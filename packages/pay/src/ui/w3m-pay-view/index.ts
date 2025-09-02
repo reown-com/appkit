@@ -171,7 +171,7 @@ export class W3mPayView extends LitElement {
       ?chevron=${true}
       data-testid="wallet-payment-option"
     >
-      <wui-text variant="lg-regular" color="inherit">Pay from wallet</wui-text>
+      <wui-text variant="lg-regular" color="primary">Pay from wallet</wui-text>
     </wui-list-item>`
   }
 
@@ -194,16 +194,11 @@ export class W3mPayView extends LitElement {
           data-testid="exchange-option-${exchange.id}"
           ?chevron=${true}
           ?disabled=${this.loadingExchangeId !== null}
+          ?loading=${this.loadingExchangeId === exchange.id}
+          imageSrc=${ifDefined(exchange.imageUrl)}
         >
           <wui-flex alignItems="center" gap="3">
-            ${this.loadingExchangeId === exchange.id
-              ? html`<wui-loading-spinner color="accent-primary" size="md"></wui-loading-spinner>`
-              : html`<wui-wallet-image
-                  size="sm"
-                  imageSrc=${ifDefined(exchange.imageUrl)}
-                  name=${exchange.name}
-                ></wui-wallet-image>`}
-            <wui-text flexGrow="1" variant="md-medium" color="inherit"
+            <wui-text flexGrow="1" variant="md-medium" color="primary"
               >Pay with ${exchange.name} <wui-spinner size="sm" color="secondary"></wui-spinner
             ></wui-text>
           </wui-flex>

@@ -972,7 +972,7 @@ describe('ApiController', () => {
       { id: '3', name: 'Wallet3', mobile_link: 'link3' }
     ] as WcWallet[]
 
-    const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
+    const { filteredWallets } = ApiController._filterWalletsByPlatform(mockWallets)
     expect(filteredWallets).toHaveLength(2)
     expect(filteredWallets.map(w => w.id)).toEqual(['1', '3'])
   })
@@ -1033,7 +1033,7 @@ describe('ApiController', () => {
       { id: '5', name: 'Wallet5' } // Should be filtered out
     ] as WcWallet[]
 
-    const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
+    const { filteredWallets } = ApiController._filterWalletsByPlatform(mockWallets)
     expect(filteredWallets).toHaveLength(5)
     expect(filteredWallets.map(w => w.id)).toEqual([
       '1',
@@ -1053,7 +1053,7 @@ describe('ApiController', () => {
       { id: '3', name: 'Wallet3', mobile_link: 'link3' }
     ] as WcWallet[]
 
-    const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
+    const { filteredWallets } = ApiController._filterWalletsByPlatform(mockWallets)
     expect(filteredWallets).toEqual(mockWallets)
   })
 
@@ -1082,5 +1082,112 @@ describe('ApiController', () => {
       entries: 2,
       include: ['1', '2']
     })
+  })
+
+  it('should track mobileFilteredOutWalletsLength correctly in mobile environment when using fetchWalletsByPage', async () => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+
+    // Reset state to start fresh
+    ApiController.state.mobileFilteredOutWalletsLength = undefined
+    ApiController.state.wallets = []
+    ApiController.state.recommended = []
+
+    const mockWalletsPage1 = [
+      { id: '1', name: 'Wallet1', mobile_link: 'link1', chains: ['eip155:1'] },
+      { id: '2', name: 'Wallet2', chains: ['eip155:1'] }, // No mobile_link - will be filtered
+      { id: '3', name: 'Wallet3', chains: ['eip155:1'] } // No mobile_link - will be filtered
+    ] as WcWallet[]
+
+    const mockWalletsPage2 = [
+      { id: '4', name: 'Wallet4', mobile_link: 'link4', chains: ['eip155:1'] },
+      { id: '5', name: 'Wallet5', chains: ['eip155:1'] }, // No mobile_link - will be filtered
+      { id: '6', name: 'Wallet6', mobile_link: 'link6', chains: ['eip155:1'] }
+    ] as WcWallet[]
+
+    const fetchSpy = vi
+      .spyOn(api, 'get')
+      .mockResolvedValueOnce({ data: mockWalletsPage1, count: 6 })
+      .mockResolvedValueOnce({ data: mockWalletsPage2, count: 6 })
+
+    // First page - should filter out 2 wallets
+    await ApiController.fetchWalletsByPage({ page: 1 })
+    expect(ApiController.state.mobileFilteredOutWalletsLength).toBe(2) // 2 wallets filtered out
+
+    // Second page - should filter out 1 more wallet and accumulate
+    await ApiController.fetchWalletsByPage({ page: 2 })
+    expect(ApiController.state.mobileFilteredOutWalletsLength).toBe(3) // 2 + 1 = 3 total filtered
+
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+  })
+
+  it('should not increment mobileFilteredOutWalletsLength in non-mobile environment', async () => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+
+    // Reset state
+    ApiController.state.mobileFilteredOutWalletsLength = undefined
+    ApiController.state.wallets = []
+    ApiController.state.recommended = []
+
+    const mockWallets = [
+      { id: '1', name: 'Wallet1', chains: ['eip155:1'] }, // No mobile_link but should not be filtered
+      { id: '2', name: 'Wallet2', chains: ['eip155:1'] } // No mobile_link but should not be filtered
+    ] as WcWallet[]
+
+    vi.spyOn(api, 'get').mockResolvedValueOnce({ data: mockWallets, count: 2 })
+
+    await ApiController.fetchWalletsByPage({ page: 1 })
+    expect(ApiController.state.mobileFilteredOutWalletsLength).toBe(0) // No wallets filtered
+  })
+
+  it('should handle custom deeplink wallets correctly in mobile filtering count', async () => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+    mockChainControllerState({
+      activeChain: 'solana'
+    })
+
+    // Reset state
+    ApiController.state.mobileFilteredOutWalletsLength = undefined
+
+    ApiController.state.wallets = []
+    ApiController.state.recommended = []
+
+    const mockWallets = [
+      { id: '1', name: 'Wallet1', mobile_link: 'link1', chains: ['solana:1'] },
+      { id: '2', name: 'Wallet2', chains: ['solana:1'] }, // No mobile_link - will be filtered
+      { id: CUSTOM_DEEPLINK_WALLETS.PHANTOM.id, name: 'Phantom', chains: ['solana:1'] }, // Custom deeplink - should not be filtered
+      { id: '4', name: 'Wallet4', chains: ['solana:1'] } // No mobile_link - will be filtered
+    ] as WcWallet[]
+
+    vi.spyOn(api, 'get').mockResolvedValueOnce({ data: mockWallets, count: 4 })
+
+    await ApiController.fetchWalletsByPage({ page: 1 })
+
+    // Should keep: Wallet1 (has mobile_link), Phantom (custom deeplink)
+    // Should filter: Wallet2, Wallet4 (no mobile_link, no custom deeplink)
+    expect(ApiController.state.mobileFilteredOutWalletsLength).toBe(2)
+  })
+
+  it('should not accumulate mobileFilteredOutWalletsLength when calling fetchWallets directly', async () => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+
+    // Reset state
+    ApiController.state.mobileFilteredOutWalletsLength = undefined
+
+    const mockWallets = [
+      { id: '1', name: 'Wallet1', chains: ['eip155:1'] }, // No mobile_link - will be filtered
+      { id: '2', name: 'Wallet2', chains: ['eip155:1'] } // No mobile_link - will be filtered
+    ] as WcWallet[]
+
+    vi.spyOn(api, 'get').mockResolvedValueOnce({ data: mockWallets, count: 2 })
+
+    // Call fetchWallets directly (not through fetchWalletsByPage)
+    const result = await ApiController.fetchWallets({ page: 1, entries: 2 })
+
+    // fetchWallets should return the filtered data and mobileFilteredOutWalletsLength
+    expect(result.data).toHaveLength(0) // No wallets with mobile_link
+    expect(result.mobileFilteredOutWalletsLength).toBe(2) // 2 wallets were filtered
+
+    // But state should not be updated since this wasn't called from fetchWalletsByPage
+    expect(ApiController.state.mobileFilteredOutWalletsLength).toBeUndefined()
   })
 })

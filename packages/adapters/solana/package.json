@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-solana",
-  "version": "1.7.20",
+  "version": "1.8.2",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -62,7 +62,7 @@
     "@wallet-standard/features": "1.1.0",
     "@walletconnect/universal-provider": "2.21.7",
     "@solana/spl-token": "0.4.13",
-    "valtio": "2.1.5"
+    "valtio": "2.1.7"
   },
   "optionalDependencies": {
     "borsh": "0.7.0",

@@ -186,6 +186,7 @@ export type IconType =
   | 'verifyFilled'
   | 'wallet'
   | 'walletConnect'
+  | 'walletConnectInvert'
   | 'walletConnectLightBrown'
   | 'walletConnectBrown'
   | 'warning'
@@ -325,7 +326,7 @@ export type TransactionIconType =
   | 'arrowBottom'
   | 'arrowTop'
   | 'swapVertical'
-  | 'swapHorizontalBold'
+  | 'swapHorizontal'
   | 'checkmark'
   | 'close'
 

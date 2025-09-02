@@ -14,6 +14,9 @@ export type { AccountControllerState } from '../src/controllers/AccountControlle
 export { ChainController } from '../src/controllers/ChainController.js'
 export type { ChainControllerState } from '../src/controllers/ChainController.js'
 
+export { ProviderController } from '../src/controllers/ProviderController.js'
+export type { ProviderControllerState } from '../src/controllers/ProviderController.js'
+
 export { OnRampController } from '../src/controllers/OnRampController.js'
 export type { OnRampControllerState, OnRampProvider } from '../src/controllers/OnRampController.js'
 
@@ -23,6 +26,7 @@ export type {
   ConnectionControllerClient,
   ConnectionControllerState
 } from '../src/controllers/ConnectionController.js'
+export type { ConnectExternalOptions } from '../src/controllers/ConnectionController.js'
 
 export { ConnectorController } from '../src/controllers/ConnectorController.js'
 export { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
@@ -85,10 +89,7 @@ export { OptionsStateController } from '../src/controllers/OptionsStateControlle
 export type { OptionsStateControllerState } from '../src/controllers/OptionsStateController.js'
 
 export { ExchangeController } from '../src/controllers/ExchangeController.js'
-export type {
-  ExchangeControllerState,
-  CurrentPayment
-} from '../src/controllers/ExchangeController.js'
+export type { ExchangeControllerState } from '../src/controllers/ExchangeController.js'
 
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from '../src/utils/AssetUtil.js'
@@ -101,8 +102,19 @@ export { SIWXUtil } from '../src/utils/SIWXUtil.js'
 export { ModalUtil } from '../src/utils/ModalUtil.js'
 export { NetworkUtil } from '../src/utils/NetworkUtil.js'
 export { withErrorBoundary, AppKitError } from '../src/utils/withErrorBoundary.js'
-export { formatCaip19Asset, getExchanges, getPayUrl } from '../src/utils/ExchangeUtil.js'
-export type { Exchange, GetExchangesParams, PayUrlParams } from '../src/utils/ExchangeUtil.js'
+export {
+  formatCaip19Asset,
+  getExchanges,
+  getPayUrl,
+  getPaymentAssetsForNetwork
+} from '../src/utils/ExchangeUtil.js'
+export type {
+  Exchange,
+  GetExchangesParams,
+  PayUrlParams,
+  PaymentAsset,
+  CurrentPayment
+} from '../src/utils/ExchangeUtil.js'
 
 export { FetchUtil } from '../src/utils/FetchUtil.js'
 

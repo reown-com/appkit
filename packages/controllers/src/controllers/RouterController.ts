@@ -86,6 +86,7 @@ export interface RouterControllerState {
     | 'PayLoading'
     | 'FundWallet'
     | 'PayWithExchange'
+    | 'PayWithExchangeSelectAsset'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

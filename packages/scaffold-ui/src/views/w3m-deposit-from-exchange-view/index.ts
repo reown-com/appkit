@@ -2,8 +2,9 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
-  AssetUtil,
+  AccountController,
   ChainController,
+  ConnectionController,
   type CurrentPayment,
   type Exchange,
   ExchangeController,
@@ -21,7 +22,7 @@ import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 
-const PRESET_AMOUNTS = [10, 50, 100]
+const PRESET_AMOUNTS = [10, 50, 100] as const
 
 @customElement('w3m-deposit-from-exchange-view')
 export class W3mDepositFromExchangeView extends LitElement {
@@ -40,10 +41,15 @@ export class W3mDepositFromExchangeView extends LitElement {
   @state() public isPaymentInProgress = ExchangeController.state.isPaymentInProgress
   @state() public currentPayment?: CurrentPayment = ExchangeController.state.currentPayment
   @state() public paymentId = ExchangeController.state.paymentId
+  @state() public paymentAsset = ExchangeController.state.paymentAsset
 
   public constructor() {
     super()
     this.unsubscribe.push(
+      ChainController.subscribeKey('activeCaipNetwork', val => {
+        this.network = val
+        this.setDefaultPaymentAsset()
+      }),
       ExchangeController.subscribe(exchangeState => {
         this.exchanges = exchangeState.exchanges
         this.isLoading = exchangeState.isLoading
@@ -53,6 +59,7 @@ export class W3mDepositFromExchangeView extends LitElement {
         this.paymentId = exchangeState.paymentId
         this.isPaymentInProgress = exchangeState.isPaymentInProgress
         this.currentPayment = exchangeState.currentPayment
+        this.paymentAsset = exchangeState.paymentAsset
 
         const shouldHandlePaymentInProgress =
           exchangeState.isPaymentInProgress &&
@@ -72,21 +79,14 @@ export class W3mDepositFromExchangeView extends LitElement {
     ExchangeController.reset()
   }
 
-  public override firstUpdated() {
-    ExchangeController.fetchExchanges()
-    ExchangeController.fetchTokenPrice()
+  public override async firstUpdated() {
+    await this.getPaymentAssets()
 
-    if (this.network) {
-      ExchangeController.setPaymentAsset({
-        network: `${this.network.chainNamespace}:${this.network.id}`,
-        asset: 'native',
-        metadata: {
-          name: this.network.nativeCurrency.name,
-          symbol: this.network.nativeCurrency.symbol,
-          decimals: this.network.nativeCurrency.decimals
-        }
-      })
+    if (!this.paymentAsset) {
+      await this.setDefaultPaymentAsset()
     }
+    this.onPresetAmountClick(PRESET_AMOUNTS[0])
+    await ExchangeController.fetchExchanges()
   }
 
   // -- Render -------------------------------------------- //
@@ -98,16 +98,15 @@ export class W3mDepositFromExchangeView extends LitElement {
     `
   }
 
-  // -- Private ------------------------------------------- //
-  private exchangesTemplate() {
-    return html`
-      <wui-flex
-        flexDirection="column"
-        gap="2"
-        .padding=${['3', '3', '3', '3'] as const}
-        class="exchanges-container"
-      >
-        ${this.exchanges.map(
+  private exchangesLoadingTemplate() {
+    return Array.from({ length: 2 }).map(
+      () => html`<wui-shimmer width="100%" height="65px" borderRadius="xxs"></wui-shimmer>`
+    )
+  }
+
+  private _exchangesTemplate() {
+    return this.exchanges.length > 0
+      ? this.exchanges.map(
           exchange =>
             html`<wui-list-item
               @click=${() => this.onExchangeClick(exchange)}
@@ -115,16 +114,31 @@ export class W3mDepositFromExchangeView extends LitElement {
               variant="image"
               imageSrc=${exchange.imageUrl}
               ?loading=${this.isLoading}
-              ?disabled=${!this.amount}
             >
               <wui-text variant="md-regular" color="secondary">
                 Deposit from ${exchange.name}
               </wui-text>
             </wui-list-item>`
-        )}
-      </wui-flex>
-    `
+        )
+      : html`<wui-flex flexDirection="column" alignItems="center" gap="4" padding="4">
+          <wui-text variant="lg-medium" align="center" color="primary">
+            No exchanges support this asset on this network
+          </wui-text>
+        </wui-flex>`
   }
+
+  // -- Private ------------------------------------------- //
+  private exchangesTemplate() {
+    return html`<wui-flex
+      flexDirection="column"
+      gap="2"
+      .padding=${['3', '3', '3', '3'] as const}
+      class="exchanges-container"
+    >
+      ${this.isLoading ? this.exchangesLoadingTemplate() : this._exchangesTemplate()}
+    </wui-flex>`
+  }
+
   private amountInputTemplate() {
     return html`
       <wui-flex flexDirection="column" gap="3" .padding=${['0', '3', '3', '3'] as const} class="amount-input-container">
@@ -134,8 +148,9 @@ export class W3mDepositFromExchangeView extends LitElement {
           <wui-token-button
             data-testid="deposit-from-exchange-asset-button"
             flexDirection="row-reverse"
-            text=${this.network?.nativeCurrency.symbol || ''}
-            imageSrc=${AssetUtil.getNetworkImage(this.network) || ''}
+            text=${this.paymentAsset?.metadata.symbol || ''}
+            imageSrc=${this.paymentAsset?.metadata.iconUrl || ''}
+            @click=${() => RouterController.push('PayWithExchangeSelectAsset')}
             >
           </wui-token-button>
         </wui-flex>
@@ -166,26 +181,30 @@ export class W3mDepositFromExchangeView extends LitElement {
 
     return html`
       <wui-text variant="md-regular" color="secondary">
-        ${this.tokenAmount} ${this.network?.nativeCurrency.symbol}
+        ${this.tokenAmount.toFixed(4)} ${this.paymentAsset?.metadata.symbol}
       </wui-text>
     `
   }
 
   private async onExchangeClick(exchange: Exchange) {
-    if (this.amount) {
-      await ExchangeController.handlePayWithExchange(exchange.id)
+    if (!this.amount) {
+      SnackController.showError('Please enter an amount')
+
+      return
     }
+
+    await ExchangeController.handlePayWithExchange(exchange.id)
   }
 
   private handlePaymentInProgress() {
+    const namespace = ChainController.state.activeChain
+
     if (
       this.isPaymentInProgress &&
       this.currentPayment?.exchangeId &&
       this.currentPayment?.sessionId &&
       this.paymentId
     ) {
-      SnackController.showLoading('Deposit in progress...')
-      RouterController.replace('Account')
       ExchangeController.waitUntilComplete({
         exchangeId: this.currentPayment.exchangeId,
         sessionId: this.currentPayment.sessionId,
@@ -193,15 +212,38 @@ export class W3mDepositFromExchangeView extends LitElement {
       }).then(status => {
         if (status.status === 'SUCCESS') {
           SnackController.showSuccess('Deposit completed')
+
+          if (namespace) {
+            AccountController.fetchTokenBalance()
+            ConnectionController.updateBalance(namespace)
+          }
         } else if (status.status === 'FAILED') {
           SnackController.showError('Deposit failed')
         }
       })
+      SnackController.showLoading('Deposit in progress...')
+      RouterController.replace('Account')
     }
   }
 
   private onPresetAmountClick(amount: number) {
     ExchangeController.setAmount(amount)
+  }
+
+  private async getPaymentAssets() {
+    if (this.network) {
+      await ExchangeController.getAssetsForNetwork(this.network.caipNetworkId)
+    }
+  }
+
+  private async setDefaultPaymentAsset() {
+    if (this.network) {
+      const paymentAssets = await ExchangeController.getAssetsForNetwork(this.network.caipNetworkId)
+
+      if (paymentAssets[0]) {
+        ExchangeController.setPaymentAsset(paymentAssets[0])
+      }
+    }
   }
 }
 

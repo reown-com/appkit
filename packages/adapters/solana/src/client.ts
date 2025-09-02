@@ -1,6 +1,6 @@
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { Commitment, ConnectionConfig } from '@solana/web3.js'
-import { PublicKey, Connection as SolanaConnection } from '@solana/web3.js'
+import { PublicKey, SendTransactionError, Connection as SolanaConnection } from '@solana/web3.js'
 import UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
@@ -47,6 +47,17 @@ export interface AdapterOptions {
 const IGNORED_CONNECTIONS_IDS: string[] = [
   CommonConstantsUtil.CONNECTOR_ID.AUTH,
   CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+]
+
+const TRANSACTION_ERROR_MAP = [
+  {
+    pattern: /Attempt to debit an account but found no record of a prior credit/iu,
+    message: 'Not enough SOL to cover fees or rent'
+  },
+  {
+    pattern: /Insufficient funds for fee/iu,
+    message: 'Not enough SOL to cover fees or rent'
+  }
 ]
 
 export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
@@ -216,7 +227,19 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
           value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
         })
 
-    const result = await provider.sendTransaction(transaction, connection)
+    const result = await provider.sendTransaction(transaction, connection).catch(error => {
+      if (error instanceof SendTransactionError) {
+        const errMessage = error?.transactionError?.message ?? error?.message ?? ''
+
+        for (const { pattern, message } of TRANSACTION_ERROR_MAP) {
+          if (pattern.test(errMessage)) {
+            throw new Error(message)
+          }
+        }
+      }
+
+      throw error
+    })
 
     await new Promise<void>(resolve => {
       const interval = setInterval(async () => {

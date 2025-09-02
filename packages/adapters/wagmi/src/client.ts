@@ -316,13 +316,13 @@ export class WagmiAdapter extends AdapterBlueprint {
       customConnectors.push(walletConnect(options, appKit))
     }
 
-    if (options.enableEIP6963 !== false) {
+    if (options.enableInjected !== false) {
       customConnectors.push(injected({ shimDisconnect: true }))
     }
 
-    const isEmailEnabled = appKit?.remoteFeatures?.email ?? true
-    const socialsEnabled =
-      Array.isArray(appKit?.remoteFeatures?.socials) && appKit?.remoteFeatures?.socials?.length > 0
+    const isEmailEnabled = appKit?.remoteFeatures?.email ?? appKit?.features?.email ?? true
+    const socials = appKit?.remoteFeatures?.socials ?? appKit?.features?.socials
+    const socialsEnabled = Array.isArray(socials) && socials?.length > 0
 
     if (isEmailEnabled || socialsEnabled) {
       customConnectors.push(

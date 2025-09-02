@@ -18,15 +18,15 @@ import { useAppKitState } from '@reown/appkit/react'
 
 export function MultiChainInfo() {
   const { activeChain, selectedNetworkId } = useAppKitState()
-  const [ready, setReady] = useState(false)
+  const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
-    setReady(true)
+    setIsReady(true)
   }, [])
 
   return (
     <>
-      {ready && (
+      {isReady && (
         <Card marginTop={10} marginBottom={10}>
           <CardHeader>
             <Heading size="md">Chain Information</Heading>

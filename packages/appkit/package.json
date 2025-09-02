@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit",
-  "version": "1.7.20",
+  "version": "1.8.2",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -44,11 +44,6 @@
       "types": "./dist/types/exports/library/vue.d.ts",
       "import": "./dist/esm/exports/library/vue.js",
       "default": "./dist/esm/exports/library/vue.js"
-    },
-    "./store": {
-      "types": "./dist/types/exports/store.d.ts",
-      "import": "./dist/esm/exports/store.js",
-      "default": "./dist/esm/exports/store.js"
     },
     "./utils": {
       "types": "./dist/types/exports/utils.d.ts",
@@ -120,9 +115,6 @@
       "library/vue": [
         "./dist/types/exports/library/vue.d.ts"
       ],
-      "store": [
-        "./dist/types/exports/store.d.ts"
-      ],
       "networks": [
         "./dist/types/exports/networks.d.ts"
       ],
@@ -146,7 +138,7 @@
     "@walletconnect/universal-provider": "2.21.7",
     "bs58": "6.0.0",
     "semver": "7.7.2",
-    "valtio": "2.1.5",
+    "valtio": "2.1.7",
     "viem": ">=2.33.3"
   },
   "devDependencies": {

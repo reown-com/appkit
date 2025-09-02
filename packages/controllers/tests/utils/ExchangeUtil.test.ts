@@ -17,7 +17,9 @@ describe('ExchangeUtil', () => {
     vi.stubGlobal('fetch', vi.fn())
     // Ensure projectId is set for URL generation via snapshot
     vi.spyOn(OptionsController, 'getSnapshot').mockReturnValue({
-      projectId: 'test-project-id'
+      projectId: 'test-project-id',
+      sdkType: 'test-sdk-type',
+      sdkVersion: 'test-sdk-version'
     } as unknown as ReturnType<typeof OptionsController.getSnapshot>)
   })
 
@@ -30,7 +32,7 @@ describe('ExchangeUtil', () => {
     it('returns the correct WalletConnect JSON-RPC URL', () => {
       const url = getApiUrl()
       expect(url).toBe(
-        'https://rpc.walletconnect.org/v1/json-rpc?projectId=test-project-id&source=fund-wallet'
+        'https://rpc.walletconnect.org/v1/json-rpc?projectId=test-project-id&st=test-sdk-type&sv=test-sdk-version&source=fund-wallet'
       )
     })
   })
@@ -61,7 +63,7 @@ describe('ExchangeUtil', () => {
       expect(global.fetch).toHaveBeenCalledTimes(1)
       const [calledUrl, calledInit] = vi.mocked(global.fetch).mock.calls[0]!
       expect(String(calledUrl)).toBe(
-        'https://rpc.walletconnect.org/v1/json-rpc?projectId=test-project-id&source=fund-wallet'
+        'https://rpc.walletconnect.org/v1/json-rpc?projectId=test-project-id&st=test-sdk-type&sv=test-sdk-version&source=fund-wallet'
       )
       expect(calledInit?.method).toBe('POST')
       expect(calledInit?.headers).toEqual({ 'Content-Type': 'application/json' })

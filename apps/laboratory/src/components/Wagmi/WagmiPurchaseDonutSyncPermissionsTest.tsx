@@ -39,8 +39,8 @@ function ConnectedTestContent({
   const {
     data: donutsOwned,
     refetch: fetchDonutsOwned,
-    isLoading: donutsQueryLoading,
-    isRefetching: donutsQueryRefetching
+    isLoading: isDonutsQueryLoading,
+    isRefetching: isDonutsQueryRefetching
   } = useReadContract({
     abi: donutContractAbi,
     address: donutContractaddress,
@@ -109,7 +109,7 @@ function ConnectedTestContent({
         Purchase Donut
       </Button>
       <Flex alignItems="center">
-        {donutsQueryLoading || donutsQueryRefetching ? (
+        {isDonutsQueryLoading || isDonutsQueryRefetching ? (
           <Text>Fetching donuts...</Text>
         ) : (
           <>
