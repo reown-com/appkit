@@ -32,7 +32,7 @@ export function EthersSendCallsTest({
   onCallsHash: (hash: string) => void
   capabilities: WalletCapabilities
 }) {
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const { chainId } = useAppKitNetwork()
   const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
@@ -77,7 +77,7 @@ export function EthersSendCallsTest({
 
   async function onSendCalls() {
     try {
-      setLoading(true)
+      setIsLoading(true)
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
@@ -120,7 +120,7 @@ export function EthersSendCallsTest({
         type: 'error'
       })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -183,7 +183,7 @@ export function EthersSendCallsTest({
                 </>
               ))
             ) : (
-              <Button data-testid="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
+              <Button data-testid="send-calls-button" onClick={onSendCalls} isDisabled={isLoading}>
                 Send Batch Calls to Vitalik
               </Button>
             )}
@@ -191,13 +191,13 @@ export function EthersSendCallsTest({
           </Stack>
           <Spacer />
           <Link onClick={onAddTransactionButtonClick}>
-            <Button variant="outline" colorScheme="blue" isDisabled={loading}>
+            <Button variant="outline" colorScheme="blue" isDisabled={isLoading}>
               <AddIcon mr={2} /> Add Transaction
             </Button>
           </Link>
         </Stack>
         {transactionsToBatch.length ? (
-          <Button data-testid="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
+          <Button data-testid="send-calls-button" onClick={onSendCalls} isDisabled={isLoading}>
             Send Calls
           </Button>
         ) : null}
