@@ -23,9 +23,9 @@ import { SnackController } from './SnackController.js'
 
 // -- Constants ----------------------------------------- //
 const DEFAULT_PAGE = 0
-const DEFAULT_STATE: ExchangeControllerState = {
+export const DEFAULT_STATE: ExchangeControllerState = {
   paymentAsset: null,
-  amount: 10,
+  amount: 0,
   tokenAmount: 0,
   priceLoading: false,
   error: null,
