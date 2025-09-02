@@ -42,7 +42,7 @@
     "danger": "danger ci",
     "prettier": "prettier --check .",
     "prettier:format": "prettier --write .",
-    "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out`; rm bun.lock.yaml; rm bun.lock",
+    "clean": "rm -rf `find . -type d -name node_modules -o -name dist -o -name .next -o -name out`; rm bun.lock",
     "changeset:pre": "changeset pre enter",
     "changeset:pre:exit": "changeset pre exit",
     "changeset": "changeset",
