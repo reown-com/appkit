@@ -4,12 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import type { CaipNetwork } from '@reown/appkit-common'
-import {
-  ChainController,
-  ExchangeController,
-  RouterController,
-  SnackController
-} from '@reown/appkit-controllers'
+import { ChainController, ExchangeController, RouterController } from '@reown/appkit-controllers'
 
 import { W3mDepositFromExchangeView } from '../../src/views/w3m-deposit-from-exchange-view'
 import { HelpersUtil } from '../utils/HelpersUtil'
