@@ -825,17 +825,17 @@ const controller = {
       return []
     }
 
-    accountState.balanceLoading = true
     const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
     const chain = ChainController.state.activeCaipNetwork?.chainNamespace
     const caipAddress = ChainController.state.activeCaipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
 
+    ChainController.setAccountProp('balanceLoading', true, chain)
     if (
       accountState.lastRetry &&
       !CoreHelperUtil.isAllowedRetry(accountState.lastRetry, 30 * ConstantsUtil.ONE_SEC_MS)
     ) {
-      accountState.balanceLoading = false
+      ChainController.setAccountProp('balanceLoading', false, chain)
 
       return []
     }
@@ -845,18 +845,18 @@ const controller = {
         const balance = await BalanceUtil.getMyTokensWithBalance()
 
         ChainController.setAccountProp('tokenBalance', balance, chain)
-        accountState.lastRetry = undefined
-        accountState.balanceLoading = false
+        ChainController.setAccountProp('lastRetry', undefined, chain)
+        ChainController.setAccountProp('balanceLoading', false, chain)
 
         return balance
       }
     } catch (error) {
-      accountState.lastRetry = Date.now()
+      ChainController.setAccountProp('lastRetry', Date.now(), chain)
 
       onError?.(error)
       SnackController.showError('Token Balance Unavailable')
     } finally {
-      accountState.balanceLoading = false
+      ChainController.setAccountProp('balanceLoading', false, chain)
     }
 
     return []
