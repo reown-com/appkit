@@ -1,11 +1,10 @@
 ---
-'@reown/appkit-adapter-wagmi': patch
-'@reown/appkit': patch
-'pay-test-exchange': patch
 '@reown/appkit-adapter-bitcoin': patch
+'@reown/appkit': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
+'@reown/appkit-adapter-wagmi': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
@@ -21,9 +20,8 @@
 '@reown/appkit-siwx': patch
 '@reown/appkit-testing': patch
 '@reown/appkit-ui': patch
-'@reown/appkit-universal-connector': patch
 '@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where `authConnector` was always included in wagmi config when email and social login were disabled
+Moves `useAppKitProvider` and `ProviderUtil` to `controllers` package, upgrades Valtio versions
