@@ -1511,7 +1511,7 @@ export abstract class AppKitBaseClient {
 
     const newCaipAddress = `${chainNamespace}:${newChainId}:${address}`
 
-    this.setCaipAddress(newCaipAddress as CaipAddress, chainNamespace)
+    this.setCaipAddress(newCaipAddress as CaipAddress, chainNamespace, true)
     await this.syncIdentity({
       address,
       chainId: newChainId,
@@ -1910,8 +1910,18 @@ export abstract class AppKitBaseClient {
 
   public getPreferredAccountType = (namespace: ChainNamespace) => getPreferredAccountType(namespace)
 
-  public setCaipAddress = (caipAddress: CaipAddress | null, chain: ChainNamespace) => {
-    ChainController.setAccountProp('caipAddress', caipAddress, chain)
+  public setCaipAddress = (
+    caipAddress: CaipAddress | null,
+    chain: ChainNamespace,
+    shouldRefresh = false
+  ) => {
+    ChainController.setAccountProp('caipAddress', caipAddress, chain, shouldRefresh)
+    ChainController.setAccountProp(
+      'address',
+      CoreHelperUtil.getPlainAddress(caipAddress as CaipAddress),
+      chain,
+      shouldRefresh
+    )
   }
 
   public setBalance = (balance: string, balanceSymbol: string, chain: ChainNamespace) => {

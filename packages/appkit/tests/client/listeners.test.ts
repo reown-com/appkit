@@ -83,6 +83,7 @@ describe('Listeners', () => {
     emitter.emit('accountChanged', mockAccount)
 
     expect(setCaipAddressSpy).toHaveBeenCalledWith(
+      'caipAddress',
       `${mockAccount.chainNamespace}:${mockAccount.chainId}:${mockAccount.address}`,
       'eip155',
       true
@@ -133,9 +134,9 @@ describe('Listeners', () => {
     expect(removeConnectorIdSpy).toHaveBeenCalledWith(chainNamespace)
     expect(removeConnectedNamespaceSpy).toHaveBeenCalledWith(chainNamespace)
     expect(resetChainSpy).toHaveBeenCalledWith(chainNamespace)
-    expect(setUserSpy).toHaveBeenCalledWith(undefined, chainNamespace)
+    expect(setUserSpy).toHaveBeenCalledWith(null, chainNamespace)
     expect(setStatusSpy).toHaveBeenCalledWith('disconnected', chainNamespace)
-    expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(undefined, chainNamespace)
+    expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(null, chainNamespace)
     expect(modalCloseSpy).toHaveBeenCalled()
   })
 
