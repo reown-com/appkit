@@ -30,8 +30,8 @@ function AvailableTestContent({ accountAddress }: { accountAddress: string | und
   const {
     data: donutsOwned,
     refetch: fetchDonutsOwned,
-    isLoading: donutsQueryLoading,
-    isRefetching: donutsQueryRefetching
+    isLoading: isDonutsQueryLoading,
+    isRefetching: isDonutsQueryRefetching
   } = useReadContract({
     abi,
     address,
@@ -44,7 +44,7 @@ function AvailableTestContent({ accountAddress }: { accountAddress: string | und
   const {
     refetch: simulateContract,
     data: simulateData,
-    isFetching: simulateFetching
+    isFetching: isSimulateFetching
   } = useSimulateContract({
     abi,
     address,
@@ -96,12 +96,12 @@ function AvailableTestContent({ accountAddress }: { accountAddress: string | und
         onClick={onSendTransaction}
         disabled={!simulateData?.request}
         isDisabled={isPending}
-        isLoading={simulateFetching}
+        isLoading={isSimulateFetching}
       >
         Purchase crypto donut
       </Button>
 
-      {donutsQueryLoading || donutsQueryRefetching ? (
+      {isDonutsQueryLoading || isDonutsQueryRefetching ? (
         <Text>Fetching donuts...</Text>
       ) : (
         <Flex alignItems="center">

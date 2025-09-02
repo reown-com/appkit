@@ -15,7 +15,7 @@ import { useChakraToast } from '@/src/components/Toast'
 import { abi, address as donutAddress } from '@/src/utils/DonutContract'
 
 export function Ethers5WriteContractTest() {
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const toast = useChakraToast()
   const { address } = useAppKitAccount({ namespace: 'eip155' })
@@ -24,7 +24,7 @@ export function Ethers5WriteContractTest() {
 
   async function onSendTransaction() {
     try {
-      setLoading(true)
+      setIsLoading(true)
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
@@ -46,7 +46,7 @@ export function Ethers5WriteContractTest() {
         type: 'error'
       })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
   const allowedChains = [sepolia.id, optimism.id]
@@ -56,7 +56,7 @@ export function Ethers5WriteContractTest() {
       <Button
         data-testid="sign-transaction-button"
         onClick={onSendTransaction}
-        isDisabled={loading}
+        isDisabled={isLoading}
       >
         Purchase crypto donut
       </Button>
@@ -64,13 +64,13 @@ export function Ethers5WriteContractTest() {
       <Spacer />
 
       <Link isExternal href="https://sepoliafaucet.com">
-        <Button variant="outline" colorScheme="blue" isDisabled={loading}>
+        <Button variant="outline" colorScheme="blue" isDisabled={isLoading}>
           Sepolia Faucet 1
         </Button>
       </Link>
 
       <Link isExternal href="https://www.infura.io/faucet/sepolia">
-        <Button variant="outline" colorScheme="orange" isDisabled={loading}>
+        <Button variant="outline" colorScheme="orange" isDisabled={isLoading}>
           Sepolia Faucet 2
         </Button>
       </Link>
