@@ -127,6 +127,7 @@ export class W3mAllWalletsList extends LitElement {
           data-testid="wallet-search-item-${wallet.id}"
           @click=${() => this.onConnectWallet(wallet)}
           .wallet=${wallet}
+          walletId=${wallet.id}
         ></w3m-all-wallets-list-item>
       `
     )

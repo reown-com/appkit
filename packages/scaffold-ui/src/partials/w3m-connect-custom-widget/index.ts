@@ -15,7 +15,6 @@ import {
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-wallet'
 
 @customElement('w3m-connect-custom-widget')
 export class W3mConnectCustomWidget extends LitElement {
@@ -65,7 +64,7 @@ export class W3mConnectCustomWidget extends LitElement {
     return html`<wui-flex flexDirection="column" gap="2">
       ${wallets.map(
         wallet => html`
-          <wui-list-wallet
+          <w3m-list-wallet
             imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
             name=${wallet.name ?? 'Unknown'}
             @click=${() => this.onConnectWallet(wallet)}
@@ -74,8 +73,9 @@ export class W3mConnectCustomWidget extends LitElement {
             tabIdx=${ifDefined(this.tabIdx)}
             ?loading=${this.loading}
             ?disabled=${hasWcConnection}
+            walletId=${wallet.id}
           >
-          </wui-list-wallet>
+          </w3m-list-wallet>
         `
       )}
     </wui-flex>`

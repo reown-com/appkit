@@ -54,7 +54,7 @@ export class W3mConnectInjectedWidget extends LitElement {
           )
 
           return html`
-            <wui-list-wallet
+            <w3m-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               .installed=${true}
               name=${connector.name ?? 'Unknown'}
@@ -64,8 +64,9 @@ export class W3mConnectInjectedWidget extends LitElement {
               size="sm"
               @click=${() => this.onConnector(connector)}
               tabIdx=${ifDefined(this.tabIdx)}
+              walletId=${connector.id}
             >
-            </wui-list-wallet>
+            </w3m-list-wallet>
           `
         })}
       </wui-flex>

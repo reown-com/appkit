@@ -25,6 +25,11 @@
       "import": "./dist/esm/exports/partials/w3m-router-container.js",
       "default": "./dist/esm/exports/partials/w3m-router-container.js"
     },
+    "./partials/w3m-list-wallet": {
+      "types": "./dist/types/exports/partials/w3m-list-wallet.d.ts",
+      "import": "./dist/esm/exports/partials/w3m-list-wallet.js",
+      "default": "./dist/esm/exports/partials/w3m-list-wallet.js"
+    },
     "./utils": {
       "types": "./dist/types/exports/utils.d.ts",
       "import": "./dist/esm/exports/utils.js",

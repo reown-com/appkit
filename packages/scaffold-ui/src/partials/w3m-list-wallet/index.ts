@@ -1,0 +1,133 @@
+import { LitElement, html } from 'lit'
+import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { RouterController } from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
+import type { IWalletImage, IconType, TagType } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-list-wallet'
+
+import styles from './styles.js'
+
+@customElement('w3m-list-wallet')
+export class W3mListWallet extends LitElement {
+  public static override styles = styles
+
+  // -- Members ------------------------------------------- //
+  private intersectionObserver?: IntersectionObserver
+
+  private hasImpressionSent = false
+
+  // -- State & Properties -------------------------------- //
+  @property({ type: Array }) public walletImages?: IWalletImage[] = []
+
+  @property() public imageSrc? = ''
+
+  @property() public name = ''
+
+  @property() public size?: 'sm' | 'md' = 'md'
+
+  @property() public tagLabel?: string
+
+  @property() public tagVariant?: TagType
+
+  @property() public walletIcon?: IconType
+
+  @property() public tabIdx?: number = undefined
+
+  @property({ type: Boolean }) public disabled = false
+
+  @property({ type: Boolean }) public showAllWallets = false
+
+  @property({ type: Boolean }) public loading = false
+
+  @property({ type: String }) public loadingSpinnerColor = 'accent-100'
+
+  @property() public walletId?: string = ''
+
+  // -- Lifecycle ------------------------------------------- //
+  public override connectedCallback() {
+    super.connectedCallback()
+    this.setupIntersectionObserver()
+  }
+
+  public override disconnectedCallback() {
+    super.disconnectedCallback()
+    this.cleanupIntersectionObserver()
+  }
+
+  public override updated(changedProperties: Map<string, any>) {
+    super.updated(changedProperties)
+
+    // Reset impression tracking when wallet changes
+    if (changedProperties.has('name') || changedProperties.has('imageSrc')) {
+      this.hasImpressionSent = false
+    }
+
+    // Check if loading state changed and we're visible
+    if (changedProperties.has('loading') && !this.loading && this.intersectionObserver) {
+      const entry = this.intersectionObserver.takeRecords().find(entry => entry.target === this)
+      if (entry && entry.isIntersecting && !this.hasImpressionSent) {
+        this.sendImpressionEvent()
+      }
+    }
+  }
+
+  // -- Private ------------------------------------------- //
+  private setupIntersectionObserver() {
+    this.intersectionObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !this.loading && !this.hasImpressionSent) {
+            this.sendImpressionEvent()
+          }
+        })
+      },
+      { threshold: 0.1 } // Trigger when 10% of the element is visible
+    )
+
+    this.intersectionObserver.observe(this)
+  }
+
+  private cleanupIntersectionObserver() {
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect()
+      this.intersectionObserver = undefined
+    }
+  }
+
+  private sendImpressionEvent() {
+    if (!this.name || this.hasImpressionSent) {
+      return
+    }
+
+    this.hasImpressionSent = true
+    console.log('>>> w3m-list-wallet', this.name, this.walletId, RouterController.state.view)
+  }
+
+  // -- Render -------------------------------------------- //
+  public override render() {
+    return html`
+      <wui-list-wallet
+        .walletImages=${this.walletImages}
+        imageSrc=${ifDefined(this.imageSrc)}
+        name=${this.name}
+        size=${ifDefined(this.size)}
+        tagLabel=${ifDefined(this.tagLabel)}
+        .tagVariant=${this.tagVariant}
+        .walletIcon=${this.walletIcon}
+        .tabIdx=${this.tabIdx}
+        .disabled=${this.disabled}
+        .showAllWallets=${this.showAllWallets}
+        .loading=${this.loading}
+        loadingSpinnerColor=${this.loadingSpinnerColor}
+      ></wui-list-wallet>
+    `
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'w3m-list-wallet': W3mListWallet
+  }
+}

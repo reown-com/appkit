@@ -22,7 +22,7 @@ export class W3mGetWalletView extends LitElement {
     return html`
       <wui-flex flexDirection="column" .padding=${['0', '3', '3', '3'] as const} gap="2">
         ${this.recommendedWalletsTemplate()}
-        <wui-list-wallet
+        <w3m-list-wallet
           name="Explore all"
           showAllWallets
           walletIcon="allWallets"
@@ -31,7 +31,7 @@ export class W3mGetWalletView extends LitElement {
           @click=${() => {
             CoreHelperUtil.openHref('https://walletconnect.com/explorer?type=wallet', '_blank')
           }}
-        ></wui-list-wallet>
+        ></w3m-list-wallet>
       </wui-flex>
     `
   }
@@ -44,7 +44,7 @@ export class W3mGetWalletView extends LitElement {
 
     return wallets.map(
       wallet => html`
-        <wui-list-wallet
+        <w3m-list-wallet
           name=${wallet.name ?? 'Unknown'}
           tagVariant="accent"
           size="sm"
@@ -52,7 +52,7 @@ export class W3mGetWalletView extends LitElement {
           @click=${() => {
             this.onWalletClick(wallet)
           }}
-        ></wui-list-wallet>
+        ></w3m-list-wallet>
       `
     )
   }

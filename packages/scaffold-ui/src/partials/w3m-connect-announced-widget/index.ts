@@ -12,7 +12,6 @@ import {
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-wallet'
 import { HelpersUtil } from '@reown/appkit-utils'
 
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
@@ -60,7 +59,7 @@ export class W3mConnectAnnouncedWidget extends LitElement {
           )
 
           return html`
-            <wui-list-wallet
+            <w3m-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               name=${connector.name ?? 'Unknown'}
               @click=${() => this.onConnector(connector)}
@@ -70,8 +69,9 @@ export class W3mConnectAnnouncedWidget extends LitElement {
               data-testid=${`wallet-selector-${connector.id}`}
               .installed=${true}
               tabIdx=${ifDefined(this.tabIdx)}
+              walletId=${connector.id}
             >
-            </wui-list-wallet>
+            </w3m-list-wallet>
           `
         })}
       </wui-flex>

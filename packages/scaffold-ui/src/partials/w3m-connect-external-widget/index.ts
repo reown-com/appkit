@@ -12,7 +12,6 @@ import {
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-wallet'
 
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 
@@ -59,7 +58,7 @@ export class W3mConnectExternalWidget extends LitElement {
       <wui-flex flexDirection="column" gap="2">
         ${filteredOutCoinbaseConnectors.map(
           connector => html`
-            <wui-list-wallet
+            <w3m-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               .installed=${true}
               name=${connector.name ?? 'Unknown'}
@@ -68,8 +67,9 @@ export class W3mConnectExternalWidget extends LitElement {
               @click=${() => this.onConnector(connector)}
               tabIdx=${ifDefined(this.tabIdx)}
               ?disabled=${hasWcConnection}
+              walletId=${connector.id}
             >
-            </wui-list-wallet>
+            </w3m-list-wallet>
           `
         )}
       </wui-flex>
