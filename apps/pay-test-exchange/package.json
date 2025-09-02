@@ -1,5 +1,5 @@
 {
-  "name": "pay-test-exchange",
+  "name": "@apps/pay-test-exchange",
   "version": "0.1.6",
   "private": true,
   "scripts": {
