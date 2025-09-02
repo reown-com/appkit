@@ -7,10 +7,10 @@ import {
   ChainController,
   ConnectionController,
   OptionsController,
+  ProviderController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
-import { ProviderUtil } from '@reown/appkit-utils'
 
 import {
   assertWalletGrantPermissionsResponse,
@@ -179,7 +179,7 @@ export const SmartSessionsController = {
   },
 
   isSmartSessionSupported(): boolean {
-    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    const provider = ProviderController.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       return false

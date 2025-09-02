@@ -8,10 +8,10 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
+  ProviderController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
-import { ProviderUtil } from '@reown/appkit-utils'
 
 import {
   AppKitPayErrorCodes,
@@ -338,7 +338,7 @@ export const PayController = {
       return
     }
 
-    const provider = ProviderUtil.getProvider(chainNamespace)
+    const provider = ProviderController.getProvider(chainNamespace)
 
     if (!provider) {
       return

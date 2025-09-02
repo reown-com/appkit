@@ -72,6 +72,7 @@ beforeAll(async () => {
 
   ChainController.setActiveCaipNetwork(caipNetwork)
   ChainController.setAccountProp('caipAddress', caipAddress, chain)
+  ChainController.setAccountProp('address', '0x123', chain)
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)
   vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue(balanceResponse)
   vi.spyOn(BlockchainApiController, 'fetchSwapQuote').mockResolvedValue(swapQuoteResponse)

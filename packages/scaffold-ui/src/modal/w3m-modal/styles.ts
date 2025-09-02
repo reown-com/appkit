@@ -2,7 +2,7 @@ import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
-    z-index: var(--w3m-z-index);
+    z-index: ${({ tokens }) => tokens.core.zIndex};
     display: block;
     backface-visibility: hidden;
     will-change: opacity;
@@ -101,7 +101,7 @@ export default css`
   }
 
   :host(.appkit-modal) wui-card {
-    max-width: 400px;
+    max-width: var(--apkt-modal-width);
   }
 
   wui-card[shake='true'] {

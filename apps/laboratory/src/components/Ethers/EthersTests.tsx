@@ -25,7 +25,7 @@ import { EthersTransactionTest } from './EthersTransactionTest'
 import { EthersWriteContractTest } from './EthersWriteContractTest'
 
 export function EthersTests() {
-  const [ready, setReady] = React.useState(false)
+  const [isReady, setIsReady] = React.useState(false)
 
   const [callsHash, setCallsHash] = React.useState<string>('')
 
@@ -44,10 +44,10 @@ export function EthersTests() {
   }, [isConnected])
 
   React.useEffect(() => {
-    setReady(true)
+    setIsReady(true)
   }, [])
 
-  if (!ready) {
+  if (!isReady) {
     return null
   }
 

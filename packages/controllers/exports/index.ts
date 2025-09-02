@@ -11,6 +11,9 @@ export type { RouterControllerState } from '../src/controllers/RouterController.
 export { ChainController } from '../src/controllers/ChainController.js'
 export type { ChainControllerState, AccountState } from '../src/controllers/ChainController.js'
 
+export { ProviderController } from '../src/controllers/ProviderController.js'
+export type { ProviderControllerState } from '../src/controllers/ProviderController.js'
+
 export { OnRampController } from '../src/controllers/OnRampController.js'
 export type { OnRampControllerState, OnRampProvider } from '../src/controllers/OnRampController.js'
 

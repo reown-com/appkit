@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-wagmi",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -27,7 +27,7 @@
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/universal-provider": "2.21.7",
-    "valtio": "2.1.5"
+    "valtio": "2.1.7"
   },
   "optionalDependencies": {
     "@wagmi/connectors": ">=5.7.11"

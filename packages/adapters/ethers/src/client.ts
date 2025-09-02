@@ -14,8 +14,8 @@ import {
   StorageUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
+import { ProviderController } from '@reown/appkit-controllers'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
-import { ProviderUtil } from '@reown/appkit-utils'
 import { type Address, EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -777,7 +777,7 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   public async getCapabilities(params: AdapterBlueprint.GetCapabilitiesParams): Promise<unknown> {
-    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    const provider = ProviderController.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       throw new Error('Provider is undefined')
@@ -787,7 +787,7 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   public async grantPermissions(params: AdapterBlueprint.GrantPermissionsParams): Promise<unknown> {
-    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    const provider = ProviderController.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       throw new Error('Provider is undefined')
@@ -799,7 +799,7 @@ export class EthersAdapter extends AdapterBlueprint {
   public async revokePermissions(
     params: AdapterBlueprint.RevokePermissionsParams
   ): Promise<Address> {
-    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    const provider = ProviderController.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       throw new Error('Provider is undefined')
@@ -811,7 +811,7 @@ export class EthersAdapter extends AdapterBlueprint {
   public async walletGetAssets(
     params: AdapterBlueprint.WalletGetAssetsParams
   ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
-    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    const provider = ProviderController.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       throw new Error('Provider is undefined')

@@ -6,9 +6,9 @@ import {
   ChainController,
   ConnectorController,
   ModalController,
+  ProviderController,
   StorageUtil
 } from '@reown/appkit-controllers'
-import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { emitter, mockEvmAdapter, solanaEmitter } from '../mocks/Adapter'
@@ -116,7 +116,7 @@ describe('Listeners', () => {
     const resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
     const removeConnectorIdSpy = vi.spyOn(ConnectorController, 'removeConnectorId')
     const removeConnectedNamespaceSpy = vi.spyOn(StorageUtil, 'removeConnectedNamespace')
-    const resetChainSpy = vi.spyOn(ProviderUtil, 'resetChain')
+    const resetChainSpy = vi.spyOn(ProviderController, 'resetChain')
     const modalCloseSpy = vi.spyOn(ModalController, 'close')
 
     const appKit = new AppKit(mockOptions)

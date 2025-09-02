@@ -1,14 +1,16 @@
 import {
+  TOKEN_2022_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
   TokenAccountNotFoundError,
   createAssociatedTokenAccountInstruction,
-  createTransferInstruction,
+  createTransferCheckedInstruction,
   getAccount,
   getAssociatedTokenAddressSync,
   getMint
 } from '@solana/spl-token'
 import {
   ComputeBudgetProgram,
+  Connection,
   PublicKey,
   Transaction,
   type TransactionInstruction
@@ -16,6 +18,24 @@ import {
 
 import { SPL_COMPUTE_BUDGET_CONSTANTS } from '@reown/appkit-utils/solana'
 import type { SPLTokenTransactionArgs } from '@reown/appkit-utils/solana'
+
+async function getMintOwnerProgramId(connection: Connection, mint: PublicKey) {
+  const info = await connection.getAccountInfo(mint)
+
+  if (!info) {
+    throw new Error('Mint account not found')
+  }
+
+  if (info.owner.equals(TOKEN_PROGRAM_ID)) {
+    return TOKEN_PROGRAM_ID
+  }
+
+  if (info.owner.equals(TOKEN_2022_PROGRAM_ID)) {
+    return TOKEN_2022_PROGRAM_ID
+  }
+
+  throw new Error('Unknown mint owner program')
+}
 
 export async function createSPLTokenTransaction({
   provider,
@@ -27,30 +47,29 @@ export async function createSPLTokenTransaction({
   if (!provider.publicKey) {
     throw new Error('No public key found')
   }
-
   if (amount <= 0) {
     throw new Error('Amount must be greater than 0')
   }
-
   try {
     const fromPubkey = provider.publicKey
     const toPubkey = new PublicKey(to)
     const mintPubkey = new PublicKey(tokenMint)
 
-    const mintInfo = await getMint(connection, mintPubkey)
-    const decimals = mintInfo.decimals
+    const programId = await getMintOwnerProgramId(connection, mintPubkey)
 
+    const mintInfo = await getMint(connection, mintPubkey, undefined, programId)
+    const decimals = mintInfo.decimals
     if (decimals < 0) {
       throw new Error('Invalid token decimals')
     }
 
     const tokenAmount = Math.floor(amount * 10 ** decimals)
 
-    const fromTokenAccount = getAssociatedTokenAddressSync(mintPubkey, fromPubkey)
-    const toTokenAccount = getAssociatedTokenAddressSync(mintPubkey, toPubkey)
+    const fromTokenAccount = getAssociatedTokenAddressSync(mintPubkey, fromPubkey, false, programId)
+    const toTokenAccount = getAssociatedTokenAddressSync(mintPubkey, toPubkey, false, programId)
 
     try {
-      const fromAccount = await getAccount(connection, fromTokenAccount)
+      const fromAccount = await getAccount(connection, fromTokenAccount, undefined, programId)
       if (fromAccount.amount < BigInt(tokenAmount)) {
         throw new Error('Insufficient token balance')
       }
@@ -63,7 +82,7 @@ export async function createSPLTokenTransaction({
 
     let shouldCreateATA = false
     try {
-      await getAccount(connection, toTokenAccount)
+      await getAccount(connection, toTokenAccount, undefined, programId)
     } catch (error) {
       if (error instanceof TokenAccountNotFoundError) {
         shouldCreateATA = true
@@ -87,18 +106,26 @@ export async function createSPLTokenTransaction({
 
     if (shouldCreateATA) {
       instructions.push(
-        createAssociatedTokenAccountInstruction(fromPubkey, toTokenAccount, toPubkey, mintPubkey)
+        createAssociatedTokenAccountInstruction(
+          fromPubkey,
+          toTokenAccount,
+          toPubkey,
+          mintPubkey,
+          programId
+        )
       )
     }
 
     instructions.push(
-      createTransferInstruction(
+      createTransferCheckedInstruction(
         fromTokenAccount,
+        mintPubkey,
         toTokenAccount,
         fromPubkey,
         tokenAmount,
+        decimals,
         [],
-        TOKEN_PROGRAM_ID
+        programId
       )
     )
 

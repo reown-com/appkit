@@ -6,10 +6,10 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
+  ProviderController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
-import { ProviderUtil } from '@reown/appkit-utils'
 
 import { PayController } from '../../src/controllers/PayController'
 import { AppKitPayError, AppKitPayErrorCodes, AppKitPayErrorMessages } from '../../src/types/errors'
@@ -111,13 +111,13 @@ describe('PayController', () => {
     vi.spyOn(ApiUtil, 'getExchanges').mockResolvedValue(mockExchangesResponse as any)
     vi.spyOn(ApiUtil, 'getPayUrl').mockResolvedValue(mockPayUrlResponse)
 
-    // Mock ProviderUtil
-    vi.spyOn(ProviderUtil, 'subscribeProviders').mockImplementation(callback => {
+    // Mock ProviderController
+    vi.spyOn(ProviderController, 'subscribeProviders').mockImplementation(callback => {
       // Simulate a provider update - use any to bypass complex annoying type requirements
       callback({} as any)
       return () => {}
     })
-    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue({} as any)
+    vi.spyOn(ProviderController, 'getProvider').mockReturnValue({} as any)
 
     // Mock ParseUtil
     vi.spyOn(ParseUtil, 'parseCaipAddress').mockReturnValue({
@@ -829,7 +829,7 @@ describe('PayController', () => {
   describe('subscribeEvents', () => {
     it('should not subscribe if already configured', () => {
       PayController.state.isConfigured = true
-      const subscribeSpy = vi.spyOn(ProviderUtil, 'subscribeProviders')
+      const subscribeSpy = vi.spyOn(ProviderController, 'subscribeProviders')
 
       PayController.subscribeEvents()
 

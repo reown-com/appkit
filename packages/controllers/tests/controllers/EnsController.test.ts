@@ -1,4 +1,4 @@
-import { polygon } from 'viem/chains'
+import { mainnet, polygon } from 'viem/chains'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
@@ -79,15 +79,22 @@ beforeAll(() => {
     [
       {
         namespace: ConstantsUtil.CHAIN.EVM,
-        caipNetworks: []
+        caipNetworks: [
+          { ...mainnet, caipNetworkId: 'eip155:1', chainNamespace: ConstantsUtil.CHAIN.EVM }
+        ],
+        accountState: {
+          currentTab: 0,
+          addressLabels: new Map()
+        }
       }
     ],
-    [],
+    [{ ...mainnet, caipNetworkId: 'eip155:1', chainNamespace: ConstantsUtil.CHAIN.EVM }],
     {
       connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
       networkControllerClient: vi.fn() as unknown as NetworkControllerClient
     }
   )
+  ChainController.setAccountProp('address', '0x123', chain)
 })
 
 describe('EnsController', () => {
@@ -177,13 +184,7 @@ describe('EnsController', () => {
       chainNamespace: ConstantsUtil.CHAIN.EVM
     } as any)
 
-    const evmAdapter = {
-      namespace: ConstantsUtil.CHAIN.EVM,
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
-    }
-    ChainController.state.chains.set(ConstantsUtil.CHAIN.EVM, evmAdapter)
-    ChainController.setAccountProp('caipAddress', 'eip155:1:0x123', chain)
-    // Use fake timers so that the timestamp is always the same
+    ChainController.setAccountProp('address', '0x123', chain)
     vi.useFakeTimers()
 
     const message = JSON.stringify({

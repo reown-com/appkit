@@ -29,15 +29,11 @@ import {
   ChainController,
   CoreHelperUtil,
   OptionsController,
+  ProviderController,
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
-import {
-  ErrorUtil,
-  HelpersUtil,
-  ProviderUtil,
-  ConstantsUtil as UtilConstantsUtil
-} from '@reown/appkit-utils'
+import { ErrorUtil, HelpersUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 import { W3mFrameHelpers, W3mFrameProvider } from '@reown/appkit-wallet'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
@@ -436,17 +432,17 @@ export class AppKit extends AppKitBaseClient {
 
     if (isSameNamespace && ChainController.getAccountData(networkNamespace)?.caipAddress) {
       const adapter = this.getAdapter(networkNamespace)
-      const provider = ProviderUtil.getProvider(networkNamespace)
-      const providerType = ProviderUtil.getProviderId(networkNamespace)
+      const provider = ProviderController.getProvider(networkNamespace)
+      const providerType = ProviderController.getProviderId(networkNamespace)
 
       await adapter?.switchNetwork({ caipNetwork, provider, providerType })
       this.setCaipNetwork(caipNetwork)
     } else {
-      const currentNamespaceProviderType = ProviderUtil.getProviderId(currentNamespace)
+      const currentNamespaceProviderType = ProviderController.getProviderId(currentNamespace)
       const isCurrentNamespaceAuthProvider =
         currentNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
 
-      const newNamespaceProviderType = ProviderUtil.getProviderId(networkNamespace)
+      const newNamespaceProviderType = ProviderController.getProviderId(networkNamespace)
       const isNewNamespaceAuthProvider =
         newNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
       const isNewNamespaceSupportsAuthConnector =
@@ -509,8 +505,8 @@ export class AppKit extends AppKitBaseClient {
          */
         if (!ChainController.state.noAdapters) {
           const adapter = this.getAdapter(networkNamespace)
-          const provider = ProviderUtil.getProvider(networkNamespace)
-          const providerType = ProviderUtil.getProviderId(networkNamespace)
+          const provider = ProviderController.getProvider(networkNamespace)
+          const providerType = ProviderController.getProviderId(networkNamespace)
 
           await adapter?.switchNetwork({ caipNetwork, provider, providerType })
         }
@@ -578,7 +574,7 @@ export class AppKit extends AppKitBaseClient {
   }
 
   protected override syncConnectedWalletInfo(chainNamespace: ChainNamespace): void {
-    const providerType = ProviderUtil.getProviderId(chainNamespace)
+    const providerType = ProviderController.getProviderId(chainNamespace)
     if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
       const provider = this.authProvider
 

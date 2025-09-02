@@ -15,7 +15,7 @@ import { vitalikEthAddress } from '@/src/utils/DataUtil'
 import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '@/src/utils/EIP5792Utils'
 
 export function Ethers5SendCallsTest({ capabilities }: { capabilities: WalletCapabilities }) {
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const { chainId } = useAppKitNetwork()
   const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
@@ -31,7 +31,7 @@ export function Ethers5SendCallsTest({ capabilities }: { capabilities: WalletCap
   })
   async function onSendCalls() {
     try {
-      setLoading(true)
+      setIsLoading(true)
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
@@ -74,7 +74,7 @@ export function Ethers5SendCallsTest({ capabilities }: { capabilities: WalletCap
         type: 'error'
       })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -105,7 +105,7 @@ export function Ethers5SendCallsTest({ capabilities }: { capabilities: WalletCap
       <Button
         data-testid="send-calls-button"
         onClick={onSendCalls}
-        isDisabled={loading}
+        isDisabled={isLoading}
         maxWidth={'50%'}
       >
         Send Batch Calls to Vitalik
