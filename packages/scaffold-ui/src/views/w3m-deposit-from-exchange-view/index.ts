@@ -22,7 +22,7 @@ import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 
-const PRESET_AMOUNTS = [10, 50, 100]
+const PRESET_AMOUNTS = [10, 50, 100] as const
 
 @customElement('w3m-deposit-from-exchange-view')
 export class W3mDepositFromExchangeView extends LitElement {
@@ -86,6 +86,7 @@ export class W3mDepositFromExchangeView extends LitElement {
       await this.setDefaultPaymentAsset()
     }
     await ExchangeController.fetchExchanges()
+    this.onPresetAmountClick(PRESET_AMOUNTS[0])
   }
 
   // -- Render -------------------------------------------- //
@@ -238,6 +239,7 @@ export class W3mDepositFromExchangeView extends LitElement {
   private async setDefaultPaymentAsset() {
     if (this.network) {
       const paymentAssets = await ExchangeController.getAssetsForNetwork(this.network.caipNetworkId)
+
       if (paymentAssets[0]) {
         ExchangeController.setPaymentAsset(paymentAssets[0])
       }
