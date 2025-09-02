@@ -34,6 +34,8 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private sourceTokenPriceInUSD = SwapController.state.sourceTokenPriceInUSD
 
+  @state() private balanceSymbol = ChainController.getAccountData()?.balanceSymbol
+
   @state() private toToken = SwapController.state.toToken
 
   @state() private toTokenAmount = SwapController.state.toTokenAmount ?? ''
@@ -59,7 +61,7 @@ export class W3mSwapPreviewView extends LitElement {
     this.unsubscribe.push(
       ...[
         ChainController.subscribeChainProp('accountState', val => {
-          if (val?.balanceSymbol) {
+          if (val?.balanceSymbol !== this.balanceSymbol) {
             RouterController.goBack()
           }
         }),
