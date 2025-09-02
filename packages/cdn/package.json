@@ -17,7 +17,6 @@
     "serve": "http-server dist -p 8080 --cors"
   },
   "devDependencies": {
-    "@wagmi/connectors": "5.7.12",
     "http-server": "14.1.1",
     "vite-plugin-node-polyfills": "0.23.0"
   },
