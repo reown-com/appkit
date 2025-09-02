@@ -374,7 +374,6 @@ describe('Base Public methods', () => {
     }
 
     const appKit = new AppKit(mockOptions)
-    console.log('>> Get Address - mockAccountData', mockAccountData)
     await appKit.ready()
     await appKit['syncAccount'](mockAccountData)
 
