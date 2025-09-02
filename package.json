@@ -119,6 +119,7 @@
     "packages/adapters/*",
     "packages/appkit",
     "packages/common",
+    "packages/universal-connector",
     "packages/ui",
     "packages/controllers",
     "packages/core-legacy",
@@ -131,13 +132,12 @@
     "packages/wallet-button",
     "packages/cdn",
     "packages/experimental",
+    "packages/testing",
     "packages/cli",
+    "packages/pay",
+    "packages/codemod",
     "apps/*",
     "examples/*",
-    "services/*",
-    "packages/ui-new",
-    "!packages/appkit-new",
-    "!apps/gallery-new",
-    "!apps/laboratory-new"
+    "services/*"
   ]
 }
