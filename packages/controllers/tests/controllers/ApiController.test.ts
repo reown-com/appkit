@@ -13,6 +13,7 @@ import {
   OptionsController,
   type WcWallet
 } from '../../exports/index.js'
+import { mockChainControllerState } from '../../exports/testing.js'
 import { api } from '../../src/controllers/ApiController.js'
 import { CUSTOM_DEEPLINK_WALLETS } from '../../src/utils/MobileWallet.js'
 
@@ -987,7 +988,7 @@ describe('ApiController', () => {
       { id: '4', name: 'Wallet4', mobile_link: 'link4', webapp_link: 'webapp_link4' }
     ] as WcWallet[]
 
-    const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
+    const { filteredWallets } = ApiController._filterWalletsByPlatform(mockWallets)
     expect(filteredWallets).toHaveLength(3)
     expect(filteredWallets.map(w => w.id)).toEqual(['1', '2', '4'])
   })
@@ -1008,7 +1009,7 @@ describe('ApiController', () => {
       { id: CUSTOM_DEEPLINK_WALLETS.BINANCE.id, name: 'Binance' }
     ] as WcWallet[]
 
-    const filteredWallets = ApiController._filterWalletsByPlatform(mockWallets)
+    const { filteredWallets } = ApiController._filterWalletsByPlatform(mockWallets)
     expect(filteredWallets).toHaveLength(6)
     expect(filteredWallets.map(w => w.id)).toEqual([
       '1',
