@@ -28,8 +28,8 @@ export function useWagmiAvailableCapabilities() {
         .getProvider?.({
           chainId: chain?.id
         })
-        .then(provider => {
-          setProvider(provider as Provider)
+        .then(currentProvider => {
+          setProvider(currentProvider as Provider)
         })
     }
   }, [connector, chain])

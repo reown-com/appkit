@@ -29,7 +29,7 @@ export function SolanaSendTransactionTest() {
   const { address } = useAppKitAccount({ namespace: 'solana' })
   const { walletProvider } = useAppKitProvider<Provider>('solana')
   const { connection } = useAppKitConnection()
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [recipient, setRecipient] = useState('')
   const [amount, setAmount] = useState('')
 
@@ -37,7 +37,7 @@ export function SolanaSendTransactionTest() {
 
   async function onSendTransaction() {
     try {
-      setLoading(true)
+      setIsLoading(true)
       if (!walletProvider?.publicKey || !address) {
         throw Error('user is disconnected')
       }
@@ -80,13 +80,13 @@ export function SolanaSendTransactionTest() {
         partialDescription: false
       })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
   async function onSendVersionedTransaction() {
     try {
-      setLoading(true)
+      setIsLoading(true)
       if (!walletProvider?.publicKey || !address) {
         throw Error('user is disconnected')
       }
@@ -134,7 +134,7 @@ export function SolanaSendTransactionTest() {
         type: 'error'
       })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -159,14 +159,14 @@ export function SolanaSendTransactionTest() {
       <Button
         data-testid="sign-transaction-button"
         onClick={onSendTransaction}
-        isDisabled={loading}
+        isDisabled={isLoading}
       >
         Sign and Send Transaction
       </Button>
       <Button
         data-test-id="sign-transaction-button"
         onClick={onSendVersionedTransaction}
-        isDisabled={loading}
+        isDisabled={isLoading}
       >
         Sign and Send Versioned Transaction
       </Button>

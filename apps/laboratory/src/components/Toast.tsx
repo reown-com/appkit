@@ -20,12 +20,12 @@ export default function CustomToast({
   type,
   onClose
 }: CustomToastProps) {
-  const [copied, setCopied] = React.useState(false)
+  const [isCopied, setIsCopied] = React.useState(false)
 
   function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    setIsCopied(true)
+    setTimeout(() => setIsCopied(false), 2000)
   }
 
   const toastBg = React.useMemo(() => {
@@ -64,7 +64,7 @@ export default function CustomToast({
           {allowCopy && typeof description === 'string' && type !== 'error' ? (
             <Button minWidth="auto" size="xs" onClick={() => copyToClipboard(description)}>
               <CopyIcon width="3" height="3" marginRight="2" />
-              <Text>{copied ? 'Signature copied' : 'Copy'}</Text>
+              <Text>{isCopied ? 'Signature copied' : 'Copy'}</Text>
             </Button>
           ) : null}
         </Box>

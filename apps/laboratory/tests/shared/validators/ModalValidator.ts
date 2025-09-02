@@ -16,6 +16,14 @@ export class ModalValidator {
     this.page = page
   }
 
+  async expectConnectedMalicious() {
+    // Find button with Disconnect text and expect it to be visible
+    const disconnectButton = this.page.getByRole('button', { name: 'Disconnect' })
+    await expect(disconnectButton, 'Disconnect button should be visible').toBeVisible({
+      timeout: MAX_WAIT
+    })
+  }
+
   async expectConnected(namespace?: ChainNamespace) {
     const accountButton = namespace
       ? this.page.locator(`appkit-account-button[namespace="${namespace}"]`)
@@ -82,6 +90,13 @@ export class ModalValidator {
     await expect(
       this.page.getByText('Signature declined'),
       'Signature declined should be visible'
+    ).toBeVisible()
+  }
+
+  async expectDisconnectedMalicious() {
+    await expect(
+      this.page.getByText('Select chains'),
+      'Select chains text should be visible'
     ).toBeVisible()
   }
 
@@ -185,6 +200,16 @@ export class ModalValidator {
     } else {
       await expect(walletButtonHook).toBeEnabled({ timeout: 20_000 })
     }
+  }
+
+  async expectAcceptedSignMalicious() {
+    // Wait for the JSON-RPC Request Approved text to appear
+    await expect(this.page.getByText('JSON-RPC Request Approved')).toBeVisible({
+      timeout: 30 * 1000
+    })
+
+    // Refresh the page
+    await this.page.reload()
   }
 
   async expectAcceptedSign() {

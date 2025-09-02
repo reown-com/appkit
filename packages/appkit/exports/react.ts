@@ -44,6 +44,8 @@ export type { AppKitOptions }
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/react/index.js'
 
+export { useAppKitProvider } from '@reown/appkit-controllers/react'
+
 export function useAppKitNetwork(): UseAppKitNetworkReturn {
   const { caipNetwork, caipNetworkId, chainId } = useAppKitNetworkCore()
 

@@ -6,8 +6,12 @@ import {
   ConstantsUtil,
   ContractUtil
 } from '@reown/appkit-common'
-import { ChainController, ConnectionController, CoreHelperUtil } from '@reown/appkit-controllers'
-import { ProviderUtil } from '@reown/appkit-utils'
+import {
+  ChainController,
+  ConnectionController,
+  CoreHelperUtil,
+  ProviderController
+} from '@reown/appkit-controllers'
 
 import { AppKitPayError } from '../types/errors.js'
 import { AppKitPayErrorCodes } from '../types/errors.js'
@@ -163,7 +167,7 @@ export async function processSolanaPayment(
   }
 
   try {
-    const provider = ProviderUtil.getProvider(chainNamespace)
+    const provider = ProviderController.getProvider(chainNamespace)
     if (!provider) {
       throw new AppKitPayError(
         AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR,
