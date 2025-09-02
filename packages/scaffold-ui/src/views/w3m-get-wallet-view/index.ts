@@ -5,6 +5,8 @@ import {
   ApiController,
   AssetUtil,
   CoreHelperUtil,
+  type CustomWallet,
+  EventsController,
   OptionsController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -18,7 +20,7 @@ export class W3mGetWalletView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', '3', '3', '3']} gap="2">
+      <wui-flex flexDirection="column" .padding=${['0', '3', '3', '3'] as const} gap="2">
         ${this.recommendedWalletsTemplate()}
         <wui-list-wallet
           name="Explore all"
@@ -48,11 +50,20 @@ export class W3mGetWalletView extends LitElement {
           size="sm"
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           @click=${() => {
-            CoreHelperUtil.openHref(wallet.homepage ?? EXPLORER, '_blank')
+            this.onWalletClick(wallet)
           }}
         ></wui-list-wallet>
       `
     )
+  }
+
+  private onWalletClick(wallet: CustomWallet) {
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'GET_WALLET',
+      properties: { name: wallet.name, walletRank: 1, explorerId: wallet.id }
+    })
+    CoreHelperUtil.openHref(wallet.homepage ?? EXPLORER, '_blank')
   }
 }
 
