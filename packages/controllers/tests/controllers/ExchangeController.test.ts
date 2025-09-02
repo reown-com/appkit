@@ -4,6 +4,7 @@ import { ChainController } from '../../exports'
 import { AccountController } from '../../src/controllers/AccountController'
 import { EventsController } from '../../src/controllers/EventsController'
 import { ExchangeController } from '../../src/controllers/ExchangeController'
+import { DEFAULT_STATE } from '../../src/controllers/ExchangeController'
 import { OptionsController } from '../../src/controllers/OptionsController'
 import { SnackController } from '../../src/controllers/SnackController'
 import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil'
@@ -17,6 +18,10 @@ describe('ExchangeController', () => {
 
   afterEach(() => {
     vi.resetAllMocks()
+  })
+
+  it('should have default state', () => {
+    expect(ExchangeController.state).toEqual(DEFAULT_STATE)
   })
 
   it('getTokenAmount returns computed amount', () => {
