@@ -338,7 +338,8 @@ describe('EthersAdapter', () => {
         tokenBalance: [],
         smartAccountDeployed: false,
         addressLabels: new Map(),
-        user: undefined
+        user: undefined,
+        preferredAccountType: 'smartAccount'
       })
 
       const ethersAdapter = new EthersAdapter()
@@ -377,6 +378,7 @@ describe('EthersAdapter', () => {
 
   describe('EthersAdapter -reconnect', () => {
     it('should call SIWXUtil.authConnectorAuthenticate when reconnecting with AUTH provider', async () => {
+      ChainController.setAccountProp('preferredAccountType', 'smartAccount', 'eip155')
       const ethersAdapter = new EthersAdapter()
       vi.spyOn(SIWXUtil, 'authConnectorAuthenticate')
 
@@ -941,6 +943,9 @@ describe('EthersAdapter', () => {
   })
 
   describe('EthersAdapter - switchNetwork', () => {
+    beforeEach(() => {
+      ChainController.setAccountProp('preferredAccountType', 'smartAccount', 'eip155')
+    })
     const errorCodes = [
       WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID,
       WcConstantsUtil.ERROR_INVALID_CHAIN_ID,

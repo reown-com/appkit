@@ -283,7 +283,8 @@ describe('Ethers5Adapter', () => {
         tokenBalance: [],
         smartAccountDeployed: false,
         addressLabels: new Map(),
-        user: undefined
+        user: undefined,
+        preferredAccountType: 'smartAccount'
       })
 
       const ethers5Adapter = new Ethers5Adapter()
@@ -476,6 +477,7 @@ describe('Ethers5Adapter', () => {
 
   describe('Ethers5Adapter -reconnect', () => {
     it('should call SIWXUtil.authConnectorAuthenticate when reconnecting with AUTH provider', async () => {
+      ChainController.setAccountProp('preferredAccountType', 'smartAccount', 'eip155')
       const ethers5Adapter = new Ethers5Adapter()
       const authConnectorAuthenticateSpy = vi.spyOn(SIWXUtil, 'authConnectorAuthenticate')
 
@@ -889,6 +891,9 @@ describe('Ethers5Adapter', () => {
   })
 
   describe('Ethers5Adapter - switchNetwork', () => {
+    beforeEach(() => {
+      ChainController.setAccountProp('preferredAccountType', 'smartAccount', 'eip155')
+    })
     it('should switch network with Auth provider', async () => {
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0],

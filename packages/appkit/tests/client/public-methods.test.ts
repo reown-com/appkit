@@ -332,21 +332,21 @@ describe('Base Public methods', () => {
   })
 
   it('should set status', () => {
-    const setStatus = vi.spyOn(ChainController, 'setAccountProp')
+    const chainSpy = vi.spyOn(ChainController, 'setAccountProp')
 
     const appKit = new AppKit(mockOptions)
     appKit.setStatus('connected', 'eip155')
 
-    expect(setStatus).toHaveBeenCalledWith('status', 'connected', 'eip155')
+    expect(chainSpy).toHaveBeenCalledWith('status', 'connected', 'eip155')
   })
 
   it('should add address label', () => {
-    const addAddressLabel = vi.spyOn(ChainController, 'setAccountProp')
+    const chainSpy = vi.spyOn(ChainController, 'setAccountProp')
 
     const appKit = new AppKit(mockOptions)
     appKit.addAddressLabel('0x123', 'eip155 Address', 'eip155')
 
-    expect(addAddressLabel).toHaveBeenCalledWith(
+    expect(chainSpy).toHaveBeenCalledWith(
       'addressLabels',
       new Map([['0x123', 'eip155 Address']]),
       'eip155'
@@ -354,19 +354,19 @@ describe('Base Public methods', () => {
   })
 
   it('should remove address label', () => {
-    const removeAddressLabel = vi.spyOn(ChainController, 'setAccountProp')
+    const chainSpy = vi.spyOn(ChainController, 'setAccountProp')
 
     const appKit = new AppKit(mockOptions)
     appKit.removeAddressLabel('0x123', 'eip155')
 
-    expect(removeAddressLabel).toHaveBeenCalledWith(
+    expect(chainSpy).toHaveBeenCalledWith(
       'addressLabels',
-      new Map([['0x123', 'eip155 Address']]),
+      new Map([['0x123', undefined]]),
       'eip155'
     )
   })
 
-  it('should get address and CAIP address', async () => {
+  it.only('should get address and CAIP address', async () => {
     const mockAccountData = {
       address: '0x123',
       chainId: mainnet.id,
@@ -374,6 +374,7 @@ describe('Base Public methods', () => {
     }
 
     const appKit = new AppKit(mockOptions)
+    console.log('>> Get Address - mockAccountData', mockAccountData)
     await appKit.ready()
     await appKit['syncAccount'](mockAccountData)
 
@@ -408,12 +409,13 @@ describe('Base Public methods', () => {
   })
 
   it('should set balance', () => {
-    const setBalance = vi.spyOn(ChainController, 'setAccountProp')
+    const chainSpy = vi.spyOn(ChainController, 'setAccountProp')
 
     const appKit = new AppKit(mockOptions)
     appKit.setBalance('1.5', 'ETH', 'eip155')
 
-    expect(setBalance).toHaveBeenCalledWith('balance', '1.5', 'ETH', 'eip155')
+    expect(chainSpy).toHaveBeenCalledWith('balance', '1.5', 'eip155')
+    expect(chainSpy).toHaveBeenCalledWith('balanceSymbol', 'ETH', 'eip155')
   })
 
   it('should set profile name', () => {

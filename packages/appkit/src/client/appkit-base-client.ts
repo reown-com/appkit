@@ -1423,10 +1423,12 @@ export abstract class AppKitBaseClient {
     )
 
     this.setStatus('connected', chainNamespace)
+    console.log('>> Sync Acc - isUnsupportedNetwork', isUnsupportedNetwork)
+    console.log('>> Sync Acc - shouldSupportAllNetworks', shouldSupportAllNetworks)
     if (isUnsupportedNetwork && !shouldSupportAllNetworks) {
       return
     }
-
+    console.log('>> Sync Acc - chainIdToUse', chainIdToUse)
     if (chainIdToUse) {
       let caipNetwork = this.getCaipNetworks().find(
         n => n.id.toString() === chainIdToUse.toString()
@@ -2354,6 +2356,8 @@ export abstract class AppKitBaseClient {
 
   public getAddress = (chainNamespace?: ChainNamespace) => {
     const namespace = chainNamespace || ChainController.state.activeChain
+    console.log('>> Get Address - namespace', namespace)
+    console.log('>> Get Address - address', ChainController.getAccountData(namespace))
 
     return ChainController.getAccountData(namespace)?.address
   }

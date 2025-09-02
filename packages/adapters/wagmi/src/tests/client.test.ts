@@ -871,7 +871,8 @@ describe('WagmiAdapter', () => {
         tokenBalance: [],
         smartAccountDeployed: false,
         addressLabels: new Map(),
-        user: undefined
+        user: undefined,
+        preferredAccountType: 'smartAccount'
       })
 
       await adapter.switchNetwork({
