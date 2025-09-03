@@ -324,6 +324,18 @@ const controller = {
         chainNamespace: CommonConstantsUtil.CHAIN.EVM
       })
 
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_SUCCESS',
+        properties: {
+          isSmartAccount:
+            getPreferredAccountType('eip155') === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          token: SendController.state.token?.symbol || '',
+          amount: params.sendTokenAmount,
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+        }
+      })
+
       if (hash) {
         SendController.setHash(hash)
       }
