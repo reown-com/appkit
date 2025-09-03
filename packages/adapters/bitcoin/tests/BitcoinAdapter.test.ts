@@ -753,11 +753,9 @@ describe('BitcoinAdapter', () => {
   })
 
   describe('syncConnections', () => {
-    let mockGetConnectorStorageInfo: Mock
     let mockEmitFirstAvailableConnection: any
 
     beforeEach(() => {
-      mockGetConnectorStorageInfo = vi.fn()
       mockEmitFirstAvailableConnection = vi
         .spyOn(adapter as any, 'emitFirstAvailableConnection')
         .mockImplementation(() => {})
@@ -788,8 +786,7 @@ describe('BitcoinAdapter', () => {
 
       await adapter.syncConnections({
         connectToFirstConnector: false,
-        caipNetwork: bitcoin,
-        getConnectorStorageInfo: HelpersUtil.getConnectorStorageInfo.bind(this)
+        caipNetwork: bitcoin
       })
 
       expect(connectSpy).toHaveBeenCalled()
@@ -816,8 +813,7 @@ describe('BitcoinAdapter', () => {
 
       await adapter.syncConnections({
         connectToFirstConnector: false,
-        caipNetwork: bitcoin,
-        getConnectorStorageInfo: HelpersUtil.getConnectorStorageInfo.bind(this)
+        caipNetwork: bitcoin
       })
 
       expect(connectSpy).not.toHaveBeenCalled()
@@ -841,8 +837,7 @@ describe('BitcoinAdapter', () => {
 
       await adapter.syncConnections({
         connectToFirstConnector: false,
-        caipNetwork: bitcoin,
-        getConnectorStorageInfo: HelpersUtil.getConnectorStorageInfo.bind(this)
+        caipNetwork: bitcoin
       })
 
       expect(connectSpy).not.toHaveBeenCalled()
@@ -873,8 +868,7 @@ describe('BitcoinAdapter', () => {
 
       await adapter.syncConnections({
         connectToFirstConnector: false,
-        caipNetwork: bitcoin,
-        getConnectorStorageInfo: HelpersUtil.getConnectorStorageInfo.bind(this)
+        caipNetwork: bitcoin
       })
 
       const wcConnection = adapter.connections.find(c => c.connectorId === 'walletConnect')
@@ -896,15 +890,14 @@ describe('BitcoinAdapter', () => {
 
       adapter.connectors.push(connector)
 
-      mockGetConnectorStorageInfo.mockReturnValue({
-        isDisconnected: false,
+      vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValueOnce({
+        hasDisconnected: false,
         hasConnected: true
       })
 
       await adapter.syncConnections({
         connectToFirstConnector: true,
-        caipNetwork: bitcoin,
-        getConnectorStorageInfo: mockGetConnectorStorageInfo
+        caipNetwork: bitcoin
       })
 
       expect(mockEmitFirstAvailableConnection).toHaveBeenCalled()
@@ -924,15 +917,14 @@ describe('BitcoinAdapter', () => {
 
       adapter.connectors.push(connector)
 
-      mockGetConnectorStorageInfo.mockReturnValue({
-        isDisconnected: false,
+      vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValueOnce({
+        hasDisconnected: false,
         hasConnected: true
       })
 
       await adapter.syncConnections({
         connectToFirstConnector: false,
-        caipNetwork: bitcoin,
-        getConnectorStorageInfo: mockGetConnectorStorageInfo
+        caipNetwork: bitcoin
       })
 
       expect(mockEmitFirstAvailableConnection).not.toHaveBeenCalled()
@@ -958,16 +950,15 @@ describe('BitcoinAdapter', () => {
 
       adapter.connectors.push(connector1, connector2)
 
-      mockGetConnectorStorageInfo.mockReturnValue({
-        isDisconnected: false,
+      vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValueOnce({
+        hasDisconnected: false,
         hasConnected: true
       })
 
       await expect(
         adapter.syncConnections({
           connectToFirstConnector: false,
-          caipNetwork: bitcoin,
-          getConnectorStorageInfo: mockGetConnectorStorageInfo
+          caipNetwork: bitcoin
         })
       ).rejects.toThrow('Connection failed')
 
@@ -990,16 +981,15 @@ describe('BitcoinAdapter', () => {
 
       adapter.connectors.push(connector)
 
-      mockGetConnectorStorageInfo.mockReturnValue({
-        isDisconnected: false,
+      vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValueOnce({
+        hasDisconnected: false,
         hasConnected: true
       })
 
       await expect(
         adapter.syncConnections({
           connectToFirstConnector: false,
-          caipNetwork: bitcoin,
-          getConnectorStorageInfo: mockGetConnectorStorageInfo
+          caipNetwork: bitcoin
         })
       ).rejects.toThrow('The connector does not support any of the requested chains')
 
@@ -1019,15 +1009,14 @@ describe('BitcoinAdapter', () => {
       ])
       adapter.connectors.push(connector)
 
-      mockGetConnectorStorageInfo.mockReturnValue({
-        isDisconnected: false,
+      vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValueOnce({
+        hasDisconnected: false,
         hasConnected: true
       })
 
       await adapter.syncConnections({
         connectToFirstConnector: false,
-        caipNetwork: bitcoin,
-        getConnectorStorageInfo: mockGetConnectorStorageInfo
+        caipNetwork: bitcoin
       })
 
       expect(adapter.connections).toHaveLength(0)

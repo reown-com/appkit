@@ -8,7 +8,7 @@ import {
   type Provider as CoreProvider,
   type NetworkControllerClient
 } from '@reown/appkit-controllers'
-import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
 
 import { SolanaAdapter } from '../client'
@@ -314,11 +314,9 @@ describe('SolanaAdapter', () => {
   })
 
   describe('SolanaAdapter - syncConnections', () => {
-    let mockGetConnectorStorageInfo: Mock
     let mockEmitFirstAvailableConnection: any
 
     beforeEach(() => {
-      mockGetConnectorStorageInfo = vi.fn()
       mockEmitFirstAvailableConnection = vi
         .spyOn(adapter as any, 'emitFirstAvailableConnection')
         .mockImplementation(() => {})
@@ -336,7 +334,7 @@ describe('SolanaAdapter', () => {
         value: [mockConnector]
       })
 
-      mockGetConnectorStorageInfo.mockReturnValue({
+      vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValueOnce({
         hasDisconnected: false,
         hasConnected: true
       })
@@ -347,8 +345,7 @@ describe('SolanaAdapter', () => {
 
       await adapter.syncConnections({
         connectToFirstConnector: false,
-        caipNetwork: mockCaipNetworks[0],
-        getConnectorStorageInfo: mockGetConnectorStorageInfo
+        caipNetwork: mockCaipNetworks[0]
       })
 
       expect(mockConnector.connect).toHaveBeenCalledWith({
@@ -374,15 +371,14 @@ describe('SolanaAdapter', () => {
         value: [mockConnector]
       })
 
-      mockGetConnectorStorageInfo.mockReturnValue({
+      vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValueOnce({
         hasDisconnected: true,
         hasConnected: true
       })
 
       await adapter.syncConnections({
         connectToFirstConnector: false,
-        caipNetwork: mockCaipNetworks[0],
-        getConnectorStorageInfo: mockGetConnectorStorageInfo
+        caipNetwork: mockCaipNetworks[0]
       })
 
       expect(mockConnector.connect).not.toHaveBeenCalled()
@@ -404,14 +400,13 @@ describe('SolanaAdapter', () => {
         }
       ])
 
-      mockGetConnectorStorageInfo.mockReturnValue({
+      vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValueOnce({
         hasDisconnected: false,
         hasConnected: true
       })
 
       await adapter.syncConnections({
-        connectToFirstConnector: false,
-        getConnectorStorageInfo: mockGetConnectorStorageInfo
+        connectToFirstConnector: false
       })
 
       const wcConnection = adapter.connections.find(c => c.connectorId === 'walletConnect')
@@ -434,15 +429,14 @@ describe('SolanaAdapter', () => {
         value: [mockConnector]
       })
 
-      mockGetConnectorStorageInfo.mockReturnValue({
+      vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValueOnce({
         hasDisconnected: false,
         hasConnected: true
       })
 
       await adapter.syncConnections({
         connectToFirstConnector: true,
-        caipNetwork: mockCaipNetworks[0],
-        getConnectorStorageInfo: mockGetConnectorStorageInfo
+        caipNetwork: mockCaipNetworks[0]
       })
 
       expect(mockEmitFirstAvailableConnection).toHaveBeenCalled()
@@ -460,15 +454,14 @@ describe('SolanaAdapter', () => {
         value: [mockConnector]
       })
 
-      mockGetConnectorStorageInfo.mockReturnValue({
+      vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValueOnce({
         hasDisconnected: false,
         hasConnected: true
       })
 
       await adapter.syncConnections({
         connectToFirstConnector: false,
-        caipNetwork: mockCaipNetworks[0],
-        getConnectorStorageInfo: mockGetConnectorStorageInfo
+        caipNetwork: mockCaipNetworks[0]
       })
 
       expect(mockEmitFirstAvailableConnection).not.toHaveBeenCalled()
@@ -493,7 +486,7 @@ describe('SolanaAdapter', () => {
         value: [mockConnector1, mockConnector2]
       })
 
-      mockGetConnectorStorageInfo.mockReturnValue({
+      vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValue({
         hasDisconnected: false,
         hasConnected: true
       })
@@ -501,13 +494,14 @@ describe('SolanaAdapter', () => {
       await expect(
         adapter.syncConnections({
           connectToFirstConnector: false,
-          caipNetwork: mockCaipNetworks[0],
-          getConnectorStorageInfo: mockGetConnectorStorageInfo
+          caipNetwork: mockCaipNetworks[0]
         })
       ).rejects.toThrow('Connection failed')
 
       expect(adapter.connections).toHaveLength(1)
       expect(adapter.connections[0]?.connectorId).toBe(mockConnector2.id)
+
+      vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockRestore()
     })
 
     it('should not add connection if no address returned from connector', async () => {
@@ -522,15 +516,14 @@ describe('SolanaAdapter', () => {
         value: [mockConnector]
       })
 
-      mockGetConnectorStorageInfo.mockReturnValue({
+      vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValueOnce({
         hasDisconnected: false,
         hasConnected: true
       })
 
       await adapter.syncConnections({
         connectToFirstConnector: false,
-        caipNetwork: mockCaipNetworks[0],
-        getConnectorStorageInfo: mockGetConnectorStorageInfo
+        caipNetwork: mockCaipNetworks[0]
       })
 
       expect(adapter.connections).toHaveLength(0)
@@ -548,7 +541,7 @@ describe('SolanaAdapter', () => {
         value: [wcConnector]
       })
 
-      mockGetConnectorStorageInfo.mockReturnValue({
+      vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValueOnce({
         hasDisconnected: false,
         hasConnected: true
       })
@@ -559,8 +552,7 @@ describe('SolanaAdapter', () => {
 
       await adapter.syncConnections({
         connectToFirstConnector: false,
-        caipNetwork: mockCaipNetworks[0],
-        getConnectorStorageInfo: mockGetConnectorStorageInfo
+        caipNetwork: mockCaipNetworks[0]
       })
 
       expect(listenProviderEventsSpy).not.toHaveBeenCalled()
