@@ -820,7 +820,7 @@ const controller = {
     return state.lastConnectedSIWECaipNetwork
   },
   async fetchTokenBalance(onError?: (error: unknown) => void): Promise<Balance[]> {
-    const accountState = { ...ChainController.getAccountData() }
+    const accountState = ChainController.getAccountData()
     if (!accountState) {
       return []
     }
