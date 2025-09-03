@@ -25,6 +25,11 @@ export class W3mInputToken extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const isInsufficientBalance =
+      this.token &&
+      this.sendTokenAmount &&
+      this.sendTokenAmount > Number(this.token.quantity.numeric ?? 0)
+
     return html` <wui-flex
       flexDirection="column"
       gap="01"
@@ -33,8 +38,9 @@ export class W3mInputToken extends LitElement {
       <wui-flex alignItems="center">
         <wui-input-amount
           @inputChange=${this.onInputChange.bind(this)}
-          ?disabled=${!this.token && true}
+          ?disabled=${!this.token}
           .value=${this.sendTokenAmount ? String(this.sendTokenAmount) : ''}
+          ?error=${Boolean(isInsufficientBalance)}
         ></wui-input-amount>
         ${this.buttonTemplate()}
       </wui-flex>
@@ -87,12 +93,6 @@ export class W3mInputToken extends LitElement {
 
   private maxAmountTemplate() {
     if (this.token) {
-      if (this.sendTokenAmount && this.sendTokenAmount > Number(this.token.quantity.numeric)) {
-        return html` <wui-text variant="sm-regular" color="error">
-          ${UiHelperUtil.roundNumber(Number(this.token.quantity.numeric), 6, 5)}
-        </wui-text>`
-      }
-
       return html` <wui-text variant="sm-regular" color="secondary">
         ${UiHelperUtil.roundNumber(Number(this.token.quantity.numeric), 6, 5)}
       </wui-text>`
@@ -103,10 +103,6 @@ export class W3mInputToken extends LitElement {
 
   private actionTemplate() {
     if (this.token) {
-      if (this.sendTokenAmount && this.sendTokenAmount > Number(this.token.quantity.numeric)) {
-        return html`<wui-link @click=${this.onBuyClick.bind(this)}>Buy</wui-link>`
-      }
-
       return html`<wui-link @click=${this.onMaxClick.bind(this)}>Max</wui-link>`
     }
 
@@ -123,10 +119,6 @@ export class W3mInputToken extends LitElement {
 
       SendController.setTokenAmount(Number(maxValue.toFixed(20)))
     }
-  }
-
-  private onBuyClick() {
-    RouterController.push('OnRampProviders')
   }
 }
 

@@ -21,8 +21,12 @@ export class WuiInputAmount extends LitElement {
 
   @property({ type: String }) public placeholder = '0'
 
+  @property({ type: Boolean }) public error = false
+
   // -- Render -------------------------------------------- //
   public override render() {
+    this.dataset['error'] = String(this.error)
+
     if (this.inputElementRef?.value && this.value) {
       this.inputElementRef.value.value = this.value
     }
