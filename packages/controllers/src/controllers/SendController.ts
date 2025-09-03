@@ -279,7 +279,8 @@ const controller = {
           getPreferredAccountType('eip155') === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
         token: SendController.state.token?.symbol || '',
         amount: params.sendTokenAmount,
-        network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+        network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+        hash: hash || ''
       }
     })
 
@@ -332,7 +333,8 @@ const controller = {
             getPreferredAccountType('eip155') === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: SendController.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+          hash: hash || ''
         }
       })
 
