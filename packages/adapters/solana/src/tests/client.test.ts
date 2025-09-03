@@ -1,4 +1,4 @@
-import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'

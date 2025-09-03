@@ -1,6 +1,6 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 import { providers, utils } from 'ethers'
-import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WcHelpersUtil } from '@reown/appkit'
 import {

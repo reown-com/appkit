@@ -1,6 +1,6 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 import { JsonRpcProvider, getAddress } from 'ethers'
-import { type Mock, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WcConstantsUtil, WcHelpersUtil } from '@reown/appkit'
 import {
