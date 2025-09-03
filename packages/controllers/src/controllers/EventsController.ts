@@ -125,29 +125,15 @@ export const EventsController = {
     if (state.subscribedToVisibilityChange) {
       return
     }
-
-    const document = this._getDocument()
-    if (!document) {
+    if (typeof document === 'undefined') {
       return
     }
 
     state.subscribedToVisibilityChange = true
-    document.addEventListener('visibilitychange', () => {
+    document?.addEventListener?.('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
         EventsController._submitPendingEvents()
       }
     })
-  },
-
-  _getDocument(): Document | undefined {
-    if (typeof globalThis?.document !== 'undefined') {
-      return globalThis.document
-    }
-
-    if (typeof document !== 'undefined') {
-      return document
-    }
-
-    return undefined
   }
 }
