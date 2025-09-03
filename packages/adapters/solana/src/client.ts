@@ -540,8 +540,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
   public async syncConnections({
     connectToFirstConnector,
-    caipNetwork,
-    getConnectorStorageInfo
+    caipNetwork
   }: AdapterBlueprint.SyncConnectionsParams) {
     await this.connectionManager?.syncConnections({
       connectors: this.connectors,
@@ -550,7 +549,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       universalProvider: this.universalProvider as UniversalProvider,
       onConnection: this.addConnection.bind(this),
       onListenProvider: this.listenSolanaProviderEvents.bind(this),
-      getConnectionStatusInfo: getConnectorStorageInfo
+      getConnectionStatusInfo: HelpersUtil.getConnectorStorageInfo.bind(this)
     })
 
     if (connectToFirstConnector) {

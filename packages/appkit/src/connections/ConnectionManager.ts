@@ -23,7 +23,10 @@ interface BaseSyncConnectionsParams<Connector = unknown, P = unknown> {
   universalProvider: UniversalProvider
   onConnection: (connection: ConnectionType) => void
   onListenProvider: (connectorId: string, provider: P) => void
-  getConnectionStatusInfo: (connectorId: string) => {
+  getConnectionStatusInfo: (
+    connectorId: string,
+    namespace: ChainNamespace
+  ) => {
     hasDisconnected: boolean
     hasConnected: boolean
   }
@@ -83,7 +86,7 @@ export class ConnectionManager {
     await Promise.all(
       connectors
         .filter(c => {
-          const { hasDisconnected, hasConnected } = getConnectionStatusInfo(c.id)
+          const { hasDisconnected, hasConnected } = getConnectionStatusInfo(c.id, this.namespace)
 
           return !hasDisconnected && hasConnected
         })
@@ -144,7 +147,7 @@ export class ConnectionManager {
     await Promise.all(
       connectors
         .filter(c => {
-          const { hasDisconnected, hasConnected } = getConnectionStatusInfo(c.id)
+          const { hasDisconnected, hasConnected } = getConnectionStatusInfo(c.id, this.namespace)
 
           return !hasDisconnected && hasConnected
         })
@@ -192,7 +195,7 @@ export class ConnectionManager {
     await Promise.all(
       connectors
         .filter(c => {
-          const { hasDisconnected, hasConnected } = getConnectionStatusInfo(c.id)
+          const { hasDisconnected, hasConnected } = getConnectionStatusInfo(c.id, this.namespace)
 
           return !hasDisconnected && hasConnected
         })
@@ -256,7 +259,12 @@ export class ConnectionManager {
             onListenProvider(connector.id, connector.provider as BitcoinConnector)
             onConnection({
               connectorId: connector.id,
-              accounts: accounts.map(a => ({ address: a.address, type: a.type })),
+              accounts: accounts.map(a => ({
+                address: a.address,
+                type: a.type,
+                publicKey: a.publicKey,
+                path: a.path
+              })),
               caipNetwork
             })
           }

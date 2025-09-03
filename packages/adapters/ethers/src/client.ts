@@ -321,8 +321,7 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   public async syncConnections({
-    connectToFirstConnector,
-    getConnectorStorageInfo
+    connectToFirstConnector
   }: AdapterBlueprint.SyncConnectionsParams) {
     await this.connectionManager?.syncConnections({
       connectors: this.connectors,
@@ -330,9 +329,7 @@ export class EthersAdapter extends AdapterBlueprint {
       universalProvider: this.universalProvider as UniversalProvider,
       onConnection: this.addConnection.bind(this),
       onListenProvider: this.listenProviderEvents.bind(this),
-      getConnectionStatusInfo(connectorId) {
-        return getConnectorStorageInfo(connectorId)
-      }
+      getConnectionStatusInfo: HelpersUtil.getConnectorStorageInfo.bind(this)
     })
 
     if (connectToFirstConnector) {
