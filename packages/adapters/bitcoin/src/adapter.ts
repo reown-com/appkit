@@ -217,8 +217,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
   public async syncConnections({
     connectToFirstConnector,
-    caipNetwork,
-    getConnectorStorageInfo
+    caipNetwork
   }: AdapterBlueprint.SyncConnectionsParams) {
     await this.connectionManager?.syncConnections({
       connectors: this.connectors,
@@ -226,8 +225,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       caipNetworks: this.getCaipNetworks(),
       universalProvider: this.universalProvider as UniversalProvider,
       onConnection: this.addConnection.bind(this),
-      onListenProvider: this.listenProviderEvents.bind(this),
-      getConnectionStatusInfo: getConnectorStorageInfo
+      onListenProvider: this.listenProviderEvents.bind(this)
     })
 
     if (connectToFirstConnector) {
