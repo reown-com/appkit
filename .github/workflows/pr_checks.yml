@@ -92,6 +92,7 @@ jobs:
             .turbo/
           retention-days: 1
 
+      # Create a separate artifact for node_modules to preserve symlinks and permissions
       - name: Upload node_modules
         if: github.event_name != 'push'
         uses: actions/upload-artifact@v4
@@ -142,6 +143,7 @@ jobs:
           name: node-modules
           path: node_modules
 
+      # Restore executable permissions for binaries
       - name: Fix permissions
         run: chmod +x node_modules/*/bin/*
 
@@ -188,6 +190,7 @@ jobs:
           name: node-modules
           path: node_modules
 
+      # Restore executable permissions for binaries
       - name: Fix permissions
         run: chmod +x node_modules/*/bin/*
 
@@ -233,6 +236,7 @@ jobs:
           name: node-modules
           path: node_modules
 
+      # Restore executable permissions for binaries
       - name: Fix permissions
         run: chmod +x node_modules/*/bin/*
 
