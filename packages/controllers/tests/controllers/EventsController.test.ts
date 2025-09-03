@@ -11,6 +11,16 @@ const event = { type: 'track', event: 'MODAL_CLOSE', properties: { connected: tr
 
 describe('EventsController', () => {
   beforeEach(() => {
+    document.dispatchEvent = (event: Event): boolean => {
+      if (event.type !== 'visibilitychange') {
+        return true
+      }
+      if (document.visibilityState === 'hidden') {
+        EventsController._submitPendingEvents()
+      }
+      return true
+    }
+
     // Reset the state
     EventsController.state.pendingEvents = []
     EventsController.state.subscribedToVisibilityChange = false
