@@ -11,6 +11,21 @@ const event = { type: 'track', event: 'MODAL_CLOSE', properties: { connected: tr
 
 describe('EventsController', () => {
   beforeEach(() => {
+    // Mock the document object
+    let eventsAndCallbacks = new Map<string, () => void>()
+    const addEventListener = function (event: string, callback: () => void) {
+      eventsAndCallbacks.set(event, callback)
+    }
+    global.document = {
+      ...global.document,
+      addEventListener: addEventListener,
+      dispatchEvent: (event: Event) => {
+        console.log(event.type)
+        eventsAndCallbacks.get(event.type)?.()
+      },
+      visibilityState: 'hidden'
+    } as unknown as Document
+
     // Reset the state
     EventsController.state.pendingEvents = []
     EventsController.state.subscribedToVisibilityChange = false
