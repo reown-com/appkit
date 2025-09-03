@@ -9,6 +9,11 @@ import type { CreateAppKit } from '@reown/appkit'
 import type { CaipNetwork, CustomCaipNetwork } from '@reown/appkit-common'
 import { AppKit, type Metadata, createAppKit } from '@reown/appkit/core'
 
+type ModalConfig = Omit<
+  CreateAppKit,
+  'networks' | 'projectId' | 'metadata' | 'universalProvider' | 'manualWCControl'
+>
+
 type ExtendedNamespaces = Omit<SessionTypes.Namespace, 'chains' | 'accounts'> & {
   chains: CustomCaipNetwork[]
   namespace: string
@@ -18,12 +23,14 @@ export type Config = {
   projectId: string
   metadata: Metadata
   networks: ExtendedNamespaces[]
+  modalConfig?: ModalConfig
 }
 
 export class UniversalConnector {
   private appKit: AppKit
   private config: Config
   public provider: Awaited<ReturnType<typeof UniversalProvider.init>>
+  private modalConfig: ModalConfig | undefined
 
   constructor({
     appKit,
@@ -37,6 +44,7 @@ export class UniversalConnector {
     this.appKit = appKit
     this.provider = provider
     this.config = config
+    this.modalConfig = config.modalConfig
   }
 
   public static async init(config: Config) {
@@ -46,6 +54,7 @@ export class UniversalConnector {
     })
 
     const appKitConfig: CreateAppKit = {
+      ...config.modalConfig,
       networks: config.networks.flatMap(network => network.chains) as [
         CaipNetwork,
         ...CaipNetwork[]
