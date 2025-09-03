@@ -16,11 +16,10 @@ describe('EventsController', () => {
     const addEventListener = function (event: string, callback: () => void) {
       eventsAndCallbacks.set(event, callback)
     }
-    global.document = {
-      ...global.document,
+    globalThis.document = {
+      ...globalThis.document,
       addEventListener: addEventListener,
       dispatchEvent: (event: Event) => {
-        console.log(event.type)
         eventsAndCallbacks.get(event.type)?.()
       },
       visibilityState: 'hidden'
