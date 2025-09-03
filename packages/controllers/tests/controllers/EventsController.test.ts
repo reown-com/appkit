@@ -4,6 +4,19 @@ import { type CaipNetwork } from '@reown/appkit-common'
 
 import { ChainController, EventsController, FetchUtil } from '../../exports/index.js'
 
+// Mock the document object
+let eventsAndCallbacks = new Map<string, () => void>()
+globalThis.document = {
+  ...globalThis.document,
+  addEventListener: function (event: string, callback: () => void) {
+    eventsAndCallbacks.set(event, callback)
+  },
+  dispatchEvent: (event: Event) => {
+    eventsAndCallbacks.get(event.type)?.()
+  },
+  visibilityState: 'hidden'
+} as unknown as Document
+
 // -- Setup --------------------------------------------------------------------
 const event = { type: 'track', event: 'MODAL_CLOSE', properties: { connected: true } } as const
 
@@ -11,20 +24,6 @@ const event = { type: 'track', event: 'MODAL_CLOSE', properties: { connected: tr
 
 describe('EventsController', () => {
   beforeEach(() => {
-    // Mock the document object
-    let eventsAndCallbacks = new Map<string, () => void>()
-    const addEventListener = function (event: string, callback: () => void) {
-      eventsAndCallbacks.set(event, callback)
-    }
-    globalThis.document = {
-      ...globalThis.document,
-      addEventListener: addEventListener,
-      dispatchEvent: (event: Event) => {
-        eventsAndCallbacks.get(event.type)?.()
-      },
-      visibilityState: 'hidden'
-    } as unknown as Document
-
     // Reset the state
     EventsController.state.pendingEvents = []
     EventsController.state.subscribedToVisibilityChange = false
