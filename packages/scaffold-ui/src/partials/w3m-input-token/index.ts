@@ -87,12 +87,6 @@ export class W3mInputToken extends LitElement {
 
   private maxAmountTemplate() {
     if (this.token) {
-      if (this.sendTokenAmount && this.sendTokenAmount > Number(this.token.quantity.numeric)) {
-        return html` <wui-text variant="sm-regular" color="error">
-          ${UiHelperUtil.roundNumber(Number(this.token.quantity.numeric), 6, 5)}
-        </wui-text>`
-      }
-
       return html` <wui-text variant="sm-regular" color="secondary">
         ${UiHelperUtil.roundNumber(Number(this.token.quantity.numeric), 6, 5)}
       </wui-text>`
@@ -103,10 +97,6 @@ export class W3mInputToken extends LitElement {
 
   private actionTemplate() {
     if (this.token) {
-      if (this.sendTokenAmount && this.sendTokenAmount > Number(this.token.quantity.numeric)) {
-        return html`<wui-link @click=${this.onBuyClick.bind(this)}>Buy</wui-link>`
-      }
-
       return html`<wui-link @click=${this.onMaxClick.bind(this)}>Max</wui-link>`
     }
 
@@ -123,10 +113,6 @@ export class W3mInputToken extends LitElement {
 
       SendController.setTokenAmount(Number(maxValue.toFixed(20)))
     }
-  }
-
-  private onBuyClick() {
-    RouterController.push('OnRampProviders')
   }
 }
 

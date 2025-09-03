@@ -17,6 +17,18 @@ import '../../partials/w3m-input-address/index.js'
 import '../../partials/w3m-input-token/index.js'
 import styles from './styles.js'
 
+const SEND_BUTTON_MESSAGE = {
+  INSUFFICIENT_FUNDS: 'Insufficient Funds',
+  INCORRECT_VALUE: 'Incorrect Value',
+  INVALID_ADDRESS: 'Invalid Address',
+  ADD_ADDRESS: 'Add Address',
+  ADD_AMOUNT: 'Add Amount',
+  SELECT_TOKEN: 'Select Token',
+  PREVIEW_SEND: 'Preview Send'
+} as const
+
+type SendButtonMessage = (typeof SEND_BUTTON_MESSAGE)[keyof typeof SEND_BUTTON_MESSAGE]
+
 @customElement('w3m-wallet-send-view')
 export class W3mWalletSendView extends LitElement {
   public static override styles = styles
@@ -35,14 +47,7 @@ export class W3mWalletSendView extends LitElement {
 
   @state() private loading = SendController.state.loading
 
-  @state() private message:
-    | 'Preview Send'
-    | 'Select Token'
-    | 'Add Address'
-    | 'Add Amount'
-    | 'Insufficient Funds'
-    | 'Incorrect Value'
-    | 'Invalid Address' = 'Preview Send'
+  @state() private message: SendButtonMessage = SEND_BUTTON_MESSAGE.PREVIEW_SEND
 
   public constructor() {
     super()
@@ -84,18 +89,7 @@ export class W3mWalletSendView extends LitElement {
           .value=${this.receiverProfileName ? this.receiverProfileName : this.receiverAddress}
         ></w3m-input-address>
       </wui-flex>
-      <wui-flex .margin=${['4', '0', '0', '0'] as const}>
-        <wui-button
-          @click=${this.onButtonClick.bind(this)}
-          ?disabled=${!this.message.startsWith('Preview Send')}
-          size="lg"
-          variant="accent-primary"
-          ?loading=${this.loading}
-          fullWidth
-        >
-          ${this.message}
-        </wui-button>
-      </wui-flex>
+      <wui-flex .margin=${['4', '0', '0', '0'] as const}> ${this.buttonTemplate()} </wui-flex>
     </wui-flex>`
   }
 
@@ -114,17 +108,17 @@ export class W3mWalletSendView extends LitElement {
   }
 
   private getMessage() {
-    this.message = 'Preview Send'
+    this.message = SEND_BUTTON_MESSAGE.PREVIEW_SEND
 
     if (
       this.receiverAddress &&
       !CoreHelperUtil.isAddress(this.receiverAddress, ChainController.state.activeChain)
     ) {
-      this.message = 'Invalid Address'
+      this.message = SEND_BUTTON_MESSAGE.INVALID_ADDRESS
     }
 
     if (!this.receiverAddress) {
-      this.message = 'Add Address'
+      this.message = SEND_BUTTON_MESSAGE.ADD_ADDRESS
     }
 
     if (
@@ -132,23 +126,38 @@ export class W3mWalletSendView extends LitElement {
       this.token &&
       this.sendTokenAmount > Number(this.token.quantity.numeric)
     ) {
-      this.message = 'Insufficient Funds'
+      this.message = SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS
     }
 
     if (!this.sendTokenAmount) {
-      this.message = 'Add Amount'
+      this.message = SEND_BUTTON_MESSAGE.ADD_AMOUNT
     }
 
     if (this.sendTokenAmount && this.token?.price) {
       const value = this.sendTokenAmount * this.token.price
       if (!value) {
-        this.message = 'Incorrect Value'
+        this.message = SEND_BUTTON_MESSAGE.INCORRECT_VALUE
       }
     }
 
     if (!this.token) {
-      this.message = 'Select Token'
+      this.message = SEND_BUTTON_MESSAGE.SELECT_TOKEN
     }
+  }
+
+  private buttonTemplate() {
+    const isDisabled = !this.message.startsWith(SEND_BUTTON_MESSAGE.PREVIEW_SEND)
+
+    return html`<wui-button
+      @click=${this.onButtonClick.bind(this)}
+      ?disabled=${isDisabled}
+      size="lg"
+      variant="accent-primary"
+      ?loading=${this.loading}
+      fullWidth
+    >
+      ${this.message}
+    </wui-button>`
   }
 }
 
