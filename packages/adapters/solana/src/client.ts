@@ -548,8 +548,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       caipNetworks: this.getCaipNetworks(),
       universalProvider: this.universalProvider as UniversalProvider,
       onConnection: this.addConnection.bind(this),
-      onListenProvider: this.listenSolanaProviderEvents.bind(this),
-      getConnectionStatusInfo: HelpersUtil.getConnectorStorageInfo.bind(this)
+      onListenProvider: this.listenSolanaProviderEvents.bind(this)
     })
 
     if (connectToFirstConnector) {

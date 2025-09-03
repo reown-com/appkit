@@ -1247,8 +1247,7 @@ export abstract class AppKitBaseClient {
 
         return adapter?.syncConnections({
           connectToFirstConnector: !caipAddress,
-          caipNetwork,
-          getConnectorStorageInfo: HelpersUtil.getConnectorStorageInfo.bind(this)
+          caipNetwork
         })
       })
     )

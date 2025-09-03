@@ -331,8 +331,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
       caipNetworks: this.getCaipNetworks(),
       universalProvider: this.universalProvider as UniversalProvider,
       onConnection: this.addConnection.bind(this),
-      onListenProvider: this.listenProviderEvents.bind(this),
-      getConnectionStatusInfo: HelpersUtil.getConnectorStorageInfo.bind(this)
+      onListenProvider: this.listenProviderEvents.bind(this)
     })
 
     if (connectToFirstConnector) {
