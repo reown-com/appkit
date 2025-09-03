@@ -1276,7 +1276,6 @@ export abstract class AppKitBaseClient {
         chainId: caipNetwork.id,
         rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0] as string
       })
-      console.log('>>> connection1', connection)
 
       if (connection) {
         this.syncProvider({ ...connection, chainNamespace: namespace })
