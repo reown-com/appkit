@@ -6,19 +6,10 @@ on:
     branches:
       - main
   merge_group:
-    # The merge queue provides the same benefits
-    # as the Require branches to be up to date before merging branch protection,
-    # but does not require a pull request author to update their pull
-    # request branch and wait for status checks to finish before trying to merge.
-    # See https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue
     branches:
       - main
   push:
     branches:
-      # Build against main to prime turbocache
-      # GitHub Actions is branch-specific but falls
-      # back to the default branch (main) if no
-      # branch specific cache is found.
       - main
 
 permissions:
@@ -38,6 +29,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -51,14 +45,6 @@ jobs:
       - name: install
         run: pnpm install
 
-      # Cache Turborepo's build outputs (.turbo directory).
-      # This speeds up the 'pnpm build' step significantly if inputs haven't changed.
-      # The key includes the OS and a hash of the lockfile, ensuring dependency changes
-      # invalidate the cache.
-      # The restore-key provides a fallback to the latest cache without the specific lockfile hash.
-      # Running this on the target branch (e.g., 'main' via push or merge_group) aims to
-      # populate a shared cache that subsequent PR/branch builds can use as a fallback,
-      # further speeding up their builds if only a few packages changed.
       - name: Cache Turborepo cache
         uses: actions/cache@v4
         with:
@@ -89,7 +75,6 @@ jobs:
             .turbo/
           retention-days: 1
 
-      # Create a separate artifact for node_modules to preserve symlinks and permissions
       - name: Upload node_modules
         if: github.event_name != 'push'
         uses: actions/upload-artifact@v4
@@ -116,6 +101,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -137,7 +125,6 @@ jobs:
           name: node-modules
           path: node_modules
 
-      # Restore executable permissions for binaries
       - name: Fix permissions
         run: chmod +x node_modules/*/bin/*
 
@@ -160,6 +147,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -181,7 +171,6 @@ jobs:
           name: node-modules
           path: node_modules
 
-      # Restore executable permissions for binaries
       - name: Fix permissions
         run: chmod +x node_modules/*/bin/*
 
@@ -203,6 +192,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -224,7 +216,6 @@ jobs:
           name: node-modules
           path: node_modules
 
-      # Restore executable permissions for binaries
       - name: Fix permissions
         run: chmod +x node_modules/*/bin/*
 
@@ -246,7 +237,8 @@ jobs:
       contents: write
       pull-requests: write
     with:
-      branch: ${{ github.ref }}
+      # Pass the SHA so the called workflow can check out a stable commit
+      branch: ${{ github.sha }}
       build-and-cache-only: ${{ github.event_name == 'push' }}
       matrix_config: '{"shard":[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "shardTotal":[10]}'
       build_trigger_type: ${{ github.event_name }}
