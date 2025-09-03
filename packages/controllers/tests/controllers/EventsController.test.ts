@@ -47,7 +47,8 @@ describe('EventsController', () => {
     }
     expect(mock).toHaveBeenCalledTimes(1)
 
-    expect(mock).toHaveBeenCalledExactlyOnceWith('visibilitychange', expect.any(Function))
+    expect(mock).toHaveBeenCalledTimes(1)
+    expect(mock).toHaveBeenCalledWith('visibilitychange', expect.any(Function))
     expect(EventsController.state.subscribedToVisibilityChange).toEqual(true)
     ;(document as any).addEventListener = original
   })
@@ -113,7 +114,8 @@ describe('EventsController', () => {
     })
     document.dispatchEvent(new Event('visibilitychange'))
     EventsController._submitPendingEvents()
-    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledExactlyOnceWith(
+    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledTimes(1)
+    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledWith(
       expect.objectContaining({
         path: '/batch',
         params: EventsController.getSdkProperties()
@@ -136,7 +138,8 @@ describe('EventsController', () => {
     }
 
     // the events should be automatically submitted when the KB limit is reached
-    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledExactlyOnceWith(
+    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledTimes(1)
+    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledWith(
       expect.objectContaining({
         path: '/batch',
         params: EventsController.getSdkProperties()
@@ -172,7 +175,8 @@ describe('EventsController', () => {
 
     document.dispatchEvent(new Event('visibilitychange'))
 
-    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledExactlyOnceWith(
+    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledTimes(1)
+    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledWith(
       expect.objectContaining({
         path: '/batch',
         params: EventsController.getSdkProperties(),
@@ -261,8 +265,8 @@ describe('EventsController', () => {
     })
 
     document.dispatchEvent(new Event('visibilitychange'))
-
-    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledExactlyOnceWith(
+    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledTimes(1)
+    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledWith(
       expect.objectContaining({
         path: '/batch',
         params: EventsController.getSdkProperties(),
@@ -312,7 +316,8 @@ describe('EventsController', () => {
       data: { type: 'track', event: 'MODAL_CLOSE', properties: { connected: true } }
     })
     EventsController._submitPendingEvents()
-    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledExactlyOnceWith(
+    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledTimes(1)
+    expect(FetchUtil.prototype.sendBeacon).toHaveBeenCalledWith(
       expect.objectContaining({
         path: '/batch',
         params: EventsController.getSdkProperties(),
