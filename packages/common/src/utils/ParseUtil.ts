@@ -1,11 +1,4 @@
-import type {
-  AssetNamespace,
-  CaipAddress,
-  CaipAsset,
-  CaipNetworkId,
-  ChainId,
-  ChainNamespace
-} from './TypeUtil.js'
+import type { CaipAddress, CaipNetworkId, ChainId, ChainNamespace } from './TypeUtil.js'
 
 export type ParsedCaipAddress = {
   chainNamespace: ChainNamespace
@@ -59,34 +52,6 @@ export const ParseUtil = {
     return {
       chainNamespace: chainNamespace as ChainNamespace,
       chainId: chainId as ChainId
-    }
-  },
-  parseCaipAsset(assetId: CaipAsset) {
-    const parts = assetId.split('/')
-
-    if (parts.length !== 2 && parts.length !== 3) {
-      throw new Error(`Invalid CAIP-19 asset id: ${assetId}`)
-    }
-
-    const [caipNetwork, assetName, tokenId] = parts
-
-    if (!caipNetwork || !assetName) {
-      throw new Error(`Invalid CAIP-19 asset id: ${assetId}`)
-    }
-
-    const [assetNamespace, assetAddress] = assetName.split(':')
-
-    if (!assetNamespace || !assetAddress) {
-      throw new Error(`Invalid CAIP-19 asset name: ${assetName}`)
-    }
-
-    return {
-      caipNetwork: caipNetwork as CaipNetworkId,
-      asset: {
-        namespace: assetNamespace as AssetNamespace,
-        address: assetAddress
-      },
-      tokenId
     }
   }
 }

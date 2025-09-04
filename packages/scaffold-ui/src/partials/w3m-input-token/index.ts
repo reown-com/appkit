@@ -27,7 +27,7 @@ export class W3mInputToken extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const isDisabled = this.readOnly || (!this.token && true)
+    const isDisabled = this.readOnly || !this.token
 
     return html` <wui-flex
       flexDirection="column"

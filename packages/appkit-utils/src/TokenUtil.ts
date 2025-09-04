@@ -7,8 +7,8 @@ export const TokenUtil = {
     }
 
     const [symbol] =
-      Object.entries(PresetsUtil.TOKEN_ADDRESSES_BY_SYMBOL).find(([_, addresses]) =>
-        addresses.includes(tokenAddress)
+      Object.entries(PresetsUtil.TOKEN_ADDRESSES_BY_SYMBOL).find(([_, addressesByChain]) =>
+        Object.values(addressesByChain).includes(tokenAddress)
       ) ?? []
 
     return symbol

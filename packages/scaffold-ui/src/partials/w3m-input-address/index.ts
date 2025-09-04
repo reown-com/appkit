@@ -13,7 +13,6 @@ import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-input-amount'
 import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'

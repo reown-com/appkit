@@ -116,15 +116,10 @@ export const PresetsUtil = {
   } as Record<string, string>,
 
   TOKEN_ADDRESSES_BY_SYMBOL: {
-    DAI: ['0x6b175474e89094c44da98b954eedeac495271d0f'],
-    USDC: [
-      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-      '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
-      '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
-      '0x036CbD53842c5426634e7929541eC2318f3dCF7e'
-    ],
-    USDT: ['0xdac17f958d2ee523a2206206994597c13d831ec7']
+    USDC: {
+      8453: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+      84532: '0x036CbD53842c5426634e7929541eC2318f3dCF7e'
+    }
   },
 
   ConnectorImageIds: {

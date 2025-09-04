@@ -15,9 +15,9 @@ import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { ERC7811Utils } from './ERC7811Util.js'
-import { NetworkUtil } from './NetworkUtil.js'
 import { StorageUtil } from './StorageUtil.js'
 import type { BlockchainApiBalanceResponse } from './TypeUtil.js'
+import { ViemUtil } from './ViemUtil.js'
 
 // -- Types -------------------------------------------------------------------- //
 interface FetchER20BalanceParams {
@@ -124,7 +124,7 @@ export const BalanceUtil = {
     return balances.filter(balance => balance.quantity.decimals !== '0')
   },
   async fetchERC20Balance({ caipAddress, assetAddress, caipNetworkId }: FetchER20BalanceParams) {
-    const publicClient = NetworkUtil.createViemPublicClient(caipNetworkId)
+    const publicClient = ViemUtil.createViemPublicClient(caipNetworkId)
 
     const { address } = ParseUtil.parseCaipAddress(caipAddress)
 

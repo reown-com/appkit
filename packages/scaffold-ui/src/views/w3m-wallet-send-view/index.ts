@@ -91,6 +91,7 @@ export class W3mWalletSendView extends LitElement {
     this.getMessage()
 
     const isReadOnly = Boolean(this.params)
+
     if (!this.address) {
       throw new Error('w3m-wallet-send-view: No account connected')
     }
