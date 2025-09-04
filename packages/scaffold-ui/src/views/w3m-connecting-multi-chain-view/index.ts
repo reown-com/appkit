@@ -91,7 +91,7 @@ export class W3mConnectingMultiChainView extends LitElement {
               @click=${() => this.onConnector(connector)}
               size="sm"
               data-testid="wui-list-chain-${connector.chain}"
-              walletId=${connector.explorerId || connector.id}
+              rdnsId=${connector.id}
             ></w3m-list-wallet>
           `
         : null

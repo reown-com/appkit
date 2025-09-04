@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { RouterController } from '@reown/appkit-controllers'
+import { EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import type { IWalletImage, IconType, TagType } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-list-wallet'
@@ -43,7 +43,7 @@ export class W3mListWallet extends LitElement {
 
   @property({ type: String }) public loadingSpinnerColor = 'accent-100'
 
-  @property() public walletId?: string = ''
+  @property() public rdnsId?: string = ''
 
   // -- Lifecycle ------------------------------------------- //
   public override connectedCallback() {
@@ -83,7 +83,7 @@ export class W3mListWallet extends LitElement {
           }
         })
       },
-      { threshold: 0.1 } // Trigger when 10% of the element is visible
+      { threshold: 0.1 }
     )
 
     this.intersectionObserver.observe(this)
@@ -102,7 +102,18 @@ export class W3mListWallet extends LitElement {
     }
 
     this.hasImpressionSent = true
-    console.log('>>> w3m-list-wallet', this.name, this.walletId, RouterController.state.view)
+    if (this.rdnsId) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'WALLET_IMPRESSION',
+        properties: {
+          name: this.name,
+          walletRank: 1,
+          rdnsId: this.rdnsId,
+          view: RouterController.state.view
+        }
+      })
+    }
   }
 
   // -- Render -------------------------------------------- //

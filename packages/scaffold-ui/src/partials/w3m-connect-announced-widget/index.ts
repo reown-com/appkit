@@ -69,7 +69,7 @@ export class W3mConnectAnnouncedWidget extends LitElement {
               data-testid=${`wallet-selector-${connector.id}`}
               .installed=${true}
               tabIdx=${ifDefined(this.tabIdx)}
-              walletId=${connector.id}
+              rdnsId=${connector.id}
             >
             </w3m-list-wallet>
           `

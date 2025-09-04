@@ -77,7 +77,7 @@ export class W3mConnectRecentWidget extends LitElement {
               tabIdx=${ifDefined(this.tabIdx)}
               ?loading=${this.loading}
               ?disabled=${hasWcConnection}
-              walletId=${wallet.id}
+              rdnsId=${wallet.id}
             >
             </w3m-list-wallet>
           `

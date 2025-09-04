@@ -39,6 +39,8 @@ export class W3mAllWalletsList extends LitElement {
 
   @state() private filteredWallets = ApiController.state.filteredWallets
 
+  @state() private badge?: 'certified' | undefined
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -127,7 +129,8 @@ export class W3mAllWalletsList extends LitElement {
           data-testid="wallet-search-item-${wallet.id}"
           @click=${() => this.onConnectWallet(wallet)}
           .wallet=${wallet}
-          walletId=${wallet.id}
+          explorerId=${wallet.id}
+          certified=${this.badge === 'certified'}
         ></w3m-all-wallets-list-item>
       `
     )

@@ -52,6 +52,7 @@ export class W3mConnectInjectedWidget extends LitElement {
           const isAlreadyConnected = connectionsByNamespace.some(c =>
             HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
           )
+          console.log('>>> connector', connector)
 
           return html`
             <w3m-list-wallet
@@ -64,7 +65,7 @@ export class W3mConnectInjectedWidget extends LitElement {
               size="sm"
               @click=${() => this.onConnector(connector)}
               tabIdx=${ifDefined(this.tabIdx)}
-              walletId=${connector.id}
+              rdnsId=${connector.id}
             >
             </w3m-list-wallet>
           `

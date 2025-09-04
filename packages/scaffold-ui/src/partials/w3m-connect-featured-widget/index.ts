@@ -40,7 +40,7 @@ export class W3mConnectFeaturedWidget extends LitElement {
               tabIdx=${ifDefined(this.tabIdx)}
               size="sm"
               ?disabled=${hasWcConnection}
-              walletId=${wallet.id}
+              rdnsId=${wallet.id}
             >
             </w3m-list-wallet>
           `

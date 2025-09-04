@@ -2,7 +2,12 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { AssetUtil, RouterController, type WcWallet } from '@reown/appkit-controllers'
+import {
+  AssetUtil,
+  EventsController,
+  RouterController,
+  type WcWallet
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
@@ -27,6 +32,12 @@ export class W3mAllWalletsListItem extends LitElement {
   @state() private imageLoading = false
 
   @state() private isImpressed = false
+
+  @property() private explorerId: string = ''
+
+  @property() private walletQuery: string = ''
+
+  @property() private certified: boolean = false
 
   @property({ type: Object }) private wallet: (WcWallet & { installed: boolean }) | undefined =
     undefined
@@ -126,6 +137,18 @@ export class W3mAllWalletsListItem extends LitElement {
       this.wallet.id,
       RouterController.state.view
     )
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'WALLET_IMPRESSION',
+      properties: {
+        name: this.wallet.name,
+        walletRank: 1,
+        explorerId: this.explorerId,
+        view: RouterController.state.view,
+        query: this.walletQuery,
+        certified: this.certified
+      }
+    })
   }
 }
 

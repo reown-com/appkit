@@ -901,14 +901,21 @@ export type Event =
       type: 'track'
       address?: string
       event: 'WALLET_IMPRESSION'
-      properties: {
-        name: string
-        walletRank: number
-        explorerId: string
-        view: string
-        query: string
-        certified: boolean
-      }
+      properties:
+        | {
+            name: string
+            walletRank: number
+            explorerId: string
+            view: string
+            query?: string
+            certified?: boolean
+          }
+        | {
+            name: string
+            walletRank: number
+            rdnsId: string
+            view: string
+          }
     }
 
 type PayConfiguration = {
