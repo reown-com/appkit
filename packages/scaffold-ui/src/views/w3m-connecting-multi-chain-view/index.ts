@@ -110,9 +110,9 @@ export class W3mConnectingMultiChainView extends LitElement {
 
     if (connector.id === 'walletConnect') {
       if (CoreHelperUtil.isMobile()) {
-        RouterController.push('AllWallets', { redirectView })
+        RouterController.push('AllWallets')
       } else {
-        RouterController.push('ConnectingWalletConnect')
+        RouterController.push('ConnectingWalletConnect', { redirectView })
       }
     } else {
       RouterController.push('ConnectingExternal', {

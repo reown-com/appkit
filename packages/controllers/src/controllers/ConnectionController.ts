@@ -457,8 +457,6 @@ const controller = {
       })
     } catch (error) {
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
-    } finally {
-      state.disconnectReason = undefined
     }
   },
 
