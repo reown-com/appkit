@@ -1257,23 +1257,13 @@ export abstract class AppKitBaseClient {
   protected async syncAdapterConnections() {
     await Promise.allSettled(
       this.chainNamespaces.map(namespace => {
+        const adapter = this.getAdapter(namespace)
         const caipAddress = this.getCaipAddress(namespace)
         const caipNetwork = this.getCaipNetwork(namespace)
 
-        return this.chainAdapters?.[namespace].syncConnections({
+        return adapter?.syncConnections({
           connectToFirstConnector: !caipAddress,
-          caipNetwork,
-          getConnectorStorageInfo(connectorId) {
-            const storageConnectionsByNamespace = StorageUtil.getConnections()
-            const storageConnections = storageConnectionsByNamespace[namespace] ?? []
-
-            return {
-              hasDisconnected: StorageUtil.isConnectorDisconnected(connectorId, namespace),
-              hasConnected: storageConnections.some(c =>
-                HelpersUtil.isLowerCaseMatch(c.connectorId, connectorId)
-              )
-            }
-          }
+          caipNetwork
         })
       })
     )
@@ -1281,10 +1271,9 @@ export abstract class AppKitBaseClient {
 
   protected async syncAdapterConnection(namespace: ChainNamespace) {
     const adapter = this.getAdapter(namespace)
-    const connectorId = ConnectorController.getConnectorId(namespace)
     const caipNetwork = this.getCaipNetwork(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const connectors = ConnectorController.getConnectors(namespace)
-
     const connector = connectors.find(c => c.id === connectorId)
 
     try {
