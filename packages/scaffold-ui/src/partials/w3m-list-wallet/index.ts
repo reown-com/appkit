@@ -1,4 +1,4 @@
-import { LitElement, html } from 'lit'
+import { LitElement, type PropertyValues, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
@@ -56,7 +56,7 @@ export class W3mListWallet extends LitElement {
     this.cleanupIntersectionObserver()
   }
 
-  public override updated(changedProperties: Map<string, any>) {
+  public override updated(changedProperties: PropertyValues) {
     super.updated(changedProperties)
 
     // Reset impression tracking when wallet changes

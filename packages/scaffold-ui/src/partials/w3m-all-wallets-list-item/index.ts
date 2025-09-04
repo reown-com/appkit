@@ -33,11 +33,11 @@ export class W3mAllWalletsListItem extends LitElement {
 
   @state() private isImpressed = false
 
-  @property() private explorerId: string = ''
+  @property() private explorerId = ''
 
-  @property() private walletQuery: string = ''
+  @property() private walletQuery = ''
 
-  @property() private certified: boolean = false
+  @property() private certified = false
 
   @property({ type: Object }) private wallet: (WcWallet & { installed: boolean }) | undefined =
     undefined
@@ -131,12 +131,6 @@ export class W3mAllWalletsListItem extends LitElement {
     }
 
     this.isImpressed = true
-    console.log(
-      '>>> w3m-all-wallets-list-item',
-      this.wallet.name,
-      this.wallet.id,
-      RouterController.state.view
-    )
     EventsController.sendEvent({
       type: 'track',
       event: 'WALLET_IMPRESSION',
