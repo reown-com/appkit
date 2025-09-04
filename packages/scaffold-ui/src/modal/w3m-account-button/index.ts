@@ -4,8 +4,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { CaipAddress, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import {
-  AccountController,
-  type AccountControllerState,
+  type AccountState,
   type AdapterNetworkState,
   AssetController,
   AssetUtil,
@@ -93,10 +92,9 @@ class W3mAccountButtonBase extends LitElement {
         ChainController.subscribeKey('activeCaipAddress', val => {
           this.caipAddress = val
         }),
-        AccountController.subscribeKey('balance', val => (this.balanceVal = val)),
-        AccountController.subscribeKey('balanceSymbol', val => (this.balanceSymbol = val)),
-        AccountController.subscribeKey('profileName', val => (this.profileName = val)),
-        AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
+        ChainController.subscribeChainProp('accountState', accountState => {
+          this.setAccountData(accountState)
+        }),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           this.network = val
           this.networkImage = AssetUtil.getNetworkImage(val)
@@ -163,7 +161,7 @@ class W3mAccountButtonBase extends LitElement {
     }
   }
 
-  private setAccountData(accountState: AccountControllerState | undefined) {
+  private setAccountData(accountState: AccountState | undefined) {
     if (!accountState) {
       return
     }

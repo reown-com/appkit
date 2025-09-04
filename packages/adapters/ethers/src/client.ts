@@ -4,7 +4,7 @@ import { JsonRpcProvider, formatEther, getAddress } from 'ethers'
 import { type AppKitOptions, WcConstantsUtil, WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
-  AccountController,
+  ChainController,
   type CombinedProvider,
   type Connector,
   type ConnectorType,
@@ -155,6 +155,12 @@ export class EthersAdapter extends AdapterBlueprint {
       throw new Error('Provider is undefined')
     }
 
+    const address = ChainController.getAccountData(CommonConstantsUtil.CHAIN.EVM)?.address
+
+    if (!address) {
+      throw new Error('Address is undefined')
+    }
+
     const tx = await EthersMethods.sendTransaction(
       {
         value: Number.isNaN(Number(params.value)) ? BigInt(0) : BigInt(params.value),
@@ -162,10 +168,10 @@ export class EthersAdapter extends AdapterBlueprint {
         data: params.data ? (params.data as Address) : '0x',
         gas: params.gas ? BigInt(params.gas) : undefined,
         gasPrice: params.gasPrice ? BigInt(params.gasPrice) : undefined,
-        address: AccountController.state.address as Address
+        address: address as Address
       },
       params.provider as Provider,
-      AccountController.state.address as Address,
+      address as Address,
       Number(params.caipNetwork?.id)
     )
 

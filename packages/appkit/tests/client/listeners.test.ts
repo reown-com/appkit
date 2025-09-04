@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
-  AccountController,
+  type AccountState,
   BlockchainApiController,
   ChainController,
   ConnectorController,
@@ -34,7 +34,7 @@ describe('Listeners', () => {
 
   it('should set caip address, profile name and profile image on accountChanged event', async () => {
     const identity = { name: 'vitalik.eth', avatar: null } as const
-    const setCaipAddressSpy = vi.spyOn(AccountController, 'setCaipAddress')
+    const setCaipAddressSpy = vi.spyOn(ChainController, 'setAccountProp')
     const fetchIdentitySpy = vi
       .spyOn(BlockchainApiController, 'fetchIdentity')
       .mockResolvedValueOnce(identity)
@@ -54,8 +54,10 @@ describe('Listeners', () => {
     mockEvmAdapter.emit('accountChanged', mockAccount)
 
     expect(setCaipAddressSpy).toHaveBeenCalledWith(
+      'caipAddress',
       `${mockAccount.chainNamespace}:${mockAccount.chainId}:${mockAccount.address}`,
-      'eip155'
+      'eip155',
+      true
     )
     expect(fetchIdentitySpy).toHaveBeenCalledWith({
       address: mockAccount.address
@@ -65,13 +67,13 @@ describe('Listeners', () => {
   })
 
   it('should call syncAccountInfo when namespace is different than active namespace', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      caipAddress: `${mainnet.chainNamespace}:${mainnet.id}:0x1234`,
       address: '0x1234'
-    })
+    } as unknown as AccountState)
     const appKit = new AppKit({ ...mockOptions, defaultNetwork: solana })
     await appKit.ready()
-    const setCaipAddressSpy = vi.spyOn(appKit, 'setCaipAddress')
+    const setCaipAddressSpy = vi.spyOn(ChainController, 'setAccountProp')
 
     const mockAccount = {
       address: '0x123',
@@ -81,8 +83,10 @@ describe('Listeners', () => {
     emitter.emit('accountChanged', mockAccount)
 
     expect(setCaipAddressSpy).toHaveBeenCalledWith(
+      'caipAddress',
       `${mockAccount.chainNamespace}:${mockAccount.chainId}:${mockAccount.address}`,
-      'eip155'
+      'eip155',
+      true
     )
   })
 
@@ -130,9 +134,9 @@ describe('Listeners', () => {
     expect(removeConnectorIdSpy).toHaveBeenCalledWith(chainNamespace)
     expect(removeConnectedNamespaceSpy).toHaveBeenCalledWith(chainNamespace)
     expect(resetChainSpy).toHaveBeenCalledWith(chainNamespace)
-    expect(setUserSpy).toHaveBeenCalledWith(undefined, chainNamespace)
+    expect(setUserSpy).toHaveBeenCalledWith(null, chainNamespace)
     expect(setStatusSpy).toHaveBeenCalledWith('disconnected', chainNamespace)
-    expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(undefined, chainNamespace)
+    expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(null, chainNamespace)
     expect(modalCloseSpy).toHaveBeenCalled()
   })
 
