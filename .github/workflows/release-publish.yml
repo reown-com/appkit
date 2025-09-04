@@ -54,7 +54,7 @@ jobs:
             --head "${{ github.ref_name }}" \
             --base main \
             --title "Merge ${{ github.ref_name }} back to main" \
-            --body  "Auto‑generated after publishing."
+            --body  "Auto‑generated after publishing." \
             --verbose
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
