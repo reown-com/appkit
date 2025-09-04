@@ -52,7 +52,8 @@ export const appKitConfigs = {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
     wagmiConfig: commonWagmiConfig,
-    networks: ConstantsUtil.EvmNetworks
+    networks: ConstantsUtil.EvmNetworks,
+    customWallets: []
   },
   'wagmi-all': {
     ...commonAppKitConfig,
