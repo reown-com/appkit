@@ -86,7 +86,7 @@ export const EventsController = {
         EventsController._submitPendingEvents()
       }
     } catch (err) {
-      console.warn('sendAnalyticsEvent', err)
+      console.warn('_setPendingEvent', err)
     }
   },
 
