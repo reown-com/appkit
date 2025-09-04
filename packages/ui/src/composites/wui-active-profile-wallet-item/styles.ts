@@ -1,17 +1,17 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   wui-image {
-    width: var(--wui-spacing-2xl);
-    height: var(--wui-spacing-2xl);
-    border-radius: var(--wui-border-radius-3xs);
+    width: 24px;
+    height: 24px;
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
   wui-image,
   .icon-box {
-    width: var(--wui-spacing-2xl);
-    height: var(--wui-spacing-2xl);
-    border-radius: var(--wui-border-radius-3xs);
+    width: 32px;
+    height: 32px;
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
   wui-icon:not(.custom-icon, .icon-badge) {
@@ -20,7 +20,8 @@ export default css`
 
   .icon-box {
     position: relative;
-    background-color: var(--wui-color-gray-glass-002);
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
 
   .icon-badge {
@@ -28,9 +29,14 @@ export default css`
     top: 18px;
     left: 23px;
     z-index: 3;
-    background-color: var(--wui-color-gray-glass-005);
-    border: 2px solid var(--wui-color-modal-bg);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border: 2px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
     border-radius: 50%;
-    padding: var(--wui-spacing-4xs);
+    padding: ${({ spacing }) => spacing['01']};
+  }
+
+  .icon-badge {
+    width: 8px;
+    height: 8px;
   }
 `

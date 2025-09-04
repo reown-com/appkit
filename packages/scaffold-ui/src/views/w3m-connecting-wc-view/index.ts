@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 
 import type { BaseError, Platform } from '@reown/appkit-controllers'
 import {
@@ -39,6 +39,10 @@ export class W3mConnectingWcView extends LitElement {
 
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
+  @property({ type: Boolean }) public displayBranding = true
+
+  @property({ type: Boolean }) public basic = false
+
   public constructor() {
     super()
     this.determinePlatforms()
@@ -64,7 +68,7 @@ export class W3mConnectingWcView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private reownBrandingTemplate() {
-    if (!this.remoteFeatures?.reownBranding) {
+    if (!this.remoteFeatures?.reownBranding || !this.displayBranding) {
       return null
     }
 
@@ -97,7 +101,7 @@ export class W3mConnectingWcView extends LitElement {
         )
         const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
         const hasConnections = connectionsByNamespace.length > 0
-        await ConnectionController.connectWalletConnect()
+        await ConnectionController.connectWalletConnect({ cache: 'never' })
 
         if (!this.isSiwxEnabled) {
           if (hasConnections && isMultiWalletEnabled) {
@@ -202,7 +206,7 @@ export class W3mConnectingWcView extends LitElement {
           </w3m-connecting-wc-mobile>
         `
       case 'qrcode':
-        return html`<w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode>`
+        return html`<w3m-connecting-wc-qrcode ?basic=${this.basic}></w3m-connecting-wc-qrcode>`
       default:
         return html`<w3m-connecting-wc-unsupported></w3m-connecting-wc-unsupported>`
     }

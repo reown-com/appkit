@@ -1,5 +1,5 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import { JsonRpcProvider, formatEther } from 'ethers'
+import { JsonRpcProvider, formatEther, getAddress } from 'ethers'
 
 import { type AppKitOptions, WcConstantsUtil, WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
@@ -14,8 +14,8 @@ import {
   StorageUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
+import { ProviderController } from '@reown/appkit-controllers'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
-import { ProviderUtil } from '@reown/appkit-utils'
 import { type Address, EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -257,7 +257,7 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     return {
-      address: accounts[0],
+      address: this.toChecksummedAddress(accounts[0]),
       chainId: Number(requestChainId) || Number(chainId),
       provider: selectedProvider,
       type: connector.type,
@@ -321,18 +321,14 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   public async syncConnections({
-    connectToFirstConnector,
-    getConnectorStorageInfo
+    connectToFirstConnector
   }: AdapterBlueprint.SyncConnectionsParams) {
     await this.connectionManager?.syncConnections({
       connectors: this.connectors,
       caipNetworks: this.getCaipNetworks(),
       universalProvider: this.universalProvider as UniversalProvider,
       onConnection: this.addConnection.bind(this),
-      onListenProvider: this.listenProviderEvents.bind(this),
-      getConnectionStatusInfo(connectorId) {
-        return getConnectorStorageInfo(connectorId)
-      }
+      onListenProvider: this.listenProviderEvents.bind(this)
     })
 
     if (connectToFirstConnector) {
@@ -427,13 +423,13 @@ export class EthersAdapter extends AdapterBlueprint {
 
       if (connection.account) {
         this.emit('accountChanged', {
-          address: connection.account.address,
+          address: this.toChecksummedAddress(connection.account.address),
           chainId: caipNetwork.id,
           connector
         })
 
         return {
-          address: connection.account.address,
+          address: this.toChecksummedAddress(connection.account.address),
           chainId: caipNetwork.id,
           provider: connector.provider,
           type: connector.type,
@@ -479,7 +475,7 @@ export class EthersAdapter extends AdapterBlueprint {
       })
 
       this.emit('accountChanged', {
-        address: accounts[0] as Address,
+        address: this.toChecksummedAddress(accounts[0] as Address),
         chainId: Number(chainId),
         connector
       })
@@ -511,7 +507,7 @@ export class EthersAdapter extends AdapterBlueprint {
       }
 
       this.emit('accountChanged', {
-        address: accounts[0] as Address,
+        address: this.toChecksummedAddress(accounts[0] as Address),
         chainId: Number(chainId),
         connector
       })
@@ -528,7 +524,7 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     return {
-      address: accounts[0] as Address,
+      address: this.toChecksummedAddress(accounts[0] as Address),
       chainId: Number(chainId),
       provider: selectedProvider,
       type: type as ConnectorType,
@@ -771,26 +767,17 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   public async getCapabilities(params: AdapterBlueprint.GetCapabilitiesParams): Promise<unknown> {
-    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    const provider = ProviderController.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       throw new Error('Provider is undefined')
-    }
-
-    const walletCapabilitiesString = provider.session?.sessionProperties?.['capabilities']
-    if (walletCapabilitiesString) {
-      const walletCapabilities = EthersMethods.parseWalletCapabilities(walletCapabilitiesString)
-      const accountCapabilities = walletCapabilities[params]
-      if (accountCapabilities) {
-        return accountCapabilities
-      }
     }
 
     return await provider.request({ method: 'wallet_getCapabilities', params: [params] })
   }
 
   public async grantPermissions(params: AdapterBlueprint.GrantPermissionsParams): Promise<unknown> {
-    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    const provider = ProviderController.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       throw new Error('Provider is undefined')
@@ -802,7 +789,7 @@ export class EthersAdapter extends AdapterBlueprint {
   public async revokePermissions(
     params: AdapterBlueprint.RevokePermissionsParams
   ): Promise<Address> {
-    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    const provider = ProviderController.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       throw new Error('Provider is undefined')
@@ -814,7 +801,7 @@ export class EthersAdapter extends AdapterBlueprint {
   public async walletGetAssets(
     params: AdapterBlueprint.WalletGetAssetsParams
   ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
-    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    const provider = ProviderController.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       throw new Error('Provider is undefined')
@@ -824,5 +811,13 @@ export class EthersAdapter extends AdapterBlueprint {
       method: 'wallet_getAssets',
       params: [params]
     })
+  }
+
+  private toChecksummedAddress(address: string) {
+    try {
+      return getAddress(address.toLowerCase() as `0x${string}`)
+    } catch {
+      return address
+    }
   }
 }

@@ -1,10 +1,10 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
     display: flex;
     justify-content: center;
-    gap: var(--wui-spacing-2xl);
+    gap: ${({ spacing }) => spacing['4']};
   }
 
   wui-visual-thumbnail:nth-child(1) {

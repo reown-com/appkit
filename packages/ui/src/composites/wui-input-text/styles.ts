@@ -1,186 +1,125 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
     position: relative;
     width: 100%;
-    display: inline-block;
-    color: var(--wui-color-fg-275);
+    display: inline-flex;
+    flex-direction: column;
+    gap: ${({ spacing }) => spacing[3]};
+    color: ${({ tokens }) => tokens.theme.textPrimary};
+    caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
+  }
+
+  .wui-input-text-container {
+    position: relative;
+    display: flex;
   }
 
   input {
     width: 100%;
-    border-radius: var(--wui-border-radius-xs);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
-    background: var(--wui-color-gray-glass-002);
-    font-size: var(--wui-font-size-paragraph);
-    letter-spacing: var(--wui-letter-spacing-paragraph);
-    color: var(--wui-color-fg-100);
-    transition:
-      background-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
-      border-color var(--wui-ease-inout-power-1) var(--wui-duration-md),
-      box-shadow var(--wui-ease-inout-power-1) var(--wui-duration-md);
-    will-change: background-color, border-color, box-shadow;
-    caret-color: var(--wui-color-accent-100);
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    color: inherit;
+    background: transparent;
+    border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
+    caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
+    padding: ${({ spacing }) => spacing[3]} ${({ spacing }) => spacing[3]}
+      ${({ spacing }) => spacing[3]} ${({ spacing }) => spacing[10]};
+    font-size: ${({ textSize }) => textSize.large};
+    line-height: ${({ typography }) => typography['lg-regular'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['lg-regular'].letterSpacing};
+    font-weight: ${({ fontWeight }) => fontWeight.regular};
+    font-family: ${({ fontFamily }) => fontFamily.regular};
+  }
+
+  input[data-size='lg'] {
+    padding: ${({ spacing }) => spacing[4]} ${({ spacing }) => spacing[3]}
+      ${({ spacing }) => spacing[4]} ${({ spacing }) => spacing[10]};
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    input:hover:enabled {
+      border: 1px solid ${({ tokens }) => tokens.theme.borderSecondary};
+    }
   }
 
   input:disabled {
-    cursor: not-allowed;
-    border: 1px solid var(--wui-color-gray-glass-010);
-  }
-
-  input:disabled::placeholder,
-  input:disabled + wui-icon {
-    color: var(--wui-color-fg-300);
+    cursor: unset;
+    border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
   }
 
   input::placeholder {
-    color: var(--wui-color-fg-275);
+    color: ${({ tokens }) => tokens.theme.textSecondary};
   }
 
   input:focus:enabled {
-    background-color: var(--wui-color-gray-glass-005);
-    -webkit-box-shadow:
-      inset 0 0 0 1px var(--wui-color-accent-100),
-      0px 0px 0px 4px var(--wui-box-shadow-blue);
-    -moz-box-shadow:
-      inset 0 0 0 1px var(--wui-color-accent-100),
-      0px 0px 0px 4px var(--wui-box-shadow-blue);
-    box-shadow:
-      inset 0 0 0 1px var(--wui-color-accent-100),
-      0px 0px 0px 4px var(--wui-box-shadow-blue);
+    border: 1px solid ${({ tokens }) => tokens.theme.borderSecondary};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    -webkit-box-shadow: 0px 0px 0px 4px ${({ tokens }) => tokens.core.foregroundAccent040};
+    -moz-box-shadow: 0px 0px 0px 4px ${({ tokens }) => tokens.core.foregroundAccent040};
+    box-shadow: 0px 0px 0px 4px ${({ tokens }) => tokens.core.foregroundAccent040};
   }
 
-  input:hover:enabled {
-    background-color: var(--wui-color-gray-glass-005);
+  div.wui-input-text-container:has(input:disabled) {
+    opacity: 0.5;
   }
 
-  wui-icon {
+  wui-icon.wui-input-text-left-icon {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
+    left: ${({ spacing }) => spacing[4]};
+    color: ${({ tokens }) => tokens.theme.iconDefault};
   }
 
-  .wui-size-sm {
-    padding: 9px var(--wui-spacing-m) 10px var(--wui-spacing-s);
+  button.wui-input-text-submit-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: ${({ spacing }) => spacing[3]};
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
+    color: ${({ tokens }) => tokens.core.textAccentPrimary};
   }
 
-  wui-icon + .wui-size-sm {
-    padding: 9px var(--wui-spacing-m) 10px 36px;
+  button.wui-input-text-submit-button:disabled {
+    opacity: 1;
   }
 
-  wui-icon[data-input='sm'] {
-    left: var(--wui-spacing-s);
+  button.wui-input-text-submit-button.loading wui-icon {
+    animation: spin 1s linear infinite;
   }
 
-  .wui-size-md {
-    padding: 15px var(--wui-spacing-m) var(--wui-spacing-l) var(--wui-spacing-m);
+  button.wui-input-text-submit-button:hover {
+    background: ${({ tokens }) => tokens.core.foregroundAccent010};
   }
 
-  wui-icon + .wui-size-md,
-  wui-loading-spinner + .wui-size-md {
-    padding: 10.5px var(--wui-spacing-3xl) 10.5px var(--wui-spacing-3xl);
-  }
-
-  wui-icon[data-input='md'] {
-    left: var(--wui-spacing-l);
-  }
-
-  .wui-size-lg {
-    padding: var(--wui-spacing-s) var(--wui-spacing-s) var(--wui-spacing-s) var(--wui-spacing-l);
-    letter-spacing: var(--wui-letter-spacing-medium-title);
-    font-size: var(--wui-font-size-medium-title);
-    font-weight: var(--wui-font-weight-light);
-    line-height: 130%;
-    color: var(--wui-color-fg-100);
-    height: 64px;
-  }
-
-  .wui-padding-right-xs {
-    padding-right: var(--wui-spacing-xs);
-  }
-
-  .wui-padding-right-s {
-    padding-right: var(--wui-spacing-s);
-  }
-
-  .wui-padding-right-m {
-    padding-right: var(--wui-spacing-m);
-  }
-
-  .wui-padding-right-l {
-    padding-right: var(--wui-spacing-l);
-  }
-
-  .wui-padding-right-xl {
-    padding-right: var(--wui-spacing-xl);
-  }
-
-  .wui-padding-right-2xl {
-    padding-right: var(--wui-spacing-2xl);
-  }
-
-  .wui-padding-right-3xl {
-    padding-right: var(--wui-spacing-3xl);
-  }
-
-  .wui-padding-right-4xl {
-    padding-right: var(--wui-spacing-4xl);
-  }
-
-  .wui-padding-right-5xl {
-    padding-right: var(--wui-spacing-5xl);
-  }
-
-  wui-icon + .wui-size-lg,
-  wui-loading-spinner + .wui-size-lg {
-    padding-left: 50px;
-  }
-
-  wui-icon[data-input='lg'] {
-    left: var(--wui-spacing-l);
-  }
-
-  .wui-size-mdl {
-    padding: 17.25px var(--wui-spacing-m) 17.25px var(--wui-spacing-m);
-  }
-  wui-icon + .wui-size-mdl,
-  wui-loading-spinner + .wui-size-mdl {
-    padding: 17.25px var(--wui-spacing-3xl) 17.25px 40px;
-  }
-  wui-icon[data-input='mdl'] {
-    left: var(--wui-spacing-m);
-  }
-
-  input:placeholder-shown ~ ::slotted(wui-input-element),
-  input:placeholder-shown ~ ::slotted(wui-icon) {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  input:has(+ .wui-input-text-submit-button) {
+    padding-right: ${({ spacing }) => spacing[12]};
   }
 
   input[type='number'] {
     -moz-appearance: textfield;
   }
 
-  ::slotted(wui-input-element),
-  ::slotted(wui-icon) {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+  input[type='search']::-webkit-search-decoration,
+  input[type='search']::-webkit-search-cancel-button,
+  input[type='search']::-webkit-search-results-button,
+  input[type='search']::-webkit-search-results-decoration {
+    -webkit-appearance: none;
   }
 
-  ::slotted(wui-input-element) {
-    right: var(--wui-spacing-m);
-  }
-
-  ::slotted(wui-icon) {
-    right: 0px;
+  /* -- Keyframes --------------------------------------------------- */
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 `

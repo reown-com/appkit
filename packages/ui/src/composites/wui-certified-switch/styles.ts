@@ -1,20 +1,22 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
-    height: 100%;
+    height: auto;
   }
 
-  button {
+  :host > wui-flex {
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    column-gap: var(--wui-spacing-1xs);
-    padding: var(--wui-spacing-xs) var(--wui-spacing-s);
-    background-color: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
-    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-md);
+    column-gap: ${({ spacing }) => spacing['2']};
+    padding: ${({ spacing }) => spacing['2']} ${({ spacing }) => spacing['3']};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
+    box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.theme.foregroundPrimary};
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
     will-change: background-color;
     cursor: pointer;
   }

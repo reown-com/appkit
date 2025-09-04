@@ -1,10 +1,18 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
-  :host > wui-flex:first-child {
-    column-gap: var(--wui-spacing-s);
-    padding: 7px var(--wui-spacing-l) 7px var(--wui-spacing-xs);
+  :host {
     width: 100%;
+  }
+
+  :host > wui-flex {
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    column-gap: ${({ spacing }) => spacing['3']};
+    padding: ${({ spacing }) => spacing['2']};
+    padding-right: ${({ spacing }) => spacing['4']};
   }
 
   wui-flex {

@@ -1,138 +1,100 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
     width: var(--local-width);
-    position: relative;
   }
 
   button {
-    border: none;
-    border-radius: var(--local-border-radius);
     width: var(--local-width);
     white-space: nowrap;
+    column-gap: ${({ spacing }) => spacing[2]};
+    transition:
+      scale ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-1']},
+      background-color ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']},
+      border-radius ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-1']};
+    will-change: scale, background-color, border-radius;
+    cursor: pointer;
   }
 
   /* -- Sizes --------------------------------------------------- */
-  button[data-size='xs'] {
-    padding: var(--wui-spacing-3xs) var(--wui-spacing-s) var(--wui-spacing-3xs) var(--wui-spacing-s);
-    height: 24px;
-  }
-
-  button[data-size='xs'][data-icon-left='true'][data-icon-right='false'] {
-    padding: var(--wui-spacing-3xs) var(--wui-spacing-s) var(--wui-spacing-3xs) var(--wui-spacing-s);
-  }
-
-  button[data-size='xs'][data-icon-right='true'][data-icon-left='false'] {
-    padding: var(--wui-spacing-3xs) var(--wui-spacing-s) var(--wui-spacing-3xs) var(--wui-spacing-s);
-  }
-
   button[data-size='sm'] {
-    padding: 7.2px var(--wui-spacing-s) 7.2px var(--wui-spacing-s);
-    height: 32px;
-  }
-
-  button[data-size='sm'][data-icon-left='true'][data-icon-right='false'] {
-    padding: 7.2px var(--wui-spacing-s) 7.2px var(--wui-spacing-s);
-  }
-
-  button[data-size='sm'][data-icon-right='true'][data-icon-left='false'] {
-    padding: 7.2px var(--wui-spacing-s) 7.2px var(--wui-spacing-s);
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
+    padding: 0 ${({ spacing }) => spacing[2]};
+    height: 28px;
   }
 
   button[data-size='md'] {
-    padding: 8.2px var(--wui-spacing-l) 9px var(--wui-spacing-l);
-    height: 36px;
-  }
-
-  button[data-size='md'][data-icon-left='true'][data-icon-right='false'] {
-    padding: 8.2px var(--wui-spacing-l) 9px var(--wui-spacing-s);
-  }
-
-  button[data-size='md'][data-icon-right='true'][data-icon-left='false'] {
-    padding: 8.2px var(--wui-spacing-s) 9px var(--wui-spacing-l);
+    border-radius: ${({ borderRadius }) => borderRadius[3]};
+    padding: 0 ${({ spacing }) => spacing[4]};
+    height: 38px;
   }
 
   button[data-size='lg'] {
-    padding: var(--wui-spacing-m) var(--wui-spacing-2l);
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    padding: 0 ${({ spacing }) => spacing[5]};
     height: 48px;
   }
 
   /* -- Variants --------------------------------------------------------- */
-  button[data-variant='main'] {
-    background-color: var(--wui-color-accent-100);
-    color: var(--wui-color-inverse-100);
-    border: none;
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
+  button[data-variant='accent-primary'] {
+    background-color: ${({ tokens }) => tokens.core.backgroundAccentPrimary};
+    color: ${({ tokens }) => tokens.theme.textInvert};
   }
 
-  button[data-variant='inverse'] {
-    background-color: var(--wui-color-inverse-100);
-    color: var(--wui-color-inverse-000);
-    border: none;
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
+  button[data-variant='accent-secondary'] {
+    background-color: ${({ tokens }) => tokens.core.foregroundAccent010};
+    color: ${({ tokens }) => tokens.core.textAccentPrimary};
   }
 
-  button[data-variant='accent'] {
-    background-color: var(--wui-color-accent-glass-010);
-    color: var(--wui-color-accent-100);
-    border: none;
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
+  button[data-variant='neutral-primary'] {
+    background-color: ${({ tokens }) => tokens.theme.backgroundInvert};
+    color: ${({ tokens }) => tokens.theme.textInvert};
   }
 
-  button[data-variant='accent-error'] {
-    background: var(--wui-color-error-glass-015);
-    color: var(--wui-color-error-100);
-    border: none;
-    box-shadow: inset 0 0 0 1px var(--wui-color-error-glass-010);
+  button[data-variant='neutral-secondary'] {
+    background-color: transparent;
+    border: 1px solid ${({ tokens }) => tokens.theme.borderSecondary};
+    color: ${({ tokens }) => tokens.theme.textPrimary};
   }
 
-  button[data-variant='accent-success'] {
-    background: var(--wui-color-success-glass-015);
-    color: var(--wui-color-success-100);
-    border: none;
-    box-shadow: inset 0 0 0 1px var(--wui-color-success-glass-010);
+  button[data-variant='neutral-tertiary'] {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    color: ${({ tokens }) => tokens.theme.textPrimary};
   }
 
-  button[data-variant='neutral'] {
-    background: transparent;
-    color: var(--wui-color-fg-100);
+  button[data-variant='error-primary'] {
+    background-color: ${({ tokens }) => tokens.core.textError};
+    color: ${({ tokens }) => tokens.theme.textInvert};
+  }
+
+  button[data-variant='error-secondary'] {
+    background-color: ${({ tokens }) => tokens.core.backgroundError};
+    color: ${({ tokens }) => tokens.core.textError};
+  }
+
+  button[data-variant='shade'] {
+    background: var(--wui-color-gray-glass-002);
+    color: var(--wui-color-fg-200);
     border: none;
     box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
   }
 
   /* -- Focus states --------------------------------------------------- */
-  button[data-variant='main']:focus-visible:enabled {
-    background-color: var(--wui-color-accent-090);
-    box-shadow:
-      inset 0 0 0 1px var(--wui-color-accent-100),
-      0 0 0 4px var(--wui-color-accent-glass-020);
+  button[data-size='sm']:focus-visible:enabled {
+    border-radius: 28px;
   }
-  button[data-variant='inverse']:focus-visible:enabled {
-    background-color: var(--wui-color-inverse-100);
-    box-shadow:
-      inset 0 0 0 1px var(--wui-color-gray-glass-010),
-      0 0 0 4px var(--wui-color-accent-glass-020);
+
+  button[data-size='md']:focus-visible:enabled {
+    border-radius: 38px;
   }
-  button[data-variant='accent']:focus-visible:enabled {
-    background-color: var(--wui-color-accent-glass-010);
-    box-shadow:
-      inset 0 0 0 1px var(--wui-color-accent-100),
-      0 0 0 4px var(--wui-color-accent-glass-020);
+
+  button[data-size='lg']:focus-visible:enabled {
+    border-radius: 48px;
   }
-  button[data-variant='accent-error']:focus-visible:enabled {
-    background: var(--wui-color-error-glass-015);
-    box-shadow:
-      inset 0 0 0 1px var(--wui-color-error-100),
-      0 0 0 4px var(--wui-color-error-glass-020);
-  }
-  button[data-variant='accent-success']:focus-visible:enabled {
-    background: var(--wui-color-success-glass-015);
-    box-shadow:
-      inset 0 0 0 1px var(--wui-color-success-100),
-      0 0 0 4px var(--wui-color-success-glass-020);
-  }
-  button[data-variant='neutral']:focus-visible:enabled {
+  button[data-variant='shade']:focus-visible:enabled {
     background: var(--wui-color-gray-glass-005);
     box-shadow:
       inset 0 0 0 1px var(--wui-color-gray-glass-010),
@@ -140,85 +102,42 @@ export default css`
   }
 
   /* -- Hover & Active states ----------------------------------------------------------- */
-  @media (hover: hover) and (pointer: fine) {
-    button[data-variant='main']:hover:enabled {
-      background-color: var(--wui-color-accent-090);
+  @media (hover: hover) {
+    button[data-size='sm']:hover:enabled {
+      border-radius: 28px;
     }
 
-    button[data-variant='main']:active:enabled {
-      background-color: var(--wui-color-accent-080);
+    button[data-size='md']:hover:enabled {
+      border-radius: 38px;
     }
 
-    button[data-variant='accent']:hover:enabled {
-      background-color: var(--wui-color-accent-glass-015);
+    button[data-size='lg']:hover:enabled {
+      border-radius: 48px;
     }
 
-    button[data-variant='accent']:active:enabled {
-      background-color: var(--wui-color-accent-glass-020);
-    }
-
-    button[data-variant='accent-error']:hover:enabled {
-      background: var(--wui-color-error-glass-020);
-      color: var(--wui-color-error-100);
-    }
-
-    button[data-variant='accent-error']:active:enabled {
-      background: var(--wui-color-error-glass-030);
-      color: var(--wui-color-error-100);
-    }
-
-    button[data-variant='accent-success']:hover:enabled {
-      background: var(--wui-color-success-glass-020);
-      color: var(--wui-color-success-100);
-    }
-
-    button[data-variant='accent-success']:active:enabled {
-      background: var(--wui-color-success-glass-030);
-      color: var(--wui-color-success-100);
-    }
-
-    button[data-variant='neutral']:hover:enabled {
+    button[data-variant='shade']:hover:enabled {
       background: var(--wui-color-gray-glass-002);
     }
 
-    button[data-variant='neutral']:active:enabled {
+    button[data-variant='shade']:active:enabled {
       background: var(--wui-color-gray-glass-005);
     }
-
-    button[data-size='lg'][data-icon-left='true'][data-icon-right='false'] {
-      padding-left: var(--wui-spacing-m);
-    }
-
-    button[data-size='lg'][data-icon-right='true'][data-icon-left='false'] {
-      padding-right: var(--wui-spacing-m);
-    }
   }
 
-  /* -- Disabled state --------------------------------------------------- */
+  button[data-size='sm']:active:enabled {
+    border-radius: 28px;
+  }
+
+  button[data-size='md']:active:enabled {
+    border-radius: 38px;
+  }
+
+  button[data-size='lg']:active:enabled {
+    border-radius: 48px;
+  }
+
+  /* -- Disabled states --------------------------------------------------- */
   button:disabled {
-    background-color: var(--wui-color-gray-glass-002);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
-    color: var(--wui-color-gray-glass-020);
-    cursor: not-allowed;
-  }
-
-  button > wui-text {
-    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
-    will-change: opacity;
-    opacity: var(--local-opacity-100);
-  }
-
-  ::slotted(*) {
-    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
-    will-change: opacity;
-    opacity: var(--local-opacity-100);
-  }
-
-  wui-loading-spinner {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    opacity: var(--local-opacity-000);
+    opacity: 0.3;
   }
 `

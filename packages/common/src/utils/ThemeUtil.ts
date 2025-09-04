@@ -28,6 +28,6 @@ export function getW3mThemeVariables(themeVariables?: ThemeVariables, themeType?
 
   return {
     '--w3m-accent': themeVariables?.['--w3m-accent'] || 'hsla(230, 100%, 67%, 1)',
-    '--w3m-background': '#121313'
+    '--w3m-background': '#202020'
   }
 }

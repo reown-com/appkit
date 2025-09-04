@@ -16,7 +16,7 @@ export class W3mWalletLoginList extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex flexDirection="column" gap="2">
         <w3m-connector-list tabIdx=${ifDefined(this.tabIdx)}></w3m-connector-list>
         <w3m-all-wallets-widget tabIdx=${ifDefined(this.tabIdx)}></w3m-all-wallets-widget>
       </wui-flex>

@@ -1,47 +1,53 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
-  @keyframes fadein {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
   wui-shimmer {
     width: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: clamp(0px, var(--wui-border-radius-l), 40px) !important;
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
   }
 
   wui-qr-code {
     opacity: 0;
-    animation-duration: 200ms;
-    animation-timing-function: ease;
-    animation-name: fadein;
+    animation-duration: ${({ durations }) => durations['xl']};
+    animation-timing-function: ${({ easings }) => easings['ease-out-power-2']};
+    animation-name: fade-in;
     animation-fill-mode: forwards;
   }
 
   wui-logo {
     width: 80px;
     height: 80px;
-    border-radius: var(--wui-border-radius-m);
+    border-radius: ${({ borderRadius }) => borderRadius['8']};
   }
 
   wui-flex:first-child:not(:only-child) {
     position: relative;
   }
+
   wui-loading-thumbnail {
     position: absolute;
   }
+
   wui-icon-box {
     position: absolute;
-    right: calc(var(--wui-spacing-3xs) * -1);
-    bottom: calc(var(--wui-spacing-3xs) * -1);
+    right: calc(${({ spacing }) => spacing['1']} * -1);
+    bottom: calc(${({ spacing }) => spacing['1']} * -1);
     opacity: 0;
     transform: scale(0.5);
-    transition: all var(--wui-ease-out-power-2) var(--wui-duration-lg);
+    transition:
+      opacity ${({ durations }) => durations['lg']} ${({ easings }) => easings['ease-out-power-2']},
+      transform ${({ durations }) => durations['lg']}
+        ${({ easings }) => easings['ease-out-power-2']};
+    will-change: opacity, transform;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 `

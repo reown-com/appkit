@@ -18,7 +18,6 @@ import { getNamespaceByLibrary } from '@/tests/shared/utils/namespace'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
-import { routeInterceptUrl } from '../utils/verify'
 import type { ModalValidator } from '../validators/ModalValidator'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 
@@ -47,19 +46,19 @@ export type ModalFlavor =
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
   const urlsByFlavor: Partial<Record<ModalFlavor, string>> = {
-    default: `${baseUrl}library/${library}/`,
-    external: `${baseUrl}library/external/`,
-    siwx: `${baseUrl}library/siwx-default/`,
-    'wagmi-verify-valid': `${baseUrl}library/wagmi-verify-valid/`,
-    'wagmi-verify-domain-mismatch': `${baseUrl}library/wagmi-verify-domain-mismatch/`,
+    default: `${baseUrl}appkit?name=${library}`,
+    external: `${baseUrl}appkit?name=external`,
+    siwx: `${baseUrl}appkit?name=siwx-default`,
+    'wagmi-verify-valid': `${baseUrl}appkit?name=wagmi-verify-valid`,
+    'wagmi-verify-domain-mismatch': `${baseUrl}appkit?name=wagmi-verify-domain-mismatch`,
     'wagmi-verify-evil': maliciousUrl,
-    'ethers-verify-valid': `${baseUrl}library/ethers-verify-valid/`,
-    'ethers-verify-domain-mismatch': `${baseUrl}library/ethers-verify-domain-mismatch/`,
+    'ethers-verify-valid': `${baseUrl}appkit?name=ethers-verify-valid`,
+    'ethers-verify-domain-mismatch': `${baseUrl}appkit?name=ethers-verify-domain-mismatch`,
     'ethers-verify-evil': maliciousUrl,
-    'core-sign-client': `${baseUrl}core/sign-client/`
+    'core-sign-client': `${baseUrl}appkit-core/sign-client`
   }
 
-  return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
+  return urlsByFlavor[flavor] || `${baseUrl}appkit?name=${library}-${flavor}`
 }
 
 export class ModalPage {
@@ -79,11 +78,13 @@ export class ModalPage {
     this.connectButton = this.page.getByTestId('connect-button').first()
 
     if (library === 'multichain-ethers-solana') {
-      this.url = `${this.baseURL}library/multichain-ethers-solana/`
+      this.url = `${this.baseURL}appkit?name=multichain-ethers-solana`
     } else if (library === 'default-account-types-sa' || library === 'default-account-types-eoa') {
-      this.url = `${this.baseURL}flag/${library}/`
+      this.url = `${this.baseURL}appkit?name=flag-${library}`
     } else if (flavor === 'flag-enable-reconnect') {
-      this.url = `${this.baseURL}flag/enable-reconnect/${library}`
+      this.url = `${this.baseURL}appkit?name=${flavor}-${library}`
+    } else if (flavor === 'siwe') {
+      this.url = `${this.baseURL}appkit?name=${library}-all`
     } else {
       this.url = getUrlByFlavor(this.baseURL, library, flavor)
     }
@@ -105,11 +106,8 @@ export class ModalPage {
   }
 
   async load() {
-    if (this.flavor === 'wagmi-verify-evil') {
-      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/wagmi-verify-evil/')
-    }
-    if (this.flavor === 'ethers-verify-evil') {
-      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/ethers-verify-evil/')
+    if (this.flavor === 'wagmi-verify-evil' || this.flavor === 'ethers-verify-evil') {
+      await this.page.goto(maliciousUrl)
     }
 
     await this.page.goto(this.url)
@@ -123,6 +121,42 @@ export class ModalPage {
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return value!
+  }
+
+  async getConnectUriMalicious(timingRecords?: TimingRecords): Promise<string> {
+    // Find div with p containing "Testnets Only?" text and get the adjacent div at the same level
+    const testnetsOnlyP = this.page.locator('p:has-text("Testnets Only?")')
+    await expect(testnetsOnlyP).toBeVisible()
+
+    const parentDiv = testnetsOnlyP.locator('..')
+    const adjacentDiv = parentDiv.locator('div').nth(1)
+    await expect(adjacentDiv).toBeVisible()
+
+    // Click the adjacent div
+    await adjacentDiv.click()
+
+    // Find div with Ethereum Goerli text and click it
+    await this.page.getByText('Ethereum').click()
+
+    // Find button with Connect text and click it
+    await this.page.getByRole('button', { name: 'Connect' }).click()
+
+    const qrLoadInitiatedTime = new Date()
+
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
   }
 
   async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
@@ -407,8 +441,15 @@ export class ModalPage {
     }
 
     await expect(this.page.getByText(headerTitle)).not.toBeVisible({
-      timeout: 20_000
+      timeout: 30_000
     })
+  }
+
+  async disconnectMalicious() {
+    // Find button with Disconnect text and click it
+    const disconnectButton = this.page.getByRole('button', { name: 'Disconnect' })
+    await expect(disconnectButton, 'Disconnect button should be visible').toBeVisible()
+    await disconnectButton.click()
   }
 
   async disconnect(clickAccountButton = true) {
@@ -431,6 +472,14 @@ export class ModalPage {
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click()
+  }
+
+  async signMalicious(_namespace?: string) {
+    // Find the first button with personal_sign text and click it
+    const signButton = this.page.getByRole('button', { name: 'personal_sign' }).first()
+
+    await signButton.scrollIntoViewIfNeeded()
+    await signButton.click()
   }
 
   async sign(_namespace?: string) {
@@ -554,7 +603,7 @@ export class ModalPage {
   }
 
   async switchActiveChain() {
-    await this.page.getByText('Switch to', { exact: false }).waitFor()
+    await this.page.locator('w3m-switch-active-chain-view').waitFor()
     await this.page.getByTestId('w3m-switch-active-chain-button').click()
   }
 
@@ -611,7 +660,7 @@ export class ModalPage {
   }
 
   async openOnramp() {
-    await this.page.getByTestId('w3m-account-default-onramp-button').click()
+    await this.page.getByTestId('wallet-features-onramp-button').click()
   }
 
   async closeModal() {
@@ -828,8 +877,15 @@ export class ModalPage {
     await profileButton.waitFor({ state: 'hidden', timeout: 15_000 })
   }
 
-  async getWalletFeaturesButton(feature: WalletFeature) {
+  async getWalletFeaturesButton(feature: WalletFeature | 'fund-wallet') {
     const walletFeatureButton = this.page.getByTestId(`wallet-features-${feature}-button`)
+    await expect(walletFeatureButton).toBeVisible()
+
+    return walletFeatureButton
+  }
+
+  async getDefaultWalletFeaturesButton(feature: WalletFeature | 'fund-wallet') {
+    const walletFeatureButton = this.page.getByTestId(`w3m-account-default-${feature}-button`)
     await expect(walletFeatureButton).toBeVisible()
 
     return walletFeatureButton

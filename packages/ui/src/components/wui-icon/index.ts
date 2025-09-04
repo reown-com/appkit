@@ -1,150 +1,290 @@
 import type { TemplateResult } from 'lit'
-import { LitElement, html } from 'lit'
+import { LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { until } from 'lit/directives/until.js'
+import { html, unsafeStatic } from 'lit/static-html.js'
 
-import { globalSvgCache } from '../../utils/CacheUtil.js'
-import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ColorType, IconType, SizeType } from '../../utils/TypeUtil.js'
+import { appStoreSvg } from '../../assets/svg/app-store.js'
+import { appleSvg } from '../../assets/svg/apple.js'
+import { bitcoinSvg } from '../../assets/svg/bitcoin.js'
+import { chromeStoreSvg } from '../../assets/svg/chrome-store.js'
+import { cursorSvg } from '../../assets/svg/cursor.js'
+import { discordSvg } from '../../assets/svg/discord.js'
+import { ethereumSvg } from '../../assets/svg/ethereum.js'
+import { etherscanSvg } from '../../assets/svg/etherscan.js'
+import { facebookSvg } from '../../assets/svg/facebook.js'
+import { farcasterSvg } from '../../assets/svg/farcaster.js'
+import { githubSvg } from '../../assets/svg/github.js'
+import { googleSvg } from '../../assets/svg/google.js'
+import { playStoreSvg } from '../../assets/svg/play-store.js'
+import { reownSvg } from '../../assets/svg/reown-logo.js'
+import { solanaSvg } from '../../assets/svg/solana.js'
+import { telegramSvg } from '../../assets/svg/telegram.js'
+import { twitchSvg } from '../../assets/svg/twitch.js'
+import { twitterIconSvg } from '../../assets/svg/twitterIcon.js'
+import {
+  walletConnectBrownSvg,
+  walletConnectInvertSvg,
+  walletConnectLightBrownSvg,
+  walletConnectSvg
+} from '../../assets/svg/walletconnect.js'
+import { xSvg } from '../../assets/svg/x.js'
+import { vars } from '../../utils/ThemeHelperUtil.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
+import type { IconColorType, IconSizeType, IconType, IconWeightType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
-const ICONS = {
-  add: async () => (await import('../../assets/svg/add.js')).addSvg,
-  allWallets: async () => (await import('../../assets/svg/all-wallets.js')).allWalletsSvg,
-  arrowBottomCircle: async () =>
-    (await import('../../assets/svg/arrow-bottom-circle.js')).arrowBottomCircleSvg,
-  appStore: async () => (await import('../../assets/svg/app-store.js')).appStoreSvg,
-  apple: async () => (await import('../../assets/svg/apple.js')).appleSvg,
-  arrowBottom: async () => (await import('../../assets/svg/arrow-bottom.js')).arrowBottomSvg,
-  arrowLeft: async () => (await import('../../assets/svg/arrow-left.js')).arrowLeftSvg,
-  arrowRight: async () => (await import('../../assets/svg/arrow-right.js')).arrowRightSvg,
-  arrowTop: async () => (await import('../../assets/svg/arrow-top.js')).arrowTopSvg,
-  bank: async () => (await import('../../assets/svg/bank.js')).bankSvg,
-  browser: async () => (await import('../../assets/svg/browser.js')).browserSvg,
-  bin: async () => (await import('../../assets/svg/bin.js')).binSvg,
-  bitcoin: async () => (await import('../../assets/svg/bitcoin.js')).bitcoinSvg,
-  card: async () => (await import('../../assets/svg/card.js')).cardSvg,
-  checkmark: async () => (await import('../../assets/svg/checkmark.js')).checkmarkSvg,
-  checkmarkBold: async () => (await import('../../assets/svg/checkmark-bold.js')).checkmarkBoldSvg,
-  chevronBottom: async () => (await import('../../assets/svg/chevron-bottom.js')).chevronBottomSvg,
-  chevronLeft: async () => (await import('../../assets/svg/chevron-left.js')).chevronLeftSvg,
-  chevronRight: async () => (await import('../../assets/svg/chevron-right.js')).chevronRightSvg,
-  chevronTop: async () => (await import('../../assets/svg/chevron-top.js')).chevronTopSvg,
-  chromeStore: async () => (await import('../../assets/svg/chrome-store.js')).chromeStoreSvg,
-  clock: async () => (await import('../../assets/svg/clock.js')).clockSvg,
-  close: async () => (await import('../../assets/svg/close.js')).closeSvg,
-  compass: async () => (await import('../../assets/svg/compass.js')).compassSvg,
-  coinPlaceholder: async () =>
-    (await import('../../assets/svg/coinPlaceholder.js')).coinPlaceholderSvg,
-  copy: async () => (await import('../../assets/svg/copy.js')).copySvg,
-  cursor: async () => (await import('../../assets/svg/cursor.js')).cursorSvg,
-  cursorTransparent: async () =>
-    (await import('../../assets/svg/cursor-transparent.js')).cursorTransparentSvg,
-  circle: async () => (await import('../../assets/svg/circle.js')).circleSvg,
-  desktop: async () => (await import('../../assets/svg/desktop.js')).desktopSvg,
-  disconnect: async () => (await import('../../assets/svg/disconnect.js')).disconnectSvg,
-  discord: async () => (await import('../../assets/svg/discord.js')).discordSvg,
-  ethereum: async () => (await import('../../assets/svg/ethereum.js')).ethereumSvg,
-  etherscan: async () => (await import('../../assets/svg/etherscan.js')).etherscanSvg,
-  extension: async () => (await import('../../assets/svg/extension.js')).extensionSvg,
-  externalLink: async () => (await import('../../assets/svg/external-link.js')).externalLinkSvg,
-  facebook: async () => (await import('../../assets/svg/facebook.js')).facebookSvg,
-  farcaster: async () => (await import('../../assets/svg/farcaster.js')).farcasterSvg,
-  filters: async () => (await import('../../assets/svg/filters.js')).filtersSvg,
-  github: async () => (await import('../../assets/svg/github.js')).githubSvg,
-  google: async () => (await import('../../assets/svg/google.js')).googleSvg,
-  helpCircle: async () => (await import('../../assets/svg/help-circle.js')).helpCircleSvg,
-  image: async () => (await import('../../assets/svg/image.js')).imageSvg,
-  id: async () => (await import('../../assets/svg/id.js')).idSvg,
-  infoCircle: async () => (await import('../../assets/svg/info-circle.js')).infoCircleSvg,
-  lightbulb: async () => (await import('../../assets/svg/lightbulb.js')).lightbulbSvg,
-  mail: async () => (await import('../../assets/svg/mail.js')).mailSvg,
-  mobile: async () => (await import('../../assets/svg/mobile.js')).mobileSvg,
-  more: async () => (await import('../../assets/svg/more.js')).moreSvg,
-  networkPlaceholder: async () =>
-    (await import('../../assets/svg/network-placeholder.js')).networkPlaceholderSvg,
-  nftPlaceholder: async () =>
-    (await import('../../assets/svg/nftPlaceholder.js')).nftPlaceholderSvg,
-  off: async () => (await import('../../assets/svg/off.js')).offSvg,
-  playStore: async () => (await import('../../assets/svg/play-store.js')).playStoreSvg,
-  plus: async () => (await import('../../assets/svg/plus.js')).plusSvg,
-  qrCode: async () => (await import('../../assets/svg/qr-code.js')).qrCodeIcon,
-  recycleHorizontal: async () =>
-    (await import('../../assets/svg/recycle-horizontal.js')).recycleHorizontalSvg,
-  refresh: async () => (await import('../../assets/svg/refresh.js')).refreshSvg,
-  search: async () => (await import('../../assets/svg/search.js')).searchSvg,
-  send: async () => (await import('../../assets/svg/send.js')).sendSvg,
-  swapHorizontal: async () =>
-    (await import('../../assets/svg/swapHorizontal.js')).swapHorizontalSvg,
-  swapHorizontalMedium: async () =>
-    (await import('../../assets/svg/swapHorizontalMedium.js')).swapHorizontalMediumSvg,
-  swapHorizontalBold: async () =>
-    (await import('../../assets/svg/swapHorizontalBold.js')).swapHorizontalBoldSvg,
-  swapHorizontalRoundedBold: async () =>
-    (await import('../../assets/svg/swapHorizontalRoundedBold.js')).swapHorizontalRoundedBoldSvg,
-  swapVertical: async () => (await import('../../assets/svg/swapVertical.js')).swapVerticalSvg,
-  solana: async () => (await import('../../assets/svg/solana.js')).solanaSvg,
-  telegram: async () => (await import('../../assets/svg/telegram.js')).telegramSvg,
-  threeDots: async () => (await import('../../assets/svg/three-dots.js')).threeDotsSvg,
-  twitch: async () => (await import('../../assets/svg/twitch.js')).twitchSvg,
-  twitter: async () => (await import('../../assets/svg/x.js')).xSvg,
-  twitterIcon: async () => (await import('../../assets/svg/twitterIcon.js')).twitterIconSvg,
-  user: async () => (await import('../../assets/svg/user.js')).userSvg,
-  verify: async () => (await import('../../assets/svg/verify.js')).verifySvg,
-  verifyFilled: async () => (await import('../../assets/svg/verify-filled.js')).verifyFilledSvg,
-  wallet: async () => (await import('../../assets/svg/wallet.js')).walletSvg,
-  walletConnect: async () => (await import('../../assets/svg/walletconnect.js')).walletConnectSvg,
-  walletConnectLightBrown: async () =>
-    (await import('../../assets/svg/walletconnect.js')).walletConnectLightBrownSvg,
-  walletConnectBrown: async () =>
-    (await import('../../assets/svg/walletconnect.js')).walletConnectBrownSvg,
-  walletPlaceholder: async () =>
-    (await import('../../assets/svg/wallet-placeholder.js')).walletPlaceholderSvg,
-  warningCircle: async () => (await import('../../assets/svg/warning-circle.js')).warningCircleSvg,
-  x: async () => (await import('../../assets/svg/x.js')).xSvg,
-  info: async () => (await import('../../assets/svg/info.js')).infoSvg,
-  exclamationTriangle: async () =>
-    (await import('../../assets/svg/exclamation-triangle.js')).exclamationTriangleSvg,
-  reown: async () => (await import('../../assets/svg/reown-logo.js')).reownSvg,
-  'x-mark': async () => (await import('../../assets/svg/x-mark.js')).xMarkSvg
-} as const
+// -- Phosphor Icons Mapping -------------------------------- //
+const phosphorIconsMap: Record<string, string> = {
+  add: 'ph-plus',
+  allWallets: 'ph-dots-three',
+  arrowBottom: 'ph-arrow-down',
+  arrowBottomCircle: 'ph-arrow-circle-down',
+  arrowClockWise: 'ph-arrow-clockwise',
+  arrowLeft: 'ph-arrow-left',
+  arrowRight: 'ph-arrow-right',
+  arrowTop: 'ph-arrow-up',
+  arrowTopRight: 'ph-arrow-up-right',
+  bank: 'ph-bank',
+  bin: 'ph-trash',
+  browser: 'ph-browser',
+  card: 'ph-credit-card',
+  checkmark: 'ph-check',
+  checkmarkBold: 'ph-check',
+  chevronBottom: 'ph-caret-down',
+  chevronLeft: 'ph-caret-left',
+  chevronRight: 'ph-caret-right',
+  chevronTop: 'ph-caret-up',
+  clock: 'ph-clock',
+  close: 'ph-x',
+  coinPlaceholder: 'ph-circle-half',
+  compass: 'ph-compass',
+  copy: 'ph-copy',
+  desktop: 'ph-desktop',
+  dollar: 'ph-currency-dollar',
+  download: 'ph-vault',
+  exclamationCircle: 'ph-warning-circle',
+  extension: 'ph-puzzle-piece',
+  externalLink: 'ph-arrow-square-out',
+  filters: 'ph-funnel-simple',
+  helpCircle: 'ph-question',
+  id: 'ph-identification-card',
+  image: 'ph-image',
+  info: 'ph-info',
+  lightbulb: 'ph-lightbulb',
+  mail: 'ph-envelope',
+  mobile: 'ph-device-mobile',
+  more: 'ph-dots-three',
+  networkPlaceholder: 'ph-globe',
+  nftPlaceholder: 'ph-image',
+  plus: 'ph-plus',
+  power: 'ph-power',
+  qrCode: 'ph-qr-code',
+  questionMark: 'ph-question',
+  refresh: 'ph-arrow-clockwise',
+  recycleHorizontal: 'ph-arrows-clockwise',
+  search: 'ph-magnifying-glass',
+  sealCheck: 'ph-seal-check',
+  send: 'ph-paper-plane-right',
+  signOut: 'ph-sign-out',
+  spinner: 'ph-spinner',
+  swapHorizontal: 'ph-arrows-left-right',
+  swapVertical: 'ph-arrows-down-up',
+  threeDots: 'ph-dots-three',
+  user: 'ph-user',
+  verify: 'ph-seal-check',
+  verifyFilled: 'ph-seal-check',
+  wallet: 'ph-wallet',
+  warning: 'ph-warning',
+  warningCircle: 'ph-warning-circle',
 
-async function getSvg(name: IconType) {
-  if (globalSvgCache.has(name)) {
-    return globalSvgCache.get(name) as Promise<TemplateResult<2>>
-  }
+  /*
+   * Icons keeping as SVG (no direct Phosphor equivalents or brand-specific)
+   */
+  appStore: '',
+  apple: '',
+  bitcoin: '',
+  chromeStore: '',
+  cursor: '',
+  discord: '',
+  ethereum: '',
+  etherscan: '',
+  facebook: '',
+  farcaster: '',
+  github: '',
+  google: '',
+  playStore: '',
+  reown: '',
+  solana: '',
+  telegram: '',
+  twitch: '',
+  twitterIcon: '',
+  twitter: '',
+  walletConnect: '',
+  walletConnectBrown: '',
+  walletConnectLightBrown: '',
+  x: ''
+}
 
-  const importFn = ICONS[name as keyof typeof ICONS] ?? ICONS.copy
-  const svgPromise = importFn()
+// Dynamic imports for Phosphor components
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const phosphorImports: Record<string, () => Promise<any>> = {
+  'ph-arrow-circle-down': () => import('@phosphor-icons/webcomponents/PhArrowCircleDown'),
+  'ph-arrow-clockwise': () => import('@phosphor-icons/webcomponents/PhArrowClockwise'),
+  'ph-arrow-down': () => import('@phosphor-icons/webcomponents/PhArrowDown'),
+  'ph-arrow-left': () => import('@phosphor-icons/webcomponents/PhArrowLeft'),
+  'ph-arrow-right': () => import('@phosphor-icons/webcomponents/PhArrowRight'),
+  'ph-arrow-square-out': () => import('@phosphor-icons/webcomponents/PhArrowSquareOut'),
+  'ph-arrows-down-up': () => import('@phosphor-icons/webcomponents/PhArrowsDownUp'),
+  'ph-arrows-left-right': () => import('@phosphor-icons/webcomponents/PhArrowsLeftRight'),
+  'ph-arrow-up': () => import('@phosphor-icons/webcomponents/PhArrowUp'),
+  'ph-arrow-up-right': () => import('@phosphor-icons/webcomponents/PhArrowUpRight'),
+  'ph-arrows-clockwise': () => import('@phosphor-icons/webcomponents/PhArrowsClockwise'),
+  'ph-bank': () => import('@phosphor-icons/webcomponents/PhBank'),
+  'ph-browser': () => import('@phosphor-icons/webcomponents/PhBrowser'),
+  'ph-caret-down': () => import('@phosphor-icons/webcomponents/PhCaretDown'),
+  'ph-caret-left': () => import('@phosphor-icons/webcomponents/PhCaretLeft'),
+  'ph-caret-right': () => import('@phosphor-icons/webcomponents/PhCaretRight'),
+  'ph-caret-up': () => import('@phosphor-icons/webcomponents/PhCaretUp'),
+  'ph-check': () => import('@phosphor-icons/webcomponents/PhCheck'),
+  'ph-circle-half': () => import('@phosphor-icons/webcomponents/PhCircleHalf'),
+  'ph-clock': () => import('@phosphor-icons/webcomponents/PhClock'),
+  'ph-compass': () => import('@phosphor-icons/webcomponents/PhCompass'),
+  'ph-copy': () => import('@phosphor-icons/webcomponents/PhCopy'),
+  'ph-credit-card': () => import('@phosphor-icons/webcomponents/PhCreditCard'),
+  'ph-currency-dollar': () => import('@phosphor-icons/webcomponents/PhCurrencyDollar'),
+  'ph-desktop': () => import('@phosphor-icons/webcomponents/PhDesktop'),
+  'ph-device-mobile': () => import('@phosphor-icons/webcomponents/PhDeviceMobile'),
+  'ph-dots-three': () => import('@phosphor-icons/webcomponents/PhDotsThree'),
+  'ph-vault': () => import('@phosphor-icons/webcomponents/PhVault'),
+  'ph-envelope': () => import('@phosphor-icons/webcomponents/PhEnvelope'),
+  'ph-funnel-simple': () => import('@phosphor-icons/webcomponents/PhFunnelSimple'),
+  'ph-globe': () => import('@phosphor-icons/webcomponents/PhGlobe'),
+  'ph-identification-card': () => import('@phosphor-icons/webcomponents/PhIdentificationCard'),
+  'ph-image': () => import('@phosphor-icons/webcomponents/PhImage'),
+  'ph-info': () => import('@phosphor-icons/webcomponents/PhInfo'),
+  'ph-lightbulb': () => import('@phosphor-icons/webcomponents/PhLightbulb'),
+  'ph-magnifying-glass': () => import('@phosphor-icons/webcomponents/PhMagnifyingGlass'),
+  'ph-paper-plane-right': () => import('@phosphor-icons/webcomponents/PhPaperPlaneRight'),
+  'ph-plus': () => import('@phosphor-icons/webcomponents/PhPlus'),
+  'ph-power': () => import('@phosphor-icons/webcomponents/PhPower'),
+  'ph-puzzle-piece': () => import('@phosphor-icons/webcomponents/PhPuzzlePiece'),
+  'ph-qr-code': () => import('@phosphor-icons/webcomponents/PhQrCode'),
+  'ph-question': () => import('@phosphor-icons/webcomponents/PhQuestion'),
+  'ph-question-circle': () => import('@phosphor-icons/webcomponents/PhQuestionMark'),
+  'ph-seal-check': () => import('@phosphor-icons/webcomponents/PhSealCheck'),
+  'ph-sign-out': () => import('@phosphor-icons/webcomponents/PhSignOut'),
+  'ph-spinner': () => import('@phosphor-icons/webcomponents/PhSpinner'),
+  'ph-trash': () => import('@phosphor-icons/webcomponents/PhTrash'),
+  'ph-user': () => import('@phosphor-icons/webcomponents/PhUser'),
+  'ph-wallet': () => import('@phosphor-icons/webcomponents/PhWallet'),
+  'ph-warning': () => import('@phosphor-icons/webcomponents/PhWarning'),
+  'ph-warning-circle': () => import('@phosphor-icons/webcomponents/PhWarningCircle'),
+  'ph-x': () => import('@phosphor-icons/webcomponents/PhX')
+}
 
-  globalSvgCache.set(name, svgPromise)
+// -- SVG Options ------------------------------------------ //
+const svgOptions: Partial<Record<IconType, TemplateResult<2>>> = {
+  appStore: appStoreSvg,
+  apple: appleSvg,
+  bitcoin: bitcoinSvg,
+  chromeStore: chromeStoreSvg,
+  cursor: cursorSvg,
+  discord: discordSvg,
+  ethereum: ethereumSvg,
+  etherscan: etherscanSvg,
+  facebook: facebookSvg,
+  farcaster: farcasterSvg,
+  github: githubSvg,
+  google: googleSvg,
+  playStore: playStoreSvg,
+  reown: reownSvg,
+  solana: solanaSvg,
+  telegram: telegramSvg,
+  twitch: twitchSvg,
+  twitter: xSvg,
+  twitterIcon: twitterIconSvg,
+  walletConnect: walletConnectSvg,
+  walletConnectInvert: walletConnectInvertSvg,
+  walletConnectBrown: walletConnectBrownSvg,
+  walletConnectLightBrown: walletConnectLightBrownSvg,
+  x: xSvg
+}
 
-  return svgPromise
+// -- Constants ------------------------------------------ //
+export const ICON_COLOR = {
+  'accent-primary': vars.tokens.core.iconAccentPrimary,
+  'accent-certified': vars.tokens.core.iconAccentCertified,
+  default: vars.tokens.theme.iconDefault,
+  success: vars.tokens.core.iconSuccess,
+  error: vars.tokens.core.iconError,
+  warning: vars.tokens.core.iconWarning,
+  inverse: vars.tokens.theme.iconInverse
 }
 
 @customElement('wui-icon')
 export class WuiIcon extends LitElement {
-  public static override styles = [resetStyles, colorStyles, styles]
+  public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public size: SizeType = 'md'
+  @property() public size: IconSizeType = 'md'
 
   @property() public name: IconType = 'copy'
 
-  @property() public color: ColorType = 'fg-300'
+  @property() public weight: IconWeightType = 'bold'
 
-  @property() public aspectRatio = '1 / 1'
+  @property() public color: IconColorType = 'inherit'
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const getSize = {
+      xxs: '2',
+      xs: '3',
+      sm: '3',
+      md: '4',
+      mdl: '5',
+      lg: '5',
+      xl: '6',
+      xxl: '7',
+      inherit: 'inherit'
+    } as const
+
     this.style.cssText = `
-      --local-color: ${`var(--wui-color-${this.color});`}
-      --local-width: ${`var(--wui-icon-size-${this.size});`}
-      --local-aspect-ratio: ${this.aspectRatio}
+      --local-width: ${this.size === 'inherit' ? 'inherit' : `var(--apkt-spacing-${getSize[this.size]})`};
+      --local-color: ${this.color === 'inherit' ? 'inherit' : ICON_COLOR[this.color]}
     `
 
-    return html`${until(getSvg(this.name), html`<div class="fallback"></div>`)}`
+    // Check if the icon should use Phosphor
+    const phosphorIconTag = phosphorIconsMap[this.name]
+
+    if (phosphorIconTag && phosphorIconTag !== '') {
+      // Import the Phosphor icon component dynamically
+      const importFn = phosphorImports[phosphorIconTag]
+      if (importFn) {
+        importFn()
+      }
+
+      const tag = unsafeStatic(phosphorIconTag)
+
+      const getPhosphorSize = {
+        xxs: '0.5em',
+        xs: '0.75em',
+        sm: '0.75em',
+        md: '1em',
+        mdl: '1.25em',
+        lg: '1.25em',
+        xl: '1.5em',
+        xxl: '1.75em'
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any
+
+      // Return the Phosphor icon with dynamic tag
+      // eslint-disable-next-line lit/binding-positions, lit/no-invalid-html
+      return html`<${tag} size=${getPhosphorSize[this.size]} weight="${this.weight}"></${tag}>`
+    }
+
+    // Fallback to regular SVG
+    return svgOptions[this.name] || html``
   }
 }
 

@@ -14,15 +14,16 @@ import {
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-account-name-suggestion-item'
 import '@reown/appkit-ui/wui-ens-input'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-loading-spinner'
-import '@reown/appkit-ui/wui-tag'
 import '@reown/appkit-ui/wui-text'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import styles from './styles.js'
 
 @customElement('w3m-register-account-name-view')
@@ -81,14 +82,15 @@ export class W3mRegisterAccountNameView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        gap="m"
-        .padding=${['0', 's', 'm', 's'] as const}
+        gap="4"
+        .padding=${['1', '3', '4', '3'] as const}
       >
         <form ${ref(this.formRef)} @submit=${this.onSubmitName.bind(this)}>
           <wui-ens-input
             @inputChange=${this.onNameInputChange.bind(this)}
             .errorMessage=${this.error}
             .value=${this.name}
+            .onKeyDown=${this.onKeyDown.bind(this)}
           >
           </wui-ens-input>
           ${this.submitButtonTemplate()}
@@ -108,7 +110,7 @@ export class W3mRegisterAccountNameView extends LitElement {
     if (this.loading) {
       return html`<wui-loading-spinner
         class="input-loading-spinner"
-        color="fg-200"
+        color="secondary"
       ></wui-loading-spinner>`
     }
 
@@ -116,11 +118,11 @@ export class W3mRegisterAccountNameView extends LitElement {
 
     return html`
       <wui-icon-link
-        .disabled=${isRegistered}
+        ?disabled=${Boolean(isRegistered)}
         class="input-submit-button"
         size="sm"
         icon="chevronRight"
-        iconColor=${isRegistered ? 'fg-200' : 'accent-100'}
+        iconColor=${isRegistered ? 'default' : 'accent-primary'}
         @click=${() => this.onSubmitName(reownName)}
       >
       </wui-icon-link>
@@ -128,29 +130,28 @@ export class W3mRegisterAccountNameView extends LitElement {
   }
 
   private onDebouncedNameInputChange = CoreHelperUtil.debounce((value: string) => {
-    if (EnsController.validateName(value)) {
-      this.error = ''
-      this.name = value
-      EnsController.getSuggestions(value)
-    } else if (value.length < 4) {
+    if (value.length < 4) {
       this.error = 'Name must be at least 4 characters long'
+      // eslint-disable-next-line no-negated-condition
+    } else if (!HelpersUtil.isValidReownName(value)) {
+      this.error = 'The value is not a valid username'
     } else {
-      this.error = 'Can only contain letters, numbers and - characters'
+      this.error = ''
+      EnsController.getSuggestions(value)
     }
   })
 
   private onNameInputChange(event: CustomEvent<string>) {
-    this.onDebouncedNameInputChange(event.detail)
+    const value = HelpersUtil.validateReownName(event.detail || '')
+    this.name = value
+    this.onDebouncedNameInputChange(value)
   }
 
-  private nameSuggestionTagTemplate(suggestion: { name: string; registered: boolean }) {
-    if (this.loading) {
-      return html`<wui-loading-spinner color="fg-200"></wui-loading-spinner>`
+  private onKeyDown(event: KeyboardEvent) {
+    // eslint-disable-next-line no-negated-condition
+    if (event.key.length === 1 && !HelpersUtil.isValidReownName(event.key)) {
+      event.preventDefault()
     }
-
-    return suggestion.registered
-      ? html`<wui-tag variant="shade" size="lg">Registered</wui-tag>`
-      : html`<wui-tag variant="success" size="lg">Available</wui-tag>`
   }
 
   private templateSuggestions() {
@@ -158,19 +159,17 @@ export class W3mRegisterAccountNameView extends LitElement {
       return null
     }
 
-    return html`<wui-flex flexDirection="column" gap="xxs" alignItems="center">
+    return html`<wui-flex flexDirection="column" gap="1" alignItems="center">
       ${this.suggestions.map(
         suggestion =>
-          html`<button
-            .disabled=${suggestion.registered || this.loading}
+          html`<wui-account-name-suggestion-item
+            name=${suggestion.name}
+            ?registered=${suggestion.registered}
+            ?loading=${this.loading}
+            ?disabled=${suggestion.registered || this.loading}
             data-testid="account-name-suggestion"
-            class="suggestion"
             @click=${() => this.onSubmitName(suggestion.name as ReownName)}
-          >
-            <wui-text color="fg-100" variant="paragraph-400" class="suggested-name">
-              ${suggestion.name}</wui-text
-            >${this.nameSuggestionTagTemplate(suggestion)}
-          </button>`
+          ></wui-account-name-suggestion-item>`
       )}
     </wui-flex>`
   }

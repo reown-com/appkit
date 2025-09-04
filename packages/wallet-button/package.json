@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-wallet-button",
-  "version": "1.7.17",
+  "version": "1.8.2",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -42,13 +42,13 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "lit": "3.3.0",
-    "valtio": "2.1.5"
+    "valtio": "2.1.7"
   },
   "optionalDependencies": {
     "@lit/react": "1.0.8"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",

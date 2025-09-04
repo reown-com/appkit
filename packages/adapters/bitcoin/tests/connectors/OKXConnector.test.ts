@@ -197,6 +197,59 @@ describe('OKXConnector', () => {
 
       expect(result).toEqual({ psbt: 'bW9ja19wc2J0', txid: 'mock_txhash' })
     })
+
+    it('should sign a PSBT with partial signing without broadcast', async () => {
+      const signInputs = [
+        {
+          index: 0,
+          address: 'mock_address',
+          publicKey: 'mock_pubkey',
+          sighashTypes: [1, 3],
+          disableTweakSigner: true
+        }
+      ]
+      const psbtBase64 = Buffer.from('mock_psbt').toString('base64')
+      const result = await connector.signPSBT({
+        psbt: psbtBase64,
+        signInputs,
+        broadcast: false
+      })
+      expect(result).toEqual({ psbt: 'bW9ja19wc2J0', txid: undefined })
+      expect(wallet.signPsbt).toHaveBeenCalledWith(
+        Buffer.from(psbtBase64, 'base64').toString('hex'),
+        {
+          autoFinalized: false,
+          toSignInputs: [
+            {
+              index: 0,
+              address: 'mock_address',
+              publicKey: 'mock_pubkey',
+              sighashTypes: [1, 3],
+              disableTweakSigner: true
+            }
+          ]
+        }
+      )
+      expect(wallet.pushPsbt).not.toHaveBeenCalled()
+    })
+    it('should throw error when trying to broadcast with partial signing', async () => {
+      const signInputs = [
+        {
+          index: 0,
+          address: 'mock_address',
+          publicKey: 'mock_pubkey',
+          sighashTypes: [1, 3],
+          disableTweakSigner: true
+        }
+      ]
+      await expect(
+        connector.signPSBT({
+          psbt: Buffer.from('mock_psbt').toString('base64'),
+          signInputs,
+          broadcast: true
+        })
+      ).rejects.toThrow('Broadcast not supported for partial signing')
+    })
   })
 
   describe('request', () => {

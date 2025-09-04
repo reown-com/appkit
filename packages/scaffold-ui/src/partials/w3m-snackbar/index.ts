@@ -8,19 +8,6 @@ import '@reown/appkit-ui/wui-snackbar'
 import styles from './styles.js'
 
 // -- Helpers ------------------------------------------- //
-const presets = {
-  loading: undefined,
-  success: {
-    backgroundColor: 'success-100',
-    iconColor: 'success-100',
-    icon: 'checkmark'
-  },
-  error: {
-    backgroundColor: 'error-100',
-    iconColor: 'error-100',
-    icon: 'close'
-  }
-} as const
 
 @customElement('w3m-snackbar')
 export class W3mSnackBar extends LitElement {
@@ -51,21 +38,9 @@ export class W3mSnackBar extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { message, variant, svg } = SnackController.state
+    const { message, variant } = SnackController.state
 
-    const preset = presets[variant]
-
-    const { icon, iconColor } = svg ?? preset ?? {}
-
-    return html`
-      <wui-snackbar
-        message=${message}
-        backgroundColor=${preset?.backgroundColor}
-        iconColor=${iconColor}
-        icon=${icon}
-        .loading=${variant === 'loading'}
-      ></wui-snackbar>
-    `
+    return html` <wui-snackbar message=${message} variant=${variant}></wui-snackbar> `
   }
 
   // -- Private ------------------------------------------- //
