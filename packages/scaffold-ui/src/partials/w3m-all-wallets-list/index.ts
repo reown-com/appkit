@@ -66,9 +66,8 @@ export class W3mAllWalletsList extends LitElement {
     return html`
       <wui-grid
         data-scroll=${!this.loading}
-        .padding=${['0', 's', 's', 's'] as const}
-        columnGap="xxs"
-        rowGap="l"
+        .padding=${['0', '3', '3', '3'] as const}
+        gap="2"
         justifyContent="space-between"
       >
         ${this.loading ? this.shimmerTemplate(16) : this.walletsTemplate()}
@@ -125,6 +124,7 @@ export class W3mAllWalletsList extends LitElement {
     return wallets.map(
       wallet => html`
         <w3m-all-wallets-list-item
+          data-testid="wallet-search-item-${wallet.id}"
           @click=${() => this.onConnectWallet(wallet)}
           .wallet=${wallet}
         ></w3m-all-wallets-list-item>
@@ -133,7 +133,8 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private paginationLoaderTemplate() {
-    const { wallets, recommended, featured, count } = ApiController.state
+    const { wallets, recommended, featured, count, mobileFilteredOutWalletsLength } =
+      ApiController.state
     const columns = window.innerWidth < 352 ? 3 : 4
     const currentWallets = wallets.length + recommended.length
     const minimumRows = Math.ceil(currentWallets / columns)
@@ -144,7 +145,11 @@ export class W3mAllWalletsList extends LitElement {
       return null
     }
 
-    if (count === 0 || [...featured, ...wallets, ...recommended].length < count) {
+    if (
+      count === 0 ||
+      [...featured, ...wallets, ...recommended].length <
+        count - (mobileFilteredOutWalletsLength ?? 0)
+    ) {
       return this.shimmerTemplate(shimmerCount, PAGINATOR_ID)
     }
 

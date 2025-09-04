@@ -92,7 +92,7 @@ export class W3mSwapSelectTokenView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" gap="s">
+      <wui-flex flexDirection="column" gap="3">
         ${this.templateSearchInput()} ${this.templateSuggestedTokens()} ${this.templateTokens()}
       </wui-flex>
     `
@@ -113,7 +113,7 @@ export class W3mSwapSelectTokenView extends LitElement {
 
   private templateSearchInput() {
     return html`
-      <wui-flex .padding=${['3xs', 's', '0', 's']} gap="xs">
+      <wui-flex .padding=${['1', '3', '0', '3']} gap="2">
         <wui-input-text
           data-testid="swap-select-token-search-input"
           class="network-search-input"
@@ -135,8 +135,8 @@ export class W3mSwapSelectTokenView extends LitElement {
     >(yourTokens, this.searchValue)
 
     if (filteredYourTokens?.length > 0) {
-      return html`<wui-flex justifyContent="flex-start" padding="s">
-          <wui-text variant="paragraph-500" color="fg-200">Your tokens</wui-text>
+      return html`<wui-flex justifyContent="flex-start" padding="2">
+          <wui-text variant="md-medium" color="secondary">Your tokens</wui-text>
         </wui-flex>
         ${filteredYourTokens.map(token => {
           const selected =
@@ -206,10 +206,10 @@ export class W3mSwapSelectTokenView extends LitElement {
   private templateTokens() {
     return html`
       <wui-flex class="tokens-container">
-        <wui-flex class="tokens" .padding=${['0', 's', 's', 's']} flexDirection="column">
+        <wui-flex class="tokens" .padding=${['0', '2', '2', '2'] as const} flexDirection="column">
           ${this.templateMyTokens()}
-          <wui-flex justifyContent="flex-start" padding="s">
-            <wui-text variant="paragraph-500" color="fg-200">Tokens</wui-text>
+          <wui-flex justifyContent="flex-start" padding="3">
+            <wui-text variant="md-medium" color="secondary">Tokens</wui-text>
           </wui-flex>
           ${this.templateAllTokens()}
         </wui-flex>
@@ -222,7 +222,11 @@ export class W3mSwapSelectTokenView extends LitElement {
 
     if (this.tokensLoading) {
       return html`
-        <wui-flex class="suggested-tokens-container" .padding=${['0', 's', '0', 's']} gap="xs">
+        <wui-flex
+          class="suggested-tokens-container"
+          .padding=${['0', '3', '0', '3'] as const}
+          gap="2"
+        >
           <wui-token-button loading></wui-token-button>
           <wui-token-button loading></wui-token-button>
           <wui-token-button loading></wui-token-button>
@@ -237,7 +241,11 @@ export class W3mSwapSelectTokenView extends LitElement {
     }
 
     return html`
-      <wui-flex class="suggested-tokens-container" .padding=${['0', 's', '0', 's']} gap="xs">
+      <wui-flex
+        class="suggested-tokens-container"
+        .padding=${['0', '3', '0', '3'] as const}
+        gap="2"
+      >
         ${tokens.map(
           token => html`
             <wui-token-button

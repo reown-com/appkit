@@ -2,7 +2,7 @@ import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import { CoreHelperUtil } from '@reown/appkit-controllers'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { UnisatConnector } from '../../src/connectors/UnisatConnector'
 import type { UnisatConnector as UnisatConnectorTypes } from '../../src/connectors/UnisatConnector/types'
@@ -61,8 +61,8 @@ describe('UnisatConnector', () => {
     expect(connector.imageUrl).toBe('mock_image_url')
   })
 
-  it('should return only mainnet chain', () => {
-    expect(connector.chains).toEqual([bitcoin])
+  it('should return bitcoin chains', () => {
+    expect(connector.chains).toEqual([bitcoin, bitcoinTestnet])
   })
 
   describe('connect', () => {
@@ -349,6 +349,12 @@ describe('UnisatConnector', () => {
     it('should switch network', async () => {
       await connector.switchNetwork(bitcoin.caipNetworkId)
       expect(wallet.switchChain).toHaveBeenCalledWith('BITCOIN_MAINNET')
+
+      await connector.switchNetwork(bitcoinTestnet.caipNetworkId)
+      expect(wallet.switchChain).toHaveBeenCalledWith('BITCOIN_TESTNET')
+
+      await connector.switchNetwork(bitcoinSignet.caipNetworkId)
+      expect(wallet.switchChain).toHaveBeenCalledWith('BITCOIN_SIGNET')
     })
   })
 })

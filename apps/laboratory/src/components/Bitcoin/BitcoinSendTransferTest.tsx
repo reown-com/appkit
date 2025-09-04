@@ -12,7 +12,7 @@ export function BitcoinSendTransferTest() {
   const { address } = useAppKitAccount({ namespace: 'bip122' })
   const toast = useChakraToast()
 
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [recipient, setRecipient] = useState<string>(address || '')
   const [amount, setAmount] = useState<string>('1500')
 
@@ -26,7 +26,7 @@ export function BitcoinSendTransferTest() {
     }
 
     try {
-      setLoading(true)
+      setIsLoading(true)
       const signature = await walletProvider.sendTransfer({
         recipient,
         amount
@@ -40,7 +40,7 @@ export function BitcoinSendTransferTest() {
     } catch (error) {
       toast({ title: 'Error', description: (error as Error).message, type: 'error' })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -62,7 +62,7 @@ export function BitcoinSendTransferTest() {
         data-testid="send-transfer-button"
         onClick={onSendTransfer}
         width="auto"
-        isLoading={loading}
+        isLoading={isLoading}
       >
         Send Transfer
       </Button>

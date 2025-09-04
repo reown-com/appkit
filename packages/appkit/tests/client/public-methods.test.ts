@@ -30,6 +30,7 @@ import {
   EventsController,
   ModalController,
   OptionsController,
+  ProviderController,
   PublicStateController,
   RouterController,
   SnackController,
@@ -37,12 +38,11 @@ import {
   ThemeController
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
-import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockUser, mockUserBalance } from '../mocks/Account.js'
-import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
-import { base, bitcoin, mainnet, polygon, sepolia, solana } from '../mocks/Networks.js'
+import { mockEvmAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
+import { base, bitcoin, mainnet, polygon, sepolia } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
 import { mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
 import {
@@ -375,12 +375,12 @@ describe('Base Public methods', () => {
   })
 
   it('should get provider', () => {
-    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue(mockProvider)
+    vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
     const appKit = new AppKit(mockOptions)
 
     expect(appKit.getProvider<any>('eip155')).toBe(mockProvider)
 
-    vi.spyOn(ProviderUtil, 'getProvider').mockClear()
+    vi.spyOn(ProviderController, 'getProvider').mockClear()
   })
 
   it('should get preferred account type', () => {
@@ -635,7 +635,7 @@ describe('Base Public methods', () => {
   it('should set connected wallet info with type', () => {
     const walletInfo = { name: 'MetaMask', icon: 'icon-url' }
     const setConnectedWalletInfo = vi.spyOn(AccountController, 'setConnectedWalletInfo')
-    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValueOnce('WALLET_CONNECT')
+    vi.spyOn(ProviderController, 'getProviderId').mockReturnValueOnce('WALLET_CONNECT')
 
     const appKit = new AppKit(mockOptions)
     appKit.setConnectedWalletInfo(walletInfo, mainnet.chainNamespace)
@@ -782,7 +782,7 @@ describe('Base Public methods', () => {
     const setConnectedWalletInfo = vi.spyOn(AccountController, 'setConnectedWalletInfo')
     const getActiveNetworkProps = vi.spyOn(StorageUtil, 'getActiveNetworkProps')
     const fetchTokenBalance = vi.spyOn(AccountController, 'fetchTokenBalance')
-    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
+    vi.spyOn(ProviderController, 'getProviderId').mockReturnValue(
       UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
     )
     const mockConnector = {
@@ -839,38 +839,6 @@ describe('Base Public methods', () => {
     await appKit['syncAccount']({ ...mockAccountData, address: '0x456' })
 
     expect(fetchIdentity).toHaveBeenCalled()
-  })
-
-  it('should not sync identity on non-evm network', async () => {
-    const fetchIdentity = vi.spyOn(BlockchainApiController, 'fetchIdentity')
-
-    const appKit = new AppKit({
-      ...mockOptions,
-      adapters: [mockSolanaAdapter],
-      networks: [solana]
-    })
-
-    vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValue([
-      {
-        quantity: { numeric: '0.00', decimals: '18' },
-        chainId: solana.caipNetworkId,
-        symbol: 'SOL'
-      } as Balance
-    ])
-    const mockAccountData = {
-      address: '7y523k4jsh90d',
-      chainId: solana.id,
-      chainNamespace: solana.chainNamespace
-    }
-    vi.spyOn(StorageUtil, 'getActiveNetworkProps').mockReturnValueOnce({
-      namespace: solana.chainNamespace,
-      chainId: solana.id,
-      caipNetworkId: solana.caipNetworkId
-    })
-
-    await appKit['syncAccount'](mockAccountData)
-
-    expect(fetchIdentity).not.toHaveBeenCalled()
   })
 
   it('should not sync identity on a test network', async () => {
@@ -978,7 +946,7 @@ describe('Base Public methods', () => {
       cb(providers)
       return () => {}
     })
-    vi.mocked(ProviderUtil).subscribeProviders = mockSubscribeProviders
+    vi.mocked(ProviderController).subscribeProviders = mockSubscribeProviders
 
     const appKit = new AppKit(mockOptions)
     appKit.subscribeProviders(callback)

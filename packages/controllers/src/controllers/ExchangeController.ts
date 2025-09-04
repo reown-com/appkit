@@ -2,89 +2,61 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type CaipNetworkId } from '@reown/appkit-common'
-import {
-  AccountController,
-  CoreHelperUtil,
-  EventsController,
-  SnackController
-} from '@reown/appkit-controllers'
 
-import { formatCaip19Asset, getExchanges, getPayUrl } from '../utils/ExchangeUtil.js'
-import type { Exchange, GetExchangesParams, PayUrlParams } from '../utils/ExchangeUtil.js'
+import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import {
+  type GetBuyStatusResult,
+  formatCaip19Asset,
+  getBuyStatus,
+  getExchanges,
+  getPayUrl,
+  getPaymentAssetsForNetwork
+} from '../utils/ExchangeUtil.js'
+import type { CurrentPayment, Exchange, PayUrlParams, PaymentAsset } from '../utils/ExchangeUtil.js'
+import { AccountController } from './AccountController.js'
+import { BlockchainApiController } from './BlockchainApiController.js'
+import { ChainController } from './ChainController.js'
+import { EventsController } from './EventsController.js'
+import { OptionsController } from './OptionsController.js'
+import { SnackController } from './SnackController.js'
 
 // -- Constants ----------------------------------------- //
 const DEFAULT_PAGE = 0
-const DEFAULT_STATE: ExchangeControllerState = {
-  paymentAsset: {
-    network: 'eip155:1',
-    asset: '0x0',
-    metadata: {
-      name: '0x0',
-      symbol: '0x0',
-      decimals: 0
-    }
-  },
+export const DEFAULT_STATE: ExchangeControllerState = {
+  paymentAsset: null,
   amount: 0,
+  tokenAmount: 0,
+  priceLoading: false,
   error: null,
   exchanges: [],
   isLoading: false,
-  currentPayment: undefined
+  currentPayment: undefined,
+  isPaymentInProgress: false,
+  paymentId: '',
+  assets: []
 }
 
 // -- Types --------------------------------------------- //
-type PayStatus = 'UNKNOWN' | 'IN_PROGRESS' | 'SUCCESS' | 'FAILED'
-
-type OpenPayUrlParams = {
-  exchangeId: string
-  openInNewTab?: boolean
-}
-
-export type CurrentPayment = {
-  type: PaymentType
-  exchangeId?: string
-  sessionId?: string
-  status?: PayStatus
-  result?: string
-}
-export type PayResult = CurrentPayment['result']
-
 export interface ExchangeControllerState {
   amount: number
+  tokenAmount: number
+  priceLoading: boolean
   error: string | null
   isLoading: boolean
   exchanges: Exchange[]
   currentPayment?: CurrentPayment
-  paymentAsset: {
-    network: CaipNetworkId
-    asset: string
-    metadata: {
-      name: string
-      symbol: string
-      decimals: number
-    }
-  }
+  paymentAsset: PaymentAsset | null
+  isPaymentInProgress: boolean
+  paymentId: string
+  assets: PaymentAsset[]
 }
 
 type StateKey = keyof ExchangeControllerState
-type PaymentType = 'wallet' | 'exchange'
 
 // -- State --------------------------------------------- //
-const state = proxy<ExchangeControllerState>({
-  paymentAsset: {
-    network: 'eip155:1',
-    asset: '0x0',
-    metadata: {
-      name: '0x0',
-      symbol: '0x0',
-      decimals: 0
-    }
-  },
-  amount: 0,
-  error: null,
-  exchanges: [],
-  isLoading: false,
-  currentPayment: undefined
-})
+const state = proxy<ExchangeControllerState>(DEFAULT_STATE)
 
 // -- Controller ---------------------------------------- //
 export const ExchangeController = {
@@ -103,13 +75,99 @@ export const ExchangeController = {
     Object.assign(state, { ...DEFAULT_STATE })
   },
 
-  // -- Getters ----------------------------------------- //
-  getExchanges() {
-    return state.exchanges
+  async getAssetsForNetwork(network: CaipNetworkId) {
+    const assets = getPaymentAssetsForNetwork(network)
+    const metadata = await ExchangeController.getAssetsImageAndPrice(assets)
+    const assetsWithPrice = assets.map(asset => {
+      const assetAddress =
+        asset.asset === 'native'
+          ? getActiveNetworkTokenAddress()
+          : `${asset.network}:${asset.asset}`
+      const assetMetadata = metadata.find(
+        m => m.fungibles?.[0]?.address?.toLowerCase() === assetAddress.toLowerCase()
+      )
+
+      return {
+        ...asset,
+        price: assetMetadata?.fungibles?.[0]?.price || 1,
+        metadata: {
+          ...asset.metadata,
+          iconUrl: assetMetadata?.fungibles?.[0]?.iconUrl
+        }
+      }
+    })
+
+    state.assets = assetsWithPrice
+
+    return assetsWithPrice
   },
 
+  async getAssetsImageAndPrice(assets: PaymentAsset[]) {
+    const addresses = assets.map(asset =>
+      asset.asset === 'native' ? getActiveNetworkTokenAddress() : `${asset.network}:${asset.asset}`
+    )
+
+    const metadata = await Promise.all(
+      addresses.map(address => BlockchainApiController.fetchTokenPrice({ addresses: [address] }))
+    )
+
+    return metadata
+  },
+
+  getTokenAmount() {
+    if (!state?.paymentAsset?.price) {
+      throw new Error('Cannot get token price')
+    }
+
+    const tokenAmount = new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 8
+    }).format(state.amount / state.paymentAsset.price)
+
+    return Number(tokenAmount)
+  },
+
+  setAmount(amount: number) {
+    state.amount = amount
+    if (state.paymentAsset?.price) {
+      state.tokenAmount = ExchangeController.getTokenAmount()
+    }
+  },
+
+  setPaymentAsset(asset: PaymentAsset) {
+    state.paymentAsset = asset
+  },
+
+  isPayWithExchangeEnabled() {
+    return (
+      OptionsController.state.remoteFeatures?.payWithExchange ||
+      OptionsController.state.remoteFeatures?.payments ||
+      OptionsController.state.features?.pay
+    )
+  },
+
+  isPayWithExchangeSupported() {
+    return (
+      ExchangeController.isPayWithExchangeEnabled() &&
+      ChainController.state.activeCaipNetwork &&
+      ConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(
+        ChainController.state.activeCaipNetwork.chainNamespace
+      )
+    )
+  },
+
+  // -- Getters ----------------------------------------- //
   async fetchExchanges() {
     try {
+      const isPayWithExchangeSupported = ExchangeController.isPayWithExchangeSupported()
+
+      if (!state.paymentAsset || !isPayWithExchangeSupported) {
+        state.exchanges = []
+        state.isLoading = false
+
+        return
+      }
+
       state.isLoading = true
       const response = await getExchanges({
         page: DEFAULT_PAGE,
@@ -123,25 +181,6 @@ export const ExchangeController = {
       throw new Error('Unable to get exchanges')
     } finally {
       state.isLoading = false
-    }
-  },
-
-  async getAvailableExchanges(params?: GetExchangesParams) {
-    try {
-      const asset =
-        params?.asset && params?.network
-          ? formatCaip19Asset(params.network, params.asset)
-          : undefined
-
-      const response = await getExchanges({
-        page: params?.page ?? DEFAULT_PAGE,
-        asset,
-        amount: params?.amount?.toString()
-      })
-
-      return response
-    } catch (error) {
-      throw new Error('Unable to get exchanges')
     }
   },
 
@@ -173,6 +212,7 @@ export const ExchangeController = {
             type: 'exchange',
             exchangeId
           },
+          source: 'fund-from-exchange',
           headless: false
         }
       })
@@ -186,32 +226,28 @@ export const ExchangeController = {
     }
   },
 
-  async openPayUrl(openParams: OpenPayUrlParams, params: PayUrlParams) {
-    try {
-      const payUrl = await this.getPayUrl(openParams.exchangeId, params)
-      if (!payUrl) {
-        throw new Error('Unable to get pay url')
-      }
-
-      const target = openParams.openInNewTab ? '_blank' : '_self'
-      CoreHelperUtil.openHref(payUrl.url, target)
-
-      return payUrl
-    } catch (error) {
-      state.error = 'Unable to get pay url'
-      throw new Error('Unable to get pay url')
-    }
-  },
-
-  getExchangeById(exchangeId: string) {
-    return state.exchanges.find(exchange => exchange.id === exchangeId)
-  },
-
   async handlePayWithExchange(exchangeId: string) {
     try {
-      if (!AccountController.state.caipAddress) {
+      if (!AccountController.state.address) {
         throw new Error('No account connected')
       }
+
+      if (!state.paymentAsset) {
+        throw new Error('No payment asset selected')
+      }
+
+      const popupWindow = CoreHelperUtil.returnOpenHref(
+        '',
+        'popupWindow',
+        'scrollbar=yes,width=480,height=720'
+      )
+
+      if (!popupWindow) {
+        throw new Error('Could not create popup window')
+      }
+
+      state.isPaymentInProgress = true
+      state.paymentId = crypto.randomUUID()
 
       state.currentPayment = {
         type: 'exchange',
@@ -222,11 +258,18 @@ export const ExchangeController = {
       const payUrlParams: PayUrlParams = {
         network,
         asset,
-        amount: state.amount,
-        recipient: AccountController.state.caipAddress
+        amount: state.tokenAmount,
+        recipient: AccountController.state.address
       }
-      const payUrl = await this.getPayUrl(exchangeId, payUrlParams)
+      const payUrl = await ExchangeController.getPayUrl(exchangeId, payUrlParams)
       if (!payUrl) {
+        try {
+          popupWindow.close()
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error('Unable to close popup window', err)
+        }
+
         throw new Error('Unable to initiate payment')
       }
 
@@ -234,15 +277,97 @@ export const ExchangeController = {
       state.currentPayment.status = 'IN_PROGRESS'
       state.currentPayment.exchangeId = exchangeId
 
-      return {
-        url: payUrl.url,
-        openInNewTab: true
-      }
+      popupWindow.location.href = payUrl.url
     } catch (error) {
       state.error = 'Unable to initiate payment'
       SnackController.showError(state.error)
-
-      return null
     }
+  },
+
+  async waitUntilComplete({
+    exchangeId,
+    sessionId,
+    paymentId,
+    retries = 20
+  }: {
+    exchangeId: string
+    sessionId: string
+    paymentId: string
+    retries?: number
+  }): Promise<GetBuyStatusResult> {
+    const status = await ExchangeController.getBuyStatus(exchangeId, sessionId, paymentId)
+    if (status.status === 'SUCCESS' || status.status === 'FAILED') {
+      return status
+    }
+
+    if (retries === 0) {
+      throw new Error('Unable to get deposit status')
+    }
+
+    // Wait 5 seconds before checking again
+    await new Promise(resolve => {
+      setTimeout(resolve, 5000)
+    })
+
+    return ExchangeController.waitUntilComplete({
+      exchangeId,
+      sessionId,
+      paymentId,
+      retries: retries - 1
+    })
+  },
+
+  async getBuyStatus(exchangeId: string, sessionId: string, paymentId: string) {
+    try {
+      if (!state.currentPayment) {
+        throw new Error('No current payment')
+      }
+
+      const status = await getBuyStatus({ sessionId, exchangeId })
+      state.currentPayment.status = status.status
+      if (status.status === 'SUCCESS' || status.status === 'FAILED') {
+        state.currentPayment.result = status.txHash
+        state.isPaymentInProgress = false
+        EventsController.sendEvent({
+          type: 'track',
+          event: status.status === 'SUCCESS' ? 'PAY_SUCCESS' : 'PAY_ERROR',
+          properties: {
+            source: 'fund-from-exchange',
+            paymentId,
+            configuration: {
+              network: state.paymentAsset?.network || '',
+              asset: state.paymentAsset?.asset || '',
+              recipient: AccountController.state.address || '',
+              amount: state.amount
+            },
+            currentPayment: {
+              type: 'exchange',
+              exchangeId: state.currentPayment?.exchangeId,
+              sessionId: state.currentPayment?.sessionId,
+              result: status.txHash
+            }
+          }
+        })
+      }
+
+      return status
+    } catch (error) {
+      return {
+        status: 'UNKNOWN',
+        txHash: ''
+      } as GetBuyStatusResult
+    }
+  },
+  reset() {
+    state.currentPayment = undefined
+    state.isPaymentInProgress = false
+    state.paymentId = ''
+    state.paymentAsset = null
+    state.amount = 0
+    state.tokenAmount = 0
+    state.priceLoading = false
+    state.error = null
+    state.exchanges = []
+    state.isLoading = false
   }
 }

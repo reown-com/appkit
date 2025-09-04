@@ -48,6 +48,7 @@ export interface ApiControllerState {
   isAnalyticsEnabled: boolean
   excludedWallets: { rdns?: string | null; name: string }[]
   isFetchingRecommendedWallets: boolean
+  mobileFilteredOutWalletsLength?: number
 }
 
 interface PrefetchParameters {
@@ -133,29 +134,24 @@ export const ApiController = {
   },
 
   _filterWalletsByPlatform(wallets: WcWallet[]) {
+    const walletsLength = wallets.length
     const filteredWallets = CoreHelperUtil.isMobile()
       ? wallets?.filter(w => {
-          if (w.mobile_link) {
+          if (w.mobile_link || w.webapp_link) {
             return true
           }
 
-          if (
-            w.id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id ||
-            w.id === CUSTOM_DEEPLINK_WALLETS.BINANCE.id
-          ) {
-            return true
-          }
-          const isSolana = ChainController.state.activeChain === 'solana'
-
-          return (
-            isSolana &&
-            (w.id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id ||
-              w.id === CUSTOM_DEEPLINK_WALLETS.PHANTOM.id)
+          const customDeeplinkWalletIds = Object.values(CUSTOM_DEEPLINK_WALLETS).map(
+            wallet => wallet.id
           )
+
+          return customDeeplinkWalletIds.includes(w.id)
         })
       : wallets
 
-    return filteredWallets
+    const mobileFilteredOutWalletsLength = walletsLength - filteredWallets.length
+
+    return { filteredWallets, mobileFilteredOutWalletsLength }
   },
 
   async fetchProjectConfig() {
@@ -242,12 +238,14 @@ export const ApiController = {
       }
     })
 
-    const filteredWallets = ApiController._filterWalletsByPlatform(wallets?.data)
+    const { filteredWallets, mobileFilteredOutWalletsLength } =
+      ApiController._filterWalletsByPlatform(wallets?.data)
 
     return {
       data: filteredWallets || [],
       // Keep original count for display on main page
-      count: wallets?.count
+      count: wallets?.count,
+      mobileFilteredOutWalletsLength
     }
   },
 
@@ -320,7 +318,11 @@ export const ApiController = {
       exclude,
       chains
     }
-    const { data, count } = await ApiController.fetchWallets(params)
+    const { data, count, mobileFilteredOutWalletsLength } = await ApiController.fetchWallets(params)
+
+    state.mobileFilteredOutWalletsLength =
+      mobileFilteredOutWalletsLength + (state.mobileFilteredOutWalletsLength ?? 0)
+
     const images = data
       .slice(0, imageCountToFetch)
       .map(w => w.image_id)

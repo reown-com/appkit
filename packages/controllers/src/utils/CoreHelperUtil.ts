@@ -267,20 +267,31 @@ export const CoreHelperUtil = {
     return Promise.race([imagePromise, CoreHelperUtil.wait(2000)])
   },
 
-  formatBalance(balance: string | undefined, symbol: string | undefined) {
+  parseBalance(balance: string | undefined, symbol: string | undefined) {
     let formattedBalance = '0.000'
 
     if (typeof balance === 'string') {
       const number = Number(balance)
-      if (number) {
-        const formattedValue = Math.floor(number * 1000) / 1000
+      if (!isNaN(number)) {
+        const formattedValue = (Math.floor(number * 1000) / 1000).toFixed(3)
         if (formattedValue) {
-          formattedBalance = formattedValue.toString()
+          formattedBalance = formattedValue
         }
       }
     }
+    const [valueString, decimalsString] = formattedBalance.split('.')
 
-    return `${formattedBalance}${symbol ? ` ${symbol}` : ''}`
+    const value = valueString || '0'
+    const decimals = decimalsString || '000'
+
+    const formattedText = `${value}.${decimals}${symbol ? ` ${symbol}` : ''}`
+
+    return {
+      formattedText,
+      value,
+      decimals,
+      symbol
+    }
   },
 
   getApiUrl() {

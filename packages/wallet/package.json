@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-wallet",
-  "version": "1.7.18",
+  "version": "1.8.2",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -37,7 +37,7 @@
     "zod": "3.22.4"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",

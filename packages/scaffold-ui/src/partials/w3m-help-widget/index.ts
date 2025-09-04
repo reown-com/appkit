@@ -21,19 +21,19 @@ export class W3mHelpWidget extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" alignItems="center" gap="l">
+      <wui-flex flexDirection="column" alignItems="center" gap="4">
         ${this.data.map(
           item => html`
-            <wui-flex flexDirection="column" alignItems="center" gap="xl">
-              <wui-flex flexDirection="row" justifyContent="center" gap="1xs">
-                ${item.images.map(image => html`<wui-visual name=${image}></wui-visual>`)}
+            <wui-flex flexDirection="column" alignItems="center" gap="5">
+              <wui-flex flexDirection="row" justifyContent="center" gap="1">
+                ${item.images.map(image => html`<wui-visual size="sm" name=${image}></wui-visual>`)}
               </wui-flex>
             </wui-flex>
-            <wui-flex flexDirection="column" alignItems="center" gap="xxs">
-              <wui-text variant="paragraph-500" color="fg-100" align="center">
-                ${item.title}
-              </wui-text>
-              <wui-text variant="small-500" color="fg-200" align="center">${item.text}</wui-text>
+            <wui-flex flexDirection="column" alignItems="center" gap="1">
+              <wui-text variant="md-regular" color="primary" align="center">${item.title}</wui-text>
+              <wui-text variant="sm-regular" color="secondary" align="center"
+                >${item.text}</wui-text
+              >
             </wui-flex>
           `
         )}

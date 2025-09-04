@@ -65,6 +65,9 @@ export const ConstantsUtil = {
     // Arbitrum
     '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'
   ],
+  SOLANA_SPL_TOKEN_ADDRESSES: {
+    SOL: 'So11111111111111111111111111111111111111112'
+  },
   HTTP_STATUS_CODES: {
     SERVER_ERROR: 500,
     TOO_MANY_REQUESTS: 429,

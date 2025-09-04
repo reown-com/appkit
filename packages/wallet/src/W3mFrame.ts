@@ -97,8 +97,8 @@ export class W3mFrame {
         iframe.style.display = 'none'
         iframe.style.border = 'none'
         iframe.style.animationDelay = '0s, 50ms'
-        iframe.style.borderBottomLeftRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
-        iframe.style.borderBottomRightRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
+        iframe.style.borderBottomLeftRadius = `clamp(0px, var(--apkt-borderRadius-8), 44px)`
+        iframe.style.borderBottomRightRadius = `clamp(0px, var(--apkt-borderRadius-8), 44px)`
         this.iframe = iframe
         this.iframe.onerror = () => {
           this.frameLoadPromiseResolver?.reject('Unable to load email login dependency')

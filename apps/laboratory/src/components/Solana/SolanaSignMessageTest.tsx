@@ -11,7 +11,7 @@ import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 export function SolanaSignMessageTest() {
   const toast = useChakraToast()
   const { walletProvider } = useAppKitProvider<Provider>('solana')
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   async function onSignMessage() {
     try {
@@ -19,7 +19,7 @@ export function SolanaSignMessageTest() {
         throw Error('user is disconnected')
       }
 
-      setLoading(true)
+      setIsLoading(true)
       const encodedMessage = new TextEncoder().encode('Hello from AppKit')
       const signature = await walletProvider.signMessage(encodedMessage)
 
@@ -35,12 +35,12 @@ export function SolanaSignMessageTest() {
         type: 'error'
       })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
   return (
-    <Button data-testid="sign-message-button" onClick={onSignMessage} isLoading={loading}>
+    <Button data-testid="sign-message-button" onClick={onSignMessage} isLoading={isLoading}>
       Sign Message
     </Button>
   )

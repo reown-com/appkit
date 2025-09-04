@@ -180,9 +180,11 @@ const controller = {
 
   async fetchTokenBalance(onError?: (error: unknown) => void): Promise<Balance[]> {
     state.loading = true
+    const namespace = ChainController.state.activeChain
     const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
     const chain = ChainController.state.activeCaipNetwork?.chainNamespace
-    const caipAddress = ChainController.state.activeCaipAddress
+    const caipAddress =
+      AccountController.getCaipAddress(namespace) ?? ChainController.state.activeCaipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
     if (
       state.lastRetry &&
@@ -320,8 +322,22 @@ const controller = {
       }
     })
 
+    let tokenMint: string | undefined = undefined
+
+    if (
+      SendController.state.token &&
+      SendController.state.token.address !== ConstantsUtil.SOLANA_NATIVE_TOKEN_ADDRESS
+    ) {
+      if (CoreHelperUtil.isCaipAddress(SendController.state.token.address)) {
+        tokenMint = CoreHelperUtil.getPlainAddress(SendController.state.token.address)
+      } else {
+        tokenMint = SendController.state.token.address
+      }
+    }
+
     await ConnectionController.sendTransaction({
       chainNamespace: 'solana',
+      tokenMint,
       to: SendController.state.receiverAddress,
       value: SendController.state.sendTokenAmount
     })

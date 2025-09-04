@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-ethers5",
-  "version": "1.7.18",
+  "version": "1.8.2",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -27,7 +27,7 @@
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/universal-provider": "2.21.8",
-    "valtio": "2.1.5"
+    "valtio": "2.1.7"
   },
   "optionalDependencies": {
     "@coinbase/wallet-sdk": "4.3.0",
@@ -44,7 +44,7 @@
     "vitest": "2.1.9"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",

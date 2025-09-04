@@ -46,7 +46,7 @@ export class W3mConnectInjectedWidget extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex flexDirection="column" gap="2">
         ${injectedConnectors.map(connector => {
           const connectionsByNamespace = this.connections.get(connector.chain) ?? []
           const isAlreadyConnected = connectionsByNamespace.some(c =>
@@ -58,9 +58,10 @@ export class W3mConnectInjectedWidget extends LitElement {
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               .installed=${true}
               name=${connector.name ?? 'Unknown'}
-              tagVariant=${isAlreadyConnected ? 'shade' : 'success'}
+              tagVariant=${isAlreadyConnected ? 'info' : 'success'}
               tagLabel=${isAlreadyConnected ? 'connected' : 'installed'}
               data-testid=${`wallet-selector-${connector.id}`}
+              size="sm"
               @click=${() => this.onConnector(connector)}
               tabIdx=${ifDefined(this.tabIdx)}
             >

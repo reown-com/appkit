@@ -34,9 +34,6 @@ import '../w3m-tooltip-trigger/index.js'
 import '../w3m-tooltip/index.js'
 import styles from './styles.js'
 
-const TABS_PADDING = 48
-const MODAL_MOBILE_VIEW_PX = 430
-
 @customElement('w3m-account-wallet-features-widget')
 export class W3mAccountWalletFeaturesWidget extends LitElement {
   public static override styles = styles
@@ -118,12 +115,12 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
     return html`<wui-flex
       flexDirection="column"
-      .padding=${['0', 'xl', 'm', 'xl'] as const}
+      .padding=${['0', '5', '4', '5'] as const}
       alignItems="center"
-      gap="m"
+      gap="4"
       data-testid="w3m-account-wallet-features-widget"
     >
-      <wui-flex flexDirection="column" justifyContent="center" alignItems="center" gap="xs">
+      <wui-flex flexDirection="column" justifyContent="center" alignItems="center" gap="2">
         <wui-wallet-switch
           profileName=${this.profileName}
           address=${this.address}
@@ -169,7 +166,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     })
     const deduplicatedFeaturesOrder = [...new Set(mergedFeaturesOrder)]
 
-    return html`<wui-flex gap="s">
+    return html`<wui-flex gap="3">
       ${deduplicatedFeaturesOrder.map(feature => {
         switch (feature) {
           case 'fund':
@@ -186,10 +183,22 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private fundWalletTemplate() {
-    const isOnrampEnabled = this.remoteFeatures?.onramp
-    const isReceiveEnabled = this.features?.receive
+    if (!this.namespace) {
+      return null
+    }
 
-    if (!isOnrampEnabled && !isReceiveEnabled) {
+    const isOnrampSupported = CoreConstantsUtil.ONRAMP_SUPPORTED_CHAIN_NAMESPACES.includes(
+      this.namespace
+    )
+    const isPayWithExchangeSupported =
+      CoreConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(this.namespace)
+
+    const isReceiveEnabled = this.features?.receive
+    const isOnrampEnabled = this.remoteFeatures?.onramp && isOnrampSupported
+    const isPayWithExchangeEnabled =
+      this.remoteFeatures?.payWithExchange && isPayWithExchangeSupported
+
+    if (!isOnrampEnabled && !isReceiveEnabled && !isPayWithExchangeEnabled) {
       return null
     }
 
@@ -199,6 +208,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           data-testid="wallet-features-fund-wallet-button"
           @click=${this.onFundWalletClick.bind(this)}
           icon="dollar"
+          variant="accent"
+          fullWidth
         ></wui-icon-button>
       </w3m-tooltip-trigger>
     `
@@ -215,9 +226,11 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     return html`
       <w3m-tooltip-trigger text="Swap">
         <wui-icon-button
+          fullWidth
           data-testid="wallet-features-swaps-button"
           @click=${this.onSwapClick.bind(this)}
           icon="recycleHorizontal"
+          variant="accent"
         >
         </wui-icon-button>
       </w3m-tooltip-trigger>
@@ -236,9 +249,11 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     return html`
       <w3m-tooltip-trigger text="Send">
         <wui-icon-button
+          fullWidth
           data-testid="wallet-features-send-button"
           @click=${this.onSendClick.bind(this)}
           icon="send"
+          variant="accent"
         ></wui-icon-button>
       </w3m-tooltip-trigger>
     `
@@ -293,21 +308,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       return null
     }
 
-    const isMobileAndSmall = CoreHelperUtil.isMobile() && window.innerWidth < MODAL_MOBILE_VIEW_PX
-    let localTabWidth = '104px'
-
-    if (isMobileAndSmall) {
-      localTabWidth = `${(window.innerWidth - TABS_PADDING) / tabsByNamespace.length}px`
-    } else if (tabsByNamespace.length === 2) {
-      localTabWidth = '156px'
-    } else {
-      localTabWidth = '104px'
-    }
-
     return html`<wui-tabs
       .onTabChange=${this.onTabChange.bind(this)}
       .activeTab=${this.currentTab}
-      localTabWidth=${localTabWidth}
       .tabs=${tabsByNamespace}
     ></wui-tabs>`
   }

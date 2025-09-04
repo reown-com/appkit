@@ -169,4 +169,64 @@ describe('SwapController', () => {
       onSuccess: onEmbeddedWalletApprovalSuccessSpy
     })
   })
+
+  describe('getParams()', () => {
+    it('should use AccountController.getCaipAddress before falling back to activeCaipAddress', () => {
+      const mockNamespace = ConstantsUtil.CHAIN.EVM
+      const mockCaipAddressFromAccount = 'eip155:1:0xAccountController'
+      const mockActiveCaipAddress = 'eip155:1:0xChainController'
+
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: mockNamespace,
+        activeCaipAddress: mockActiveCaipAddress,
+        activeCaipNetwork: caipNetwork
+      })
+
+      const getCaipAddressSpy = vi
+        .spyOn(AccountController, 'getCaipAddress')
+        .mockReturnValue(mockCaipAddressFromAccount)
+
+      const params = SwapController.getParams()
+
+      expect(getCaipAddressSpy).toHaveBeenCalledWith(mockNamespace)
+      expect(params.fromCaipAddress).toBe(mockCaipAddressFromAccount)
+    })
+
+    it('should fallback to activeCaipAddress when AccountController.getCaipAddress returns undefined', () => {
+      const mockNamespace = ConstantsUtil.CHAIN.EVM
+      const mockActiveCaipAddress = 'eip155:1:0xFallback'
+
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: mockNamespace,
+        activeCaipAddress: mockActiveCaipAddress,
+        activeCaipNetwork: caipNetwork
+      })
+
+      const getCaipAddressSpy = vi
+        .spyOn(AccountController, 'getCaipAddress')
+        .mockReturnValue(undefined)
+
+      const params = SwapController.getParams()
+
+      expect(getCaipAddressSpy).toHaveBeenCalledWith(mockNamespace)
+      expect(params.fromCaipAddress).toBe(mockActiveCaipAddress)
+    })
+
+    it('should throw error when no address is available from either source', () => {
+      const mockNamespace = ConstantsUtil.CHAIN.EVM
+
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: mockNamespace,
+        activeCaipAddress: undefined,
+        activeCaipNetwork: caipNetwork
+      })
+
+      vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(undefined)
+
+      expect(() => SwapController.getParams()).toThrow('No address found to swap the tokens from.')
+    })
+  })
 })

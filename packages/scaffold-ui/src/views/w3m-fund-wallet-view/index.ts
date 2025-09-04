@@ -4,6 +4,7 @@ import { state } from 'lit/decorators.js'
 import {
   ChainController,
   ConstantsUtil as CoreConstantsUtil,
+  ExchangeController,
   OptionsController,
   RouterController
 } from '@reown/appkit-controllers'
@@ -18,10 +19,11 @@ export class W3mFundWalletView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private namespace = ChainController.state.activeChain
+  @state() private activeCaipNetwork = ChainController.state.activeCaipNetwork
   @state() private features = OptionsController.state.features
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
-
+  @state() private exchangesLoading = ExchangeController.state.isLoading
+  @state() private exchanges = ExchangeController.state.exchanges
   public constructor() {
     super()
 
@@ -29,12 +31,12 @@ export class W3mFundWalletView extends LitElement {
       ...[
         OptionsController.subscribeKey('features', val => (this.features = val)),
         OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val)),
-        ChainController.subscribeKey('activeChain', val => (this.namespace = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => {
-          if (val?.chainNamespace) {
-            this.namespace = val?.chainNamespace
-          }
-        })
+          this.activeCaipNetwork = val
+          this.setDefaultPaymentAsset()
+        }),
+        ExchangeController.subscribeKey('isLoading', val => (this.exchangesLoading = val)),
+        ExchangeController.subscribeKey('exchanges', val => (this.exchanges = val))
       ]
     )
   }
@@ -43,24 +45,46 @@ export class W3mFundWalletView extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
+  public override async firstUpdated() {
+    const isPayWithExchangeSupported = ExchangeController.isPayWithExchangeSupported()
+    if (isPayWithExchangeSupported) {
+      await this.setDefaultPaymentAsset()
+      await ExchangeController.fetchExchanges()
+    }
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 's', 'xl', 's'] as const} gap="xs">
-        ${this.onrampTemplate()} ${this.receiveTemplate()}
+      <wui-flex flexDirection="column" .padding=${['1', '3', '3', '3'] as const} gap="2">
+        ${this.onrampTemplate()} ${this.receiveTemplate()} ${this.depositFromExchangeTemplate()}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
+
+  private async setDefaultPaymentAsset() {
+    if (!this.activeCaipNetwork) {
+      return
+    }
+
+    const assets = await ExchangeController.getAssetsForNetwork(
+      this.activeCaipNetwork.caipNetworkId
+    )
+    const usdc = assets.find(asset => asset.metadata.symbol === 'USDC') || assets[0]
+    if (usdc) {
+      ExchangeController.setPaymentAsset(usdc)
+    }
+  }
   private onrampTemplate() {
-    if (!this.namespace) {
+    if (!this.activeCaipNetwork) {
       return null
     }
 
     const isOnrampEnabled = this.remoteFeatures?.onramp
     const hasNetworkSupport = CoreConstantsUtil.ONRAMP_SUPPORTED_CHAIN_NAMESPACES.includes(
-      this.namespace
+      this.activeCaipNetwork.chainNamespace
     )
 
     if (!isOnrampEnabled || !hasNetworkSupport) {
@@ -68,14 +92,36 @@ export class W3mFundWalletView extends LitElement {
     }
 
     return html`
-      <wui-list-description
+      <wui-list-item
         @click=${this.onBuyCrypto.bind(this)}
-        text="Buy crypto"
         icon="card"
-        iconColor="success-100"
-        iconBackgroundColor="success-100"
         data-testid="wallet-features-onramp-button"
-      ></wui-list-description>
+      >
+        <wui-text variant="lg-regular" color="primary">Buy crypto</wui-text>
+      </wui-list-item>
+    `
+  }
+
+  private depositFromExchangeTemplate() {
+    if (!this.activeCaipNetwork) {
+      return null
+    }
+
+    const isPayWithExchangeSupported = ExchangeController.isPayWithExchangeSupported()
+    if (!isPayWithExchangeSupported) {
+      return null
+    }
+
+    return html`
+      <wui-list-item
+        @click=${this.onDepositFromExchange.bind(this)}
+        icon="download"
+        data-testid="wallet-features-deposit-from-exchange-button"
+        ?loading=${this.exchangesLoading}
+        ?disabled=${this.exchangesLoading || !this.exchanges.length}
+      >
+        <wui-text variant="lg-regular" color="primary">Deposit from exchange</wui-text>
+      </wui-list-item>
     `
   }
 
@@ -87,14 +133,13 @@ export class W3mFundWalletView extends LitElement {
     }
 
     return html`
-      <wui-list-description
+      <wui-list-item
         @click=${this.onReceive.bind(this)}
-        text="Receive funds"
         icon="qrCode"
-        iconColor="fg-200"
-        iconBackgroundColor="fg-200"
         data-testid="wallet-features-receive-button"
-      ></wui-list-description>
+      >
+        <wui-text variant="lg-regular" color="primary">Receive funds</wui-text>
+      </wui-list-item>
     `
   }
 
@@ -104,6 +149,10 @@ export class W3mFundWalletView extends LitElement {
 
   private onReceive() {
     RouterController.push('WalletReceive')
+  }
+
+  private onDepositFromExchange() {
+    RouterController.push('PayWithExchange')
   }
 }
 

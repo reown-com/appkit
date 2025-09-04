@@ -65,9 +65,9 @@ describe('W3mOnrampTokensView', () => {
 
     const firstToken = listItems?.[0]
     expect(firstToken?.getAttribute('imageSrc')).toBe('ethereum.png')
-    const tokenName = firstToken?.querySelector('wui-text[variant="paragraph-500"]')
+    const tokenName = firstToken?.querySelector('wui-text[variant="md-medium"]')
     expect(tokenName?.textContent).toBe('Ethereum')
-    const tokenSymbol = firstToken?.querySelector('wui-text[variant="small-400"]')
+    const tokenSymbol = firstToken?.querySelector('wui-text[variant="sm-regular"]')
     expect(tokenSymbol?.textContent).toBe('ETH')
   })
 

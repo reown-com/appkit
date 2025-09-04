@@ -26,9 +26,9 @@ interface AppKitConnectionsCardProps {
 }
 
 export function AppKitConnections({ namespace, title = 'Connections' }: AppKitConnectionsProps) {
-  const { multiWallet } = useAppKitState()
+  const { multiWallet: isMultiWallet } = useAppKitState()
 
-  const isMultiWalletEnabled = Boolean(multiWallet)
+  const isMultiWalletEnabled = Boolean(isMultiWallet)
 
   if (!isMultiWalletEnabled) {
     return null
