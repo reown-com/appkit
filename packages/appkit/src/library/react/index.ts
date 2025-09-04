@@ -121,7 +121,7 @@ export function useAppKit() {
     await modal?.open(options)
   }
 
-  async function openSend(args?: OpenOptions<'WalletSend'>['arguments']) {
+  async function openSend(args: NonNullable<OpenOptions<'WalletSend'>['arguments']>) {
     const w3mModal = modal as AppKit
 
     return w3mModal.openSend(args)

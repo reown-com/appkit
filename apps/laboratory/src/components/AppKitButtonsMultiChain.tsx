@@ -92,10 +92,6 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
 
   async function handleOpenSendWithArguments() {
     try {
-      if (caipNetwork?.id !== base.id) {
-        await switchNetwork(base).then(() => null)
-      }
-
       const { hash } = await openSend({
         amount: '1',
         assetAddress: PresetsUtil.TOKEN_ADDRESSES_BY_SYMBOL.USDC[base.id],

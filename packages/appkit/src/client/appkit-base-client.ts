@@ -1867,6 +1867,11 @@ export abstract class AppKitBaseClient {
   public getCaipNetworks = (namespace?: ChainNamespace) =>
     ChainController.getCaipNetworks(namespace)
 
+  public getCaipNetworkById = (id: string | number) =>
+    this.getCaipNetworks().find(
+      n => n.id.toString() === id.toString() || n.caipNetworkId.toString() === id.toString()
+    )
+
   public getActiveChainNamespace = () => ChainController.state.activeChain
 
   public setRequestedCaipNetworks: (typeof ChainController)['setRequestedCaipNetworks'] = (
@@ -2059,21 +2064,35 @@ export abstract class AppKitBaseClient {
     return ModalController.open(options)
   }
 
-  public async openSend(args?: OpenOptions<'WalletSend'>['arguments']): Promise<{ hash: string }> {
-    const caipAddress = this.getCaipAddress(args?.namespace)
+  public async openSend(
+    args: NonNullable<OpenOptions<'WalletSend'>['arguments']>
+  ): Promise<{ hash: string }> {
+    const namespaceToUse = args.namespace || ChainController.state.activeChain
+    const caipAddress = this.getCaipAddress(namespaceToUse)
+    const chainId = this.getCaipNetwork(namespaceToUse)?.id
 
     if (!caipAddress) {
       throw new Error('openSend: caipAddress not found')
     }
 
-    const symbol = TokenUtil.getTokenSymbolByAddress(args?.assetAddress)
+    if (chainId?.toString() !== args.chainId.toString()) {
+      const caipNetwork = this.getCaipNetworkById(args.chainId)
 
-    if (symbol) {
-      try {
-        await ApiController.fetchTokenImages([symbol])
-      } catch {
-        /* Ignore */
+      if (!caipNetwork) {
+        throw new Error(`openSend: caipNetwork with chainId ${args.chainId} not found`)
       }
+
+      await this.switchNetwork(caipNetwork)
+    }
+
+    try {
+      const symbol = TokenUtil.getTokenSymbolByAddress(args.assetAddress)
+
+      if (symbol) {
+        await ApiController.fetchTokenImages([symbol])
+      }
+    } catch {
+      /* Ignore */
     }
 
     await this.open({
