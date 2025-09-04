@@ -419,6 +419,17 @@ export type CustomWallet = Pick<
 
 // -- EventsController Types ----------------------------------------------------
 
+export type PendingEvent = {
+  eventId: string
+  url: string
+  domain: string
+  timestamp: number
+  props: {
+    address?: string
+    properties: unknown
+  }
+}
+
 export type Event =
   | {
       type: 'track'

@@ -1,5 +1,31 @@
 # @reown/appkit-wallet-button
 
+## 1.8.2
+
+### Patch Changes
+
+- [#4923](https://github.com/reown-com/appkit/pull/4923) [`b6adfdc`](https://github.com/reown-com/appkit/commit/b6adfdc1713daefb63393d9fa3a2cb2e31ba00e2) Thanks [@github-actions](https://github.com/apps/github-actions)! - Fixed an issue where Solana token-2022 token transfers failed because the send flow used legacy transfer instructions
+
+- Updated dependencies [[`2f67cb8`](https://github.com/reown-com/appkit/commit/2f67cb800e99c09a85e89ba7f6dc38486305120a), [`d412fdb`](https://github.com/reown-com/appkit/commit/d412fdbe4a10583844fc19fa5dae364a7e92a9ca), [`b6adfdc`](https://github.com/reown-com/appkit/commit/b6adfdc1713daefb63393d9fa3a2cb2e31ba00e2), [`7fab812`](https://github.com/reown-com/appkit/commit/7fab812a0e796d52332fc38cdbd57ea020d46713)]:
+  - @reown/appkit-ui@1.8.2
+  - @reown/appkit-controllers@1.8.2
+  - @reown/appkit-utils@1.8.2
+  - @reown/appkit-common@1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- [#4891](https://github.com/reown-com/appkit/pull/4891) [`01283a8`](https://github.com/reown-com/appkit/commit/01283a82083a25108665f1d8e5c02194ed5e57e3) Thanks [@magiziz](https://github.com/magiziz)! - Added bitcoin signet network
+
+- [#4892](https://github.com/reown-com/appkit/pull/4892) [`58a66f1`](https://github.com/reown-com/appkit/commit/58a66f1687c8ad7a84ab7aeac9a36a9b2314c885) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where `authConnector` was always included in wagmi config when email and social login were disabled
+
+- Updated dependencies [[`01283a8`](https://github.com/reown-com/appkit/commit/01283a82083a25108665f1d8e5c02194ed5e57e3), [`85f8403`](https://github.com/reown-com/appkit/commit/85f84031748af811eaee7d85fbae803c51eb5e11), [`477eea4`](https://github.com/reown-com/appkit/commit/477eea454add184bc9b5778a0ba46215efee7ede), [`58a66f1`](https://github.com/reown-com/appkit/commit/58a66f1687c8ad7a84ab7aeac9a36a9b2314c885), [`763a4f7`](https://github.com/reown-com/appkit/commit/763a4f7c84c96b9b03258de4f4fcf6764d35c7e8)]:
+  - @reown/appkit-utils@1.8.1
+  - @reown/appkit-common@1.8.1
+  - @reown/appkit-controllers@1.8.1
+  - @reown/appkit-ui@1.8.1
+
 ## 1.8.0
 
 ### Patch Changes

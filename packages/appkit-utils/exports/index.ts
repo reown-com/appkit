@@ -9,8 +9,6 @@ export { ErrorUtil } from '../src/ErrorUtil.js'
 export { TokenUtil } from '../src/TokenUtil.js'
 export { LoggerUtil } from '../src/LoggerUtil.js'
 export { CaipNetworksUtil, getBlockchainApiRpcUrl } from '../src/CaipNetworkUtil.js'
-export { ProviderUtil } from '../src/ProviderUtil.js'
-export type { ProviderStoreUtilState, ProviderType } from '../src/ProviderUtil.js'
 export type { SocialProvider } from '../src/TypeUtil.js'
 
 export { SocialProviderEnum } from '../src/TypeUtil.js'

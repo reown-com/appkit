@@ -1,5 +1,19 @@
 # @reown/appkit-common
 
+## 1.8.2
+
+### Patch Changes
+
+- [#4923](https://github.com/reown-com/appkit/pull/4923) [`b6adfdc`](https://github.com/reown-com/appkit/commit/b6adfdc1713daefb63393d9fa3a2cb2e31ba00e2) Thanks [@github-actions](https://github.com/apps/github-actions)! - Fixed an issue where Solana token-2022 token transfers failed because the send flow used legacy transfer instructions
+
+## 1.8.1
+
+### Patch Changes
+
+- [#4891](https://github.com/reown-com/appkit/pull/4891) [`01283a8`](https://github.com/reown-com/appkit/commit/01283a82083a25108665f1d8e5c02194ed5e57e3) Thanks [@magiziz](https://github.com/magiziz)! - Added bitcoin signet network
+
+- [#4892](https://github.com/reown-com/appkit/pull/4892) [`58a66f1`](https://github.com/reown-com/appkit/commit/58a66f1687c8ad7a84ab7aeac9a36a9b2314c885) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where `authConnector` was always included in wagmi config when email and social login were disabled
+
 ## 1.8.0
 
 ### Patch Changes

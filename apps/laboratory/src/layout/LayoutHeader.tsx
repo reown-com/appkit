@@ -16,7 +16,6 @@ import {
   useDisclosure
 } from '@chakra-ui/react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { DOCS_URL, GALLERY_URL, REPO_URL } from '@/src/utils/ConstantsUtil'
@@ -44,7 +43,6 @@ function downloadLogs(toast: ReturnType<typeof useChakraToast>) {
 }
 
 export function LayoutHeader() {
-  const pathname = usePathname()
   const controls = useDisclosure()
   const controlsCW = useDisclosure({ id: 'customWallet' })
   const controlsNW = useDisclosure({ id: 'networks' })
@@ -52,8 +50,9 @@ export function LayoutHeader() {
   const toast = useChakraToast()
   const { colorMode } = useColorMode()
   const [origin, setOrigin] = useState('')
+
   useEffect(() => {
-    setOrigin(window.location.origin)
+    setOrigin(window.location.href)
   }, [])
 
   return (
@@ -97,7 +96,7 @@ export function LayoutHeader() {
           Logs
         </Button>
       </Stack>
-      <Text fontSize="2xs">{origin + pathname}</Text>
+      <Text fontSize="2xs">{origin}</Text>
 
       <OptionsDrawer controls={controls} />
       <NetworksDrawer controls={controlsNW} />

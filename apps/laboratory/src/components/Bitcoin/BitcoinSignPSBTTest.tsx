@@ -14,10 +14,10 @@ export function BitcoinSignPSBTTest() {
   const { caipNetwork } = useAppKitNetwork()
   const toast = useChakraToast()
 
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [recipient, setRecipient] = useState<string>(address || '')
   const [amount, setAmount] = useState<string>('1500')
-  const [broadcast, setBroadcast] = useState(false)
+  const [isBroadcast, setIsBroadcast] = useState(false)
 
   async function onSignPSBT() {
     if (!walletProvider || !address || !caipNetwork) {
@@ -41,7 +41,7 @@ export function BitcoinSignPSBTTest() {
     }
 
     try {
-      setLoading(true)
+      setIsLoading(true)
       const utxos = await BitcoinUtil.getUTXOs(address, caipNetwork.caipNetworkId)
       const feeRate = await BitcoinUtil.getFeeRate()
 
@@ -54,14 +54,14 @@ export function BitcoinSignPSBTTest() {
         utxos
       })
 
-      params.broadcast = broadcast
+      params.broadcast = isBroadcast
 
       const signature = await walletProvider.signPSBT(params)
       toast({ title: 'PSBT Signature', description: signature.psbt, type: 'success' })
     } catch (error) {
       toast({ title: 'Error', description: (error as Error).message, type: 'error' })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -81,15 +81,20 @@ export function BitcoinSignPSBTTest() {
         </Box>
 
         <Checkbox
-          isChecked={broadcast}
-          onChange={e => setBroadcast(e.currentTarget.checked)}
+          isChecked={isBroadcast}
+          onChange={e => setIsBroadcast(e.currentTarget.checked)}
           py="2"
         >
           Broadcast
         </Checkbox>
       </Flex>
 
-      <Button data-testid="sign-psbt-button" onClick={onSignPSBT} width="auto" isLoading={loading}>
+      <Button
+        data-testid="sign-psbt-button"
+        onClick={onSignPSBT}
+        width="auto"
+        isLoading={isLoading}
+      >
         Sign PSBT
       </Button>
     </>

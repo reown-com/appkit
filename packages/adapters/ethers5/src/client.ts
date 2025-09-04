@@ -15,8 +15,8 @@ import {
   StorageUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
+import { ProviderController } from '@reown/appkit-controllers'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
-import { ProviderUtil } from '@reown/appkit-utils'
 import { type Address, EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -324,18 +324,14 @@ export class Ethers5Adapter extends AdapterBlueprint {
   }
 
   public async syncConnections({
-    connectToFirstConnector,
-    getConnectorStorageInfo
+    connectToFirstConnector
   }: AdapterBlueprint.SyncConnectionsParams) {
     await this.connectionManager?.syncConnections({
       connectors: this.connectors,
       caipNetworks: this.getCaipNetworks(),
       universalProvider: this.universalProvider as UniversalProvider,
       onConnection: this.addConnection.bind(this),
-      onListenProvider: this.listenProviderEvents.bind(this),
-      getConnectionStatusInfo(connectorId) {
-        return getConnectorStorageInfo(connectorId)
-      }
+      onListenProvider: this.listenProviderEvents.bind(this)
     })
 
     if (connectToFirstConnector) {
@@ -778,7 +774,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
   }
 
   public async getCapabilities(params: AdapterBlueprint.GetCapabilitiesParams): Promise<unknown> {
-    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    const provider = ProviderController.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       throw new Error('Provider is undefined')
@@ -788,7 +784,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
   }
 
   public async grantPermissions(params: AdapterBlueprint.GrantPermissionsParams): Promise<unknown> {
-    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    const provider = ProviderController.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       throw new Error('Provider is undefined')
@@ -800,7 +796,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
   public async revokePermissions(
     params: AdapterBlueprint.RevokePermissionsParams
   ): Promise<Address> {
-    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    const provider = ProviderController.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       throw new Error('Provider is undefined')
@@ -812,7 +808,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
   public async walletGetAssets(
     params: AdapterBlueprint.WalletGetAssetsParams
   ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
-    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    const provider = ProviderController.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       throw new Error('Provider is undefined')

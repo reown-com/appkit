@@ -59,10 +59,7 @@ export function AppKitProvider({
 
   return (
     <AppKitContext.Provider
-      value={{
-        projectId: resolvedProjectId,
-        appKit: currentAppKitSnapshot as AppKit | undefined
-      }}
+      value={{ projectId: resolvedProjectId, appKit: currentAppKitSnapshot as AppKit | undefined }}
     >
       {(() => {
         if (isProjectIdLoading && !resolvedProjectId) {
