@@ -10,7 +10,10 @@ import {
   Text
 } from '@chakra-ui/react'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { PresetsUtil } from '@reown/appkit-utils'
 import {
+  base,
   bitcoin,
   bitcoinTestnet,
   mainnet,
@@ -29,6 +32,8 @@ import {
 } from '@reown/appkit/react'
 
 import type { Adapter } from '../constants/appKitConfigs'
+import { ConstantsUtil } from '../utils/ConstantsUtil'
+import { useChakraToast } from './Toast'
 
 function getNetworkToSwitch(activeNetwork: CaipNetwork | undefined) {
   if (!activeNetwork) {
@@ -46,12 +51,13 @@ function getNetworkToSwitch(activeNetwork: CaipNetwork | undefined) {
 }
 
 export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | undefined }) {
-  const { open } = useAppKit()
+  const { open, openSend } = useAppKit()
   const { disconnect } = useDisconnect()
   const { caipNetwork, switchNetwork } = useAppKitNetwork()
   const evmAccount = useAppKitAccount({ namespace: 'eip155' })
   const solanaAccount = useAppKitAccount({ namespace: 'solana' })
   const bitcoinAccount = useAppKitAccount({ namespace: 'bip122' })
+  const toast = useChakraToast()
   const isAnyAccountConnected =
     evmAccount.isConnected || solanaAccount.isConnected || bitcoinAccount.isConnected
 
@@ -82,6 +88,34 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
         toToken: 'ETH'
       }
     })
+  }
+
+  async function handleOpenSendWithArguments() {
+    try {
+      if (caipNetwork?.id !== base.id) {
+        await switchNetwork(base).then(() => null)
+      }
+
+      const { hash } = await openSend({
+        amount: '1',
+        assetAddress: PresetsUtil.TOKEN_ADDRESSES_BY_SYMBOL.USDC[base.id],
+        namespace: CommonConstantsUtil.CHAIN.EVM,
+        chainId: base.id,
+        to: evmAccount.address as string
+      })
+
+      toast({
+        title: ConstantsUtil.SigningSucceededToastTitle,
+        description: hash,
+        type: 'success'
+      })
+    } catch (err) {
+      toast({
+        title: ConstantsUtil.SigningFailedToastTitle,
+        description: err instanceof Error ? err.message : 'Failed to send',
+        type: 'error'
+      })
+    }
   }
 
   function handleSwitchNetwork() {
@@ -185,6 +219,13 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
                     onClick={handleOpenSwapWithArguments}
                   >
                     Open Swap with Arguments
+                  </Button>
+
+                  <Button
+                    data-testid="open-swap-with-arguments-hook-button"
+                    onClick={handleOpenSendWithArguments}
+                  >
+                    Open Send with Arguments
                   </Button>
                 </Box>
               </Box>

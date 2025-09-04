@@ -2060,6 +2060,12 @@ export abstract class AppKitBaseClient {
   }
 
   public async openSend(args?: OpenOptions<'WalletSend'>['arguments']): Promise<{ hash: string }> {
+    const caipAddress = this.getCaipAddress(args?.namespace)
+
+    if (!caipAddress) {
+      throw new Error('openSend: caipAddress not found')
+    }
+
     const symbol = TokenUtil.getTokenSymbolByAddress(args?.assetAddress)
 
     if (symbol) {
