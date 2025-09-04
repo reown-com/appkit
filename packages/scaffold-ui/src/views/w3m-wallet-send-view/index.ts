@@ -178,7 +178,7 @@ export class W3mWalletSendView extends LitElement {
     }
   }
 
-  async handleSendParameters() {
+  private async handleSendParameters() {
     this.loading = true
 
     if (!this.params) {
