@@ -50,6 +50,7 @@ import {
   ConnectionController,
   ConnectionControllerUtil,
   ConnectorController,
+  ConnectorControllerUtil,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
   EnsController,
@@ -1075,11 +1076,26 @@ export abstract class AppKitBaseClient {
 
     adapter.on('disconnect', () => {
       const isMultiWallet = this.remoteFeatures.multiWallet
+
       const allConnections = Array.from(ConnectionController.state.connections.values()).flat()
+      const isConnectionsEmpty = allConnections.length === 0
+
+      const isTryingToChooseDifferentWallet =
+        RouterController.state.view === 'WalletSend' &&
+        ConnectionController.state.disconnectReason ===
+          ConnectorControllerUtil.DISCONNECT_REASON.CHOOSE_DIFFERENT_WALLET
+
+      let shouldCloseModal = false
+
+      if (isMultiWallet) {
+        shouldCloseModal = false
+      } else {
+        shouldCloseModal = isConnectionsEmpty && !isTryingToChooseDifferentWallet
+      }
 
       this.onDisconnectNamespace({
         chainNamespace,
-        closeModal: !isMultiWallet || allConnections.length === 0
+        closeModal: shouldCloseModal
       })
     })
 

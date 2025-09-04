@@ -4,6 +4,7 @@ import { state } from 'lit/decorators.js'
 import {
   ChainController,
   ConnectionController,
+  ConnectorControllerUtil,
   CoreHelperUtil,
   RouterController,
   SendController,
@@ -112,16 +113,23 @@ export class W3mWalletSendView extends LitElement {
   }
 
   private onFundWalletClick() {
-    RouterController.push('FundWallet')
+    RouterController.push('FundWallet', {
+      redirectView: 'WalletSend'
+    })
   }
 
   private async onConnectDifferentWalletClick() {
     try {
       this.disconnecting = true
+      ConnectionController.setDisconnectReason(
+        ConnectorControllerUtil.DISCONNECT_REASON.CHOOSE_DIFFERENT_WALLET
+      )
       await ConnectionController.disconnect()
     } finally {
       this.disconnecting = false
-      RouterController.push('Connect')
+      RouterController.push('Connect', {
+        redirectView: 'WalletSend'
+      })
     }
   }
 

@@ -11,7 +11,9 @@ import {
 import {
   ApiController,
   ChainController,
+  ConnectionController,
   ConnectorController,
+  ConnectorControllerUtil,
   CoreHelperUtil,
   ModalController,
   ModalUtil,
@@ -238,6 +240,10 @@ export class W3mModalBase extends LitElement {
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
 
     const isInProfileView = RouterController.state.view === 'ProfileWallets'
+    const isTryingToChooseDifferentWallet =
+      RouterController.state.view === 'WalletSend' &&
+      ConnectionController.state.disconnectReason ===
+        ConnectorControllerUtil.DISCONNECT_REASON.CHOOSE_DIFFERENT_WALLET
 
     if (caipAddress) {
       await this.onConnected({
@@ -245,13 +251,19 @@ export class W3mModalBase extends LitElement {
         isSwitchingNamespace,
         isInProfileView
       })
-    } else if (!isSwitchingNamespace && !this.enableEmbedded && !isInProfileView) {
+    } else if (
+      !isSwitchingNamespace &&
+      !this.enableEmbedded &&
+      !isInProfileView &&
+      !isTryingToChooseDifferentWallet
+    ) {
       ModalController.close()
     }
 
     await SIWXUtil.initializeIfEnabled(caipAddress)
     this.caipAddress = caipAddress
     ChainController.setIsSwitchingNamespace(false)
+    ConnectionController.resetDisconnectReason()
   }
 
   private async onConnected(args: {
