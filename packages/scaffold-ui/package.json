@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-scaffold-ui",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -118,7 +118,7 @@
     "lit": "3.3.0"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",

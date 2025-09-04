@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-testing",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -28,7 +28,7 @@
     "dotenv": "16.4.7"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
