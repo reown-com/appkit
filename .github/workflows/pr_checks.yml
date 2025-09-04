@@ -38,6 +38,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -116,6 +119,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -160,6 +166,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -203,6 +212,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -246,7 +258,8 @@ jobs:
       contents: write
       pull-requests: write
     with:
-      branch: ${{ github.ref }}
+      # Pass the SHA so the called workflow can check out a stable commit
+      branch: ${{ github.sha }}
       build-and-cache-only: ${{ github.event_name == 'push' }}
       matrix_config: '{"shard":[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "shardTotal":[10]}'
       build_trigger_type: ${{ github.event_name }}

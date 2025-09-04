@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "start": "next start",
-    "build": "next build --turbopack",
+    "build": "next build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "typecheck": "tsc --noEmit",
     "playwright:start": "pnpm start",

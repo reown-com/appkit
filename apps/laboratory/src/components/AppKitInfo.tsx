@@ -110,7 +110,7 @@ export function AppKitInfo() {
                 <Box display="flex" alignItems="center" gap={2}>
                   {walletInfo?.icon ? (
                     <Image
-                      src={walletInfo.icon}
+                      src={walletInfo.icon.trim()}
                       alt={walletInfo.name}
                       width={24}
                       height={24}
