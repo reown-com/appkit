@@ -477,13 +477,24 @@ export abstract class AppKitBaseClient {
         const connections = ConnectionController.getConnections(activeChain)
         const isMultiWallet = this.remoteFeatures.multiWallet
         const hasConnections = connections.length > 0
+        const isTryingToChooseDifferentWallet =
+          RouterController.state.data?.redirectView === 'WalletSend' &&
+          ConnectionController.state.disconnectReason ===
+            ConnectorControllerUtil.DISCONNECT_REASON.CHOOSE_DIFFERENT_WALLET
 
         if (!adapter) {
           throw new Error('Adapter not found')
         }
 
         const result = await adapter.connectWalletConnect(chainId)
-        const shouldClose = !hasConnections || !isMultiWallet
+
+        let shouldClose = false
+
+        if (isMultiWallet) {
+          shouldClose = false
+        } else {
+          shouldClose = !hasConnections && !isTryingToChooseDifferentWallet
+        }
 
         if (shouldClose) {
           this.close()
@@ -1144,6 +1155,7 @@ export abstract class AppKitBaseClient {
       }
 
       StorageUtil.addConnectedNamespace(chainNamespace)
+      ConnectionController.resetDisconnectReason()
     })
   }
 

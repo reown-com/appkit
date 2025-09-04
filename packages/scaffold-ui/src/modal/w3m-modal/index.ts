@@ -263,7 +263,6 @@ export class W3mModalBase extends LitElement {
     await SIWXUtil.initializeIfEnabled(caipAddress)
     this.caipAddress = caipAddress
     ChainController.setIsSwitchingNamespace(false)
-    ConnectionController.resetDisconnectReason()
   }
 
   private async onConnected(args: {
