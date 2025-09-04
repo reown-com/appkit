@@ -11,6 +11,7 @@ import { OptionsController } from './OptionsController.js'
 const baseUrl = CoreHelperUtil.getAnalyticsUrl()
 const api = new FetchUtil({ baseUrl, clientId: null })
 const excluded = ['MODAL_CREATED']
+// SendBeacon payload limit is 64KB, using 45KB for a safe margin, also 45KB is approx ~200 events which is plenty
 const MAX_PENDING_EVENTS_KB = 45
 // -- Types --------------------------------------------- //
 export interface EventsControllerState {
