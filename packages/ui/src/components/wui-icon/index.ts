@@ -1,6 +1,7 @@
 import type { TemplateResult } from 'lit'
 import { LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
+import { until } from 'lit/directives/until.js'
 import { html, unsafeStatic } from 'lit/static-html.js'
 
 import { appStoreSvg } from '../../assets/svg/app-store.js'
@@ -28,6 +29,7 @@ import {
   walletConnectSvg
 } from '../../assets/svg/walletconnect.js'
 import { xSvg } from '../../assets/svg/x.js'
+import { globalPhosphorCache } from '../../utils/CacheUtil.js'
 import { vars } from '../../utils/ThemeHelperUtil.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconColorType, IconSizeType, IconType, IconWeightType } from '../../utils/TypeUtil.js'
@@ -177,7 +179,6 @@ const phosphorImports: Record<string, () => Promise<any>> = {
   'ph-spinner': () => import('@phosphor-icons/webcomponents/PhSpinner'),
   'ph-trash': () => import('@phosphor-icons/webcomponents/PhTrash'),
   'ph-user': () => import('@phosphor-icons/webcomponents/PhUser'),
-  'ph-wallet': () => import('@phosphor-icons/webcomponents/PhWallet'),
   'ph-warning': () => import('@phosphor-icons/webcomponents/PhWarning'),
   'ph-warning-circle': () => import('@phosphor-icons/webcomponents/PhWarningCircle'),
   'ph-x': () => import('@phosphor-icons/webcomponents/PhX')
@@ -222,6 +223,54 @@ export const ICON_COLOR = {
   inverse: vars.tokens.theme.iconInverse
 }
 
+// -- Utils ------------------------------------------ //
+export async function loadPhosphorIcon(tag: string) {
+  let cachedPromise = globalPhosphorCache.get(tag)
+  await new Promise(resolve => {
+    setTimeout(resolve, 10000)
+  })
+  if (!cachedPromise) {
+    const importFn = phosphorImports[tag]
+    if (!importFn) {
+      return null
+    }
+    cachedPromise = importFn()
+    globalPhosphorCache.set(tag, cachedPromise)
+  }
+
+  return cachedPromise
+}
+
+async function getSvg(name: IconType, size: IconSizeType, weight: IconWeightType) {
+  // Check if the icon should use Phosphor
+  const phosphorIconTag = phosphorIconsMap[name]
+
+  if (phosphorIconTag && phosphorIconTag !== '') {
+    await loadPhosphorIcon(phosphorIconTag)
+
+    const tag = unsafeStatic(phosphorIconTag)
+
+    const getPhosphorSize = {
+      xxs: '0.5em',
+      xs: '0.75em',
+      sm: '0.75em',
+      md: '1em',
+      mdl: '1.25em',
+      lg: '1.25em',
+      xl: '1.5em',
+      xxl: '1.75em'
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any
+
+    // Return the Phosphor icon with dynamic tag
+    // eslint-disable-next-line lit/binding-positions, lit/no-invalid-html
+    return html`<${tag} size=${getPhosphorSize[size]} weight="${weight}"></${tag}>`
+  }
+
+  // Fallback to regular SVG
+  return svgOptions[name] || html``
+}
+
 @customElement('wui-icon')
 export class WuiIcon extends LitElement {
   public static override styles = [resetStyles, styles]
@@ -251,40 +300,14 @@ export class WuiIcon extends LitElement {
 
     this.style.cssText = `
       --local-width: ${this.size === 'inherit' ? 'inherit' : `var(--apkt-spacing-${getSize[this.size]})`};
+      --local-height: ${this.size === 'inherit' ? 'inherit' : `var(--apkt-spacing-${getSize[this.size]})`};
       --local-color: ${this.color === 'inherit' ? 'inherit' : ICON_COLOR[this.color]}
     `
 
-    // Check if the icon should use Phosphor
-    const phosphorIconTag = phosphorIconsMap[this.name]
-
-    if (phosphorIconTag && phosphorIconTag !== '') {
-      // Import the Phosphor icon component dynamically
-      const importFn = phosphorImports[phosphorIconTag]
-      if (importFn) {
-        importFn()
-      }
-
-      const tag = unsafeStatic(phosphorIconTag)
-
-      const getPhosphorSize = {
-        xxs: '0.5em',
-        xs: '0.75em',
-        sm: '0.75em',
-        md: '1em',
-        mdl: '1.25em',
-        lg: '1.25em',
-        xl: '1.5em',
-        xxl: '1.75em'
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any
-
-      // Return the Phosphor icon with dynamic tag
-      // eslint-disable-next-line lit/binding-positions, lit/no-invalid-html
-      return html`<${tag} size=${getPhosphorSize[this.size]} weight="${this.weight}"></${tag}>`
-    }
-
-    // Fallback to regular SVG
-    return svgOptions[this.name] || html``
+    return html`${until(
+      getSvg(this.name, this.size, this.weight),
+      html`<div class="fallback"></div>`
+    )}`
   }
 }
 

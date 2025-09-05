@@ -1,5 +1,3 @@
-import type { TemplateResult } from 'lit'
-
 export class CacheUtil<K, V> {
   private cache = new Map<K, V>()
 
@@ -24,4 +22,4 @@ export class CacheUtil<K, V> {
   }
 }
 
-export const globalSvgCache = new CacheUtil<string, Promise<TemplateResult<2>>>()
+export const globalPhosphorCache = new CacheUtil<string, Promise<void>>()
