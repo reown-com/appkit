@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-ethers5",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",

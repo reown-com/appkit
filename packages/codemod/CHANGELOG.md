@@ -1,5 +1,21 @@
 # @reown/appkit-experimental
 
+## 1.8.3
+
+### Patch Changes
+
+- [#4607](https://github.com/reown-com/appkit/pull/4607) [`c44d696`](https://github.com/reown-com/appkit/commit/c44d69607496e723c37664a25e306f5563846ece) Thanks [@enesozturk](https://github.com/enesozturk)! - Moves `useAppKitProvider` and `ProviderUtil` to `controllers` package, upgrades Valtio versions
+
+- [#4872](https://github.com/reown-com/appkit/pull/4872) [`8ba484f`](https://github.com/reown-com/appkit/commit/8ba484fa97d2da0ca721b05407a4cc439437e16f) Thanks [@zoruka](https://github.com/zoruka)! - Fix filtering of wallets on ApiController to allow webapp wallets in mobile.
+
+- [#4950](https://github.com/reown-com/appkit/pull/4950) [`756a3ee`](https://github.com/reown-com/appkit/commit/756a3eefe6cb075db1582df6cc7ca3456403a158) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Implemented batching for pulse api analytics
+
+- [#4941](https://github.com/reown-com/appkit/pull/4941) [`721bfcf`](https://github.com/reown-com/appkit/commit/721bfcf90e5d5e7d425d989f3e9a313373e40747) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where funding from the exchange did not work on the first attempt
+
+- [#4957](https://github.com/reown-com/appkit/pull/4957) [`5595d17`](https://github.com/reown-com/appkit/commit/5595d1785821170e301ea4966994419a4cbb21cc) Thanks [@magiziz](https://github.com/magiziz)! - Replaced "deposit from an exchange" to "deposit from exchange" in appkit header
+
+- [#4934](https://github.com/reown-com/appkit/pull/4934) [`6e465c5`](https://github.com/reown-com/appkit/commit/6e465c5f6aaf10c64bc99968f4d3970ecb77831e) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where Solana token-2022 token transfers failed because the send flow used legacy transfer instructions
+
 ## 1.8.2
 
 ### Patch Changes
