@@ -74,6 +74,7 @@ export class W3mSwapInput extends LitElement {
             placeholder="0"
             type="text"
             inputmode="decimal"
+            pattern="[0-9,.]*"
           />
           <wui-text class="market-value" variant="sm-regular" color="secondary">
             ${isMarketValueGreaterThanZero
