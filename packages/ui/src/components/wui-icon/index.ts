@@ -21,6 +21,7 @@ import { solanaSvg } from '../../assets/svg/solana.js'
 import { telegramSvg } from '../../assets/svg/telegram.js'
 import { twitchSvg } from '../../assets/svg/twitch.js'
 import { twitterIconSvg } from '../../assets/svg/twitterIcon.js'
+import { walletSvg } from '../../assets/svg/wallet.js'
 import {
   walletConnectBrownSvg,
   walletConnectInvertSvg,
@@ -94,7 +95,6 @@ const phosphorIconsMap: Record<string, string> = {
   user: 'ph-user',
   verify: 'ph-seal-check',
   verifyFilled: 'ph-seal-check',
-  wallet: 'ph-wallet',
   warning: 'ph-warning',
   warningCircle: 'ph-warning-circle',
 
@@ -123,7 +123,8 @@ const phosphorIconsMap: Record<string, string> = {
   walletConnect: '',
   walletConnectBrown: '',
   walletConnectLightBrown: '',
-  x: ''
+  x: '',
+  wallet: ''
 }
 
 // Dynamic imports for Phosphor components
@@ -177,7 +178,6 @@ const phosphorImports: Record<string, () => Promise<any>> = {
   'ph-spinner': () => import('@phosphor-icons/webcomponents/PhSpinner'),
   'ph-trash': () => import('@phosphor-icons/webcomponents/PhTrash'),
   'ph-user': () => import('@phosphor-icons/webcomponents/PhUser'),
-  'ph-wallet': () => import('@phosphor-icons/webcomponents/PhWallet'),
   'ph-warning': () => import('@phosphor-icons/webcomponents/PhWarning'),
   'ph-warning-circle': () => import('@phosphor-icons/webcomponents/PhWarningCircle'),
   'ph-x': () => import('@phosphor-icons/webcomponents/PhX')
@@ -208,7 +208,8 @@ const svgOptions: Partial<Record<IconType, TemplateResult<2>>> = {
   walletConnectInvert: walletConnectInvertSvg,
   walletConnectBrown: walletConnectBrownSvg,
   walletConnectLightBrown: walletConnectLightBrownSvg,
-  x: xSvg
+  x: xSvg,
+  wallet: walletSvg
 }
 
 // -- Constants ------------------------------------------ //
