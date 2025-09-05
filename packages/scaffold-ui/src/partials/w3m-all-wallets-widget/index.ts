@@ -13,7 +13,6 @@ import {
   RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-list-wallet'
 
 @customElement('w3m-all-wallets-widget')
 export class W3mAllWalletsWidget extends LitElement {
@@ -78,7 +77,7 @@ export class W3mAllWalletsWidget extends LitElement {
     )
 
     return html`
-      <wui-list-wallet
+      <w3m-list-wallet
         name="Search Wallet"
         walletIcon="search"
         showAllWallets
@@ -90,7 +89,7 @@ export class W3mAllWalletsWidget extends LitElement {
         .loading=${this.isFetchingRecommendedWallets}
         ?disabled=${hasWcConnection}
         size="sm"
-      ></wui-list-wallet>
+      ></w3m-list-wallet>
     `
   }
 

@@ -6,7 +6,6 @@ import type { Connector } from '@reown/appkit-controllers'
 import { AssetUtil, ConnectorController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-wallet'
 
 @customElement('w3m-connect-multi-chain-widget')
 export class W3mConnectMultiChainWidget extends LitElement {
@@ -45,7 +44,7 @@ export class W3mConnectMultiChainWidget extends LitElement {
       <wui-flex flexDirection="column" gap="2">
         ${multiChainConnectors.map(
           connector => html`
-            <wui-list-wallet
+            <w3m-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
               .installed=${true}
               name=${connector.name ?? 'Unknown'}
@@ -55,8 +54,9 @@ export class W3mConnectMultiChainWidget extends LitElement {
               size="sm"
               @click=${() => this.onConnector(connector)}
               tabIdx=${ifDefined(this.tabIdx)}
+              rdnsId=${connector.id}
             >
-            </wui-list-wallet>
+            </w3m-list-wallet>
           `
         )}
       </wui-flex>

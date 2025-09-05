@@ -523,7 +523,7 @@ export type Event =
   | {
       type: 'track'
       address?: string
-      event: 'CLICK_GET_WALLET'
+      event: 'CLICK_GET_WALLET_HELP'
     }
   | {
       type: 'track'
@@ -887,6 +887,36 @@ export type Event =
       properties: InitializeAppKitConfigs
     }
   | PayEvent
+  | {
+      type: 'track'
+      address?: string
+      event: 'GET_WALLET'
+      properties: {
+        name: string
+        walletRank: number
+        explorerId: string
+      }
+    }
+  | {
+      type: 'track'
+      address?: string
+      event: 'WALLET_IMPRESSION'
+      properties:
+        | {
+            name: string
+            walletRank: number
+            explorerId: string
+            view: string
+            query?: string
+            certified?: boolean
+          }
+        | {
+            name: string
+            walletRank: number
+            rdnsId: string
+            view: string
+          }
+    }
 
 type PayConfiguration = {
   network: string

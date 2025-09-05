@@ -6,4 +6,11 @@ export { customElement } from '../src/utils/WebComponentsUtil.js'
 export { borderRadius, colors, spacing } from '../src/utils/ThemeConstantsUtil.js'
 export { css } from '../src/utils/ThemeHelperUtil.js'
 
-export type { IconType, VisualType, ColorType, TransactionType } from '../src/utils/TypeUtil.js'
+export type {
+  IconType,
+  VisualType,
+  ColorType,
+  TransactionType,
+  IWalletImage,
+  TagType
+} from '../src/utils/TypeUtil.js'

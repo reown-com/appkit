@@ -576,7 +576,9 @@ export class W3mProfileWalletsView extends LitElement {
 
   private handleAddConnection(namespace: ChainNamespace) {
     ConnectorController.setFilterByNamespace(namespace)
-    RouterController.push('Connect')
+    RouterController.push('Connect', {
+      addWalletForNamespace: namespace
+    })
   }
 
   private getChainLabelInfo(namespace: ChainNamespace) {

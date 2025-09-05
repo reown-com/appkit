@@ -102,6 +102,7 @@ export interface RouterControllerState {
     navigateTo?: RouterControllerState['view']
     navigateWithReplace?: boolean
     swap?: SwapInputArguments
+    addWalletForNamespace?: ChainNamespace
   }
   transactionStack: TransactionAction[]
 }

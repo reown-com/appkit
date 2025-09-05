@@ -13,7 +13,6 @@ import {
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-wallet'
 import '@reown/appkit-ui/wui-text'
 import '@reown/appkit-ui/wui-wallet-image'
 
@@ -86,13 +85,14 @@ export class W3mConnectingMultiChainView extends LitElement {
     return this.activeConnector?.connectors?.map(connector =>
       connector.name
         ? html`
-            <wui-list-wallet
+            <w3m-list-wallet
               imageSrc=${ifDefined(AssetUtil.getChainImage(connector.chain))}
               name=${ConstantsUtil.CHAIN_NAME_MAP[connector.chain]}
               @click=${() => this.onConnector(connector)}
               size="sm"
               data-testid="wui-list-chain-${connector.chain}"
-            ></wui-list-wallet>
+              rdnsId=${connector.id}
+            ></w3m-list-wallet>
           `
         : null
     )
