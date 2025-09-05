@@ -37,7 +37,6 @@ const connectors = [externalTestConnector()]
 const commonAppKitConfig = {
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
-  customWallets: ConstantsUtil.CustomWallets,
   projectId: ConstantsUtil.ProjectId
 }
 const commonWagmiConfig = {
@@ -391,6 +390,13 @@ export const appKitConfigs = {
   },
 
   // ----- Flags -------------------------
+  'flag-custom-wallets': {
+    ...commonAppKitConfig,
+    adapters: ['wagmi', 'solana', 'bitcoin'],
+    wagmiConfig: commonWagmiConfig,
+    networks: ConstantsUtil.EvmNetworks,
+    customWallets: ConstantsUtil.CustomWallets
+  },
   'flag-custom-rpc-url': {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
