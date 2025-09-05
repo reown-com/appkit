@@ -106,7 +106,6 @@ export function SortableSocialGrid({
   isDisabled = () => false,
   measuring,
   modifiers,
-  removable,
   renderItem,
   reorderItems = arrayMove,
   strategy = rectSortingStrategy,
@@ -130,9 +129,6 @@ export function SortableSocialGrid({
   }
   // eslint-disable-next-line no-negated-condition
   const activeIndex = activeId !== null ? getIndex(activeId) : -1
-  const handleRemove = removable
-    ? (id: UniqueIdentifier) => setItems(itms => itms.filter(item => item !== id))
-    : undefined
 
   useEffect(() => {
     if (activeId === null) {
@@ -185,7 +181,6 @@ export function SortableSocialGrid({
                 style={getItemStyles}
                 disabled={isDisabled(value)}
                 renderItem={renderItem}
-                onRemove={handleRemove}
                 animateLayoutChanges={animateLayoutChanges}
                 useDragOverlay={useDragOverlay}
                 getNewIndex={getNewIndex}

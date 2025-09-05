@@ -18,8 +18,6 @@ export interface Props {
   disabled?: boolean
   dragging?: boolean
   handle?: boolean
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  handleProps?: any
   height?: number
   index?: number
   fadeIn?: boolean
@@ -44,7 +42,6 @@ export interface Props {
     transition: Props['transition']
     value: Props['value']
   }): React.ReactElement
-  onToggleOption?: (social: SocialProvider) => void
   connectMethodDragging?: boolean
 }
 

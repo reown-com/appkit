@@ -24,7 +24,6 @@ interface SortableSocialOptionItemProps {
   index: number
   handle: boolean
   useDragOverlay?: boolean
-  onRemove?(id: UniqueIdentifier): void
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   style(values: any): React.CSSProperties
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,11 +36,9 @@ export function SortableSocialOptionItem({
   handle,
   id,
   index,
-  onRemove,
   style,
   renderItem,
-  useDragOverlay,
-  onToggleOption
+  useDragOverlay
 }: SortableSocialOptionItemProps) {
   const {
     attributes,
@@ -50,7 +47,6 @@ export function SortableSocialOptionItem({
     listeners,
     overIndex,
     setNodeRef,
-    setActivatorNodeRef,
     transform,
     transition
   } = useSortable({
@@ -65,7 +61,6 @@ export function SortableSocialOptionItem({
       dragging={isDragging}
       sorting={isSorting}
       handle={handle}
-      handleProps={handle ? { ref: setActivatorNodeRef } : undefined}
       renderItem={renderItem}
       index={index}
       style={style({
@@ -75,14 +70,12 @@ export function SortableSocialOptionItem({
         isSorting,
         overIndex
       })}
-      onRemove={onRemove ? () => onRemove(id) : undefined}
       transform={transform}
       transition={transition}
       listeners={listeners}
       data-index={index}
       data-id={id}
       dragOverlay={!useDragOverlay && isDragging}
-      onToggleOption={onToggleOption}
       {...attributes}
     />
   )
