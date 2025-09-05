@@ -75,6 +75,7 @@ import {
   ErrorUtil,
   HelpersUtil,
   LoggerUtil,
+  TokenUtil,
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
 
@@ -106,6 +107,7 @@ export type Views =
 
 type ViewArguments = {
   Swap: NonNullable<RouterControllerState['data']>['swap']
+  WalletSend: NonNullable<RouterControllerState['data']>['send']
 }
 
 export interface OpenOptions<View extends Views> {
@@ -247,6 +249,18 @@ export abstract class AppKitBaseClient {
         default:
           break
       }
+    }
+  }
+
+  private createCleanupHandler(unsubscribeFunctions: (() => void)[]) {
+    return (): void => {
+      unsubscribeFunctions.forEach(unsubscribe => {
+        try {
+          unsubscribe()
+        } catch {
+          // Ignore cleanup errors
+        }
+      })
     }
   }
 
@@ -1853,6 +1867,11 @@ export abstract class AppKitBaseClient {
   public getCaipNetworks = (namespace?: ChainNamespace) =>
     ChainController.getCaipNetworks(namespace)
 
+  public getCaipNetworkById = (id: string | number) =>
+    this.getCaipNetworks().find(
+      n => n.id.toString() === id.toString() || n.caipNetworkId.toString() === id.toString()
+    )
+
   public getActiveChainNamespace = () => ChainController.state.activeChain
 
   public setRequestedCaipNetworks: (typeof ChainController)['setRequestedCaipNetworks'] = (
@@ -2029,12 +2048,75 @@ export abstract class AppKitBaseClient {
     if (options?.arguments) {
       switch (options?.view) {
         case 'Swap':
-          return ModalController.open({ ...options, data: { swap: options.arguments } })
+          return ModalController.open({
+            ...options,
+            data: { swap: options.arguments as ViewArguments['Swap'] }
+          })
+        case 'WalletSend':
+          return ModalController.open({
+            ...options,
+            data: { send: options.arguments as ViewArguments['WalletSend'] }
+          })
         default:
       }
     }
 
     return ModalController.open(options)
+  }
+
+  public async openSend(
+    args: NonNullable<OpenOptions<'WalletSend'>['arguments']>
+  ): Promise<{ hash: string }> {
+    const namespaceToUse = args.namespace || ChainController.state.activeChain
+    const caipAddress = this.getCaipAddress(namespaceToUse)
+    const chainId = this.getCaipNetwork(namespaceToUse)?.id
+
+    if (!caipAddress) {
+      throw new Error('openSend: caipAddress not found')
+    }
+
+    if (chainId?.toString() !== args.chainId.toString()) {
+      const caipNetwork = this.getCaipNetworkById(args.chainId)
+
+      if (!caipNetwork) {
+        throw new Error(`openSend: caipNetwork with chainId ${args.chainId} not found`)
+      }
+
+      await this.switchNetwork(caipNetwork)
+    }
+
+    try {
+      const symbol = TokenUtil.getTokenSymbolByAddress(args.assetAddress)
+
+      if (symbol) {
+        await ApiController.fetchTokenImages([symbol])
+      }
+    } catch {
+      /* Ignore */
+    }
+
+    await this.open({
+      view: 'WalletSend',
+      arguments: args
+    })
+
+    return new Promise((resolve, reject) => {
+      const unsubscribe = SendController.subscribeKey('hash', hash => {
+        if (hash) {
+          cleanup()
+          resolve({ hash })
+        }
+      })
+
+      const unsubscribeModal = ModalController.subscribe(modal => {
+        if (!modal.open) {
+          cleanup()
+          reject(new Error('Modal closed'))
+        }
+      })
+
+      const cleanup = this.createCleanupHandler([unsubscribe, unsubscribeModal])
+    })
   }
 
   public async close() {

@@ -101,6 +101,7 @@ export { OptionsUtil } from '../src/utils/OptionsUtil.js'
 export { SIWXUtil } from '../src/utils/SIWXUtil.js'
 export { ModalUtil } from '../src/utils/ModalUtil.js'
 export { NetworkUtil } from '../src/utils/NetworkUtil.js'
+export { ViemUtil } from '../src/utils/ViemUtil.js'
 export { withErrorBoundary, AppKitError } from '../src/utils/withErrorBoundary.js'
 export {
   formatCaip19Asset,

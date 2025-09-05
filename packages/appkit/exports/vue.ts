@@ -47,8 +47,8 @@ export function useAppKitNetwork(): Ref<UseAppKitNetworkReturn> {
     caipNetwork: ChainController.state.activeCaipNetwork,
     chainId: ChainController.state.activeCaipNetwork?.id,
     caipNetworkId: ChainController.state.activeCaipNetwork?.caipNetworkId,
-    switchNetwork: (network: AppKitNetwork) => {
-      modal?.switchNetwork(network)
+    switchNetwork: async (network: AppKitNetwork) => {
+      await modal?.switchNetwork(network)
     }
   })
 
