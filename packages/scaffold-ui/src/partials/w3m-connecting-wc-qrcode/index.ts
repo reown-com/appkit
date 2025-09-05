@@ -5,6 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import {
   AssetUtil,
   ConnectionController,
+  CoreHelperUtil,
   EventsController,
   ThemeController
 } from '@reown/appkit-controllers'
@@ -90,11 +91,21 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     const alt = this.wallet ? this.wallet.name : undefined
     ConnectionController.setWcLinking(undefined)
     ConnectionController.setRecentWallet(this.wallet)
+    let uriWithLink = this.uri
+
+    /*
+     * Assign the uri with the link if the wallet has a mobile link
+     * so when the QR is scanned via the main camera it will prompt the wallet to open
+     */
+    if (this.wallet?.mobile_link) {
+      const { redirect } = CoreHelperUtil.formatNativeUrl(this.wallet?.mobile_link, this.uri, null)
+      uriWithLink = redirect
+    }
 
     return html` <wui-qr-code
       size=${size}
       theme=${ThemeController.state.themeMode}
-      uri=${this.uri}
+      uri=${uriWithLink}
       imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet))}
       color=${ifDefined(ThemeController.state.themeVariables['--w3m-qr-color'])}
       alt=${ifDefined(alt)}
