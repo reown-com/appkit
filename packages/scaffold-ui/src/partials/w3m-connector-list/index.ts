@@ -74,10 +74,6 @@ export class W3mConnectorList extends LitElement {
       external
     })
 
-    console.log('>> Connector List - connectorTypeOrder', connectorTypeOrder)
-    console.log('>> Connector List - connectors by type', connectors)
-    console.log('>> Connector List - connectors', this.connectors)
-
     return connectorTypeOrder.map(type => {
       switch (type) {
         /*

@@ -80,14 +80,6 @@ export class W3mConnectRecommendedWidget extends LitElement {
       emailWalletAmount +
       socialWalletAmount
 
-    console.log('>> Conector amounts', {
-      featuredWalletAmount,
-      customWalletAmount,
-      injectedWalletAmount,
-      emailWalletAmount,
-      socialWalletAmount
-    })
-
     if (walletsDisplayed >= DISPLAYED_WALLETS_AMOUNT) {
       this.style.cssText = `display: none`
 
@@ -98,8 +90,6 @@ export class W3mConnectRecommendedWidget extends LitElement {
       0,
       DISPLAYED_WALLETS_AMOUNT - walletsDisplayed
     )
-
-    console.log('>> Connect Recommended Widget - wallets', wallets)
 
     if (!wallets.length) {
       this.style.cssText = `display: none`
