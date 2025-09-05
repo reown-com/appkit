@@ -1,5 +1,20 @@
 # @reown/appkit-ui
 
+## 1.8.2
+
+### Patch Changes
+
+- [#4911](https://github.com/reown-com/appkit/pull/4911) [`2f67cb8`](https://github.com/reown-com/appkit/commit/2f67cb800e99c09a85e89ba7f6dc38486305120a) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix several styling issues when used with AppKit CDN
+
+- [#4923](https://github.com/reown-com/appkit/pull/4923) [`b6adfdc`](https://github.com/reown-com/appkit/commit/b6adfdc1713daefb63393d9fa3a2cb2e31ba00e2) Thanks [@github-actions](https://github.com/apps/github-actions)! - Fixed an issue where Solana token-2022 token transfers failed because the send flow used legacy transfer instructions
+
+- [#4923](https://github.com/reown-com/appkit/pull/4923) [`7fab812`](https://github.com/reown-com/appkit/commit/7fab812a0e796d52332fc38cdbd57ea020d46713) Thanks [@github-actions](https://github.com/apps/github-actions)! - Fix an issue where changing the z-index in ThemeVariables didn't work properly
+
+- Updated dependencies [[`d412fdb`](https://github.com/reown-com/appkit/commit/d412fdbe4a10583844fc19fa5dae364a7e92a9ca), [`b6adfdc`](https://github.com/reown-com/appkit/commit/b6adfdc1713daefb63393d9fa3a2cb2e31ba00e2)]:
+  - @reown/appkit-controllers@1.8.2
+  - @reown/appkit-common@1.8.2
+  - @reown/appkit-wallet@1.8.2
+
 ## 1.8.1
 
 ### Patch Changes

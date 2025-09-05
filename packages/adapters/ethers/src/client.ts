@@ -321,18 +321,14 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   public async syncConnections({
-    connectToFirstConnector,
-    getConnectorStorageInfo
+    connectToFirstConnector
   }: AdapterBlueprint.SyncConnectionsParams) {
     await this.connectionManager?.syncConnections({
       connectors: this.connectors,
       caipNetworks: this.getCaipNetworks(),
       universalProvider: this.universalProvider as UniversalProvider,
       onConnection: this.addConnection.bind(this),
-      onListenProvider: this.listenProviderEvents.bind(this),
-      getConnectionStatusInfo(connectorId) {
-        return getConnectorStorageInfo(connectorId)
-      }
+      onListenProvider: this.listenProviderEvents.bind(this)
     })
 
     if (connectToFirstConnector) {
