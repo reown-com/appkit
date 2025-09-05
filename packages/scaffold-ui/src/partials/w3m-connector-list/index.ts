@@ -56,9 +56,13 @@ export class W3mConnectorList extends LitElement {
 
   // -- Private ------------------------------------------ //
   private connectorListTemplate() {
+    const connectors = ConnectorUtil.getConnectorsByType(
+      this.connectors,
+      this.recommended,
+      this.featured
+    )
     const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
-      ConnectorUtil.getConnectorsByType(this.connectors, this.recommended, this.featured)
-
+      connectors
     const connectorTypeOrder = ConnectorUtil.getConnectorTypeOrder({
       custom,
       recent,
