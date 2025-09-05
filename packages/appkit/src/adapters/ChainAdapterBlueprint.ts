@@ -755,10 +755,6 @@ export namespace AdapterBlueprint {
   export type SyncConnectionsParams = {
     connectToFirstConnector: boolean
     caipNetwork?: CaipNetwork
-    getConnectorStorageInfo: (connectorId: string) => {
-      hasDisconnected: boolean
-      hasConnected: boolean
-    }
   }
 
   export type SignMessageParams = {

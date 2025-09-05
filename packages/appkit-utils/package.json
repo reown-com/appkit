@@ -64,7 +64,7 @@
     "@walletconnect/logger": "2.1.2",
     "@walletconnect/universal-provider": "2.21.7",
     "valtio": "2.1.7",
-    "viem": ">=2.33.3"
+    "viem": ">=2.37.2"
   },
   "devDependencies": {
     "@walletconnect/types": "2.21.7",
@@ -83,7 +83,7 @@
     "valtio": "2.1.7"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",

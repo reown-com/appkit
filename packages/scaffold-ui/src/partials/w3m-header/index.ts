@@ -99,7 +99,7 @@ function headings() {
     DataCapture: 'Profile',
     DataCaptureOtpConfirm: 'Confirm Email',
     FundWallet: 'Fund Wallet',
-    PayWithExchange: 'Deposit from an Exchange',
+    PayWithExchange: 'Deposit from Exchange',
     PayWithExchangeSelectAsset: 'Select Asset'
   }
 }
