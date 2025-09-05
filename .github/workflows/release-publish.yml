@@ -24,13 +24,13 @@ jobs:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
 
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: pnpm
+          cache: bun
 
-      - run: pnpm install
+      - run: bun install
 
       - name: Version or publish
         id: changesets
@@ -39,8 +39,8 @@ jobs:
           branch: ${{ github.ref_name }}
           title: 'chore: version packages'
           commit: 'chore: version packages'
-          publish: pnpm changeset:publish
-          version: pnpm changeset:version
+          publish: bun run changeset:publish
+          version: bun run changeset:version
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -142,7 +142,6 @@ export function SortableConnectMethodItem({
         isSorting,
         overIndex
       })}
-      onRemove={onRemove ? () => onRemove(id) : undefined}
       transform={transform}
       transition={transition}
       wrapperStyle={wrapperStyle?.({ index, isDragging, active, id })}
