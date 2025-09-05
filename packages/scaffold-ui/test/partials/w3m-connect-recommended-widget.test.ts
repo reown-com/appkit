@@ -12,6 +12,7 @@ import {
   RouterController,
   StorageUtil
 } from '@reown/appkit-controllers'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { W3mConnectRecommendedWidget } from '../../src/partials/w3m-connect-recommended-widget'
 import { WalletUtil } from '../../src/utils/WalletUtil.js'
@@ -28,7 +29,8 @@ const MOCK_AUTH_CONNECTOR: AuthConnector = {
   id: 'auth',
   name: 'Auth',
   type: 'AUTH',
-  chain: CommonConstantsUtil.CHAIN.EVM
+  chain: CommonConstantsUtil.CHAIN.EVM,
+  provider: vi.fn() as unknown as W3mFrameProvider
 }
 
 const MOCK_RECOMMENDED_WALLET: WcWallet = {
@@ -248,11 +250,7 @@ describe('W3mConnectRecommendedWidget', () => {
 
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
       ...ApiController.state,
-      recommended: [
-        MOCK_RECOMMENDED_WALLET,
-        { ...MOCK_RECOMMENDED_WALLET, id: 'mock2' },
-        { ...MOCK_RECOMMENDED_WALLET, id: 'mock3' }
-      ]
+      recommended: [MOCK_RECOMMENDED_WALLET, { ...MOCK_RECOMMENDED_WALLET, id: 'mock2' }]
     })
 
     const recommended = WalletUtil.filterOutDuplicateWallets(ApiController.state.recommended)
@@ -266,6 +264,6 @@ describe('W3mConnectRecommendedWidget', () => {
     await elementUpdated(element)
 
     const walletItems = element.shadowRoot?.querySelectorAll('wui-list-wallet')
-    expect(walletItems?.length).toBe(2)
+    expect(walletItems?.length).toBe(1)
   })
 })

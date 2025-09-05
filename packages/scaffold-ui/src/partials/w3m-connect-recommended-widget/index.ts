@@ -18,7 +18,8 @@ import '@reown/appkit-ui/wui-list-wallet'
 
 import { WalletUtil } from '../../utils/WalletUtil.js'
 
-const DISPLAYED_WALLETS_AMOUNT = 5
+// We display maximum 4 recommended wallets
+const DISPLAYED_WALLETS_AMOUNT = 4
 
 @customElement('w3m-connect-recommended-widget')
 export class W3mConnectRecommendedWidget extends LitElement {
@@ -86,6 +87,7 @@ export class W3mConnectRecommendedWidget extends LitElement {
       return null
     }
 
+    // We show maximum 4 recommended wallets, showing 1 less for each already rendered wallet (injected, auth, custom, featured)
     const wallets = WalletUtil.filterOutDuplicateWallets(this.wallets).slice(
       0,
       DISPLAYED_WALLETS_AMOUNT - walletsDisplayed
