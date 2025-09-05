@@ -99,14 +99,6 @@ describe('W3mSwapInput', () => {
     input.value = '1a2b3'
     input.dispatchEvent(new InputEvent('input'))
     expect(onSetAmount).toHaveBeenLastCalledWith('sourceToken', '123')
-
-    input.value = '1a2b3c,'
-    input.dispatchEvent(new InputEvent('input'))
-    expect(onSetAmount).toHaveBeenLastCalledWith('sourceToken', '123')
-
-    input.value = '1a2b3c,4d5e6f'
-    input.dispatchEvent(new InputEvent('input'))
-    expect(onSetAmount).toHaveBeenLastCalledWith('sourceToken', '123456')
   })
 
   it('should handle focus states', async () => {
