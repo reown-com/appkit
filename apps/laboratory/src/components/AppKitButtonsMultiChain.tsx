@@ -218,7 +218,7 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
                   </Button>
 
                   <Button
-                    data-testid="open-swap-with-arguments-hook-button"
+                    data-testid="open-send-with-arguments-hook-button"
                     onClick={handleOpenSendWithArguments}
                   >
                     Open Send with Arguments

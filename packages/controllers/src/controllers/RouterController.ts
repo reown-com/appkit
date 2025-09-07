@@ -10,8 +10,8 @@ import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
-import type { SwapInputArguments, SwapInputTarget } from './SwapController.js'
 import type { SendInputArguments } from './SendController.js'
+import type { SwapInputArguments, SwapInputTarget } from './SwapController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {

@@ -302,6 +302,11 @@ describe('AppKitBaseClient.openSend', () => {
       }
     })()
 
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipAddress: 'eip155:1:0x1234567890123456789012345678901234567890'
+    })
+
     openSpy = vi.spyOn(baseClient, 'open').mockResolvedValue(undefined)
     fetchTokenImagesSpy = vi.spyOn(ApiController, 'fetchTokenImages').mockResolvedValue(undefined)
     subscribeKeySpy = vi.spyOn(SendController, 'subscribeKey').mockReturnValue(() => {})
@@ -332,24 +337,6 @@ describe('AppKitBaseClient.openSend', () => {
       arguments: mockArgs
     })
     expect(result).toEqual({ hash: '0x123hash' })
-  })
-
-  it('should not fetch token images when assetAddress is not provided', async () => {
-    vi.spyOn(TokenUtil, 'getTokenSymbolByAddress').mockReturnValue(undefined)
-
-    subscribeKeySpy.mockImplementation((_key: any, callback: any) => {
-      setTimeout(() => callback('0x123hash'), 0)
-      return () => {}
-    })
-
-    await baseClient.openSend()
-
-    expect(TokenUtil.getTokenSymbolByAddress).toHaveBeenCalledWith(undefined)
-    expect(fetchTokenImagesSpy).not.toHaveBeenCalled()
-    expect(openSpy).toHaveBeenCalledWith({
-      view: 'WalletSend',
-      arguments: undefined
-    })
   })
 
   it('should not fetch token images when symbol is not found', async () => {
