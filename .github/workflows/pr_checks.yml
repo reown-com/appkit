@@ -42,20 +42,19 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
+      - uses: oven-sh/setup-bun@v2
+        name: Install Bun
 
       - name: setup-node
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: 'pnpm'
 
       - name: install
-        run: pnpm install
+        run: bun install
 
       # Cache Turborepo's build outputs (.turbo directory).
-      # This speeds up the 'pnpm build' step significantly if inputs haven't changed.
+      # This speeds up the 'bun run build' step significantly if inputs haven't changed.
       # The key includes the OS and a hash of the lockfile, ensuring dependency changes
       # invalidate the cache.
       # The restore-key provides a fallback to the latest cache without the specific lockfile hash.
@@ -66,12 +65,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .turbo
-          key: ${{ runner.os }}-turbo-build-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-turbo-build-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-turbo-build-
 
       - name: build
-        run: pnpm build
+        run: bun run build
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
@@ -123,14 +122,13 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
+      - uses: oven-sh/setup-bun@v2
+        name: Install Bun
 
       - name: setup-node
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: 'pnpm'
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -148,10 +146,10 @@ jobs:
         run: chmod +x node_modules/*/bin/*
 
       - name: install
-        run: pnpm install
+        run: bun install
 
       - name: check
-        run: pnpm ${{ matrix.style-command }}
+        run: bun run ${{ matrix.style-command }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
@@ -170,14 +168,13 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
+      - uses: oven-sh/setup-bun@v2
+        name: Install Bun
 
       - name: setup-node
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: 'pnpm'
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -195,10 +192,10 @@ jobs:
         run: chmod +x node_modules/*/bin/*
 
       - name: install
-        run: pnpm install
+        run: bun install
 
       - name: build sample apps
-        run: pnpm build:sample-apps
+        run: bun run build:sample-apps
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
@@ -216,14 +213,13 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
+      - uses: oven-sh/setup-bun@v2
+        name: Install Bun
 
       - name: setup-node
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: 'pnpm'
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -241,10 +237,10 @@ jobs:
         run: chmod +x node_modules/*/bin/*
 
       - name: install
-        run: pnpm install
+        run: bun install
 
       - name: Test
-        run: pnpm test:ci
+        run: bun run test:ci
 
       - name: Report
         if: always()
