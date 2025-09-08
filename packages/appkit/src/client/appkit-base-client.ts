@@ -147,7 +147,7 @@ export abstract class AppKitBaseClient {
     this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
     this.readyPromise = this.initialize(options)
 
-    SemVerUtils.checkSDKVersion('html-react-1.8.1')
+    SemVerUtils.checkSDKVersion(options.sdkVersion)
   }
 
   private getChainNamespacesSet(adapters: AdapterBlueprint[], caipNetworks: CaipNetwork[]) {

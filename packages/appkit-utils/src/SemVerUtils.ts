@@ -16,7 +16,7 @@ export const SemVerUtils = {
     const versionRegex = /(?<version>\d+(?:\.\d+)*(?:\.\d+)?)(?:-[a-zA-Z]+\.\d+)?/u
     const match = version.match(versionRegex)
 
-    return match?.groups?.version || null
+    return match?.groups?.['version'] || null
   },
 
   checkSDKVersion(version: AppKitSdkVersion) {
