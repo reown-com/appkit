@@ -13,7 +13,7 @@ export const SemVerUtils = {
      * Match semantic version patterns with optional pre-release suffixes
      * Examples: 1.7.1, 1.7.1-canary.3, 1.7.1-beta.1, 1.7, 1, etc.
      */
-    const versionRegex = /(?<version>\d+(?:\.\d+)*(?:\.\d+)?)(?:-[a-zA-Z]+\.\d+)?/u
+    const versionRegex = /(?<version>\d+(?:\.\d+){0,2})(?:-[a-zA-Z]+\.\d+)?/u
     const match = version.match(versionRegex)
 
     return match?.groups?.['version'] || null
@@ -55,7 +55,7 @@ export const SemVerUtils = {
   },
 
   isValidVersion(version: string | undefined) {
-    return version?.match(/^\d+\.\d+\.\d+$/u)
+    return typeof version === 'string' && /^\d+\.\d+\.\d+$/u.test(version)
   },
 
   isOlder(currentVersion: string, latestVersion: string) {

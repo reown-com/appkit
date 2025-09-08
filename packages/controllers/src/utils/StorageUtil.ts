@@ -916,12 +916,9 @@ export const StorageUtil = {
   getLatestAppKitVersion() {
     try {
       const result = this.getLatestAppKitVersionCache()
-      const version = result?.['version']
+      const version = result?.version
 
-      if (
-        version &&
-        !this.isCacheExpired(version.timestamp, this.cacheExpiry.latestAppKitVersion)
-      ) {
+      if (version && !this.isCacheExpired(result.timestamp, this.cacheExpiry.latestAppKitVersion)) {
         return version
       }
 
@@ -946,8 +943,8 @@ export const StorageUtil = {
   updateLatestAppKitVersion(params: { timestamp: number; version: string }) {
     try {
       const cache = StorageUtil.getLatestAppKitVersionCache()
-      cache['timestamp'] = params.timestamp
-      cache['version'] = params.version
+      cache.timestamp = params.timestamp
+      cache.version = params.version
 
       SafeLocalStorage.setItem(SafeLocalStorageKeys.LATEST_APPKIT_VERSION, JSON.stringify(cache))
     } catch {
