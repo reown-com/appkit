@@ -5,6 +5,10 @@ export default css`
     position: relative;
   }
 
+  :host([fullWidth]) {
+    width: 100%;
+  }
+
   button {
     display: flex;
     justify-content: center;
@@ -30,16 +34,22 @@ export default css`
   }
 
   button[data-size='sm'] {
+    width: 28px;
+    height: 28px;
     padding: ${({ spacing }) => spacing[2]};
     border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
   button[data-size='md'] {
+    width: 40px;
+    height: 40px;
     padding: ${({ spacing }) => spacing[3]};
     border-radius: ${({ borderRadius }) => borderRadius[3]};
   }
 
   button[data-size='lg'] {
+    width: 44px;
+    height: 44px;
     padding: ${({ spacing }) => spacing[3]};
     border-radius: ${({ borderRadius }) => borderRadius[4]};
   }
@@ -51,14 +61,15 @@ export default css`
 
   button[data-size='md'] wui-icon {
     width: 16px;
+    height: 16px;
   }
 
   button[data-size='lg'] wui-icon {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
   }
 
-  button[data-full-width] {
+  button[data-full-width='true'] {
     width: 100%;
   }
 

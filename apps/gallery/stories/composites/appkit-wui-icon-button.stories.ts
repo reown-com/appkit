@@ -16,7 +16,8 @@ export default {
     icon: 'card',
     size: 'md',
     variant: 'accent',
-    disabled: false
+    disabled: false,
+    fullWidth: false
   },
   argTypes: {
     icon: {
@@ -33,6 +34,9 @@ export default {
     },
     disabled: {
       control: { type: 'boolean' }
+    },
+    fullWidth: {
+      control: { type: 'boolean' }
     }
   }
 } as Component
@@ -45,6 +49,7 @@ export const Default: Component = {
         size=${args.size}
         variant=${args.variant}
         ?disabled=${args.disabled}
+        ?fullWidth=${args.fullWidth}
       ></wui-icon-button>
     </gallery-container>
   `
