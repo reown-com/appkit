@@ -4,8 +4,20 @@ import { CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
 import { ConstantsUtil } from './ConstantsUtil.js'
 
 export const SemVerUtils = {
+  extractVersion(version: string | undefined) {
+    if (!version || typeof version !== 'string') {
+      return null
+    }
+
+    // Match semantic version patterns with optional pre-release suffixes
+    // Examples: 1.7.1, 1.7.1-canary.3, 1.7.1-beta.1, 1.7, 1, etc.
+    const versionRegex = /(\d+(?:\.\d+)*(?:\.\d+)?)(?:-[a-zA-Z]+\.\d+)?/
+    const match = version.match(versionRegex)
+    return match ? match[1] : null
+  },
+
   checkSDKVersion(version: AppKitSdkVersion) {
-    const packageVersion = version.split('-')[2]
+    const packageVersion = this.extractVersion(version)
     const isDevelopment = CoreHelperUtil.isDevelopment()
 
     if (!packageVersion || !isDevelopment) {
@@ -44,15 +56,24 @@ export const SemVerUtils = {
   },
 
   isOlder(currentVersion: string, latestVersion: string) {
-    const currentVersionMatch = currentVersion.match(/(?:\d+\.\d+\.\d+)/u)
-    const currentVersionNumber = currentVersionMatch ? currentVersionMatch[1] : currentVersion
+    const currentVersionNumber = this.extractVersion(currentVersion)
+    const latestVersionNumber = this.extractVersion(latestVersion)
 
-    if (!currentVersionNumber || !latestVersion) {
+    if (!currentVersionNumber || !latestVersionNumber) {
       return false
     }
 
-    const current = currentVersionNumber.split('.').map(Number)
-    const latest = latestVersion.split('.').map(Number)
+    // Normalize versions to ensure they have at least 3 parts
+    const normalizeVersion = (version: string) => {
+      const parts = version.split('.').map(Number)
+      while (parts.length < 3) {
+        parts.push(0)
+      }
+      return parts
+    }
+
+    const current = normalizeVersion(currentVersionNumber)
+    const latest = normalizeVersion(latestVersionNumber)
 
     for (let i = 0; i < Math.max(current.length, latest.length); i += 1) {
       const currentPart = current[i] || 0
