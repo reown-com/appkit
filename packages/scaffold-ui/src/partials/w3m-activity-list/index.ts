@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
 import { DateUtil } from '@reown/appkit-common'
-import type { Transaction, TransactionImage } from '@reown/appkit-common'
+import type { Transaction } from '@reown/appkit-common'
 import {
   ChainController,
   CoreHelperUtil,
@@ -159,42 +159,8 @@ export class W3mActivityList extends LitElement {
   }
 
   private templateRenderTransaction(transaction: Transaction, isLastTransaction: boolean) {
-    const { date, descriptions, direction, isAllNFT, images, status, transfers, type } =
+    const { date, descriptions, direction, images, status, type, transfers } =
       this.getTransactionListItemProps(transaction)
-    const hasMultipleTransfers = transfers?.length > 1
-    const hasTwoTransfers = transfers?.length === 2
-
-    if (hasTwoTransfers && !isAllNFT) {
-      return html`
-        <wui-transaction-list-item
-          date=${date}
-          .direction=${direction}
-          id=${isLastTransaction && this.next ? PAGINATOR_ID : ''}
-          status=${status}
-          type=${type}
-          .images=${images}
-          .descriptions=${descriptions}
-        ></wui-transaction-list-item>
-      `
-    }
-
-    if (hasMultipleTransfers) {
-      return transfers.map((transfer, index) => {
-        const description = TransactionUtil.getTransferDescription(transfer)
-        const isLastTransfer = isLastTransaction && index === transfers.length - 1
-
-        return html` <wui-transaction-list-item
-          date=${date}
-          direction=${transfer.direction}
-          id=${isLastTransfer && this.next ? PAGINATOR_ID : ''}
-          status=${status}
-          type=${type}
-          .onlyDirectionIcon=${true}
-          .images=${[images[index]] as TransactionImage[]}
-          .descriptions=${[description]}
-        ></wui-transaction-list-item>`
-      })
-    }
 
     return html`
       <wui-transaction-list-item
@@ -204,6 +170,7 @@ export class W3mActivityList extends LitElement {
         status=${status}
         type=${type}
         .images=${images}
+        .onlyDirectionIcon=${transfers.length > 1}
         .descriptions=${descriptions}
       ></wui-transaction-list-item>
     `
