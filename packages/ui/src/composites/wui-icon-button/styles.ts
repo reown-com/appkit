@@ -9,39 +9,60 @@ export default css`
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: transparent;
+    padding: ${({ spacing }) => spacing[1]};
   }
 
-  button:focus-visible {
-    box-shadow: 0 0 0 4px ${({ tokens }) => tokens.core.foregroundAccent020};
+  /* -- Colors --------------------------------------------------- */
+  button[data-type='accent'] wui-icon {
+    color: ${({ tokens }) => tokens.core.iconAccentPrimary};
   }
 
-  @media (hover: hover) {
-    button:hover:enabled {
-      border-radius: ${({ borderRadius }) => borderRadius[32]};
-    }
+  button[data-type='neutral'][data-variant='primary'] wui-icon {
+    color: ${({ tokens }) => tokens.theme.iconInverse};
   }
 
-  button[data-variant='accent'] {
-    background-color: ${({ tokens }) => tokens.core.foregroundAccent010};
+  button[data-type='neutral'][data-variant='secondary'] wui-icon {
+    color: ${({ tokens }) => tokens.theme.iconDefault};
   }
 
-  button[data-variant='secondary'] {
-    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  button[data-type='success'] wui-icon {
+    color: ${({ tokens }) => tokens.core.iconSuccess};
+  }
+
+  button[data-type='error'] wui-icon {
+    color: ${({ tokens }) => tokens.core.iconError};
+  }
+
+  /* -- Sizes --------------------------------------------------- */
+  button[data-size='xs'] {
+    width: 16px;
+    height: 16px;
+
+    border-radius: ${({ borderRadius }) => borderRadius[1]};
   }
 
   button[data-size='sm'] {
-    padding: ${({ spacing }) => spacing[2]};
-    border-radius: ${({ borderRadius }) => borderRadius[2]};
+    width: 20px;
+    height: 20px;
+    border-radius: ${({ borderRadius }) => borderRadius[1]};
   }
 
   button[data-size='md'] {
-    padding: ${({ spacing }) => spacing[3]};
-    border-radius: ${({ borderRadius }) => borderRadius[3]};
+    width: 24px;
+    height: 24px;
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
   button[data-size='lg'] {
-    padding: ${({ spacing }) => spacing[3]};
-    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    width: 28px;
+    height: 28px;
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
+  }
+
+  button[data-size='xs'] wui-icon {
+    width: 8px;
+    height: 8px;
   }
 
   button[data-size='sm'] wui-icon {
@@ -51,14 +72,48 @@ export default css`
 
   button[data-size='md'] wui-icon {
     width: 16px;
+    height: 16px;
   }
 
   button[data-size='lg'] wui-icon {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
   }
 
-  button[data-full-width] {
+  /* -- Hover --------------------------------------------------- */
+  @media (hover: hover) {
+    button[data-type='accent']:hover:enabled {
+      background-color: ${({ tokens }) => tokens.core.foregroundAccent010};
+    }
+
+    button[data-variant='primary'][data-type='neutral']:hover:enabled {
+      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    }
+
+    button[data-variant='secondary'][data-type='neutral']:hover:enabled {
+      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    }
+
+    button[data-type='success']:hover:enabled {
+      background-color: ${({ tokens }) => tokens.core.backgroundSuccess};
+    }
+
+    button[data-type='error']:hover:enabled {
+      background-color: ${({ tokens }) => tokens.core.backgroundError};
+    }
+  }
+
+  /* -- Focus --------------------------------------------------- */
+  button:focus-visible {
+    box-shadow: 0 0 0 4px ${({ tokens }) => tokens.core.foregroundAccent020};
+  }
+
+  /* -- Properties --------------------------------------------------- */
+  button[data-full-width='true'] {
+    width: 100%;
+  }
+
+  :host([fullWidth]) {
     width: 100%;
   }
 

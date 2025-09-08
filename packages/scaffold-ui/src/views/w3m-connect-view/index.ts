@@ -156,8 +156,8 @@ export class W3mConnectView extends LitElement {
             isEnableWallets &&
             isEnableWalletGuide &&
             this.walletGuide === 'get-started'
-              ? ['1', '3', '0', '3']
-              : ['1', '3', '3', '3']}
+              ? (['0', '3', '0', '3'] as const)
+              : (['0', '3', '3', '3'] as const)}
           >
             ${this.renderConnectMethod(tabIndex)}
           </wui-flex>
