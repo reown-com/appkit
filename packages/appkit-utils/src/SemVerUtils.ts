@@ -9,11 +9,14 @@ export const SemVerUtils = {
       return null
     }
 
-    // Match semantic version patterns with optional pre-release suffixes
-    // Examples: 1.7.1, 1.7.1-canary.3, 1.7.1-beta.1, 1.7, 1, etc.
-    const versionRegex = /(\d+(?:\.\d+)*(?:\.\d+)?)(?:-[a-zA-Z]+\.\d+)?/
+    /*
+     * Match semantic version patterns with optional pre-release suffixes
+     * Examples: 1.7.1, 1.7.1-canary.3, 1.7.1-beta.1, 1.7, 1, etc.
+     */
+    const versionRegex = /(?<version>\d+(?:\.\d+)*(?:\.\d+)?)(?:-[a-zA-Z]+\.\d+)?/u
     const match = version.match(versionRegex)
-    return match ? match[1] : null
+
+    return match?.groups?.version || null
   },
 
   checkSDKVersion(version: AppKitSdkVersion) {
@@ -64,11 +67,12 @@ export const SemVerUtils = {
     }
 
     // Normalize versions to ensure they have at least 3 parts
-    const normalizeVersion = (version: string) => {
+    function normalizeVersion(version: string) {
       const parts = version.split('.').map(Number)
       while (parts.length < 3) {
         parts.push(0)
       }
+
       return parts
     }
 
