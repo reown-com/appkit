@@ -92,10 +92,6 @@ export class W3mWalletSendView extends LitElement {
 
     const isReadOnly = Boolean(this.params)
 
-    if (!this.address) {
-      throw new Error('w3m-wallet-send-view: No account connected')
-    }
-
     return html` <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const}>
       <wui-flex class="inputContainer" gap="2" flexDirection="column">
         <w3m-input-token
