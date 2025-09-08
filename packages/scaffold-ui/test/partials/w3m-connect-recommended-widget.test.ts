@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import type { ConnectorWithProviders, WcWallet } from '@reown/appkit-controllers'
+import type { AuthConnector, ConnectorWithProviders, WcWallet } from '@reown/appkit-controllers'
 import {
   ApiController,
   ConnectorController,
@@ -12,6 +12,7 @@ import {
   RouterController,
   StorageUtil
 } from '@reown/appkit-controllers'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { W3mConnectRecommendedWidget } from '../../src/partials/w3m-connect-recommended-widget'
 import { WalletUtil } from '../../src/utils/WalletUtil.js'
@@ -22,6 +23,14 @@ const MOCK_WALLET_CONNECT_CONNECTOR: ConnectorWithProviders = {
   name: 'WalletConnect',
   type: 'WALLET_CONNECT',
   chain: CommonConstantsUtil.CHAIN.EVM
+}
+
+const MOCK_AUTH_CONNECTOR: AuthConnector = {
+  id: 'auth',
+  name: 'Auth',
+  type: 'AUTH',
+  chain: CommonConstantsUtil.CHAIN.EVM,
+  provider: vi.fn() as unknown as W3mFrameProvider
 }
 
 const MOCK_RECOMMENDED_WALLET: WcWallet = {
@@ -79,7 +88,7 @@ describe('W3mConnectRecommendedWidget', () => {
     expect(element.render()).toBeNull()
   })
 
-  it('should not render if customWallets are set', async () => {
+  it('should render correct amount if customWallets are set', async () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       customWallets: [MOCK_RECOMMENDED_WALLET]
@@ -93,24 +102,23 @@ describe('W3mConnectRecommendedWidget', () => {
       ></w3m-connect-recommended-widget>`
     )
 
-    expect(element.style.display).toBe('none')
+    expect(element.shadowRoot?.querySelectorAll('wui-list-wallet')?.length).toBe(1)
   })
 
-  it('should not render if featuredWalletIds are set', async () => {
+  it('should render correct amount if featuredWalletIds are set', async () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       featuredWalletIds: ['mock-id']
     })
 
     const recommended = WalletUtil.filterOutDuplicateWallets(ApiController.state.recommended)
-
     const element: W3mConnectRecommendedWidget = await fixture(
       html`<w3m-connect-recommended-widget
         .wallets=${recommended}
       ></w3m-connect-recommended-widget>`
     )
 
-    expect(element.style.display).toBe('none')
+    expect(element.shadowRoot?.querySelectorAll('wui-list-wallet')?.length).toBe(1)
   })
 
   it('should not render if there are no recommended wallets', async () => {
@@ -217,6 +225,7 @@ describe('W3mConnectRecommendedWidget', () => {
   })
 
   it('should limit recommended wallets based on injected wallets', async () => {
+    // 1 injected
     const injectedConnector: ConnectorWithProviders = {
       id: 'injected',
       name: 'Injected Wallet',
@@ -224,9 +233,19 @@ describe('W3mConnectRecommendedWidget', () => {
       chain: CommonConstantsUtil.CHAIN.EVM
     }
 
+    // Email and socials (2)
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      features: {
+        socials: ['google'],
+        email: true
+      }
+    })
+
+    // WC
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       ...ConnectorController.state,
-      connectors: [MOCK_WALLET_CONNECT_CONNECTOR, injectedConnector]
+      connectors: [MOCK_WALLET_CONNECT_CONNECTOR, MOCK_AUTH_CONNECTOR, injectedConnector]
     })
 
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
@@ -235,7 +254,6 @@ describe('W3mConnectRecommendedWidget', () => {
     })
 
     const recommended = WalletUtil.filterOutDuplicateWallets(ApiController.state.recommended)
-
     const element: W3mConnectRecommendedWidget = await fixture(
       html`<w3m-connect-recommended-widget
         .wallets=${recommended}
