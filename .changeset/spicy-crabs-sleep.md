@@ -26,4 +26,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Added `openSend` function to customize the send flow experience by pre-configuring the token, amount, chain, and recipient address
+Added send arguments to `open` function to customize the send flow experience by pre-configuring the token, amount, chain, and recipient address
