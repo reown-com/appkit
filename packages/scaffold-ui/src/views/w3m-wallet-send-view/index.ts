@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { type CaipNetworkId } from '@reown/appkit-common'
+import { type CaipAddress } from '@reown/appkit-common'
 import {
   AccountController,
   AssetUtil,
@@ -43,7 +43,7 @@ export class W3mWalletSendView extends LitElement {
 
   @state() private params = RouterController.state.data?.send
 
-  @state() private address = AccountController.state.address
+  @state() private caipAddress = AccountController.state.caipAddress
 
   @state() private message:
     | 'Preview Send'
@@ -65,7 +65,7 @@ export class W3mWalletSendView extends LitElement {
     this.unsubscribe.push(
       ...[
         AccountController.subscribeKey('caipAddress', val => {
-          this.address = CoreHelperUtil.getPlainAddress(val)
+          this.caipAddress = val
         }),
         SendController.subscribe(val => {
           this.token = val.token
@@ -201,13 +201,20 @@ export class W3mWalletSendView extends LitElement {
       return
     }
 
-    const caipNetworkId: CaipNetworkId = `${namespace}:${chainId}`
+    const caipNetwork = ChainController.getCaipNetworkById(chainId, namespace)
+
+    if (!caipNetwork) {
+      SnackController.showError(`Network with id "${chainId}" not found`)
+      this.loading = false
+
+      return
+    }
 
     try {
       const { balance, name, symbol, decimals } = await BalanceUtil.fetchERC20Balance({
-        caipAddress: `${caipNetworkId}:${this.address}`,
+        caipAddress: this.caipAddress as CaipAddress,
         assetAddress,
-        caipNetworkId
+        caipNetwork
       })
 
       if (!name || !symbol || !decimals || !balance) {
@@ -219,8 +226,8 @@ export class W3mWalletSendView extends LitElement {
       SendController.setToken({
         name,
         symbol,
-        chainId: caipNetworkId,
-        address: `${caipNetworkId}:${assetAddress}`,
+        chainId: caipNetwork.id.toString(),
+        address: `${caipNetwork.chainNamespace}:${caipNetwork.id}:${assetAddress}`,
         value: 0,
         price: 0,
         quantity: {

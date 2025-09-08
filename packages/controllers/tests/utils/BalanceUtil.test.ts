@@ -455,7 +455,7 @@ describe('BalanceUtil', () => {
   describe('fetchERC20Balance', () => {
     const mockCaipAddress = 'eip155:1:0x1234567890123456789012345678901234567890'
     const mockAssetAddress = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
-    const mockCaipNetworkId = 'eip155:1'
+    const mockCaipNetwork = mockEthereumNetwork
     const mockAddress = '0x1234567890123456789012345678901234567890'
 
     let mockPublicClient: any
@@ -483,10 +483,10 @@ describe('BalanceUtil', () => {
       const result = await BalanceUtil.fetchERC20Balance({
         caipAddress: mockCaipAddress,
         assetAddress: mockAssetAddress,
-        caipNetworkId: mockCaipNetworkId
+        caipNetwork: mockCaipNetwork
       })
 
-      expect(ViemUtil.createViemPublicClient).toHaveBeenCalledWith(mockCaipNetworkId)
+      expect(ViemUtil.createViemPublicClient).toHaveBeenCalledWith(mockCaipNetwork)
       expect(mockPublicClient.multicall).toHaveBeenCalledWith({
         contracts: [
           {
@@ -537,7 +537,7 @@ describe('BalanceUtil', () => {
       const result = await BalanceUtil.fetchERC20Balance({
         caipAddress: mockCaipAddress,
         assetAddress: mockAssetAddress,
-        caipNetworkId: mockCaipNetworkId
+        caipNetwork: mockCaipNetwork
       })
 
       expect(result).toEqual({
@@ -561,7 +561,7 @@ describe('BalanceUtil', () => {
       const result = await BalanceUtil.fetchERC20Balance({
         caipAddress: mockCaipAddress,
         assetAddress: mockAssetAddress,
-        caipNetworkId: mockCaipNetworkId
+        caipNetwork: mockCaipNetwork
       })
 
       expect(result).toEqual({
@@ -585,7 +585,7 @@ describe('BalanceUtil', () => {
       const result = await BalanceUtil.fetchERC20Balance({
         caipAddress: mockCaipAddress,
         assetAddress: mockAssetAddress,
-        caipNetworkId: mockCaipNetworkId
+        caipNetwork: mockCaipNetwork
       })
 
       expect(result).toEqual({
@@ -604,11 +604,11 @@ describe('BalanceUtil', () => {
         BalanceUtil.fetchERC20Balance({
           caipAddress: mockCaipAddress,
           assetAddress: mockAssetAddress,
-          caipNetworkId: mockCaipNetworkId
+          caipNetwork: mockCaipNetwork
         })
       ).rejects.toThrow('Network error')
 
-      expect(ViemUtil.createViemPublicClient).toHaveBeenCalledWith(mockCaipNetworkId)
+      expect(ViemUtil.createViemPublicClient).toHaveBeenCalledWith(mockCaipNetwork)
       expect(mockPublicClient.multicall).toHaveBeenCalled()
     })
 
@@ -625,7 +625,7 @@ describe('BalanceUtil', () => {
       const result = await BalanceUtil.fetchERC20Balance({
         caipAddress: mockCaipAddress,
         assetAddress: mockAssetAddress,
-        caipNetworkId: mockCaipNetworkId
+        caipNetwork: mockCaipNetwork
       })
 
       expect(result).toEqual({
@@ -649,7 +649,7 @@ describe('BalanceUtil', () => {
       const result = await BalanceUtil.fetchERC20Balance({
         caipAddress: mockCaipAddress,
         assetAddress: mockAssetAddress,
-        caipNetworkId: mockCaipNetworkId
+        caipNetwork: mockCaipNetwork
       })
 
       expect(result).toEqual({

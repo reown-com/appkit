@@ -4,7 +4,6 @@ import {
   type Address,
   type CaipAddress,
   type CaipNetwork,
-  type CaipNetworkId,
   ConstantsUtil,
   ParseUtil
 } from '@reown/appkit-common'
@@ -23,7 +22,7 @@ import { ViemUtil } from './ViemUtil.js'
 interface FetchER20BalanceParams {
   caipAddress: CaipAddress
   assetAddress: string
-  caipNetworkId: CaipNetworkId
+  caipNetwork: CaipNetwork
 }
 
 // -- Controller ---------------------------------------- //
@@ -123,8 +122,8 @@ export const BalanceUtil = {
   filterLowQualityTokens(balances: BlockchainApiBalanceResponse['balances']) {
     return balances.filter(balance => balance.quantity.decimals !== '0')
   },
-  async fetchERC20Balance({ caipAddress, assetAddress, caipNetworkId }: FetchER20BalanceParams) {
-    const publicClient = await ViemUtil.createViemPublicClient(caipNetworkId)
+  async fetchERC20Balance({ caipAddress, assetAddress, caipNetwork }: FetchER20BalanceParams) {
+    const publicClient = await ViemUtil.createViemPublicClient(caipNetwork)
 
     const { address } = ParseUtil.parseCaipAddress(caipAddress)
 

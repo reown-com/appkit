@@ -222,7 +222,7 @@ export abstract class AppKitBaseClient {
     }
 
     if (chainId?.toString() !== args.chainId.toString()) {
-      const caipNetwork = this.getCaipNetworkById(args.chainId)
+      const caipNetwork = ChainController.getCaipNetworkById(args.chainId, namespaceToUse)
 
       if (!caipNetwork) {
         throw new Error(`openSend: caipNetwork with chainId ${args.chainId} not found`)
@@ -279,11 +279,6 @@ export abstract class AppKitBaseClient {
       isSend
     }
   }
-
-  private getCaipNetworkById = (id: string | number) =>
-    this.getCaipNetworks().find(
-      n => n.id.toString() === id.toString() || n.caipNetworkId.toString() === id.toString()
-    )
 
   private async checkAllowedOrigins() {
     try {

@@ -1,6 +1,6 @@
-import { type Chain as ViemChain, type createPublicClient, type http } from 'viem'
+import { type createPublicClient, type defineChain, type http } from 'viem'
 
-import { type CaipNetworkId, ParseUtil } from '@reown/appkit-common'
+import { type CaipNetwork, type CaipNetworkId, ParseUtil } from '@reown/appkit-common'
 
 import { OptionsController } from '../controllers/OptionsController.js'
 
@@ -8,9 +8,9 @@ import { OptionsController } from '../controllers/OptionsController.js'
 type PublicClient = typeof createPublicClient
 type Http = typeof http
 type ViemUtils = {
-  chains: Record<string, ViemChain>
   createPublicClient: PublicClient
   http: Http
+  defineChain: typeof defineChain
 }
 
 // -- Constants ----------------------------------------------------------------
@@ -19,14 +19,12 @@ let cachedViemUtils: ViemUtils | undefined = undefined
 // -- Helpers ------------------------------------------------------------------
 async function loadViemUtils() {
   if (!cachedViemUtils) {
-    const viemChains = await import('viem/chains')
-
-    const { createPublicClient, http } = await import('viem')
+    const { createPublicClient, http, defineChain } = await import('viem')
 
     cachedViemUtils = {
-      chains: viemChains as unknown as Record<string, ViemChain>,
       createPublicClient,
-      http
+      http,
+      defineChain
     }
   }
 
@@ -42,33 +40,27 @@ export const ViemUtil = {
 
     return url.toString()
   },
-  async getViemChainById(caipNetworkId: CaipNetworkId) {
-    const { chains } = await loadViemUtils()
+  async getViemChain(caipNetwork: CaipNetwork) {
+    const { defineChain } = await loadViemUtils()
 
-    const { chainId } = ParseUtil.parseCaipNetworkId(caipNetworkId)
+    const { chainId } = ParseUtil.parseCaipNetworkId(caipNetwork.caipNetworkId)
 
-    for (const chain of Object.values(chains)) {
-      if (chain.id.toString() === chainId.toString()) {
-        return chain
-      }
-    }
-
-    return undefined
+    return defineChain({ ...caipNetwork, id: Number(chainId) })
   },
-  async createViemPublicClient(caipNetworkId: CaipNetworkId) {
+  async createViemPublicClient(caipNetwork: CaipNetwork) {
     const { createPublicClient, http } = await loadViemUtils()
 
     const projectId = OptionsController.state.projectId
 
-    const viemChain = await ViemUtil.getViemChainById(caipNetworkId)
+    const viemChain = await ViemUtil.getViemChain(caipNetwork)
 
     if (!viemChain) {
-      throw new Error(`Chain ${caipNetworkId} not found in viem/chains`)
+      throw new Error(`Chain ${caipNetwork.caipNetworkId} not found in viem/chains`)
     }
 
     return createPublicClient({
       chain: viemChain,
-      transport: http(ViemUtil.getBlockchainApiRpcUrl(caipNetworkId, projectId))
+      transport: http(ViemUtil.getBlockchainApiRpcUrl(caipNetwork.caipNetworkId, projectId))
     })
   }
 }

@@ -1,10 +1,11 @@
 import { fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   AssetUtil,
+  ChainController,
   ConstantsUtil,
   RouterController,
   SendController,
@@ -24,6 +25,18 @@ const mockValidParams = {
   amount: '10.5',
   to: '0x9876543210987654321098765432109876543210'
 }
+const mockMainnet = {
+  id: '1',
+  name: 'Mainnet',
+  chainNamespace: 'eip155',
+  caipNetworkId: 'eip155:1' as const,
+  nativeCurrency: { symbol: 'ETH', name: 'Ethereum', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ['https://mainnet.infura.io/v3/YOUR_INFURA_API_KEY']
+    }
+  }
+} as CaipNetwork
 
 describe('W3mWalletSendView - parameters handling', () => {
   beforeEach(() => {
@@ -49,6 +62,7 @@ describe('W3mWalletSendView - parameters handling', () => {
       decimals: 18,
       balance: '100'
     })
+    vi.spyOn(ChainController, 'getCaipNetworkById').mockReturnValue(mockMainnet)
     vi.spyOn(AssetUtil, 'getTokenImage').mockReturnValue('')
     vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
     vi.spyOn(SendController, 'setToken').mockImplementation(() => {})
@@ -70,14 +84,14 @@ describe('W3mWalletSendView - parameters handling', () => {
       expect(BalanceUtil.fetchERC20Balance).toHaveBeenCalledWith({
         caipAddress: `eip155:1:${mockAddress}`,
         assetAddress: mockValidParams.assetAddress,
-        caipNetworkId: 'eip155:1'
+        caipNetwork: mockMainnet
       })
     })
 
     expect(SendController.setToken).toHaveBeenCalledWith({
       name: 'Test Token',
       symbol: 'TEST',
-      chainId: 'eip155:1',
+      chainId: mockMainnet.id,
       address: 'eip155:1:0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
       value: 0,
       price: 0,
@@ -210,7 +224,7 @@ describe('W3mWalletSendView - parameters handling', () => {
       expect(SendController.setToken).toHaveBeenCalledWith({
         name: 'USD Coin',
         symbol: 'USDC',
-        chainId: 'eip155:1',
+        chainId: mockMainnet.id,
         address: 'eip155:1:0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
         value: 0,
         price: 0,
@@ -239,7 +253,7 @@ describe('W3mWalletSendView - parameters handling', () => {
       expect(SendController.setToken).toHaveBeenCalledWith({
         name: 'Test Token',
         symbol: 'TEST',
-        chainId: 'eip155:1',
+        chainId: mockMainnet.id,
         address: 'eip155:1:0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
         value: 0,
         price: 0,
