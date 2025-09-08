@@ -155,7 +155,7 @@ export class W3mHeader extends LitElement {
   public override render() {
     return html`
       <wui-flex
-        .padding=${['0', '5', '0', '5'] as const}
+        .padding=${['0', '4', '0', '4'] as const}
         justifyContent="space-between"
         alignItems="center"
       >
@@ -184,24 +184,28 @@ export class W3mHeader extends LitElement {
     }
 
     return html`<wui-flex>
-      <wui-icon-link
+      <wui-icon-button
         icon="clock"
+        size="lg"
+        type="neutral"
         variant="primary"
         @click=${() => RouterController.push('SmartSessionList')}
         data-testid="w3m-header-smart-sessions"
-      ></wui-icon-link>
+      ></wui-icon-button>
       ${this.closeButtonTemplate()}
     </wui-flex> `
   }
 
   private closeButtonTemplate() {
     return html`
-      <wui-icon-link
+      <wui-icon-button
         icon="close"
+        size="lg"
+        type="neutral"
         variant="primary"
         @click=${this.onClose.bind(this)}
         data-testid="w3m-header-close"
-      ></wui-icon-link>
+      ></wui-icon-button>
     `
   }
 
@@ -246,22 +250,26 @@ export class W3mHeader extends LitElement {
     }
 
     if (this.showBack && !shouldHideBack) {
-      return html`<wui-icon-link
+      return html`<wui-icon-button
         data-testid="header-back"
         id="dynamic"
         icon="chevronLeft"
+        size="lg"
+        type="neutral"
         variant="primary"
         @click=${this.onGoBack.bind(this)}
-      ></wui-icon-link>`
+      ></wui-icon-button>`
     }
 
-    return html`<wui-icon-link
+    return html`<wui-icon-button
       data-hidden=${!isConnectHelp}
       id="dynamic"
       icon="helpCircle"
+      size="lg"
+      type="neutral"
       variant="primary"
       @click=${this.onWalletHelp.bind(this)}
-    ></wui-icon-link>`
+    ></wui-icon-button>`
   }
 
   private onNetworks() {

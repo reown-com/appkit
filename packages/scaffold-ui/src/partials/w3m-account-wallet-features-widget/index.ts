@@ -18,8 +18,8 @@ import {
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-balance'
+import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon-button'
 import '@reown/appkit-ui/wui-tabs'
 import '@reown/appkit-ui/wui-tooltip'
 import '@reown/appkit-ui/wui-wallet-switch'
@@ -204,13 +204,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
     return html`
       <w3m-tooltip-trigger text="Fund wallet">
-        <wui-icon-button
+        <wui-button
           data-testid="wallet-features-fund-wallet-button"
           @click=${this.onFundWalletClick.bind(this)}
-          icon="dollar"
-          variant="accent"
+          variant="accent-secondary"
+          size="lg"
           fullWidth
-        ></wui-icon-button>
+        >
+          <wui-icon name="dollar"></wui-icon>
+        </wui-button>
       </w3m-tooltip-trigger>
     `
   }
@@ -225,14 +227,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
     return html`
       <w3m-tooltip-trigger text="Swap">
-        <wui-icon-button
+        <wui-button
           fullWidth
           data-testid="wallet-features-swaps-button"
           @click=${this.onSwapClick.bind(this)}
-          icon="recycleHorizontal"
-          variant="accent"
+          variant="accent-secondary"
+          size="lg"
         >
-        </wui-icon-button>
+          <wui-icon name="recycleHorizontal"></wui-icon>
+        </wui-button>
       </w3m-tooltip-trigger>
     `
   }
@@ -248,13 +251,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
     return html`
       <w3m-tooltip-trigger text="Send">
-        <wui-icon-button
+        <wui-button
           fullWidth
           data-testid="wallet-features-send-button"
           @click=${this.onSendClick.bind(this)}
-          icon="send"
-          variant="accent"
-        ></wui-icon-button>
+          variant="accent-secondary"
+          size="lg"
+        >
+          <wui-icon name="send"></wui-icon>
+        </wui-button>
       </w3m-tooltip-trigger>
     `
   }

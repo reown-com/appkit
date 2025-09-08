@@ -14,7 +14,9 @@ export class WuiIconButton extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() icon: IconType = 'card'
 
-  @property() variant: 'accent' | 'secondary' = 'accent'
+  @property() variant: 'primary' | 'secondary' = 'primary'
+
+  @property() type: 'accent' | 'neutral' | 'success' | 'error' = 'accent'
 
   @property() public size: Exclude<SizeType, 'xxs' | 'mdl' | 'xl' | 'xs' | 'xxl'> = 'md'
 
@@ -25,12 +27,13 @@ export class WuiIconButton extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const iconColors = {
-      accent: 'accent-primary',
+      primary: 'accent-primary',
       secondary: 'inverse'
     } as const
 
     return html`<button
       data-variant=${this.variant}
+      data-type=${this.type}
       data-size=${this.size}
       data-full-width=${this.fullWidth}
       ?disabled=${this.disabled}
