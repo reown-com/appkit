@@ -37,7 +37,8 @@ export const StorageUtil = {
     ens: 300000,
     identity: 300000,
     transactionsHistory: 15000,
-    tokenPrice: 15000
+    tokenPrice: 15000,
+    latestAppKitVersion: 604_800_000 // 7 days
   },
   isCacheExpired(timestamp: number, cacheExpiry: number) {
     return Date.now() - timestamp > cacheExpiry
@@ -907,6 +908,49 @@ export const StorageUtil = {
       )
     } catch {
       console.info('Unable to remove token price cache', addresses)
+    }
+  },
+
+  /* ----- AppKit Latest Version ------------------------- */
+  getLatestAppKitVersion() {
+    try {
+      const result = this.getLatestAppKitVersionCache()
+      const version = result?.['version']
+
+      if (
+        version &&
+        !this.isCacheExpired(version.timestamp, this.cacheExpiry.latestAppKitVersion)
+      ) {
+        return version
+      }
+
+      return undefined
+    } catch {
+      console.info('Unable to get latest AppKit version')
+    }
+
+    return undefined
+  },
+  getLatestAppKitVersionCache() {
+    try {
+      const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.LATEST_APPKIT_VERSION)
+
+      return result ? JSON.parse(result) : {}
+    } catch {
+      console.info('Unable to get latest AppKit version cache')
+    }
+
+    return {}
+  },
+  updateLatestAppKitVersion(params: { timestamp: number; version: string }) {
+    try {
+      const cache = StorageUtil.getLatestAppKitVersionCache()
+      cache['timestamp'] = params.timestamp
+      cache['version'] = params.version
+
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.LATEST_APPKIT_VERSION, JSON.stringify(cache))
+    } catch {
+      console.info('Unable to update latest AppKit version on local storage', params)
     }
   }
 }

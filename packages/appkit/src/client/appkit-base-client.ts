@@ -75,6 +75,7 @@ import {
   ErrorUtil,
   HelpersUtil,
   LoggerUtil,
+  SemVerUtils,
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
 
@@ -145,6 +146,8 @@ export abstract class AppKitBaseClient {
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
     this.readyPromise = this.initialize(options)
+
+    SemVerUtils.checkSDKVersion('html-react-1.8.1')
   }
 
   private getChainNamespacesSet(adapters: AdapterBlueprint[], caipNetworks: CaipNetwork[]) {
