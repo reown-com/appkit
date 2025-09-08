@@ -1,5 +1,5 @@
-import type { AppKitSdkVersion } from '@reown/appkit-common'
-import { CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
+import { type AppKitSdkVersion, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { StorageUtil } from '@reown/appkit-controllers'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
 
@@ -21,7 +21,7 @@ export const SemVerUtils = {
 
   checkSDKVersion(version: AppKitSdkVersion) {
     const packageVersion = this.extractVersion(version)
-    const isDevelopment = CoreHelperUtil.isDevelopment()
+    const isDevelopment = CommonConstantsUtil.IS_DEVELOPMENT
 
     if (!packageVersion || !isDevelopment) {
       return

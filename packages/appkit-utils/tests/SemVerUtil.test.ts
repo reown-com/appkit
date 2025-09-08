@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { AppKitSdkVersion } from '@reown/appkit-common'
-import { CoreHelperUtil } from '@reown/appkit-controllers'
+import { type AppKitSdkVersion, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
 import { ConstantsUtil } from '../exports'
 import { SemVerUtils } from '../src/SemVerUtils'
@@ -122,7 +121,9 @@ describe('SemVerUtils', () => {
 
     it('should not check version in production', () => {
       // Mock CoreHelperUtil.isDevelopment to return false
-      const coreHelperMock = vi.spyOn(CoreHelperUtil, 'isDevelopment').mockReturnValueOnce(false)
+      const coreHelperMock = vi
+        .spyOn(CommonConstantsUtil, 'IS_DEVELOPMENT', 'get')
+        .mockReturnValueOnce(false)
 
       SemVerUtils.checkSDKVersion('html-wagmi-1.7.1-canary.3' as any)
 
@@ -135,7 +136,9 @@ describe('SemVerUtils', () => {
 
     it('should not check version when packageVersion is not available', () => {
       // Mock CoreHelperUtil.isDevelopment to return true
-      const coreHelperMock = vi.spyOn(CoreHelperUtil, 'isDevelopment').mockReturnValueOnce(true)
+      const coreHelperMock = vi
+        .spyOn(CommonConstantsUtil, 'IS_DEVELOPMENT', 'get')
+        .mockReturnValueOnce(true)
 
       SemVerUtils.checkSDKVersion('html-react-invalid' as AppKitSdkVersion) // No valid version
 
@@ -148,7 +151,9 @@ describe('SemVerUtils', () => {
 
     it('should check version and warn when current is older than latest', async () => {
       // Mock CoreHelperUtil.isDevelopment to return true
-      const coreHelperMock = vi.spyOn(CoreHelperUtil, 'isDevelopment').mockReturnValueOnce(true)
+      const coreHelperMock = vi
+        .spyOn(CommonConstantsUtil, 'IS_DEVELOPMENT', 'get')
+        .mockReturnValueOnce(true)
 
       // Mock fetch response
       const mockResponse = {
@@ -175,7 +180,9 @@ describe('SemVerUtils', () => {
 
     it('should not warn when current version is newer or equal', async () => {
       // Mock CoreHelperUtil.isDevelopment to return true
-      const coreHelperMock = vi.spyOn(CoreHelperUtil, 'isDevelopment').mockReturnValueOnce(true)
+      const coreHelperMock = vi
+        .spyOn(CommonConstantsUtil, 'IS_DEVELOPMENT', 'get')
+        .mockReturnValueOnce(true)
 
       // Mock fetch response with older version
       const mockResponse = {
@@ -196,7 +203,9 @@ describe('SemVerUtils', () => {
 
     it('should handle invalid npm response gracefully', async () => {
       // Mock CoreHelperUtil.isDevelopment to return true
-      const coreHelperMock = vi.spyOn(CoreHelperUtil, 'isDevelopment').mockReturnValueOnce(true)
+      const coreHelperMock = vi
+        .spyOn(CommonConstantsUtil, 'IS_DEVELOPMENT', 'get')
+        .mockReturnValueOnce(true)
 
       // Mock fetch response with invalid data
       const mockResponse = {

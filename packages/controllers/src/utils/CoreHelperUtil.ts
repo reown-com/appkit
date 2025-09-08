@@ -17,10 +17,6 @@ type SDKFramework = 'html' | 'react' | 'vue' | 'cdn' | 'unity'
 export type OpenTarget = '_blank' | '_self' | 'popupWindow' | '_top'
 
 export const CoreHelperUtil = {
-  isDevelopment() {
-    return typeof process !== 'undefined' && process.env['NODE_ENV'] === 'development'
-  },
-
   isMobile() {
     if (this.isClient()) {
       return Boolean(
