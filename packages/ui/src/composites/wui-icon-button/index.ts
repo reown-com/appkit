@@ -26,11 +26,6 @@ export class WuiIconButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const iconColors = {
-      primary: 'accent-primary',
-      secondary: 'inverse'
-    } as const
-
     return html`<button
       data-variant=${this.variant}
       data-type=${this.type}
@@ -38,7 +33,7 @@ export class WuiIconButton extends LitElement {
       data-full-width=${this.fullWidth}
       ?disabled=${this.disabled}
     >
-      <wui-icon color=${iconColors[this.variant]} name=${this.icon}></wui-icon>
+      <wui-icon color="inherit" name=${this.icon}></wui-icon>
     </button>`
   }
 }
