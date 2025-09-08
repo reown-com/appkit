@@ -38,7 +38,8 @@ export const StorageUtil = {
     identity: 300000,
     transactionsHistory: 15000,
     tokenPrice: 15000,
-    latestAppKitVersion: 604_800_000 // 7 days
+    // 7 Days
+    latestAppKitVersion: 604_800_000
   },
   isCacheExpired(timestamp: number, cacheExpiry: number) {
     return Date.now() - timestamp > cacheExpiry
