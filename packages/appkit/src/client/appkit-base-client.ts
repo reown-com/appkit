@@ -75,8 +75,8 @@ import {
   ErrorUtil,
   HelpersUtil,
   LoggerUtil,
-  TokenUtil,
   SemVerUtils,
+  TokenUtil,
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
 
