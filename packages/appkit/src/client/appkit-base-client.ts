@@ -2115,6 +2115,7 @@ export abstract class AppKitBaseClient {
     }
 
     const { isSwap, isSend } = this.toModalOptions()
+
     if (isSwap(options)) {
       return ModalController.open({
         ...options,

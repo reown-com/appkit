@@ -99,7 +99,7 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
           assetAddress: TokenUtil.TOKEN_ADDRESSES_BY_SYMBOL.USDC[base.id],
           namespace: CommonConstantsUtil.CHAIN.EVM,
           chainId: base.id,
-          to: '0x0D7455CE739f7897a6F17386abc3e7e275beeDCA'
+          to: evmAccount.address as string
         }
       }).then(data => ({ hash: data?.hash }))
 
