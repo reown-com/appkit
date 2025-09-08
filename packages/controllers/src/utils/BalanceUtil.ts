@@ -124,7 +124,7 @@ export const BalanceUtil = {
     return balances.filter(balance => balance.quantity.decimals !== '0')
   },
   async fetchERC20Balance({ caipAddress, assetAddress, caipNetworkId }: FetchER20BalanceParams) {
-    const publicClient = ViemUtil.createViemPublicClient(caipNetworkId)
+    const publicClient = await ViemUtil.createViemPublicClient(caipNetworkId)
 
     const { address } = ParseUtil.parseCaipAddress(caipAddress)
 

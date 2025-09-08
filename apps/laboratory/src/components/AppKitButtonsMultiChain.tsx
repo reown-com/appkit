@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { PresetsUtil } from '@reown/appkit-utils'
+import { TokenUtil } from '@reown/appkit-utils'
 import {
   base,
   bitcoin,
@@ -51,7 +51,7 @@ function getNetworkToSwitch(activeNetwork: CaipNetwork | undefined) {
 }
 
 export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | undefined }) {
-  const { open, openSend } = useAppKit()
+  const { open } = useAppKit()
   const { disconnect } = useDisconnect()
   const { caipNetwork, switchNetwork } = useAppKitNetwork()
   const evmAccount = useAppKitAccount({ namespace: 'eip155' })
@@ -92,19 +92,24 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
 
   async function handleOpenSendWithArguments() {
     try {
-      const { hash } = await openSend({
-        amount: '1',
-        assetAddress: PresetsUtil.TOKEN_ADDRESSES_BY_SYMBOL.USDC[base.id],
-        namespace: CommonConstantsUtil.CHAIN.EVM,
-        chainId: base.id,
-        to: evmAccount.address as string
-      })
+      const { hash } = await open({
+        view: 'WalletSend',
+        arguments: {
+          amount: '1',
+          assetAddress: TokenUtil.TOKEN_ADDRESSES_BY_SYMBOL.USDC[base.id],
+          namespace: CommonConstantsUtil.CHAIN.EVM,
+          chainId: base.id,
+          to: '0x0D7455CE739f7897a6F17386abc3e7e275beeDCA'
+        }
+      }).then(data => ({ hash: data?.hash }))
 
-      toast({
-        title: ConstantsUtil.SigningSucceededToastTitle,
-        description: hash,
-        type: 'success'
-      })
+      if (hash) {
+        toast({
+          title: ConstantsUtil.SigningSucceededToastTitle,
+          description: hash,
+          type: 'success'
+        })
+      }
     } catch (err) {
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,

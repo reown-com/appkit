@@ -46,7 +46,6 @@ export class W3mInputAddress extends LitElement {
   public override render() {
     if (this.readOnly) {
       return html` <wui-flex
-        @click=${this.onBoxClick.bind(this)}
         flexDirection="column"
         justifyContent="center"
         gap="01"

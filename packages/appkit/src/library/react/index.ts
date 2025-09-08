@@ -118,20 +118,14 @@ export function useAppKit() {
   }
 
   async function open<View extends Views>(options?: OpenOptions<View>) {
-    await modal?.open(options)
-  }
-
-  async function openSend(args: NonNullable<OpenOptions<'WalletSend'>['arguments']>) {
-    const w3mModal = modal as AppKit
-
-    return w3mModal.openSend(args)
+    return modal?.open(options)
   }
 
   async function close() {
     await modal?.close()
   }
 
-  return { open, openSend, close }
+  return { open, close }
 }
 
 export function useWalletInfo(namespace?: ChainNamespace) {

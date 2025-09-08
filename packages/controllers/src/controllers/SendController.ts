@@ -88,10 +88,6 @@ const controller = {
     }
   },
 
-  setHash(hash: SendControllerState['hash']) {
-    state.hash = hash
-  },
-
   setTokenAmount(sendTokenAmount: SendControllerState['sendTokenAmount']) {
     state.sendTokenAmount = sendTokenAmount
   },
@@ -166,12 +162,16 @@ const controller = {
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
       })
-      await SendController.sendERC20Token({
+      const { hash } = await SendController.sendERC20Token({
         receiverAddress: SendController.state.receiverAddress,
         tokenAddress: SendController.state.token.address,
         sendTokenAmount: SendController.state.sendTokenAmount,
         decimals: SendController.state.token.quantity.decimals
       })
+
+      if (hash) {
+        state.hash = hash
+      }
     } else {
       EventsController.sendEvent({
         type: 'track',
@@ -183,11 +183,15 @@ const controller = {
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
       })
-      await SendController.sendNativeToken({
+      const { hash } = await SendController.sendNativeToken({
         receiverAddress: SendController.state.receiverAddress,
         sendTokenAmount: SendController.state.sendTokenAmount,
         decimals: SendController.state.token.quantity.decimals
       })
+
+      if (hash) {
+        state.hash = hash
+      }
     }
   },
 
@@ -284,12 +288,10 @@ const controller = {
       }
     })
 
-    if (hash) {
-      SendController.setHash(hash)
-    }
-
     ConnectionController._getClient()?.updateBalance('eip155')
     SendController.resetSend()
+
+    return { hash }
   },
 
   async sendERC20Token(params: ContractWriteParams) {
@@ -338,12 +340,12 @@ const controller = {
         }
       })
 
-      if (hash) {
-        SendController.setHash(hash)
-      }
-
       SendController.resetSend()
+
+      return { hash }
     }
+
+    return { hash: undefined }
   },
 
   async sendSolanaToken() {
@@ -378,7 +380,7 @@ const controller = {
     })
 
     if (hash) {
-      SendController.setHash(hash)
+      state.hash = hash
     }
 
     ConnectionController._getClient()?.updateBalance('solana')

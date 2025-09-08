@@ -104,6 +104,8 @@ export { NetworkUtil } from '../src/utils/NetworkUtil.js'
 export { ViemUtil } from '../src/utils/ViemUtil.js'
 export { withErrorBoundary, AppKitError } from '../src/utils/withErrorBoundary.js'
 export {
+  baseSepoliaUSDC,
+  baseUSDC,
   formatCaip19Asset,
   getExchanges,
   getPayUrl,

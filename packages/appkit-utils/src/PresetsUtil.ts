@@ -115,13 +115,6 @@ export const PresetsUtil = {
     '00000008819873e925422c1ff0f99f7c': 'b3406e4a-bbfc-44fb-e3a6-89673c78b700'
   } as Record<string, string>,
 
-  TOKEN_ADDRESSES_BY_SYMBOL: {
-    USDC: {
-      8453: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-      84532: '0x036CbD53842c5426634e7929541eC2318f3dCF7e'
-    }
-  },
-
   ConnectorImageIds: {
     [CommonConstantsUtil.CONNECTOR_ID.COINBASE]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
     [CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',

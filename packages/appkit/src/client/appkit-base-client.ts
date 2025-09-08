@@ -110,11 +110,15 @@ type ViewArguments = {
   WalletSend: NonNullable<RouterControllerState['data']>['send']
 }
 
-export interface OpenOptions<View extends Views> {
-  view?: View
+export interface OpenOptions<V extends Views | undefined = Views> {
+  view?: V
   uri?: string
   namespace?: ChainNamespace
-  arguments?: View extends keyof ViewArguments ? ViewArguments[View] : never
+  arguments?: V extends 'Swap'
+    ? ViewArguments['Swap']
+    : V extends 'WalletSend'
+      ? ViewArguments['WalletSend']
+      : never
 }
 
 export abstract class AppKitBaseClient {
@@ -205,6 +209,26 @@ export abstract class AppKitBaseClient {
       // If siwx is already configured for ReownAuthentication we keep the current instance
     }
   }
+
+  private toModalOptions() {
+    function isSwap(options?: OpenOptions): options is OpenOptions<'Swap'> {
+      return options?.view === 'Swap'
+    }
+
+    function isSend(options?: OpenOptions): options is OpenOptions<'WalletSend'> {
+      return options?.view === 'WalletSend'
+    }
+
+    return {
+      isSwap,
+      isSend
+    }
+  }
+
+  private getCaipNetworkById = (id: string | number) =>
+    this.getCaipNetworks().find(
+      n => n.id.toString() === id.toString() || n.caipNetworkId.toString() === id.toString()
+    )
 
   private async checkAllowedOrigins() {
     try {
@@ -1867,11 +1891,6 @@ export abstract class AppKitBaseClient {
   public getCaipNetworks = (namespace?: ChainNamespace) =>
     ChainController.getCaipNetworks(namespace)
 
-  public getCaipNetworkById = (id: string | number) =>
-    this.getCaipNetworks().find(
-      n => n.id.toString() === id.toString() || n.caipNetworkId.toString() === id.toString()
-    )
-
   public getActiveChainNamespace = () => ChainController.state.activeChain
 
   public setRequestedCaipNetworks: (typeof ChainController)['setRequestedCaipNetworks'] = (
@@ -2045,26 +2064,28 @@ export abstract class AppKitBaseClient {
       ConnectionController.setUri(options.uri)
     }
 
-    if (options?.arguments) {
-      switch (options?.view) {
-        case 'Swap':
-          return ModalController.open({
-            ...options,
-            data: { swap: options.arguments as ViewArguments['Swap'] }
-          })
-        case 'WalletSend':
-          return ModalController.open({
-            ...options,
-            data: { send: options.arguments as ViewArguments['WalletSend'] }
-          })
-        default:
+    const { isSwap, isSend } = this.toModalOptions()
+
+    if (isSwap(options)) {
+      return ModalController.open({
+        ...options,
+        data: { swap: options.arguments }
+      })
+    } else if (isSend(options)) {
+      if (options.arguments) {
+        return this.openSend(options.arguments)
       }
+
+      return ModalController.open({
+        ...options,
+        data: { send: options.arguments }
+      })
     }
 
     return ModalController.open(options)
   }
 
-  public async openSend(
+  private async openSend(
     args: NonNullable<OpenOptions<'WalletSend'>['arguments']>
   ): Promise<{ hash: string }> {
     const namespaceToUse = args.namespace || ChainController.state.activeChain
@@ -2095,9 +2116,9 @@ export abstract class AppKitBaseClient {
       /* Ignore */
     }
 
-    await this.open({
+    await ModalController.open({
       view: 'WalletSend',
-      arguments: args
+      data: { send: args }
     })
 
     return new Promise((resolve, reject) => {
