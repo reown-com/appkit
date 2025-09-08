@@ -210,6 +210,61 @@ export abstract class AppKitBaseClient {
     }
   }
 
+  private async openSend(
+    args: NonNullable<OpenOptions<'WalletSend'>['arguments']>
+  ): Promise<{ hash: string }> {
+    const namespaceToUse = args.namespace || ChainController.state.activeChain
+    const caipAddress = this.getCaipAddress(namespaceToUse)
+    const chainId = this.getCaipNetwork(namespaceToUse)?.id
+
+    if (!caipAddress) {
+      throw new Error('openSend: caipAddress not found')
+    }
+
+    if (chainId?.toString() !== args.chainId.toString()) {
+      const caipNetwork = this.getCaipNetworkById(args.chainId)
+
+      if (!caipNetwork) {
+        throw new Error(`openSend: caipNetwork with chainId ${args.chainId} not found`)
+      }
+
+      await this.switchNetwork(caipNetwork)
+    }
+
+    try {
+      const symbol = TokenUtil.getTokenSymbolByAddress(args.assetAddress)
+
+      if (symbol) {
+        await ApiController.fetchTokenImages([symbol])
+      }
+    } catch {
+      /* Ignore */
+    }
+
+    await ModalController.open({
+      view: 'WalletSend',
+      data: { send: args }
+    })
+
+    return new Promise((resolve, reject) => {
+      const unsubscribe = SendController.subscribeKey('hash', hash => {
+        if (hash) {
+          cleanup()
+          resolve({ hash })
+        }
+      })
+
+      const unsubscribeModal = ModalController.subscribe(modal => {
+        if (!modal.open) {
+          cleanup()
+          reject(new Error('Modal closed'))
+        }
+      })
+
+      const cleanup = this.createCleanupHandler([unsubscribe, unsubscribeModal])
+    })
+  }
+
   private toModalOptions() {
     function isSwap(options?: OpenOptions): options is OpenOptions<'Swap'> {
       return options?.view === 'Swap'
@@ -2065,7 +2120,6 @@ export abstract class AppKitBaseClient {
     }
 
     const { isSwap, isSend } = this.toModalOptions()
-
     if (isSwap(options)) {
       return ModalController.open({
         ...options,
@@ -2075,69 +2129,9 @@ export abstract class AppKitBaseClient {
       if (options.arguments) {
         return this.openSend(options.arguments)
       }
-
-      return ModalController.open({
-        ...options,
-        data: { send: options.arguments }
-      })
     }
 
     return ModalController.open(options)
-  }
-
-  private async openSend(
-    args: NonNullable<OpenOptions<'WalletSend'>['arguments']>
-  ): Promise<{ hash: string }> {
-    const namespaceToUse = args.namespace || ChainController.state.activeChain
-    const caipAddress = this.getCaipAddress(namespaceToUse)
-    const chainId = this.getCaipNetwork(namespaceToUse)?.id
-
-    if (!caipAddress) {
-      throw new Error('openSend: caipAddress not found')
-    }
-
-    if (chainId?.toString() !== args.chainId.toString()) {
-      const caipNetwork = this.getCaipNetworkById(args.chainId)
-
-      if (!caipNetwork) {
-        throw new Error(`openSend: caipNetwork with chainId ${args.chainId} not found`)
-      }
-
-      await this.switchNetwork(caipNetwork)
-    }
-
-    try {
-      const symbol = TokenUtil.getTokenSymbolByAddress(args.assetAddress)
-
-      if (symbol) {
-        await ApiController.fetchTokenImages([symbol])
-      }
-    } catch {
-      /* Ignore */
-    }
-
-    await ModalController.open({
-      view: 'WalletSend',
-      data: { send: args }
-    })
-
-    return new Promise((resolve, reject) => {
-      const unsubscribe = SendController.subscribeKey('hash', hash => {
-        if (hash) {
-          cleanup()
-          resolve({ hash })
-        }
-      })
-
-      const unsubscribeModal = ModalController.subscribe(modal => {
-        if (!modal.open) {
-          cleanup()
-          reject(new Error('Modal closed'))
-        }
-      })
-
-      const cleanup = this.createCleanupHandler([unsubscribe, unsubscribeModal])
-    })
   }
 
   public async close() {

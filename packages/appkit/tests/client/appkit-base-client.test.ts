@@ -275,9 +275,8 @@ describe('AppKitBaseClient.getCaipNetwork', () => {
   })
 })
 
-describe('AppKitBaseClient.openSend', () => {
+describe('AppKitBaseClient.open', () => {
   let baseClient: AppKitBaseClient
-  let openSpy: MockInstance
   let fetchTokenImagesSpy: MockInstance
   let subscribeKeySpy: MockInstance
   let modalSubscribeSpy: MockInstance
@@ -302,12 +301,23 @@ describe('AppKitBaseClient.openSend', () => {
       }
     })()
 
+    vi.spyOn(ModalController, 'open').mockResolvedValue(undefined)
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              caipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
+              activeCaipAddress: 'eip155:1:0x1234567890123456789012345678901234567890'
+            }
+          }
+        ]
+      ]) as unknown as Map<ChainNamespace, ChainAdapter>,
       activeCaipAddress: 'eip155:1:0x1234567890123456789012345678901234567890'
     })
 
-    openSpy = vi.spyOn(baseClient, 'open').mockResolvedValue(undefined)
     fetchTokenImagesSpy = vi.spyOn(ApiController, 'fetchTokenImages').mockResolvedValue(undefined)
     subscribeKeySpy = vi.spyOn(SendController, 'subscribeKey').mockReturnValue(() => {})
     modalSubscribeSpy = vi.spyOn(ModalController, 'subscribe').mockReturnValue(() => {})
@@ -328,13 +338,13 @@ describe('AppKitBaseClient.openSend', () => {
       return () => {}
     })
 
-    const result = await baseClient.openSend(mockArgs)
+    const result = await baseClient.open({ view: 'WalletSend', arguments: mockArgs })
 
     expect(TokenUtil.getTokenSymbolByAddress).toHaveBeenCalledWith(mockArgs.assetAddress)
     expect(fetchTokenImagesSpy).toHaveBeenCalledWith(['USDC'])
-    expect(openSpy).toHaveBeenCalledWith({
+    expect(ModalController.open).toHaveBeenCalledWith({
       view: 'WalletSend',
-      arguments: mockArgs
+      data: { send: mockArgs }
     })
     expect(result).toEqual({ hash: '0x123hash' })
   })
@@ -354,13 +364,13 @@ describe('AppKitBaseClient.openSend', () => {
       return () => {}
     })
 
-    await baseClient.openSend(mockArgs)
+    await baseClient.open({ view: 'WalletSend', arguments: mockArgs })
 
     expect(TokenUtil.getTokenSymbolByAddress).toHaveBeenCalledWith(mockArgs.assetAddress)
     expect(fetchTokenImagesSpy).not.toHaveBeenCalled()
-    expect(openSpy).toHaveBeenCalledWith({
+    expect(ModalController.open).toHaveBeenCalledWith({
       view: 'WalletSend',
-      arguments: mockArgs
+      data: { send: mockArgs }
     })
   })
 
@@ -380,13 +390,13 @@ describe('AppKitBaseClient.openSend', () => {
       return () => {}
     })
 
-    const result = await baseClient.openSend(mockArgs)
+    const result = await baseClient.open({ view: 'WalletSend', arguments: mockArgs })
 
     expect(TokenUtil.getTokenSymbolByAddress).toHaveBeenCalledWith(mockArgs.assetAddress)
     expect(fetchTokenImagesSpy).toHaveBeenCalledWith(['USDC'])
-    expect(openSpy).toHaveBeenCalledWith({
+    expect(ModalController.open).toHaveBeenCalledWith({
       view: 'WalletSend',
-      arguments: mockArgs
+      data: { send: mockArgs }
     })
     expect(result).toEqual({ hash: '0x123hash' })
   })
@@ -408,7 +418,9 @@ describe('AppKitBaseClient.openSend', () => {
 
     subscribeKeySpy.mockReturnValue(() => {})
 
-    await expect(baseClient.openSend(mockArgs)).rejects.toThrow('Modal closed')
+    await expect(baseClient.open({ view: 'WalletSend', arguments: mockArgs })).rejects.toThrow(
+      'Modal closed'
+    )
   })
 
   it('should resolve with hash when SendController emits hash', async () => {
@@ -428,7 +440,7 @@ describe('AppKitBaseClient.openSend', () => {
 
     modalSubscribeSpy.mockReturnValue(() => {})
 
-    const result = await baseClient.openSend(mockArgs)
+    const result = await baseClient.open({ view: 'WalletSend', arguments: mockArgs })
 
     expect(result).toEqual({ hash: '0xabc123def456' })
   })
