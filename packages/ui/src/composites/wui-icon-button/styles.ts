@@ -19,11 +19,11 @@ export default css`
   }
 
   button[data-type='neutral'][data-variant='primary'] wui-icon {
-    color: ${({ tokens }) => tokens.theme.iconDefault};
+    color: ${({ tokens }) => tokens.theme.iconInverse};
   }
 
   button[data-type='neutral'][data-variant='secondary'] wui-icon {
-    color: ${({ tokens }) => tokens.theme.iconInverse};
+    color: ${({ tokens }) => tokens.theme.iconDefault};
   }
 
   button[data-type='success'] wui-icon {
