@@ -115,7 +115,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
     return html`<wui-flex
       flexDirection="column"
-      .padding=${['0', '5', '4', '5'] as const}
+      .padding=${['0', '3', '4', '3'] as const}
       alignItems="center"
       gap="4"
       data-testid="w3m-account-wallet-features-widget"
@@ -166,7 +166,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     })
     const deduplicatedFeaturesOrder = [...new Set(mergedFeaturesOrder)]
 
-    return html`<wui-flex gap="3">
+    return html`<wui-flex gap="2">
       ${deduplicatedFeaturesOrder.map(feature => {
         switch (feature) {
           case 'fund':

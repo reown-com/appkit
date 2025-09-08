@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 
 import '../../components/wui-icon/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconType, SizeType } from '../../utils/TypeUtil.js'
+import type { IconButtonSize, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -18,7 +18,7 @@ export class WuiIconButton extends LitElement {
 
   @property() type: 'accent' | 'neutral' | 'success' | 'error' = 'accent'
 
-  @property() public size: Exclude<SizeType, 'xxs' | 'mdl' | 'xl' | 'xs' | 'xxl'> = 'md'
+  @property() public size: IconButtonSize = 'md'
 
   @property({ type: Boolean }) public fullWidth = false
 
