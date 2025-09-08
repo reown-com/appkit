@@ -26,6 +26,7 @@ export type SafeLocalStorageItems = {
   '@appkit/history_transactions_cache': string
   '@appkit/token_price_cache': string
   '@appkit/recent_emails': string
+  '@appkit/latest_version': string
   /*
    * DO NOT CHANGE: @walletconnect/universal-provider requires us to set this specific key
    *  This value is a stringified version of { href: stiring; name: string }
@@ -58,7 +59,8 @@ export const SafeLocalStorageKeys = {
   DISCONNECTED_CONNECTOR_IDS: '@appkit/disconnected_connector_ids',
   HISTORY_TRANSACTIONS_CACHE: '@appkit/history_transactions_cache',
   TOKEN_PRICE_CACHE: '@appkit/token_price_cache',
-  RECENT_EMAILS: '@appkit/recent_emails'
+  RECENT_EMAILS: '@appkit/recent_emails',
+  LATEST_APPKIT_VERSION: '@appkit/latest_version'
 } as const satisfies Record<string, keyof SafeLocalStorageItems>
 
 export type SafeLocalStorageKey = keyof SafeLocalStorageItems | NamespacedConnectorKey
