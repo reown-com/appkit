@@ -1,5 +1,23 @@
 # @reown/appkit-cdn
 
+## 1.8.1
+
+### Patch Changes
+
+- [#4891](https://github.com/reown-com/appkit/pull/4891) [`01283a8`](https://github.com/reown-com/appkit/commit/01283a82083a25108665f1d8e5c02194ed5e57e3) Thanks [@magiziz](https://github.com/magiziz)! - Added bitcoin signet network
+
+- [#4892](https://github.com/reown-com/appkit/pull/4892) [`58a66f1`](https://github.com/reown-com/appkit/commit/58a66f1687c8ad7a84ab7aeac9a36a9b2314c885) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where `authConnector` was always included in wagmi config when email and social login were disabled
+
+- [`4ddc9bd`](https://github.com/reown-com/appkit/commit/4ddc9bd9b3c4b0eb7c7cbbf6a86d7c3d6f5813cb) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the question mark icon in the header was not displayed correctly
+
+- Updated dependencies [[`01283a8`](https://github.com/reown-com/appkit/commit/01283a82083a25108665f1d8e5c02194ed5e57e3), [`58a66f1`](https://github.com/reown-com/appkit/commit/58a66f1687c8ad7a84ab7aeac9a36a9b2314c885), [`4ddc9bd`](https://github.com/reown-com/appkit/commit/4ddc9bd9b3c4b0eb7c7cbbf6a86d7c3d6f5813cb)]:
+  - @reown/appkit@1.8.1
+  - @reown/appkit-adapter-ethers@1.8.1
+  - @reown/appkit-adapter-ethers5@1.8.1
+  - @reown/appkit-adapter-solana@1.8.1
+  - @reown/appkit-adapter-wagmi@1.8.1
+  - @reown/appkit-polyfills@1.8.1
+
 ## 1.8.0
 
 ### Patch Changes
