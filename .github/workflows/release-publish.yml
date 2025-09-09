@@ -30,7 +30,7 @@ jobs:
           node-version: 22.x
           cache: pnpm
 
-      - run: pnpm install
+      - run: pnpm ci
 
       - name: Version or publish
         id: changesets

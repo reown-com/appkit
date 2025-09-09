@@ -28,7 +28,7 @@ jobs:
           node-version: 22.x
           cache: pnpm
 
-      - run: pnpm install
+      - run: pnpm ci
 
       - name: Compute next version
         id: next

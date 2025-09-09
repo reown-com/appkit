@@ -105,7 +105,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm ci
 
       - name: Cache Turborepo cache
         uses: actions/cache@v4
@@ -197,7 +197,7 @@ jobs:
       # - name: Tune GitHub-hosted runner network
       #   uses: smorimoto/tune-github-hosted-runner-network@v1
 
-      - name: checkout # Checkout is still needed for pnpm install and playwright config
+      - name: checkout # Checkout is still needed for pnpm ci and playwright config
         uses: actions/checkout@v4
         with:
           repository: reown-com/appkit
@@ -272,7 +272,7 @@ jobs:
         run: chmod +x node_modules/*/bin/* || true # Allow failure if no binaries found
 
       - name: Install dependencies # Install again to link binaries, etc.
-        run: pnpm install --frozen-lockfile
+        run: pnpm ci
 
       # The cache is scoped to the key, version, and branch.
       # Version includes the path e.g. /tmp/playwright_cache
@@ -417,7 +417,7 @@ jobs:
           path: node_modules # Specify path to download into
 
       - name: Install dependencies # Install again to link binaries, etc.
-        run: pnpm install --frozen-lockfile
+        run: pnpm ci
 
       - name: Install Playwright system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true' # <-- Re-enable condition

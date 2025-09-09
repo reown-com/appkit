@@ -42,7 +42,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm ci
         shell: bash
 
       - name: Publish prerelease
@@ -52,7 +52,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
-          pnpm install
+          pnpm ci
           pnpm changeset:pre ${{ github.event.inputs.canaryName }}
           pnpm changeset:version
           pnpm changeset:pre:exit
