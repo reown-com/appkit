@@ -231,7 +231,7 @@ export abstract class AppKitBaseClient {
         throw new Error(`openSend: caipNetwork with chainId ${args.chainId} not found`)
       }
 
-      await this.switchNetwork(caipNetwork)
+      await this.switchNetwork(caipNetwork, true)
     }
 
     try {
@@ -2159,14 +2159,14 @@ export abstract class AppKitBaseClient {
     return ChainController.state.activeCaipNetwork?.id
   }
 
-  public async switchNetwork(appKitNetwork: AppKitNetwork) {
+  public async switchNetwork(appKitNetwork: AppKitNetwork, throwIfFailedToSwitch = false) {
     const network = this.getCaipNetworks().find(n => n.id === appKitNetwork.id)
     if (!network) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.SWITCH_NETWORK_NOT_FOUND, 'error')
 
       return
     }
-    await ChainController.switchActiveNetwork(network)
+    await ChainController.switchActiveNetwork(network, throwIfFailedToSwitch)
   }
 
   public getWalletProvider() {

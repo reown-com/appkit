@@ -410,7 +410,7 @@ const controller = {
     }
   },
 
-  async switchActiveNetwork(network: CaipNetwork) {
+  async switchActiveNetwork(network: CaipNetwork, throwIfFailedToSwitch = false) {
     const namespace = ChainController.state.activeChain
 
     if (!namespace) {
@@ -434,6 +434,10 @@ const controller = {
           ModalController.close()
         }
       } catch (error) {
+        if (throwIfFailedToSwitch) {
+          throw error
+        }
+
         RouterController.goBack()
       }
 
