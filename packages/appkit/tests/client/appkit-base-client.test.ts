@@ -2,7 +2,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import {
   AlertController,
   ApiController,
@@ -443,5 +443,44 @@ describe('AppKitBaseClient.open', () => {
     const result = await baseClient.open({ view: 'WalletSend', arguments: mockArgs })
 
     expect(result).toEqual({ hash: '0xabc123def456' })
+  })
+
+  it('it should throw an error if failed to switch network', async () => {
+    const mockArgs = {
+      assetAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+      amount: '1.0',
+      namespace: 'eip155' as ChainNamespace,
+      chainId: '1',
+      to: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
+    }
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155',
+      activeCaipAddress: 'eip155:137:0x1234567890123456789012345678901234567890',
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              caipAddress: 'eip155:137:0x1234567890123456789012345678901234567890'
+            }
+          }
+        ]
+      ]) as unknown as Map<ChainNamespace, ChainAdapter>
+    })
+
+    vi.spyOn(baseClient as any, 'getCaipNetwork').mockReturnValue({ id: 137 } as CaipNetwork)
+    vi.spyOn(ChainController, 'getCaipNetworkById').mockReturnValue({
+      id: 1,
+      chainNamespace: 'eip155'
+    } as CaipNetwork)
+
+    vi.spyOn(ChainController, 'switchActiveNetwork').mockRejectedValue(
+      new Error('Failed to switch')
+    )
+
+    await expect(baseClient.open({ view: 'WalletSend', arguments: mockArgs })).rejects.toThrow(
+      'Failed to switch'
+    )
   })
 })
