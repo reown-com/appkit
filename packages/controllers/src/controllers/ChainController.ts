@@ -761,6 +761,12 @@ const controller = {
     return ChainController.getAllRequestedCaipNetworks()
   },
 
+  getCaipNetworkById(id: string | number, namespace?: ChainNamespace) {
+    return controller
+      .getCaipNetworks(namespace)
+      .find(n => n.id.toString() === id.toString() || n.caipNetworkId.toString() === id.toString())
+  },
+
   setLastConnectedSIWECaipNetwork(network: CaipNetwork | undefined) {
     state.lastConnectedSIWECaipNetwork = network
   },

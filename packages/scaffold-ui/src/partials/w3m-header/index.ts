@@ -81,6 +81,7 @@ function headings() {
     WalletSend: 'Send',
     WalletSendPreview: 'Review Send',
     WalletSendSelectToken: 'Select Token',
+    WalletSendConfirmed: 'Confirmed',
     WhatIsANetwork: 'What is a network?',
     WhatIsAWallet: 'What is a Wallet?',
     ConnectWallets: 'Connect Wallet',

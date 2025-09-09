@@ -124,7 +124,7 @@ export function useAppKit() {
   }
 
   async function open<View extends Views>(options?: OpenOptions<View>) {
-    await modal?.open(options)
+    return modal?.open(options)
   }
 
   async function close() {

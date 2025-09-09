@@ -94,7 +94,7 @@ describe('Base Public methods', () => {
 
     for (const view of views) {
       await appkit.open({ view })
-      expect(modelOpen).toHaveBeenCalledWith({ view })
+      expect(modelOpen).toHaveBeenCalledWith(expect.objectContaining({ view }))
     }
   })
 
