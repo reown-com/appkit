@@ -1,5 +1,34 @@
 # @reown/appkit-scaffold-ui
 
+## 1.8.3
+
+### Patch Changes
+
+- [#4607](https://github.com/reown-com/appkit/pull/4607) [`c44d696`](https://github.com/reown-com/appkit/commit/c44d69607496e723c37664a25e306f5563846ece) Thanks [@enesozturk](https://github.com/enesozturk)! - Moves `useAppKitProvider` and `ProviderUtil` to `controllers` package, upgrades Valtio versions
+
+- [#4872](https://github.com/reown-com/appkit/pull/4872) [`8ba484f`](https://github.com/reown-com/appkit/commit/8ba484fa97d2da0ca721b05407a4cc439437e16f) Thanks [@zoruka](https://github.com/zoruka)! - Fix filtering of wallets on ApiController to allow webapp wallets in mobile.
+
+- [#4950](https://github.com/reown-com/appkit/pull/4950) [`756a3ee`](https://github.com/reown-com/appkit/commit/756a3eefe6cb075db1582df6cc7ca3456403a158) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Implemented batching for pulse api analytics
+
+- [#4921](https://github.com/reown-com/appkit/pull/4921) [`7495de9`](https://github.com/reown-com/appkit/commit/7495de95e8eea1b54734a25965b43a9f926f28e7) Thanks [@enesozturk](https://github.com/enesozturk)! - Prevent calling SELECT_WALLET event to be trigerred for AppKit Core
+
+- [#4963](https://github.com/reown-com/appkit/pull/4963) [`15f9cd2`](https://github.com/reown-com/appkit/commit/15f9cd238e545bbb4269230637f0d960d6df0ff5) Thanks [@tomiir](https://github.com/tomiir)! - Increases amount of displayed explorer api wallets in main screen to 4. Updates rendering logic to display explorer wallets alongside featured and custom wallets instead of hiding explorer wallets if these wallets were present.
+
+- [#4941](https://github.com/reown-com/appkit/pull/4941) [`721bfcf`](https://github.com/reown-com/appkit/commit/721bfcf90e5d5e7d425d989f3e9a313373e40747) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where funding from the exchange did not work on the first attempt
+
+- [#4957](https://github.com/reown-com/appkit/pull/4957) [`5595d17`](https://github.com/reown-com/appkit/commit/5595d1785821170e301ea4966994419a4cbb21cc) Thanks [@magiziz](https://github.com/magiziz)! - Replaced "deposit from an exchange" to "deposit from exchange" in appkit header
+
+- [#4934](https://github.com/reown-com/appkit/pull/4934) [`6e465c5`](https://github.com/reown-com/appkit/commit/6e465c5f6aaf10c64bc99968f4d3970ecb77831e) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where Solana token-2022 token transfers failed because the send flow used legacy transfer instructions
+
+- [#4920](https://github.com/reown-com/appkit/pull/4920) [`5ab0dda`](https://github.com/reown-com/appkit/commit/5ab0ddab81b9d07a3103b8776ee1aa5c1278ff80) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where changing the z-index in ThemeVariables didn't work properly
+
+- Updated dependencies [[`c44d696`](https://github.com/reown-com/appkit/commit/c44d69607496e723c37664a25e306f5563846ece), [`8ba484f`](https://github.com/reown-com/appkit/commit/8ba484fa97d2da0ca721b05407a4cc439437e16f), [`756a3ee`](https://github.com/reown-com/appkit/commit/756a3eefe6cb075db1582df6cc7ca3456403a158), [`721bfcf`](https://github.com/reown-com/appkit/commit/721bfcf90e5d5e7d425d989f3e9a313373e40747), [`5595d17`](https://github.com/reown-com/appkit/commit/5595d1785821170e301ea4966994419a4cbb21cc), [`99ead12`](https://github.com/reown-com/appkit/commit/99ead12c31d8f591d16e798f229fae84dce5faaa), [`6e465c5`](https://github.com/reown-com/appkit/commit/6e465c5f6aaf10c64bc99968f4d3970ecb77831e), [`5ab0dda`](https://github.com/reown-com/appkit/commit/5ab0ddab81b9d07a3103b8776ee1aa5c1278ff80), [`df63af5`](https://github.com/reown-com/appkit/commit/df63af568507892398a55bc7eb31e37606dac3da)]:
+  - @reown/appkit-utils@1.8.3
+  - @reown/appkit-common@1.8.3
+  - @reown/appkit-controllers@1.8.3
+  - @reown/appkit-ui@1.8.3
+  - @reown/appkit-wallet@1.8.3
+
 ## 1.8.2
 
 ### Patch Changes
