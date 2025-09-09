@@ -735,7 +735,7 @@ describe('Base Public methods', () => {
     expect(switchActiveNetwork).toHaveBeenCalledWith(
       mainnet,
       expect.objectContaining({
-        throwIfFailedToSwitch: false
+        throwOnFailure: false
       })
     )
 

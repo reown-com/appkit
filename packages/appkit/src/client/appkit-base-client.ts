@@ -123,7 +123,7 @@ export interface OpenOptions<V extends Views | undefined = Views> {
 }
 
 interface AppKitSwitchNetworkOptions {
-  throwIfFailedToSwitch?: boolean
+  throwOnFailure?: boolean
 }
 
 export abstract class AppKitBaseClient {
@@ -235,7 +235,7 @@ export abstract class AppKitBaseClient {
         throw new Error(`openSend: caipNetwork with chainId ${args.chainId} not found`)
       }
 
-      await this.switchNetwork(caipNetwork, { throwIfFailedToSwitch: true })
+      await this.switchNetwork(caipNetwork, { throwOnFailure: true })
     }
 
     try {
@@ -2165,7 +2165,7 @@ export abstract class AppKitBaseClient {
 
   public async switchNetwork(
     appKitNetwork: AppKitNetwork,
-    { throwIfFailedToSwitch = false }: AppKitSwitchNetworkOptions = {}
+    { throwOnFailure = false }: AppKitSwitchNetworkOptions = {}
   ) {
     const network = this.getCaipNetworks().find(n => n.id === appKitNetwork.id)
     if (!network) {
@@ -2173,7 +2173,7 @@ export abstract class AppKitBaseClient {
 
       return
     }
-    await ChainController.switchActiveNetwork(network, { throwIfFailedToSwitch })
+    await ChainController.switchActiveNetwork(network, { throwOnFailure })
   }
 
   public getWalletProvider() {

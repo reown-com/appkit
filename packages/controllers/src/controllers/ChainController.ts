@@ -64,7 +64,7 @@ export interface ChainControllerState {
 type ChainControllerStateKey = keyof ChainControllerState
 
 export interface SwitchActiveNetworkOptions {
-  throwIfFailedToSwitch?: boolean
+  throwOnFailure?: boolean
 }
 
 // -- State --------------------------------------------- //
@@ -416,7 +416,7 @@ const controller = {
 
   async switchActiveNetwork(
     network: CaipNetwork,
-    { throwIfFailedToSwitch = false }: SwitchActiveNetworkOptions = {}
+    { throwOnFailure = false }: SwitchActiveNetworkOptions = {}
   ) {
     const namespace = ChainController.state.activeChain
 
@@ -441,7 +441,7 @@ const controller = {
           ModalController.close()
         }
       } catch (error) {
-        if (throwIfFailedToSwitch) {
+        if (throwOnFailure) {
           throw error
         }
 
