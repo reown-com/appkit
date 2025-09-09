@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import chalk from 'chalk'
 import inquirer from 'inquirer'
 
 import {
@@ -9,9 +8,6 @@ import {
   generateRepoUrl,
   runReactNativeCLI
 } from './utils.js'
-
-// Define styles
-const redTip = chalk.hex('#C70039') // Red for tips
 
 // Display CLI Banner
 console.log(banner)
@@ -90,7 +86,7 @@ export async function main() {
   await cloneRepository(repoUrl, directoryName)
 
   const url = 'https://dashboard.reown.com'
-  console.log(`Your ${redTip('Project Id')} will work only on the localhost enviroment`)
+  console.log(`Your 'Project Id' will work only on the localhost environment`)
   console.log(`
 Go to: ${url}
 To create a personal ProjectId
