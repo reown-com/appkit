@@ -233,9 +233,9 @@ describe('W3mHeader', () => {
       expect(trackSpy).toHaveBeenCalledWith({ type: 'track', event: 'CLICK_WALLET_HELP' })
     })
 
-    it('should hide help button when isConnectHelp is false', async () => {
-      RouterController.state.view = 'Account' // This should make isConnectHelp false
-      OptionsController.state.enableNetworkSwitch = false // Ensure help button is rendered instead of network selector
+    it('should hide help button when not in Connect view', async () => {
+      RouterController.state.view = 'Account'
+      OptionsController.state.enableNetworkSwitch = false
       element.requestUpdate()
       await element.updateComplete
       await elementUpdated(element)
