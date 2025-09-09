@@ -63,6 +63,10 @@ export interface ChainControllerState {
 
 type ChainControllerStateKey = keyof ChainControllerState
 
+export interface SwitchActiveNetworkOptions {
+  throwIfFailedToSwitch?: boolean
+}
+
 // -- State --------------------------------------------- //
 const state = proxy<ChainControllerState>({
   chains: proxyMap<ChainNamespace, ChainAdapter>(),
@@ -410,7 +414,10 @@ const controller = {
     }
   },
 
-  async switchActiveNetwork(network: CaipNetwork, throwIfFailedToSwitch = false) {
+  async switchActiveNetwork(
+    network: CaipNetwork,
+    { throwIfFailedToSwitch = false }: SwitchActiveNetworkOptions = {}
+  ) {
     const namespace = ChainController.state.activeChain
 
     if (!namespace) {
