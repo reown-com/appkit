@@ -899,7 +899,7 @@ export type Event =
       event: 'GET_WALLET'
       properties: {
         name: string
-        walletRank: number
+        walletRank: number | undefined
         explorerId: string
       }
     }
@@ -910,7 +910,7 @@ export type Event =
       properties:
         | {
             name: string
-            walletRank: number
+            walletRank: number | undefined
             explorerId: string
             view: string
             query?: string
@@ -918,7 +918,7 @@ export type Event =
           }
         | {
             name: string
-            walletRank: number
+            walletRank: number | undefined
             rdnsId: string
             view: string
           }

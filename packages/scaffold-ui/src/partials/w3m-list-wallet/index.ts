@@ -45,6 +45,8 @@ export class W3mListWallet extends LitElement {
 
   @property() public rdnsId?: string = ''
 
+  @property() public walletRank?: number = undefined
+
   // -- Lifecycle ------------------------------------------- //
   public override connectedCallback() {
     super.connectedCallback()
@@ -108,7 +110,7 @@ export class W3mListWallet extends LitElement {
         event: 'WALLET_IMPRESSION',
         properties: {
           name: this.name,
-          walletRank: 1,
+          walletRank: this.walletRank,
           rdnsId: this.rdnsId,
           view: RouterController.state.view
         }

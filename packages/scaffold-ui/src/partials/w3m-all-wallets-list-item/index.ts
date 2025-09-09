@@ -136,7 +136,7 @@ export class W3mAllWalletsListItem extends LitElement {
       event: 'WALLET_IMPRESSION',
       properties: {
         name: this.wallet.name,
-        walletRank: 1,
+        walletRank: this.wallet.order,
         explorerId: this.explorerId,
         view: RouterController.state.view,
         query: this.walletQuery,
