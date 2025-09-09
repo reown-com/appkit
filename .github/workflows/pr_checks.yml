@@ -52,7 +52,7 @@ jobs:
           cache: 'pnpm'
 
       - name: install
-        run: pnpm ci
+        run: pnpm install --frozen-lockfile
 
       # Cache Turborepo's build outputs (.turbo directory).
       # This speeds up the 'pnpm build' step significantly if inputs haven't changed.
@@ -148,7 +148,7 @@ jobs:
         run: chmod +x node_modules/*/bin/*
 
       - name: install
-        run: pnpm ci
+        run: pnpm install --frozen-lockfile
 
       - name: check
         run: pnpm ${{ matrix.style-command }}
@@ -195,7 +195,7 @@ jobs:
         run: chmod +x node_modules/*/bin/*
 
       - name: install
-        run: pnpm ci
+        run: pnpm install --frozen-lockfile
 
       - name: build sample apps
         run: pnpm build:sample-apps
@@ -241,7 +241,7 @@ jobs:
         run: chmod +x node_modules/*/bin/*
 
       - name: install
-        run: pnpm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Test
         run: pnpm test:ci
