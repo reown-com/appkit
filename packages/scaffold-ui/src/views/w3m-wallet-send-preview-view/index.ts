@@ -43,6 +43,8 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private loading = SendController.state.loading
 
+  @state() private params = RouterController.state.data?.send
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -139,7 +141,7 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private sendValueTemplate() {
-    if (this.token && this.sendTokenAmount) {
+    if (!this.params && this.token && this.sendTokenAmount) {
       const price = this.token.price
       const totalValue = price * this.sendTokenAmount
 
@@ -160,8 +162,12 @@ export class W3mWalletSendPreviewView extends LitElement {
 
     try {
       await SendController.sendToken()
-      SnackController.showSuccess('Transaction started')
-      RouterController.replace('Account')
+      if (this.params) {
+        RouterController.reset('WalletSendConfirmed')
+      } else {
+        SnackController.showSuccess('Transaction started')
+        RouterController.replace('Account')
+      }
     } catch (error) {
       let errMessage = 'Failed to send transaction. Please try again.'
 
