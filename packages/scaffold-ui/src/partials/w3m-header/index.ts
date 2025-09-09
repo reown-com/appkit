@@ -15,7 +15,7 @@ import {
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-icon-button'
 import '@reown/appkit-ui/wui-select'
 import '@reown/appkit-ui/wui-tag'
 import '@reown/appkit-ui/wui-text'
