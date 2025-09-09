@@ -733,9 +733,9 @@ describe('Base Public methods', () => {
     await appKit.switchNetwork(mainnet)
 
     expect(switchActiveNetwork).toHaveBeenCalledWith(
+      mainnet,
       expect.objectContaining({
-        id: mainnet.id,
-        name: mainnet.name
+        throwIfFailedToSwitch: false
       })
     )
 
