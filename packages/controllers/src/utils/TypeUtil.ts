@@ -22,6 +22,7 @@ import type { AccountControllerState } from '../controllers/AccountController.js
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
+import type { RouterControllerState } from '../controllers/RouterController.js'
 
 type InitializeAppKitConfigs = {
   showWallets?: boolean
@@ -464,6 +465,8 @@ export type Event =
         name: string
         platform: Platform
         displayIndex?: number
+        walletRank: number | undefined
+        view: RouterControllerState['view']
       }
     }
   | {
@@ -474,6 +477,8 @@ export type Event =
         method: 'qrcode' | 'mobile' | 'browser' | 'email'
         name: string
         reconnect?: boolean
+        walletRank: number | undefined
+        view: RouterControllerState['view']
       }
     }
   | {
