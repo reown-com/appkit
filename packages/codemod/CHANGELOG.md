@@ -1,5 +1,19 @@
 # @reown/appkit-experimental
 
+## 1.8.4
+
+### Patch Changes
+
+- [#4979](https://github.com/reown-com/appkit/pull/4979) [`75dfdbd`](https://github.com/reown-com/appkit/commit/75dfdbda65d1a6d491a866015669da39e013a810) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where using the `open` function with send arguments and attempting to switch networks did not throw, causing the network state to become inconsistent
+
+- [#4965](https://github.com/reown-com/appkit/pull/4965) [`120b141`](https://github.com/reown-com/appkit/commit/120b1410986c787af0ae15094b02adfee8621efd) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the wallet icon from the SIWX screen was not properly rendered on Safari
+
+- [`8e051a4`](https://github.com/reown-com/appkit/commit/8e051a431fbc6d2d386ceb3c1d2764991b0aece1) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the question mark icon in the header was not displayed correctly
+
+- [#4968](https://github.com/reown-com/appkit/pull/4968) [`504fe04`](https://github.com/reown-com/appkit/commit/504fe04237e8213a39bc7dce42db6175829f38b3) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the send input field did not include number pattern validation when typing characters
+
+- [#4962](https://github.com/reown-com/appkit/pull/4962) [`197dcbf`](https://github.com/reown-com/appkit/commit/197dcbf7a0d1ff89e1e820766714cef2acf1eb17) Thanks [@magiziz](https://github.com/magiziz)! - Added send arguments to `open` function to customize the send flow experience by pre-configuring the token, amount, chain, and recipient address
+
 ## 1.8.3
 
 ### Patch Changes
