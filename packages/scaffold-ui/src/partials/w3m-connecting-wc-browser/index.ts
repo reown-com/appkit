@@ -63,7 +63,7 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
     } catch (error) {
       const isUserRejectedRequestError =
         error instanceof AppKitError && error.originalName === UserRejectedRequestError.name
-        
+
       if (isUserRejectedRequestError) {
         EventsController.sendEvent({
           type: 'track',

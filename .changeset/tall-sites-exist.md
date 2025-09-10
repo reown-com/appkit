@@ -26,4 +26,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where upon user connection rejection a `CONNECT_ERROR` event was logged. It now logs a new new event error called `USER_REJECTED`
+Fixed an issue where upon user connection rejection a `CONNECT_ERROR` event was logged. It now logs a new event error called `USER_REJECTED`
