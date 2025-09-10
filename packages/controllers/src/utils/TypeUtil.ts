@@ -592,7 +592,7 @@ export type Event =
       properties: {
         network: string
         isSmartAccount: boolean
-        message: string
+        message: string | undefined
       }
     }
   | {

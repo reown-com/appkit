@@ -475,7 +475,7 @@ export const SIWXUtil = {
       network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
       isSmartAccount:
         getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-      message: CoreHelperUtil.parseError(error)
+      message: error ? CoreHelperUtil.parseError(error) : undefined
     }
   },
   async clearSessions() {
