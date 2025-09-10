@@ -4,6 +4,7 @@ import { state } from 'lit/decorators.js'
 import {
   ChainController,
   ConnectionController,
+  CoreHelperUtil,
   EventsController,
   ModalController,
   OptionsController,
@@ -114,7 +115,8 @@ export class W3mConnectingSiweView extends LitElement {
         type: 'track',
         properties: {
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
-          isSmartAccount
+          isSmartAccount,
+          message: CoreHelperUtil.parseError(error)
         }
       })
     } finally {
