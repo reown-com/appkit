@@ -74,7 +74,10 @@ export const SIWXUtil = {
       EventsController.sendEvent({
         type: 'track',
         event: 'SIWX_AUTH_ERROR',
-        properties: this.getSIWXEventProperties()
+        properties: {
+          ...this.getSIWXEventProperties(),
+          message: CoreHelperUtil.parseError(error)
+        }
       })
 
       // eslint-disable-next-line no-console
@@ -136,8 +139,6 @@ export const SIWXUtil = {
         properties: this.getSIWXEventProperties()
       })
     } catch (error) {
-      const properties = this.getSIWXEventProperties()
-
       if (!ModalController.state.open || RouterController.state.view === 'ApproveTransaction') {
         await ModalController.open({
           view: 'SIWXSignMessage'
@@ -148,7 +149,10 @@ export const SIWXUtil = {
       EventsController.sendEvent({
         type: 'track',
         event: 'SIWX_AUTH_ERROR',
-        properties
+        properties: {
+          ...this.getSIWXEventProperties(),
+          message: CoreHelperUtil.parseError(error)
+        }
       })
 
       // eslint-disable-next-line no-console
@@ -453,7 +457,10 @@ export const SIWXUtil = {
         EventsController.sendEvent({
           type: 'track',
           event: 'SIWX_AUTH_ERROR',
-          properties: SIWXUtil.getSIWXEventProperties()
+          properties: {
+            ...SIWXUtil.getSIWXEventProperties(),
+            message: CoreHelperUtil.parseError(error)
+          }
         })
 
         // eslint-disable-next-line no-console

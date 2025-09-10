@@ -4,6 +4,7 @@ import { state } from 'lit/decorators.js'
 import {
   ChainController,
   ConnectionController,
+  CoreHelperUtil,
   EventsController,
   ModalController,
   OptionsController,
@@ -86,6 +87,7 @@ export class W3mConnectingSiweView extends LitElement {
       SIWEController.setStatus('loading')
       const session = await SIWEController.signIn()
       SIWEController.setStatus('success')
+      console.log('>>> SIWX_AUTH_SUCCESS3')
       EventsController.sendEvent({
         event: 'SIWX_AUTH_SUCCESS',
         type: 'track',
@@ -114,7 +116,8 @@ export class W3mConnectingSiweView extends LitElement {
         type: 'track',
         properties: {
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
-          isSmartAccount
+          isSmartAccount,
+          message: CoreHelperUtil.parseError(error)
         }
       })
     } finally {
