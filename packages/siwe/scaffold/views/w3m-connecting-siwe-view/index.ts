@@ -87,7 +87,6 @@ export class W3mConnectingSiweView extends LitElement {
       SIWEController.setStatus('loading')
       const session = await SIWEController.signIn()
       SIWEController.setStatus('success')
-      console.log('>>> SIWX_AUTH_SUCCESS3')
       EventsController.sendEvent({
         event: 'SIWX_AUTH_SUCCESS',
         type: 'track',
