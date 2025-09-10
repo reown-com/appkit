@@ -47,13 +47,13 @@ export class UniversalConnector {
 
   public static async init(config: Config) {
     const provider = await UniversalProvider.init({
-      ...config.providerConfig,
+      ...(config.providerConfig || {}),
       projectId: config.projectId,
       metadata: config.metadata
     })
 
     const appKitConfig: CreateAppKit = {
-      ...config.modalConfig,
+      ...(config.modalConfig || {}),
       networks: config.networks.flatMap(network => network.chains) as [
         CaipNetwork,
         ...CaipNetwork[]
