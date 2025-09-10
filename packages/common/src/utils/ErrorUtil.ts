@@ -20,6 +20,7 @@ type RpcProviderError = {
 // -- Classes ---------------------------------------------------------------- //
 export class ProviderRpcError extends Error {
   public code: ProviderRpcErrorCode
+  override name = 'ProviderRpcError'
 
   constructor(cause: unknown, options: RpcProviderError) {
     super(options.message, { cause })
