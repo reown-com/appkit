@@ -10,10 +10,10 @@ export const SemVerUtils = {
     }
 
     /*
-     * Match semantic version patterns with optional pre-release suffixes
-     * Examples: 1.7.1, 1.7.1-canary.3, 1.7.1-beta.1, 1.7, 1, etc.
+     * Match semantic version patterns with optional pre-release suffixes and version range operators
+     * Examples: 1.7.1, 1.7.1-canary.3, 1.7.1-beta.1, 1.7, 1, ^1.8.3, >=1.x.x, <=1.x.x, etc.
      */
-    const versionRegex = /(?<version>\d+(?:\.\d+){0,2})(?:-[a-zA-Z]+\.\d+)?/u
+    const versionRegex = /(?:[~^>=<]+\s*)?(?<version>\d+(?:\.\d+){0,2})(?:-[a-zA-Z]+\.\d+)?/u
     const match = version.match(versionRegex)
 
     return match?.groups?.['version'] || null

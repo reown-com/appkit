@@ -27,6 +27,34 @@ describe('SemVerUtils', () => {
       expect(SemVerUtils.extractVersion('3.1.0-beta.5')).toBe('3.1.0')
     })
 
+    it('should extract version from strings with version range operators', () => {
+      expect(SemVerUtils.extractVersion('^1.8.3')).toBe('1.8.3')
+      expect(SemVerUtils.extractVersion('~1.7.1')).toBe('1.7.1')
+      expect(SemVerUtils.extractVersion('>=1.5.0')).toBe('1.5.0')
+      expect(SemVerUtils.extractVersion('<=2.0.0')).toBe('2.0.0')
+      expect(SemVerUtils.extractVersion('<1.9.0')).toBe('1.9.0')
+      expect(SemVerUtils.extractVersion('>1.6.5')).toBe('1.6.5')
+      expect(SemVerUtils.extractVersion('>=1.x.x')).toBe('1')
+      expect(SemVerUtils.extractVersion('<=2.x.x')).toBe('2')
+      expect(SemVerUtils.extractVersion('^1.7')).toBe('1.7')
+      expect(SemVerUtils.extractVersion('~2')).toBe('2')
+    })
+
+    it('should extract version from strings with multiple operators and whitespace', () => {
+      expect(SemVerUtils.extractVersion('^  1.8.3')).toBe('1.8.3')
+      expect(SemVerUtils.extractVersion('>=  1.5.0')).toBe('1.5.0')
+      expect(SemVerUtils.extractVersion('<=   2.0.0')).toBe('2.0.0')
+      expect(SemVerUtils.extractVersion('<    1.9.0')).toBe('1.9.0')
+      expect(SemVerUtils.extractVersion('>   1.6.5')).toBe('1.6.5')
+    })
+
+    it('should extract version from strings with operators and pre-release suffixes', () => {
+      expect(SemVerUtils.extractVersion('^1.8.3-beta.1')).toBe('1.8.3')
+      expect(SemVerUtils.extractVersion('~1.7.1-canary.5')).toBe('1.7.1')
+      expect(SemVerUtils.extractVersion('>=1.5.0-alpha.2')).toBe('1.5.0')
+      expect(SemVerUtils.extractVersion('<=2.0.0-rc.1')).toBe('2.0.0')
+    })
+
     it('should handle edge cases', () => {
       expect(SemVerUtils.extractVersion('')).toBe(null)
       expect(SemVerUtils.extractVersion('no-version-here')).toBe(null)

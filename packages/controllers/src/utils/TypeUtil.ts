@@ -600,6 +600,7 @@ export type Event =
       properties: {
         network: string
         isSmartAccount: boolean
+        message: string | undefined
       }
     }
   | {
