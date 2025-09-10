@@ -18,7 +18,7 @@ import {
 } from '@/src/utils/DataUtil'
 
 export default function HomePage() {
-  console.log('Test change 2')
+  console.log('Test change 3')
 
   return (
     <>
