@@ -74,10 +74,7 @@ export const SIWXUtil = {
       EventsController.sendEvent({
         type: 'track',
         event: 'SIWX_AUTH_ERROR',
-        properties: {
-          ...this.getSIWXEventProperties(),
-          message: CoreHelperUtil.parseError(error)
-        }
+        properties: this.getSIWXEventProperties(error)
       })
 
       // eslint-disable-next-line no-console
@@ -149,10 +146,7 @@ export const SIWXUtil = {
       EventsController.sendEvent({
         type: 'track',
         event: 'SIWX_AUTH_ERROR',
-        properties: {
-          ...this.getSIWXEventProperties(),
-          message: CoreHelperUtil.parseError(error)
-        }
+        properties: this.getSIWXEventProperties(error)
       })
 
       // eslint-disable-next-line no-console
@@ -457,10 +451,7 @@ export const SIWXUtil = {
         EventsController.sendEvent({
           type: 'track',
           event: 'SIWX_AUTH_ERROR',
-          properties: {
-            ...SIWXUtil.getSIWXEventProperties(),
-            message: CoreHelperUtil.parseError(error)
-          }
+          properties: SIWXUtil.getSIWXEventProperties(error)
         })
 
         // eslint-disable-next-line no-console
@@ -473,7 +464,7 @@ export const SIWXUtil = {
 
     return true
   },
-  getSIWXEventProperties() {
+  getSIWXEventProperties(error?: unknown) {
     const namespace = ChainController.state.activeChain
 
     if (!namespace) {
@@ -483,7 +474,8 @@ export const SIWXUtil = {
     return {
       network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
       isSmartAccount:
-        getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+      message: CoreHelperUtil.parseError(error)
     }
   },
   async clearSessions() {
