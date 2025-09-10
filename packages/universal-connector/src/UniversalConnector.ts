@@ -47,6 +47,7 @@ export class UniversalConnector {
 
   public static async init(config: Config) {
     const provider = await UniversalProvider.init({
+      ...config.providerConfig,
       projectId: config.projectId,
       metadata: config.metadata
     })
