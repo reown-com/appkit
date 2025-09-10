@@ -7,12 +7,17 @@ export type Controller = Record<string, any>
 export class AppKitError extends Error {
   public category: TelemetryErrorCategory
   public originalError: unknown
+  public originalName = 'AppKitError'
 
   constructor(message: string, category: TelemetryErrorCategory, originalError?: unknown) {
     super(message)
     this.name = 'AppKitError'
     this.category = category
     this.originalError = originalError
+
+    if (originalError && originalError instanceof Error) {
+      this.originalName = originalError.name
+    }
 
     // Ensure `this instanceof AppKitError` is true, important for custom errors.
     Object.setPrototypeOf(this, AppKitError.prototype)
