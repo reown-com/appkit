@@ -18,6 +18,8 @@ import {
 } from '@/src/utils/DataUtil'
 
 export default function HomePage() {
+  console.log('Test change')
+
   return (
     <>
       <ConfigurationList title="Featured" sdkOptions={featuredSdkOptions} />
