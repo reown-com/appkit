@@ -1,0 +1,21 @@
+name: 'CTA Assistant'
+on:
+  issue_comment:
+    types: [created]
+  pull_request_target:
+    types: [opened, closed, synchronize]
+
+# Required permissions
+permissions:
+  actions: write
+  contents: write # can be 'read' if signatures are in remote repository
+  pull-requests: write
+  statuses: write
+
+jobs:
+  CTA:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: walletconnect/actions/github/cta-assistant@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
