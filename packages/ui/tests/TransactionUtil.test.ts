@@ -122,3 +122,81 @@ describe('TransactionUtil.getTransactionDescriptions', () => {
     expect(desc[0]).toBe('success')
   })
 })
+
+describe('TransactionUtil.mergeTransfers', () => {
+  const createToken1Transfer = (quantity = '100') => ({
+    fungible_info: {
+      name: 'Token1',
+      symbol: 'TOK1',
+      icon: { url: 'token1-url' }
+    },
+    direction: 'in' as const,
+    quantity: { numeric: quantity }
+  })
+
+  const createToken2Transfer = (quantity = '200') => ({
+    fungible_info: {
+      name: 'Token2',
+      symbol: 'TOK2',
+      icon: { url: 'token2-url' }
+    },
+    direction: 'in' as const,
+    quantity: { numeric: quantity }
+  })
+
+  it('returns empty array for empty input', () => {
+    const result = TransactionUtil.mergeTransfers([])
+    expect(result).toEqual([])
+  })
+
+  it('returns single transfer unchanged', () => {
+    const token1Transfer = createToken1Transfer()
+    const result = TransactionUtil.mergeTransfers([token1Transfer])
+    expect(result).toEqual([token1Transfer])
+  })
+
+  it('returns multiple transfers with different names unchanged', () => {
+    const token1Transfer = createToken1Transfer()
+    const token2Transfer = createToken2Transfer()
+    const result = TransactionUtil.mergeTransfers([token1Transfer, token2Transfer])
+    expect(result).toEqual([token1Transfer, token2Transfer])
+  })
+
+  it('merges transfers with same token name', () => {
+    const token1Transfer = createToken1Transfer('100')
+    const token1Transfer2 = createToken1Transfer('50')
+    const result = TransactionUtil.mergeTransfers([token1Transfer, token1Transfer2])
+    expect(result.length).toBe(1)
+    expect(result[0]?.fungible_info?.name).toBe('Token1')
+    expect(result[0]?.quantity.numeric).toBe('150')
+  })
+
+  it('merges multiple transfers with mixed same and different names', () => {
+    const token1Transfer = createToken1Transfer('100')
+    const token2Transfer = createToken2Transfer('200')
+    const token1Transfer2 = createToken1Transfer('50')
+    const result = TransactionUtil.mergeTransfers([token1Transfer, token2Transfer, token1Transfer2])
+    expect(result.length).toBe(2)
+
+    // Find the merged Token1 transfer
+    const token1Merged = result.find(t => t?.fungible_info?.name === 'Token1')
+    expect(token1Merged?.quantity.numeric).toBe('150') // '100' + '50'
+
+    // Token2 should remain unchanged
+    const token2Result = result.find(t => t?.fungible_info?.name === 'Token2')
+    expect(token2Result?.quantity.numeric).toBe('200')
+  })
+
+  it('handles transfers with undefined fungible_info gracefully', () => {
+    const token1Transfer = createToken1Transfer()
+    const transferWithoutFungible = {
+      direction: 'in' as const,
+      quantity: { numeric: '100' }
+    } as any
+
+    const result = TransactionUtil.mergeTransfers([token1Transfer, transferWithoutFungible])
+    expect(result.length).toBe(2)
+    expect(result).toContain(token1Transfer)
+    expect(result).toContain(transferWithoutFungible)
+  })
+})

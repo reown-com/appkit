@@ -145,6 +145,27 @@ export const TransactionUtil = {
 
     return description
   },
+  mergeTransfers(transfers: TransactionTransfer[]) {
+    let mergedTransfers = transfers
+    // If we have more than two transfers, we need to merge transfers with same direction and same token
+    if (transfers?.length > 1) {
+      mergedTransfers = transfers.reduce<TransactionTransfer[]>((acc, t) => {
+        const existingTransfer = acc.find(
+          acumTransfer => t?.fungible_info?.name === acumTransfer.fungible_info?.name
+        )
+        const quantity = Number(existingTransfer?.quantity.numeric) + Number(t?.quantity.numeric)
+        if (existingTransfer) {
+          existingTransfer.quantity.numeric = quantity.toString()
+        } else {
+          acc.push(t)
+        }
+
+        return acc
+      }, [])
+    }
+
+    return mergedTransfers
+  },
 
   getQuantityFixedValue(value: string | undefined) {
     if (!value) {

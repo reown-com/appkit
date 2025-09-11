@@ -170,7 +170,7 @@ export class W3mActivityList extends LitElement {
         status=${status}
         type=${type}
         .images=${images}
-        .onlyDirectionIcon=${transfers.length > 1}
+        .onlyDirectionIcon=${transfers.length === 1}
         .descriptions=${descriptions}
       ></wui-transaction-list-item>
     `
@@ -290,10 +290,9 @@ export class W3mActivityList extends LitElement {
     const date = DateUtil.formatDate(transaction?.metadata?.minedAt)
     const descriptions = TransactionUtil.getTransactionDescriptions(transaction)
 
-    const transfers = transaction?.transfers
-    const transfer = transaction?.transfers?.[0]
-    const isAllNFT =
-      Boolean(transfer) && transaction?.transfers?.every(item => Boolean(item.nft_info))
+    const transfers = TransactionUtil.mergeTransfers(transaction?.transfers)
+    const transfer = transfers?.[0]
+    const isAllNFT = Boolean(transfer) && transfers?.every(item => Boolean(item.nft_info))
     const images = TransactionUtil.getTransactionImages(transfers)
 
     return {
