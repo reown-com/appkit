@@ -772,6 +772,7 @@ export type Event =
       event: 'SOCIAL_LOGIN_ERROR'
       properties: {
         provider: SocialProvider
+        message: string
       }
     }
   | {
@@ -928,6 +929,7 @@ type PayEvent =
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
         caipNetworkId?: CaipNetworkId
+        message?: string
       }
     }
   | {
@@ -940,6 +942,7 @@ type PayEvent =
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
         caipNetworkId?: CaipNetworkId
+        message?: string
       }
     }
   | {
@@ -952,6 +955,7 @@ type PayEvent =
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
         caipNetworkId?: CaipNetworkId
+        message?: string
       }
     }
   | {
@@ -962,6 +966,7 @@ type PayEvent =
         exchanges: PayExchange[]
         configuration: PayConfiguration
         caipNetworkId?: CaipNetworkId
+        message?: string
       }
     }
   | {
@@ -975,6 +980,7 @@ type PayEvent =
         headless: boolean
         caipNetworkId?: CaipNetworkId
         source: 'pay' | 'fund-from-exchange'
+        message?: string
       }
     }
 

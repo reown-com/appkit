@@ -226,7 +226,7 @@ export class W3mRegisterAccountNameView extends LitElement {
             getPreferredAccountType(ChainController.state.activeChain) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName: name,
-          error: (error as Error)?.message || 'Unknown error'
+          error: CoreHelperUtil.parseError(error)
         }
       })
     }
