@@ -1,5 +1,7 @@
 /* eslint-disable no-bitwise */
-import type { SpacingType, ThemeType, TruncateOptions } from './TypeUtil.js'
+import type { MaskInputOptions, SpacingType, ThemeType, TruncateOptions } from './TypeUtil.js'
+
+const DECIMAL_POINT = '.'
 
 export const UiHelperUtil = {
   getSpacingStyles(spacing: SpacingType | SpacingType[], index: number) {
@@ -161,5 +163,30 @@ export const UiHelperUtil = {
     }
 
     return 0
+  },
+
+  maskInput({ value, decimals, integers }: MaskInputOptions) {
+    if (value === DECIMAL_POINT) {
+      return `0${DECIMAL_POINT}`
+    }
+
+    const [integerPart = '', decimalsPart] = value
+      .split(DECIMAL_POINT)
+      .map(p => p.replace(/[^0-9]/gu, ''))
+
+    const limitedInteger = integers ? integerPart.substring(0, integers) : integerPart
+
+    // Normalize two-digit values like "00" → "0", "01" → "1" and etc
+    const cleanIntegerPart =
+      limitedInteger.length === 2 ? String(Number(limitedInteger)) : limitedInteger
+    const cleanDecimalsPart =
+      typeof decimals === 'number' ? decimalsPart?.substring(0, decimals) : decimalsPart
+
+    const maskValue =
+      typeof cleanDecimalsPart === 'string' && typeof decimals === 'number' && decimals > 0
+        ? [cleanIntegerPart, cleanDecimalsPart].join(DECIMAL_POINT)
+        : cleanIntegerPart
+
+    return maskValue ?? ''
   }
 }

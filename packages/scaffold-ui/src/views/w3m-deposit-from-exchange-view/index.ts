@@ -20,9 +20,13 @@ import '@reown/appkit-ui/wui-list-item'
 import '@reown/appkit-ui/wui-shimmer'
 import '@reown/appkit-ui/wui-text'
 
+import '../../partials/w3m-fund-input/index.js'
 import styles from './styles.js'
 
+// -- Constants ----------------------------------------- //
 const PRESET_AMOUNTS = [10, 50, 100] as const
+const MAX_DECIMALS = 6
+const MAX_INTEGERS = 10
 
 @customElement('w3m-deposit-from-exchange-view')
 export class W3mDepositFromExchangeView extends LitElement {
@@ -85,7 +89,7 @@ export class W3mDepositFromExchangeView extends LitElement {
     if (!this.paymentAsset) {
       await this.setDefaultPaymentAsset()
     }
-    this.onPresetAmountClick(PRESET_AMOUNTS[0])
+    ExchangeController.setAmount(PRESET_AMOUNTS[0])
     await ExchangeController.fetchExchanges()
   }
 
@@ -155,14 +159,17 @@ export class W3mDepositFromExchangeView extends LitElement {
           </wui-token-button>
         </wui-flex>
         <wui-flex flexDirection="column" alignItems="center" justifyContent="center">
-          <wui-flex alignItems="center" gap="1">
-            <wui-text variant="h2-regular" color="secondary">${this.amount}</wui-text>
-            <wui-text variant="md-regular" color="secondary">USD</wui-text>
-          </wui-flex>
+          <w3m-fund-input
+            @inputChange=${this.onAmountChange.bind(this)}
+            .amount=${this.amount}
+            .maxDecimals=${MAX_DECIMALS}
+            .maxIntegers=${MAX_INTEGERS}
+          >
+          </w3m-fund-input>
           ${this.tokenAmountTemplate()}
           </wui-flex>
           <wui-flex justifyContent="space-between" gap="2">
-            ${PRESET_AMOUNTS.map(amount => html`<wui-button @click=${() => this.onPresetAmountClick(amount)} variant=${this.amount === amount ? 'neutral-primary' : 'neutral-secondary'} size="sm" fullWidth>$${amount}</wui-button>`)}
+            ${PRESET_AMOUNTS.map(amount => html`<wui-button @click=${() => ExchangeController.setAmount(amount)} variant=${this.amount === amount ? 'neutral-primary' : 'neutral-secondary'} size="sm" fullWidth>$${amount}</wui-button>`)}
           </wui-flex>
         </wui-flex>
       </wui-flex>
@@ -170,7 +177,7 @@ export class W3mDepositFromExchangeView extends LitElement {
   }
 
   private tokenAmountTemplate() {
-    if (this.priceLoading) {
+     if (this.priceLoading) {
       return html`<wui-shimmer
         width="65px"
         height="20px"
@@ -226,8 +233,8 @@ export class W3mDepositFromExchangeView extends LitElement {
     }
   }
 
-  private onPresetAmountClick(amount: number) {
-    ExchangeController.setAmount(amount)
+  private onAmountChange(event: InputEvent) {
+    ExchangeController.setAmount(event.detail)
   }
 
   private async getPaymentAssets() {

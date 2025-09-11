@@ -1,7 +1,7 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type CaipNetworkId } from '@reown/appkit-common'
+import { type CaipNetworkId, NumberUtil } from '@reown/appkit-common'
 
 import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
@@ -119,12 +119,10 @@ export const ExchangeController = {
       throw new Error('Cannot get token price')
     }
 
-    const tokenAmount = new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 8
-    }).format(state.amount / state.paymentAsset.price)
+    const bigAmount = NumberUtil.bigNumber(state.amount).round(8)
+    const bigPrice = NumberUtil.bigNumber(state.paymentAsset.price).round(8)
 
-    return Number(tokenAmount)
+    return bigAmount.div(bigPrice).div(bigPrice).round(8).toNumber()
   },
 
   setAmount(amount: number) {
