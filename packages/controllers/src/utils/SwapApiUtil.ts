@@ -129,5 +129,16 @@ export const SwapApiUtil = {
           }) as SwapTokenWithBalance
       ) || []
     )
+  },
+
+  async handleSwapError(error: unknown) {
+    const response = await ((error as ErrorOptions)?.cause as Response)?.json()
+    const reason = response?.reasons?.[0]?.description
+
+    if (reason?.includes('insufficient liquidity')) {
+      return 'Insufficient liquidity'
+    }
+
+    return undefined
   }
 }
