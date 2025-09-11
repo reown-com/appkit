@@ -592,6 +592,7 @@ export type Event =
       properties: {
         network: string
         isSmartAccount: boolean
+        message: string | undefined
       }
     }
   | {
@@ -845,6 +846,7 @@ export type Event =
         isSmartAccount: boolean
         network: string
         token: string
+        hash: string
         amount: number
       }
     }
@@ -1306,7 +1308,7 @@ export type UseAppKitNetworkReturn = {
   caipNetwork: CaipNetwork | undefined
   chainId: number | string | undefined
   caipNetworkId: CaipNetworkId | undefined
-  switchNetwork: (network: AppKitNetwork) => void
+  switchNetwork: (network: AppKitNetwork) => Promise<void>
 }
 
 export type BadgeType = 'none' | 'certified'
