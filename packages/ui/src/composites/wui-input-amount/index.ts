@@ -7,6 +7,10 @@ import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
+// -- Constants ----------------------------------------- //
+const MAX_DECIMALS = 12
+const MAX_INTEGERS = 16
+
 @customElement('wui-input-amount')
 export class WuiInputAmount extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
@@ -21,11 +25,11 @@ export class WuiInputAmount extends LitElement {
 
   @property({ type: String }) public placeholder = '0'
 
-  @property({ type: String }) public widthVariant: 'fit' | 'auto' = 'fit'
+  @property({ type: String }) public widthVariant: 'fit' | 'auto' = 'auto'
 
-  @property({ type: Number }) public maxDecimals?: number | undefined = undefined
+  @property({ type: Number }) public maxDecimals?: number = MAX_DECIMALS
 
-  @property({ type: Number }) public maxIntegers?: number | undefined = undefined
+  @property({ type: Number }) public maxIntegers?: number = MAX_INTEGERS
 
   // -- Render -------------------------------------------- //
   public override render() {

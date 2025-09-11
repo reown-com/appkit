@@ -169,7 +169,7 @@ export class W3mDepositFromExchangeView extends LitElement {
           ${this.tokenAmountTemplate()}
           </wui-flex>
           <wui-flex justifyContent="space-between" gap="2">
-            ${PRESET_AMOUNTS.map(amount => html`<wui-button @click=${() => ExchangeController.setAmount(amount)} variant=${this.amount === amount ? 'neutral-primary' : 'neutral-secondary'} size="sm" fullWidth>$${amount}</wui-button>`)}
+            ${PRESET_AMOUNTS.map(amount => html`<wui-button @click=${() => ExchangeController.setAmount(amount)} variant=${String(this.amount) === String(amount) ? 'neutral-primary' : 'neutral-secondary'} size="sm" fullWidth>$${amount}</wui-button>`)}
           </wui-flex>
         </wui-flex>
       </wui-flex>
@@ -177,7 +177,7 @@ export class W3mDepositFromExchangeView extends LitElement {
   }
 
   private tokenAmountTemplate() {
-     if (this.priceLoading) {
+    if (this.priceLoading) {
       return html`<wui-shimmer
         width="65px"
         height="20px"
