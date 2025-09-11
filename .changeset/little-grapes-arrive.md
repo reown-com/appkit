@@ -2,4 +2,4 @@
 '@reown/appkit-controllers': patch
 ---
 
-Updates Swap error when fetching qoute in insufficient liquidity
+Updates Swap error when fetching quotes in insufficient liquidity
