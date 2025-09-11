@@ -199,4 +199,49 @@ describe('TransactionUtil.mergeTransfers', () => {
     expect(result).toContain(token1Transfer)
     expect(result).toContain(transferWithoutFungible)
   })
+
+  it('does not merge transfers with undefined fungible_info name', () => {
+    const transferWithoutName = {
+      fungible_info: {
+        symbol: 'TOK1',
+        icon: { url: 'token1-url' }
+        // name is undefined
+      },
+      direction: 'in' as const,
+      quantity: { numeric: '100' }
+    }
+
+    const anotherTransferWithoutName = {
+      fungible_info: {
+        symbol: 'TOK1',
+        icon: { url: 'token1-url' }
+        // name is undefined
+      },
+      direction: 'in' as const,
+      quantity: { numeric: '50' }
+    }
+
+    const result = TransactionUtil.mergeTransfers([transferWithoutName, anotherTransferWithoutName])
+    expect(result.length).toBe(2) // Should not merge because names are undefined
+    expect(result[0]?.quantity.numeric).toBe('100')
+    expect(result[1]?.quantity.numeric).toBe('50')
+  })
+
+  it('does not merge transfer with undefined name with named transfer', () => {
+    const namedTransfer = createToken1Transfer('100')
+    const transferWithoutName = {
+      fungible_info: {
+        symbol: 'TOK1',
+        icon: { url: 'token1-url' }
+        // name is undefined
+      },
+      direction: 'in' as const,
+      quantity: { numeric: '50' }
+    }
+
+    const result = TransactionUtil.mergeTransfers([namedTransfer, transferWithoutName])
+    expect(result.length).toBe(2) // Should not merge because one has undefined name
+    expect(result.find(t => t?.fungible_info?.name === 'Token1')?.quantity.numeric).toBe('100')
+    expect(result.find(t => !t?.fungible_info?.name)?.quantity.numeric).toBe('50')
+  })
 })

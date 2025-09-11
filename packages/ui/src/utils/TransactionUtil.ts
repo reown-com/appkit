@@ -150,11 +150,12 @@ export const TransactionUtil = {
     // If we have more than two transfers, we need to merge transfers with same direction and same token
     if (transfers?.length > 1) {
       mergedTransfers = transfers.reduce<TransactionTransfer[]>((acc, t) => {
+        const name = t?.fungible_info?.name
         const existingTransfer = acc.find(
-          acumTransfer => t?.fungible_info?.name === acumTransfer.fungible_info?.name
+          ({ fungible_info }) => name && name === fungible_info?.name
         )
-        const quantity = Number(existingTransfer?.quantity.numeric) + Number(t?.quantity.numeric)
         if (existingTransfer) {
+          const quantity = Number(existingTransfer.quantity.numeric) + Number(t.quantity.numeric)
           existingTransfer.quantity.numeric = quantity.toString()
         } else {
           acc.push(t)
