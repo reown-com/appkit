@@ -28,7 +28,7 @@ import {
 } from '@wallet-standard/features'
 import base58 from 'bs58'
 
-import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
 import type { RequestArguments } from '@reown/appkit-controllers'
 import type { Provider as CoreProvider } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
@@ -124,7 +124,9 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
 
   public async connect(): Promise<string> {
     const feature = this.getWalletFeature(StandardConnect)
-    await feature.connect()
+    await feature.connect().catch(err => {
+      throw new UserRejectedRequestError(err)
+    })
 
     const account = this.getAccount(true)
     const publicKey = new PublicKey(account.publicKey)
