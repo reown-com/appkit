@@ -1,8 +1,10 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
+import { UserRejectedRequestError } from '@reown/appkit-common'
 import type { BaseError, Platform } from '@reown/appkit-controllers'
 import {
+  AppKitError,
   ChainController,
   ConnectionController,
   CoreHelperUtil,
@@ -135,11 +137,23 @@ export class W3mConnectingWcView extends LitElement {
         }
       }
 
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'CONNECT_ERROR',
-        properties: { message: (error as BaseError)?.message ?? 'Unknown' }
-      })
+      const isUserRejectedRequestError =
+        error instanceof AppKitError && error.originalName === UserRejectedRequestError.name
+
+      if (isUserRejectedRequestError) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'USER_REJECTED',
+          properties: { message: error.message }
+        })
+      } else {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_ERROR',
+          properties: { message: (error as BaseError)?.message ?? 'Unknown' }
+        })
+      }
+
       ConnectionController.setWcError(true)
       SnackController.showError((error as BaseError).message ?? 'Connection error')
       ConnectionController.resetWcConnection()

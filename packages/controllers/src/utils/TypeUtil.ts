@@ -487,6 +487,14 @@ export type Event =
   | {
       type: 'track'
       address?: string
+      event: 'USER_REJECTED'
+      properties: {
+        message: string
+      }
+    }
+  | {
+      type: 'track'
+      address?: string
       event: 'DISCONNECT_SUCCESS'
       properties: {
         namespace?: ChainNamespace | 'all'
