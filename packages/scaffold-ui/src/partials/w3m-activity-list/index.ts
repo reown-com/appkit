@@ -159,7 +159,7 @@ export class W3mActivityList extends LitElement {
   }
 
   private templateRenderTransaction(transaction: Transaction, isLastTransaction: boolean) {
-    const { date, descriptions, direction, images, status, type, transfers } =
+    const { date, descriptions, direction, images, status, type, transfers, isAllNFT } =
       this.getTransactionListItemProps(transaction)
 
     return html`
@@ -170,7 +170,7 @@ export class W3mActivityList extends LitElement {
         status=${status}
         type=${type}
         .images=${images}
-        .onlyDirectionIcon=${transfers.length === 1}
+        .onlyDirectionIcon=${isAllNFT || transfers.length === 1}
         .descriptions=${descriptions}
       ></wui-transaction-list-item>
     `
