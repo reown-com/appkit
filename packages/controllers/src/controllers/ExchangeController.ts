@@ -122,7 +122,7 @@ export const ExchangeController = {
     const bigAmount = NumberUtil.bigNumber(state.amount).round(8)
     const bigPrice = NumberUtil.bigNumber(state.paymentAsset.price).round(8)
 
-    return bigAmount.div(bigPrice).div(bigPrice).round(8).toNumber()
+    return bigAmount.div(bigPrice).round(8).toNumber()
   },
 
   setAmount(amount: number) {
