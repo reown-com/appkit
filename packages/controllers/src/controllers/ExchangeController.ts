@@ -333,7 +333,7 @@ export const ExchangeController = {
           event: status.status === 'SUCCESS' ? 'PAY_SUCCESS' : 'PAY_ERROR',
           properties: {
             message:
-              status.status !== 'SUCCESS' ? CoreHelperUtil.parseError(state.error) : undefined,
+              status.status === 'FAILED' ? CoreHelperUtil.parseError(state.error) : undefined,
             source: 'fund-from-exchange',
             paymentId,
             configuration: {
