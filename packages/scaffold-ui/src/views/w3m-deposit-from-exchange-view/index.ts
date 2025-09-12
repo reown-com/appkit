@@ -12,7 +12,7 @@ import {
   SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-chip-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-image'
@@ -173,16 +173,15 @@ export class W3mDepositFromExchangeView extends LitElement {
           </wui-flex>
           ${this.tokenAmountTemplate()}
         </wui-flex>
-        <wui-flex justifyContent="space-between" gap="2">
+        <wui-flex justifyContent="center" gap="2">
           ${PRESET_AMOUNTS.map(
             amount =>
-              html`<wui-button
+              html`<wui-chip-button
                 @click=${() => this.onPresetAmountClick(amount)}
-                variant=${this.amount === amount ? 'neutral-primary' : 'neutral-secondary'}
-                size="sm"
-                fullWidth
-                >$${amount}</wui-button
-              >`
+                type=${this.amount === amount ? 'neutral' : 'accent'}
+                size="md"
+                .text=${`$${amount}`}
+              ></wui-chip-button>`
           )}
         </wui-flex>
       </wui-flex>
