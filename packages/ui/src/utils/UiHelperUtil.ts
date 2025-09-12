@@ -166,6 +166,9 @@ export const UiHelperUtil = {
   },
 
   maskInput({ value, decimals, integers }: MaskInputOptions) {
+    // eslint-disable-next-line no-param-reassign
+    value = value.replace(',', '.')
+
     if (value === DECIMAL_POINT) {
       return `0${DECIMAL_POINT}`
     }

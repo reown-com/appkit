@@ -26,7 +26,7 @@ import { SnackController } from './SnackController.js'
 const DEFAULT_PAGE = 0
 export const DEFAULT_STATE: ExchangeControllerState = {
   paymentAsset: null,
-  amount: 0,
+  amount: null,
   tokenAmount: 0,
   priceLoading: false,
   error: null,
@@ -40,7 +40,7 @@ export const DEFAULT_STATE: ExchangeControllerState = {
 
 // -- Types --------------------------------------------- //
 export interface ExchangeControllerState {
-  amount: number
+  amount: number | null
   tokenAmount: number
   priceLoading: boolean
   error: string | null
@@ -119,13 +119,13 @@ export const ExchangeController = {
       throw new Error('Cannot get token price')
     }
 
-    const bigAmount = NumberUtil.bigNumber(state.amount).round(8)
+    const bigAmount = NumberUtil.bigNumber(state.amount ?? 0).round(8)
     const bigPrice = NumberUtil.bigNumber(state.paymentAsset.price).round(8)
 
     return bigAmount.div(bigPrice).round(8).toNumber()
   },
 
-  setAmount(amount: number) {
+  setAmount(amount: number | null) {
     state.amount = amount
     if (state.paymentAsset?.price) {
       state.tokenAmount = ExchangeController.getTokenAmount()
@@ -170,7 +170,7 @@ export const ExchangeController = {
       const response = await getExchanges({
         page: DEFAULT_PAGE,
         asset: formatCaip19Asset(state.paymentAsset.network, state.paymentAsset.asset),
-        amount: state.amount.toString()
+        amount: state.amount?.toString() ?? '0'
       })
       // Putting this here in order to maintain backawrds compatibility with the UI when we introduce more exchanges
       state.exchanges = response.exchanges.slice(0, 2)
@@ -338,7 +338,7 @@ export const ExchangeController = {
               network: state.paymentAsset?.network || '',
               asset: state.paymentAsset?.asset || '',
               recipient: AccountController.state.address || '',
-              amount: state.amount
+              amount: state.amount ?? 0
             },
             currentPayment: {
               type: 'exchange',
