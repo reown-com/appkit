@@ -226,6 +226,7 @@ export class ModalPage {
     return uri
   }
 
+  // eslint-disable-next-line max-params
   async qrCodeFlow(
     page: ModalPage,
     walletPage: WalletPage,
