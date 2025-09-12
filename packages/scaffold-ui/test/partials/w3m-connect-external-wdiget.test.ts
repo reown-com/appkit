@@ -163,7 +163,7 @@ describe('W3mConnectExternalWidget', () => {
 
     await element.updateComplete
 
-    expect(element.shadowRoot?.querySelectorAll('wui-list-wallet').length).toBe(0)
+    expect(element.shadowRoot?.querySelectorAll('w3m-list-wallet').length).toBe(0)
 
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       ...ConnectorController.state,
@@ -176,6 +176,6 @@ describe('W3mConnectExternalWidget', () => {
     await element.updateComplete
     await elementUpdated(element)
 
-    expect(element.shadowRoot?.querySelectorAll('wui-list-wallet').length).toBe(1)
+    expect(element.shadowRoot?.querySelectorAll('w3m-list-wallet').length).toBe(1)
   })
 })

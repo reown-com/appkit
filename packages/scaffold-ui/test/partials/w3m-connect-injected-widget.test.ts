@@ -196,7 +196,7 @@ describe('W3mConnectInjectedWidget', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    const walletList = HelpersUtil.querySelectAll(element, 'wui-list-wallet')
+    const walletList = HelpersUtil.querySelectAll(element, 'w3m-list-wallet')
     expect(walletList.length).toBe(0)
 
     const browserWalletSelector = HelpersUtil.getByTestId(
@@ -219,7 +219,7 @@ describe('W3mConnectInjectedWidget', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    const walletList = HelpersUtil.querySelectAll(element, 'wui-list-wallet')
+    const walletList = HelpersUtil.querySelectAll(element, 'w3m-list-wallet')
     expect(walletList.length).toBe(2)
 
     const browserWalletSelector = HelpersUtil.getByTestId(
@@ -255,7 +255,7 @@ describe('W3mConnectInjectedWidget', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    const walletList = HelpersUtil.querySelectAll(element, 'wui-list-wallet')
+    const walletList = HelpersUtil.querySelectAll(element, 'w3m-list-wallet')
     expect(walletList.length).toBe(1)
 
     const walletSelector = HelpersUtil.getByTestId(element, `wallet-selector-${otherConnector.id}`)

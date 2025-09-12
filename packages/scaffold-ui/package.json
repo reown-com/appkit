@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-scaffold-ui",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -24,6 +24,11 @@
       "types": "./dist/types/exports/partials/w3m-router-container.d.ts",
       "import": "./dist/esm/exports/partials/w3m-router-container.js",
       "default": "./dist/esm/exports/partials/w3m-router-container.js"
+    },
+    "./partials/w3m-list-wallet": {
+      "types": "./dist/types/exports/partials/w3m-list-wallet.d.ts",
+      "import": "./dist/esm/exports/partials/w3m-list-wallet.js",
+      "default": "./dist/esm/exports/partials/w3m-list-wallet.js"
     },
     "./utils": {
       "types": "./dist/types/exports/utils.d.ts",
