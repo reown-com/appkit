@@ -96,7 +96,7 @@ export class W3mDepositFromExchangeView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" gap="2" class="container">
+      <wui-flex flexDirection="column" class="container">
         ${this.amountInputTemplate()} ${this.exchangesTemplate()}
       </wui-flex>
     `
@@ -145,20 +145,32 @@ export class W3mDepositFromExchangeView extends LitElement {
 
   private amountInputTemplate() {
     return html`
-      <wui-flex flexDirection="column" gap="3" .padding=${['0', '3', '3', '3'] as const} class="amount-input-container">
-        <wui-flex justifyContent="space-between" alignItems="center">
+      <wui-flex
+        flexDirection="column"
+        .padding=${['0', '3', '3', '3'] as const}
+        class="amount-input-container"
+      >
+        <wui-flex
+          justifyContent="space-between"
+          alignItems="center"
+          .margin=${['0', '0', '6', '0'] as const}
+        >
           <wui-text variant="md-medium" color="secondary">Asset</wui-text>
-
           <wui-token-button
             data-testid="deposit-from-exchange-asset-button"
             flexDirection="row-reverse"
             text=${this.paymentAsset?.metadata.symbol || ''}
             imageSrc=${this.paymentAsset?.metadata.iconUrl || ''}
             @click=${() => RouterController.push('PayWithExchangeSelectAsset')}
-            >
+          >
           </wui-token-button>
         </wui-flex>
-        <wui-flex flexDirection="column" alignItems="center" justifyContent="center">
+        <wui-flex
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          .margin=${['0', '0', '4', '0'] as const}
+        >
           <w3m-fund-input
             @inputChange=${this.onAmountChange.bind(this)}
             .amount=${this.amount}
@@ -167,10 +179,18 @@ export class W3mDepositFromExchangeView extends LitElement {
           >
           </w3m-fund-input>
           ${this.tokenAmountTemplate()}
-          </wui-flex>
-          <wui-flex justifyContent="space-between" gap="2">
-            ${PRESET_AMOUNTS.map(amount => html`<wui-button @click=${() => ExchangeController.setAmount(amount)} variant=${String(this.amount) === String(amount) ? 'neutral-primary' : 'neutral-secondary'} size="sm" fullWidth>$${amount}</wui-button>`)}
-          </wui-flex>
+        </wui-flex>
+        <wui-flex justifyContent="space-between" gap="2">
+          ${PRESET_AMOUNTS.map(
+            amount =>
+              html`<wui-button
+                @click=${() => ExchangeController.setAmount(amount)}
+                variant=${this.amount === amount ? 'neutral-primary' : 'neutral-secondary'}
+                size="sm"
+                fullWidth
+                >$${amount}</wui-button
+              >`
+          )}
         </wui-flex>
       </wui-flex>
     `
