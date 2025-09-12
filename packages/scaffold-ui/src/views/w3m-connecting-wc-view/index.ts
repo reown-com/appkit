@@ -91,7 +91,7 @@ export class W3mConnectingWcView extends LitElement {
 
     try {
       const { wcPairingExpiry, status } = ConnectionController.state
-
+      const { redirectView } = RouterController.state.data ?? {}
       if (
         retry ||
         OptionsController.state.enableEmbedded ||
@@ -109,6 +109,8 @@ export class W3mConnectingWcView extends LitElement {
           if (hasConnections && isMultiWalletEnabled) {
             RouterController.replace('ProfileWallets')
             SnackController.showSuccess('New Wallet Added')
+          } else if (redirectView) {
+            RouterController.replace(redirectView)
           } else {
             ModalController.close()
           }

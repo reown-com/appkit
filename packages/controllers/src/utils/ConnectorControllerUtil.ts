@@ -20,6 +20,10 @@ import type { Connector, SocialProvider } from './TypeUtil.js'
 // -- Constants ------------------------------------------ //
 const UPDATE_EMAIL_INTERVAL_MS = 1_000
 
+export const DISCONNECT_REASON = {
+  CHOOSE_DIFFERENT_WALLET: 'chooseDifferentWallet'
+}
+
 interface ConnectWalletConnectParameters {
   walletConnect: boolean
   connector?: Connector
@@ -47,6 +51,7 @@ interface ConnectEmailParameters {
 }
 
 export const ConnectorControllerUtil = {
+  DISCONNECT_REASON,
   checkNamespaceConnectorId(namespace: ChainNamespace, connectorId: string): boolean {
     return ConnectorController.getConnectorId(namespace) === connectorId
   },

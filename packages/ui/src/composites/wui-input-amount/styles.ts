@@ -6,16 +6,23 @@ export default css`
     display: inline-block;
   }
 
+  :host([data-error='true']) > input {
+    color: ${({ tokens }) => tokens.core.textError};
+  }
+
+  :host([data-error='false']) > input {
+    color: ${({ tokens }) => tokens.theme.textSecondary};
+  }
+
   input {
     background: transparent;
     width: 100%;
     height: auto;
-    color: ${({ tokens }) => tokens.theme.textPrimary};
     font-feature-settings: 'case' on;
-    font-size: 32px;
-    caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
-    line-height: 130%;
-    letter-spacing: -1.28px;
+    font-size: ${({ textSize }) => textSize.h4};
+    caret-color: ${({ tokens }) => tokens.core.backgroundAccentPrimary};
+    line-height: ${({ typography }) => typography['h4-regular-mono'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h4-regular-mono'].letterSpacing};
     box-sizing: border-box;
     -webkit-appearance: none;
     -moz-appearance: textfield;
@@ -29,6 +36,6 @@ export default css`
   }
 
   input::placeholder {
-    color: ${({ tokens }) => tokens.theme.foregroundTertiary};
+    color: ${({ tokens }) => tokens.theme.textSecondary};
   }
 `

@@ -75,7 +75,10 @@ export class W3mConnectInjectedWidget extends LitElement {
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
     ConnectorController.setActiveConnector(connector)
-    RouterController.push('ConnectingExternal', { connector })
+    RouterController.push('ConnectingExternal', {
+      connector,
+      redirectView: RouterController.state.data?.redirectView
+    })
   }
 }
 
