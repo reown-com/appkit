@@ -398,3 +398,9 @@ export interface TokenInfo {
   isFoT?: boolean
   tags?: string[]
 }
+
+export type MaskInputOptions = {
+  value: string
+  decimals?: number
+  integers?: number
+}

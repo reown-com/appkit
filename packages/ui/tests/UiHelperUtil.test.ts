@@ -221,6 +221,76 @@ describe('UiHelperUtil', () => {
     })
   })
 
+  describe('maskInput', () => {
+    it('returns "0." when value is just the decimal point', () => {
+      expect(UiHelperUtil.maskInput({ value: '.', decimals: 2, integers: 5 })).toBe('0.')
+      expect(UiHelperUtil.maskInput({ value: '.', decimals: 0, integers: 5 })).toBe('0.')
+      expect(
+        UiHelperUtil.maskInput({
+          value: '.',
+          decimals: undefined,
+          integers: undefined
+        })
+      ).toBe('0.')
+    })
+
+    it('strips non-digits from integer and decimal parts', () => {
+      expect(UiHelperUtil.maskInput({ value: '1a2b', decimals: 2, integers: 5 })).toBe('12')
+      expect(UiHelperUtil.maskInput({ value: '1a2b.3c4d', decimals: 4, integers: 5 })).toBe('12.34')
+      expect(UiHelperUtil.maskInput({ value: 'abc.def', decimals: 2, integers: 5 })).toBe('.')
+    })
+
+    it('limits integer digits according to "integers"', () => {
+      expect(UiHelperUtil.maskInput({ value: '123456', decimals: 2, integers: 3 })).toBe('123')
+      expect(UiHelperUtil.maskInput({ value: '000123', decimals: 2, integers: 4 })).toBe('0001')
+    })
+
+    it('normalizes exactly two-digit integers ("00" -> "0", "01" -> "1")', () => {
+      expect(UiHelperUtil.maskInput({ value: '00', decimals: 2, integers: 2 })).toBe('0')
+      expect(UiHelperUtil.maskInput({ value: '01', decimals: 2, integers: 2 })).toBe('1')
+    })
+
+    it('applies decimal limit when decimals > 0 and a decimals part is present', () => {
+      expect(UiHelperUtil.maskInput({ value: '12.3456', decimals: 2, integers: 10 })).toBe('12.34')
+      expect(UiHelperUtil.maskInput({ value: '12.3', decimals: 4, integers: 10 })).toBe('12.3')
+    })
+
+    it('handles decimals when decimals is 0 or not a number', () => {
+      expect(UiHelperUtil.maskInput({ value: '12.34', decimals: 0, integers: 10 })).toBe('12')
+      expect(UiHelperUtil.maskInput({ value: '12.34', decimals: undefined, integers: 10 })).toBe(
+        '12.34'
+      )
+    })
+
+    it('handles inputs without a decimal point', () => {
+      expect(UiHelperUtil.maskInput({ value: '123', decimals: 2, integers: 10 })).toBe('123')
+      expect(UiHelperUtil.maskInput({ value: '123', decimals: 0, integers: 10 })).toBe('123')
+    })
+
+    it('handles multiple decimal points by considering only the first split part', () => {
+      expect(UiHelperUtil.maskInput({ value: '1.2.3', decimals: 2, integers: 10 })).toBe('1.2')
+    })
+
+    it('removes signs and non-numeric characters', () => {
+      expect(UiHelperUtil.maskInput({ value: '-123.45', decimals: 2, integers: 10 })).toBe('123.45')
+      expect(UiHelperUtil.maskInput({ value: '+123,45', decimals: 2, integers: 10 })).toBe('123.45')
+    })
+
+    it('handles empty and whitespace inputs', () => {
+      expect(UiHelperUtil.maskInput({ value: '', decimals: 2, integers: 10 })).toBe('')
+      expect(UiHelperUtil.maskInput({ value: '   ', decimals: 2, integers: 10 })).toBe('')
+    })
+
+    it('truncates decimals to zero length when decimals=0 even if value includes dot', () => {
+      expect(UiHelperUtil.maskInput({ value: '0.0001', decimals: 0, integers: 2 })).toBe('0')
+    })
+
+    it('large inputs respect both integer and decimal caps', () => {
+      expect(
+        UiHelperUtil.maskInput({ value: '9876543210.1234567890', decimals: 4, integers: 6 })
+      ).toBe('987654.1234')
+    })
+  })
   it('should format currency as expected', () => {
     // Large numbers
     expect(UiHelperUtil.formatCurrency(1000000)).toEqual('$1,000,000.00')
