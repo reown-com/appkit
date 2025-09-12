@@ -150,7 +150,7 @@ export class W3mWalletSendView extends LitElement {
       await ConnectionController.disconnect()
     } finally {
       this.disconnecting = false
-      RouterController.push('Connect', {
+      RouterController.reset('Connect', {
         redirectView: 'WalletSend'
       })
     }
@@ -197,8 +197,9 @@ export class W3mWalletSendView extends LitElement {
   private buttonTemplate() {
     const isDisabled = !this.message.startsWith(SEND_BUTTON_MESSAGE.PREVIEW_SEND)
     const isInsufficientBalance = this.message === SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS
+    const isReadOnly = Boolean(this.params)
 
-    if (isInsufficientBalance) {
+    if (isInsufficientBalance && !isReadOnly) {
       return html`
         <wui-flex .margin=${['4', '0', '0', '0'] as const} flexDirection="column" gap="4">
           <wui-button
