@@ -944,7 +944,8 @@ describe('PayController', () => {
             exchangeId,
             sessionId,
             result: mockFailedStatus.txHash
-          }
+          },
+          message: 'Unknown error'
         }
       })
     })

@@ -1,5 +1,7 @@
+import { UserRejectedRequestError } from '@reown/appkit-common'
 import type { BaseError } from '@reown/appkit-controllers'
 import {
+  AppKitError,
   ConnectionController,
   ConnectorController,
   EventsController,
@@ -64,11 +66,23 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
         }
       })
     } catch (error) {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'CONNECT_ERROR',
-        properties: { message: (error as BaseError)?.message ?? 'Unknown' }
-      })
+      const isUserRejectedRequestError =
+        error instanceof AppKitError && error.originalName === UserRejectedRequestError.name
+
+      if (isUserRejectedRequestError) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'USER_REJECTED',
+          properties: { message: error.message }
+        })
+      } else {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_ERROR',
+          properties: { message: (error as BaseError)?.message ?? 'Unknown' }
+        })
+      }
+
       this.error = true
     }
   }

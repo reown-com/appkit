@@ -63,6 +63,10 @@ export interface ChainControllerState {
 
 type ChainControllerStateKey = keyof ChainControllerState
 
+export interface SwitchActiveNetworkOptions {
+  throwOnFailure?: boolean
+}
+
 // -- State --------------------------------------------- //
 const state = proxy<ChainControllerState>({
   chains: proxyMap<ChainNamespace, ChainAdapter>(),
@@ -410,7 +414,10 @@ const controller = {
     }
   },
 
-  async switchActiveNetwork(network: CaipNetwork) {
+  async switchActiveNetwork(
+    network: CaipNetwork,
+    { throwOnFailure = false }: SwitchActiveNetworkOptions = {}
+  ) {
     const namespace = ChainController.state.activeChain
 
     if (!namespace) {
@@ -434,6 +441,10 @@ const controller = {
           ModalController.close()
         }
       } catch (error) {
+        if (throwOnFailure) {
+          throw error
+        }
+
         RouterController.goBack()
       }
 

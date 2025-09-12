@@ -232,6 +232,18 @@ describe('W3mHeader', () => {
 
       expect(trackSpy).toHaveBeenCalledWith({ type: 'track', event: 'CLICK_WALLET_HELP' })
     })
+
+    it('should hide help button when not in Connect view', async () => {
+      RouterController.state.view = 'Account'
+      OptionsController.state.enableNetworkSwitch = false
+      element.requestUpdate()
+      await element.updateComplete
+      await elementUpdated(element)
+
+      const helpButton = element.shadowRoot?.querySelector('wui-icon-button[icon="helpCircle"]')
+      expect(helpButton).toBeTruthy()
+      expect(helpButton?.getAttribute('data-hidden')).toBe('true')
+    })
   })
 
   describe('Network Selector Visibility', () => {
