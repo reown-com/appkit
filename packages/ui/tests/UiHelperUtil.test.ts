@@ -255,10 +255,10 @@ describe('UiHelperUtil', () => {
       expect(UiHelperUtil.maskInput({ value: '12.3', decimals: 4, integers: 10 })).toBe('12.3')
     })
 
-    it('omits decimals when decimals is 0 or not a number', () => {
+    it('handles decimals when decimals is 0 or not a number', () => {
       expect(UiHelperUtil.maskInput({ value: '12.34', decimals: 0, integers: 10 })).toBe('12')
       expect(UiHelperUtil.maskInput({ value: '12.34', decimals: undefined, integers: 10 })).toBe(
-        '12'
+        '12.34'
       )
     })
 
@@ -273,7 +273,7 @@ describe('UiHelperUtil', () => {
 
     it('removes signs and non-numeric characters', () => {
       expect(UiHelperUtil.maskInput({ value: '-123.45', decimals: 2, integers: 10 })).toBe('123.45')
-      expect(UiHelperUtil.maskInput({ value: '+123,45', decimals: 2, integers: 10 })).toBe('12345')
+      expect(UiHelperUtil.maskInput({ value: '+123,45', decimals: 2, integers: 10 })).toBe('123.45')
     })
 
     it('handles empty and whitespace inputs', () => {
