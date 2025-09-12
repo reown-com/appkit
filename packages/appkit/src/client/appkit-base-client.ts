@@ -533,7 +533,13 @@ export abstract class AppKitBaseClient {
     return extendedNetwork
   }
 
-  private async disconnectNamespace(namespace: ChainNamespace, id?: string) {
+  /**
+   * Disconnects a connector with the given namespace and id. If the connector id is not provided, disconnects the adapter (namespace).
+   * @param namespace ChainNamespace
+   * @param id string
+   * @returns
+   */
+  private async disconnectConnector(namespace: ChainNamespace, id: string | undefined) {
     try {
       this.setLoading(true, namespace)
 
@@ -544,6 +550,7 @@ export abstract class AppKitBaseClient {
       const adapter = this.getAdapter(namespace)
       const caipAddress = ChainController.state.chains.get(namespace)?.accountState?.caipAddress
 
+      console.log('disconnecting connector', namespace, id, caipAddress)
       /**
        * When the page loaded, the controller doesn't have address yet.
        * To disconnect, we are checking enableReconnect flag to disconnect the namespace.
@@ -613,13 +620,11 @@ export abstract class AppKitBaseClient {
           this.syncConnectedWalletInfo(namespace)
         }
       },
+      disconnectConnector: async params => {
+        this.disconnectConnector(params.namespace, params.id)
+      },
       disconnect: async params => {
-        const {
-          id: connectorIdParam,
-          chainNamespace,
-          initialDisconnect,
-          connectorOnly
-        } = params || {}
+        const { id: connectorIdParam, chainNamespace, initialDisconnect } = params || {}
 
         const namespace = chainNamespace || ChainController.state.activeChain
         const namespaceConnectorId = ConnectorController.getConnectorId(namespace)
@@ -639,20 +644,14 @@ export abstract class AppKitBaseClient {
            * If the connector is WalletConnect or Auth, disconnect all namespaces
            * since they share a single connector instance across all adapters
            */
-          if ((isWalletConnect || isAuth) && !connectorOnly) {
+          if (isWalletConnect || isAuth) {
             namespacesToDisconnect = namespaces
           }
 
           const disconnectPromises = namespacesToDisconnect.map(async ns => {
-            if (connectorOnly && !connectorIdParam) {
-              return
-            }
-
-            const connectorIdToDisconnect = ConnectorController.getConnectorId(ns)
-            const disconnectData = await this.disconnectNamespace(
-              ns,
-              connectorIdParam || connectorIdToDisconnect
-            )
+            const currentConnectorId = ConnectorController.getConnectorId(ns)
+            const connectorIdToDisconnect = connectorIdParam || currentConnectorId
+            const disconnectData = await this.disconnectConnector(ns, connectorIdToDisconnect)
 
             if (disconnectData) {
               if (isAuth) {
@@ -1246,12 +1245,24 @@ export abstract class AppKitBaseClient {
     const currentConnectorId = ConnectorController.getConnectorId(namespace)
     const isMultiWalletEnabled = OptionsController.state.remoteFeatures?.multiWallet
     const hasNewConnectorConnected = currentConnectorId !== connector?.id
+
+    console.trace('shouldDisconnectPreviousConnector', {
+      namespace,
+      newConnectorId,
+      currentConnectorId,
+      hasNewConnectorConnected,
+      isMultiWalletEnabled
+    })
     const shouldDisconnectPreviousConnector =
-      newConnectorId && currentConnectorId && hasNewConnectorConnected && !isMultiWalletEnabled
+      namespace &&
+      newConnectorId &&
+      currentConnectorId &&
+      hasNewConnectorConnected &&
+      !isMultiWalletEnabled
 
     try {
       if (shouldDisconnectPreviousConnector) {
-        await ConnectionController.disconnect({ id: currentConnectorId, namespace })
+        await this.disconnectConnector(namespace, currentConnectorId)
       }
     } catch (error) {
       console.warn('Error disconnecting previous connector', error)
