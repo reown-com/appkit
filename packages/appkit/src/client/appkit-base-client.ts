@@ -583,15 +583,9 @@ export abstract class AppKitBaseClient {
 
         const result = await adapter.connectWalletConnect(chainId)
 
-        let shouldClose = false
+        const closeModal = !isMultiWallet && !hasConnections && !isTryingToChooseDifferentWallet
 
-        if (isMultiWallet) {
-          shouldClose = false
-        } else {
-          shouldClose = !hasConnections && !isTryingToChooseDifferentWallet
-        }
-
-        if (shouldClose) {
+        if (closeModal) {
           this.close()
         }
 
@@ -1191,17 +1185,11 @@ export abstract class AppKitBaseClient {
         ConnectionController.state.disconnectReason ===
           ConnectorControllerUtil.DISCONNECT_REASON.CHOOSE_DIFFERENT_WALLET
 
-      let shouldCloseModal = false
-
-      if (isMultiWallet) {
-        shouldCloseModal = false
-      } else {
-        shouldCloseModal = isConnectionsEmpty && !isTryingToChooseDifferentWallet
-      }
+      const closeModal = !isMultiWallet && isConnectionsEmpty && !isTryingToChooseDifferentWallet
 
       this.onDisconnectNamespace({
         chainNamespace,
-        closeModal: shouldCloseModal
+        closeModal
       })
     })
 
