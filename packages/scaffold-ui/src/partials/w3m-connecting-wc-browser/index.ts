@@ -1,4 +1,4 @@
-import { UserRejectedRequestError } from '@reown/appkit-common'
+import { ErrorUtil } from '@reown/appkit-common'
 import type { BaseError } from '@reown/appkit-controllers'
 import {
   AppKitError,
@@ -67,7 +67,8 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
       })
     } catch (error) {
       const isUserRejectedRequestError =
-        error instanceof AppKitError && error.originalName === UserRejectedRequestError.name
+        error instanceof AppKitError &&
+        error.originalName === ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST
 
       if (isUserRejectedRequestError) {
         EventsController.sendEvent({

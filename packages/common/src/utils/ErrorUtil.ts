@@ -20,7 +20,7 @@ type RpcProviderError = {
 // -- Classes ---------------------------------------------------------------- //
 export class ProviderRpcError extends Error {
   public code: ProviderRpcErrorCode
-  override name = 'ProviderRpcError'
+  override name = ErrorUtil.PROVIDER_RPC_ERROR_NAME.PROVIDER_RPC
 
   constructor(cause: unknown, options: RpcProviderError) {
     super(options.message, { cause })
@@ -29,7 +29,7 @@ export class ProviderRpcError extends Error {
 }
 
 export class UserRejectedRequestError extends ProviderRpcError {
-  override name = 'UserRejectedRequestError'
+  override name = ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST
 
   constructor(cause: unknown) {
     super(cause, {
@@ -44,6 +44,10 @@ export const ErrorUtil = {
   RPC_ERROR_CODE: {
     USER_REJECTED_REQUEST: 4001
   } as const,
+  PROVIDER_RPC_ERROR_NAME: {
+    PROVIDER_RPC: 'ProviderRpcError',
+    USER_REJECTED_REQUEST: 'UserRejectedRequestError'
+  },
   isRpcProviderError(error: unknown): error is RpcProviderError {
     try {
       if (typeof error === 'object' && error !== null) {

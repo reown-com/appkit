@@ -1,7 +1,7 @@
 import {
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
-  UserRejectedRequestError
+  ErrorUtil
 } from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 import type { BaseError, Connector } from '@reown/appkit-controllers'
@@ -114,7 +114,8 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       }
     } catch (error) {
       const isUserRejectedRequestError =
-        error instanceof AppKitError && error.originalName === UserRejectedRequestError.name
+        error instanceof AppKitError &&
+        error.originalName === ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST
 
       if (isUserRejectedRequestError) {
         EventsController.sendEvent({
