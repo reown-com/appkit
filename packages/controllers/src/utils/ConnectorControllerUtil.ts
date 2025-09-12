@@ -185,9 +185,7 @@ export const ConnectorControllerUtil = {
                   EventsController.sendEvent({
                     type: 'track',
                     event: 'SOCIAL_LOGIN_SUCCESS',
-                    properties: {
-                      provider: socialProvider
-                    }
+                    properties: { provider: socialProvider }
                   })
                 }
               }
@@ -196,7 +194,7 @@ export const ConnectorControllerUtil = {
                 EventsController.sendEvent({
                   type: 'track',
                   event: 'SOCIAL_LOGIN_ERROR',
-                  properties: { provider: socialProvider }
+                  properties: { provider: socialProvider, message: CoreHelperUtil.parseError(err) }
                 })
               }
               reject(new Error('Failed to connect'))
@@ -205,7 +203,7 @@ export const ConnectorControllerUtil = {
             EventsController.sendEvent({
               type: 'track',
               event: 'SOCIAL_LOGIN_ERROR',
-              properties: { provider: socialProvider }
+              properties: { provider: socialProvider, message: 'Untrusted Origin' }
             })
           }
         }

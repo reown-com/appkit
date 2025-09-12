@@ -281,4 +281,16 @@ describe('SendController', () => {
       expect(SendController.resetSend).toHaveBeenCalled()
     })
   })
+
+  describe('resetSend()', () => {
+    it('should not reset the hash', () => {
+      /*
+       * DO NOT RESET SendController.state.hash as it is required
+       * to track the hash for the appKit.openSend(...) function
+       */
+      SendController.state.hash = '0x123'
+      SendController.resetSend()
+      expect(SendController.state.hash).toEqual('0x123')
+    })
+  })
 })

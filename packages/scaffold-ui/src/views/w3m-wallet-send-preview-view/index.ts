@@ -4,6 +4,7 @@ import { state } from 'lit/decorators.js'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
+  CoreHelperUtil,
   EventsController,
   RouterController,
   SendController,
@@ -42,6 +43,8 @@ export class W3mWalletSendPreviewView extends LitElement {
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
 
   @state() private loading = SendController.state.loading
+
+  @state() private params = RouterController.state.data?.send
 
   public constructor() {
     super()
@@ -139,7 +142,7 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private sendValueTemplate() {
-    if (this.token && this.sendTokenAmount) {
+    if (!this.params && this.token && this.sendTokenAmount) {
       const price = this.token.price
       const totalValue = price * this.sendTokenAmount
 
@@ -160,8 +163,12 @@ export class W3mWalletSendPreviewView extends LitElement {
 
     try {
       await SendController.sendToken()
-      SnackController.showSuccess('Transaction started')
-      RouterController.replace('Account')
+      if (this.params) {
+        RouterController.reset('WalletSendConfirmed')
+      } else {
+        SnackController.showSuccess('Transaction started')
+        RouterController.replace('Account')
+      }
     } catch (error) {
       let errMessage = 'Failed to send transaction. Please try again.'
 
@@ -177,13 +184,11 @@ export class W3mWalletSendPreviewView extends LitElement {
       // eslint-disable-next-line no-console
       console.error('SendController:sendToken - failed to send transaction', error)
 
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_ERROR',
         properties: {
-          message: errorMessage,
+          message: CoreHelperUtil.parseError(error),
           isSmartAccount:
             getPreferredAccountType(ChainController.state.activeChain) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,

@@ -1,15 +1,21 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
+import { type CaipAddress } from '@reown/appkit-common'
 import {
+  AccountController,
+  AssetUtil,
   ChainController,
   ConnectionController,
   ConnectorControllerUtil,
+  ConstantsUtil,
   CoreHelperUtil,
   RouterController,
   SendController,
+  SnackController,
   SwapController
 } from '@reown/appkit-controllers'
+import { BalanceUtil } from '@reown/appkit-controllers/utils'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -50,6 +56,10 @@ export class W3mWalletSendView extends LitElement {
 
   @state() private loading = SendController.state.loading
 
+  @state() private params = RouterController.state.data?.send
+
+  @state() private caipAddress = AccountController.state.caipAddress
+
   @state() private message: SendButtonMessage = SEND_BUTTON_MESSAGE.PREVIEW_SEND
 
   @state() private disconnecting = false
@@ -57,13 +67,16 @@ export class W3mWalletSendView extends LitElement {
   public constructor() {
     super()
     // Only load balances and network price if a token is set, else they will be loaded in the select token view
-    if (this.token) {
+    if (this.token && !this.params) {
       this.fetchBalances()
       this.fetchNetworkPrice()
     }
 
     this.unsubscribe.push(
       ...[
+        AccountController.subscribeKey('caipAddress', val => {
+          this.caipAddress = val
+        }),
         SendController.subscribe(val => {
           this.token = val.token
           this.sendTokenAmount = val.sendTokenAmount
@@ -79,18 +92,26 @@ export class W3mWalletSendView extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
+  public override async firstUpdated() {
+    await this.handleSendParameters()
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.getMessage()
+
+    const isReadOnly = Boolean(this.params)
 
     return html` <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const}>
       <wui-flex class="inputContainer" gap="2" flexDirection="column">
         <w3m-input-token
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
+          ?readOnly=${isReadOnly}
         ></w3m-input-token>
         <wui-icon-box size="md" variant="secondary" icon="arrowBottom"></wui-icon-box>
         <w3m-input-address
+          ?readOnly=${isReadOnly}
           .value=${this.receiverProfileName ? this.receiverProfileName : this.receiverAddress}
         ></w3m-input-address>
       </wui-flex>
@@ -109,7 +130,9 @@ export class W3mWalletSendView extends LitElement {
   }
 
   private onButtonClick() {
-    RouterController.push('WalletSendPreview')
+    RouterController.push('WalletSendPreview', {
+      send: this.params
+    })
   }
 
   private onFundWalletClick() {
@@ -214,6 +237,79 @@ export class W3mWalletSendView extends LitElement {
         ${this.message}
       </wui-button>
     </wui-flex>`
+  }
+
+  private async handleSendParameters() {
+    this.loading = true
+
+    if (!this.params) {
+      this.loading = false
+
+      return
+    }
+
+    const amount = Number(this.params.amount)
+
+    if (isNaN(amount)) {
+      SnackController.showError('Invalid amount')
+      this.loading = false
+
+      return
+    }
+
+    const { namespace, chainId, assetAddress } = this.params
+
+    if (!ConstantsUtil.SEND_PARAMS_SUPPORTED_CHAINS.includes(namespace)) {
+      SnackController.showError(`Chain "${namespace}" is not supported for send parameters`)
+      this.loading = false
+
+      return
+    }
+
+    const caipNetwork = ChainController.getCaipNetworkById(chainId, namespace)
+
+    if (!caipNetwork) {
+      SnackController.showError(`Network with id "${chainId}" not found`)
+      this.loading = false
+
+      return
+    }
+
+    try {
+      const { balance, name, symbol, decimals } = await BalanceUtil.fetchERC20Balance({
+        caipAddress: this.caipAddress as CaipAddress,
+        assetAddress,
+        caipNetwork
+      })
+
+      if (!name || !symbol || !decimals || !balance) {
+        SnackController.showError('Token not found')
+
+        return
+      }
+
+      SendController.setToken({
+        name,
+        symbol,
+        chainId: caipNetwork.id.toString(),
+        address: `${caipNetwork.chainNamespace}:${caipNetwork.id}:${assetAddress}`,
+        value: 0,
+        price: 0,
+        quantity: {
+          decimals: decimals.toString(),
+          numeric: balance.toString()
+        },
+        iconUrl: AssetUtil.getTokenImage(symbol) ?? ''
+      })
+      SendController.setTokenAmount(amount)
+      SendController.setReceiverAddress(this.params.to)
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to load token information:', err)
+      SnackController.showError('Failed to load token information')
+    } finally {
+      this.loading = false
+    }
   }
 }
 

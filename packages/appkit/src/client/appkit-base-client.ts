@@ -76,6 +76,8 @@ import {
   ErrorUtil,
   HelpersUtil,
   LoggerUtil,
+  SemVerUtils,
+  TokenUtil,
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
 
@@ -107,13 +109,22 @@ export type Views =
 
 type ViewArguments = {
   Swap: NonNullable<RouterControllerState['data']>['swap']
+  WalletSend: NonNullable<RouterControllerState['data']>['send']
 }
 
-export interface OpenOptions<View extends Views> {
-  view?: View
+export interface OpenOptions<V extends Views | undefined = Views> {
+  view?: V
   uri?: string
   namespace?: ChainNamespace
-  arguments?: View extends keyof ViewArguments ? ViewArguments[View] : never
+  arguments?: V extends 'Swap'
+    ? ViewArguments['Swap']
+    : V extends 'WalletSend'
+      ? ViewArguments['WalletSend']
+      : never
+}
+
+interface AppKitSwitchNetworkOptions {
+  throwOnFailure?: boolean
 }
 
 export abstract class AppKitBaseClient {
@@ -146,6 +157,8 @@ export abstract class AppKitBaseClient {
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
     this.readyPromise = this.initialize(options)
+
+    SemVerUtils.checkSDKVersion(options.sdkVersion)
   }
 
   private getChainNamespacesSet(adapters: AdapterBlueprint[], caipNetworks: CaipNetwork[]) {
@@ -205,6 +218,76 @@ export abstract class AppKitBaseClient {
     }
   }
 
+  private async openSend(
+    args: NonNullable<OpenOptions<'WalletSend'>['arguments']>
+  ): Promise<{ hash: string }> {
+    const namespaceToUse = args.namespace || ChainController.state.activeChain
+    const caipAddress = this.getCaipAddress(namespaceToUse)
+    const chainId = this.getCaipNetwork(namespaceToUse)?.id
+
+    if (!caipAddress) {
+      throw new Error('openSend: caipAddress not found')
+    }
+
+    if (chainId?.toString() !== args.chainId.toString()) {
+      const caipNetwork = ChainController.getCaipNetworkById(args.chainId, namespaceToUse)
+
+      if (!caipNetwork) {
+        throw new Error(`openSend: caipNetwork with chainId ${args.chainId} not found`)
+      }
+
+      await this.switchNetwork(caipNetwork, { throwOnFailure: true })
+    }
+
+    try {
+      const symbol = TokenUtil.getTokenSymbolByAddress(args.assetAddress)
+
+      if (symbol) {
+        await ApiController.fetchTokenImages([symbol])
+      }
+    } catch {
+      /* Ignore */
+    }
+
+    await ModalController.open({
+      view: 'WalletSend',
+      data: { send: args }
+    })
+
+    return new Promise((resolve, reject) => {
+      const unsubscribe = SendController.subscribeKey('hash', hash => {
+        if (hash) {
+          cleanup()
+          resolve({ hash })
+        }
+      })
+
+      const unsubscribeModal = ModalController.subscribe(modal => {
+        if (!modal.open) {
+          cleanup()
+          reject(new Error('Modal closed'))
+        }
+      })
+
+      const cleanup = this.createCleanupHandler([unsubscribe, unsubscribeModal])
+    })
+  }
+
+  private toModalOptions() {
+    function isSwap(options?: OpenOptions): options is OpenOptions<'Swap'> {
+      return options?.view === 'Swap'
+    }
+
+    function isSend(options?: OpenOptions): options is OpenOptions<'WalletSend'> {
+      return options?.view === 'WalletSend'
+    }
+
+    return {
+      isSwap,
+      isSend
+    }
+  }
+
   private async checkAllowedOrigins() {
     try {
       const allowedOrigins = await ApiController.fetchAllowedOrigins()
@@ -248,6 +331,18 @@ export abstract class AppKitBaseClient {
         default:
           break
       }
+    }
+  }
+
+  private createCleanupHandler(unsubscribeFunctions: (() => void)[]) {
+    return (): void => {
+      unsubscribeFunctions.forEach(unsubscribe => {
+        try {
+          unsubscribe()
+        } catch {
+          // Ignore cleanup errors
+        }
+      })
     }
   }
 
@@ -2054,11 +2149,16 @@ export abstract class AppKitBaseClient {
       ConnectionController.setUri(options.uri)
     }
 
-    if (options?.arguments) {
-      switch (options?.view) {
-        case 'Swap':
-          return ModalController.open({ ...options, data: { swap: options.arguments } })
-        default:
+    const { isSwap, isSend } = this.toModalOptions()
+
+    if (isSwap(options)) {
+      return ModalController.open({
+        ...options,
+        data: { swap: options.arguments }
+      })
+    } else if (isSend(options)) {
+      if (options.arguments) {
+        return this.openSend(options.arguments)
       }
     }
 
@@ -2091,14 +2191,17 @@ export abstract class AppKitBaseClient {
     return ChainController.state.activeCaipNetwork?.id
   }
 
-  public async switchNetwork(appKitNetwork: AppKitNetwork) {
+  public async switchNetwork(
+    appKitNetwork: AppKitNetwork,
+    { throwOnFailure = false }: AppKitSwitchNetworkOptions = {}
+  ) {
     const network = this.getCaipNetworks().find(n => n.id === appKitNetwork.id)
     if (!network) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.SWITCH_NETWORK_NOT_FOUND, 'error')
 
       return
     }
-    await ChainController.switchActiveNetwork(network)
+    await ChainController.switchActiveNetwork(network, { throwOnFailure })
   }
 
   public getWalletProvider() {

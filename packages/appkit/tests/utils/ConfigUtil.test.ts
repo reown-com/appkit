@@ -24,6 +24,8 @@ vi.mock('@reown/appkit-controllers', async () => {
   )) as typeof import('@reown/appkit-controllers')
 
   return {
+    baseUSDC: actualModule.baseUSDC,
+    baseSepoliaUSDC: actualModule.baseSepoliaUSDC,
     ApiController: {
       fetchProjectConfig: vi.fn()
     },

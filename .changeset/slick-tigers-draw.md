@@ -26,4 +26,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Replaced "deposit from an exchange" to "deposit from exchange" in appkit header
+Fixed an issue where the question mark icon in the header was not displayed correctly

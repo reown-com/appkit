@@ -105,7 +105,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Cache Turborepo cache
         uses: actions/cache@v4
@@ -197,7 +197,7 @@ jobs:
       # - name: Tune GitHub-hosted runner network
       #   uses: smorimoto/tune-github-hosted-runner-network@v1
 
-      - name: checkout # Checkout is still needed for pnpm install and playwright config
+      - name: checkout # Checkout is still needed for pnpm install --frozen-lockfile and playwright config
         uses: actions/checkout@v4
         with:
           repository: reown-com/appkit
