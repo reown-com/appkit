@@ -234,7 +234,7 @@ export class W3mDepositFromExchangeView extends LitElement {
   }
 
   private onAmountChange(event: InputEvent) {
-    ExchangeController.setAmount(Number(event.detail))
+    ExchangeController.setAmount(event.detail)
   }
 
   private async getPaymentAssets() {

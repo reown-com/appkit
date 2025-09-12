@@ -7,10 +7,6 @@ import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
-// -- Constants ----------------------------------------- //
-const MAX_DECIMALS = 12
-const MAX_INTEGERS = 16
-
 @customElement('wui-input-amount')
 export class WuiInputAmount extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
@@ -27,17 +23,22 @@ export class WuiInputAmount extends LitElement {
 
   @property({ type: String }) public widthVariant: 'fit' | 'auto' = 'auto'
 
-  @property({ type: Number }) public maxDecimals?: number = MAX_DECIMALS
+  @property({ type: Number }) public maxDecimals?: number = undefined
 
-  @property({ type: Number }) public maxIntegers?: number = MAX_INTEGERS
+  @property({ type: Number }) public maxIntegers?: number = undefined
+
+  // -- Lifecycle ----------------------------------------- //
+  public override firstUpdated() {
+    this.resizeInput()
+  }
+
+  public override updated() {
+    this.resizeInput()
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {
     this.dataset['widthVariant'] = this.widthVariant
-
-    if (this.widthVariant === 'fit') {
-      this.resizeInput()
-    }
 
     if (this.inputElementRef?.value && this.value) {
       this.inputElementRef.value.value = this.value
@@ -85,6 +86,8 @@ export class WuiInputAmount extends LitElement {
           composed: true
         })
       )
+
+      this.resizeInput()
     }
   }
 
@@ -96,7 +99,7 @@ export class WuiInputAmount extends LitElement {
         const mirror = inputElement.previousElementSibling as HTMLSpanElement | null
 
         if (mirror) {
-          mirror.textContent = this.value || '0'
+          mirror.textContent = inputElement.value || '0'
           inputElement.style.width = `${mirror.offsetWidth}px`
         }
       }

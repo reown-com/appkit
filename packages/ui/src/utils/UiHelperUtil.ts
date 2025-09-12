@@ -182,8 +182,10 @@ export const UiHelperUtil = {
     const cleanDecimalsPart =
       typeof decimals === 'number' ? decimalsPart?.substring(0, decimals) : decimalsPart
 
+    const canIncludeDecimals = typeof decimals !== 'number' || decimals > 0
+
     const maskValue =
-      typeof cleanDecimalsPart === 'string' && typeof decimals === 'number' && decimals > 0
+      typeof cleanDecimalsPart === 'string' && canIncludeDecimals
         ? [cleanIntegerPart, cleanDecimalsPart].join(DECIMAL_POINT)
         : cleanIntegerPart
 
