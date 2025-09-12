@@ -146,7 +146,9 @@ describe('W3mConnectAnnouncedWidget', () => {
     )
     walletSelector.click()
 
-    expect(pushSpy).toHaveBeenCalledWith('ConnectingWalletConnect')
+    expect(pushSpy).toHaveBeenCalledWith('ConnectingWalletConnect', {
+      redirectView: undefined
+    })
   })
 
   it('should route to ConnectingExternal for non-WalletConnect connectors', async () => {
