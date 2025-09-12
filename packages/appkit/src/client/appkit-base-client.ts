@@ -1273,7 +1273,9 @@ export abstract class AppKitBaseClient {
       properties: {
         method: CoreHelperUtil.isMobile() ? 'mobile' : 'qrcode',
         name: this.universalProvider?.session?.peer?.metadata?.name || 'Unknown',
-        reconnect: true
+        reconnect: true,
+        view: RouterController.state.view,
+        walletRank: undefined
       }
     })
   }
@@ -1382,7 +1384,9 @@ export abstract class AppKitBaseClient {
           properties: {
             method: 'browser',
             name: connector.info?.name || connector.name || 'Unknown',
-            reconnect: true
+            reconnect: true,
+            view: RouterController.state.view,
+            walletRank: undefined
           }
         })
       } else {

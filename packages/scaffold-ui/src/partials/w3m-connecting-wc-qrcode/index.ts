@@ -6,6 +6,7 @@ import {
   AssetUtil,
   ConnectionController,
   EventsController,
+  RouterController,
   ThemeController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -40,7 +41,9 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
         properties: {
           name: this.wallet?.name ?? 'WalletConnect',
           platform: 'qrcode',
-          displayIndex: this.wallet?.display_index
+          displayIndex: this.wallet?.display_index,
+          walletRank: this.wallet?.order,
+          view: RouterController.state.view
         }
       })
     }

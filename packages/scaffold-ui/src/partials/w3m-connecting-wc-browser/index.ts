@@ -5,7 +5,8 @@ import {
   ConnectionController,
   ConnectorController,
   EventsController,
-  ModalController
+  ModalController,
+  RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
@@ -26,7 +27,9 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
       properties: {
         name: this.wallet.name,
         platform: 'browser',
-        displayIndex: this.wallet?.display_index
+        displayIndex: this.wallet?.display_index,
+        walletRank: this.wallet.order,
+        view: RouterController.state.view
       }
     })
   }
@@ -57,7 +60,9 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
         event: 'CONNECT_SUCCESS',
         properties: {
           method: 'browser',
-          name: this.wallet?.name || 'Unknown'
+          name: this.wallet?.name || 'Unknown',
+          view: RouterController.state.view,
+          walletRank: this.wallet?.order
         }
       })
     } catch (error) {

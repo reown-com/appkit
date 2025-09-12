@@ -52,7 +52,9 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       properties: {
         name: this.connector.name ?? 'Unknown',
         platform: 'browser',
-        displayIndex: this.wallet?.display_index
+        displayIndex: this.wallet?.display_index,
+        walletRank: this.wallet?.order,
+        view: RouterController.state.view
       }
     })
     this.onConnect = this.onConnectProxy.bind(this)
@@ -103,7 +105,9 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
             event: 'CONNECT_SUCCESS',
             properties: {
               method: 'browser',
-              name: this.connector.name || 'Unknown'
+              name: this.connector.name || 'Unknown',
+              view: RouterController.state.view,
+              walletRank: this.wallet?.order
             }
           })
         }
