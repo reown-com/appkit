@@ -57,11 +57,14 @@ export const WalletUtil = {
 
   filterOutDuplicatesByIds(wallets: WcWallet[]) {
     const connectors = ConnectorController.state.connectors.filter(
-      connector => connector.type === 'ANNOUNCED' || connector.type === 'INJECTED'
+      connector =>
+        connector.type === 'ANNOUNCED' ||
+        connector.type === 'INJECTED' ||
+        connector.type === 'MULTI_CHAIN'
     )
     const recent = StorageUtil.getRecentWallets()
 
-    const connectorIds = connectors.map(connector => connector.explorerId)
+    const connectorIds = connectors.map(connector => connector.explorerId || connector.id)
 
     const recentIds = recent.map(wallet => wallet.id)
 
