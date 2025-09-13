@@ -14,12 +14,12 @@ export function Footer() {
           GitHub
         </a>{' '}
         •{' '}
-        <a href="https://cloud.reown.com" target="_blank" rel="noreferrer">
-          Cloud
+        <a href="https://dashboard.reown.com" target="_blank" rel="noreferrer">
+          Dashboard
         </a>
       </div>
       <p className="warning">
-        This project ID only works on localhost. Go to Cloud to get your own.
+        This project ID only works on localhost. Visit our Dashboard to get your own.
       </p>
     </div>
   )
