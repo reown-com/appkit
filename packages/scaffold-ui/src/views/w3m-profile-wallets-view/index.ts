@@ -544,13 +544,16 @@ export class W3mProfileWalletsView extends LitElement {
       ConnectionController.syncStorageConnections()
       SnackController.showSuccess('Wallet deleted')
     } else {
-      this.handleDisconnect(namespace, { id: connection.connectorId })
+      this.handleDisconnect(namespace, { id: connection.connectorId, connectorOnly: true })
     }
   }
 
-  private async handleDisconnect(namespace: ChainNamespace, { id }: { id?: string }) {
+  private async handleDisconnect(
+    namespace: ChainNamespace,
+    { id, connectorOnly }: { id?: string; connectorOnly?: boolean }
+  ) {
     try {
-      await ConnectionController.disconnect({ id, namespace })
+      await ConnectionController.disconnect({ id, namespace, connectorOnly })
       SnackController.showSuccess('Wallet disconnected')
     } catch {
       SnackController.showError('Failed to disconnect wallet')

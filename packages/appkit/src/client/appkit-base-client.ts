@@ -80,7 +80,7 @@ import {
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
 
-import type { AdapterBlueprint } from '../adapters/index.js'
+import type { AdapterBlueprint, ChainAdapterConnector } from '../adapters/index.js'
 import { UniversalAdapter } from '../universal-adapter/client.js'
 import { ConfigUtil } from '../utils/ConfigUtil.js'
 import { WcConstantsUtil, WcHelpersUtil } from '../utils/index.js'
@@ -614,7 +614,12 @@ export abstract class AppKitBaseClient {
         }
       },
       disconnect: async params => {
-        const { id: connectorIdParam, chainNamespace, initialDisconnect } = params || {}
+        const {
+          id: connectorIdParam,
+          chainNamespace,
+          initialDisconnect,
+          connectorOnly
+        } = params || {}
 
         const namespace = chainNamespace || ChainController.state.activeChain
         const namespaceConnectorId = ConnectorController.getConnectorId(namespace)
@@ -634,11 +639,15 @@ export abstract class AppKitBaseClient {
            * If the connector is WalletConnect or Auth, disconnect all namespaces
            * since they share a single connector instance across all adapters
            */
-          if (isWalletConnect || isAuth) {
+          if ((isWalletConnect || isAuth) && !connectorOnly) {
             namespacesToDisconnect = namespaces
           }
 
           const disconnectPromises = namespacesToDisconnect.map(async ns => {
+            if (connectorOnly && !connectorIdParam) {
+              return
+            }
+
             const connectorIdToDisconnect = ConnectorController.getConnectorId(ns)
             const disconnectData = await this.disconnectNamespace(
               ns,
@@ -1223,7 +1232,30 @@ export abstract class AppKitBaseClient {
       }
 
       StorageUtil.addConnectedNamespace(chainNamespace)
+      this.handlePreviousConnectorConnection(connector)
     })
+  }
+
+  /**
+   * Checks the incoming connector and handles the previous connection in the connector's namespace, and if necessary (i.e multi-wallet is disabled) disconnects the previous connector
+   * @param connector
+   */
+  protected async handlePreviousConnectorConnection(connector: ChainAdapterConnector | undefined) {
+    const namespace = connector?.chain
+    const newConnectorId = connector?.id
+    const currentConnectorId = ConnectorController.getConnectorId(namespace)
+    const isMultiWalletEnabled = OptionsController.state.remoteFeatures?.multiWallet
+    const hasNewConnectorConnected = currentConnectorId !== connector?.id
+    const shouldDisconnectPreviousConnector =
+      newConnectorId && currentConnectorId && hasNewConnectorConnected && !isMultiWalletEnabled
+
+    try {
+      if (shouldDisconnectPreviousConnector) {
+        await ConnectionController.disconnect({ id: currentConnectorId, namespace })
+      }
+    } catch (error) {
+      console.warn('Error disconnecting previous connector', error)
+    }
   }
 
   protected async createUniversalProviderForAdapter(chainNamespace: ChainNamespace) {
