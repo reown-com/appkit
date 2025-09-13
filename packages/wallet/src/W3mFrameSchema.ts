@@ -381,7 +381,7 @@ export const RpcSolanaSignAndSendTransactionRequest = z.object({
   method: z.literal('solana_signAndSendTransaction'),
   params: z.object({
     transaction: z.string(),
-    // Options should match https://solana-labs.github.io/solana-web3.js/types/SendOptions.html
+    // Options should match https://solana-foundation.github.io/solana-web3.js/types/SendOptions.html
     options: z
       .object({
         skipPreflight: z.boolean().optional(),
