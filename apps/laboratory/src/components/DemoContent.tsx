@@ -45,9 +45,9 @@ export default function DemoContent({
       {isSiweEnabled ? <SiweData /> : null}
       {isSiwxReown ? <ReownAuthenticationTests /> : null}
 
-      <AppKitConnections namespace="eip155" title="EVM Connections" />
-      <AppKitConnections namespace="solana" title="Solana Connections" />
-      <AppKitConnections namespace="bip122" title="Bitcoin Connections" />
+      {evmAdapter ? <AppKitConnections namespace="eip155" title="EVM Connections" /> : null}
+      {solanaAdapter ? <AppKitConnections namespace="solana" title="Solana Connections" /> : null}
+      {bitcoinAdapter ? <AppKitConnections namespace="bip122" title="Bitcoin Connections" /> : null}
 
       {evmAdapter === 'wagmi' && <WagmiTests />}
       {evmAdapter === 'ethers5' && <Ethers5Tests />}
