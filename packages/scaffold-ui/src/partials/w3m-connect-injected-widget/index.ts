@@ -45,24 +45,7 @@ export class W3mConnectInjectedWidget extends LitElement {
       return null
     }
 
-    console.log('>> injectedConnectors', injectedConnectors)
-    const sortedConnectors = injectedConnectors.sort((a, b) => {
-      if (a.explorerWallet && b.explorerWallet) {
-        return (a.explorerWallet.order ?? 0) - (b.explorerWallet.order ?? 0)
-      }
-
-      if (a.explorerWallet) {
-        return -1
-      }
-
-      if (b.explorerWallet) {
-        return 1
-      }
-
-      return 0
-    })
-
-    console.log('>> sortedConnectors', sortedConnectors)
+    const sortedConnectors = ConnectorUtil.sortConnectorsByExplorerWallet(injectedConnectors)
 
     return html`
       <wui-flex flexDirection="column" gap="2">
@@ -84,6 +67,7 @@ export class W3mConnectInjectedWidget extends LitElement {
               @click=${() => this.onConnector(connector)}
               tabIdx=${ifDefined(this.tabIdx)}
               rdnsId=${connector.id}
+              walletRank=${connector.explorerWallet?.order}
             >
             </w3m-list-wallet>
           `

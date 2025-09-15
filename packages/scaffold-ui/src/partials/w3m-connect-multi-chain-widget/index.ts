@@ -1,11 +1,13 @@
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { Connector } from '@reown/appkit-controllers'
+import type { Connector, ConnectorWithProviders } from '@reown/appkit-controllers'
 import { AssetUtil, ConnectorController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
+
+import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 
 @customElement('w3m-connect-multi-chain-widget')
 export class W3mConnectMultiChainWidget extends LitElement {
@@ -15,7 +17,7 @@ export class W3mConnectMultiChainWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public tabIdx?: number = undefined
 
-  @state() private connectors = ConnectorController.state.connectors
+  @property() public connectors: ConnectorWithProviders[] = []
 
   public constructor() {
     super()
@@ -40,9 +42,11 @@ export class W3mConnectMultiChainWidget extends LitElement {
       return null
     }
 
+    const sortedConnectors = ConnectorUtil.sortConnectorsByExplorerWallet(multiChainConnectors)
+
     return html`
       <wui-flex flexDirection="column" gap="2">
-        ${multiChainConnectors.map(
+        ${sortedConnectors.map(
           connector => html`
             <w3m-list-wallet
               imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
@@ -55,6 +59,7 @@ export class W3mConnectMultiChainWidget extends LitElement {
               @click=${() => this.onConnector(connector)}
               tabIdx=${ifDefined(this.tabIdx)}
               rdnsId=${connector.id}
+              walletRank=${connector.explorerWallet?.order}
             >
             </w3m-list-wallet>
           `

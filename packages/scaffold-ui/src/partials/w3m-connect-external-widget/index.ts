@@ -68,6 +68,7 @@ export class W3mConnectExternalWidget extends LitElement {
               tabIdx=${ifDefined(this.tabIdx)}
               ?disabled=${hasWcConnection}
               rdnsId=${connector.id}
+              walletRank=${connector.explorerWallet?.order}
             >
             </w3m-list-wallet>
           `

@@ -78,6 +78,7 @@ export class W3mConnectRecentWidget extends LitElement {
               ?loading=${this.loading}
               ?disabled=${hasWcConnection}
               rdnsId=${wallet.id}
+              walletRank=${wallet.order}
             >
             </w3m-list-wallet>
           `

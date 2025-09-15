@@ -119,11 +119,13 @@ export class W3mConnectorList extends LitElement {
             ${multiChain.length
               ? html`<w3m-connect-multi-chain-widget
                   tabIdx=${ifDefined(this.tabIdx)}
+                  .connectors=${multiChain}
                 ></w3m-connect-multi-chain-widget>`
               : null}
             ${announced.length
               ? html`<w3m-connect-announced-widget
                   tabIdx=${ifDefined(this.tabIdx)}
+                  .connectors=${announced}
                 ></w3m-connect-announced-widget>`
               : null}
             ${injected.length
