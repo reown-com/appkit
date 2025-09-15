@@ -6,7 +6,6 @@ import type { Connector, ConnectorWithProviders } from '@reown/appkit-controller
 import {
   AssetUtil,
   ConnectionController,
-  ConnectorController,
   CoreHelperUtil,
   RouterController
 } from '@reown/appkit-controllers'
@@ -31,7 +30,6 @@ export class W3mConnectAnnouncedWidget extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
       ConnectionController.subscribeKey('connections', val => (this.connections = val))
     )
   }

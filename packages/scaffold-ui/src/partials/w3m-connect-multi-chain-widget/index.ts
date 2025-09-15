@@ -11,9 +11,6 @@ import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 
 @customElement('w3m-connect-multi-chain-widget')
 export class W3mConnectMultiChainWidget extends LitElement {
-  // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
-
   // -- State & Properties -------------------------------- //
   @property() public tabIdx?: number = undefined
 
@@ -21,13 +18,6 @@ export class W3mConnectMultiChainWidget extends LitElement {
 
   public constructor() {
     super()
-    this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
-    )
-  }
-
-  public override disconnectedCallback() {
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //
