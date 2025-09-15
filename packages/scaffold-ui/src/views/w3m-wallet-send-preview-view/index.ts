@@ -1,8 +1,9 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, ErrorUtil } from '@reown/appkit-common'
 import {
+  AppKitError,
   ChainController,
   CoreHelperUtil,
   EventsController,
@@ -180,23 +181,39 @@ export class W3mWalletSendPreviewView extends LitElement {
         }
       }
 
-      SnackController.showError(errMessage)
-      // eslint-disable-next-line no-console
-      console.error('SendController:sendToken - failed to send transaction', error)
+      const isUserRejectedRequestError =
+        error instanceof AppKitError &&
+        error.originalName === ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST
 
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SEND_ERROR',
-        properties: {
-          message: CoreHelperUtil.parseError(error),
-          isSmartAccount:
-            getPreferredAccountType(ChainController.state.activeChain) ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          token: this.token?.symbol || '',
-          amount: this.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
-        }
-      })
+      const eventProperties = {
+        message: CoreHelperUtil.parseError(error),
+        isSmartAccount:
+          getPreferredAccountType(ChainController.state.activeChain) ===
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+        token: this.token?.symbol || '',
+        amount: this.sendTokenAmount,
+        network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+      }
+
+      if (isUserRejectedRequestError) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SEND_REJECTED',
+          properties: eventProperties
+        })
+
+        errMessage = error.message
+      } else {
+        // eslint-disable-next-line no-console
+        console.error('SendController:sendToken - failed to send transaction', error)
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SEND_ERROR',
+          properties: eventProperties
+        })
+      }
+
+      SnackController.showError(errMessage)
     }
   }
 

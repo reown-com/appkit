@@ -392,44 +392,60 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async sendTransaction(
     params: AdapterBlueprint.SendTransactionParams
   ): Promise<AdapterBlueprint.SendTransactionResult> {
-    const { chainId, address } = getAccount(this.wagmiConfig)
-    const txParams = {
-      account: address,
-      to: params.to as Hex,
-      value: Number.isNaN(Number(params.value)) ? BigInt(0) : BigInt(params.value),
-      gas: params.gas ? BigInt(params.gas) : undefined,
-      gasPrice: params.gasPrice ? BigInt(params.gasPrice) : undefined,
-      data: params.data as Hex,
-      chainId,
-      type: 'legacy' as const,
-      parameters: ['nonce'] as const
+    try {
+      const { chainId, address } = getAccount(this.wagmiConfig)
+      const txParams = {
+        account: address,
+        to: params.to as Hex,
+        value: Number.isNaN(Number(params.value)) ? BigInt(0) : BigInt(params.value),
+        gas: params.gas ? BigInt(params.gas) : undefined,
+        gasPrice: params.gasPrice ? BigInt(params.gasPrice) : undefined,
+        data: params.data as Hex,
+        chainId,
+        type: 'legacy' as const,
+        parameters: ['nonce'] as const
+      }
+
+      await prepareTransactionRequest(this.wagmiConfig, txParams)
+      const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
+      await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
+
+      return { hash: tx }
+    } catch (err) {
+      if (ErrorUtil.isUserRejectedRequestError(err)) {
+        throw new UserRejectedRequestError(err)
+      }
+
+      throw err
     }
-
-    await prepareTransactionRequest(this.wagmiConfig, txParams)
-    const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
-    await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
-
-    return { hash: tx }
   }
 
   public async writeContract(
     params: AdapterBlueprint.WriteContractParams
   ): Promise<AdapterBlueprint.WriteContractResult> {
-    const { caipNetwork, ...data } = params
-    const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork.caipNetworkId))
+    try {
+      const { caipNetwork, ...data } = params
+      const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork.caipNetworkId))
 
-    const tx = await wagmiWriteContract(this.wagmiConfig, {
-      chain: this.wagmiChains?.[chainId],
-      chainId,
-      address: data.tokenAddress,
-      account: data.fromAddress,
-      abi: data.abi,
-      functionName: data.method,
-      args: data.args,
-      __mode: 'prepared'
-    })
+      const tx = await wagmiWriteContract(this.wagmiConfig, {
+        chain: this.wagmiChains?.[chainId],
+        chainId,
+        address: data.tokenAddress,
+        account: data.fromAddress,
+        abi: data.abi,
+        functionName: data.method,
+        args: data.args,
+        __mode: 'prepared'
+      })
 
-    return { hash: tx }
+      return { hash: tx }
+    } catch (err) {
+      if (ErrorUtil.isUserRejectedRequestError(err)) {
+        throw new UserRejectedRequestError(err)
+      }
+
+      throw err
+    }
   }
 
   public async estimateGas(
