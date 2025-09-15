@@ -85,7 +85,7 @@ export class W3mConnectorList extends LitElement {
     })
   }
 
-  private connectorListTemplate() 
+  private connectorListTemplate() {
     const mappedConnectors = this.mapConnectorsToExplorerWallets(this.connectors, this.wallets)
 
     const connectors = ConnectorUtil.getConnectorsByType(
@@ -97,7 +97,6 @@ export class W3mConnectorList extends LitElement {
     const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
       connectors
 
-    console.log('>> connectors', connectors)
     const connectorTypeOrder = ConnectorUtil.getConnectorTypeOrder({
       custom,
       recent,
@@ -108,8 +107,6 @@ export class W3mConnectorList extends LitElement {
       featured,
       external
     })
-
-    console.log('>> injected', injected)
 
     return connectorTypeOrder.map(type => {
       switch (type) {
