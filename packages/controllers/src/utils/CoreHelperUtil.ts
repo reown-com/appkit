@@ -157,19 +157,20 @@ export const CoreHelperUtil = {
     let safeAppUrl = appUrl
     let safeUniversalLink = universalLink
 
-    if (!safeAppUrl.includes('://')) {
-      safeAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
-      safeAppUrl = `${safeAppUrl}://`
-    }
+    if (safeAppUrl) {
+      if (!safeAppUrl.includes('://')) {
+        safeAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
+        safeAppUrl = `${safeAppUrl}://`
+      }
 
-    if (!safeAppUrl.endsWith('/')) {
-      safeAppUrl = `${safeAppUrl}/`
-    }
+      if (!safeAppUrl.endsWith('/')) {
+        safeAppUrl = `${safeAppUrl}/`
+      }
 
-    if (safeUniversalLink && !safeUniversalLink?.endsWith('/')) {
-      safeUniversalLink = `${safeUniversalLink}/`
+      if (safeUniversalLink && !safeUniversalLink?.endsWith('/')) {
+        safeUniversalLink = `${safeUniversalLink}/`
+      }
     }
-
     // Android deeplinks in tg context require the uri to be encoded twice
     if (this.isTelegram() && this.isAndroid()) {
       // eslint-disable-next-line no-param-reassign
