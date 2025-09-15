@@ -5,12 +5,10 @@ import { ConstantsUtil as CommonConstantsUtil, ErrorUtil } from '@reown/appkit-c
 import {
   AppKitError,
   ChainController,
-  CoreHelperUtil,
   EventsController,
   RouterController,
   SendController,
-  SnackController,
-  getPreferredAccountType
+  SnackController
 } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
@@ -18,7 +16,6 @@ import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-preview-item'
 import '@reown/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../partials/w3m-wallet-send-details/index.js'
 import styles from './styles.js'
@@ -173,45 +170,26 @@ export class W3mWalletSendPreviewView extends LitElement {
     } catch (error) {
       let errMessage = 'Failed to send transaction. Please try again.'
 
+      const isUserRejectedRequestError =
+        error instanceof AppKitError &&
+        error.originalName === ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST
+
       // eslint-disable-next-line no-warning-comments
       // TODO: Remove this once we have a better way to handle errors for each adapter
-      if (ChainController.state.activeChain === CommonConstantsUtil.CHAIN.SOLANA) {
+      if (
+        ChainController.state.activeChain === CommonConstantsUtil.CHAIN.SOLANA ||
+        isUserRejectedRequestError
+      ) {
         if (error instanceof Error) {
           errMessage = error.message
         }
       }
 
-      const isUserRejectedRequestError =
-        error instanceof AppKitError &&
-        error.originalName === ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST
-
-      const eventProperties = {
-        message: CoreHelperUtil.parseError(error),
-        isSmartAccount:
-          getPreferredAccountType(ChainController.state.activeChain) ===
-          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-        token: this.token?.symbol || '',
-        amount: this.sendTokenAmount,
-        network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
-      }
-
-      if (isUserRejectedRequestError) {
-        EventsController.sendEvent({
-          type: 'track',
-          event: 'SEND_REJECTED',
-          properties: eventProperties
-        })
-
-        errMessage = error.message
-      } else {
-        // eslint-disable-next-line no-console
-        console.error('SendController:sendToken - failed to send transaction', error)
-        EventsController.sendEvent({
-          type: 'track',
-          event: 'SEND_ERROR',
-          properties: eventProperties
-        })
-      }
+      EventsController.sendEvent({
+        type: 'track',
+        event: isUserRejectedRequestError ? 'SEND_REJECTED' : 'SEND_ERROR',
+        properties: SendController.getSdkEventProperties(error)
+      })
 
       SnackController.showError(errMessage)
     }

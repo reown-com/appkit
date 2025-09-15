@@ -114,6 +114,18 @@ const controller = {
     state.loading = loading
   },
 
+  getSdkEventProperties(error: unknown) {
+    return {
+      message: CoreHelperUtil.parseError(error),
+      isSmartAccount:
+        getPreferredAccountType(ChainController.state.activeChain) ===
+        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+      token: state.token?.symbol || '',
+      amount: state.sendTokenAmount ?? 0,
+      network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+    }
+  },
+
   async sendToken() {
     try {
       SendController.setLoading(true)
