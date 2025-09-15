@@ -26,5 +26,5 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where a `SEND_ERROR` event was logged when a user rejected a transaction. It now logs a `SEND_REJECT` event instead
+Fixed an issue where a `SEND_ERROR` event was logged when a user rejected a transaction. It now logs a `SEND_REJECTED` event instead
 
