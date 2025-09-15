@@ -60,12 +60,9 @@ describe('ErrorUtil', () => {
       expect(ErrorUtil.isUserRejectedRequestError(new Error('User rejected the operation'))).toBe(
         true
       )
-      expect(
-        ErrorUtil.isUserRejectedRequestError(new Error('Action was user cancelled by the user'))
-      ).toBe(true)
-      expect(
-        ErrorUtil.isUserRejectedRequestError(new Error('Action was user canceled by the user'))
-      ).toBe(true)
+      expect(ErrorUtil.isUserRejectedRequestError(new Error('User cancelled the operation'))).toBe(
+        true
+      )
     })
   })
 
