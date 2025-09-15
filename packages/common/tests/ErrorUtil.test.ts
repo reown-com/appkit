@@ -55,6 +55,18 @@ describe('ErrorUtil', () => {
       expect(ErrorUtil.isUserRejectedRequestError(BigInt(0))).toBe(false)
       expect(ErrorUtil.isUserRejectedRequestError(new Error('test'))).toBe(false)
     })
+
+    it('returns true for Error instance with user rejection phrasing in message', () => {
+      expect(ErrorUtil.isUserRejectedRequestError(new Error('User rejected the operation'))).toBe(
+        true
+      )
+      expect(
+        ErrorUtil.isUserRejectedRequestError(new Error('Action was user cancelled by the user'))
+      ).toBe(true)
+      expect(
+        ErrorUtil.isUserRejectedRequestError(new Error('Action was user canceled by the user'))
+      ).toBe(true)
+    })
   })
 
   describe('Error classes', () => {
