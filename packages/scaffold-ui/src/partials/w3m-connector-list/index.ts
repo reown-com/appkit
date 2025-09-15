@@ -2,7 +2,12 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ApiController, ConnectorController } from '@reown/appkit-controllers'
+import {
+  ApiController,
+  type Connector,
+  ConnectorController,
+  type WcWallet
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 
@@ -34,6 +39,8 @@ export class W3mConnectorList extends LitElement {
 
   @state() private featured = ApiController.state.featured
 
+  @state() private wallets: WcWallet[] = []
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -41,6 +48,16 @@ export class W3mConnectorList extends LitElement {
       ApiController.subscribeKey('recommended', val => (this.recommended = val)),
       ApiController.subscribeKey('featured', val => (this.featured = val))
     )
+  }
+
+  public override async connectedCallback() {
+    super.connectedCallback()
+    const { data } = await ApiController.fetchWallets({
+      page: 1,
+      entries: 20,
+      badge: 'certified'
+    })
+    this.wallets = data
   }
 
   public override disconnectedCallback() {
@@ -55,14 +72,32 @@ export class W3mConnectorList extends LitElement {
   }
 
   // -- Private ------------------------------------------ //
-  private connectorListTemplate() {
+  private mapConnectorsToExplorerWallets(connectors: Connector[], explorerWallets: WcWallet[]) {
+    return connectors.map(connector => {
+      const explorerWallet = explorerWallets.find(
+        wallet =>
+          wallet.id === connector.id ||
+          wallet.rdns === connector.info?.rdns ||
+          wallet.name === connector.name
+      )
+
+      return { ...connector, explorerWallet }
+    })
+  }
+
+  private connectorListTemplate() 
+    const mappedConnectors = this.mapConnectorsToExplorerWallets(this.connectors, this.wallets)
+
     const connectors = ConnectorUtil.getConnectorsByType(
-      this.connectors,
+      mappedConnectors,
       this.recommended,
       this.featured
     )
+
     const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
       connectors
+
+    console.log('>> connectors', connectors)
     const connectorTypeOrder = ConnectorUtil.getConnectorTypeOrder({
       custom,
       recent,
@@ -73,6 +108,8 @@ export class W3mConnectorList extends LitElement {
       featured,
       external
     })
+
+    console.log('>> injected', injected)
 
     return connectorTypeOrder.map(type => {
       switch (type) {

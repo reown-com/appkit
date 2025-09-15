@@ -117,6 +117,7 @@ export type Connector = {
   provider?: Provider | W3mFrameProvider | UniversalProvider
   chain: ChainNamespace
   connectors?: Connector[]
+  explorerWallet?: WcWallet
 }
 
 export interface AuthConnector extends Connector {

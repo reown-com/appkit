@@ -45,9 +45,28 @@ export class W3mConnectInjectedWidget extends LitElement {
       return null
     }
 
+    console.log('>> injectedConnectors', injectedConnectors)
+    const sortedConnectors = injectedConnectors.sort((a, b) => {
+      if (a.explorerWallet && b.explorerWallet) {
+        return (a.explorerWallet.order ?? 0) - (b.explorerWallet.order ?? 0)
+      }
+
+      if (a.explorerWallet) {
+        return -1
+      }
+
+      if (b.explorerWallet) {
+        return 1
+      }
+
+      return 0
+    })
+
+    console.log('>> sortedConnectors', sortedConnectors)
+
     return html`
       <wui-flex flexDirection="column" gap="2">
-        ${injectedConnectors.map(connector => {
+        ${sortedConnectors.map(connector => {
           const connectionsByNamespace = this.connections.get(connector.chain) ?? []
           const isAlreadyConnected = connectionsByNamespace.some(c =>
             HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
