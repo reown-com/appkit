@@ -930,7 +930,7 @@ export type Event =
         | {
             name: string
             walletRank: number | undefined
-            rdnsId: string
+            rdnsId?: string
             view: string
           }
     }
