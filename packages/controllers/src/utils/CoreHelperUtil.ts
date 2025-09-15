@@ -157,15 +157,16 @@ export const CoreHelperUtil = {
     let safeAppUrl = appUrl
     let safeUniversalLink = universalLink
 
-    if (!safeAppUrl.includes('://')) {
-      safeAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
-      safeAppUrl = `${safeAppUrl}://`
-    }
+    if (safeAppUrl) {
+      if (!safeAppUrl.includes('://')) {
+        safeAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
+        safeAppUrl = `${safeAppUrl}://`
+      }
 
-    if (!safeAppUrl.endsWith('/')) {
-      safeAppUrl = `${safeAppUrl}/`
+      if (!safeAppUrl.endsWith('/')) {
+        safeAppUrl = `${safeAppUrl}/`
+      }
     }
-
     if (safeUniversalLink && !safeUniversalLink?.endsWith('/')) {
       safeUniversalLink = `${safeUniversalLink}/`
     }
