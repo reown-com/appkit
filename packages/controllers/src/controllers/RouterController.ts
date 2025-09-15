@@ -10,6 +10,7 @@ import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
+import type { SendInputArguments } from './SendController.js'
 import type { SwapInputArguments, SwapInputTarget } from './SwapController.js'
 
 // -- Types --------------------------------------------- //
@@ -71,6 +72,7 @@ export interface RouterControllerState {
     | 'WalletSend'
     | 'WalletSendPreview'
     | 'WalletSendSelectToken'
+    | 'WalletSendConfirmed'
     | 'WhatIsANetwork'
     | 'WhatIsAWallet'
     | 'WhatIsABuy'
@@ -102,6 +104,8 @@ export interface RouterControllerState {
     navigateTo?: RouterControllerState['view']
     navigateWithReplace?: boolean
     swap?: SwapInputArguments
+    addWalletForNamespace?: ChainNamespace
+    send?: SendInputArguments
   }
   transactionStack: TransactionAction[]
 }

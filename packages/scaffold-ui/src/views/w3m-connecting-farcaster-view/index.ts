@@ -216,7 +216,7 @@ export class W3mConnectingFarcasterView extends LitElement {
           EventsController.sendEvent({
             type: 'track',
             event: 'SOCIAL_LOGIN_ERROR',
-            properties: { provider: this.socialProvider }
+            properties: { provider: this.socialProvider, message: CoreHelperUtil.parseError(error) }
           })
         }
         RouterController.goBack()

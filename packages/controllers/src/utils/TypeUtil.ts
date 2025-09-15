@@ -22,6 +22,7 @@ import type { AccountControllerState } from '../controllers/AccountController.js
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
+import type { RouterControllerState } from '../controllers/RouterController.js'
 
 type InitializeAppKitConfigs = {
   showWallets?: boolean
@@ -464,6 +465,8 @@ export type Event =
         name: string
         platform: Platform
         displayIndex?: number
+        walletRank: number | undefined
+        view: RouterControllerState['view']
       }
     }
   | {
@@ -474,12 +477,22 @@ export type Event =
         method: 'qrcode' | 'mobile' | 'browser' | 'email'
         name: string
         reconnect?: boolean
+        walletRank: number | undefined
+        view: RouterControllerState['view']
       }
     }
   | {
       type: 'track'
       address?: string
       event: 'CONNECT_ERROR'
+      properties: {
+        message: string
+      }
+    }
+  | {
+      type: 'track'
+      address?: string
+      event: 'USER_REJECTED'
       properties: {
         message: string
       }
@@ -523,7 +536,7 @@ export type Event =
   | {
       type: 'track'
       address?: string
-      event: 'CLICK_GET_WALLET'
+      event: 'CLICK_GET_WALLET_HELP'
     }
   | {
       type: 'track'
@@ -592,6 +605,7 @@ export type Event =
       properties: {
         network: string
         isSmartAccount: boolean
+        message: string | undefined
       }
     }
   | {
@@ -763,6 +777,7 @@ export type Event =
       event: 'SOCIAL_LOGIN_ERROR'
       properties: {
         provider: SocialProvider
+        message: string
       }
     }
   | {
@@ -845,6 +860,7 @@ export type Event =
         isSmartAccount: boolean
         network: string
         token: string
+        hash: string
         amount: number
       }
     }
@@ -887,6 +903,36 @@ export type Event =
       properties: InitializeAppKitConfigs
     }
   | PayEvent
+  | {
+      type: 'track'
+      address?: string
+      event: 'GET_WALLET'
+      properties: {
+        name: string
+        walletRank: number | undefined
+        explorerId: string
+      }
+    }
+  | {
+      type: 'track'
+      address?: string
+      event: 'WALLET_IMPRESSION'
+      properties:
+        | {
+            name: string
+            walletRank: number | undefined
+            explorerId: string
+            view: string
+            query?: string
+            certified?: boolean
+          }
+        | {
+            name: string
+            walletRank: number | undefined
+            rdnsId: string
+            view: string
+          }
+    }
 
 type PayConfiguration = {
   network: string
@@ -918,6 +964,7 @@ type PayEvent =
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
         caipNetworkId?: CaipNetworkId
+        message?: string
       }
     }
   | {
@@ -930,6 +977,7 @@ type PayEvent =
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
         caipNetworkId?: CaipNetworkId
+        message?: string
       }
     }
   | {
@@ -942,6 +990,7 @@ type PayEvent =
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
         caipNetworkId?: CaipNetworkId
+        message?: string
       }
     }
   | {
@@ -952,6 +1001,7 @@ type PayEvent =
         exchanges: PayExchange[]
         configuration: PayConfiguration
         caipNetworkId?: CaipNetworkId
+        message?: string
       }
     }
   | {
@@ -965,6 +1015,7 @@ type PayEvent =
         headless: boolean
         caipNetworkId?: CaipNetworkId
         source: 'pay' | 'fund-from-exchange'
+        message?: string
       }
     }
 
@@ -1306,7 +1357,7 @@ export type UseAppKitNetworkReturn = {
   caipNetwork: CaipNetwork | undefined
   chainId: number | string | undefined
   caipNetworkId: CaipNetworkId | undefined
-  switchNetwork: (network: AppKitNetwork) => void
+  switchNetwork: (network: AppKitNetwork) => Promise<void>
 }
 
 export type BadgeType = 'none' | 'certified'

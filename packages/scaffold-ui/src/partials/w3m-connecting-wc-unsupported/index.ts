@@ -26,7 +26,9 @@ export class W3mConnectingWcUnsupported extends LitElement {
       properties: {
         name: this.wallet.name,
         platform: 'browser',
-        displayIndex: this.wallet?.display_index
+        displayIndex: this.wallet?.display_index,
+        walletRank: this.wallet?.order,
+        view: RouterController.state.view
       }
     })
   }

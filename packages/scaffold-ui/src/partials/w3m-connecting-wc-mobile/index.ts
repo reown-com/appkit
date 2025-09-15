@@ -6,7 +6,8 @@ import {
   CoreHelperUtil,
   EventsController,
   type OpenTarget,
-  OptionsController
+  OptionsController,
+  RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
@@ -55,7 +56,9 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
       properties: {
         name: this.wallet.name,
         platform: 'mobile',
-        displayIndex: this.wallet?.display_index
+        displayIndex: this.wallet?.display_index,
+        walletRank: this.wallet.order,
+        view: RouterController.state.view
       }
     })
   }

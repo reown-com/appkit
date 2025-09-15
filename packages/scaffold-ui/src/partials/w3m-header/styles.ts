@@ -33,7 +33,7 @@ export default css`
     animation-delay: 0ms, 200ms;
   }
 
-  wui-icon-link[data-hidden='true'] {
+  wui-icon-button[data-hidden='true'] {
     opacity: 0 !important;
     pointer-events: none;
   }
