@@ -1309,6 +1309,12 @@ export abstract class AppKitBaseClient {
     await this.syncWalletConnectAccount()
     const address = this.getAddress()
 
+    if (!this.getCaipAddress()) {
+      StorageUtil.deleteRecentWallet()
+    }
+
+    const recentWallet = StorageUtil.getRecentWallet()
+
     EventsController.sendEvent({
       type: 'track',
       event: 'CONNECT_SUCCESS',
@@ -1318,7 +1324,7 @@ export abstract class AppKitBaseClient {
         name: this.universalProvider?.session?.peer?.metadata?.name || 'Unknown',
         reconnect: true,
         view: RouterController.state.view,
-        walletRank: undefined
+        walletRank: recentWallet?.order
       }
     })
   }
