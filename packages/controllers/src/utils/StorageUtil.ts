@@ -148,6 +148,7 @@ export const StorageUtil = {
           recentWallets.pop()
         }
         SafeLocalStorage.setItem(SafeLocalStorageKeys.RECENT_WALLETS, JSON.stringify(recentWallets))
+        SafeLocalStorage.setItem(SafeLocalStorageKeys.RECENT_WALLET, JSON.stringify(wallet))
       }
     } catch {
       console.info('Unable to set AppKit recent')
@@ -164,6 +165,26 @@ export const StorageUtil = {
     }
 
     return []
+  },
+
+  getRecentWallet(): WcWallet | null {
+    try {
+      const recent = SafeLocalStorage.getItem(SafeLocalStorageKeys.RECENT_WALLET)
+
+      return recent ? JSON.parse(recent) : null
+    } catch {
+      console.info('Unable to get AppKit recent')
+    }
+
+    return null
+  },
+
+  deleteRecentWallet() {
+    try {
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.RECENT_WALLET)
+    } catch {
+      console.info('Unable to delete AppKit recent')
+    }
   },
 
   setConnectedConnectorId(namespace: ChainNamespace, connectorId: string) {

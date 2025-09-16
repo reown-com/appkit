@@ -14,7 +14,8 @@ import type {
   Connector,
   ConnectorType,
   ModalControllerState,
-  NetworkControllerClient
+  NetworkControllerClient,
+  RouterControllerState
 } from '../../exports/index.js'
 import {
   ChainController,
@@ -24,6 +25,7 @@ import {
   ConnectorControllerUtil,
   ConstantsUtil,
   CoreHelperUtil,
+  EventsController,
   ModalController,
   RouterController
 } from '../../exports/index.js'
@@ -592,5 +594,41 @@ describe('ConnectionController', () => {
           })
       ).rejects.toThrow('Invalid connection status: connecting')
     })
+  })
+})
+
+describe('finalizeWcConnection', () => {
+  it('should include event properties when address is provided', () => {
+    const sendEventSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+      ...RouterController.state,
+      view: 'TestView' as unknown as RouterControllerState['view'],
+      data: { wallet: { name: 'TestWallet', id: 'test' } }
+    })
+
+    vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
+      ...ConnectionController.state,
+      wcLinking: { href: 'wc://deeplink', name: 'TestWallet' },
+      recentWallet: { id: 'test', order: 5, name: 'TestWallet' }
+    })
+
+    const address = '0xabc'
+
+    ConnectionController.finalizeWcConnection(address)
+
+    expect(sendEventSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'track',
+        event: 'CONNECT_SUCCESS',
+        address,
+        properties: expect.objectContaining({
+          method: 'mobile',
+          name: 'TestWallet',
+          view: 'TestView',
+          walletRank: 5
+        })
+      })
+    )
   })
 })

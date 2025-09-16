@@ -366,6 +366,7 @@ const controller = {
     state.status = 'disconnected'
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
+    StorageUtil.deleteRecentWallet()
   },
 
   resetUri() {
@@ -394,7 +395,7 @@ const controller = {
           method: wcLinking ? 'mobile' : 'qrcode',
           name: RouterController.state.data?.wallet?.name || 'Unknown',
           view: RouterController.state.view,
-          walletRank: RouterController.state.data?.wallet?.order
+          walletRank: recentWallet?.order
         }
       })
     }
