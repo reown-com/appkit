@@ -355,7 +355,6 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
 
-    console.log('>>> accountChanged2', connector)
     this.emit('accountChanged', {
       address: this.toChecksummedAddress(address),
       chainId,
