@@ -185,11 +185,10 @@ export class W3mDepositFromExchangeView extends LitElement {
             amount =>
               html`<wui-chip-button
                 @click=${() => ExchangeController.setAmount(amount)}
-                variant="neutral"
+                type="neutral"
                 size="sm"
-                fullWidth
-                >$${amount}</wui-chip-button
-              >`
+                text=${`$${amount}`}
+              ></wui-chip-button>`
           )}
         </wui-flex>
       </wui-flex>
