@@ -1,5 +1,5 @@
 ---
-'@reown/appkit-ui': patch
+'@reown/appkit-scaffold-ui': patch
 'pay-test-exchange': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
@@ -17,13 +17,13 @@
 '@reown/appkit-experimental': patch
 '@reown/appkit-pay': patch
 '@reown/appkit-polyfills': patch
-'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-testing': patch
+'@reown/appkit-ui': patch
 '@reown/appkit-universal-connector': patch
 '@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where the wallet icon from the SIWX screen was not properly rendered on Safari
+Enhanced connection UX by allowing scanning of QR code with main device camera and prompting the target wallet

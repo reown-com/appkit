@@ -8,6 +8,10 @@ jobs:
   canary:
     name: Publish canary from main
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     # Skip if this push is from merging the "back to main" PR
     if: ${{ !(contains(github.event.head_commit.message, 'Merge release/') && contains(github.event.head_commit.message, 'back to main')) }}
     concurrency:

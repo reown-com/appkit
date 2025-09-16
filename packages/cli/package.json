@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-cli",
-  "version": "1.8.3",
+  "version": "1.8.5",
   "sideEffects": false,
   "description": "Reown AppKit CLI",
   "main": "index.js",
@@ -34,5 +34,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }
