@@ -64,8 +64,10 @@
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/universal-provider": "2.21.7",
-    "valtio": "2.1.7",
-    "viem": ">=2.37.2"
+    "valtio": "2.1.7"
+  },
+  "optionalDependencies": {
+    "wagmi": ">=2.37.2"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",

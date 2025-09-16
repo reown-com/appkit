@@ -63,8 +63,10 @@
     "@wallet-standard/wallet": "1.1.0",
     "@walletconnect/logger": "2.1.2",
     "@walletconnect/universal-provider": "2.21.7",
-    "valtio": "2.1.7",
-    "viem": ">=2.37.2"
+    "valtio": "2.1.7"
+  },
+  "optionalDependencies": {
+    "wagmi": ">=2.37.2"
   },
   "devDependencies": {
     "@walletconnect/types": "2.21.7",

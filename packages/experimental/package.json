@@ -53,8 +53,10 @@
     "@reown/appkit-utils": "workspace:*",
     "lit": "3.3.0",
     "valtio": "2.1.7",
-    "viem": "2.37.2",
     "zod": "3.22.4"
+  },
+  "optionalDependencies": {
+    "wagmi": ">=2.37.2"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",

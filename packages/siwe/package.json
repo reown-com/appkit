@@ -26,8 +26,10 @@
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/utils": "2.21.7",
     "lit": "3.1.0",
-    "valtio": "2.1.7",
-    "viem": "2.37.2"
+    "valtio": "2.1.7"
+  },
+  "optionalDependencies": {
+    "wagmi": ">=2.37.2"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "SEE LICENSE IN LICENSE.md",
