@@ -119,7 +119,7 @@ export class W3mDepositFromExchangeView extends LitElement {
               imageSrc=${exchange.imageUrl}
               ?loading=${this.isLoading}
             >
-              <wui-text variant="md-regular" color="secondary">
+              <wui-text variant="md-regular" color="primary">
                 Deposit from ${exchange.name}
               </wui-text>
             </wui-list-item>`
@@ -180,15 +180,15 @@ export class W3mDepositFromExchangeView extends LitElement {
           </w3m-fund-input>
           ${this.tokenAmountTemplate()}
         </wui-flex>
-        <wui-flex justifyContent="space-between" gap="2">
+        <wui-flex justifyContent="center" gap="2">
           ${PRESET_AMOUNTS.map(
             amount =>
-              html`<wui-button
+              html`<wui-chip-button
                 @click=${() => ExchangeController.setAmount(amount)}
-                variant=${this.amount === amount ? 'neutral-primary' : 'neutral-secondary'}
+                variant="neutral"
                 size="sm"
                 fullWidth
-                >$${amount}</wui-button
+                >$${amount}</wui-chip-button
               >`
           )}
         </wui-flex>
