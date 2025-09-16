@@ -92,7 +92,10 @@ export class W3mDownloadsView extends LitElement {
     `
   }
 
-  private openStore(params: { href: string; type: 'chrome' | 'app' | 'play' | 'homepage' }) {
+  private openStore(params: {
+    href: string
+    type: 'chrome_store' | 'app_store' | 'play_store' | 'homepage'
+  }) {
     if (params.href && this.wallet) {
       EventsController.sendEvent({
         type: 'track',
