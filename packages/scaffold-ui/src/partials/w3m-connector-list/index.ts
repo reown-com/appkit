@@ -4,6 +4,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
   ApiController,
+  ChainController,
   type Connector,
   ConnectorController,
   type WcWallet
@@ -52,11 +53,23 @@ export class W3mConnectorList extends LitElement {
 
   public override async connectedCallback() {
     super.connectedCallback()
-    const { data } = await ApiController.fetchWallets({
+
+    const currentNamespace = ChainController.state.activeChain
+
+    const params = {
       page: 1,
       entries: 20,
-      badge: 'certified'
-    })
+      badge: 'certified' as const,
+      names: '',
+      rdns: ''
+    }
+    if (currentNamespace === 'eip155') {
+      params.rdns = this.connectors.map(connector => connector.info?.rdns || '').join(',')
+    } else {
+      params.names = this.connectors.map(connector => connector.name).join(',')
+    }
+
+    const { data } = await ApiController.fetchWallets(params)
     this.wallets = data
   }
 

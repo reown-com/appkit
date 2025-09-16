@@ -183,6 +183,8 @@ export interface ApiGetWalletsRequest {
   badge?: BadgeType
   include?: string[]
   exclude?: string[]
+  names?: string
+  rdns?: string
 }
 
 export interface ApiGetWalletsResponse {
