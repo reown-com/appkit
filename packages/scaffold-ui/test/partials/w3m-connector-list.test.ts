@@ -246,7 +246,7 @@ describe('W3mConnectorList', () => {
       }
     ]
 
-    const element: W3mConnectorList = await fixture(
+    await fixture(
       html`<w3m-connector-list .connectors=${connectorsWithNames}></w3m-connector-list>`
     )
 
@@ -282,7 +282,7 @@ describe('W3mConnectorList', () => {
       }
     ]
 
-    const element: W3mConnectorList = await fixture(
+    await fixture(
       html`<w3m-connector-list .connectors=${connectorsWithEmptyRdns}></w3m-connector-list>`
     )
 

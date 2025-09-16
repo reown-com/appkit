@@ -6,9 +6,15 @@ import '../exports/index.js'
 
 // Mock ResizeObserver
 global.ResizeObserver = class {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+  observe() {
+    // Pass
+  }
+  unobserve() {
+    // Pass
+  }
+  disconnect() {
+    // Pass
+  }
 }
 
 // Mock window.open
