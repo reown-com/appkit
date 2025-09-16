@@ -64,7 +64,6 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
   readonly getActiveChain: WalletStandardProviderConfig['getActiveChain']
   readonly name: string
   readonly chain = ConstantsUtil.CHAIN.SOLANA
-  readonly chains: CaipNetwork[]
   readonly imageUrl: string
   public readonly provider = this as CoreProvider
 
@@ -79,19 +78,21 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
     this.name = ConnectorController.getConnectorName(wallet.name) || wallet.name
     this.id = PresetsUtil.ConnectorExplorerIds[this.name] || this.name
     this.explorerId = PresetsUtil.ConnectorExplorerIds[this.name]
-    this.chains = this.wallet.chains
-      .map(chainId =>
-        this.requestedChains.find(
-          chain => chain.id === chainId || chain.id === solanaChains[chainId]?.id
-        )
-      )
-      .filter(Boolean) as CaipNetwork[]
 
     this.imageUrl = this.wallet.icon
     this.bindEvents()
   }
 
   // -- Public ------------------------------------------- //
+  public get chains() {
+    return this.wallet.chains
+      .map(chainId =>
+        this.requestedChains.find(
+          chain => chain.id === chainId || chain.id === solanaChains[chainId]?.id
+        )
+      )
+      .filter(Boolean) as CaipNetwork[]
+  }
 
   public get publicKey() {
     const account = this.getAccount(false)
