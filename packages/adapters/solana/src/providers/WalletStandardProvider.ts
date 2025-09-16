@@ -57,9 +57,15 @@ type AvailableFeatures = StandardConnectFeature &
   StandardEventsFeature
 
 export class WalletStandardProvider extends ProviderEventEmitter implements SolanaProvider {
+  readonly type = 'ANNOUNCED' as const
+  readonly id: string
+  readonly explorerId?: string
   readonly wallet: Wallet
   readonly getActiveChain: WalletStandardProviderConfig['getActiveChain']
+  readonly name: string
   readonly chain = ConstantsUtil.CHAIN.SOLANA
+  readonly chains: CaipNetwork[]
+  readonly imageUrl: string
   public readonly provider = this as CoreProvider
 
   private readonly requestedChains: WalletStandardProviderConfig['requestedChains']
@@ -70,33 +76,22 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
     this.wallet = wallet
     this.getActiveChain = getActiveChain
     this.requestedChains = requestedChains
+    this.name = wallet.name === 'Trust' ? 'Trust Wallet' : wallet.name
+    this.id = PresetsUtil.ConnectorExplorerIds[this.name] || this.name
+    this.explorerId = PresetsUtil.ConnectorExplorerIds[this.name]
+    this.chains = this.wallet.chains
+      .map(chainId =>
+        this.requestedChains.find(
+          chain => chain.id === chainId || chain.id === solanaChains[chainId]?.id
+        )
+      )
+      .filter(Boolean) as CaipNetwork[]
 
+    this.imageUrl = this.wallet.icon
     this.bindEvents()
   }
 
   // -- Public ------------------------------------------- //
-  public get id() {
-    const name = this.name
-
-    return PresetsUtil.ConnectorExplorerIds[name] || name
-  }
-
-  public get name() {
-    if (this.wallet.name === 'Trust') {
-      // The wallets from our list of wallets have not matching with the extension name
-      return 'Trust Wallet'
-    }
-
-    return this.wallet.name
-  }
-
-  public get type() {
-    return 'ANNOUNCED' as const
-  }
-
-  public get explorerId() {
-    return PresetsUtil.ConnectorExplorerIds[this.name]
-  }
 
   public get publicKey() {
     const account = this.getAccount(false)
@@ -106,20 +101,6 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
     }
 
     return undefined
-  }
-
-  public get imageUrl() {
-    return this.wallet.icon
-  }
-
-  public get chains() {
-    return this.wallet.chains
-      .map(chainId =>
-        this.requestedChains.find(
-          chain => chain.id === chainId || chain.id === solanaChains[chainId]?.id
-        )
-      )
-      .filter(Boolean) as CaipNetwork[]
   }
 
   public async connect(): Promise<string> {
