@@ -23,7 +23,7 @@
     "dayjs": "1.11.13"
   },
   "optionalDependencies": {
-    "wagmi": ">=2.37.2"
+    "viem": ">=2.37.2"
   },
   "devDependencies": {
     "@types/big.js": "6.2.2",

@@ -156,7 +156,7 @@
   },
   "optionalDependencies": {
     "@lit/react": "1.0.8",
-    "wagmi": ">=2.37.2"
+    "viem": ">=2.37.2"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "SEE LICENSE IN LICENSE.md",

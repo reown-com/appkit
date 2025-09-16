@@ -29,7 +29,7 @@
     "valtio": "2.1.7"
   },
   "optionalDependencies": {
-    "wagmi": ">=2.37.2"
+    "viem": ">=2.37.2"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "SEE LICENSE IN LICENSE.md",

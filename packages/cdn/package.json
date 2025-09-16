@@ -41,7 +41,7 @@
     "wagmi": "2.16.9"
   },
   "optionalDependencies": {
-    "wagmi": ">=2.37.2"
+    "viem": ">=2.37.2"
   },
   "keywords": [
     "appkit",

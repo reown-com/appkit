@@ -44,7 +44,7 @@
     "tweetnacl": "1.0.3"
   },
   "optionalDependencies": {
-    "wagmi": ">=2.37.2"
+    "viem": ">=2.37.2"
   },
   "devDependencies": {
     "@types/react": "19.1.3",

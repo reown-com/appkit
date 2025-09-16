@@ -66,7 +66,7 @@
     "valtio": "2.1.7"
   },
   "optionalDependencies": {
-    "wagmi": ">=2.37.2"
+    "viem": ">=2.37.2"
   },
   "devDependencies": {
     "@walletconnect/types": "2.21.7",
