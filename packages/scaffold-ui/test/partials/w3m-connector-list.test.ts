@@ -192,7 +192,7 @@ describe('W3mConnectorList', () => {
     expect(element.shadowRoot?.querySelector('wui-flex')?.children.length).toBe(0)
   })
 
-  it('should fetch wallets using rdns for eip155 chains', async () => {
+  it('should fetch wallets using rdns and names for eip155 chains', async () => {
     const fetchWalletsSpy = vi.spyOn(ApiController, 'fetchWallets')
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
@@ -222,7 +222,7 @@ describe('W3mConnectorList', () => {
       page: 1,
       entries: 20,
       badge: 'certified',
-      names: '',
+      names: 'Announced Wallet,Another Wallet',
       rdns: 'com.announced.wallet,com.another.wallet'
     })
   })
@@ -262,7 +262,7 @@ describe('W3mConnectorList', () => {
     })
   })
 
-  it('should handle empty rdns gracefully', async () => {
+  it('should handle empty rdns gracefully by filtering them out', async () => {
     const fetchWalletsSpy = vi.spyOn(ApiController, 'fetchWallets')
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
@@ -293,8 +293,8 @@ describe('W3mConnectorList', () => {
       page: 1,
       entries: 20,
       badge: 'certified',
-      names: '',
-      rdns: ',com.valid.wallet'
+      names: 'Wallet Without RDNS,Another Wallet',
+      rdns: 'com.valid.wallet'
     })
   })
 })
