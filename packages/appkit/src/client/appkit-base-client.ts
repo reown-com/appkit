@@ -1278,7 +1278,7 @@ export abstract class AppKitBaseClient {
       address,
       properties: {
         method: CoreHelperUtil.isMobile() ? 'mobile' : 'qrcode',
-        name: this.universalProvider?.session?.peer?.metadata?.name || 'Unknown',
+        name: recentWallet?.name || 'Unknown',
         reconnect: true,
         view: RouterController.state.view,
         walletRank: recentWallet?.order

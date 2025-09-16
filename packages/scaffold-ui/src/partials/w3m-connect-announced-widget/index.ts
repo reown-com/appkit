@@ -87,7 +87,7 @@ export class W3mConnectAnnouncedWidget extends LitElement {
         RouterController.push('ConnectingWalletConnect')
       }
     } else {
-      RouterController.push('ConnectingExternal', { connector })
+      RouterController.push('ConnectingExternal', { connector, wallet: connector.explorerWallet })
     }
   }
 }
