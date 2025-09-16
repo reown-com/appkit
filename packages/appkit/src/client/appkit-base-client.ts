@@ -550,7 +550,6 @@ export abstract class AppKitBaseClient {
       const adapter = this.getAdapter(namespace)
       const caipAddress = ChainController.state.chains.get(namespace)?.accountState?.caipAddress
 
-      console.log('disconnecting connector', namespace, id, caipAddress)
       /**
        * When the page loaded, the controller doesn't have address yet.
        * To disconnect, we are checking enableReconnect flag to disconnect the namespace.
@@ -621,7 +620,7 @@ export abstract class AppKitBaseClient {
         }
       },
       disconnectConnector: async params => {
-        this.disconnectConnector(params.namespace, params.id)
+        await this.disconnectConnector(params.namespace, params.id)
       },
       disconnect: async params => {
         const { id: connectorIdParam, chainNamespace, initialDisconnect } = params || {}
@@ -1246,13 +1245,6 @@ export abstract class AppKitBaseClient {
     const isMultiWalletEnabled = OptionsController.state.remoteFeatures?.multiWallet
     const hasNewConnectorConnected = currentConnectorId !== connector?.id
 
-    console.trace('shouldDisconnectPreviousConnector', {
-      namespace,
-      newConnectorId,
-      currentConnectorId,
-      hasNewConnectorConnected,
-      isMultiWalletEnabled
-    })
     const shouldDisconnectPreviousConnector =
       namespace &&
       newConnectorId &&

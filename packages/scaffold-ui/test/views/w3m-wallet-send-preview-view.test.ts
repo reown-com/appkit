@@ -72,6 +72,7 @@ const mockConnectionControllerClient: ConnectionControllerClient = {
   reconnectExternal: vi.fn(),
   checkInstalled: vi.fn(),
   disconnect: vi.fn(),
+  disconnectConnector: vi.fn(),
   signMessage: vi.fn(),
   sendTransaction: vi.fn(),
   estimateGas: vi.fn(),
