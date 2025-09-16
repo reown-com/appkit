@@ -54,8 +54,6 @@ export class W3mConnectorList extends LitElement {
   public override async connectedCallback() {
     super.connectedCallback()
 
-    const currentNamespace = ChainController.state.activeChain
-
     const params = {
       page: 1,
       entries: 20,
@@ -63,11 +61,17 @@ export class W3mConnectorList extends LitElement {
       names: '',
       rdns: ''
     }
-    if (currentNamespace === 'eip155') {
-      params.rdns = this.connectors.map(connector => connector.info?.rdns || '').join(',')
-    } else {
-      params.names = this.connectors.map(connector => connector.name).join(',')
+
+    // Use RDNS for EIP155 chains
+    if (ChainController.state.activeChain === 'eip155') {
+      const rdns = this.connectors
+        .flatMap(c => c.connectors?.map(c => c.info?.rdns) || [])
+        .concat(this.connectors.map(c => c.info?.rdns) || [])
+        .filter(Boolean)
+      params.rdns = rdns.join(',')
     }
+
+    params.names = this.connectors.map(connector => connector.name).join(',')
 
     const { data } = await ApiController.fetchWallets(params)
     this.wallets = data
@@ -87,6 +91,22 @@ export class W3mConnectorList extends LitElement {
   // -- Private ------------------------------------------ //
   private mapConnectorsToExplorerWallets(connectors: Connector[], explorerWallets: WcWallet[]) {
     return connectors.map(connector => {
+      if (connector.type === 'MULTI_CHAIN' && connector.connectors) {
+        const connectorIds = connector.connectors.map(c => c.id)
+        const connectorNames = connector.connectors.map(c => c.name)
+        const connectorRdns = connector.connectors.map(c => c.info?.rdns)
+
+        const explorerWallet = explorerWallets.find(
+          wallet =>
+            connectorIds.includes(wallet.id) ||
+            connectorNames.includes(wallet.name) ||
+            (wallet.rdns &&
+              (connectorRdns.includes(wallet.rdns) || connectorIds.includes(wallet.rdns)))
+        )
+
+        return { ...connector, explorerWallet }
+      }
+
       const explorerWallet = explorerWallets.find(
         wallet =>
           wallet.id === connector.id ||

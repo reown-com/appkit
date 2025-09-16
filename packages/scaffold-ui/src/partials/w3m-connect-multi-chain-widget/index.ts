@@ -48,7 +48,7 @@ export class W3mConnectMultiChainWidget extends LitElement {
               size="sm"
               @click=${() => this.onConnector(connector)}
               tabIdx=${ifDefined(this.tabIdx)}
-              rdnsId=${connector.id}
+              rdnsId=${connector.explorerWallet?.rdns}
               walletRank=${connector.explorerWallet?.order}
             >
             </w3m-list-wallet>
