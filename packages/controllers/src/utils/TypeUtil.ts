@@ -912,6 +912,7 @@ export type Event =
         name: string
         walletRank: number | undefined
         explorerId: string
+        type: 'chrome_store' | 'app_store' | 'play_store' | 'homepage'
       }
     }
   | {
