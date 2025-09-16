@@ -7,7 +7,9 @@ import {
   type CaipAddress,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
-  NumberUtil
+  ErrorUtil,
+  NumberUtil,
+  UserRejectedRequestError
 } from '@reown/appkit-common'
 import { ContractUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
@@ -141,6 +143,12 @@ const controller = {
         default:
           throw new Error('Unsupported chain')
       }
+    } catch (err) {
+      if (ErrorUtil.isUserRejectedRequestError(err)) {
+        throw new UserRejectedRequestError(err)
+      }
+
+      throw err
     } finally {
       SendController.setLoading(false)
     }

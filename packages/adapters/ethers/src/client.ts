@@ -156,59 +156,43 @@ export class EthersAdapter extends AdapterBlueprint {
   public async sendTransaction(
     params: AdapterBlueprint.SendTransactionParams
   ): Promise<AdapterBlueprint.SendTransactionResult> {
-    try {
-      if (!params.provider) {
-        throw new Error('Provider is undefined')
-      }
-
-      const tx = await EthersMethods.sendTransaction(
-        {
-          value: Number.isNaN(Number(params.value)) ? BigInt(0) : BigInt(params.value),
-          to: params.to as Address,
-          data: params.data ? (params.data as Address) : '0x',
-          gas: params.gas ? BigInt(params.gas) : undefined,
-          gasPrice: params.gasPrice ? BigInt(params.gasPrice) : undefined,
-          address: AccountController.state.address as Address
-        },
-        params.provider as Provider,
-        AccountController.state.address as Address,
-        Number(params.caipNetwork?.id)
-      )
-
-      return { hash: tx }
-    } catch (err) {
-      if (ErrorUtil.isUserRejectedRequestError(err)) {
-        throw new UserRejectedRequestError(err)
-      }
-
-      throw err
+    if (!params.provider) {
+      throw new Error('Provider is undefined')
     }
+
+    const tx = await EthersMethods.sendTransaction(
+      {
+        value: Number.isNaN(Number(params.value)) ? BigInt(0) : BigInt(params.value),
+        to: params.to as Address,
+        data: params.data ? (params.data as Address) : '0x',
+        gas: params.gas ? BigInt(params.gas) : undefined,
+        gasPrice: params.gasPrice ? BigInt(params.gasPrice) : undefined,
+        address: AccountController.state.address as Address
+      },
+      params.provider as Provider,
+      AccountController.state.address as Address,
+      Number(params.caipNetwork?.id)
+    )
+
+    return { hash: tx }
   }
 
   public async writeContract(
     params: AdapterBlueprint.WriteContractParams
   ): Promise<AdapterBlueprint.WriteContractResult> {
-    try {
-      if (!params.provider) {
-        throw new Error('Provider is undefined')
-      }
-
-      const { address } = ParseUtil.parseCaipAddress(params.caipAddress)
-      const result = await EthersMethods.writeContract(
-        params,
-        params.provider as Provider,
-        address,
-        Number(params.caipNetwork?.id)
-      )
-
-      return { hash: result }
-    } catch (err) {
-      if (ErrorUtil.isUserRejectedRequestError(err)) {
-        throw new UserRejectedRequestError(err)
-      }
-
-      throw err
+    if (!params.provider) {
+      throw new Error('Provider is undefined')
     }
+
+    const { address } = ParseUtil.parseCaipAddress(params.caipAddress)
+    const result = await EthersMethods.writeContract(
+      params,
+      params.provider as Provider,
+      address,
+      Number(params.caipNetwork?.id)
+    )
+
+    return { hash: result }
   }
 
   public async estimateGas(

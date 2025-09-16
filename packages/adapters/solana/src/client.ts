@@ -5,11 +5,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
 import { type AppKit, type AppKitOptions, WcHelpersUtil } from '@reown/appkit'
-import {
-  ConstantsUtil as CommonConstantsUtil,
-  UserRejectedRequestError
-} from '@reown/appkit-common'
-import { ErrorUtil as CommonErrorUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AlertController,
   ChainController,
@@ -208,64 +204,56 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   public async sendTransaction(
     params: AdapterBlueprint.SendTransactionParams
   ): Promise<AdapterBlueprint.SendTransactionResult> {
-    try {
-      const connection = SolStoreUtil.state.connection
+    const connection = SolStoreUtil.state.connection
 
-      if (!connection || !params.provider) {
-        throw new Error('Connection is not set')
-      }
+    if (!connection || !params.provider) {
+      throw new Error('Connection is not set')
+    }
 
-      const provider = params.provider as SolanaProvider
+    const provider = params.provider as SolanaProvider
 
-      const transaction = params.tokenMint
-        ? await createSPLTokenTransaction({
-            provider,
-            connection,
-            to: params.to,
-            amount: Number(params.value),
-            tokenMint: params.tokenMint
-          })
-        : await createSendTransaction({
-            provider,
-            connection,
-            to: params.to,
-            value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
-          })
+    const transaction = params.tokenMint
+      ? await createSPLTokenTransaction({
+          provider,
+          connection,
+          to: params.to,
+          amount: Number(params.value),
+          tokenMint: params.tokenMint
+        })
+      : await createSendTransaction({
+          provider,
+          connection,
+          to: params.to,
+          value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
+        })
 
-      const result = await provider.sendTransaction(transaction, connection).catch(error => {
-        if (error instanceof SendTransactionError) {
-          const errMessage = error?.transactionError?.message ?? error?.message ?? ''
+    const result = await provider.sendTransaction(transaction, connection).catch(error => {
+      if (error instanceof SendTransactionError) {
+        const errMessage = error?.transactionError?.message ?? error?.message ?? ''
 
-          for (const { pattern, message } of TRANSACTION_ERROR_MAP) {
-            if (pattern.test(errMessage)) {
-              throw new Error(message)
-            }
+        for (const { pattern, message } of TRANSACTION_ERROR_MAP) {
+          if (pattern.test(errMessage)) {
+            throw new Error(message)
           }
         }
-
-        throw error
-      })
-
-      await new Promise<void>(resolve => {
-        const interval = setInterval(async () => {
-          const status = await connection.getSignatureStatus(result)
-
-          if (status?.value) {
-            clearInterval(interval)
-            resolve()
-          }
-        }, 1000)
-      })
-
-      return {
-        hash: result
-      }
-    } catch (err) {
-      if (CommonErrorUtil.isUserRejectedRequestError(err)) {
-        throw new UserRejectedRequestError(err)
       }
 
-      throw err
+      throw error
+    })
+
+    await new Promise<void>(resolve => {
+      const interval = setInterval(async () => {
+        const status = await connection.getSignatureStatus(result)
+
+        if (status?.value) {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 1000)
+    })
+
+    return {
+      hash: result
     }
   }
 
