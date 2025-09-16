@@ -26,4 +26,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Removed NFTs tab from accounts creen
+Removed NFTs tab from account modal view

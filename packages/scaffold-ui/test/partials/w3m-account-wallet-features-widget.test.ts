@@ -259,6 +259,7 @@ describe('list content template', () => {
     expect(activity).toBeNull()
   })
 })
+
 describe('wallet features visibility', () => {
   beforeAll(() => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
