@@ -29,7 +29,7 @@ import {
 import base58 from 'bs58'
 
 import { type CaipNetwork, ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
-import type { RequestArguments } from '@reown/appkit-controllers'
+import { ConnectorController, type RequestArguments } from '@reown/appkit-controllers'
 import type { Provider as CoreProvider } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 import type {
@@ -76,7 +76,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
     this.wallet = wallet
     this.getActiveChain = getActiveChain
     this.requestedChains = requestedChains
-    this.name = wallet.name === 'Trust' ? 'Trust Wallet' : wallet.name
+    this.name = ConnectorController.getConnectorName(wallet.name) || wallet.name
     this.id = PresetsUtil.ConnectorExplorerIds[this.name] || this.name
     this.explorerId = PresetsUtil.ConnectorExplorerIds[this.name]
     this.chains = this.wallet.chains

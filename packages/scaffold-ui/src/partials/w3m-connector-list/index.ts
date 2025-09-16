@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
   ChainController,
@@ -63,7 +64,7 @@ export class W3mConnectorList extends LitElement {
     }
 
     // Use RDNS for EIP155 chains
-    if (ChainController.state.activeChain === 'eip155') {
+    if (ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM) {
       const rdns = this.connectors
         .flatMap(c => c.connectors?.map(c => c.info?.rdns) || [])
         .concat(this.connectors.map(c => c.info?.rdns) || [])
