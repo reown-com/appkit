@@ -515,8 +515,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
       await connector.provider.disconnect()
 
-      console.log('>>> disconnecting connector', params.id, this.connections)
-
       this.deleteConnection(connector.id)
 
       if (this.connections.length === 0) {
