@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-cdn",
-  "version": "1.8.3",
+  "version": "1.8.5",
   "sideEffects": false,
   "main": "dist/wagmi.js",
   "type": "module",
@@ -52,5 +52,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }
