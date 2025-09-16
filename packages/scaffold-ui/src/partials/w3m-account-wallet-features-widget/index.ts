@@ -286,9 +286,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       return html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`
     }
     if (this.currentTab === 1) {
-      return html`<w3m-account-nfts-widget></w3m-account-nfts-widget>`
-    }
-    if (this.currentTab === 2) {
       return html`<w3m-account-activity-widget></w3m-account-activity-widget>`
     }
 
