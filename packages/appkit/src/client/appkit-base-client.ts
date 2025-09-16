@@ -1201,13 +1201,15 @@ export abstract class AppKitBaseClient {
     })
 
     adapter.on('accountChanged', ({ address, chainId, connector }) => {
+      this.handlePreviousConnectorConnection(connector)
+
       const isActiveChain = ChainController.state.activeChain === chainNamespace
 
       if (connector?.provider) {
         this.syncProvider({
-          id: connector.id,
-          type: connector.type,
-          provider: connector.provider,
+          id: connector?.id || connector?.provider?.id,
+          type: connector?.type || connector?.provider?.type,
+          provider: connector?.provider,
           chainNamespace
         })
         this.syncConnectedWalletInfo(chainNamespace)
@@ -1230,7 +1232,6 @@ export abstract class AppKitBaseClient {
       }
 
       StorageUtil.addConnectedNamespace(chainNamespace)
-      this.handlePreviousConnectorConnection(connector)
     })
   }
 
@@ -1240,10 +1241,10 @@ export abstract class AppKitBaseClient {
    */
   protected async handlePreviousConnectorConnection(connector: ChainAdapterConnector | undefined) {
     const namespace = connector?.chain
-    const newConnectorId = connector?.id
+    const newConnectorId = connector?.id || connector?.provider?.id
     const currentConnectorId = ConnectorController.getConnectorId(namespace)
     const isMultiWalletEnabled = OptionsController.state.remoteFeatures?.multiWallet
-    const hasNewConnectorConnected = currentConnectorId !== connector?.id
+    const hasNewConnectorConnected = currentConnectorId !== newConnectorId
 
     const shouldDisconnectPreviousConnector =
       namespace &&
@@ -1254,7 +1255,7 @@ export abstract class AppKitBaseClient {
 
     try {
       if (shouldDisconnectPreviousConnector) {
-        await this.disconnectConnector(namespace, currentConnectorId)
+        await ConnectionController.disconnect({ id: currentConnectorId, namespace: namespace })
       }
     } catch (error) {
       console.warn('Error disconnecting previous connector', error)
