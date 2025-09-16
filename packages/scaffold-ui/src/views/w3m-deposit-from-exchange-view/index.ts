@@ -12,7 +12,7 @@ import {
   SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-chip-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-image'

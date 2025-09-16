@@ -1479,8 +1479,3 @@ export type FeatureConfigMap = {
 }
 
 export type FeatureKey = keyof FeatureConfigMap
-
-export type ThemeOverrides = {
-  padding?: string
-  backgroundColor?: string
-}
