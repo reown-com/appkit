@@ -1207,8 +1207,8 @@ export abstract class AppKitBaseClient {
 
       if (connector?.provider) {
         this.syncProvider({
-          id: connector?.id || connector?.provider?.id,
-          type: connector?.type || connector?.provider?.type,
+          id: connector.id,
+          type: connector.type,
           provider: connector?.provider,
           chainNamespace
         })
@@ -1241,7 +1241,7 @@ export abstract class AppKitBaseClient {
    */
   protected async handlePreviousConnectorConnection(connector: ChainAdapterConnector | undefined) {
     const namespace = connector?.chain
-    const newConnectorId = connector?.id || connector?.provider?.id
+    const newConnectorId = connector?.id
     const currentConnectorId = ConnectorController.getConnectorId(namespace)
     const isMultiWalletEnabled = OptionsController.state.remoteFeatures?.multiWallet
     const hasNewConnectorConnected = currentConnectorId !== newConnectorId
