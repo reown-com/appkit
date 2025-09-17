@@ -105,7 +105,9 @@ export class W3mConnectorList extends LitElement {
               (connectorRdns.includes(wallet.rdns) || connectorIds.includes(wallet.rdns)))
         )
 
-        return { ...connector, explorerWallet }
+        connector.explorerWallet = explorerWallet
+
+        return connector
       }
 
       const explorerWallet = explorerWallets.find(
@@ -115,7 +117,9 @@ export class W3mConnectorList extends LitElement {
           wallet.name === connector.name
       )
 
-      return { ...connector, explorerWallet }
+      connector.explorerWallet = explorerWallet
+
+      return connector
     })
   }
 
