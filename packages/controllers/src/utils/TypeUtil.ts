@@ -882,6 +882,18 @@ export type Event =
   | {
       type: 'track'
       address?: string
+      event: 'SEND_REJECTED'
+      properties: {
+        message: string
+        isSmartAccount: boolean
+        network: string
+        token: string
+        amount: number
+      }
+    }
+  | {
+      type: 'track'
+      address?: string
       event: 'CONNECT_PROXY_ERROR'
       properties: {
         message: string
