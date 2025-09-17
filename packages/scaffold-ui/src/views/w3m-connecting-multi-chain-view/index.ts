@@ -91,7 +91,7 @@ export class W3mConnectingMultiChainView extends LitElement {
               @click=${() => this.onConnector(connector)}
               size="sm"
               data-testid="wui-list-chain-${connector.chain}"
-              rdnsId=${connector.id}
+              rdnsId=${connector.explorerWallet?.rdns}
             ></w3m-list-wallet>
           `
         : null
@@ -115,7 +115,8 @@ export class W3mConnectingMultiChainView extends LitElement {
       }
     } else {
       RouterController.push('ConnectingExternal', {
-        connector
+        connector,
+        wallet: this.activeConnector?.explorerWallet
       })
     }
   }
