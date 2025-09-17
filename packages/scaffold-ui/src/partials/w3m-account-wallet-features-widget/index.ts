@@ -281,12 +281,14 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private listContentTemplate() {
-    const TABS = [
-      html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`,
-      html`<w3m-account-activity-widget></w3m-account-activity-widget>`
-    ]
+    if (this.currentTab === 0) {
+      return html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`
+    }
+    if (this.currentTab === 1) {
+      return html`<w3m-account-activity-widget></w3m-account-activity-widget>`
+    }
 
-    return TABS[this.currentTab]
+    return html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`
   }
 
   private tokenBalanceTemplate() {
