@@ -413,7 +413,6 @@ export abstract class AppKitBaseClient {
     OptionsController.setDebug(options.debug !== false)
 
     // On by default
-    OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false)
     OptionsController.setEnableWalletGuide(options.enableWalletGuide !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
