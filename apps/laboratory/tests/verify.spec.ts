@@ -200,6 +200,39 @@ testMEthersVerifyEvil(
   }
 )
 
+testMWagmiVerifyValid(
+  'wagmi: can sign even if Verify API is blocked',
+  async ({ modalPage, context }) => {
+    test.skip(modalPage.library !== 'wagmi', 'fixture always uses wagmi')
+
+    const modalValidator = new ModalValidator(modalPage.page)
+    const walletPage = new WalletPage(await context.newPage())
+    await walletPage.load()
+    const walletValidator = new WalletValidator(walletPage.page)
+
+    await modalPage.page.route('*://verify.walletconnect.{org,com}/**', route => route.abort())
+    await walletPage.page.route('*://verify.walletconnect.{org,com}/**', route => route.abort())
+
+    const uri = await modalPage.getConnectUri()
+    await walletPage.connectWithUri(uri)
+    await expect(walletPage.page.getByText('Cannot Verify')).toBeVisible()
+    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+    await modalValidator.expectConnected()
+    await walletValidator.expectConnected()
+
+    await modalPage.sign()
+    const chainName = DEFAULT_CHAIN_NAME
+    await walletValidator.expectReceivedSign({ chainName })
+    await expect(walletPage.page.getByText('Cannot Verify')).toBeVisible()
+    await walletPage.handleRequest({ accept: true })
+    await modalValidator.expectAcceptedSign()
+
+    await modalPage.disconnect()
+    await modalValidator.expectDisconnected()
+    await walletValidator.expectDisconnected()
+  }
+)
+
 interface TimingFixtureWithLibrary {
   library: string
 }

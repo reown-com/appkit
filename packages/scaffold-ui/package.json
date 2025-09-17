@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-scaffold-ui",
-  "version": "1.8.2",
+  "version": "1.8.5",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -24,6 +24,11 @@
       "types": "./dist/types/exports/partials/w3m-router-container.d.ts",
       "import": "./dist/esm/exports/partials/w3m-router-container.js",
       "default": "./dist/esm/exports/partials/w3m-router-container.js"
+    },
+    "./partials/w3m-list-wallet": {
+      "types": "./dist/types/exports/partials/w3m-list-wallet.d.ts",
+      "import": "./dist/esm/exports/partials/w3m-list-wallet.js",
+      "default": "./dist/esm/exports/partials/w3m-list-wallet.js"
     },
     "./utils": {
       "types": "./dist/types/exports/utils.d.ts",
@@ -113,7 +118,7 @@
     "lit": "3.3.0"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
@@ -138,5 +143,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

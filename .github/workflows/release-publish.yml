@@ -12,6 +12,7 @@ jobs:
       contents: write
       id-token: write
       pull-requests: write
+      attestations: write
     runs-on: ubuntu-latest
     timeout-minutes: 5
     # Only run on push events to release branches, skip PR events and "back to main" merges
@@ -30,7 +31,7 @@ jobs:
           node-version: 22.x
           cache: pnpm
 
-      - run: pnpm install
+      - run: pnpm install --frozen-lockfile
 
       - name: Version or publish
         id: changesets
