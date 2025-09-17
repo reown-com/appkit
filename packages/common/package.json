@@ -20,10 +20,8 @@
   },
   "dependencies": {
     "big.js": "6.2.2",
-    "dayjs": "1.11.13"
-  },
-  "peerDependencies": {
-    "viem": ">=2.37.2"
+    "dayjs": "1.11.13",
+    "viem": "^2.37"
   },
   "devDependencies": {
     "@types/big.js": "6.2.2",

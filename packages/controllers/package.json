@@ -63,11 +63,9 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.21.7",
-    "valtio": "2.1.7"
-  },
-  "peerDependencies": {
-    "viem": ">=2.37.2"
+    "@walletconnect/universal-provider": "2.21.9-canary-caret-viem-1",
+    "valtio": "2.1.7",
+    "viem": "^2.37"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",

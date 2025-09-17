@@ -24,12 +24,10 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/utils": "2.21.7",
+    "@walletconnect/utils": "2.21.9-canary-caret-viem-1",
     "lit": "3.1.0",
-    "valtio": "2.1.7"
-  },
-  "peerDependencies": {
-    "viem": ">=2.37.2"
+    "valtio": "2.1.7",
+    "viem": "^2.37"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "SEE LICENSE IN LICENSE.md",
