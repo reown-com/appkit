@@ -138,7 +138,7 @@ describe('W3mDepositFromExchangeView', () => {
 
     // Clicking a preset amount should delegate to controller
     const setAmountSpy = vi.spyOn(ExchangeController, 'setAmount')
-    const presetButtons = HelpersUtil.querySelectAll(element, 'wui-button')
+    const presetButtons = HelpersUtil.querySelectAll(element, 'wui-chip-button')
     // Click the first preset ($10)
     presetButtons?.[0]?.click()
     await elementUpdated(element)
