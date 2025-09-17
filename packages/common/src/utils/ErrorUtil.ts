@@ -42,12 +42,22 @@ export const ErrorUtil = {
       return false
     }
   },
+  isUserRejectedMessage(message: string) {
+    return (
+      message.toLowerCase().includes('user rejected') ||
+      message.toLowerCase().includes('user cancelled') ||
+      message.toLowerCase().includes('user canceled')
+    )
+  },
   isUserRejectedRequestError(error: unknown) {
     if (ErrorUtil.isRpcProviderError(error)) {
       const isUserRejectedCode = error.code === ErrorUtil.RPC_ERROR_CODE.USER_REJECTED_REQUEST
-      const isUserRejectedMessage = error.message.toLowerCase().includes('user rejected')
 
-      return isUserRejectedCode || isUserRejectedMessage
+      return isUserRejectedCode || ErrorUtil.isUserRejectedMessage(error.message)
+    }
+
+    if (error instanceof Error) {
+      return ErrorUtil.isUserRejectedMessage(error.message)
     }
 
     return false
