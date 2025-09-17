@@ -24,7 +24,6 @@ import {
   ChainController,
   type ConnectionControllerClient,
   CoreHelperUtil,
-  type NetworkControllerClient,
   type SocialProvider
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
@@ -155,8 +154,7 @@ describe('WagmiAdapter', () => {
     })
     adapter.wagmiConfig = mockWagmiConfig
     ChainController.initialize([adapter], mockCaipNetworks, {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
     })
     ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })

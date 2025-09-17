@@ -58,8 +58,7 @@ describe('Base', () => {
       expect(initialize).toHaveBeenCalledOnce()
 
       expect(initialize).toHaveBeenCalledWith(mockOptions.adapters, [mainnet, sepolia, solana], {
-        connectionControllerClient: expect.any(Object),
-        networkControllerClient: expect.any(Object)
+        connectionControllerClient: expect.any(Object)
       })
     })
 

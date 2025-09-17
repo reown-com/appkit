@@ -5,8 +5,7 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   type ConnectionControllerClient,
-  type Provider as CoreProvider,
-  type NetworkControllerClient
+  type Provider as CoreProvider
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
@@ -74,8 +73,7 @@ describe('SolanaAdapter', () => {
       adapterType: ConstantsUtil.ADAPTER_TYPES.SOLANA
     })
     ChainController.initialize([adapter], mockCaipNetworks, {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
     })
     ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'solana')
   })

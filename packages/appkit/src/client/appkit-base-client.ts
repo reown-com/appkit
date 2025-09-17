@@ -405,7 +405,12 @@ export abstract class AppKitBaseClient {
       if (activeCaipNetwork) {
         const address = ChainController.getAccountData(activeCaipNetwork.chainNamespace)?.address
         console.log('<< address', address)
-        if (address) {
+        const providerType = ProviderController.getProviderId(activeCaipNetwork.chainNamespace)
+        console.log('<< providerType', providerType)
+
+        if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
+          this.syncWalletConnectAccount()
+        } else if (address) {
           this.syncAccount({
             address,
             chainId: activeCaipNetwork.id,
@@ -1528,8 +1533,12 @@ export abstract class AppKitBaseClient {
         this.setStatus('disconnected', chainNamespace)
       }
 
+      const data = this.getApprovedCaipNetworksData()
       this.syncConnectedWalletInfo(chainNamespace)
-      await ChainController.setApprovedCaipNetworksData(chainNamespace)
+      await ChainController.setApprovedCaipNetworksData(chainNamespace, {
+        approvedCaipNetworkIds: data.approvedCaipNetworkIds,
+        supportsAllNetworks: data.supportsAllNetworks
+      })
     })
 
     await Promise.all(syncTasks)
@@ -2522,9 +2531,6 @@ export abstract class AppKitBaseClient {
 
     return ChainController.getAccountData(namespace)?.address
   }
-
-  public setApprovedCaipNetworksData: (typeof ChainController)['setApprovedCaipNetworksData'] =
-    namespace => ChainController.setApprovedCaipNetworksData(namespace)
 
   public resetNetwork: (typeof ChainController)['resetNetwork'] = (namespace: ChainNamespace) => {
     ChainController.resetNetwork(namespace)

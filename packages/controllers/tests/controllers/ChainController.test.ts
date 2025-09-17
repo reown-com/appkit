@@ -8,12 +8,7 @@ import {
 } from '@reown/appkit-common'
 import { SafeLocalStorage } from '@reown/appkit-common'
 
-import {
-  CoreHelperUtil,
-  ModalController,
-  type NetworkControllerClient,
-  OptionsController
-} from '../../exports/index.js'
+import { CoreHelperUtil, ModalController, OptionsController } from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
 import { getActiveNetworkTokenAddress } from '../../src/utils/ChainControllerUtil.js'
@@ -115,23 +110,15 @@ const connectionControllerClient: ConnectionControllerClient = {
   updateBalance: () => Promise.resolve()
 }
 
-const networkControllerClient: NetworkControllerClient = {
-  switchCaipNetwork: async _caipNetwork => Promise.resolve(),
-  getApprovedCaipNetworksData: async () =>
-    Promise.resolve({ approvedCaipNetworkIds: [], supportsAllNetworks: false })
-}
-
 const evmAdapter = {
   namespace: ConstantsUtil.CHAIN.EVM,
   connectionControllerClient,
-  networkControllerClient,
   caipNetworks: [mainnetCaipNetwork]
 }
 
 const solanaAdapter = {
   namespace: ConstantsUtil.CHAIN.SOLANA,
   connectionControllerClient,
-  networkControllerClient,
   caipNetworks: [solanaCaipNetwork] as unknown as CaipNetwork[]
 }
 
@@ -142,15 +129,13 @@ describe('ChainController', () => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
     ChainController.state.noAdapters = false
     ChainController.initialize([evmAdapter], requestedCaipNetworks, {
-      connectionControllerClient,
-      networkControllerClient
+      connectionControllerClient
     })
   })
 
   it('should be initialized as expected', () => {
     expect(ChainController.state.activeChain).toEqual(ConstantsUtil.CHAIN.EVM)
     expect(ChainController.getConnectionControllerClient()).toEqual(connectionControllerClient)
-    expect(ChainController.getNetworkControllerClient()).toEqual(networkControllerClient)
   })
 
   it('should update network state as expected', () => {
@@ -163,31 +148,24 @@ describe('ChainController', () => {
   })
 
   it('should update state correctly on setApprovedCaipNetworkIds()', async () => {
-    const networkController = { ...networkControllerClient }
-    const networkControllerSpy = vi
-      .spyOn(networkController, 'getApprovedCaipNetworksData')
-      .mockResolvedValueOnce({
-        approvedCaipNetworkIds,
-        supportsAllNetworks: false
-      })
     const evmAdapter = {
       namespace: chainNamespace,
       connectionControllerClient,
-      networkControllerClient: networkController,
       caipNetworks: [] as CaipNetwork[]
     }
 
     // Need to re-initialize to set the spy properly
     ChainController.initialize([evmAdapter], requestedCaipNetworks, {
-      connectionControllerClient,
-      networkControllerClient: networkController
+      connectionControllerClient
     })
-    await ChainController.setApprovedCaipNetworksData(chainNamespace)
+    await ChainController.setApprovedCaipNetworksData(chainNamespace, {
+      approvedCaipNetworkIds,
+      supportsAllNetworks: false
+    })
 
     expect(ChainController.getApprovedCaipNetworkIds(chainNamespace)).toEqual(
       approvedCaipNetworkIds
     )
-    expect(networkControllerSpy).toHaveBeenCalled()
   })
 
   it('should update state correctly on setCaipNetwork()', () => {
@@ -332,7 +310,6 @@ describe('ChainController', () => {
     const limitedEvmAdapter = {
       namespace: ConstantsUtil.CHAIN.EVM,
       connectionControllerClient,
-      networkControllerClient,
       caipNetworks: [
         {
           id: 1,
@@ -366,8 +343,7 @@ describe('ChainController', () => {
     const getItemSpy = vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue('eip155')
 
     ChainController.initialize([evmAdapter], requestedCaipNetworks, {
-      connectionControllerClient,
-      networkControllerClient
+      connectionControllerClient
     })
 
     expect(getItemSpy).toHaveBeenCalledWith(SafeLocalStorageKeys.ACTIVE_NAMESPACE)
@@ -380,8 +356,7 @@ describe('ChainController', () => {
     const getItemSpy = vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue('solana')
 
     ChainController.initialize([solanaAdapter, evmAdapter], requestedCaipNetworks, {
-      connectionControllerClient,
-      networkControllerClient
+      connectionControllerClient
     })
 
     expect(getItemSpy).toHaveBeenCalledWith(SafeLocalStorageKeys.ACTIVE_NAMESPACE)
@@ -392,16 +367,14 @@ describe('ChainController', () => {
 
   it('should set noAdapters flag when no adapters provided', () => {
     ChainController.initialize([], requestedCaipNetworks, {
-      connectionControllerClient,
-      networkControllerClient
+      connectionControllerClient
     })
     expect(ChainController.state.noAdapters).toBe(true)
   })
 
   it('should set noAdapters flag when no adapter provided', () => {
     ChainController.initialize([], requestedCaipNetworks, {
-      connectionControllerClient,
-      networkControllerClient
+      connectionControllerClient
     })
     expect(ChainController.state.noAdapters).toBe(true)
   })

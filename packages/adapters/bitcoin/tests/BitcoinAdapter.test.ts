@@ -15,7 +15,6 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   type ConnectionControllerClient,
-  type NetworkControllerClient,
   StorageUtil
 } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
@@ -55,8 +54,7 @@ describe('BitcoinAdapter', () => {
     api = mockBitcoinApi()
     adapter = new BitcoinAdapter({ api, networks: [bitcoin] })
     ChainController.initialize([adapter], [bitcoin], {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
     })
     ChainController.setRequestedCaipNetworks([bitcoin], 'bip122')
   })

@@ -12,7 +12,6 @@ import {
   ChainController,
   type ConnectionControllerClient,
   CoreHelperUtil,
-  type NetworkControllerClient,
   type Provider,
   ProviderController,
   SIWXUtil
@@ -136,8 +135,7 @@ describe('EthersAdapter', () => {
 
     adapter = new EthersAdapter()
     ChainController.initialize([adapter], mockCaipNetworks, {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
     })
     ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })

@@ -1,7 +1,7 @@
 import { parseUnits } from 'viem'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
-import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import {
@@ -11,7 +11,6 @@ import {
   ConnectionController,
   type ConnectionControllerClient,
   ConnectorController,
-  type NetworkControllerClient,
   RouterController,
   SwapController
 } from '../../exports/index.js'
@@ -43,12 +42,7 @@ const caipNetwork = {
     }
   }
 } as CaipNetwork
-const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
-const client: NetworkControllerClient = {
-  switchCaipNetwork: async _caipNetwork => Promise.resolve(),
-  getApprovedCaipNetworksData: async () =>
-    Promise.resolve({ approvedCaipNetworkIds, supportsAllNetworks: false })
-}
+
 const chain = ConstantsUtil.CHAIN.EVM
 const caipAddress = 'eip155:1:0x123'
 // MATIC
@@ -62,12 +56,10 @@ const sourceTokenAmount = '1'
 beforeAll(async () => {
   const mockAdapter = {
     namespace: ConstantsUtil.CHAIN.EVM,
-    networkControllerClient: client,
     caipNetworks: [caipNetwork]
   }
   ChainController.initialize([mockAdapter], [caipNetwork], {
-    connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-    networkControllerClient: client
+    connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
   })
 
   ChainController.setActiveCaipNetwork(caipNetwork)

@@ -519,26 +519,6 @@ const controller = {
     })
   },
 
-  getNetworkControllerClient(chainNamespace?: ChainNamespace) {
-    const chain = chainNamespace || state.activeChain
-
-    if (!chain) {
-      throw new Error('ChainController:getNetworkControllerClient - chain is required')
-    }
-
-    const chainAdapter = state.chains.get(chain)
-
-    if (!chainAdapter) {
-      throw new Error('Chain adapter not found')
-    }
-
-    if (!chainAdapter.networkControllerClient) {
-      throw new Error('NetworkController client not set')
-    }
-
-    return chainAdapter.networkControllerClient
-  },
-
   getConnectionControllerClient(_chain?: ChainNamespace) {
     const chain = _chain || state.activeChain
 
@@ -641,13 +621,10 @@ const controller = {
     return approvedCaipNetworkIds
   },
 
-  async setApprovedCaipNetworksData(namespace: ChainNamespace) {
-    const networkControllerClient = ChainController.getNetworkControllerClient()
-    const data = await networkControllerClient?.getApprovedCaipNetworksData()
-
+  async setApprovedCaipNetworksData(namespace: ChainNamespace,  { approvedCaipNetworkIds: CaipNetworkId[], supportsAllNetworks: boolean } ) {
     ChainController.setAdapterNetworkState(namespace, {
-      approvedCaipNetworkIds: data?.approvedCaipNetworkIds,
-      supportsAllNetworks: data?.supportsAllNetworks
+      approvedCaipNetworkIds,
+      supportsAllNetworks
     })
   },
 

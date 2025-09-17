@@ -9,8 +9,7 @@ import {
   ConnectionController,
   type ConnectionControllerClient,
   ConnectorController,
-  EnsController,
-  type NetworkControllerClient
+  EnsController
 } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
@@ -90,8 +89,7 @@ beforeAll(() => {
     ],
     [{ ...mainnet, caipNetworkId: 'eip155:1', chainNamespace: ConstantsUtil.CHAIN.EVM }],
     {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
     }
   )
   ChainController.setAccountProp('address', '0x123', chain)

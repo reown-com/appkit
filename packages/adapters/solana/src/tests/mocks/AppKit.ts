@@ -55,9 +55,6 @@ export const mockAppKit = {
     connectionControllerClient: {
       connectWalletConnect: vi.fn(),
       disconnect: vi.fn()
-    },
-    networkControllerClient: {
-      switchCaipNetwork: vi.fn()
     }
   },
   getConnectorImage: vi.fn()

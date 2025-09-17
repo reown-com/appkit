@@ -11,7 +11,6 @@ import {
 import {
   ChainController,
   type ConnectionControllerClient,
-  type NetworkControllerClient,
   type Provider,
   ProviderController,
   SIWXUtil
@@ -80,8 +79,7 @@ describe('Ethers5Adapter', () => {
     vi.clearAllMocks()
     adapter = new Ethers5Adapter()
     ChainController.initialize([adapter], mockCaipNetworks, {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
     })
     ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })
