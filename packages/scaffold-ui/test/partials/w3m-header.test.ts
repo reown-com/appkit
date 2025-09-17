@@ -41,8 +41,8 @@ describe('W3mHeader', () => {
       tokenBalance: [],
       smartAccountDeployed: false,
       addressLabels: new Map(),
-      address: '0xAccountController',
-      caipAddress: 'eip155:1:0xAccountController'
+      address: '0xAddress',
+      caipAddress: 'eip155:1:0xAddress'
     })
     RouterController.reset('Connect')
     element = await fixture(html`<w3m-header></w3m-header>`)

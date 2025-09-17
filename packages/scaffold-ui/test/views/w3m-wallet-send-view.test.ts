@@ -3,7 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Balance } from '@reown/appkit-common'
 import {
-  AccountController,
+  type AccountState,
+  ChainController,
   ConnectionController,
   RouterController,
   SendController,
@@ -34,10 +35,10 @@ describe('W3mWalletSendView', () => {
       return {}
     })
 
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
       address: '0x123456789abcdef123456789abcdef123456789a'
-    })
+    } as unknown as AccountState)
     vi.spyOn(SwapController, 'getNetworkTokenPrice').mockResolvedValue()
     vi.spyOn(SendController, 'fetchTokenBalance').mockResolvedValue([])
     vi.spyOn(ConnectionController, 'getEnsAddress').mockImplementation((ensName: string) => {
