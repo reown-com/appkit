@@ -2215,6 +2215,9 @@ importers:
 
   packages/adapters/ethers:
     dependencies:
+      '@coinbase/wallet-sdk':
+        specifier: 4.3.7
+        version: 4.3.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
       '@ethersproject/sha2':
         specifier: 5.8.0
         version: 5.8.0
@@ -2239,6 +2242,12 @@ importers:
       '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
+      '@safe-global/safe-apps-provider':
+        specifier: 0.18.6
+        version: 0.18.6(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@safe-global/safe-apps-sdk':
+        specifier: 9.1.0
+        version: 9.1.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
       '@walletconnect/universal-provider':
         specifier: 2.21.7
         version: 2.21.7(@netlify/blobs@9.1.2)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.2)(ioredis@5.7.0)(typescript@5.8.3)(utf-8-validate@5.0.10)
@@ -2248,16 +2257,6 @@ importers:
       valtio:
         specifier: 2.1.7
         version: 2.1.7(@types/react@19.1.8)(react@19.1.0)
-    optionalDependencies:
-      '@coinbase/wallet-sdk':
-        specifier: 4.3.7
-        version: 4.3.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@safe-global/safe-apps-provider':
-        specifier: 0.18.6
-        version: 0.18.6(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@safe-global/safe-apps-sdk':
-        specifier: 9.1.0
-        version: 9.1.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.9
@@ -2271,6 +2270,9 @@ importers:
 
   packages/adapters/ethers5:
     dependencies:
+      '@coinbase/wallet-sdk':
+        specifier: 4.3.7
+        version: 4.3.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
       '@ethersproject/sha2':
         specifier: 5.8.0
         version: 5.8.0
@@ -2295,6 +2297,12 @@ importers:
       '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
+      '@safe-global/safe-apps-provider':
+        specifier: 0.18.6
+        version: 0.18.6(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@safe-global/safe-apps-sdk':
+        specifier: 9.1.0
+        version: 9.1.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
       '@walletconnect/universal-provider':
         specifier: 2.21.7
         version: 2.21.7(@netlify/blobs@9.1.2)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.2)(ioredis@5.7.0)(typescript@5.8.3)(utf-8-validate@5.0.10)
@@ -2304,16 +2312,6 @@ importers:
       valtio:
         specifier: 2.1.7
         version: 2.1.7(@types/react@19.1.8)(react@19.1.0)
-    optionalDependencies:
-      '@coinbase/wallet-sdk':
-        specifier: 4.3.7
-        version: 4.3.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@safe-global/safe-apps-provider':
-        specifier: 0.18.6
-        version: 0.18.6(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@safe-global/safe-apps-sdk':
-        specifier: 9.1.0
-        version: 9.1.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.9
@@ -19954,7 +19952,6 @@ snapshots:
       - typescript
       - utf-8-validate
       - zod
-    optional: true
 
   '@coinbase/wallet-sdk@4.3.7(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)':
     dependencies:
@@ -25330,7 +25327,6 @@ snapshots:
       - typescript
       - utf-8-validate
       - zod
-    optional: true
 
   '@safe-global/safe-apps-provider@0.18.6(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)':
     dependencies:
@@ -25351,7 +25347,6 @@ snapshots:
       - typescript
       - utf-8-validate
       - zod
-    optional: true
 
   '@safe-global/safe-apps-sdk@9.1.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.76)':
     dependencies:
@@ -39470,7 +39465,7 @@ snapshots:
     dependencies:
       ansi-styles: 4.3.0
       string-width: 4.2.3
-      strip-ansi: 6.0.1
+      strip-ansi: 7.1.0
 
   wrap-ansi@8.1.0:
     dependencies:
