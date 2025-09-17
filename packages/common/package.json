@@ -22,7 +22,7 @@
     "big.js": "6.2.2",
     "dayjs": "1.11.13"
   },
-  "optionalDependencies": {
+  "peerDependencies": {
     "viem": ">=2.37.2"
   },
   "devDependencies": {

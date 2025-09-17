@@ -55,7 +55,7 @@
     "valtio": "2.1.7",
     "zod": "3.22.4"
   },
-  "optionalDependencies": {
+  "peerDependencies": {
     "viem": ">=2.37.2"
   },
   "devDependencies": {

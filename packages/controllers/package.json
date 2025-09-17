@@ -66,7 +66,7 @@
     "@walletconnect/universal-provider": "2.21.7",
     "valtio": "2.1.7"
   },
-  "optionalDependencies": {
+  "peerDependencies": {
     "viem": ">=2.37.2"
   },
   "devDependencies": {

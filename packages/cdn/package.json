@@ -21,7 +21,8 @@
     "vite-plugin-node-polyfills": "0.23.0"
   },
   "peerDependencies": {
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "viem": ">=2.37.2"
   },
   "peerDependenciesMeta": {
     "typescript": {
@@ -39,9 +40,6 @@
     "@wagmi/core": "2.20.3",
     "vite": "5.4.19",
     "wagmi": "2.16.9"
-  },
-  "optionalDependencies": {
-    "viem": ">=2.37.2"
   },
   "keywords": [
     "appkit",
