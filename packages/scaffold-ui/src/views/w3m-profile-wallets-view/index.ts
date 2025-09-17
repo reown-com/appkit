@@ -313,7 +313,7 @@ export class W3mProfileWalletsView extends LitElement {
           imageSrc=${connectorImage}
           ?enableMoreButton=${authData.isAuth}
           @copy=${() => this.handleCopyAddress(plainAddress)}
-          @disconnect=${() => this.handleDisconnect(namespace, { id: connectorId })}
+          @disconnect=${() => this.handleDisconnect(namespace, connectorId)}
           @switch=${() => {
             if (isBitcoin && connection && account?.[0]) {
               this.handleSwitchWallet(connection, account[0].address, namespace)
@@ -544,13 +544,13 @@ export class W3mProfileWalletsView extends LitElement {
       ConnectionController.syncStorageConnections()
       SnackController.showSuccess('Wallet deleted')
     } else {
-      this.handleDisconnect(namespace, { id: connection.connectorId })
+      this.handleDisconnect(namespace, connection.connectorId)
     }
   }
 
-  private async handleDisconnect(namespace: ChainNamespace, { id }: { id?: string }) {
+  private async handleDisconnect(namespace: ChainNamespace, id: string) {
     try {
-      await ConnectionController.disconnect({ id, namespace })
+      await ConnectionController.disconnectConnector({ id, namespace })
       SnackController.showSuccess('Wallet disconnected')
     } catch {
       SnackController.showError('Failed to disconnect wallet')
