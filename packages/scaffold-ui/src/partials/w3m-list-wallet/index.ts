@@ -50,7 +50,6 @@ export class W3mListWallet extends LitElement {
   // -- Lifecycle ------------------------------------------- //
   public override connectedCallback() {
     super.connectedCallback()
-    this.setupIntersectionObserver()
   }
 
   public override disconnectedCallback() {
@@ -62,16 +61,19 @@ export class W3mListWallet extends LitElement {
     super.updated(changedProperties)
 
     // Reset impression tracking when wallet changes
-    if (changedProperties.has('name') || changedProperties.has('imageSrc')) {
+    if (
+      changedProperties.has('name') ||
+      changedProperties.has('imageSrc') ||
+      changedProperties.has('walletRank')
+    ) {
       this.hasImpressionSent = false
     }
 
+    const hasWalletRankChanged = changedProperties.has('walletRank') && this.walletRank
+
     // Check if loading state changed and we're visible
-    if (changedProperties.has('loading') && !this.loading && this.intersectionObserver) {
-      const entry = this.intersectionObserver.takeRecords().find(entry => entry.target === this)
-      if (entry && entry.isIntersecting && !this.hasImpressionSent) {
-        this.sendImpressionEvent()
-      }
+    if (hasWalletRankChanged && !this.intersectionObserver) {
+      this.setupIntersectionObserver()
     }
   }
 
@@ -99,12 +101,12 @@ export class W3mListWallet extends LitElement {
   }
 
   private sendImpressionEvent() {
-    if (!this.name || this.hasImpressionSent) {
+    if (!this.name || this.hasImpressionSent || !this.walletRank) {
       return
     }
 
     this.hasImpressionSent = true
-    if (this.rdnsId) {
+    if (this.rdnsId || this.name) {
       EventsController.sendEvent({
         type: 'track',
         event: 'WALLET_IMPRESSION',

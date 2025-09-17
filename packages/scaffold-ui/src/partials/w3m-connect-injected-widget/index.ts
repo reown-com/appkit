@@ -45,9 +45,11 @@ export class W3mConnectInjectedWidget extends LitElement {
       return null
     }
 
+    const sortedConnectors = ConnectorUtil.sortConnectorsByExplorerWallet(injectedConnectors)
+
     return html`
       <wui-flex flexDirection="column" gap="2">
-        ${injectedConnectors.map(connector => {
+        ${sortedConnectors.map(connector => {
           const connectionsByNamespace = this.connections.get(connector.chain) ?? []
           const isAlreadyConnected = connectionsByNamespace.some(c =>
             HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
@@ -64,7 +66,8 @@ export class W3mConnectInjectedWidget extends LitElement {
               size="sm"
               @click=${() => this.onConnector(connector)}
               tabIdx=${ifDefined(this.tabIdx)}
-              rdnsId=${connector.id}
+              rdnsId=${connector.explorerWallet?.rdns}
+              walletRank=${connector.explorerWallet?.order}
             >
             </w3m-list-wallet>
           `
@@ -76,7 +79,7 @@ export class W3mConnectInjectedWidget extends LitElement {
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
     ConnectorController.setActiveConnector(connector)
-    RouterController.push('ConnectingExternal', { connector })
+    RouterController.push('ConnectingExternal', { connector, wallet: connector.explorerWallet })
   }
 }
 

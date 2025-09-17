@@ -61,7 +61,12 @@ export class W3mGetWalletView extends LitElement {
     EventsController.sendEvent({
       type: 'track',
       event: 'GET_WALLET',
-      properties: { name: wallet.name, walletRank: undefined, explorerId: wallet.id }
+      properties: {
+        name: wallet.name,
+        walletRank: undefined,
+        explorerId: wallet.id,
+        type: 'homepage'
+      }
     })
     CoreHelperUtil.openHref(wallet.homepage ?? EXPLORER, '_blank')
   }

@@ -117,6 +117,7 @@ export type Connector = {
   provider?: Provider | W3mFrameProvider | UniversalProvider
   chain: ChainNamespace
   connectors?: Connector[]
+  explorerWallet?: WcWallet
 }
 
 export interface AuthConnector extends Connector {
@@ -182,6 +183,8 @@ export interface ApiGetWalletsRequest {
   badge?: BadgeType
   include?: string[]
   exclude?: string[]
+  names?: string
+  rdns?: string
 }
 
 export interface ApiGetWalletsResponse {
@@ -911,6 +914,7 @@ export type Event =
         name: string
         walletRank: number | undefined
         explorerId: string
+        type: 'chrome_store' | 'app_store' | 'play_store' | 'homepage'
       }
     }
   | {
@@ -929,7 +933,7 @@ export type Event =
         | {
             name: string
             walletRank: number | undefined
-            rdnsId: string
+            rdnsId?: string
             view: string
           }
     }

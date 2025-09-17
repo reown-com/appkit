@@ -26,4 +26,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where the question mark icon in the header was not displayed correctly
+Enhanced connection UX by allowing scanning of QR code with main device camera and prompting the target wallet
