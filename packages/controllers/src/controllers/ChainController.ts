@@ -9,6 +9,7 @@ import {
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   NetworkUtil,
+  ParseUtil,
   type SocialProvider
 } from '@reown/appkit-common'
 
@@ -402,11 +403,10 @@ const controller = {
     state.activeCaipNetwork = caipNetwork
     ChainController.setChainNetworkData(caipNetwork.chainNamespace, { caipNetwork })
 
-    const [, , address] = state.activeCaipAddress?.split(':') || []
-
     if (newAdapter?.accountState?.address) {
       state.activeCaipAddress = `${caipNetwork.chainNamespace}:${caipNetwork.id}:${newAdapter.accountState.address}`
     } else if (isSameNamespace && state.activeCaipAddress) {
+      const { address } = ParseUtil.parseCaipAddress(state.activeCaipAddress)
       state.activeCaipAddress = `${caipNetwork.caipNetworkId}:${address}`
     } else {
       state.activeCaipAddress = undefined
