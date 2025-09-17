@@ -127,7 +127,7 @@ export class W3mModalBase extends LitElement {
     this.style.setProperty('--local-modal-padding', this.padding)
     this.style.setProperty(
       '--local-border-bottom-mobile-radius',
-      this.enableEmbedded ? 'clamp(0px, var(--apkt-borderRadius-8), 44px)' : '0px'
+      this.enableEmbedded ? `clamp(0px, ${vars.borderRadius['8']}, 44px)` : '0px'
     )
 
     if (this.enableEmbedded) {
