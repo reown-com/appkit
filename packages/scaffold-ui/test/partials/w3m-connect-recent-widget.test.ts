@@ -57,7 +57,7 @@ describe('W3mConnectRecentWidget', () => {
       html`<w3m-connect-recent-widget></w3m-connect-recent-widget>`
     )
 
-    const walletElements = element.shadowRoot?.querySelectorAll('wui-list-wallet')
+    const walletElements = element.shadowRoot?.querySelectorAll('w3m-list-wallet')
     expect(walletElements?.length).toBe(1)
 
     const walletName = walletElements?.[0]?.getAttribute('name')
@@ -73,7 +73,7 @@ describe('W3mConnectRecentWidget', () => {
       html`<w3m-connect-recent-widget></w3m-connect-recent-widget>`
     )
 
-    const walletElements = element.shadowRoot?.querySelectorAll('wui-list-wallet')
+    const walletElements = element.shadowRoot?.querySelectorAll('w3m-list-wallet')
     expect(walletElements?.length).toBe(2)
 
     const walletNames = Array.from(walletElements || []).map(el => el.getAttribute('name'))
@@ -99,7 +99,7 @@ describe('W3mConnectRecentWidget', () => {
       html`<w3m-connect-recent-widget></w3m-connect-recent-widget>`
     )
 
-    const walletElement = element.shadowRoot?.querySelector('wui-list-wallet')
+    const walletElement = element.shadowRoot?.querySelector('w3m-list-wallet')
     walletElement?.click()
 
     expect(routerSpy).toHaveBeenCalledWith('ConnectingWalletConnect', {
@@ -112,7 +112,7 @@ describe('W3mConnectRecentWidget', () => {
       html`<w3m-connect-recent-widget .tabIdx=${2}></w3m-connect-recent-widget>`
     )
 
-    const walletElement = element.shadowRoot?.querySelector('wui-list-wallet')
+    const walletElement = element.shadowRoot?.querySelector('w3m-list-wallet')
     expect(walletElement?.getAttribute('tabIdx')).toBe('2')
   })
 
@@ -121,7 +121,7 @@ describe('W3mConnectRecentWidget', () => {
       html`<w3m-connect-recent-widget></w3m-connect-recent-widget>`
     )
 
-    expect(element.shadowRoot?.querySelectorAll('wui-list-wallet').length).toBe(1)
+    expect(element.shadowRoot?.querySelectorAll('w3m-list-wallet').length).toBe(1)
 
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       connectors: [{ id: 'connector1', name: 'Connector 1' }]
@@ -131,7 +131,7 @@ describe('W3mConnectRecentWidget', () => {
 
     await element.updateComplete
 
-    expect(element.shadowRoot?.querySelectorAll('wui-list-wallet').length).toBe(2)
+    expect(element.shadowRoot?.querySelectorAll('w3m-list-wallet').length).toBe(2)
   })
 
   it('should filter wallets by EIP-155 chain namespace', async () => {
@@ -154,7 +154,7 @@ describe('W3mConnectRecentWidget', () => {
       html`<w3m-connect-recent-widget></w3m-connect-recent-widget>`
     )
 
-    const walletElements = element.shadowRoot?.querySelectorAll('wui-list-wallet')
+    const walletElements = element.shadowRoot?.querySelectorAll('w3m-list-wallet')
     expect(walletElements?.length).toBe(2)
 
     const walletNames = Array.from(walletElements || []).map(el => el.getAttribute('name'))
@@ -186,7 +186,7 @@ describe('W3mConnectRecentWidget', () => {
       html`<w3m-connect-recent-widget></w3m-connect-recent-widget>`
     )
 
-    const walletElements = element.shadowRoot?.querySelectorAll('wui-list-wallet')
+    const walletElements = element.shadowRoot?.querySelectorAll('w3m-list-wallet')
     expect(walletElements?.length).toBe(2)
 
     const walletNames = Array.from(walletElements || []).map(el => el.getAttribute('name'))
@@ -210,7 +210,7 @@ describe('W3mConnectRecentWidget', () => {
       html`<w3m-connect-recent-widget></w3m-connect-recent-widget>`
     )
 
-    const walletElements = element.shadowRoot?.querySelectorAll('wui-list-wallet')
+    const walletElements = element.shadowRoot?.querySelectorAll('w3m-list-wallet')
     expect(walletElements?.length).toBe(2)
 
     const walletNames = Array.from(walletElements || []).map(el => el.getAttribute('name'))
@@ -240,7 +240,7 @@ describe('W3mConnectRecentWidget', () => {
       html`<w3m-connect-recent-widget></w3m-connect-recent-widget>`
     )
 
-    const walletElements = element.shadowRoot?.querySelectorAll('wui-list-wallet')
+    const walletElements = element.shadowRoot?.querySelectorAll('w3m-list-wallet')
     expect(walletElements?.length).toBe(1)
 
     const walletName = walletElements?.[0]?.getAttribute('name')
@@ -282,7 +282,7 @@ describe('W3mConnectRecentWidget', () => {
       html`<w3m-connect-recent-widget></w3m-connect-recent-widget>`
     )
 
-    const walletElements = element.shadowRoot?.querySelectorAll('wui-list-wallet')
+    const walletElements = element.shadowRoot?.querySelectorAll('w3m-list-wallet')
     expect(walletElements?.length).toBe(2)
 
     const walletNames = Array.from(walletElements || []).map(el => el.getAttribute('name'))
@@ -326,7 +326,7 @@ describe('W3mConnectRecentWidget', () => {
       html`<w3m-connect-recent-widget></w3m-connect-recent-widget>`
     )
 
-    const walletElements = element.shadowRoot?.querySelectorAll('wui-list-wallet')
+    const walletElements = element.shadowRoot?.querySelectorAll('w3m-list-wallet')
     expect(walletElements?.length).toBe(2)
 
     const walletNames = Array.from(walletElements || []).map(el => el.getAttribute('name'))

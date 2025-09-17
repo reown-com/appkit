@@ -762,7 +762,9 @@ describe('W3mProfileWalletsView - User Actions', () => {
     addConnectionButton?.dispatchEvent(new Event('click'))
 
     expect(ConnectorController.setFilterByNamespace).toHaveBeenCalledWith(ConstantsUtil.CHAIN.EVM)
-    expect(RouterController.push).toHaveBeenCalledWith('Connect')
+    expect(RouterController.push).toHaveBeenCalledWith('Connect', {
+      addWalletForNamespace: ConstantsUtil.CHAIN.EVM
+    })
   })
 
   it('should handle copy address action', async () => {

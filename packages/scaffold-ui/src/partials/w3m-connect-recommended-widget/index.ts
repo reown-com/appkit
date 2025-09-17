@@ -10,14 +10,15 @@ import {
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
-  RouterController,
-  StorageUtil
+  RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-wallet'
 
 import { WalletUtil } from '../../utils/WalletUtil.js'
+
+// We display maximum 4 recommended wallets
+const DISPLAYED_WALLETS_AMOUNT = 4
 
 @customElement('w3m-connect-recommended-widget')
 export class W3mConnectRecommendedWidget extends LitElement {
@@ -46,27 +47,50 @@ export class W3mConnectRecommendedWidget extends LitElement {
   public override render() {
     const { connectors } = ConnectorController.state
     const { customWallets, featuredWalletIds } = OptionsController.state
-    const recentWallets = StorageUtil.getRecentWallets()
 
     const wcConnector = connectors.find(c => c.id === 'walletConnect')
     const injectedConnectors = connectors.filter(
       c => c.type === 'INJECTED' || c.type === 'ANNOUNCED' || c.type === 'MULTI_CHAIN'
     )
-    const injectedWallets = injectedConnectors.filter(i => i.name !== 'Browser Wallet')
 
-    if (!wcConnector) {
+    if (!wcConnector && !injectedConnectors.length && !customWallets?.length) {
       return null
     }
 
-    if (featuredWalletIds || customWallets || !this.wallets.length) {
+    const isEmailEnabled = Boolean(
+      OptionsController.state.features?.email || OptionsController.state.remoteFeatures?.email
+    )
+    const isSocialsEnabled =
+      (Array.isArray(OptionsController.state.features?.socials) &&
+        OptionsController.state.features?.socials.length > 0) ||
+      (Array.isArray(OptionsController.state.remoteFeatures?.socials) &&
+        OptionsController.state.remoteFeatures?.socials.length > 0)
+
+    const injectedWallets = injectedConnectors.filter(i => i.name !== 'Browser Wallet')
+
+    const featuredWalletAmount = featuredWalletIds?.length || 0
+    const customWalletAmount = customWallets?.length || 0
+    const injectedWalletAmount = injectedWallets.length || 0
+    const emailWalletAmount = isEmailEnabled ? 1 : 0
+    const socialWalletAmount = isSocialsEnabled ? 1 : 0
+    const walletsDisplayed =
+      featuredWalletAmount +
+      customWalletAmount +
+      injectedWalletAmount +
+      emailWalletAmount +
+      socialWalletAmount
+
+    if (walletsDisplayed >= DISPLAYED_WALLETS_AMOUNT) {
       this.style.cssText = `display: none`
 
       return null
     }
 
-    const overrideLength = injectedWallets.length + recentWallets.length
-    const maxRecommended = Math.max(0, 2 - overrideLength)
-    const wallets = WalletUtil.filterOutDuplicateWallets(this.wallets).slice(0, maxRecommended)
+    // We show maximum 4 recommended wallets, showing 1 less for each already rendered wallet (injected, auth, custom, featured)
+    const wallets = WalletUtil.filterOutDuplicateWallets(this.wallets).slice(
+      0,
+      DISPLAYED_WALLETS_AMOUNT - walletsDisplayed
+    )
 
     if (!wallets.length) {
       this.style.cssText = `display: none`
@@ -82,7 +106,7 @@ export class W3mConnectRecommendedWidget extends LitElement {
       <wui-flex flexDirection="column" gap="2">
         ${wallets.map(
           wallet => html`
-            <wui-list-wallet
+            <w3m-list-wallet
               imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
               name=${wallet?.name ?? 'Unknown'}
               @click=${() => this.onConnectWallet(wallet)}
@@ -90,8 +114,10 @@ export class W3mConnectRecommendedWidget extends LitElement {
               tabIdx=${ifDefined(this.tabIdx)}
               ?loading=${this.loading}
               ?disabled=${hasWcConnection}
+              rdnsId=${wallet.rdns}
+              walletRank=${wallet.order}
             >
-            </wui-list-wallet>
+            </w3m-list-wallet>
           `
         )}
       </wui-flex>

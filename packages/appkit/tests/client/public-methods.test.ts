@@ -93,7 +93,7 @@ describe('Base Public methods', () => {
 
     for (const view of views) {
       await appkit.open({ view })
-      expect(modelOpen).toHaveBeenCalledWith({ view })
+      expect(modelOpen).toHaveBeenCalledWith(expect.objectContaining({ view }))
     }
   })
 
@@ -748,9 +748,9 @@ describe('Base Public methods', () => {
     await appKit.switchNetwork(mainnet)
 
     expect(switchActiveNetwork).toHaveBeenCalledWith(
+      mainnet,
       expect.objectContaining({
-        id: mainnet.id,
-        name: mainnet.name
+        throwOnFailure: false
       })
     )
 

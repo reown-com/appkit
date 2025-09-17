@@ -37,7 +37,9 @@ export const StorageUtil = {
     ens: 300000,
     identity: 300000,
     transactionsHistory: 15000,
-    tokenPrice: 15000
+    tokenPrice: 15000,
+    // 7 Days
+    latestAppKitVersion: 604_800_000
   },
   isCacheExpired(timestamp: number, cacheExpiry: number) {
     return Date.now() - timestamp > cacheExpiry
@@ -146,6 +148,7 @@ export const StorageUtil = {
           recentWallets.pop()
         }
         SafeLocalStorage.setItem(SafeLocalStorageKeys.RECENT_WALLETS, JSON.stringify(recentWallets))
+        SafeLocalStorage.setItem(SafeLocalStorageKeys.RECENT_WALLET, JSON.stringify(wallet))
       }
     } catch {
       console.info('Unable to set AppKit recent')
@@ -162,6 +165,26 @@ export const StorageUtil = {
     }
 
     return []
+  },
+
+  getRecentWallet(): WcWallet | null {
+    try {
+      const recent = SafeLocalStorage.getItem(SafeLocalStorageKeys.RECENT_WALLET)
+
+      return recent ? JSON.parse(recent) : null
+    } catch {
+      console.info('Unable to get AppKit recent')
+    }
+
+    return null
+  },
+
+  deleteRecentWallet() {
+    try {
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.RECENT_WALLET)
+    } catch {
+      console.info('Unable to delete AppKit recent')
+    }
   },
 
   setConnectedConnectorId(namespace: ChainNamespace, connectorId: string) {
@@ -907,6 +930,46 @@ export const StorageUtil = {
       )
     } catch {
       console.info('Unable to remove token price cache', addresses)
+    }
+  },
+
+  /* ----- AppKit Latest Version ------------------------- */
+  getLatestAppKitVersion() {
+    try {
+      const result = this.getLatestAppKitVersionCache()
+      const version = result?.version
+
+      if (version && !this.isCacheExpired(result.timestamp, this.cacheExpiry.latestAppKitVersion)) {
+        return version
+      }
+
+      return undefined
+    } catch {
+      console.info('Unable to get latest AppKit version')
+    }
+
+    return undefined
+  },
+  getLatestAppKitVersionCache() {
+    try {
+      const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.LATEST_APPKIT_VERSION)
+
+      return result ? JSON.parse(result) : {}
+    } catch {
+      console.info('Unable to get latest AppKit version cache')
+    }
+
+    return {}
+  },
+  updateLatestAppKitVersion(params: { timestamp: number; version: string }) {
+    try {
+      const cache = StorageUtil.getLatestAppKitVersionCache()
+      cache.timestamp = params.timestamp
+      cache.version = params.version
+
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.LATEST_APPKIT_VERSION, JSON.stringify(cache))
+    } catch {
+      console.info('Unable to update latest AppKit version on local storage', params)
     }
   }
 }

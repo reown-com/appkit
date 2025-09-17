@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-ethers",
-  "version": "1.8.2",
+  "version": "1.8.5",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -30,7 +30,7 @@
     "valtio": "2.1.7"
   },
   "optionalDependencies": {
-    "@coinbase/wallet-sdk": "4.3.0",
+    "@coinbase/wallet-sdk": "4.3.7",
     "@safe-global/safe-apps-provider": "0.18.6",
     "@safe-global/safe-apps-sdk": "9.1.0"
   },
@@ -44,7 +44,7 @@
     "vitest": "2.1.9"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
@@ -64,5 +64,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

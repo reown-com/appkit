@@ -99,6 +99,7 @@ const solanaCaipNetwork = {
 const connectionControllerClient: ConnectionControllerClient = {
   connectWalletConnect: async () => Promise.resolve(),
   disconnect: async () => Promise.resolve(),
+  disconnectConnector: async () => Promise.resolve(),
   estimateGas: async () => Promise.resolve(BigInt(0)),
   signMessage: async (message: string) => Promise.resolve(message),
   parseUnits: value => BigInt(value),

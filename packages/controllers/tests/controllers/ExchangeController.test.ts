@@ -406,7 +406,8 @@ describe('ExchangeController', () => {
             exchangeId: 'ex1',
             sessionId: 'sess-123',
             result: '0xfailedtx'
-          }
+          },
+          message: 'Unable to initiate payment'
         }
       })
       expect(result).toEqual(mockStatus)

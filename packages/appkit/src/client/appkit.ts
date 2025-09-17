@@ -20,6 +20,7 @@ import {
   type Metadata,
   PublicStateController,
   type RemoteFeatures,
+  RouterController,
   SIWXUtil,
   getActiveCaipNetwork,
   getPreferredAccountType
@@ -275,7 +276,9 @@ export class AppKit extends AppKitBaseClient {
             properties: {
               method: 'email',
               name: this.universalProvider?.session?.peer?.metadata?.name || 'Unknown',
-              reconnect: true
+              reconnect: true,
+              view: RouterController.state.view,
+              walletRank: undefined
             }
           })
         }

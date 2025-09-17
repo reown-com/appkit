@@ -66,6 +66,10 @@ export const DEFAULT_METHODS = {
 }
 
 export const WcHelpersUtil = {
+  RPC_ERROR_CODE: {
+    USER_REJECTED: 5000,
+    USER_REJECTED_METHODS: 5002
+  },
   getMethodsByChainNamespace(chainNamespace: ChainNamespace): string[] {
     return DEFAULT_METHODS[chainNamespace as keyof typeof DEFAULT_METHODS] || []
   },
@@ -240,6 +244,26 @@ export const WcHelpersUtil = {
       typeof data.params.event === 'object' &&
       data.params.event !== null
     )
+  },
+
+  isUserRejectedRequestError(error: unknown) {
+    try {
+      if (typeof error === 'object' && error !== null) {
+        const objErr = error as Record<string, unknown>
+
+        const hasCode = typeof objErr['code'] === 'number'
+        const hasUserRejectedMethods =
+          hasCode && objErr['code'] === WcHelpersUtil.RPC_ERROR_CODE.USER_REJECTED_METHODS
+        const hasUserRejected =
+          hasCode && objErr['code'] === WcHelpersUtil.RPC_ERROR_CODE.USER_REJECTED
+
+        return hasUserRejectedMethods || hasUserRejected
+      }
+
+      return false
+    } catch {
+      return false
+    }
   },
 
   isOriginAllowed(

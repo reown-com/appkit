@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-solana",
-  "version": "1.8.2",
+  "version": "1.8.5",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -79,7 +79,7 @@
     "vue": "3.4.3"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
@@ -99,5 +99,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

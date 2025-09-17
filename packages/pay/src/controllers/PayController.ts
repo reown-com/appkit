@@ -509,6 +509,8 @@ export const PayController = {
           type: 'track',
           event: status.status === 'SUCCESS' ? 'PAY_SUCCESS' : 'PAY_ERROR',
           properties: {
+            message:
+              status.status === 'FAILED' ? CoreHelperUtil.parseError(state.error) : undefined,
             source: 'pay',
             paymentId: state.paymentId || DEFAULT_PAYMENT_ID,
             configuration: {
@@ -571,6 +573,10 @@ export const PayController = {
           type: 'track',
           event: eventType as 'PAY_INITIATED' | 'PAY_SUCCESS' | 'PAY_ERROR',
           properties: {
+            message:
+              state.currentPayment.status === 'FAILED'
+                ? CoreHelperUtil.parseError(state.error)
+                : undefined,
             source: 'pay',
             paymentId: state.paymentId || DEFAULT_PAYMENT_ID,
             configuration: {

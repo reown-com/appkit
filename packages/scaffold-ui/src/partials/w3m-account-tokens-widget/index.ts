@@ -59,8 +59,8 @@ export class W3mAccountTokensWidget extends LitElement {
       </wui-flex>`
     }
 
-    return html` <wui-flex flexDirection="column" gap="2"
-      >${this.onRampTemplate()}
+    return html` <wui-flex flexDirection="column">
+      ${this.onRampTemplate()}
       <wui-list-description
         @click=${this.onReceiveClick.bind(this)}
         text="Receive funds"

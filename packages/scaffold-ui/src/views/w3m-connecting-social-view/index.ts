@@ -7,6 +7,7 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
+  CoreHelperUtil,
   EventsController,
   ModalController,
   OptionsController,
@@ -194,7 +195,10 @@ export class W3mConnectingSocialView extends LitElement {
             EventsController.sendEvent({
               type: 'track',
               event: 'SOCIAL_LOGIN_ERROR',
-              properties: { provider: this.socialProvider }
+              properties: {
+                provider: this.socialProvider,
+                message: CoreHelperUtil.parseError(error)
+              }
             })
           }
         }
@@ -205,7 +209,10 @@ export class W3mConnectingSocialView extends LitElement {
           EventsController.sendEvent({
             type: 'track',
             event: 'SOCIAL_LOGIN_ERROR',
-            properties: { provider: this.socialProvider }
+            properties: {
+              provider: this.socialProvider,
+              message: 'Untrusted Origin'
+            }
           })
         }
       }

@@ -8,7 +8,8 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   type Connection,
   type Hex,
-  type ParsedCaipAddress
+  type ParsedCaipAddress,
+  UserRejectedRequestError
 } from '@reown/appkit-common'
 import {
   type AccountState,
@@ -29,7 +30,7 @@ import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 import type { AppKitBaseClient } from '../client/appkit-base-client.js'
 import { ConnectionManager } from '../connections/ConnectionManager.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
-import type { AppKitOptions } from '../utils/index.js'
+import { type AppKitOptions, WcHelpersUtil } from '../utils/index.js'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 
 type EventName =
@@ -305,11 +306,19 @@ export abstract class AdapterBlueprint<
   public async connectWalletConnect(
     _chainId?: number | string
   ): Promise<undefined | { clientId: string }> {
-    const connector = this.getWalletConnectConnector()
+    try {
+      const connector = this.getWalletConnectConnector()
 
-    const result = await connector.connectWalletConnect()
+      const result = await connector.connectWalletConnect()
 
-    return { clientId: result.clientId }
+      return { clientId: result.clientId }
+    } catch (err) {
+      if (WcHelpersUtil.isUserRejectedRequestError(err)) {
+        throw new UserRejectedRequestError(err)
+      }
+
+      throw err
+    }
   }
 
   /**
@@ -754,10 +763,6 @@ export namespace AdapterBlueprint {
   export type SyncConnectionsParams = {
     connectToFirstConnector: boolean
     caipNetwork?: CaipNetwork
-    getConnectorStorageInfo: (connectorId: string) => {
-      hasDisconnected: boolean
-      hasConnected: boolean
-    }
   }
 
   export type SignMessageParams = {

@@ -28,8 +28,8 @@ import {
 } from '@wallet-standard/features'
 import base58 from 'bs58'
 
-import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
-import type { RequestArguments } from '@reown/appkit-controllers'
+import { type CaipNetwork, ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
+import { ConnectorController, type RequestArguments } from '@reown/appkit-controllers'
 import type { Provider as CoreProvider } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 import type {
@@ -57,9 +57,14 @@ type AvailableFeatures = StandardConnectFeature &
   StandardEventsFeature
 
 export class WalletStandardProvider extends ProviderEventEmitter implements SolanaProvider {
+  readonly type = 'ANNOUNCED' as const
+  readonly id: string
+  readonly explorerId?: string
   readonly wallet: Wallet
   readonly getActiveChain: WalletStandardProviderConfig['getActiveChain']
+  readonly name: string
   readonly chain = ConstantsUtil.CHAIN.SOLANA
+  readonly imageUrl: string
   public readonly provider = this as CoreProvider
 
   private readonly requestedChains: WalletStandardProviderConfig['requestedChains']
@@ -70,32 +75,23 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
     this.wallet = wallet
     this.getActiveChain = getActiveChain
     this.requestedChains = requestedChains
+    this.name = ConnectorController.getConnectorName(wallet.name) || wallet.name
+    this.id = PresetsUtil.ConnectorExplorerIds[this.name] || this.name
+    this.explorerId = PresetsUtil.ConnectorExplorerIds[this.name]
 
+    this.imageUrl = this.wallet.icon
     this.bindEvents()
   }
 
   // -- Public ------------------------------------------- //
-  public get id() {
-    const name = this.name
-
-    return PresetsUtil.ConnectorExplorerIds[name] || name
-  }
-
-  public get name() {
-    if (this.wallet.name === 'Trust') {
-      // The wallets from our list of wallets have not matching with the extension name
-      return 'Trust Wallet'
-    }
-
-    return this.wallet.name
-  }
-
-  public get type() {
-    return 'ANNOUNCED' as const
-  }
-
-  public get explorerId() {
-    return PresetsUtil.ConnectorExplorerIds[this.name]
+  public get chains() {
+    return this.wallet.chains
+      .map(chainId =>
+        this.requestedChains.find(
+          chain => chain.id === chainId || chain.id === solanaChains[chainId]?.id
+        )
+      )
+      .filter(Boolean) as CaipNetwork[]
   }
 
   public get publicKey() {
@@ -108,23 +104,11 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
     return undefined
   }
 
-  public get imageUrl() {
-    return this.wallet.icon
-  }
-
-  public get chains() {
-    return this.wallet.chains
-      .map(chainId =>
-        this.requestedChains.find(
-          chain => chain.id === chainId || chain.id === solanaChains[chainId]?.id
-        )
-      )
-      .filter(Boolean) as CaipNetwork[]
-  }
-
   public async connect(): Promise<string> {
     const feature = this.getWalletFeature(StandardConnect)
-    await feature.connect()
+    await feature.connect().catch(err => {
+      throw new UserRejectedRequestError(err)
+    })
 
     const account = this.getAccount(true)
     const publicKey = new PublicKey(account.publicKey)
