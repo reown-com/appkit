@@ -217,6 +217,50 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     })
   }
 
+  override async onAccountsChanged(
+    accounts: string[],
+    connectorId: string,
+    disconnectIfNoAccounts = true
+  ) {
+    if (accounts.length > 0) {
+      const { address } = CoreHelperUtil.getAccount(accounts[0])
+
+      const allAccounts = await this.getAccounts({ id: connectorId })
+
+      const connection = this.connectionManager?.getConnection({
+        connectorId,
+        connections: this.connections,
+        connectors: this.connectors
+      })
+
+      if (
+        address &&
+        HelpersUtil.isLowerCaseMatch(
+          this.getConnectorId(CommonConstantsUtil.CHAIN.BITCOIN),
+          connectorId
+        )
+      ) {
+        this.emit('accountChanged', {
+          address,
+          chainId: connection?.caipNetwork?.id,
+          connector: connection?.connector
+        })
+      }
+
+      this.addConnection({
+        connectorId,
+        accounts: allAccounts.accounts.map(a => ({
+          address: a.address,
+          type: a.type,
+          publicKey: a.publicKey
+        })),
+        caipNetwork: connection?.caipNetwork
+      })
+    } else if (disconnectIfNoAccounts) {
+      this.onDisconnect(connectorId)
+    }
+  }
+
   public async syncConnections({
     connectToFirstConnector,
     caipNetwork
@@ -500,7 +544,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       namespace: CommonConstantsUtil.CHAIN.BITCOIN,
       onConnect: accounts => this.onConnect(accounts, wcConnectorId),
       onDisconnect: () => this.onDisconnect(wcConnectorId),
-      onAccountsChanged: accounts => this.onAccountsChanged(accounts, wcConnectorId, false)
+      onAccountsChanged: accounts => super.onAccountsChanged(accounts, wcConnectorId, false)
     })
 
     this.addConnector(
