@@ -80,7 +80,7 @@ import {
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
 
-import type { AdapterBlueprint } from '../adapters/index.js'
+import type { AdapterBlueprint, ChainAdapterConnector } from '../adapters/index.js'
 import { UniversalAdapter } from '../universal-adapter/client.js'
 import { ConfigUtil } from '../utils/ConfigUtil.js'
 import { WcConstantsUtil, WcHelpersUtil } from '../utils/index.js'
@@ -533,7 +533,13 @@ export abstract class AppKitBaseClient {
     return extendedNetwork
   }
 
-  private async disconnectNamespace(namespace: ChainNamespace, id?: string) {
+  /**
+   * Disconnects a connector with the given namespace and id. If the connector id is not provided, disconnects the adapter (namespace).
+   * @param namespace ChainNamespace
+   * @param id string
+   * @returns
+   */
+  private async disconnectConnector(namespace: ChainNamespace, id: string | undefined) {
     try {
       this.setLoading(true, namespace)
 
@@ -613,6 +619,9 @@ export abstract class AppKitBaseClient {
           this.syncConnectedWalletInfo(namespace)
         }
       },
+      disconnectConnector: async params => {
+        await this.disconnectConnector(params.namespace, params.id)
+      },
       disconnect: async params => {
         const { id: connectorIdParam, chainNamespace, initialDisconnect } = params || {}
 
@@ -639,11 +648,9 @@ export abstract class AppKitBaseClient {
           }
 
           const disconnectPromises = namespacesToDisconnect.map(async ns => {
-            const connectorIdToDisconnect = ConnectorController.getConnectorId(ns)
-            const disconnectData = await this.disconnectNamespace(
-              ns,
-              connectorIdParam || connectorIdToDisconnect
-            )
+            const currentConnectorId = ConnectorController.getConnectorId(ns)
+            const connectorIdToDisconnect = connectorIdParam || currentConnectorId
+            const disconnectData = await this.disconnectConnector(ns, connectorIdToDisconnect)
 
             if (disconnectData) {
               if (isAuth) {
@@ -1194,13 +1201,15 @@ export abstract class AppKitBaseClient {
     })
 
     adapter.on('accountChanged', ({ address, chainId, connector }) => {
+      this.handlePreviousConnectorConnection(connector)
+
       const isActiveChain = ChainController.state.activeChain === chainNamespace
 
       if (connector?.provider) {
         this.syncProvider({
           id: connector.id,
           type: connector.type,
-          provider: connector.provider,
+          provider: connector?.provider,
           chainNamespace
         })
         this.syncConnectedWalletInfo(chainNamespace)
@@ -1224,6 +1233,33 @@ export abstract class AppKitBaseClient {
 
       StorageUtil.addConnectedNamespace(chainNamespace)
     })
+  }
+
+  /**
+   * Checks the incoming connector and handles the previous connection in the connector's namespace, and if necessary (i.e multi-wallet is disabled) disconnects the previous connector
+   * @param connector
+   */
+  protected async handlePreviousConnectorConnection(connector: ChainAdapterConnector | undefined) {
+    const namespace = connector?.chain
+    const newConnectorId = connector?.id
+    const currentConnectorId = ConnectorController.getConnectorId(namespace)
+    const isMultiWalletEnabled = OptionsController.state.remoteFeatures?.multiWallet
+    const hasNewConnectorConnected = currentConnectorId !== newConnectorId
+
+    const shouldDisconnectPreviousConnector =
+      namespace &&
+      newConnectorId &&
+      currentConnectorId &&
+      hasNewConnectorConnected &&
+      !isMultiWalletEnabled
+
+    try {
+      if (shouldDisconnectPreviousConnector) {
+        await ConnectionController.disconnect({ id: currentConnectorId, namespace })
+      }
+    } catch (error) {
+      console.warn('Error disconnecting previous connector', error)
+    }
   }
 
   protected async createUniversalProviderForAdapter(chainNamespace: ChainNamespace) {
@@ -1266,16 +1302,22 @@ export abstract class AppKitBaseClient {
     await this.syncWalletConnectAccount()
     const address = this.getAddress()
 
+    if (!this.getCaipAddress()) {
+      StorageUtil.deleteRecentWallet()
+    }
+
+    const recentWallet = StorageUtil.getRecentWallet()
+
     EventsController.sendEvent({
       type: 'track',
       event: 'CONNECT_SUCCESS',
       address,
       properties: {
         method: CoreHelperUtil.isMobile() ? 'mobile' : 'qrcode',
-        name: this.universalProvider?.session?.peer?.metadata?.name || 'Unknown',
+        name: recentWallet?.name || 'Unknown',
         reconnect: true,
         view: RouterController.state.view,
-        walletRank: undefined
+        walletRank: recentWallet?.order
       }
     })
   }

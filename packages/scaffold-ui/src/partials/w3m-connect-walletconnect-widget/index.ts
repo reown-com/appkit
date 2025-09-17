@@ -69,7 +69,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
         data-testid="wallet-selector-walletconnect"
         size="sm"
         ?disabled=${hasWcConnection}
-        rdnsId=${connector.id}
+        rdnsId=${connector.explorerWallet?.rdns}
       >
       </w3m-list-wallet>
     `
