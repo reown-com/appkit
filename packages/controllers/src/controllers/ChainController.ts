@@ -403,10 +403,12 @@ const controller = {
     state.activeCaipNetwork = caipNetwork
     ChainController.setChainNetworkData(caipNetwork.chainNamespace, { caipNetwork })
 
-    if (newAdapter?.accountState?.address) {
-      state.activeCaipAddress = `${caipNetwork.chainNamespace}:${caipNetwork.id}:${newAdapter.accountState.address}`
+    let address = newAdapter?.accountState?.address
+    if (address) {
+      state.activeCaipAddress = `${caipNetwork.chainNamespace}:${caipNetwork.id}:${address}`
     } else if (isSameNamespace && state.activeCaipAddress) {
-      const { address } = ParseUtil.parseCaipAddress(state.activeCaipAddress)
+      const { address: parsedAddress } = ParseUtil.parseCaipAddress(state.activeCaipAddress)
+      address = parsedAddress
       state.activeCaipAddress = `${caipNetwork.caipNetworkId}:${address}`
     } else {
       state.activeCaipAddress = undefined
