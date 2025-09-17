@@ -10,7 +10,7 @@ type EvmAccountProps = AccountProps & {
 export class EvmAccount extends Account {
   public override type: 'eoa' | 'smartAccount'
   public userInfo?: Record<string, unknown>
-  public smartAccountDeployed?: boolean
+  public override smartAccountDeployed?: boolean
   constructor({
     address,
     caipAddress,

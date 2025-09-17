@@ -1,4 +1,4 @@
-import type { CaipAddress, ChainNamespace, SocialProvider } from '@reown/appkit-common'
+import type { Balance, CaipAddress, ChainNamespace, SocialProvider } from '@reown/appkit-common'
 
 import type { NamespaceTypeMap, PreferredAccountTypes } from '../../../../utils/TypeUtil.js'
 
@@ -25,6 +25,23 @@ export abstract class Account {
   public namespace: ChainNamespace
   public metadata: { label: string; icon: string }
 
+  // Balance
+  public balance?: string
+  public balanceSymbol?: string
+  public balanceLoading?: boolean
+  public tokenBalance?: Balance[]
+
+  // Identity
+  public profileName?: string | null
+  public profileImage?: string | null
+
+  // UI / misc
+  public addressLabels: Map<string, string>
+  public addressExplorerUrl?: string
+  public smartAccountDeployed?: boolean
+  public socialProvider?: SocialProvider
+  public preferredAccountType?: NamespaceTypeMap[keyof NamespaceTypeMap]
+
   constructor({ address, caipAddress, type, namespace, metadata }: AccountProps) {
     this.address = address
     this.namespace = namespace
@@ -32,5 +49,8 @@ export abstract class Account {
 
     this.type = type
     this.metadata = metadata
+
+    // Initialize additional fields
+    this.addressLabels = new Map()
   }
 }

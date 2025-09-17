@@ -34,10 +34,24 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   public get name(): string {
+    // Defensive check for corrupted wallet object
+    if (!this.wallet || typeof this.wallet.name !== 'string') {
+      console.warn('WalletStandardConnector: wallet object is corrupted or missing name property')
+
+      return 'Unknown Wallet'
+    }
+
     return this.wallet.name
   }
 
   public get imageUrl(): string {
+    // Defensive check for corrupted wallet object
+    if (!this.wallet || typeof this.wallet.icon !== 'string') {
+      console.warn('WalletStandardConnector: wallet object is corrupted or missing icon property')
+
+      return ''
+    }
+
     return this.wallet.icon
   }
 
@@ -46,6 +60,13 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   public get chains() {
+    // Defensive check for corrupted wallet object
+    if (!this.wallet || !Array.isArray(this.wallet.chains)) {
+      console.warn('WalletStandardConnector: wallet object is corrupted or missing chains property')
+
+      return []
+    }
+
     return this.wallet.chains
       .map(chainId =>
         this.requestedChains.find(chain => {
@@ -75,6 +96,15 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
+    // Defensive check for corrupted wallet object
+    if (!this.wallet || !Array.isArray(this.wallet.accounts)) {
+      console.warn(
+        'WalletStandardConnector: wallet object is corrupted or missing accounts property'
+      )
+
+      return []
+    }
+
     const addresses = new Set<string>()
     const mappedAccounts = this.wallet.accounts
       .map<BitcoinConnector.AccountAddress>(acc => ({
@@ -103,6 +133,11 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
 
     const feature = this.getWalletFeature('bitcoin:signMessage')
 
+    // Defensive check for corrupted wallet object
+    if (!this.wallet || !Array.isArray(this.wallet.accounts)) {
+      throw new Error('Wallet object is corrupted or missing accounts property')
+    }
+
     const account = this.wallet.accounts.find(acc => acc.address === params.address)
 
     if (!account) {
@@ -130,6 +165,11 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
         'signPSBT',
         'This wallet does not support broadcasting, please broadcast it manually or contact the development team.'
       )
+    }
+
+    // Defensive check for corrupted wallet object
+    if (!this.wallet || !Array.isArray(this.wallet.accounts)) {
+      throw new Error('Wallet object is corrupted or missing accounts property')
     }
 
     const inputsToSign = params.signInputs.map(input => {
@@ -182,6 +222,15 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   private getWalletFeature<Name extends keyof BitcoinFeatures>(feature: Name) {
+    // Defensive check for corrupted wallet object
+    if (!this.wallet?.features) {
+      throw new MethodNotSupportedError(
+        this.id,
+        feature,
+        'Wallet object is corrupted or missing features property'
+      )
+    }
+
     if (!(feature in this.wallet.features)) {
       throw new MethodNotSupportedError(this.id, feature)
     }
@@ -210,13 +259,22 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   public async switchNetwork(caipNetworkId: string): Promise<void> {
+    // Defensive check for corrupted wallet object
+    if (!this.wallet?.features) {
+      throw new Error('Wallet object is corrupted or missing features property')
+    }
+
     const switchFeature = this.wallet.features['bitcoin:switchNetwork'] as
       | { switchNetwork: (caipNetworkId: string) => Promise<void> }
       | undefined
 
     if (switchFeature && typeof switchFeature.switchNetwork === 'function') {
       await switchFeature.switchNetwork(caipNetworkId)
-      this.emit('change', { accounts: this.wallet.accounts })
+
+      // Defensive check before emitting
+      if (this.wallet?.accounts) {
+        this.emit('change', { accounts: this.wallet.accounts })
+      }
 
       return
     }

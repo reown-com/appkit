@@ -9,7 +9,7 @@ import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 
 export async function getWalletConnectCaipNetworks(connector?: Connector) {
   if (!connector) {
-    throw new Error('networkControllerClient:getApprovedCaipNetworks - connector is undefined')
+    throw new Error('WagmiAdapter:getApprovedCaipNetworks - connector is undefined')
   }
   const provider = (await connector?.getProvider()) as Awaited<
     ReturnType<(typeof UniversalProvider)['init']>

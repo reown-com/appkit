@@ -1,5 +1,6 @@
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
+import type { ConnectedWalletInfo } from '../../../../utils/TypeUtil.js'
 import type { Account } from '../Account/Account.js'
 
 export type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'reconnecting' | 'disconnected'
@@ -20,11 +21,14 @@ export type ConnectionProps = {
   /** Accounts surfaced by the wallet */
   accounts: Account[]
 
-  /** Active account index */
+  /** Active account */
   activeAccount: Account
 
   /** Current active chain */
-  chain: CaipNetwork
+  caipNetwork?: CaipNetwork
+
+  /** Wallet info */
+  wallet: ConnectedWalletInfo
 
   /** Lifecycle */
   status: ConnectionStatus
@@ -62,11 +66,14 @@ export class Connection {
   /** Accounts surfaced by the wallet */
   public accounts: Account[]
 
-  /** Active account index */
+  /** Active account */
   public activeAccount: Account
 
   /** Current active chain */
-  public chain: CaipNetwork
+  public caipNetwork?: CaipNetwork
+
+  /** Wallet info */
+  public wallet: ConnectedWalletInfo
 
   /** Lifecycle */
   public status: ConnectionStatus
@@ -96,7 +103,8 @@ export class Connection {
     this.namespace = props.namespace
     this.accounts = props.accounts
     this.activeAccount = props.activeAccount
-    this.chain = props.chain
+    this.caipNetwork = props.caipNetwork
+    this.wallet = props.wallet
     this.status = props.status
     this.lastError = props.lastError
     this.session = props.session
@@ -126,7 +134,8 @@ export class Connection {
       namespace: this.namespace,
       accounts: this.accounts,
       activeAccount: this.activeAccount,
-      chain: this.chain,
+      caipNetwork: this.caipNetwork,
+      wallet: this.wallet,
       status: this.status,
       lastError: this.lastError,
       session: this.session,

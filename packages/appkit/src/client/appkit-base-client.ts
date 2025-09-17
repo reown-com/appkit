@@ -26,7 +26,6 @@ import type {
   Features,
   ModalControllerState,
   NamespaceTypeMap,
-  NetworkControllerClient,
   OptionsControllerState,
   PublicStateControllerState,
   RemoteFeatures,
@@ -42,6 +41,7 @@ import type {
   WriteContractArgs
 } from '@reown/appkit-controllers'
 import {
+  AdapterController,
   AlertController,
   ApiController,
   AssetUtil,
@@ -129,13 +129,12 @@ interface AppKitSwitchNetworkOptions {
 export abstract class AppKitBaseClient {
   protected universalProvider?: UniversalProvider
   protected connectionControllerClient?: ConnectionControllerClient
-  protected networkControllerClient?: NetworkControllerClient
   protected static instance?: AppKitBaseClient
   protected universalProviderInitPromise?: Promise<void>
   protected caipNetworks?: [CaipNetwork, ...CaipNetwork[]]
   protected defaultCaipNetwork?: CaipNetwork
 
-  public chainAdapters?: Adapters
+  public chainAdapters: Adapters
   public chainNamespaces: ChainNamespace[] = []
   public options: AppKitOptions
   public features: Features = {}
@@ -372,6 +371,14 @@ export abstract class AppKitBaseClient {
     this.initializeConnectorController()
   }
 
+  protected initAdapterController() {
+    console.log('<< initAdapterController', this.chainAdapters)
+
+    const switchNetwork = this.chainAdapters.eip155.switchNetwork
+    console.log('<< switchNetwork', switchNetwork)
+    AdapterController.initialize(this.chainAdapters)
+  }
+
   protected initializeThemeController(options: AppKitOptions) {
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)
@@ -382,17 +389,32 @@ export abstract class AppKitBaseClient {
   }
 
   protected initializeChainController(options: AppKitOptions) {
-    if (!this.connectionControllerClient || !this.networkControllerClient) {
-      throw new Error('ConnectionControllerClient and NetworkControllerClient must be set')
+    if (!this.connectionControllerClient) {
+      throw new Error('ConnectionControllerClient must be set')
     }
     ChainController.initialize(options.adapters ?? [], this.caipNetworks, {
-      connectionControllerClient: this.connectionControllerClient,
-      networkControllerClient: this.networkControllerClient
+      connectionControllerClient: this.connectionControllerClient
     })
     const network = this.getDefaultNetwork()
     if (network) {
       ChainController.setActiveCaipNetwork(network)
     }
+
+    ChainController.subscribeKey('activeCaipNetwork', activeCaipNetwork => {
+      console.log('<< activeCaipNetwork changed in appkit base client', activeCaipNetwork)
+      if (activeCaipNetwork) {
+        const address = ChainController.getAccountData(activeCaipNetwork.chainNamespace)?.address
+        console.log('<< address', address)
+        if (address) {
+          this.syncAccount({
+            address,
+            chainId: activeCaipNetwork.id,
+            chainNamespace: activeCaipNetwork.chainNamespace
+          })
+          console.log('<< syncAccount called')
+        }
+      }
+    })
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
@@ -898,12 +920,6 @@ export abstract class AppKitBaseClient {
       }
     }
 
-    this.networkControllerClient = {
-      switchCaipNetwork: async caipNetwork => await this.switchCaipNetwork(caipNetwork),
-      // eslint-disable-next-line @typescript-eslint/require-await
-      getApprovedCaipNetworksData: async () => this.getApprovedCaipNetworksData()
-    }
-
     ConnectionController.setClient(this.connectionControllerClient)
   }
 
@@ -1133,6 +1149,8 @@ export abstract class AppKitBaseClient {
         await this.initChainAdapter(namespace)
       })
     )
+
+    this.initAdapterController()
   }
 
   protected onConnectors(chainNamespace: ChainNamespace) {
