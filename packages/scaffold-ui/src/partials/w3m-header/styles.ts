@@ -7,11 +7,11 @@ export default css`
 
   :host > wui-flex {
     box-sizing: border-box;
-    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    background-color: var(--local-header-background-color);
   }
 
   wui-text {
-    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    background-color: var(--local-header-background-color);
   }
 
   wui-flex.w3m-header-title {

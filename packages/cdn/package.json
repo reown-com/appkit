@@ -53,6 +53,10 @@
     "solana",
     "bitcoin"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reown-com/appkit.git"
+  },
   "publishConfig": {
     "provenance": true
   }
