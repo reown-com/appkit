@@ -1,6 +1,9 @@
 ---
-'@reown/appkit-adapter-bitcoin': patch
+'@reown/appkit-controllers': patch
 '@reown/appkit': patch
+'@reown/appkit-common': patch
+'pay-test-exchange': patch
+'@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
@@ -9,8 +12,6 @@
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-codemod': patch
-'@reown/appkit-common': patch
-'@reown/appkit-controllers': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-pay': patch
@@ -20,8 +21,9 @@
 '@reown/appkit-siwx': patch
 '@reown/appkit-testing': patch
 '@reown/appkit-ui': patch
+'@reown/appkit-universal-connector': patch
 '@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-Moves `useAppKitProvider` and `ProviderUtil` to `controllers` package, upgrades Valtio versions
+Added `walletRank` property to the `CONNECT_SUCCESS` event and created a new `@appkit/recent_wallet` local storage key to track the most recently connected wallet

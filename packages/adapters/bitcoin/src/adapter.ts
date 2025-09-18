@@ -7,7 +7,7 @@ import {
   type Provider,
   WcHelpersUtil
 } from '@reown/appkit'
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
@@ -80,7 +80,9 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       }
     }
 
-    const address = await connector.connect()
+    const address = await connector.connect().catch(err => {
+      throw new UserRejectedRequestError(err)
+    })
     const accounts = await this.getAccounts({ id: connector.id })
 
     this.emit('accountChanged', {

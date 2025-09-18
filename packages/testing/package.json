@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-testing",
-  "version": "1.8.2",
+  "version": "1.8.5",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -52,5 +52,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

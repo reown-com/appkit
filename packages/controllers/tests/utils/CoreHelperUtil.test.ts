@@ -189,5 +189,16 @@ describe('CoreHelperUtil', () => {
         href: `${appUrl}/`
       })
     })
+
+    it('should handle empty appUrl', () => {
+      const appUrl = ''
+
+      const result = CoreHelperUtil.formatNativeUrl(appUrl, wcUri, null)
+
+      expect(result).toEqual({
+        redirect: `wc?uri=${encodeURIComponent(wcUri)}`,
+        href: appUrl
+      })
+    })
   })
 })

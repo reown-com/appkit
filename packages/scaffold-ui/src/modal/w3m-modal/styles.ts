@@ -53,7 +53,7 @@ export default css`
         ${({ easings }) => easings['ease-out-power-1']};
     will-change: border-radius, background-color, transform, box-shadow;
     background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
-    padding: ${({ spacing }) => spacing[1]};
+    padding: var(--local-modal-padding);
     box-sizing: border-box;
   }
 

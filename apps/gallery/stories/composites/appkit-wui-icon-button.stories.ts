@@ -14,9 +14,11 @@ export default {
   title: 'Composites/appkit-wui-icon-button',
   args: {
     icon: 'card',
-    size: 'md',
-    variant: 'accent',
-    disabled: false
+    size: 'sm',
+    variant: 'primary',
+    type: 'accent',
+    disabled: false,
+    fullWidth: false
   },
   argTypes: {
     icon: {
@@ -24,14 +26,21 @@ export default {
       control: { type: 'select' }
     },
     size: {
-      options: ['sm', 'md', 'lg'],
+      options: ['xs', 'sm', 'md', 'lg'],
       control: { type: 'select' }
     },
     variant: {
-      options: ['accent', 'secondary'],
+      options: ['primary', 'secondary'],
+      control: { type: 'select' }
+    },
+    type: {
+      options: ['accent', 'neutral', 'success', 'error'],
       control: { type: 'select' }
     },
     disabled: {
+      control: { type: 'boolean' }
+    },
+    fullWidth: {
       control: { type: 'boolean' }
     }
   }
@@ -44,7 +53,9 @@ export const Default: Component = {
         icon=${args.icon}
         size=${args.size}
         variant=${args.variant}
+        type=${args.type}
         ?disabled=${args.disabled}
+        ?fullWidth=${args.fullWidth}
       ></wui-icon-button>
     </gallery-container>
   `

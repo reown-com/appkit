@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-common",
-  "version": "1.8.2",
+  "version": "1.8.5",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/index.js",
@@ -21,7 +21,7 @@
   "dependencies": {
     "big.js": "6.2.2",
     "dayjs": "1.11.13",
-    "viem": ">=2.37.1"
+    "viem": ">=2.37.2"
   },
   "devDependencies": {
     "@types/big.js": "6.2.2",
@@ -49,5 +49,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

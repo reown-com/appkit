@@ -81,7 +81,7 @@
     "stream-browserify": "3.0.0",
     "turbo": "2.0.6-canary.0",
     "typescript": "5.8.3",
-    "vite": "5.4.19",
+    "vite": "5.4.20",
     "vite-plugin-node-polyfills": "0.23.0",
     "vitest": "2.1.9"
   },
@@ -91,23 +91,21 @@
       "@solana/web3.js": "1.98.2",
       "esbuild": ">=0.25.1",
       "@babel/runtime": ">=7.26.10",
-      "cookie": ">=0.7.0"
+      "cookie": ">=0.7.0",
+      "elliptic": ">=6.6.1",
+      "ws": ">=7.5.10",
+      "chalk": "<=5.3.0",
+      "strip-ansi": "<=7.1.0",
+      "color-convert": "<=2.0.1",
+      "color-name": "<=1.1.4",
+      "is-core-module": "<=2.13.1",
+      "error-ex": "<=1.3.2",
+      "has-ansi": "<=5.0.1",
+      "oxc-parser": "0.56.5"
     },
     "patchedDependencies": {
       "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"
     }
-  },
-  "overrides": {
-    "@solana/web3.js": "1.98.2",
-    "elliptic": ">=6.6.1",
-    "axios": ">=1.8.2",
-    "ws": ">=7.5.10"
-  },
-  "resolutions": {
-    "@solana/web3.js": "1.98.2",
-    "elliptic": ">=6.6.1",
-    "axios": ">=1.8.2",
-    "ws": ">=7.5.10"
   },
   "patchedDependencies": {
     "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"

@@ -97,5 +97,6 @@ export const ConstantsUtil = {
           'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at dashboard.reown.com to use the useAppKitConnection hook.'
       }
     }
-  }
+  },
+  IS_DEVELOPMENT: typeof process !== 'undefined' && process.env['NODE_ENV'] === 'development'
 } as const

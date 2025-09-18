@@ -5,12 +5,15 @@ import {
   type Balance,
   type CaipAddress,
   type CaipNetwork,
-  ConstantsUtil
+  ConstantsUtil,
+  UserRejectedRequestError
 } from '@reown/appkit-common'
 import {
+  AppKitError,
   type ChainAdapter,
   ChainController,
   type ConnectionControllerClient,
+  EventsController,
   type NetworkControllerClient,
   RouterController,
   SendController
@@ -72,6 +75,7 @@ const mockConnectionControllerClient: ConnectionControllerClient = {
   reconnectExternal: vi.fn(),
   checkInstalled: vi.fn(),
   disconnect: vi.fn(),
+  disconnectConnector: vi.fn(),
   signMessage: vi.fn(),
   sendTransaction: vi.fn(),
   estimateGas: vi.fn(),
@@ -282,5 +286,51 @@ describe('W3mWalletSendPreviewView', () => {
     // Get the button and check if it has the loading property set
     const button = element.shadowRoot?.querySelector('.sendButton') as WuiButton
     expect(button?.loading).to.equal(true)
+  })
+
+  it('should send SEND_REJECTED event when user rejects request', async () => {
+    const original = new UserRejectedRequestError({})
+    const appKitErr = new AppKitError('Rejected', 'INTERNAL_SDK_ERROR', original)
+
+    vi.spyOn(SendController, 'sendToken').mockRejectedValueOnce(appKitErr)
+    const eventsSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    const element = await fixture<W3mWalletSendPreviewView>(
+      html`<w3m-wallet-send-preview-view></w3m-wallet-send-preview-view>`
+    )
+
+    await element.updateComplete
+
+    const button = element.shadowRoot?.querySelector('.sendButton') as HTMLElement
+    button?.click()
+
+    await element.updateComplete
+
+    viExpect(eventsSpy).toHaveBeenCalledWith(
+      viExpect.objectContaining({ type: 'track', event: 'SEND_REJECTED' })
+    )
+  })
+
+  it('should send SEND_ERROR event when random error is thrown', async () => {
+    const nonUserError = new Error('Some random error')
+    const appKitErr = new AppKitError('Failed', 'INTERNAL_SDK_ERROR', nonUserError)
+
+    vi.spyOn(SendController, 'sendToken').mockRejectedValueOnce(appKitErr)
+    const eventsSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    const element = await fixture<W3mWalletSendPreviewView>(
+      html`<w3m-wallet-send-preview-view></w3m-wallet-send-preview-view>`
+    )
+
+    await element.updateComplete
+
+    const button = element.shadowRoot?.querySelector('.sendButton') as HTMLElement
+    button?.click()
+
+    await element.updateComplete
+
+    viExpect(eventsSpy).toHaveBeenCalledWith(
+      viExpect.objectContaining({ type: 'track', event: 'SEND_ERROR' })
+    )
   })
 })
