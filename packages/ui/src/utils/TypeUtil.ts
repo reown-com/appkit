@@ -67,7 +67,7 @@ export type SelectSize = 'lg' | 'md' | 'sm'
 
 export type SpacingType = keyof typeof vars.spacing
 
-export type IconSizeType = 'sm' | 'md' | 'lg' | 'xl' | 'inherit'
+export type IconSizeType = 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'inherit'
 
 export type BorderRadiusType = Exclude<SpacingType, '1xs' | 'xl' | 'xxl'> | 'xs'
 
