@@ -140,7 +140,7 @@
     "@walletconnect/types": "2.21.7",
     "@walletconnect/universal-provider": "2.21.7",
     "@walletconnect/utils": "2.21.7",
-    "axios": "1.9.0",
+    "axios": "1.12.0",
     "bitcoinjs-lib": "7.0.0-rc.0",
     "bs58": "6.0.0",
     "date-fns": "4.1.0",
