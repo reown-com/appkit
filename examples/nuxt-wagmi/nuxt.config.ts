@@ -39,11 +39,11 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'AppKit Nuxt Wagmi-Solana-Bitcoin Example',
+      title: 'AppKit Nuxt Wagmi Example',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'AppKit Nuxt Wagmi-Solana-Bitcoin Example' }
+        { name: 'description', content: 'AppKit Nuxt Wagmi Example' }
       ],
       link: [
         {
