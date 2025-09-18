@@ -13,7 +13,7 @@ export interface RequestArguments {
 }
 
 interface PostArguments extends RequestArguments {
-  body?: Record<string, unknown>
+  body?: Record<string, unknown> | Record<string, unknown>[]
 }
 
 async function fetchData(...args: Parameters<typeof fetch>) {
@@ -103,5 +103,11 @@ export class FetchUtil {
     }
 
     return url
+  }
+
+  public sendBeacon({ body, ...args }: PostArguments) {
+    const url = this.createUrl(args)
+
+    return navigator.sendBeacon(url.toString(), body ? JSON.stringify(body) : undefined)
   }
 }

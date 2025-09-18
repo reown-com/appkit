@@ -133,10 +133,8 @@ export const ConnectorUtil = {
     external,
     overriddenConnectors = OptionsController.state.features?.connectorTypeOrder ?? []
   }: GetConnectorTypeOrderParameters) {
-    const isWCEnabled = OptionsController.state.enableWalletConnect
-
     const allConnectors = [
-      { type: 'walletConnect', isEnabled: isWCEnabled },
+      { type: 'walletConnect', isEnabled: true },
       { type: 'recent', isEnabled: recent.length > 0 },
       { type: 'injected', isEnabled: [...injected, ...announced, ...multiChain].length > 0 },
       { type: 'featured', isEnabled: featured.length > 0 },
@@ -164,6 +162,23 @@ export const ConnectorUtil = {
     return Array.from(
       new Set([...prioritizedConnectors, ...remainingConnectors].map(({ type }) => type))
     )
+  },
+  sortConnectorsByExplorerWallet(connectors: ConnectorWithProviders[]) {
+    return connectors.sort((a, b) => {
+      if (a.explorerWallet && b.explorerWallet) {
+        return (a.explorerWallet.order ?? 0) - (b.explorerWallet.order ?? 0)
+      }
+
+      if (a.explorerWallet) {
+        return -1
+      }
+
+      if (b.explorerWallet) {
+        return 1
+      }
+
+      return 0
+    })
   },
   getAuthName({
     email,

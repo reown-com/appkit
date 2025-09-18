@@ -29,6 +29,8 @@ export class W3mInputAddress extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public value?: string
 
+  @property({ type: Boolean }) public readOnly = false
+
   @state() private instructionHidden = Boolean(this.value)
 
   @state() private pasting = false
@@ -42,6 +44,24 @@ export class W3mInputAddress extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    if (this.readOnly) {
+      return html` <wui-flex
+        flexDirection="column"
+        justifyContent="center"
+        gap="01"
+        .padding=${['8', '4', '5', '4'] as const}
+      >
+        <textarea
+          spellcheck="false"
+          ?disabled=${true}
+          autocomplete="off"
+          .value=${this.value ?? ''}
+        >
+           ${this.value ?? ''}</textarea
+        >
+      </wui-flex>`
+    }
+
     return html` <wui-flex
       @click=${this.onBoxClick.bind(this)}
       flexDirection="column"

@@ -1,6 +1,6 @@
 import type { Connection, PublicKey, SendOptions } from '@solana/web3.js'
 
-import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { RequestArguments } from '@reown/appkit-controllers'
 import type { Provider as CoreProvider } from '@reown/appkit-controllers'
@@ -74,7 +74,7 @@ export class CoinbaseWalletProvider extends ProviderEventEmitter implements Sola
       return account.toBase58()
     } catch (error) {
       this.coinbase.emit('error', error)
-      throw error
+      throw new UserRejectedRequestError(error)
     }
   }
 

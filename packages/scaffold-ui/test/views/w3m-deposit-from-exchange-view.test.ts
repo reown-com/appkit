@@ -4,12 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import type { CaipNetwork } from '@reown/appkit-common'
-import {
-  ChainController,
-  ExchangeController,
-  RouterController,
-  SnackController
-} from '@reown/appkit-controllers'
+import { ChainController, ExchangeController, RouterController } from '@reown/appkit-controllers'
 
 import { W3mDepositFromExchangeView } from '../../src/views/w3m-deposit-from-exchange-view'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -143,7 +138,7 @@ describe('W3mDepositFromExchangeView', () => {
 
     // Clicking a preset amount should delegate to controller
     const setAmountSpy = vi.spyOn(ExchangeController, 'setAmount')
-    const presetButtons = HelpersUtil.querySelectAll(element, 'wui-button')
+    const presetButtons = HelpersUtil.querySelectAll(element, 'wui-chip-button')
     // Click the first preset ($10)
     presetButtons?.[0]?.click()
     await elementUpdated(element)
@@ -156,10 +151,7 @@ describe('W3mDepositFromExchangeView', () => {
     expect(handleSpy).toHaveBeenCalledWith('ex1')
   })
 
-  it('shows error when clicking exchange without amount', async () => {
-    // Mock the SnackController
-    const showErrorSpy = vi.spyOn(SnackController, 'showError')
-
+  it('shows set amount during first update', async () => {
     // Mock active network
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
@@ -170,7 +162,6 @@ describe('W3mDepositFromExchangeView', () => {
     ExchangeController.state.exchanges = [
       { id: 'ex1', imageUrl: 'https://img1', name: 'Exchange One' }
     ] as any
-    ExchangeController.state.amount = 0
 
     // Avoid side effects on firstUpdated
     vi.spyOn(ExchangeController, 'getAssetsForNetwork').mockResolvedValue([])
@@ -181,9 +172,6 @@ describe('W3mDepositFromExchangeView', () => {
     )
     await elementUpdated(element)
 
-    const items = HelpersUtil.querySelectAll(element, 'wui-list-item')
-    items?.[0]?.click()
-
-    expect(showErrorSpy).toHaveBeenCalledWith('Please enter an amount')
+    expect(ExchangeController.state.amount).toBe(10)
   })
 })

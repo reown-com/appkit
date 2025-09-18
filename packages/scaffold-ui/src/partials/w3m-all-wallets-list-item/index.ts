@@ -2,7 +2,12 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { AssetUtil, type WcWallet } from '@reown/appkit-controllers'
+import {
+  AssetUtil,
+  EventsController,
+  RouterController,
+  type WcWallet
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
@@ -26,7 +31,16 @@ export class W3mAllWalletsListItem extends LitElement {
 
   @state() private imageLoading = false
 
-  @property() private wallet: (WcWallet & { installed: boolean }) | undefined = undefined
+  @state() private isImpressed = false
+
+  @property() private explorerId = ''
+
+  @property() private walletQuery = ''
+
+  @property() private certified = false
+
+  @property({ type: Object }) private wallet: (WcWallet & { installed: boolean }) | undefined =
+    undefined
 
   // -- Lifecycle ----------------------------------------- //
   constructor() {
@@ -37,6 +51,7 @@ export class W3mAllWalletsListItem extends LitElement {
           if (entry.isIntersecting) {
             this.visible = true
             this.fetchImageSrc()
+            this.sendImpressionEvent()
           } else {
             this.visible = false
           }
@@ -83,8 +98,8 @@ export class W3mAllWalletsListItem extends LitElement {
       <wui-wallet-image
         size="lg"
         imageSrc=${ifDefined(this.imageSrc)}
-        name=${this.wallet?.name}
-        .installed=${this.wallet?.installed}
+        name=${ifDefined(this.wallet?.name)}
+        .installed=${this.wallet?.installed ?? false}
         badgeSize="sm"
       >
       </wui-wallet-image>
@@ -108,6 +123,26 @@ export class W3mAllWalletsListItem extends LitElement {
     this.imageLoading = true
     this.imageSrc = await AssetUtil.fetchWalletImage(this.wallet.image_id)
     this.imageLoading = false
+  }
+
+  private sendImpressionEvent() {
+    if (!this.wallet || this.isImpressed) {
+      return
+    }
+
+    this.isImpressed = true
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'WALLET_IMPRESSION',
+      properties: {
+        name: this.wallet.name,
+        walletRank: this.wallet.order,
+        explorerId: this.explorerId,
+        view: RouterController.state.view,
+        query: this.walletQuery,
+        certified: this.certified
+      }
+    })
   }
 }
 

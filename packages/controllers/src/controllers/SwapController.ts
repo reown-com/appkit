@@ -595,8 +595,9 @@ const controller = {
         SwapController.setTransactionDetails()
       }
     } catch (error) {
+      const response = await SwapApiUtil.handleSwapError(error)
       state.loadingQuote = false
-      state.inputError = 'Insufficient balance'
+      state.inputError = response || 'Insufficient balance'
     }
   },
 

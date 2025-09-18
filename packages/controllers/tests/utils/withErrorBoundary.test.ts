@@ -206,7 +206,7 @@ describe('withErrorBoundary', () => {
       } catch (err: unknown) {
         expect(err).toBeInstanceOf(AppKitError)
         const appKitError = err as AppKitError
-        expect(appKitError.message).toBe(JSON.stringify(errorObject))
+        expect(appKitError.message).toBe('Server error')
         expect(appKitError.category).toBe('SECURE_SITE_ERROR')
         expect(appKitError.originalError).toBe(errorObject)
       }
@@ -321,6 +321,34 @@ describe('withErrorBoundary', () => {
         const appKitError = err as AppKitError
         // The object should be serialized successfully since Date and undefined are serializable
         expect(appKitError.message).toContain('Complex error')
+        expect(appKitError.category).toBe('SECURE_SITE_ERROR')
+        expect(appKitError.originalError).toBe(complexObject)
+      }
+      expect(sendErrorSpy).toHaveBeenCalledWith(expect.any(AppKitError), 'SECURE_SITE_ERROR')
+    })
+
+    it('should handle objects if message doesnt exist', async () => {
+      const complexObject = {
+        timestamp: new Date(),
+        function: () => 'test',
+        symbol: Symbol('test'),
+        undefined: undefined
+      }
+
+      const mockController = {
+        async errorMethod() {
+          throw complexObject
+        }
+      }
+
+      const wrappedController = withErrorBoundary(mockController, 'SECURE_SITE_ERROR')
+
+      try {
+        await wrappedController.errorMethod()
+      } catch (err: unknown) {
+        expect(err).toBeInstanceOf(AppKitError)
+        const appKitError = err as AppKitError
+        // The object should be serialized successfully since Date and undefined are serializable
         expect(appKitError.message).toContain('timestamp')
         expect(appKitError.category).toBe('SECURE_SITE_ERROR')
         expect(appKitError.originalError).toBe(complexObject)

@@ -19,7 +19,7 @@ export default {
   },
   argTypes: {
     size: {
-      options: ['xxs', 'xs', 'sm', 'md', 'lg'],
+      options: ['xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl'],
       control: { type: 'select' }
     },
     name: {

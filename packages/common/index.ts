@@ -9,6 +9,7 @@ export { NavigationUtil } from './src/utils/NavigationUtil.js'
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'
 export { Emitter } from './src/utils/EmitterUtil.js'
 export { ParseUtil } from './src/utils/ParseUtil.js'
+export { ErrorUtil, UserRejectedRequestError } from './src/utils/ErrorUtil.js'
 export {
   SafeLocalStorage,
   SafeLocalStorageKeys,

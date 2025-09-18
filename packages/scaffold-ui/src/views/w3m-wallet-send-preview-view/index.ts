@@ -1,13 +1,14 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
+import { ConstantsUtil as CommonConstantsUtil, ErrorUtil } from '@reown/appkit-common'
 import {
+  AppKitError,
   ChainController,
   EventsController,
   RouterController,
   SendController,
-  SnackController,
-  getPreferredAccountType
+  SnackController
 } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
@@ -15,7 +16,6 @@ import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-preview-item'
 import '@reown/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../partials/w3m-wallet-send-details/index.js'
 import styles from './styles.js'
@@ -41,6 +41,8 @@ export class W3mWalletSendPreviewView extends LitElement {
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
 
   @state() private loading = SendController.state.loading
+
+  @state() private params = RouterController.state.data?.send
 
   public constructor() {
     super()
@@ -138,7 +140,7 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private sendValueTemplate() {
-    if (this.token && this.sendTokenAmount) {
+    if (!this.params && this.token && this.sendTokenAmount) {
       const price = this.token.price
       const totalValue = price * this.sendTokenAmount
 
@@ -159,28 +161,37 @@ export class W3mWalletSendPreviewView extends LitElement {
 
     try {
       await SendController.sendToken()
-      SnackController.showSuccess('Transaction started')
-      RouterController.replace('Account')
+      if (this.params) {
+        RouterController.reset('WalletSendConfirmed')
+      } else {
+        SnackController.showSuccess('Transaction started')
+        RouterController.replace('Account')
+      }
     } catch (error) {
-      SnackController.showError('Failed to send transaction. Please try again.')
-      // eslint-disable-next-line no-console
-      console.error('SendController:sendToken - failed to send transaction', error)
+      let errMessage = 'Failed to send transaction. Please try again.'
 
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      const isUserRejectedRequestError =
+        error instanceof AppKitError &&
+        error.originalName === ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST
+
+      // eslint-disable-next-line no-warning-comments
+      // TODO: Remove this once we have a better way to handle errors for each adapter
+      if (
+        ChainController.state.activeChain === CommonConstantsUtil.CHAIN.SOLANA ||
+        isUserRejectedRequestError
+      ) {
+        if (error instanceof Error) {
+          errMessage = error.message
+        }
+      }
 
       EventsController.sendEvent({
         type: 'track',
-        event: 'SEND_ERROR',
-        properties: {
-          message: errorMessage,
-          isSmartAccount:
-            getPreferredAccountType(ChainController.state.activeChain) ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          token: this.token?.symbol || '',
-          amount: this.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
-        }
+        event: isUserRejectedRequestError ? 'SEND_REJECTED' : 'SEND_ERROR',
+        properties: SendController.getSdkEventProperties(error)
       })
+
+      SnackController.showError(errMessage)
     }
   }
 

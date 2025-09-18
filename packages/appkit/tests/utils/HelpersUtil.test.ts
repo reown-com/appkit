@@ -639,4 +639,41 @@ describe('WcHelpersUtil', () => {
       ).toBe(true)
     })
   })
+
+  describe('isUserRejectedRequestError', () => {
+    test('returns true when error.code is USER_REJECTED (5000)', () => {
+      const error = { code: WcHelpersUtil.RPC_ERROR_CODE.USER_REJECTED }
+      expect(WcHelpersUtil.isUserRejectedRequestError(error)).toBe(true)
+    })
+
+    test('returns true when error.code is USER_REJECTED_METHODS (5002)', () => {
+      const error = { code: WcHelpersUtil.RPC_ERROR_CODE.USER_REJECTED_METHODS }
+      expect(WcHelpersUtil.isUserRejectedRequestError(error)).toBe(true)
+    })
+
+    test('returns false for other numeric codes', () => {
+      const error = { code: 1234 }
+      expect(WcHelpersUtil.isUserRejectedRequestError(error)).toBe(false)
+    })
+
+    test('returns false when code is a string number', () => {
+      const error = { code: '5000' }
+      expect(WcHelpersUtil.isUserRejectedRequestError(error)).toBe(false)
+    })
+
+    test('returns false when code is missing', () => {
+      const error = { message: 'Some error' }
+      expect(WcHelpersUtil.isUserRejectedRequestError(error)).toBe(false)
+    })
+
+    test('returns false for null/undefined/non-object inputs', () => {
+      expect(WcHelpersUtil.isUserRejectedRequestError(null)).toBe(false)
+      expect(WcHelpersUtil.isUserRejectedRequestError(undefined)).toBe(false)
+      expect(WcHelpersUtil.isUserRejectedRequestError('string')).toBe(false)
+      expect(WcHelpersUtil.isUserRejectedRequestError(5000)).toBe(false)
+      expect(WcHelpersUtil.isUserRejectedRequestError(true)).toBe(false)
+      expect(WcHelpersUtil.isUserRejectedRequestError(BigInt(0))).toBe(false)
+      expect(WcHelpersUtil.isUserRejectedRequestError(new Error('test'))).toBe(false)
+    })
+  })
 })
