@@ -44,7 +44,7 @@
     "lit": "3.3.0",
     "valtio": "2.1.7"
   },
-  "optionalDependencies": {
+  "peerDependencies": {
     "@lit/react": "1.0.8"
   },
   "author": "Reown (https://discord.gg/reown)",
