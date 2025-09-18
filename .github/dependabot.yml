@@ -35,7 +35,6 @@ updates:
           - '@tanstack/*'
           - '@sentry/*'
           - '@wallet-standard/*'
-          - 'axios'
           - 'bitcoinjs-lib'
           - 'bs58'
           - 'date-fns'
