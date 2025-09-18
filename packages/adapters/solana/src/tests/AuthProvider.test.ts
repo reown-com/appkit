@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import { type AccountControllerState, ChainController } from '@reown/appkit-controllers'
+import { type AccountState, ChainController } from '@reown/appkit-controllers'
 
 import { AuthProvider } from '../providers/AuthProvider'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'
@@ -62,7 +62,7 @@ describe('AuthProvider specific tests', () => {
             accountState: {
               address: TestConstants.accounts[0].address,
               preferredAccountType: 'eoa'
-            } as AccountControllerState
+            } as AccountState
           }
         ]
       ])

@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Balance } from '@reown/appkit-common'
 
-import { AccountController } from '../../src/controllers/AccountController'
 import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
+import { type AccountState } from '../../src/controllers/ChainController'
 import { ChainController } from '../../src/controllers/ChainController'
 import { ConnectionController } from '../../src/controllers/ConnectionController'
 import { OptionsController } from '../../src/controllers/OptionsController'
@@ -14,7 +14,6 @@ vi.mock('../../src/controllers/ChainController')
 vi.mock('../../src/controllers/BlockchainApiController')
 vi.mock('../../src/controllers/OptionsController')
 vi.mock('../../src/controllers/ConnectionController')
-vi.mock('../../src/controllers/AccountController')
 vi.mock('../../src/controllers/ChainController')
 
 const mockSolanaNetwork = {
@@ -182,7 +181,9 @@ describe('SwapApiUtil', () => {
 
   describe('getMyTokensWithBalance', () => {
     it('should fetch and return tokens with balance', async () => {
-      AccountController.state.address = '0x123'
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: '0x123'
+      } as AccountState)
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       BlockchainApiController.getBalance = vi.fn().mockResolvedValue({
         balances: [{ address: '0x456', quantity: { decimals: '18', numeric: '1.5' } }]
@@ -195,7 +196,7 @@ describe('SwapApiUtil', () => {
         'eip155:1',
         undefined
       )
-      expect(AccountController.setTokenBalance).toHaveBeenCalled()
+      expect(ChainController.setAccountProp).toHaveBeenCalled()
       expect(result).toEqual([
         {
           address: '0x456',
@@ -207,7 +208,7 @@ describe('SwapApiUtil', () => {
       ])
     })
     it('should return an empty array if no address or active network', async () => {
-      AccountController.state.address = undefined
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
       ChainController.state.activeCaipNetwork = undefined
 
       const result = await SwapApiUtil.getMyTokensWithBalance()

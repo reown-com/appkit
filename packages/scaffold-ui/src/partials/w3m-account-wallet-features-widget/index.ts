@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 
 import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ConnectorController,
   ConstantsUtil as CoreConstantsUtil,
@@ -43,15 +42,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private address = AccountController.state.address
-
-  @state() private profileName = AccountController.state.profileName
-
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private currentTab = AccountController.state.currentTab
+  @state() private profileName = ChainController.getAccountData()?.profileName
 
-  @state() private tokenBalance = AccountController.state.tokenBalance
+  @state() private address = ChainController.getAccountData()?.address
+
+  @state() private currentTab = ChainController.getAccountData()?.currentTab
+
+  @state() private tokenBalance = ChainController.getAccountData()?.tokenBalance
 
   @state() private features = OptionsController.state.features
 
@@ -65,8 +64,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.address) {
+        ChainController.subscribeChainProp('accountState', val => {
+          if (val?.address) {
             this.address = val.address
             this.profileName = val.profileName
             this.currentTab = val.currentTab
@@ -76,6 +75,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           }
         })
       ],
+
       ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
         this.activeConnectorIds = newActiveConnectorIds
       }),
@@ -93,13 +93,13 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   public override firstUpdated() {
-    AccountController.fetchTokenBalance()
+    ChainController.fetchTokenBalance()
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.address) {
-      throw new Error('w3m-account-view: No account provided')
+      throw new Error('w3m-account-features-widget: No account provided')
     }
 
     if (!this.namespace) {
@@ -265,7 +265,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   private watchSwapValues() {
     this.watchTokenBalance = setInterval(
-      () => AccountController.fetchTokenBalance(error => this.onTokenBalanceError(error)),
+      () => ChainController.fetchTokenBalance(error => this.onTokenBalanceError(error)),
       10_000
     )
   }
@@ -317,7 +317,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onTabChange(index: number) {
-    AccountController.setCurrentTab(index)
+    ChainController.setAccountProp('currentTab', index, this.namespace)
   }
 
   private onFundWalletClick() {

@@ -3,8 +3,8 @@ import type { MockInstance } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import {
-  AccountController,
   type AccountType,
+  ChainController,
   type Connector,
   ConnectorController,
   type ConnectorType,
@@ -57,7 +57,7 @@ describe('syncExistingConnection', () => {
   })
 
   it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
-    const setStatus = vi.spyOn(AccountController, 'setStatus')
+    const setStatus = vi.spyOn(ChainController, 'setAccountProp')
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('evm-connector')
     vi.spyOn(ConnectorController, 'getConnectors').mockReturnValue(MOCKED_CONNECTORS)
 
@@ -68,16 +68,16 @@ describe('syncExistingConnection', () => {
     })
     await appKit['syncExistingConnection']()
 
-    expect(setStatus).toHaveBeenCalledWith('connecting', 'eip155')
-    expect(setStatus).toHaveBeenCalledWith('connected', 'eip155')
+    expect(setStatus).toHaveBeenCalledWith('status', 'connecting', 'eip155')
+    expect(setStatus).toHaveBeenCalledWith('status', 'connected', 'eip155')
 
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(undefined)
     vi.spyOn(ConnectorController, 'getConnectors').mockReturnValue([])
 
     await appKit['syncExistingConnection']()
 
-    expect(setStatus).toHaveBeenCalledWith('connecting', 'eip155')
-    expect(setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
+    expect(setStatus).toHaveBeenCalledWith('status', 'connecting', 'eip155')
+    expect(setStatus).toHaveBeenCalledWith('status', 'disconnected', 'eip155')
 
     vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockClear()
     vi.spyOn(StorageUtil, 'getConnectionStatus').mockClear()
@@ -287,7 +287,7 @@ describe('syncConnectedWalletInfo', () => {
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
     })
 
-    it('should not call adapter.getAccounts() when using connectExternal and AccountController.state.allAccounts has accounts', async () => {
+    it('should not call adapter.getAccounts() when using connectExternal and accountState.allAccounts has accounts', async () => {
       vi.spyOn(mockEvmAdapter, 'connect').mockResolvedValue({
         address: '0x123',
         chainId: '1',

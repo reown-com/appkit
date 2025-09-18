@@ -3,7 +3,6 @@ import { property } from 'lit/decorators.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   BlockchainApiController,
   ChainController,
   ConnectorController,
@@ -31,7 +30,7 @@ export class WuiListAccount extends LitElement {
 
   @property() public accountType = ''
 
-  private labels = AccountController.state.addressLabels
+  private labels = ChainController.getAccountData()?.addressLabels
 
   private caipNetwork = ChainController.state.activeCaipNetwork
 

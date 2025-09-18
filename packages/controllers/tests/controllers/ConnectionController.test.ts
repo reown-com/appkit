@@ -8,6 +8,7 @@ import {
   type ParsedCaipAddress
 } from '@reown/appkit-common'
 
+import type { AccountState } from '../../exports/index.js'
 import type {
   ChainAdapter,
   ConnectionControllerClient,
@@ -29,7 +30,6 @@ import {
   ModalController,
   RouterController
 } from '../../exports/index.js'
-import { AccountController } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
 const chain = CommonConstantsUtil.CHAIN.EVM
@@ -273,7 +273,9 @@ describe('ConnectionController', () => {
 
     it('should call parseCaipAddress when caipAddress is available', async () => {
       const mockCaipAddress = 'eip155:137:0x789'
-      vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(mockCaipAddress)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        caipAddress: mockCaipAddress
+      } as unknown as AccountState)
       vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
       const parseSpy = vi.spyOn(ParseUtil, 'parseCaipAddress')
 
@@ -282,12 +284,12 @@ describe('ConnectionController', () => {
         namespace: chain
       })
 
-      expect(AccountController.getCaipAddress).toHaveBeenCalledWith(chain)
+      expect(ChainController.getAccountData).toHaveBeenCalledWith(chain)
       expect(parseSpy).toHaveBeenCalledWith(mockCaipAddress)
     })
 
     it('should not call parseCaipAddress when caipAddress is not available', async () => {
-      vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(undefined)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
       vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
       const parseSpy = vi.spyOn(ParseUtil, 'parseCaipAddress')
 
@@ -296,7 +298,7 @@ describe('ConnectionController', () => {
         namespace: chain
       })
 
-      expect(AccountController.getCaipAddress).toHaveBeenCalledWith(chain)
+      expect(ChainController.getAccountData).toHaveBeenCalledWith(chain)
       expect(parseSpy).not.toHaveBeenCalled()
     })
 
@@ -325,7 +327,9 @@ describe('ConnectionController', () => {
       async ({ address, hasSwitchedAccount, hasSwitchedWallet, status }) => {
         vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue(status)
         vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
-        vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue('eip155:137:0x321')
+        vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+          caipAddress: 'eip155:137:0x321'
+        } as unknown as AccountState)
 
         const connectExternalSpy = vi
           .spyOn(ConnectionController, 'connectExternal')
@@ -366,7 +370,9 @@ describe('ConnectionController', () => {
       async status => {
         vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue(status)
         vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
-        vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue('eip155:137:0x321')
+        vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+          caipAddress: 'eip155:137:0x321'
+        } as unknown as AccountState)
 
         const onChange = vi.fn()
 
@@ -394,7 +400,9 @@ describe('ConnectionController', () => {
       const address = '0x321'
       vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue('disconnected')
       vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
-      vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(`eip155:137:${address}`)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        caipAddress: `eip155:137:${address}`
+      } as unknown as AccountState)
 
       const connectExternalSpy = vi
         .spyOn(ConnectionController, 'connectExternal')
@@ -581,7 +589,7 @@ describe('ConnectionController', () => {
     })
 
     it('should throw error if connection status is invalid', async () => {
-      vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(undefined)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
       vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue('connecting' as any)
       vi.spyOn(ConnectionController, 'handleActiveConnection').mockResolvedValue('0x123')
 

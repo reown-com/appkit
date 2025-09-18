@@ -9,7 +9,6 @@ import {
   Emitter
 } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   type ConnectionControllerClient,
   CoreHelperUtil,
@@ -198,10 +197,15 @@ describe('EthersAdapter', () => {
     it('should send transaction successfully', async () => {
       const mockTxHash = '0xtxhash'
       vi.mocked(EthersMethods.sendTransaction).mockResolvedValue(mockTxHash)
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
-        caipAddress: 'eip155:1:0x123'
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: '0x123',
+        currentTab: 0,
+        tokenBalance: [],
+        smartAccountDeployed: false,
+        addressLabels: new Map(),
+        user: undefined
       })
+
       const result = await adapter.sendTransaction({
         value: BigInt(1000),
         to: '0x456',
@@ -216,9 +220,13 @@ describe('EthersAdapter', () => {
     })
 
     it('should throw error when provider is undefined', async () => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
-        caipAddress: 'eip155:1:0x123'
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: '0x123',
+        currentTab: 0,
+        tokenBalance: [],
+        smartAccountDeployed: false,
+        addressLabels: new Map(),
+        user: undefined
       })
       await expect(
         adapter.sendTransaction({
@@ -324,8 +332,13 @@ describe('EthersAdapter', () => {
     })
 
     it('should respect preferredAccountType when calling connect with AUTH provider', async () => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: '0x123',
+        currentTab: 0,
+        tokenBalance: [],
+        smartAccountDeployed: false,
+        addressLabels: new Map(),
+        user: undefined,
         preferredAccountType: 'smartAccount'
       })
 
@@ -365,6 +378,7 @@ describe('EthersAdapter', () => {
 
   describe('EthersAdapter -reconnect', () => {
     it('should call SIWXUtil.authConnectorAuthenticate when reconnecting with AUTH provider', async () => {
+      ChainController.setAccountProp('preferredAccountType', 'smartAccount', 'eip155')
       const ethersAdapter = new EthersAdapter()
       vi.spyOn(SIWXUtil, 'authConnectorAuthenticate')
 
@@ -921,6 +935,9 @@ describe('EthersAdapter', () => {
   })
 
   describe('EthersAdapter - switchNetwork', () => {
+    beforeEach(() => {
+      ChainController.setAccountProp('preferredAccountType', 'smartAccount', 'eip155')
+    })
     const errorCodes = [
       WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID,
       WcConstantsUtil.ERROR_INVALID_CHAIN_ID,

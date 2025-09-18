@@ -4,7 +4,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetController,
   ChainController,
   ConnectionController,
@@ -37,11 +36,11 @@ export class W3mAccountSettingsView extends LitElement {
   private readonly networkImages = AssetController.state.networkImages
 
   // -- State & Properties --------------------------------- //
-  @state() private address = AccountController.state.address
+  @state() private address = ChainController.getAccountData()?.address
 
-  @state() private profileImage = AccountController.state.profileImage
+  @state() private profileImage = ChainController.getAccountData()?.profileImage
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = ChainController.getAccountData()?.profileName
 
   @state() private network = ChainController.state.activeCaipNetwork
 
@@ -59,8 +58,8 @@ export class W3mAccountSettingsView extends LitElement {
     super()
     this.usubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.address) {
+        ChainController.subscribeChainProp('accountState', val => {
+          if (val) {
             this.address = val.address
             this.profileImage = val.profileImage
             this.profileName = val.profileName

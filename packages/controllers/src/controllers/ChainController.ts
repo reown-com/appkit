@@ -2,24 +2,30 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { proxyMap, subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import {
+  type Balance,
   type CaipAddress,
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
-  NetworkUtil
+  NetworkUtil,
+  ParseUtil,
+  type SocialProvider
 } from '@reown/appkit-common'
 
+import { BalanceUtil } from '../utils/BalanceUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   AdapterNetworkState,
   ChainAdapter,
-  NetworkControllerClient
+  ConnectedWalletInfo,
+  NamespaceTypeMap,
+  NetworkControllerClient,
+  User
 } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AccountController, type AccountControllerState } from './AccountController.js'
 import { ConnectionController, type ConnectionControllerClient } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
@@ -28,9 +34,10 @@ import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { RouterController } from './RouterController.js'
 import { SendController } from './SendController.js'
+import { SnackController } from './SnackController.js'
 
 // -- Constants ----------------------------------------- //
-const accountState: AccountControllerState = {
+const defaultAccountState: AccountState = {
   currentTab: 0,
   tokenBalance: [],
   smartAccountDeployed: false,
@@ -50,6 +57,31 @@ export type ChainControllerClients = {
   networkControllerClient: NetworkControllerClient
   connectionControllerClient: ConnectionControllerClient
 }
+
+export interface AccountState {
+  currentTab: number
+  caipAddress?: CaipAddress
+  user?: User
+  address?: string
+  addressLabels: Map<string, string>
+  balance?: string
+  balanceSymbol?: string
+  balanceLoading?: boolean
+  profileName?: string | null
+  profileImage?: string | null
+  addressExplorerUrl?: string
+  smartAccountDeployed?: boolean
+  socialProvider?: SocialProvider
+  tokenBalance?: Balance[]
+  shouldUpdateToAddress?: string
+  connectedWalletInfo?: ConnectedWalletInfo
+  preferredAccountType?: NamespaceTypeMap[keyof NamespaceTypeMap]
+  socialWindow?: Window
+  farcasterUrl?: string
+  status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
+  lastRetry?: number
+}
+
 export interface ChainControllerState {
   activeChain: ChainNamespace | undefined
   activeCaipAddress: CaipAddress | undefined
@@ -96,6 +128,23 @@ const controller = {
     callback: (value: ChainControllerState[K]) => void
   ) {
     return subKey(state, key, callback)
+  },
+  subscribeAccountStateProp(
+    property: keyof AccountState,
+    callback: (value: AccountState[keyof AccountState]) => void,
+    chain?: ChainNamespace
+  ) {
+    const activeChain = chain || state.activeChain
+
+    if (!activeChain) {
+      return () => undefined
+    }
+
+    return subKey(
+      state.chains.get(activeChain)?.accountState || ({} as AccountState),
+      property,
+      callback
+    )
   },
 
   subscribeChainProp<K extends keyof ChainAdapter>(
@@ -171,7 +220,10 @@ const controller = {
       ChainController.state.chains.set(namespace, {
         namespace,
         networkState: proxy({ ...networkState, caipNetwork: namespaceNetworks?.[0] }),
-        accountState: proxy({ ...accountState, preferredAccountType: defaultTypes[namespace] }),
+        accountState: proxy({
+          ...defaultAccountState,
+          preferredAccountType: defaultTypes[namespace]
+        }),
         caipNetworks: namespaceNetworks ?? [],
         ...clients
       })
@@ -206,7 +258,7 @@ const controller = {
     state.chains.set(adapter.namespace, {
       namespace: adapter.namespace,
       networkState: { ...networkState, caipNetwork: caipNetworks[0] },
-      accountState,
+      accountState: { ...defaultAccountState },
       caipNetworks,
       connectionControllerClient,
       networkControllerClient
@@ -272,7 +324,7 @@ const controller = {
 
   setChainAccountData(
     chain: ChainNamespace | undefined,
-    accountProps: Partial<AccountControllerState>,
+    accountProps: Partial<AccountState>,
     _unknown = true
   ) {
     if (!chain) {
@@ -282,13 +334,15 @@ const controller = {
     const chainAdapter = state.chains.get(chain)
 
     if (chainAdapter) {
-      const newAccountState = { ...(chainAdapter.accountState || accountState), ...accountProps }
+      const newAccountState = {
+        ...(chainAdapter.accountState || defaultAccountState),
+        ...accountProps
+      }
       state.chains.set(chain, { ...chainAdapter, accountState: newAccountState })
       if (state.chains.size === 1 || state.activeChain === chain) {
         if (accountProps.caipAddress) {
           state.activeCaipAddress = accountProps.caipAddress
         }
-        AccountController.replaceState(newAccountState)
       }
     }
   },
@@ -309,8 +363,8 @@ const controller = {
 
   // eslint-disable-next-line max-params
   setAccountProp(
-    prop: keyof AccountControllerState,
-    value: AccountControllerState[keyof AccountControllerState],
+    prop: keyof AccountState,
+    value: AccountState[keyof AccountState],
     chain: ChainNamespace | undefined,
     replaceState = true
   ) {
@@ -339,8 +393,8 @@ const controller = {
     if (!caipNetwork) {
       return
     }
-
-    if (state.activeChain !== caipNetwork.chainNamespace) {
+    const isSameNamespace = state.activeChain === caipNetwork.chainNamespace
+    if (!isSameNamespace) {
       ChainController.setIsSwitchingNamespace(true)
     }
 
@@ -349,22 +403,22 @@ const controller = {
     state.activeCaipNetwork = caipNetwork
     ChainController.setChainNetworkData(caipNetwork.chainNamespace, { caipNetwork })
 
-    if (newAdapter?.accountState?.address) {
-      state.activeCaipAddress = `${caipNetwork.chainNamespace}:${caipNetwork.id}:${newAdapter?.accountState?.address}`
+    let address = newAdapter?.accountState?.address
+    if (address) {
+      state.activeCaipAddress = `${caipNetwork.chainNamespace}:${caipNetwork.id}:${address}`
+    } else if (isSameNamespace && state.activeCaipAddress) {
+      const { address: parsedAddress } = ParseUtil.parseCaipAddress(state.activeCaipAddress)
+      address = parsedAddress
+      state.activeCaipAddress = `${caipNetwork.caipNetworkId}:${address}`
     } else {
       state.activeCaipAddress = undefined
     }
 
-    // Update the chain's account state with the new caip address value
-    ChainController.setAccountProp(
-      'caipAddress',
-      state.activeCaipAddress,
-      caipNetwork.chainNamespace
-    )
+    ChainController.setChainAccountData(caipNetwork.chainNamespace, {
+      address,
+      caipAddress: state.activeCaipAddress
+    })
 
-    if (newAdapter) {
-      AccountController.replaceState(newAdapter.accountState)
-    }
     // Reset send state when switching networks
     SendController.resetSend()
 
@@ -419,7 +473,6 @@ const controller = {
     { throwOnFailure = false }: SwitchActiveNetworkOptions = {}
   ) {
     const namespace = ChainController.state.activeChain
-
     if (!namespace) {
       throw new Error('ChainController:switchActiveNetwork - namespace is required')
     }
@@ -784,6 +837,48 @@ const controller = {
 
   getLastConnectedSIWECaipNetwork(): CaipNetwork | undefined {
     return state.lastConnectedSIWECaipNetwork
+  },
+  async fetchTokenBalance(onError?: (error: unknown) => void): Promise<Balance[]> {
+    const accountState = ChainController.getAccountData()
+    if (!accountState) {
+      return []
+    }
+
+    const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
+    const chain = ChainController.state.activeCaipNetwork?.chainNamespace
+    const caipAddress = ChainController.state.activeCaipAddress
+    const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+
+    ChainController.setAccountProp('balanceLoading', true, chain)
+    if (
+      accountState.lastRetry &&
+      !CoreHelperUtil.isAllowedRetry(accountState.lastRetry, 30 * ConstantsUtil.ONE_SEC_MS)
+    ) {
+      ChainController.setAccountProp('balanceLoading', false, chain)
+
+      return []
+    }
+
+    try {
+      if (address && chainId && chain) {
+        const balance = await BalanceUtil.getMyTokensWithBalance()
+
+        ChainController.setAccountProp('tokenBalance', balance, chain)
+        ChainController.setAccountProp('lastRetry', undefined, chain)
+        ChainController.setAccountProp('balanceLoading', false, chain)
+
+        return balance
+      }
+    } catch (error) {
+      ChainController.setAccountProp('lastRetry', Date.now(), chain)
+
+      onError?.(error)
+      SnackController.showError('Token Balance Unavailable')
+    } finally {
+      ChainController.setAccountProp('balanceLoading', false, chain)
+    }
+
+    return []
   }
 }
 

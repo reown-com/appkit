@@ -3,7 +3,6 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import type { Event, PendingEvent } from '../utils/TypeUtil.js'
-import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -54,7 +53,7 @@ export const EventsController = {
 
   _setPendingEvent(payload: EventsControllerState) {
     try {
-      let address = AccountController.state.address
+      let address = ChainController.getAccountData()?.address
 
       if ('address' in payload.data && payload.data.address) {
         address = payload.data.address
