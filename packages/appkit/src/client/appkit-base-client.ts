@@ -1094,7 +1094,7 @@ export abstract class AppKitBaseClient {
         blueprint.construct({
           namespace,
           projectId: this.options?.projectId,
-          networks: this.getCaipNetworks()
+          networks: this.caipNetworks?.filter(({ chainNamespace }) => chainNamespace === namespace)
         })
         adapters[namespace] = blueprint
       } else {
@@ -1943,7 +1943,7 @@ export abstract class AppKitBaseClient {
     adapterBlueprint.construct({
       namespace,
       projectId: this.options?.projectId,
-      networks: this.getCaipNetworks()
+      networks: this.caipNetworks?.filter(({ chainNamespace }) => chainNamespace === namespace)
     })
 
     if (!this.chainNamespaces.includes(namespace)) {
