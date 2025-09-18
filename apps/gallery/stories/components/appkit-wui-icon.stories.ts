@@ -1,4 +1,4 @@
-import type { Meta } from '@storybook/web-components'
+import type { Meta, StoryObj } from '@storybook/web-components'
 
 import { html } from 'lit'
 
@@ -8,6 +8,7 @@ import type { WuiIcon } from '@reown/appkit-ui/wui-icon'
 import { colorOptions, iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiIcon>
+type Story = StoryObj<WuiIcon>
 
 export default {
   title: 'Components/appkit-wui-icon',
@@ -37,7 +38,7 @@ export default {
   }
 } as Component
 
-export const Default: Component = {
+export const Default: Story = {
   render: args =>
     html`<wui-icon
       color=${args.color}
