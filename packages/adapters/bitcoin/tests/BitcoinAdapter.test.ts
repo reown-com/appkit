@@ -1078,7 +1078,8 @@ describe('BitcoinAdapter', () => {
         accounts: mockAccounts.map(account => ({
           address: account.address,
           type: 'payment',
-          publicKey: account.publicKey
+          publicKey: account.publicKey,
+          path: account.path
         })),
         caipNetwork: undefined
       })
@@ -1123,12 +1124,14 @@ describe('BitcoinAdapter', () => {
           {
             address: 'mock_address_1',
             type: 'payment',
-            publicKey: 'mock_public_key_1'
+            publicKey: 'mock_public_key_1',
+            path: 'mock_path_1'
           },
           {
             address: 'mock_address_2',
             type: 'ordinal',
-            publicKey: 'mock_public_key_2'
+            publicKey: 'mock_public_key_2',
+            path: 'mock_path_2'
           }
         ],
         caipNetwork: undefined
