@@ -159,7 +159,7 @@
     "webauthn-p256": "0.0.2"
   },
   "devDependencies": {
-    "@aws-sdk/client-cloudwatch": "3.758.0",
+    "@aws-sdk/client-cloudwatch": "3.891.0",
     "@mailsac/api": "1.0.8",
     "@playwright/test": "1.48.2",
     "@reown/appkit-testing": "workspace:*",
