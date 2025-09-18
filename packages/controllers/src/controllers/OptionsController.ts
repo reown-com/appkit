@@ -148,7 +148,6 @@ export interface OptionsControllerStatePublic {
    */
   features?: Features
   /**
-   * @experimental - This feature is not production ready.
    * Enable Sign In With X (SIWX) feature.
    * @default undefined
    */
