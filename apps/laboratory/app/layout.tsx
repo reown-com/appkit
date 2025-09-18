@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 
 import Layout from '@/src/layout'
 import { bootstrapSentry } from '@/src/utils/SentryUtil'
-import { getSession } from '@/src/utils/auth'
+import { getSession } from '@/src/utils/auth-get-session'
 
 bootstrapSentry()
 
