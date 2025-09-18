@@ -74,7 +74,7 @@ export const SIWXUtil = {
       EventsController.sendEvent({
         type: 'track',
         event: 'SIWX_AUTH_ERROR',
-        properties: this.getSIWXEventProperties()
+        properties: this.getSIWXEventProperties(error)
       })
 
       // eslint-disable-next-line no-console
@@ -136,8 +136,6 @@ export const SIWXUtil = {
         properties: this.getSIWXEventProperties()
       })
     } catch (error) {
-      const properties = this.getSIWXEventProperties()
-
       if (!ModalController.state.open || RouterController.state.view === 'ApproveTransaction') {
         await ModalController.open({
           view: 'SIWXSignMessage'
@@ -148,7 +146,7 @@ export const SIWXUtil = {
       EventsController.sendEvent({
         type: 'track',
         event: 'SIWX_AUTH_ERROR',
-        properties
+        properties: this.getSIWXEventProperties(error)
       })
 
       // eslint-disable-next-line no-console
@@ -257,6 +255,7 @@ export const SIWXUtil = {
     chainNamespace: ChainNamespace
   }) {
     const siwx = SIWXUtil.getSIWX()
+    const network = getActiveCaipNetwork()
 
     if (
       !siwx ||
@@ -321,6 +320,8 @@ export const SIWXUtil = {
       await promise
     }
 
+    ChainController.setLastConnectedSIWECaipNetwork(network)
+
     return {
       address: result.address,
       chainId: result.chainId,
@@ -365,7 +366,7 @@ export const SIWXUtil = {
     methods: string[]
   }) {
     const siwx = SIWXUtil.getSIWX()
-
+    const network = getActiveCaipNetwork()
     const namespaces = new Set(chains.map(chain => chain.split(':')[0] as ChainNamespace))
 
     if (!siwx || namespaces.size !== 1 || !namespaces.has('eip155')) {
@@ -434,6 +435,10 @@ export const SIWXUtil = {
       try {
         await siwx.setSessions(sessions)
 
+        if (network) {
+          ChainController.setLastConnectedSIWECaipNetwork(network)
+        }
+
         EventsController.sendEvent({
           type: 'track',
           event: 'SIWX_AUTH_SUCCESS',
@@ -446,7 +451,7 @@ export const SIWXUtil = {
         EventsController.sendEvent({
           type: 'track',
           event: 'SIWX_AUTH_ERROR',
-          properties: SIWXUtil.getSIWXEventProperties()
+          properties: SIWXUtil.getSIWXEventProperties(error)
         })
 
         // eslint-disable-next-line no-console
@@ -459,7 +464,7 @@ export const SIWXUtil = {
 
     return true
   },
-  getSIWXEventProperties() {
+  getSIWXEventProperties(error?: unknown) {
     const namespace = ChainController.state.activeChain
 
     if (!namespace) {
@@ -469,7 +474,8 @@ export const SIWXUtil = {
     return {
       network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
       isSmartAccount:
-        getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+      message: error ? CoreHelperUtil.parseError(error) : undefined
     }
   },
   async clearSessions() {

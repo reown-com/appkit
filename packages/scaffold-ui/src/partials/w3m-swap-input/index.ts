@@ -8,7 +8,7 @@ import {
   type SwapInputTarget,
   type SwapToken
 } from '@reown/appkit-controllers'
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-text'
@@ -51,7 +51,11 @@ export class W3mSwapInput extends LitElement {
     const isMarketValueGreaterThanZero = NumberUtil.bigNumber(marketValue).gt('0')
 
     return html`
-      <wui-flex class="${this.focused ? 'focus' : ''}" justifyContent="space-between">
+      <wui-flex
+        class="${this.focused ? 'focus' : ''}"
+        justifyContent="space-between"
+        alignItems="center"
+      >
         <wui-flex
           flex="1"
           flexDirection="column"
@@ -64,16 +68,17 @@ export class W3mSwapInput extends LitElement {
             @focusin=${() => this.onFocusChange(true)}
             @focusout=${() => this.onFocusChange(false)}
             ?disabled=${this.disabled}
-            .value=${this.value}
+            value=${this.value || ''}
             @input=${this.dispatchInputChangeEvent}
             @keydown=${this.handleKeydown}
             placeholder="0"
             type="text"
             inputmode="decimal"
+            pattern="[0-9,.]*"
           />
-          <wui-text class="market-value" variant="small-400" color="fg-200">
+          <wui-text class="market-value" variant="sm-regular" color="secondary">
             ${isMarketValueGreaterThanZero
-              ? `$${UiHelperUtil.formatNumberToLocalString(this.marketValue, 2)}`
+              ? `$${NumberUtil.formatNumberToLocalString(this.marketValue, 2)}`
               : null}
           </wui-text>
         </wui-flex>
@@ -115,7 +120,7 @@ export class W3mSwapInput extends LitElement {
         data-testid="swap-select-token-button-${this.target}"
         class="swap-token-button"
         size="md"
-        variant="accent"
+        variant="neutral-secondary"
         @click=${this.onSelectToken.bind(this)}
       >
         Select token
@@ -128,7 +133,7 @@ export class W3mSwapInput extends LitElement {
         flexDirection="column"
         alignItems="flex-end"
         justifyContent="center"
-        gap="xxs"
+        gap="1"
       >
         <wui-token-button
           data-testid="swap-input-token-${this.target}"
@@ -137,7 +142,7 @@ export class W3mSwapInput extends LitElement {
           @click=${this.onSelectToken.bind(this)}
         >
         </wui-token-button>
-        <wui-flex alignItems="center" gap="xxs"> ${this.tokenBalanceTemplate()} </wui-flex>
+        <wui-flex alignItems="center" gap="1"> ${this.tokenBalanceTemplate()} </wui-flex>
       </wui-flex>
     `
   }
@@ -150,8 +155,8 @@ export class W3mSwapInput extends LitElement {
 
     return html`
       ${haveBalance
-        ? html`<wui-text variant="small-400" color="fg-200">
-            ${UiHelperUtil.formatNumberToLocalString(this.balance, 2)}
+        ? html`<wui-text variant="sm-regular" color="secondary">
+            ${NumberUtil.formatNumberToLocalString(this.balance, 2)}
           </wui-text>`
         : null}
       ${this.target === 'sourceToken' ? this.tokenActionButtonTemplate(haveBalance) : null}
@@ -161,12 +166,12 @@ export class W3mSwapInput extends LitElement {
   private tokenActionButtonTemplate(haveBalance: boolean) {
     if (haveBalance) {
       return html` <button class="max-value-button" @click=${this.setMaxValueToInput.bind(this)}>
-        <wui-text color="accent-100" variant="small-600">Max</wui-text>
+        <wui-text color="accent-primary" variant="sm-medium">Max</wui-text>
       </button>`
     }
 
     return html` <button class="max-value-button" @click=${this.onBuyToken.bind(this)}>
-      <wui-text color="accent-100" variant="small-600">Buy</wui-text>
+      <wui-text color="accent-primary" variant="sm-medium">Buy</wui-text>
     </button>`
   }
 

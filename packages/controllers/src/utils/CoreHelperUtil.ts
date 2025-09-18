@@ -157,15 +157,16 @@ export const CoreHelperUtil = {
     let safeAppUrl = appUrl
     let safeUniversalLink = universalLink
 
-    if (!safeAppUrl.includes('://')) {
-      safeAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
-      safeAppUrl = `${safeAppUrl}://`
-    }
+    if (safeAppUrl) {
+      if (!safeAppUrl.includes('://')) {
+        safeAppUrl = appUrl.replaceAll('/', '').replaceAll(':', '')
+        safeAppUrl = `${safeAppUrl}://`
+      }
 
-    if (!safeAppUrl.endsWith('/')) {
-      safeAppUrl = `${safeAppUrl}/`
+      if (!safeAppUrl.endsWith('/')) {
+        safeAppUrl = `${safeAppUrl}/`
+      }
     }
-
     if (safeUniversalLink && !safeUniversalLink?.endsWith('/')) {
       safeUniversalLink = `${safeUniversalLink}/`
     }
@@ -267,37 +268,29 @@ export const CoreHelperUtil = {
     return Promise.race([imagePromise, CoreHelperUtil.wait(2000)])
   },
 
-  formatBalance(balance: string | undefined, symbol: string | undefined) {
+  parseBalance(balance: string | undefined, symbol: string | undefined) {
     let formattedBalance = '0.000'
 
     if (typeof balance === 'string') {
       const number = Number(balance)
-      if (number) {
-        const formattedValue = Math.floor(number * 1000) / 1000
+      if (!isNaN(number)) {
+        const formattedValue = (Math.floor(number * 1000) / 1000).toFixed(3)
         if (formattedValue) {
-          formattedBalance = formattedValue.toString()
+          formattedBalance = formattedValue
         }
       }
     }
+    const [valueString, decimalsString] = formattedBalance.split('.')
 
-    return `${formattedBalance}${symbol ? ` ${symbol}` : ''}`
-  },
+    const value = valueString || '0'
+    const decimals = decimalsString || '000'
 
-  formatBalance2(balance: string | undefined, symbol: string | undefined) {
-    let formattedBalance = undefined
-
-    if (balance === '0') {
-      formattedBalance = '0'
-    } else if (typeof balance === 'string') {
-      const number = Number(balance)
-      if (number) {
-        formattedBalance = number.toString().match(/^-?\d+(?:\.\d{0,3})?/u)?.[0]
-      }
-    }
+    const formattedText = `${value}.${decimals}${symbol ? ` ${symbol}` : ''}`
 
     return {
-      value: formattedBalance ?? '0',
-      rest: formattedBalance === '0' ? '000' : '',
+      formattedText,
+      value,
+      decimals,
       symbol
     }
   },

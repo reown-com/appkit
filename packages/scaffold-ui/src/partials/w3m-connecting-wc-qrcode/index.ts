@@ -1,10 +1,13 @@
 import { html } from 'lit'
+import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
   AssetUtil,
   ConnectionController,
+  CoreHelperUtil,
   EventsController,
+  RouterController,
   ThemeController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -24,19 +27,27 @@ import styles from './styles.js'
 export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public static override styles = styles
 
+  @property({ type: Boolean }) public basic = false
+
   public constructor() {
     super()
     window.addEventListener('resize', this.forceUpdate)
+  }
 
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'SELECT_WALLET',
-      properties: {
-        name: this.wallet?.name ?? 'WalletConnect',
-        platform: 'qrcode',
-        displayIndex: this.wallet?.display_index
-      }
-    })
+  public override firstUpdated() {
+    if (!this.basic) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SELECT_WALLET',
+        properties: {
+          name: this.wallet?.name ?? 'WalletConnect',
+          platform: 'qrcode',
+          displayIndex: this.wallet?.display_index,
+          walletRank: this.wallet?.order,
+          view: RouterController.state.view
+        }
+      })
+    }
   }
 
   public override disconnectedCallback() {
@@ -53,14 +64,11 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        .padding=${['0', 'xl', 'xl', 'xl']}
-        gap="xl"
+        .padding=${['0', '5', '5', '5'] as const}
+        gap="5"
       >
-        <wui-shimmer borderRadius="l" width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
-
-        <wui-text variant="paragraph-500" color="fg-100">
-          Scan this QR Code with your phone
-        </wui-text>
+        <wui-shimmer width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
+        <wui-text variant="lg-medium" color="primary"> Scan this QR Code with your phone </wui-text>
         ${this.copyTemplate()}
       </wui-flex>
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
@@ -86,11 +94,21 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     const alt = this.wallet ? this.wallet.name : undefined
     ConnectionController.setWcLinking(undefined)
     ConnectionController.setRecentWallet(this.wallet)
+    let uriWithLink = this.uri
+
+    /*
+     * Assign the uri with the link if the wallet has a mobile link
+     * so when the QR is scanned via the main camera it will prompt the wallet to open
+     */
+    if (this.wallet?.mobile_link) {
+      const { redirect } = CoreHelperUtil.formatNativeUrl(this.wallet?.mobile_link, this.uri, null)
+      uriWithLink = redirect
+    }
 
     return html` <wui-qr-code
       size=${size}
       theme=${ThemeController.state.themeMode}
-      uri=${this.uri}
+      uri=${uriWithLink}
       imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet))}
       color=${ifDefined(ThemeController.state.themeVariables['--w3m-qr-color'])}
       alt=${ifDefined(alt)}
@@ -101,15 +119,16 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   private copyTemplate() {
     const inactive = !this.uri || !this.ready
 
-    return html`<wui-link
+    return html`<wui-button
       .disabled=${inactive}
       @click=${this.onCopyUri}
-      color="fg-200"
+      variant="neutral-secondary"
+      size="sm"
       data-testid="copy-wc2-uri"
     >
-      <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
       Copy link
-    </wui-link>`
+      <wui-icon size="sm" color="inherit" name="copy" slot="iconRight"></wui-icon>
+    </wui-button>`
   }
 
   private forceUpdate = () => {

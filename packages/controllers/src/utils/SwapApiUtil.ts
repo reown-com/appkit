@@ -1,3 +1,5 @@
+import type { CaipNetworkId } from '@reown/appkit-common'
+
 import { AccountController } from '../controllers/AccountController.js'
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
 import { ChainController } from '../controllers/ChainController.js'
@@ -22,10 +24,9 @@ export type TokenInfo = {
 
 // -- Controller ---------------------------------------- //
 export const SwapApiUtil = {
-  async getTokenList() {
-    const caipNetwork = ChainController.state.activeCaipNetwork
+  async getTokenList(caipNetworkId?: CaipNetworkId) {
     const response = await BlockchainApiController.fetchSwapTokens({
-      chainId: caipNetwork?.caipNetworkId
+      chainId: caipNetworkId
     })
     const tokens =
       response?.tokens?.map(
@@ -128,5 +129,25 @@ export const SwapApiUtil = {
           }) as SwapTokenWithBalance
       ) || []
     )
+  },
+
+  async handleSwapError(error: unknown) {
+    try {
+      const cause = (error as ErrorOptions)?.cause as Response
+      if (!cause?.json) {
+        return undefined
+      }
+
+      const response = await cause.json()
+      const reason = response?.reasons?.[0]?.description
+
+      if (reason?.includes('insufficient liquidity')) {
+        return 'Insufficient liquidity'
+      }
+
+      return undefined
+    } catch {
+      return undefined
+    }
   }
 }

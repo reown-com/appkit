@@ -1,17 +1,10 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
     display: block;
-    border-radius: clamp(0px, var(--wui-border-radius-l), 44px);
-    box-shadow: 0 0 0 1px var(--wui-color-gray-glass-005);
-    background-color: var(--wui-color-modal-bg);
+    border-radius: clamp(0px, ${({ borderRadius }) => borderRadius['8']}, 44px);
+    box-shadow: 0 0 0 1px ${({ tokens }) => tokens.theme.foregroundPrimary};
     overflow: hidden;
-  }
-
-  :host([data-embedded='true']) {
-    box-shadow:
-      0 0 0 1px var(--wui-color-gray-glass-005),
-      0px 4px 12px 4px var(--w3m-card-embedded-shadow-color);
   }
 `

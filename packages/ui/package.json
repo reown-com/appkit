@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-ui",
-  "version": "1.7.16",
+  "version": "1.8.5",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -83,6 +83,11 @@
       "import": "./dist/esm/exports/wui-avatar.js",
       "default": "./dist/esm/exports/wui-avatar.js"
     },
+    "./wui-account-name-suggestion-item": {
+      "types": "./dist/types/exports/wui-account-name-suggestion-item.d.ts",
+      "import": "./dist/esm/exports/wui-account-name-suggestion-item.js",
+      "default": "./dist/esm/exports/wui-account-name-suggestion-item.js"
+    },
     "./wui-button": {
       "types": "./dist/types/exports/wui-button.d.ts",
       "import": "./dist/esm/exports/wui-button.js",
@@ -98,10 +103,10 @@
       "import": "./dist/esm/exports/wui-card-select.js",
       "default": "./dist/esm/exports/wui-card-select.js"
     },
-    "./wui-chip": {
-      "types": "./dist/types/exports/wui-chip.d.ts",
-      "import": "./dist/esm/exports/wui-chip.js",
-      "default": "./dist/esm/exports/wui-chip.js"
+    "./wui-semantic-chip": {
+      "types": "./dist/types/exports/wui-semantic-chip.d.ts",
+      "import": "./dist/esm/exports/wui-semantic-chip.js",
+      "default": "./dist/esm/exports/wui-semantic-chip.js"
     },
     "./wui-connect-button": {
       "types": "./dist/types/exports/wui-connect-button.d.ts",
@@ -253,6 +258,11 @@
       "import": "./dist/esm/exports/wui-token-list-item.js",
       "default": "./dist/esm/exports/wui-token-list-item.js"
     },
+    "./wui-token-list-item-loader": {
+      "types": "./dist/types/exports/wui-token-list-item-loader.d.ts",
+      "import": "./dist/esm/exports/wui-token-list-item-loader.js",
+      "default": "./dist/esm/exports/wui-token-list-item-loader.js"
+    },
     "./wui-transaction-visual": {
       "types": "./dist/types/exports/wui-transaction-visual.d.ts",
       "import": "./dist/esm/exports/wui-transaction-visual.js",
@@ -292,11 +302,6 @@
       "types": "./dist/types/exports/wui-list-network.d.ts",
       "import": "./dist/esm/exports/wui-list-network.js",
       "default": "./dist/esm/exports/wui-list-network.js"
-    },
-    "./wui-list-wallet-transaction": {
-      "types": "./dist/types/exports/wui-list-wallet-transaction.d.ts",
-      "import": "./dist/esm/exports/wui-list-wallet-transaction.js",
-      "default": "./dist/esm/exports/wui-list-wallet-transaction.js"
     },
     "./wui-promo": {
       "types": "./dist/types/exports/wui-promo.d.ts",
@@ -378,11 +383,6 @@
       "import": "./dist/esm/exports/wui-checkbox.js",
       "default": "./dist/esm/exports/wui-checkbox.js"
     },
-    "./wui-switch": {
-      "types": "./dist/types/exports/wui-switch.d.ts",
-      "import": "./dist/esm/exports/wui-switch.js",
-      "default": "./dist/esm/exports/wui-switch.js"
-    },
     "./wui-certified-switch": {
       "types": "./dist/types/exports/wui-certified-switch.d.ts",
       "import": "./dist/esm/exports/wui-certified-switch.js",
@@ -408,6 +408,16 @@
       "import": "./dist/esm/exports/wui-ux-by-reown.js",
       "default": "./dist/esm/exports/wui-ux-by-reown.js"
     },
+    "./wui-tab-item": {
+      "types": "./dist/types/exports/wui-tab-item.d.ts",
+      "import": "./dist/esm/exports/wui-tab-item.js",
+      "default": "./dist/esm/exports/wui-tab-item.js"
+    },
+    "./wui-toggle": {
+      "types": "./dist/types/exports/wui-toggle.d.ts",
+      "import": "./dist/esm/exports/wui-toggle.js",
+      "default": "./dist/esm/exports/wui-toggle.js"
+    },
     "./wui-inactive-profile-wallet-item": {
       "types": "./dist/types/exports/wui-inactive-profile-wallet-item.d.ts",
       "import": "./dist/esm/exports/wui-inactive-profile-wallet-item.js",
@@ -423,6 +433,21 @@
       "import": "./dist/esm/exports/wui-wallet-switch.js",
       "default": "./dist/esm/exports/wui-wallet-switch.js"
     },
+    "./wui-network-switch": {
+      "types": "./dist/types/exports/wui-network-switch.d.ts",
+      "import": "./dist/esm/exports/wui-network-switch.js",
+      "default": "./dist/esm/exports/wui-network-switch.js"
+    },
+    "./wui-transaction-thumbnail": {
+      "types": "./dist/types/exports/wui-transaction-thumbnail.d.ts",
+      "import": "./dist/esm/exports/wui-transaction-thumbnail.js",
+      "default": "./dist/esm/exports/wui-transaction-thumbnail.js"
+    },
+    "./wui-toast-message": {
+      "types": "./dist/types/exports/wui-toast-message.d.ts",
+      "import": "./dist/esm/exports/wui-toast-message.js",
+      "default": "./dist/esm/exports/wui-toast-message.js"
+    },
     "./jsx": {
       "types": "./dist/types/exports/jsx.d.ts",
       "import": "./dist/esm/exports/jsx.js",
@@ -430,25 +455,26 @@
     }
   },
   "dependencies": {
-    "lit": "3.3.0",
-    "qrcode": "1.5.3",
-    "@reown/appkit-wallet": "workspace:*",
+    "@phosphor-icons/webcomponents": "2.1.5",
+    "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
-    "@reown/appkit-common": "workspace:*"
+    "@reown/appkit-wallet": "workspace:*",
+    "lit": "3.3.0",
+    "qrcode": "1.5.3"
   },
   "devDependencies": {
     "@types/qrcode": "1.5.5",
+    "@types/react": "19.1.3",
+    "@types/react-dom": "19.1.3",
     "@vitest/coverage-v8": "2.1.9",
     "eslint-plugin-lit": "1.15.0",
     "eslint-plugin-wc": "2.0.4",
-    "vitest": "3.1.3",
-    "@types/react": "19.1.3",
-    "@types/react-dom": "19.1.3",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "vitest": "3.1.3"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
@@ -468,5 +494,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

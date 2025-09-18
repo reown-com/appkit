@@ -106,12 +106,16 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     const connector = connectorId ? ConnectorController.getConnectorById(connectorId) : undefined
     const connectorImage = AssetUtil.getConnectorImage(connector)
+    const { value, decimals, symbol } = CoreHelperUtil.parseBalance(
+      this.balance,
+      this.balanceSymbol
+    )
 
     return html`<wui-flex
         flexDirection="column"
-        .padding=${['0', 'xl', 'm', 'xl'] as const}
+        .padding=${['0', '5', '4', '5'] as const}
         alignItems="center"
-        gap="s"
+        gap="3"
       >
         <wui-avatar
           alt=${ifDefined(this.caipAddress)}
@@ -127,55 +131,63 @@ export class W3mAccountDefaultWidget extends LitElement {
           @click=${this.onGoToProfileWalletsView.bind(this)}
           data-testid="wui-wallet-switch"
         ></wui-wallet-switch>
-        <wui-flex flexDirection="column" alignItems="center">
-          <wui-text variant="paragraph-500" color="fg-200">
-            ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
-          </wui-text>
+        <wui-flex flexDirection="row" alignItems="flex-end" justifyContent="center" gap="1">
+          <wui-text variant="h3-regular" color="primary">${value}</wui-text>
+          <wui-text variant="h3-regular" color="secondary">.${decimals}</wui-text>
+          <wui-text variant="h6-medium" color="primary">${symbol}</wui-text>
         </wui-flex>
         ${this.explorerBtnTemplate()}
       </wui-flex>
 
-      <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
+      <wui-flex flexDirection="column" gap="2" .padding=${['0', '3', '3', '3'] as const}>
         ${this.authCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
         ${this.orderedFeaturesTemplate()} ${this.activityTemplate()}
         <wui-list-item
-          variant="icon"
-          iconVariant="overlay"
-          icon="disconnect"
+          .rounded=${true}
+          icon="power"
+          iconColor="error"
           ?chevron=${false}
           .loading=${this.disconnecting}
+          .rightIcon=${false}
           @click=${this.onDisconnect.bind(this)}
           data-testid="disconnect-button"
         >
-          <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
+          <wui-text variant="lg-regular" color="primary">Disconnect</wui-text>
         </wui-list-item>
       </wui-flex>`
   }
 
   // -- Private ------------------------------------------- //
-  private onrampTemplate() {
+  private fundWalletTemplate() {
     if (!this.namespace) {
       return null
     }
 
-    const isOnrampEnabled = this.remoteFeatures?.onramp
-    const hasNetworkSupport = CoreConstantsUtil.ONRAMP_SUPPORTED_CHAIN_NAMESPACES.includes(
+    const isOnrampSupported = CoreConstantsUtil.ONRAMP_SUPPORTED_CHAIN_NAMESPACES.includes(
       this.namespace
     )
+    const isPayWithExchangeSupported =
+      CoreConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(this.namespace)
 
-    if (!isOnrampEnabled || !hasNetworkSupport) {
+    const isReceiveEnabled = Boolean(this.features?.receive)
+    const isOnrampEnabled = this.remoteFeatures?.onramp && isOnrampSupported
+    const isPayWithExchangeEnabled =
+      this.remoteFeatures?.payWithExchange && isPayWithExchangeSupported
+
+    if (!isOnrampEnabled && !isReceiveEnabled && !isPayWithExchangeEnabled) {
       return null
     }
 
     return html`
       <wui-list-item
-        data-testid="w3m-account-default-onramp-button"
+        .rounded=${true}
+        data-testid="w3m-account-default-fund-wallet-button"
         iconVariant="blue"
-        icon="card"
+        icon="dollar"
         ?chevron=${true}
-        @click=${this.handleClickPay.bind(this)}
+        @click=${this.handleClickFundWallet.bind(this)}
       >
-        <wui-text variant="paragraph-500" color="fg-100">Buy crypto</wui-text>
+        <wui-text variant="lg-regular" color="primary">Fund wallet</wui-text>
       </wui-list-item>
     `
   }
@@ -187,7 +199,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     return featuresOrder.map(feature => {
       switch (feature) {
         case 'onramp':
-          return this.onrampTemplate()
+          return this.fundWalletTemplate()
         case 'swaps':
           return this.swapsTemplate()
         case 'send':
@@ -209,14 +221,13 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     return isEnabled
       ? html` <wui-list-item
-          iconVariant="blue"
+          .rounded=${true}
           icon="clock"
-          iconSize="sm"
           ?chevron=${true}
           @click=${this.onTransactions.bind(this)}
           data-testid="w3m-account-default-activity-button"
         >
-          <wui-text variant="paragraph-500" color="fg-100">Activity</wui-text>
+          <wui-text variant="lg-regular" color="primary">Activity</wui-text>
         </wui-list-item>`
       : null
   }
@@ -231,13 +242,13 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     return html`
       <wui-list-item
-        iconVariant="blue"
+        .rounded=${true}
         icon="recycleHorizontal"
         ?chevron=${true}
         @click=${this.handleClickSwap.bind(this)}
         data-testid="w3m-account-default-swaps-button"
       >
-        <wui-text variant="paragraph-500" color="fg-100">Swap</wui-text>
+        <wui-text variant="lg-regular" color="primary">Swap</wui-text>
       </wui-list-item>
     `
   }
@@ -258,13 +269,13 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     return html`
       <wui-list-item
-        iconVariant="blue"
+        .rounded=${true}
         icon="send"
         ?chevron=${true}
         @click=${this.handleClickSend.bind(this)}
         data-testid="w3m-account-default-send-button"
       >
-        <wui-text variant="paragraph-500" color="fg-100">Send</wui-text>
+        <wui-text variant="lg-regular" color="primary">Send</wui-text>
       </wui-list-item>
     `
   }
@@ -299,8 +310,8 @@ export class W3mAccountDefaultWidget extends LitElement {
     `
   }
 
-  private handleClickPay() {
-    RouterController.push('OnRampProviders')
+  private handleClickFundWallet() {
+    RouterController.push('FundWallet')
   }
 
   private handleClickSwap() {
@@ -319,7 +330,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     }
 
     return html`
-      <wui-button size="md" variant="neutral" @click=${this.onExplorer.bind(this)}>
+      <wui-button size="md" variant="accent-primary" @click=${this.onExplorer.bind(this)}>
         <wui-icon size="sm" color="inherit" slot="iconLeft" name="compass"></wui-icon>
         Block Explorer
         <wui-icon size="sm" color="inherit" slot="iconRight" name="externalLink"></wui-icon>
@@ -356,7 +367,11 @@ export class W3mAccountDefaultWidget extends LitElement {
         SnackController.showSuccess('Wallet deleted')
       }
     } catch {
-      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'DISCONNECT_ERROR',
+        properties: { message: 'Failed to disconnect' }
+      })
       SnackController.showError('Failed to disconnect')
     } finally {
       this.disconnecting = false

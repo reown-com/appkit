@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host > wui-flex {
@@ -6,21 +6,22 @@ export default css`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-radius: var(--wui-border-radius-s);
-    background-color: var(--wui-color-gray-glass-002);
-    padding: var(--wui-spacing-xl);
-    padding-right: var(--wui-spacing-s);
+    border-radius: ${({ borderRadius }) => borderRadius['5']};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    padding: ${({ spacing }) => spacing['5']};
+    padding-right: ${({ spacing }) => spacing['3']};
     width: 100%;
     height: 100px;
     box-sizing: border-box;
-    box-shadow: inset 0px 0px 0px 1px var(--wui-color-gray-glass-002);
+    box-shadow: inset 0px 0px 0px 1px ${({ tokens }) => tokens.theme.foregroundPrimary};
     position: relative;
-    transition: box-shadow var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    transition: box-shadow ${({ easings }) => easings['ease-out-power-1']}
+      ${({ durations }) => durations['lg']};
     will-change: background-color;
   }
 
   :host wui-flex.focus {
-    box-shadow: inset 0px 0px 0px 1px var(--wui-color-gray-glass-005);
+    box-shadow: inset 0px 0px 0px 1px ${({ tokens }) => tokens.core.glass010};
   }
 
   :host > wui-flex .swap-input,
@@ -60,8 +61,8 @@ export default css`
     line-height: 130%;
     letter-spacing: -1.28px;
     outline: none;
-    caret-color: var(--wui-color-accent-100);
-    color: var(--wui-color-fg-100);
+    caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
+    color: ${({ tokens }) => tokens.theme.textPrimary};
     padding: 0px;
   }
 
@@ -79,7 +80,7 @@ export default css`
     background-color: transparent;
     border: none;
     cursor: pointer;
-    color: var(--wui-color-gray-glass-020);
+    color: ${({ tokens }) => tokens.core.glass010};
     padding-left: 0px;
   }
 

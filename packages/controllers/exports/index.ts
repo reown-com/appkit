@@ -14,6 +14,9 @@ export type { AccountControllerState } from '../src/controllers/AccountControlle
 export { ChainController } from '../src/controllers/ChainController.js'
 export type { ChainControllerState } from '../src/controllers/ChainController.js'
 
+export { ProviderController } from '../src/controllers/ProviderController.js'
+export type { ProviderControllerState } from '../src/controllers/ProviderController.js'
+
 export { OnRampController } from '../src/controllers/OnRampController.js'
 export type { OnRampControllerState, OnRampProvider } from '../src/controllers/OnRampController.js'
 
@@ -23,6 +26,7 @@ export type {
   ConnectionControllerClient,
   ConnectionControllerState
 } from '../src/controllers/ConnectionController.js'
+export type { ConnectExternalOptions } from '../src/controllers/ConnectionController.js'
 
 export { ConnectorController } from '../src/controllers/ConnectorController.js'
 export { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
@@ -70,7 +74,7 @@ export { TooltipController } from '../src/controllers/TooltipController.js'
 export type { TooltipControllerState } from '../src/controllers/TooltipController.js'
 
 export { EnsController } from '../src/controllers/EnsController.js'
-export type { EnsControllerState } from '../src/controllers/EnsController.js'
+export type { EnsControllerState, ReownName } from '../src/controllers/EnsController.js'
 
 export { AlertController } from '../src/controllers/AlertController.js'
 export type { AlertControllerState } from '../src/controllers/AlertController.js'
@@ -84,6 +88,9 @@ export type {
 export { OptionsStateController } from '../src/controllers/OptionsStateController.js'
 export type { OptionsStateControllerState } from '../src/controllers/OptionsStateController.js'
 
+export { ExchangeController } from '../src/controllers/ExchangeController.js'
+export type { ExchangeControllerState } from '../src/controllers/ExchangeController.js'
+
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from '../src/utils/AssetUtil.js'
 export { ConstantsUtil } from '../src/utils/ConstantsUtil.js'
@@ -94,7 +101,23 @@ export { OptionsUtil } from '../src/utils/OptionsUtil.js'
 export { SIWXUtil } from '../src/utils/SIWXUtil.js'
 export { ModalUtil } from '../src/utils/ModalUtil.js'
 export { NetworkUtil } from '../src/utils/NetworkUtil.js'
+export { ViemUtil } from '../src/utils/ViemUtil.js'
 export { withErrorBoundary, AppKitError } from '../src/utils/withErrorBoundary.js'
+export {
+  baseSepoliaUSDC,
+  baseUSDC,
+  formatCaip19Asset,
+  getExchanges,
+  getPayUrl,
+  getPaymentAssetsForNetwork
+} from '../src/utils/ExchangeUtil.js'
+export type {
+  Exchange,
+  GetExchangesParams,
+  PayUrlParams,
+  PaymentAsset,
+  CurrentPayment
+} from '../src/utils/ExchangeUtil.js'
 
 export { FetchUtil } from '../src/utils/FetchUtil.js'
 

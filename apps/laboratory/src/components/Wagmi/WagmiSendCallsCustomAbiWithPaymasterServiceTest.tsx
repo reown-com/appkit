@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Button, Input, Select, Stack, Text, Tooltip } from '@chakra-ui/react'
-import { type Abi, encodeFunctionData, parseEther } from 'viem'
+import { type Abi, type WalletCapabilities, encodeFunctionData, parseEther, toHex } from 'viem'
 import { useAccount, useSwitchChain } from 'wagmi'
 import { useSendCalls } from 'wagmi'
 
@@ -9,6 +9,7 @@ import type { Address } from '@reown/appkit-common'
 import { useAppKitAccount } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
+import { useCapabilities } from '@/src/hooks/useCapabilities'
 import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
 import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '@/src/utils/EIP5792Utils'
 
@@ -28,30 +29,24 @@ function getWriteMethodsFromAbi(abi: string) {
   }
 }
 
-export function WagmiSendCallsCustomAbiWithPaymasterServiceTest() {
-  const {
-    provider,
-    supported,
-    supportedChains: capabilitySupportedChains,
-    currentChainsInfo
-  } = useWagmiAvailableCapabilities({
+export function WagmiSendCallsCustomAbiWithPaymasterServiceTest({
+  capabilities
+}: {
+  capabilities: WalletCapabilities
+}) {
+  const { chain } = useAccount()
+  const { isMethodSupported } = useWagmiAvailableCapabilities()
+  const { isSupported, currentChainsInfo, supportedChains } = useCapabilities({
+    capabilities,
     capability: WALLET_CAPABILITIES.PAYMASTER_SERVICE,
-    method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
+    chainId: chain?.id ? toHex(chain.id) : undefined
   })
-
   const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { status } = useAccount()
 
   const isConnected = status === 'connected'
 
-  const doWalletSupportCapability = useMemo(
-    () =>
-      currentChainsInfo &&
-      capabilitySupportedChains.some(chain => chain.chainId === currentChainsInfo.chainId),
-    [capabilitySupportedChains]
-  )
-
-  if (!isConnected || !provider || !address) {
+  if (!isConnected || !address) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet not connected
@@ -59,7 +54,7 @@ export function WagmiSendCallsCustomAbiWithPaymasterServiceTest() {
     )
   }
 
-  if (!supported) {
+  if (!isMethodSupported(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS)) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet does not support "wallet_sendCalls" RPC method
@@ -67,7 +62,15 @@ export function WagmiSendCallsCustomAbiWithPaymasterServiceTest() {
     )
   }
 
-  if (!doWalletSupportCapability) {
+  if (supportedChains.length === 0) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Account does not support paymaster service feature
+      </Text>
+    )
+  }
+
+  if (!isSupported) {
     return (
       <Text fontSize="md" color="yellow">
         Account does not support paymaster service feature on {currentChainsInfo?.chainName}

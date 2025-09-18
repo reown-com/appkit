@@ -9,7 +9,7 @@ export function mockUniversalProvider(
   replaces: Partial<UniversalProvider> = {}
 ): UniversalProvider {
   return {
-    connect: vi.fn(),
+    connect: vi.fn().mockResolvedValue({}),
     disconnect: vi.fn(),
     request: vi.fn(),
     on: vi.fn(),

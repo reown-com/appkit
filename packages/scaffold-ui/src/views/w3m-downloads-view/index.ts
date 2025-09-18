@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 
-import { CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
+import { CoreHelperUtil, EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-item'
@@ -18,7 +18,7 @@ export class W3mDownloadsView extends LitElement {
     }
 
     return html`
-      <wui-flex gap="xs" flexDirection="column" .padding=${['s', 's', 'l', 's'] as const}>
+      <wui-flex gap="2" flexDirection="column" .padding=${['3', '3', '4', '3'] as const}>
         ${this.chromeTemplate()} ${this.iosTemplate()} ${this.androidTemplate()}
         ${this.homepageTemplate()}
       </wui-flex>
@@ -38,7 +38,7 @@ export class W3mDownloadsView extends LitElement {
       @click=${this.onChromeStore.bind(this)}
       chevron
     >
-      <wui-text variant="paragraph-500" color="fg-100">Chrome Extension</wui-text>
+      <wui-text variant="md-medium" color="primary">Chrome Extension</wui-text>
     </wui-list-item>`
   }
 
@@ -54,7 +54,7 @@ export class W3mDownloadsView extends LitElement {
       @click=${this.onAppStore.bind(this)}
       chevron
     >
-      <wui-text variant="paragraph-500" color="fg-100">iOS App</wui-text>
+      <wui-text variant="md-medium" color="primary">iOS App</wui-text>
     </wui-list-item>`
   }
 
@@ -70,7 +70,7 @@ export class W3mDownloadsView extends LitElement {
       @click=${this.onPlayStore.bind(this)}
       chevron
     >
-      <wui-text variant="paragraph-500" color="fg-100">Android App</wui-text>
+      <wui-text variant="md-medium" color="primary">Android App</wui-text>
     </wui-list-item>`
   }
 
@@ -87,32 +87,51 @@ export class W3mDownloadsView extends LitElement {
         @click=${this.onHomePage.bind(this)}
         chevron
       >
-        <wui-text variant="paragraph-500" color="fg-100">Website</wui-text>
+        <wui-text variant="md-medium" color="primary">Website</wui-text>
       </wui-list-item>
     `
   }
 
+  private openStore(params: {
+    href: string
+    type: 'chrome_store' | 'app_store' | 'play_store' | 'homepage'
+  }) {
+    if (params.href && this.wallet) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'GET_WALLET',
+        properties: {
+          name: this.wallet.name,
+          walletRank: this.wallet.order,
+          explorerId: this.wallet.id,
+          type: params.type
+        }
+      })
+      CoreHelperUtil.openHref(params.href, '_blank')
+    }
+  }
+
   private onChromeStore() {
     if (this.wallet?.chrome_store) {
-      CoreHelperUtil.openHref(this.wallet.chrome_store, '_blank')
+      this.openStore({ href: this.wallet.chrome_store, type: 'chrome_store' })
     }
   }
 
   private onAppStore() {
     if (this.wallet?.app_store) {
-      CoreHelperUtil.openHref(this.wallet.app_store, '_blank')
+      this.openStore({ href: this.wallet.app_store, type: 'app_store' })
     }
   }
 
   private onPlayStore() {
     if (this.wallet?.play_store) {
-      CoreHelperUtil.openHref(this.wallet.play_store, '_blank')
+      this.openStore({ href: this.wallet.play_store, type: 'play_store' })
     }
   }
 
   private onHomePage() {
     if (this.wallet?.homepage) {
-      CoreHelperUtil.openHref(this.wallet.homepage, '_blank')
+      this.openStore({ href: this.wallet.homepage, type: 'homepage' })
     }
   }
 }

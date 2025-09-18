@@ -39,18 +39,19 @@ export const QrCodeUtil = {
     uri,
     size,
     logoSize,
-    dotColor = '#141414'
+    padding = 8,
+    dotColor = 'var(--apkt-colors-black)'
   }: {
     uri: string
     size: number
+    padding?: number
     logoSize: number
     dotColor?: string
   }) {
-    const edgeColor = 'transparent'
-    const strokeWidth = 5
+    const strokeWidth = 10
     const dots: TemplateResult[] = []
     const matrix = getMatrix(uri, 'Q')
-    const cellSize = size / matrix.length
+    const cellSize = (size - 2 * padding) / matrix.length
     const qrList = [
       { x: 0, y: 0 },
       { x: 1, y: 0 },
@@ -58,15 +59,15 @@ export const QrCodeUtil = {
     ]
 
     qrList.forEach(({ x, y }) => {
-      const x1 = (matrix.length - QRCODE_MATRIX_MARGIN) * cellSize * x
-      const y1 = (matrix.length - QRCODE_MATRIX_MARGIN) * cellSize * y
+      const x1 = (matrix.length - QRCODE_MATRIX_MARGIN) * cellSize * x + padding
+      const y1 = (matrix.length - QRCODE_MATRIX_MARGIN) * cellSize * y + padding
       const borderRadius = 0.45
       for (let i = 0; i < qrList.length; i += 1) {
         const dotSize = cellSize * (QRCODE_MATRIX_MARGIN - i * 2)
         dots.push(
           svg`
             <rect
-              fill=${i === 2 ? dotColor : edgeColor}
+              fill=${i === 2 ? 'var(--apkt-colors-black)' : 'var(--apkt-colors-white)'}
               width=${i === 0 ? dotSize - strokeWidth : dotSize}
               rx= ${i === 0 ? (dotSize - strokeWidth) * borderRadius : dotSize * borderRadius}
               ry= ${i === 0 ? (dotSize - strokeWidth) * borderRadius : dotSize * borderRadius}
@@ -105,8 +106,8 @@ export const QrCodeUtil = {
                 j < matrixMiddleEnd
               )
             ) {
-              const cx = i * cellSize + cellSize / 2
-              const cy = j * cellSize + cellSize / 2
+              const cx = i * cellSize + cellSize / 2 + padding
+              const cy = j * cellSize + cellSize / 2 + padding
               circles.push([cx, cy])
             }
           }

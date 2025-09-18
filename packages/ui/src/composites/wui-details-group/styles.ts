@@ -1,11 +1,14 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
     display: block;
-    padding: var(--wui-spacing-l) var(--wui-spacing-m);
-    background-color: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
+    padding-left: ${({ spacing }) => spacing[3]};
+    padding-right: ${({ spacing }) => spacing[3]};
+    padding-top: ${({ spacing }) => spacing[4]};
+    padding-bottom: ${({ spacing }) => spacing[4]};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
     width: 100%;
   }
 `

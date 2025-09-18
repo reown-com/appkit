@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-pay",
-  "version": "1.7.16",
+  "version": "1.8.5",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -35,10 +35,10 @@
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "lit": "3.3.0",
-    "valtio": "2.1.5"
+    "valtio": "2.1.7"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
@@ -64,5 +64,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js'
 
 import { NumberUtil } from '@reown/appkit-common'
 import { ChainController, ConstantsUtil, SwapController } from '@reown/appkit-controllers'
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-text'
@@ -81,18 +81,18 @@ export class WuiSwapDetails extends LitElement {
         : 0
 
     return html`
-      <wui-flex flexDirection="column" alignItems="center" gap="1xs" class="details-container">
+      <wui-flex flexDirection="column" alignItems="center" gap="01" class="details-container">
         <wui-flex flexDirection="column">
           <button @click=${this.toggleDetails.bind(this)}>
-            <wui-flex justifyContent="space-between" .padding=${['0', 'xs', '0', 'xs']}>
-              <wui-flex justifyContent="flex-start" flexGrow="1" gap="xs">
-                <wui-text variant="small-400" color="fg-100">
+            <wui-flex justifyContent="space-between" .padding=${['0', '2', '0', '2'] as const}>
+              <wui-flex justifyContent="flex-start" flexGrow="1" gap="2">
+                <wui-text variant="sm-regular" color="primary">
                   1 ${this.sourceToken.symbol} =
-                  ${UiHelperUtil.formatNumberToLocalString(toTokenSwappedAmount, 3)}
+                  ${NumberUtil.formatNumberToLocalString(toTokenSwappedAmount, 3)}
                   ${this.toToken.symbol}
                 </wui-text>
-                <wui-text variant="small-400" color="fg-200">
-                  $${UiHelperUtil.formatNumberToLocalString(this.sourceTokenPriceInUSD)}
+                <wui-text variant="sm-regular" color="secondary">
+                  $${NumberUtil.formatNumberToLocalString(this.sourceTokenPriceInUSD)}
                 </wui-text>
               </wui-flex>
               <wui-icon name="chevronBottom"></wui-icon>
@@ -100,78 +100,86 @@ export class WuiSwapDetails extends LitElement {
           </button>
           ${this.detailsOpen
             ? html`
-                <wui-flex flexDirection="column" gap="xs" class="details-content-container">
+                <wui-flex flexDirection="column" gap="2" class="details-content-container">
                   ${this.priceImpact
-                    ? html` <wui-flex flexDirection="column" gap="xs">
+                    ? html` <wui-flex flexDirection="column" gap="2">
                         <wui-flex
                           justifyContent="space-between"
                           alignItems="center"
                           class="details-row"
                         >
-                          <wui-flex alignItems="center" gap="xs">
-                            <wui-text class="details-row-title" variant="small-400" color="fg-150">
+                          <wui-flex alignItems="center" gap="2">
+                            <wui-text
+                              class="details-row-title"
+                              variant="sm-regular"
+                              color="secondary"
+                            >
                               Price impact
                             </wui-text>
                             <w3m-tooltip-trigger
                               text="Price impact reflects the change in market price due to your trade"
                             >
-                              <wui-icon size="xs" color="fg-250" name="infoCircle"></wui-icon>
+                              <wui-icon size="sm" color="default" name="info"></wui-icon>
                             </w3m-tooltip-trigger>
                           </wui-flex>
                           <wui-flex>
-                            <wui-text variant="small-400" color="fg-200">
-                              ${UiHelperUtil.formatNumberToLocalString(this.priceImpact, 3)}%
+                            <wui-text variant="sm-regular" color="secondary">
+                              ${NumberUtil.formatNumberToLocalString(this.priceImpact, 3)}%
                             </wui-text>
                           </wui-flex>
                         </wui-flex>
                       </wui-flex>`
                     : null}
                   ${this.maxSlippage && this.sourceToken.symbol
-                    ? html`<wui-flex flexDirection="column" gap="xs">
+                    ? html`<wui-flex flexDirection="column" gap="2">
                         <wui-flex
                           justifyContent="space-between"
                           alignItems="center"
                           class="details-row"
                         >
-                          <wui-flex alignItems="center" gap="xs">
-                            <wui-text class="details-row-title" variant="small-400" color="fg-150">
+                          <wui-flex alignItems="center" gap="2">
+                            <wui-text
+                              class="details-row-title"
+                              variant="sm-regular"
+                              color="secondary"
+                            >
                               Max. slippage
                             </wui-text>
                             <w3m-tooltip-trigger
                               text=${`Max slippage sets the minimum amount you must receive for the transaction to proceed. ${
                                 minReceivedAmount
-                                  ? `Transaction will be reversed if you receive less than ${UiHelperUtil.formatNumberToLocalString(
+                                  ? `Transaction will be reversed if you receive less than ${NumberUtil.formatNumberToLocalString(
                                       minReceivedAmount,
                                       6
                                     )} ${this.toToken.symbol} due to price changes.`
                                   : ''
                               }`}
                             >
-                              <wui-icon size="xs" color="fg-250" name="infoCircle"></wui-icon>
+                              <wui-icon size="sm" color="default" name="info"></wui-icon>
                             </w3m-tooltip-trigger>
                           </wui-flex>
                           <wui-flex>
-                            <wui-text variant="small-400" color="fg-200">
-                              ${UiHelperUtil.formatNumberToLocalString(this.maxSlippage, 6)}
+                            <wui-text variant="sm-regular" color="secondary">
+                              ${NumberUtil.formatNumberToLocalString(this.maxSlippage, 6)}
                               ${this.toToken.symbol} ${slippageRate}%
                             </wui-text>
                           </wui-flex>
                         </wui-flex>
                       </wui-flex>`
                     : null}
-                  <wui-flex flexDirection="column" gap="xs">
+                  <wui-flex flexDirection="column" gap="2">
                     <wui-flex
                       justifyContent="space-between"
                       alignItems="center"
                       class="details-row provider-free-row"
                     >
-                      <wui-flex alignItems="center" gap="xs">
-                        <wui-text class="details-row-title" variant="small-400" color="fg-150">
+                      <wui-flex alignItems="center" gap="2">
+                        <wui-text class="details-row-title" variant="sm-regular" color="secondary">
                           Provider fee
                         </wui-text>
                       </wui-flex>
                       <wui-flex>
-                        <wui-text variant="small-400" color="fg-200">0.85%</wui-text>
+                        <wui-text variant="sm-regular" color="secondary">0.85%</wui-text>
                       </wui-flex>
                     </wui-flex>
                   </wui-flex>

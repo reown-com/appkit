@@ -2,7 +2,14 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ApiController, ConnectorController } from '@reown/appkit-controllers'
+import { ConstantsUtil } from '@reown/appkit-common'
+import {
+  ApiController,
+  ChainController,
+  type Connector,
+  ConnectorController,
+  type WcWallet
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 
@@ -34,6 +41,8 @@ export class W3mConnectorList extends LitElement {
 
   @state() private featured = ApiController.state.featured
 
+  @state() private wallets: WcWallet[] = []
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -43,6 +52,32 @@ export class W3mConnectorList extends LitElement {
     )
   }
 
+  public override async connectedCallback() {
+    super.connectedCallback()
+
+    const params = {
+      page: 1,
+      entries: 20,
+      badge: 'certified' as const,
+      names: '',
+      rdns: ''
+    }
+
+    // Use RDNS for EIP155 chains
+    if (ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM) {
+      const rdns = this.connectors
+        .flatMap(c => c.connectors?.map(c => c.info?.rdns) || [])
+        .concat(this.connectors.map(c => c.info?.rdns) || [])
+        .filter(Boolean)
+      params.rdns = rdns.join(',')
+    }
+
+    params.names = this.connectors.map(connector => connector.name).join(',')
+
+    const { data } = await ApiController.fetchWallets(params)
+    this.wallets = data
+  }
+
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
@@ -50,14 +85,55 @@ export class W3mConnectorList extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" gap="xs"> ${this.connectorListTemplate()} </wui-flex>
+      <wui-flex flexDirection="column" gap="2"> ${this.connectorListTemplate()} </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------ //
+  private mapConnectorsToExplorerWallets(connectors: Connector[], explorerWallets: WcWallet[]) {
+    return connectors.map(connector => {
+      if (connector.type === 'MULTI_CHAIN' && connector.connectors) {
+        const connectorIds = connector.connectors.map(c => c.id)
+        const connectorNames = connector.connectors.map(c => c.name)
+        const connectorRdns = connector.connectors.map(c => c.info?.rdns)
+
+        const explorerWallet = explorerWallets.find(
+          wallet =>
+            connectorIds.includes(wallet.id) ||
+            connectorNames.includes(wallet.name) ||
+            (wallet.rdns &&
+              (connectorRdns.includes(wallet.rdns) || connectorIds.includes(wallet.rdns)))
+        )
+
+        connector.explorerWallet = explorerWallet
+
+        return connector
+      }
+
+      const explorerWallet = explorerWallets.find(
+        wallet =>
+          wallet.id === connector.id ||
+          wallet.rdns === connector.info?.rdns ||
+          wallet.name === connector.name
+      )
+
+      connector.explorerWallet = explorerWallet
+
+      return connector
+    })
+  }
+
   private connectorListTemplate() {
+    const mappedConnectors = this.mapConnectorsToExplorerWallets(this.connectors, this.wallets)
+
+    const connectors = ConnectorUtil.getConnectorsByType(
+      mappedConnectors,
+      this.recommended,
+      this.featured
+    )
+
     const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
-      ConnectorUtil.getConnectorsByType(this.connectors, this.recommended, this.featured)
+      connectors
 
     const connectorTypeOrder = ConnectorUtil.getConnectorTypeOrder({
       custom,
@@ -81,11 +157,13 @@ export class W3mConnectorList extends LitElement {
             ${multiChain.length
               ? html`<w3m-connect-multi-chain-widget
                   tabIdx=${ifDefined(this.tabIdx)}
+                  .connectors=${multiChain}
                 ></w3m-connect-multi-chain-widget>`
               : null}
             ${announced.length
               ? html`<w3m-connect-announced-widget
                   tabIdx=${ifDefined(this.tabIdx)}
+                  .connectors=${announced}
                 ></w3m-connect-announced-widget>`
               : null}
             ${injected.length

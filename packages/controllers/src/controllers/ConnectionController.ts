@@ -94,9 +94,19 @@ export interface DisconnectParameters {
   initialDisconnect?: boolean
 }
 
+interface DisconnectConnectorParameters {
+  id: string
+  namespace: ChainNamespace
+}
+
+interface ConnectWalletConnectParameters {
+  cache?: 'auto' | 'always' | 'never'
+}
+
 export interface ConnectionControllerClient {
-  connectWalletConnect?: () => Promise<void>
+  connectWalletConnect?: (params?: ConnectWalletConnectParameters) => Promise<void>
   disconnect: (params?: DisconnectParameters) => Promise<void>
+  disconnectConnector: (params: DisconnectConnectorParameters) => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
@@ -211,8 +221,11 @@ const controller = {
       .some(({ connectorId: _connectorId }) => _connectorId === connectorId)
   },
 
-  async connectWalletConnect() {
-    if (CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())) {
+  async connectWalletConnect({ cache = 'auto' }: ConnectWalletConnectParameters = {}) {
+    const isInTelegramOrSafariIos =
+      CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())
+
+    if (cache === 'always' || (cache === 'auto' && isInTelegramOrSafariIos)) {
       if (wcConnectionPromise) {
         await wcConnectionPromise
         wcConnectionPromise = undefined
@@ -311,6 +324,10 @@ const controller = {
     return ConnectionController._getClient()?.formatUnits(value, decimals)
   },
 
+  updateBalance(namespace: ChainNamespace) {
+    return ConnectionController._getClient()?.updateBalance(namespace)
+  },
+
   async sendTransaction(args: SendTransactionArgs) {
     return ConnectionController._getClient()?.sendTransaction(args)
   },
@@ -355,6 +372,7 @@ const controller = {
     state.status = 'disconnected'
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
+    StorageUtil.deleteRecentWallet()
   },
 
   resetUri() {
@@ -363,7 +381,7 @@ const controller = {
     wcConnectionPromise = undefined
   },
 
-  finalizeWcConnection() {
+  finalizeWcConnection(address?: string) {
     const { wcLinking, recentWallet } = ConnectionController.state
 
     if (wcLinking) {
@@ -374,15 +392,19 @@ const controller = {
       StorageUtil.setAppKitRecent(recentWallet)
     }
 
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'CONNECT_SUCCESS',
-      properties: {
-        method: wcLinking ? 'mobile' : 'qrcode',
-        name: RouterController.state.data?.wallet?.name || 'Unknown',
-        caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
-      }
-    })
+    if (address) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'CONNECT_SUCCESS',
+        address,
+        properties: {
+          method: wcLinking ? 'mobile' : 'qrcode',
+          name: RouterController.state.data?.wallet?.name || 'Unknown',
+          view: RouterController.state.view,
+          walletRank: recentWallet?.order
+        }
+      })
+    }
   },
 
   setWcBasic(wcBasic: ConnectionControllerState['wcBasic']) {
@@ -430,6 +452,14 @@ const controller = {
       })
     } catch (error) {
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
+    }
+  },
+
+  async disconnectConnector({ id, namespace }: DisconnectConnectorParameters) {
+    try {
+      await ConnectionController._getClient()?.disconnectConnector({ id, namespace })
+    } catch (error) {
+      throw new AppKitError('Failed to disconnect connector', 'INTERNAL_SDK_ERROR', error)
     }
   },
 
@@ -533,7 +563,12 @@ const controller = {
         connector,
         closeModalOnConnect,
         onOpen(isMobile) {
-          ModalController.open({ view: isMobile ? 'AllWallets' : 'ConnectingWalletConnect' })
+          const view = isMobile ? 'AllWallets' : 'ConnectingWalletConnect'
+          if (ModalController.state.open) {
+            RouterController.push(view)
+          } else {
+            ModalController.open({ view })
+          }
         },
         onConnect() {
           RouterController.replace('ProfileWallets')

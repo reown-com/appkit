@@ -59,6 +59,7 @@ const mockChainState: ChainControllerState = {
       reconnectExternal: vi.fn(),
       checkInstalled: vi.fn(),
       disconnect: vi.fn(),
+      disconnectConnector: vi.fn(),
       signMessage: vi.fn(),
       sendTransaction: vi.fn(),
       estimateGas: vi.fn(),
@@ -167,7 +168,7 @@ describe('W3mSwapView', () => {
 
     const switchTokensSpy = vi.spyOn(SwapController, 'switchTokens')
     const switchButton = element.shadowRoot?.querySelector(
-      '.replace-tokens-button-container button'
+      'wui-flex.replace-tokens-button-container wui-icon-box'
     ) as HTMLElement
     switchButton?.click()
 

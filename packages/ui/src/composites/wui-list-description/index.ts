@@ -3,11 +3,11 @@ import { property } from 'lit/decorators.js'
 
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
-import '../../composites/wui-icon-box/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ColorType, IconType } from '../../utils/TypeUtil.js'
+import type { IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../wui-icon-box/index.js'
 import '../wui-tag/index.js'
 import styles from './styles.js'
 
@@ -24,41 +24,30 @@ export class WuiListDescription extends LitElement {
 
   @property() public tag?: string = undefined
 
-  @property() public iconBackgroundColor: ColorType = 'accent-100'
-
-  @property() public iconColor: ColorType = 'accent-100'
-
   @property({ type: Boolean }) public disabled = false
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
       <button ?disabled=${this.disabled}>
-        <wui-icon-box
-          iconColor=${this.iconColor}
-          backgroundColor=${this.iconBackgroundColor}
-          size="inherit"
-          icon=${this.icon}
-          iconSize="md"
-        ></wui-icon-box>
-        <wui-flex flexDirection="column" justifyContent="spaceBetween">
-          ${this.titleTemplate()}
-          <wui-text variant="small-400" color="fg-200"> ${this.description}</wui-text></wui-flex
-        >
+        <wui-flex alignItems="center" gap="3">
+          <wui-icon-box padding="2" color="secondary" icon=${this.icon} size="lg"></wui-icon-box>
+          <wui-flex flexDirection="column" gap="1">
+            <wui-text variant="md-medium" color="primary">${this.text}</wui-text>
+            ${this.description
+              ? html`<wui-text variant="md-regular" color="secondary">
+                  ${this.description}</wui-text
+                >`
+              : null}
+          </wui-flex>
+        </wui-flex>
+
+        <wui-flex class="tag-container" alignItems="center" gap="1" justifyContent="flex-end">
+          ${this.tag ? html`<wui-tag tagType="main" size="sm">${this.tag}</wui-tag>` : null}
+          <wui-icon size="md" name="chevronRight" color="default"></wui-icon>
+        </wui-flex>
       </button>
     `
-  }
-
-  // -- Private ------------------------------------------- //
-  private titleTemplate() {
-    if (this.tag) {
-      return html` <wui-flex alignItems="center" gap="xxs"
-        ><wui-text variant="paragraph-500" color="fg-100">${this.text}</wui-text
-        ><wui-tag tagType="main" size="md">${this.tag}</wui-tag>
-      </wui-flex>`
-    }
-
-    return html`<wui-text variant="paragraph-500" color="fg-100">${this.text}</wui-text>`
   }
 }
 

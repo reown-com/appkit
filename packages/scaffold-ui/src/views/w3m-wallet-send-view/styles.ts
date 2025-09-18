@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -10,11 +10,11 @@ export default css`
   }
 
   wui-icon-box {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--wui-border-radius-xs) !important;
-    border: 5px solid var(--wui-color-bg-125);
-    background: var(--wui-color-bg-175);
+    width: 32px;
+    height: 32px;
+    border-radius: ${({ borderRadius }) => borderRadius['10']} !important;
+    border: 4px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
     position: absolute;
     top: 50%;
     left: 50%;
@@ -23,7 +23,7 @@ export default css`
   }
 
   wui-button {
-    --local-border-radius: var(--wui-border-radius-xs) !important;
+    --local-border-radius: ${({ borderRadius }) => borderRadius['4']} !important;
   }
 
   .inputContainer {

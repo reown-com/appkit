@@ -6,9 +6,9 @@ import {
   ChainController,
   ConnectorController,
   ModalController,
+  ProviderController,
   StorageUtil
 } from '@reown/appkit-controllers'
-import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { emitter, mockEvmAdapter, solanaEmitter } from '../mocks/Adapter'
@@ -58,8 +58,7 @@ describe('Listeners', () => {
       'eip155'
     )
     expect(fetchIdentitySpy).toHaveBeenCalledWith({
-      address: mockAccount.address,
-      caipNetworkId: `${mockAccount.chainNamespace}:${mockAccount.chainId}`
+      address: mockAccount.address
     })
     expect(setProfileNameSpy).toHaveBeenCalledWith(identity.name, 'eip155')
     expect(setProfileImageSpy).toHaveBeenCalledWith(identity.avatar, 'eip155')
@@ -85,23 +84,6 @@ describe('Listeners', () => {
       `${mockAccount.chainNamespace}:${mockAccount.chainId}:${mockAccount.address}`,
       'eip155'
     )
-  })
-
-  it('should reset profile info if switched namespace is not EVM', async () => {
-    const appKit = new AppKit({ ...mockOptions, defaultNetwork: mainnet })
-    await appKit.ready()
-    const setProfileNameSpy = vi.spyOn(appKit, 'setProfileName')
-    const setProfileImageSpy = vi.spyOn(appKit, 'setProfileImage')
-
-    const mockAccount = {
-      address: 'C3k5AvYqoXjsfrkXdFBkUhqHHApeC8amP7y85LkLHL5X',
-      chainId: solana.id,
-      chainNamespace: solana.chainNamespace
-    }
-    solanaEmitter.emit('accountChanged', mockAccount)
-
-    expect(setProfileNameSpy).toHaveBeenCalledWith(null, solana.chainNamespace)
-    expect(setProfileImageSpy).toHaveBeenCalledWith(null, solana.chainNamespace)
   })
 
   it('should show unsupported chain UI when network is unsupported and allowUnsupportedChain is false', async () => {
@@ -131,7 +113,7 @@ describe('Listeners', () => {
     const resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
     const removeConnectorIdSpy = vi.spyOn(ConnectorController, 'removeConnectorId')
     const removeConnectedNamespaceSpy = vi.spyOn(StorageUtil, 'removeConnectedNamespace')
-    const resetChainSpy = vi.spyOn(ProviderUtil, 'resetChain')
+    const resetChainSpy = vi.spyOn(ProviderController, 'resetChain')
     const modalCloseSpy = vi.spyOn(ModalController, 'close')
 
     const appKit = new AppKit(mockOptions)

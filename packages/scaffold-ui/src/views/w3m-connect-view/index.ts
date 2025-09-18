@@ -21,14 +21,14 @@ import { MathUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-button'
 import '@reown/appkit-ui/wui-separator'
+import '@reown/appkit-ui/wui-ux-by-reown'
 import { ConstantsUtil as AppKitConstantsUtil } from '@reown/appkit-utils'
 
 import '../../partials/w3m-email-login-widget/index.js'
 import '../../partials/w3m-legal-checkbox/index.js'
-import '../../partials/w3m-legal-footer/index.js'
 import '../../partials/w3m-social-login-widget/index.js'
-import '../../partials/w3m-wallet-guide/index.js'
 import '../../partials/w3m-wallet-login-list/index.js'
+import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'
 import styles from './styles.js'
 
@@ -145,29 +145,41 @@ export class W3mConnectView extends LitElement {
         <wui-flex
           data-testid="w3m-connect-scroll-view"
           flexDirection="column"
+          .padding=${['0', '0', '4', '0'] as const}
           class=${classMap(classes)}
         >
           <wui-flex
             class="connect-methods"
             flexDirection="column"
-            gap="s"
+            gap="2"
             .padding=${socialOrEmailLoginEnabled &&
             isEnableWallets &&
             isEnableWalletGuide &&
             this.walletGuide === 'get-started'
-              ? ['3xs', 's', '0', 's']
-              : ['3xs', 's', 's', 's']}
+              ? (['0', '3', '0', '3'] as const)
+              : (['0', '3', '3', '3'] as const)}
           >
             ${this.renderConnectMethod(tabIndex)}
           </wui-flex>
         </wui-flex>
-        ${this.guideTemplate(isDisabled)}
-        <w3m-legal-footer></w3m-legal-footer>
+        ${this.reownBrandingTemplate()}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
+  private reownBrandingTemplate() {
+    if (HelpersUtil.hasFooter()) {
+      return null
+    }
+
+    if (!this.remoteFeatures?.reownBranding) {
+      return null
+    }
+
+    return html`<wui-ux-by-reown></wui-ux-by-reown>`
+  }
+
   private setEmailAndSocialEnableCheck(noAdapters: boolean, remoteFeatures?: RemoteFeatures) {
     this.isEmailEnabled = remoteFeatures?.email && !noAdapters
     this.isSocialEnabled =
@@ -241,6 +253,7 @@ export class W3mConnectView extends LitElement {
   private separatorTemplate(index: number, type: 'wallet' | 'email' | 'social') {
     const nextEnabledMethod = this.checkIsThereNextMethod(index)
     const isExplore = this.walletGuide === 'explore'
+
     switch (type) {
       case 'wallet': {
         const isWalletEnable = this.enableWallets
@@ -276,10 +289,7 @@ export class W3mConnectView extends LitElement {
       return null
     }
 
-    return html`<w3m-email-login-widget
-      walletGuide=${this.walletGuide}
-      tabIdx=${ifDefined(tabIndex)}
-    ></w3m-email-login-widget>`
+    return html`<w3m-email-login-widget tabIdx=${ifDefined(tabIndex)}></w3m-email-login-widget>`
   }
 
   private socialListTemplate(tabIndex?: number) {
@@ -325,36 +335,6 @@ export class W3mConnectView extends LitElement {
     return html`<w3m-wallet-login-list tabIdx=${ifDefined(tabIndex)}></w3m-wallet-login-list>`
   }
 
-  private guideTemplate(disabled = false) {
-    const isEnableWalletGuide = OptionsController.state.enableWalletGuide
-
-    if (!isEnableWalletGuide) {
-      return null
-    }
-
-    const classes = {
-      guide: true,
-      disabled
-    }
-
-    const tabIndex = disabled ? -1 : undefined
-
-    if (!this.authConnector && !this.isSocialEnabled) {
-      return null
-    }
-
-    return html`
-      ${this.walletGuide === 'explore' && !ChainController.state.noAdapters
-        ? html`<wui-separator data-testid="wui-separator" id="explore" text="or"></wui-separator>`
-        : null}
-      <w3m-wallet-guide
-        class=${classMap(classes)}
-        tabIdx=${ifDefined(tabIndex)}
-        walletGuide=${this.walletGuide}
-      ></w3m-wallet-guide>
-    `
-  }
-
   private legalCheckboxTemplate() {
     if (this.walletGuide === 'explore') {
       return null
@@ -379,8 +359,8 @@ export class W3mConnectView extends LitElement {
           to bottom,
           rgba(0, 0, 0, calc(1 - var(--connect-scroll--top-opacity))) 0px,
           rgba(200, 200, 200, calc(1 - var(--connect-scroll--top-opacity))) 1px,
-          black 40px,
-          black calc(100% - 40px),
+          black 100px,
+          black calc(100% - 100px),
           rgba(155, 155, 155, calc(1 - var(--connect-scroll--bottom-opacity))) calc(100% - 1px),
           rgba(0, 0, 0, calc(1 - var(--connect-scroll--bottom-opacity))) 100%
         )`

@@ -1,0 +1,52 @@
+name: Canary (main)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  canary:
+    name: Publish canary from main
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    # Skip if this push is from merging the "back to main" PR
+    if: ${{ !(contains(github.event.head_commit.message, 'Merge release/') && contains(github.event.head_commit.message, 'back to main')) }}
+    concurrency:
+      group: canary-${{ github.sha }} # 1 run per commit
+      cancel-in-progress: true
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+        with:
+          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        shell: bash
+
+      - name: Publish prerelease (canary)
+        run: |
+          npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
+          git reset --hard origin/main
+          pnpm install --frozen-lockfile
+          pnpm changeset:pre ${{ github.sha }}
+          pnpm changeset:version
+          pnpm changeset:pre:exit
+          pnpm publish:canary
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

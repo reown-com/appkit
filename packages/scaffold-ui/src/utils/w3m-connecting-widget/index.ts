@@ -46,7 +46,7 @@ export class W3mConnectingWidget extends LitElement {
   protected unsubscribe: (() => void)[] = []
 
   private imageSrc =
-    AssetUtil.getWalletImage(this.wallet) ?? AssetUtil.getConnectorImage(this.connector)
+    AssetUtil.getConnectorImage(this.connector) ?? AssetUtil.getWalletImage(this.wallet)
 
   private name = this.wallet?.name ?? this.connector?.name ?? 'Wallet'
 
@@ -135,18 +135,16 @@ export class W3mConnectingWidget extends LitElement {
         data-retry=${this.showRetry}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', 'xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['10', '5', '5', '5'] as const}
+        gap="6"
       >
-        <wui-flex justifyContent="center" alignItems="center">
+        <wui-flex gap="2" justifyContent="center" alignItems="center">
           <wui-wallet-image size="lg" imageSrc=${ifDefined(this.imageSrc)}></wui-wallet-image>
 
           ${this.error ? null : this.loaderTemplate()}
 
           <wui-icon-box
-            backgroundColor="error-100"
-            background="opaque"
-            iconColor="error-100"
+            color="error"
             icon="close"
             size="sm"
             border
@@ -154,45 +152,59 @@ export class W3mConnectingWidget extends LitElement {
           ></wui-icon-box>
         </wui-flex>
 
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text
-            align="center"
-            variant="paragraph-500"
-            color=${this.error ? 'error-100' : 'fg-100'}
-          >
+        <wui-flex flexDirection="column" alignItems="center" gap="6"> <wui-flex
+          flexDirection="column"
+          alignItems="center"
+          gap="2"
+          .padding=${['2', '0', '0', '0'] as const}
+        >
+          <wui-text align="center" variant="lg-medium" color=${this.error ? 'error' : 'primary'}>
             ${label}
           </wui-text>
-          <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
+          <wui-text align="center" variant="lg-regular" color="secondary">${subLabel}</wui-text>
         </wui-flex>
 
-        ${this.secondaryBtnLabel
-          ? html`
-              <wui-button
-                variant="accent"
-                size="md"
-                ?disabled=${this.isRetrying || this.isLoading}
-                @click=${this.onTryAgain.bind(this)}
-                data-testid="w3m-connecting-widget-secondary-button"
-              >
-                <wui-icon color="inherit" slot="iconLeft" name=${this.secondaryBtnIcon}></wui-icon>
-                ${this.secondaryBtnLabel}
-              </wui-button>
-            `
-          : null}
+        ${
+          this.secondaryBtnLabel
+            ? html`
+                <wui-button
+                  variant="neutral-secondary"
+                  size="md"
+                  ?disabled=${this.isRetrying || this.isLoading}
+                  @click=${this.onTryAgain.bind(this)}
+                  data-testid="w3m-connecting-widget-secondary-button"
+                >
+                  <wui-icon
+                    color="inherit"
+                    slot="iconLeft"
+                    name=${this.secondaryBtnIcon}
+                  ></wui-icon>
+                  ${this.secondaryBtnLabel}
+                </wui-button>
+              `
+            : null
+        }
       </wui-flex>
 
-      ${this.isWalletConnect
-        ? html`
-            <wui-flex .padding=${['0', 'xl', 'xl', 'xl'] as const} justifyContent="center">
-              <wui-link @click=${this.onCopyUri} color="fg-200" data-testid="wui-link-copy">
-                <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
-                Copy link
-              </wui-link>
-            </wui-flex>
-          `
-        : null}
+      ${
+        this.isWalletConnect
+          ? html`
+              <wui-flex .padding=${['0', '5', '5', '5'] as const} justifyContent="center">
+                <wui-link
+                  @click=${this.onCopyUri}
+                  variant="secondary"
+                  icon="copy"
+                  data-testid="wui-link-copy"
+                >
+                  Copy link
+                </wui-link>
+              </wui-flex>
+            `
+          : null
+      }
 
-      <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
+      <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links></wui-flex>
+      </wui-flex>
     `
   }
 

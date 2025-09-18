@@ -7,7 +7,7 @@ import {
   type Provider,
   WcHelpersUtil
 } from '@reown/appkit'
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
@@ -80,7 +80,9 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       }
     }
 
-    const address = await connector.connect()
+    const address = await connector.connect().catch(err => {
+      throw new UserRejectedRequestError(err)
+    })
     const accounts = await this.getAccounts({ id: connector.id })
 
     this.emit('accountChanged', {
@@ -91,7 +93,11 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
     this.addConnection({
       connectorId: connector.id,
-      accounts: accounts.accounts.map(a => ({ address: a.address, type: a.type })),
+      accounts: accounts.accounts.map(a => ({
+        address: a.address,
+        type: a.type,
+        publicKey: a.publicKey
+      })),
       caipNetwork: chain
     })
 
@@ -213,8 +219,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
   public async syncConnections({
     connectToFirstConnector,
-    caipNetwork,
-    getConnectorStorageInfo
+    caipNetwork
   }: AdapterBlueprint.SyncConnectionsParams) {
     await this.connectionManager?.syncConnections({
       connectors: this.connectors,
@@ -222,8 +227,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       caipNetworks: this.getCaipNetworks(),
       universalProvider: this.universalProvider as UniversalProvider,
       onConnection: this.addConnection.bind(this),
-      onListenProvider: this.listenProviderEvents.bind(this),
-      getConnectionStatusInfo: getConnectorStorageInfo
+      onListenProvider: this.listenProviderEvents.bind(this)
     })
 
     if (connectToFirstConnector) {
@@ -472,7 +476,11 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
     this.addConnection({
       connectorId: connector.id,
-      accounts: accounts.accounts.map(a => ({ address: a.address, type: a.type })),
+      accounts: accounts.accounts.map(a => ({
+        address: a.address,
+        type: a.type,
+        publicKey: a.publicKey
+      })),
       caipNetwork: chain
     })
   }

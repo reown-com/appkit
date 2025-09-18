@@ -40,7 +40,8 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           properties: {
             method: 'email',
             name: this.authConnector.name || 'Unknown',
-            caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
+            view: RouterController.state.view,
+            walletRank: undefined
           }
         })
 

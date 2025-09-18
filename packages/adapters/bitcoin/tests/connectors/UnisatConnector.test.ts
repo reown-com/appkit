@@ -2,7 +2,7 @@ import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import { CoreHelperUtil } from '@reown/appkit-controllers'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { UnisatConnector } from '../../src/connectors/UnisatConnector'
 import type { UnisatConnector as UnisatConnectorTypes } from '../../src/connectors/UnisatConnector/types'
@@ -61,8 +61,8 @@ describe('UnisatConnector', () => {
     expect(connector.imageUrl).toBe('mock_image_url')
   })
 
-  it('should return only mainnet chain', () => {
-    expect(connector.chains).toEqual([bitcoin])
+  it('should return bitcoin chains', () => {
+    expect(connector.chains).toEqual([bitcoin, bitcoinTestnet])
   })
 
   describe('connect', () => {
@@ -184,6 +184,62 @@ describe('UnisatConnector', () => {
       expect(result).toEqual({ psbt: 'bW9ja19wc2J0', txid: 'mock_txhash' })
       expect(wallet.pushPsbt).toHaveBeenCalled()
     })
+
+    it('should sign a PSBT with partial signing without broadcast', async () => {
+      const signInputs = [
+        {
+          index: 0,
+          address: 'mock_address',
+          publicKey: 'mock_pubkey',
+          sighashTypes: [1, 3],
+          disableTweakSigner: true,
+          useTweakedSigner: false
+        }
+      ]
+      const psbtBase64 = Buffer.from('mock_psbt').toString('base64')
+      const result = await connector.signPSBT({
+        psbt: psbtBase64,
+        signInputs,
+        broadcast: false
+      })
+      expect(result).toEqual({ psbt: 'bW9ja19wc2J0', txid: undefined })
+      expect(wallet.signPsbt).toHaveBeenCalledWith(
+        Buffer.from(psbtBase64, 'base64').toString('hex'),
+        {
+          autoFinalized: false,
+          toSignInputs: [
+            {
+              index: 0,
+              address: 'mock_address',
+              publicKey: 'mock_pubkey',
+              sighashTypes: [1, 3],
+              disableTweakSigner: true,
+              useTweakedSigner: false
+            }
+          ]
+        }
+      )
+      expect(wallet.pushPsbt).not.toHaveBeenCalled()
+    })
+    it('should throw error when trying to broadcast with partial signing', async () => {
+      const signInputs = [
+        {
+          index: 0,
+          address: 'mock_address',
+          publicKey: 'mock_pubkey',
+          sighashTypes: [1, 3],
+          disableTweakSigner: true,
+          useTweakedSigner: false
+        }
+      ]
+      await expect(
+        connector.signPSBT({
+          psbt: Buffer.from('mock_psbt').toString('base64'),
+          signInputs,
+          broadcast: true
+        })
+      ).rejects.toThrow('Broadcast not supported for partial signing')
+    })
   })
 
   describe('request', () => {
@@ -293,6 +349,12 @@ describe('UnisatConnector', () => {
     it('should switch network', async () => {
       await connector.switchNetwork(bitcoin.caipNetworkId)
       expect(wallet.switchChain).toHaveBeenCalledWith('BITCOIN_MAINNET')
+
+      await connector.switchNetwork(bitcoinTestnet.caipNetworkId)
+      expect(wallet.switchChain).toHaveBeenCalledWith('BITCOIN_TESTNET')
+
+      await connector.switchNetwork(bitcoinSignet.caipNetworkId)
+      expect(wallet.switchChain).toHaveBeenCalledWith('BITCOIN_SIGNET')
     })
   })
 })

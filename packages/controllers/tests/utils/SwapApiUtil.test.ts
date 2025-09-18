@@ -67,7 +67,7 @@ describe('SwapApiUtil', () => {
       OptionsController.state.projectId = 'test-project-id'
       BlockchainApiController.fetchSwapTokens = vi.fn().mockResolvedValue({ tokens: mockTokens })
 
-      const result = await SwapApiUtil.getTokenList()
+      const result = await SwapApiUtil.getTokenList(mockEthereumNetwork.caipNetworkId)
 
       expect(BlockchainApiController.fetchSwapTokens).toHaveBeenCalledWith({
         chainId: 'eip155:1'
@@ -273,6 +273,28 @@ describe('SwapApiUtil', () => {
     it('should handle undefined balances', () => {
       const result = SwapApiUtil.mapBalancesToSwapTokens(undefined as unknown as Balance[])
       expect(result).toEqual([])
+    })
+  })
+
+  describe('handleSwapError', () => {
+    it('should return "Insufficient liquidity" for insufficient liquidity error', async () => {
+      const error = {
+        cause: { json: async () => ({ reasons: [{ description: 'insufficient liquidity' }] }) }
+      }
+
+      const result = await SwapApiUtil.handleSwapError(error)
+
+      expect(result).toBe('Insufficient liquidity')
+    })
+
+    it('should return undefined for other errors', async () => {
+      const error = {
+        cause: { json: async () => ({ reasons: [{ description: 'some other error' }] }) }
+      }
+
+      const result = await SwapApiUtil.handleSwapError(error)
+
+      expect(result).toBeUndefined()
     })
   })
 })

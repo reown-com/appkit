@@ -54,7 +54,7 @@ export function ConfigurationList({ title, sdkOptions }: Props) {
                     <Box display="flex" gap={2} flexWrap="wrap">
                       {option.links ? (
                         option.links.map(link => (
-                          <Link href={link.url}>
+                          <Link key={link.url} href={link.url}>
                             <Button>{link.title}</Button>
                           </Link>
                         ))

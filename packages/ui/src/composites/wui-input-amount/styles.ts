@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
@@ -8,21 +8,41 @@ export default css`
 
   input {
     background: transparent;
-    width: 100%;
     height: auto;
-    font-family: var(--wui-font-family);
-    color: var(--wui-color-fg-100);
-
+    box-sizing: border-box;
+    color: ${({ tokens }) => tokens.theme.textPrimary};
     font-feature-settings: 'case' on;
-    font-size: 32px;
-    font-weight: var(--wui-font-weight-light);
-    caret-color: var(--wui-color-accent-100);
+    font-size: ${({ textSize }) => textSize.h4};
+    caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
     line-height: 130%;
     letter-spacing: -1.28px;
-    box-sizing: border-box;
     -webkit-appearance: none;
     -moz-appearance: textfield;
     padding: 0px;
+    font-family: ${({ fontFamily }) => fontFamily.mono};
+  }
+
+  :host([data-width-variant='auto']) input {
+    width: 100%;
+  }
+
+  :host([data-width-variant='fit']) input {
+    width: 1ch;
+  }
+
+  .wui-input-amount-fit-mirror {
+    position: absolute;
+    visibility: hidden;
+    white-space: pre;
+    font-size: ${({ textSize }) => textSize.h4};
+    line-height: 130%;
+    letter-spacing: -1.28px;
+    font-family: ${({ fontFamily }) => fontFamily.mono};
+  }
+
+  .wui-input-amount-fit-width {
+    display: inline-block;
+    position: relative;
   }
 
   input::-webkit-outer-spin-button,
@@ -32,6 +52,6 @@ export default css`
   }
 
   input::placeholder {
-    color: var(--wui-color-fg-275);
+    color: ${({ tokens }) => tokens.theme.foregroundTertiary};
   }
 `

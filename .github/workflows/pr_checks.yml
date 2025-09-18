@@ -38,6 +38,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -49,7 +52,7 @@ jobs:
           cache: 'pnpm'
 
       - name: install
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       # Cache Turborepo's build outputs (.turbo directory).
       # This speeds up the 'pnpm build' step significantly if inputs haven't changed.
@@ -116,6 +119,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -142,7 +148,7 @@ jobs:
         run: chmod +x node_modules/*/bin/*
 
       - name: install
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: check
         run: pnpm ${{ matrix.style-command }}
@@ -160,6 +166,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -186,7 +195,7 @@ jobs:
         run: chmod +x node_modules/*/bin/*
 
       - name: install
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: build sample apps
         run: pnpm build:sample-apps
@@ -203,6 +212,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -229,7 +241,7 @@ jobs:
         run: chmod +x node_modules/*/bin/*
 
       - name: install
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Test
         run: pnpm test:ci
@@ -246,7 +258,8 @@ jobs:
       contents: write
       pull-requests: write
     with:
-      branch: ${{ github.ref }}
+      # Pass the SHA so the called workflow can check out a stable commit
+      branch: ${{ github.sha }}
       build-and-cache-only: ${{ github.event_name == 'push' }}
       matrix_config: '{"shard":[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "shardTotal":[10]}'
       build_trigger_type: ${{ github.event_name }}

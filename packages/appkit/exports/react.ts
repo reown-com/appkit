@@ -44,15 +44,13 @@ export type { AppKitOptions }
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/react/index.js'
 
-/**
- * React hook to manage network switching and access current network information.
- * @see https://docs.reown.com/appkit/react/core/hooks#useappkitnetwork
- */
+export { useAppKitProvider } from '@reown/appkit-controllers/react'
+
 export function useAppKitNetwork(): UseAppKitNetworkReturn {
   const { caipNetwork, caipNetworkId, chainId } = useAppKitNetworkCore()
 
-  function switchNetwork(network: AppKitNetwork) {
-    modal?.switchNetwork(network)
+  async function switchNetwork(network: AppKitNetwork) {
+    await modal?.switchNetwork(network)
   }
 
   return {

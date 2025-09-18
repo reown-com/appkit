@@ -1,13 +1,16 @@
-import type { TransactionDirection, TransactionStatus } from '@reown/appkit-common'
+import type { TransactionStatus } from '@reown/appkit-common'
+import type { TransactionType } from '@reown/appkit-ui'
 import type {
   AccountEntryType,
   BackgroundType,
   BorderRadiusType,
+  ButtonLinkVariant,
+  ButtonShortcutVariant,
   ButtonVariant,
   CardSelectType,
-  ChipButtonVariant,
-  ChipType,
-  ColorType,
+  ChipButtonSize,
+  ChipButtonType,
+  DomainChipVariant,
   FlexAlignItemsType,
   FlexBasisType,
   FlexDirectionType,
@@ -18,48 +21,76 @@ import type {
   GridContentType,
   GridItemsType,
   IconBoxBorderType,
+  IconColorType,
   IconType,
   LogoType,
   PlacementType,
+  SemanticChipSize,
+  SemanticChipType,
   SpacingType,
-  TagType,
+  TagVariant,
   TextAlign,
+  TextColorType,
   TextType,
   ThemeType,
-  TransactionType,
+  ToastMessageVariant,
   VisualType
 } from '@reown/appkit-ui/src/utils/TypeUtil'
 
-export const colorOptions: ColorType[] = [
-  'accent-100',
-  'error-100',
-  'fg-100',
-  'fg-150',
-  'fg-200',
-  'fg-300',
-  'inherit',
-  'inverse-000',
-  'inverse-100',
-  'success-100'
+export const textColorOptions: TextColorType[] = [
+  'primary',
+  'secondary',
+  'tertiary',
+  'invert',
+  'error',
+  'warning',
+  'accent-primary'
 ]
 
+export const iconColorOptions: IconColorType[] = [
+  'inherit',
+  'accent-primary',
+  'accent-certified',
+  'success',
+  'error',
+  'warning',
+  'default',
+  'inverse'
+]
+
+// @TODO: Deprecate this
+export const colorOptions = iconColorOptions
+
+export const backgroundColorOptions = ['foregroundSecondary', 'foregroundAccent010']
+
 export const textOptions: TextType[] = [
-  'micro-700',
-  'micro-600',
-  'mini-700',
-  'tiny-500',
-  'tiny-600',
-  'small-500',
-  'small-600',
-  'medium-400',
-  'paragraph-400',
-  'paragraph-500',
-  'paragraph-600',
-  'paragraph-700',
-  'large-500',
-  'large-600',
-  'large-700',
-  '2xl-500'
+  'h1-regular-mono',
+  'h1-regular',
+  'h1-medium',
+  'h2-regular-mono',
+  'h2-regular',
+  'h2-medium',
+  'h3-regular-mono',
+  'h3-regular',
+  'h3-medium',
+  'h4-regular-mono',
+  'h4-regular',
+  'h4-medium',
+  'h5-regular-mono',
+  'h5-regular',
+  'h5-medium',
+  'h6-regular-mono',
+  'h6-regular',
+  'h6-medium',
+  'lg-regular-mono',
+  'lg-regular',
+  'lg-medium',
+  'md-regular-mono',
+  'md-regular',
+  'md-medium',
+  'sm-regular-mono',
+  'sm-regular',
+  'sm-medium'
 ]
 
 export const textAlignOptions: TextAlign[] = ['center', 'left', 'right']
@@ -114,11 +145,15 @@ export const gridContentOptions: GridContentType[] = [
 
 export const walletImagesOptions = [
   {
+    src: 'https://walletguide.walletconnect.network/_next/image?url=https%3A%2F%2Fapi.web3modal.com%2Fv2%2Fwallet-image%2F200x200%2Feebe4a7f-7166-402f-92e0-1f64ca2aa800%3FprojectId%3Dad53ae497ee922ad9beb2ef78b1a7a6e%26st%3Dwallet-guide%26sv%3D1.0.0&w=384&q=75',
+    walletName: 'MetaMask'
+  },
+  {
     src: 'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=c1781fc385454899a2b1385a2b83df3b',
     walletName: 'Rainbow'
   },
   {
-    src: 'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/f216b371-96cf-409a-9d88-296392b85800?projectId=c1781fc385454899a2b1385a2b83df3b',
+    src: 'https://walletguide.walletconnect.network/_next/image?url=https%3A%2F%2Fapi.web3modal.com%2Fv2%2Fwallet-image%2F200x200%2F7677b54f-3486-46e2-4e37-bf8747814f00%3FprojectId%3Dad53ae497ee922ad9beb2ef78b1a7a6e%26st%3Dwallet-guide%26sv%3D1.0.0&w=384&q=75',
     walletName: 'Zerion'
   },
   {
@@ -135,14 +170,14 @@ export const walletImageSrc =
   'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=c1781fc385454899a2b1385a2b83df3b'
 
 export const networkImageSrc =
-  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b'
+  'https://api.web3modal.org/public/getAssetImage/ba0ba0cd-17c6-4806-ad93-f9d174f17900?projectId=702e2d45d9debca66795614cddb5c1ca&st=appkit&sv=react-wagmi-1.7.13'
 
 export const networkImages = [
   'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b',
-  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/30c46e53-e989-45fb-4549-be3bd4eb3b00?projectId=c1781fc385454899a2b1385a2b83df3b',
-  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/93564157-2e8e-4ce7-81df-b264dbee9b00?projectId=c1781fc385454899a2b1385a2b83df3b',
-  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/ab9c186a-c52f-464b-2906-ca59d760a400?projectId=c1781fc385454899a2b1385a2b83df3b',
-  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/41d04d42-da3b-4453-8506-668cc0727900?projectId=c1781fc385454899a2b1385a2b83df3b'
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b',
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b',
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b',
+  'https://explorer-api.walletconnect.com/w3m/v1/getAssetImage/692ed6ba-e569-459a-556a-776476829e00?projectId=c1781fc385454899a2b1385a2b83df3b'
 ]
 
 export const avatarImageSrc =
@@ -172,6 +207,8 @@ export const spacingOptions: SpacingType[] = [
   '3xl'
 ]
 
+export const toastMessageOptions: ToastMessageVariant[] = ['info', 'success', 'warning', 'error']
+
 export const iconOptions: IconType[] = [
   'allWallets',
   'apple',
@@ -180,8 +217,9 @@ export const iconOptions: IconType[] = [
   'arrowRight',
   'arrowTop',
   'browser',
-  'bin',
+  'card',
   'checkmark',
+  'sealCheck',
   'chevronBottom',
   'chevronLeft',
   'chevronRight',
@@ -192,9 +230,8 @@ export const iconOptions: IconType[] = [
   'compass',
   'copy',
   'cursor',
-  'cursorTransparent',
   'desktop',
-  'disconnect',
+  'signOut',
   'discord',
   'etherscan',
   'extension',
@@ -204,14 +241,13 @@ export const iconOptions: IconType[] = [
   'github',
   'google',
   'helpCircle',
-  'infoCircle',
-  'lightbulb',
   'mail',
   'mobile',
   'networkPlaceholder',
   'nftPlaceholder',
-  'off',
+  'power',
   'qrCode',
+  'plus',
   'refresh',
   'search',
   'swapHorizontal',
@@ -224,7 +260,6 @@ export const iconOptions: IconType[] = [
   'verifyFilled',
   'wallet',
   'walletConnect',
-  'walletPlaceholder',
   'warningCircle'
 ]
 
@@ -241,7 +276,11 @@ export const visualOptions: VisualType[] = [
   'nft',
   'noun',
   'profile',
-  'system'
+  'system',
+  'coinbase',
+  'stripe',
+  'moonpay',
+  'paypal'
 ]
 
 export const logoOptions: LogoType[] = [
@@ -257,27 +296,31 @@ export const logoOptions: LogoType[] = [
 
 export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'left']
 
-export const chipButtonVariants: ChipButtonVariant[] = ['main', 'accent', 'shade', 'gray', 'shade']
+export const chipButtonTypes: ChipButtonType[] = ['accent', 'neutral']
 
-export const chipVariants: ChipType[] = [
-  'fill',
-  'transparent',
-  'shade',
-  'success',
-  'shadeSmall',
-  'error'
-]
+export const chipButtonSizes: ChipButtonSize[] = ['sm', 'md', 'lg']
+
+export const domainChipVariants: DomainChipVariant[] = ['success', 'warning', 'error']
+
+export const semanticChipTypes: SemanticChipType[] = ['success', 'error', 'warning']
+
+export const semanticChipSizes: SemanticChipSize[] = ['sm', 'md', 'lg']
 
 export const buttonOptions: ButtonVariant[] = [
-  'main',
-  'accent',
-  'accent',
-  'accent-error',
-  'accent-success',
-  'neutral'
+  'accent-primary',
+  'accent-secondary',
+  'neutral-primary',
+  'neutral-secondary',
+  'error-primary',
+  'error-secondary',
+  'neutral-tertiary'
 ]
 
-export const transactionTypeOptions: TransactionType[] = [
+export const buttonShortcutOptions: ButtonShortcutVariant[] = ['accent', 'secondary']
+
+export const buttonLinkOptions: ButtonLinkVariant[] = ['accent', 'secondary']
+
+export const transactionThumbnailOptions: TransactionType[] = [
   'approve',
   'bought',
   'borrow',
@@ -297,15 +340,20 @@ export const transactionTypeOptions: TransactionType[] = [
   'withdraw'
 ]
 
-export const transactionDirectionOptions: TransactionDirection[] = ['in', 'out']
-
 export const transactionStatusOptions: TransactionStatus[] = ['confirmed', 'pending', 'failed']
 
 export const cardSelectOptions: CardSelectType[] = ['network', 'wallet']
 
 export const backgroundOptions: BackgroundType[] = ['opaque', 'transparent']
 
-export const tagOptions: TagType[] = ['main', 'shade', 'error', 'success']
+export const tagOptions: TagVariant[] = [
+  'accent',
+  'info',
+  'success',
+  'warning',
+  'error',
+  'certified'
+]
 
 export const accountEntryOptions: AccountEntryType[] = ['icon', 'image']
 
@@ -315,8 +363,6 @@ export const iconBoxBorderOptions: IconBoxBorderType[] = [
   'wui-color-bg-125',
   'wui-accent-glass-010'
 ]
-
-export const tagLabelOptions = ['get wallet', 'installed', 'qr code', 'recent']
 
 export const signTypedData = {
   domain: {

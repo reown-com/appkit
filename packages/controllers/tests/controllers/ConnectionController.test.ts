@@ -13,7 +13,9 @@ import type {
   ConnectionControllerClient,
   Connector,
   ConnectorType,
-  NetworkControllerClient
+  ModalControllerState,
+  NetworkControllerClient,
+  RouterControllerState
 } from '../../exports/index.js'
 import {
   ChainController,
@@ -22,7 +24,10 @@ import {
   ConnectorController,
   ConnectorControllerUtil,
   ConstantsUtil,
-  CoreHelperUtil
+  CoreHelperUtil,
+  EventsController,
+  ModalController,
+  RouterController
 } from '../../exports/index.js'
 import { AccountController } from '../../exports/index.js'
 
@@ -38,6 +43,7 @@ const caipNetworks = [
 const client: ConnectionControllerClient = {
   connectWalletConnect: async () => {},
   disconnect: async () => Promise.resolve(),
+  disconnectConnector: async () => Promise.resolve(),
   signMessage: async (message: string) => Promise.resolve(message),
   estimateGas: async () => Promise.resolve(BigInt(0)),
   connectExternal: async _id => Promise.resolve({ address: '' }),
@@ -62,6 +68,7 @@ const clientCheckInstalledSpy = vi.spyOn(client, 'checkInstalled')
 const partialClient: ConnectionControllerClient = {
   connectWalletConnect: async () => Promise.resolve(),
   disconnect: async () => Promise.resolve(),
+  disconnectConnector: async () => Promise.resolve(),
   estimateGas: async () => Promise.resolve(BigInt(0)),
   signMessage: async (message: string) => Promise.resolve(message),
   parseUnits: value => BigInt(value),
@@ -215,6 +222,18 @@ describe('ConnectionController', () => {
     await ConnectionController.connectWalletConnect()
     expect(connectWalletConnectSpy).toHaveBeenCalledTimes(1)
     expect(ConnectionController.state.status).toEqual('connected')
+  })
+
+  it('should handle connectWalletConnect when cache argument is "never"', async () => {
+    vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isSafari').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isIos').mockReturnValue(true)
+
+    const connectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
+
+    await ConnectionController.connectWalletConnect({ cache: 'never' })
+
+    expect(connectWalletConnectSpy).toHaveBeenCalledTimes(1)
   })
 
   it('should set connections for a namespace', () => {
@@ -481,6 +500,86 @@ describe('ConnectionController', () => {
       })
     })
 
+    it('should handle connected connection when trying to connect with walletconnect if modal open', async () => {
+      const address = '0x321'
+      vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue('disconnected')
+      vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
+      vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
+        open: true
+      } as ModalControllerState)
+      vi.spyOn(RouterController, 'push')
+
+      const connectWalletConnectSpy = vi
+        .spyOn(ConnectorControllerUtil, 'connectWalletConnect')
+        .mockImplementation(({ onOpen }) => {
+          onOpen?.(false)
+          return Promise.resolve({ address: '0x321' } as ParsedCaipAddress)
+        })
+
+      const onChange = vi.fn()
+
+      await ConnectionController.switchConnection({
+        connection: {
+          ...mockConnection,
+          connectorId: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+        },
+        address,
+        namespace: chain,
+        onChange
+      })
+
+      expect(connectWalletConnectSpy).toHaveBeenCalledWith({
+        walletConnect: true,
+        onOpen: expect.any(Function),
+        onConnect: expect.any(Function),
+        connector: mockConnector,
+        closeModalOnConnect: undefined
+      })
+
+      expect(RouterController.push).toHaveBeenCalledWith('ConnectingWalletConnect')
+    })
+
+    it('should handle connected connection when trying to connect with walletconnect if modal closed', async () => {
+      const address = '0x321'
+      vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue('disconnected')
+      vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
+      vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
+        open: false
+      } as ModalControllerState)
+      vi.spyOn(ModalController, 'open')
+
+      const connectWalletConnectSpy = vi
+        .spyOn(ConnectorControllerUtil, 'connectWalletConnect')
+        .mockImplementation(({ onOpen }) => {
+          onOpen?.(false)
+          return Promise.resolve({ address: '0x321' } as ParsedCaipAddress)
+        })
+
+      const onChange = vi.fn()
+
+      await ConnectionController.switchConnection({
+        connection: {
+          ...mockConnection,
+          connectorId: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+        },
+        address,
+        namespace: chain,
+        onChange
+      })
+
+      expect(connectWalletConnectSpy).toHaveBeenCalledWith({
+        walletConnect: true,
+        onOpen: expect.any(Function),
+        onConnect: expect.any(Function),
+        connector: mockConnector,
+        closeModalOnConnect: undefined
+      })
+
+      expect(ModalController.open).toHaveBeenCalledWith({
+        view: 'ConnectingWalletConnect'
+      })
+    })
+
     it('should throw error if connection status is invalid', async () => {
       vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(undefined)
       vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue('connecting' as any)
@@ -497,5 +596,41 @@ describe('ConnectionController', () => {
           })
       ).rejects.toThrow('Invalid connection status: connecting')
     })
+  })
+})
+
+describe('finalizeWcConnection', () => {
+  it('should include event properties when address is provided', () => {
+    const sendEventSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+      ...RouterController.state,
+      view: 'TestView' as unknown as RouterControllerState['view'],
+      data: { wallet: { name: 'TestWallet', id: 'test' } }
+    })
+
+    vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
+      ...ConnectionController.state,
+      wcLinking: { href: 'wc://deeplink', name: 'TestWallet' },
+      recentWallet: { id: 'test', order: 5, name: 'TestWallet' }
+    })
+
+    const address = '0xabc'
+
+    ConnectionController.finalizeWcConnection(address)
+
+    expect(sendEventSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'track',
+        event: 'CONNECT_SUCCESS',
+        address,
+        properties: expect.objectContaining({
+          method: 'mobile',
+          name: 'TestWallet',
+          view: 'TestView',
+          walletRank: 5
+        })
+      })
+    )
   })
 })

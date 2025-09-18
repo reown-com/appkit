@@ -15,7 +15,6 @@ import {
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-wallet'
 
 import { WalletUtil } from '../../utils/WalletUtil.js'
 
@@ -65,20 +64,23 @@ export class W3mConnectRecentWidget extends LitElement {
     )
 
     return html`
-      <wui-flex flexDirection="column" gap="xs">
+      <wui-flex flexDirection="column" gap="2">
         ${filteredRecentWallets.map(
           wallet => html`
-            <wui-list-wallet
+            <w3m-list-wallet
               imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
               name=${wallet.name ?? 'Unknown'}
               @click=${() => this.onConnectWallet(wallet)}
               tagLabel="recent"
-              tagVariant="shade"
+              tagVariant="info"
+              size="sm"
               tabIdx=${ifDefined(this.tabIdx)}
               ?loading=${this.loading}
               ?disabled=${hasWcConnection}
+              rdnsId=${wallet.rdns}
+              walletRank=${wallet.order}
             >
-            </wui-list-wallet>
+            </w3m-list-wallet>
           `
         )}
       </wui-flex>

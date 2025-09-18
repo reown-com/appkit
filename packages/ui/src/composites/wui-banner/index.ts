@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
 import '../../components/wui-text/index.js'
-import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
@@ -19,18 +18,14 @@ export class WuiBanner extends LitElement {
 
   @property() public text = ''
 
+  @property() public type: 'info' | 'success' | 'error' | 'warning' = 'info'
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex gap="1xs" alignItems="center">
-        <wui-icon-box
-          size="sm"
-          iconcolor="fg-200"
-          backgroundcolor="fg-200"
-          icon=${this.icon}
-          background="transparent"
-        ></wui-icon-box>
-        <wui-text variant="small-400" color="fg-200">${this.text}</wui-text>
+      <wui-flex alignItems="center" data-type=${this.type}>
+        <wui-icon-box size="sm" color="inherit" icon=${this.icon}></wui-icon-box>
+        <wui-text variant="md-regular" color="inherit">${this.text}</wui-text>
       </wui-flex>
     `
   }

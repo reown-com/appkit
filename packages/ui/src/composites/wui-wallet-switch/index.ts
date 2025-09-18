@@ -1,12 +1,13 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconType, SizeType } from '../../utils/TypeUtil.js'
+import type { IconSizeType, IconType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
@@ -26,7 +27,7 @@ export class WuiWalletSwitch extends LitElement {
 
   @property() public icon?: IconType = undefined
 
-  @property() public iconSize?: SizeType = 'md'
+  @property() public iconSize?: IconSizeType = 'md'
 
   @property({ type: Boolean }) public loading = false
 
@@ -47,8 +48,8 @@ export class WuiWalletSwitch extends LitElement {
   private leftImageTemplate() {
     const imageOrIconContent = this.icon
       ? html`<wui-icon
-          size=${this.iconSize}
-          color="fg-200"
+          size=${ifDefined(this.iconSize)}
+          color="default"
           name=${this.icon}
           class="icon"
         ></wui-icon>`
@@ -68,7 +69,7 @@ export class WuiWalletSwitch extends LitElement {
   }
   public textTemplate() {
     return html`
-      <wui-text variant="paragraph-500" color="fg-100">
+      <wui-text variant="lg-regular" color="primary">
         ${UiHelperUtil.getTruncateString({
           string: this.profileName || this.address,
           charsStart: this.profileName ? 16 : this.charsStart,
@@ -80,7 +81,7 @@ export class WuiWalletSwitch extends LitElement {
   }
 
   public rightImageTemplate() {
-    return html`<wui-icon name="chevronBottom" size="xs" color="fg-200"></wui-icon>`
+    return html`<wui-icon name="chevronBottom" size="sm" color="default"></wui-icon>`
   }
 }
 

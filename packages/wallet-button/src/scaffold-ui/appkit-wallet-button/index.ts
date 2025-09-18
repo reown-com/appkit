@@ -142,14 +142,9 @@ export class AppKitWalletButton extends LitElement {
             walletConnect: this.wallet === 'walletConnect',
             connector: this.connectors.find(c => c.id === 'walletConnect'),
             onOpen(isMobile) {
-              ModalController.open().then(() => {
-                if (isMobile) {
-                  RouterController.replace('AllWallets')
-                } else {
-                  RouterController.replace('ConnectingWalletConnect', {
-                    wallet: walletButton
-                  })
-                }
+              ModalController.open({
+                view: isMobile ? 'AllWallets' : 'ConnectingWalletConnect',
+                data: isMobile ? undefined : { wallet: walletButton }
               })
             },
             onConnect() {
@@ -161,7 +156,7 @@ export class AppKitWalletButton extends LitElement {
             })
             .finally(() => (this.loading = false))
         }}
-        .icon=${ifDefined(this.wallet === 'walletConnect' ? 'walletConnect' : undefined)}
+        .icon=${ifDefined(this.wallet === 'walletConnect' ? 'walletConnectInvert' : undefined)}
         .imageSrc=${ifDefined(walletImage)}
         ?disabled=${Boolean(this.caipAddress) || loading || this.modalLoading}
         ?loading=${loading || this.modalLoading}
@@ -233,7 +228,7 @@ export class AppKitWalletButton extends LitElement {
         await ConnectorControllerUtil.connectEmail({
           namespace: this.namespace,
           onOpen() {
-            ModalController.open().then(() => RouterController.push('EmailLogin'))
+            ModalController.open({ view: 'EmailLogin' })
           },
           onConnect() {
             RouterController.push('Connect')

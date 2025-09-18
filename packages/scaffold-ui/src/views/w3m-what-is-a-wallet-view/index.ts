@@ -33,12 +33,12 @@ export class W3mWhatIsAWalletView extends LitElement {
     return html`
       <wui-flex
         flexDirection="column"
-        .padding=${['xxl', 'xl', 'xl', 'xl'] as const}
+        .padding=${['6', '5', '5', '5'] as const}
         alignItems="center"
-        gap="xl"
+        gap="5"
       >
         <w3m-help-widget .data=${data}></w3m-help-widget>
-        <wui-button variant="main" size="md" @click=${this.onGetWallet.bind(this)}>
+        <wui-button variant="accent-primary" size="md" @click=${this.onGetWallet.bind(this)}>
           <wui-icon color="inherit" slot="iconLeft" name="wallet"></wui-icon>
           Get a wallet
         </wui-button>
@@ -48,7 +48,7 @@ export class W3mWhatIsAWalletView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onGetWallet() {
-    EventsController.sendEvent({ type: 'track', event: 'CLICK_GET_WALLET' })
+    EventsController.sendEvent({ type: 'track', event: 'CLICK_GET_WALLET_HELP' })
     RouterController.push('GetWallet')
   }
 }

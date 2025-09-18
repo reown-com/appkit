@@ -1,13 +1,14 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
+import { ConstantsUtil as CommonConstantsUtil, ErrorUtil } from '@reown/appkit-common'
 import {
+  AppKitError,
   ChainController,
   EventsController,
   RouterController,
   SendController,
-  SnackController,
-  getPreferredAccountType
+  SnackController
 } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
@@ -15,7 +16,6 @@ import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-preview-item'
 import '@reown/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../partials/w3m-wallet-send-details/index.js'
 import styles from './styles.js'
@@ -42,6 +42,8 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   @state() private loading = SendController.state.loading
 
+  @state() private params = RouterController.state.data?.send
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -65,11 +67,11 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html` <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const}>
-      <wui-flex gap="xs" flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
+    return html` <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const}>
+      <wui-flex gap="2" flexDirection="column" .padding=${['0', '2', '0', '2'] as const}>
         <wui-flex alignItems="center" justifyContent="space-between">
-          <wui-flex flexDirection="column" gap="4xs">
-            <wui-text variant="small-400" color="fg-150">Send</wui-text>
+          <wui-flex flexDirection="column" gap="01">
+            <wui-text variant="sm-regular" color="secondary">Send</wui-text>
             ${this.sendValueTemplate()}
           </wui-flex>
           <wui-preview-item
@@ -80,10 +82,10 @@ export class W3mWalletSendPreviewView extends LitElement {
           ></wui-preview-item>
         </wui-flex>
         <wui-flex>
-          <wui-icon color="fg-200" size="md" name="arrowBottom"></wui-icon>
+          <wui-icon color="default" size="md" name="arrowBottom"></wui-icon>
         </wui-flex>
         <wui-flex alignItems="center" justifyContent="space-between">
-          <wui-text variant="small-400" color="fg-150">To</wui-text>
+          <wui-text variant="sm-regular" color="secondary">To</wui-text>
           <wui-preview-item
             text="${this.receiverProfileName
               ? UiHelperUtil.getTruncateString({
@@ -104,21 +106,21 @@ export class W3mWalletSendPreviewView extends LitElement {
           ></wui-preview-item>
         </wui-flex>
       </wui-flex>
-      <wui-flex flexDirection="column" .padding=${['xxl', '0', '0', '0'] as const}>
+      <wui-flex flexDirection="column" .padding=${['6', '0', '0', '0'] as const}>
         <w3m-wallet-send-details
           .caipNetwork=${this.caipNetwork}
           .receiverAddress=${this.receiverAddress}
         ></w3m-wallet-send-details>
-        <wui-flex justifyContent="center" gap="xxs" .padding=${['s', '0', '0', '0'] as const}>
-          <wui-icon size="sm" color="fg-200" name="warningCircle"></wui-icon>
-          <wui-text variant="small-400" color="fg-200">Review transaction carefully</wui-text>
+        <wui-flex justifyContent="center" gap="1" .padding=${['3', '0', '0', '0'] as const}>
+          <wui-icon size="sm" color="default" name="warningCircle"></wui-icon>
+          <wui-text variant="sm-regular" color="secondary">Review transaction carefully</wui-text>
         </wui-flex>
-        <wui-flex justifyContent="center" gap="s" .padding=${['l', '0', '0', '0'] as const}>
+        <wui-flex justifyContent="center" gap="3" .padding=${['4', '0', '0', '0'] as const}>
           <wui-button
             class="cancelButton"
             @click=${this.onCancelClick.bind(this)}
             size="lg"
-            variant="neutral"
+            variant="neutral-secondary"
           >
             Cancel
           </wui-button>
@@ -126,7 +128,7 @@ export class W3mWalletSendPreviewView extends LitElement {
             class="sendButton"
             @click=${this.onSendClick.bind(this)}
             size="lg"
-            variant="main"
+            variant="accent-primary"
             .loading=${this.loading}
           >
             Send
@@ -138,11 +140,11 @@ export class W3mWalletSendPreviewView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private sendValueTemplate() {
-    if (this.token && this.sendTokenAmount) {
+    if (!this.params && this.token && this.sendTokenAmount) {
       const price = this.token.price
       const totalValue = price * this.sendTokenAmount
 
-      return html`<wui-text variant="paragraph-400" color="fg-100"
+      return html`<wui-text variant="md-regular" color="primary"
         >$${totalValue.toFixed(2)}</wui-text
       >`
     }
@@ -159,28 +161,37 @@ export class W3mWalletSendPreviewView extends LitElement {
 
     try {
       await SendController.sendToken()
-      SnackController.showSuccess('Transaction started')
-      RouterController.replace('Account')
+      if (this.params) {
+        RouterController.reset('WalletSendConfirmed')
+      } else {
+        SnackController.showSuccess('Transaction started')
+        RouterController.replace('Account')
+      }
     } catch (error) {
-      SnackController.showError('Failed to send transaction. Please try again.')
-      // eslint-disable-next-line no-console
-      console.error('SendController:sendToken - failed to send transaction', error)
+      let errMessage = 'Failed to send transaction. Please try again.'
 
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      const isUserRejectedRequestError =
+        error instanceof AppKitError &&
+        error.originalName === ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST
+
+      // eslint-disable-next-line no-warning-comments
+      // TODO: Remove this once we have a better way to handle errors for each adapter
+      if (
+        ChainController.state.activeChain === CommonConstantsUtil.CHAIN.SOLANA ||
+        isUserRejectedRequestError
+      ) {
+        if (error instanceof Error) {
+          errMessage = error.message
+        }
+      }
 
       EventsController.sendEvent({
         type: 'track',
-        event: 'SEND_ERROR',
-        properties: {
-          message: errorMessage,
-          isSmartAccount:
-            getPreferredAccountType(ChainController.state.activeChain) ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          token: this.token?.symbol || '',
-          amount: this.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
-        }
+        event: isUserRejectedRequestError ? 'SEND_REJECTED' : 'SEND_ERROR',
+        properties: SendController.getSdkEventProperties(error)
       })
+
+      SnackController.showError(errMessage)
     }
   }
 

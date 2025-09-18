@@ -1,0 +1,731 @@
+{
+  "changesets": [
+    {
+      "releases": [
+        {
+          "name": "@reown/appkit-scaffold-ui",
+          "type": "patch"
+        }
+      ],
+      "summary": "Improves name validation and sanitization for Reown name registiration",
+      "id": "kind-buses-chew"
+    },
+    {
+      "releases": [
+        {
+          "name": "@reown/appkit-adapter-ethers5",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-adapter-ethers",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-adapter-wagmi",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit",
+          "type": "patch"
+        },
+        {
+          "name": "pay-test-exchange",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-adapter-bitcoin",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-adapter-solana",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-utils",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-cdn",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-cli",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-codemod",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-common",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-controllers",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-core",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-experimental",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-pay",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-polyfills",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-scaffold-ui",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-siwe",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-siwx",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-testing",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-ui",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-universal-connector",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-wallet",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-wallet-button",
+          "type": "patch"
+        }
+      ],
+      "summary": "Removed custom logic from EVM adapters that gets `capabilities` from `sessionProperties` as this resposibility should be delegated to the providers",
+      "id": "sad-cougars-taste"
+    },
+    {
+      "releases": [
+        {
+          "name": "@reown/appkit-controllers",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-scaffold-ui",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-ui",
+          "type": "patch"
+        },
+        {
+          "name": "pay-test-exchange",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-adapter-bitcoin",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-adapter-ethers",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-adapter-ethers5",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-adapter-solana",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-adapter-wagmi",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-utils",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-cdn",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-cli",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-codemod",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-common",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-core",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-experimental",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-pay",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-polyfills",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-siwe",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-siwx",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-testing",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-universal-connector",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-wallet",
+          "type": "patch"
+        },
+        {
+          "name": "@reown/appkit-wallet-button",
+          "type": "patch"
+        }
+      ],
+      "summary": "Fixed an issue where secure site screens would break in demo",
+      "id": "shy-states-appear"
+    },
+    {
+      "releases": [
+        {
+          "name": "@reown/appkit-adapter-bitcoin",
+          "type": "patch"
+        }
+      ],
+      "summary": "Refactors OKX and Unisat connectors to pass signInputs to wallet provider's `signPsbt` method",
+      "id": "wicked-nails-mix"
+    }
+  ],
+  "releases": [
+    {
+      "name": "@reown/appkit-scaffold-ui",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["kind-buses-chew", "sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-adapter-ethers5",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-adapter-ethers",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-adapter-wagmi",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "pay-test-exchange",
+      "type": "patch",
+      "oldVersion": "0.1.2",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "0.1.3"
+    },
+    {
+      "name": "@reown/appkit-adapter-bitcoin",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear", "wicked-nails-mix"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-adapter-solana",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-utils",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-cdn",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-cli",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-codemod",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-common",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-controllers",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-core",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-experimental",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-pay",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-polyfills",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-siwe",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-siwx",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-testing",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-ui",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-universal-connector",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-wallet",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@reown/appkit-wallet-button",
+      "type": "patch",
+      "oldVersion": "1.7.18",
+      "changesets": ["sad-cougars-taste", "shy-states-appear"],
+      "newVersion": "1.7.19"
+    },
+    {
+      "name": "@apps/laboratory",
+      "type": "none",
+      "oldVersion": "1.5.1",
+      "changesets": [],
+      "newVersion": "1.5.1"
+    },
+    {
+      "name": "@examples/react-ethers5",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/vue-ethers5",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/html-ethers",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/next-ethers-app-router",
+      "type": "none",
+      "oldVersion": "1.0.5",
+      "changesets": [],
+      "newVersion": "1.0.5"
+    },
+    {
+      "name": "@examples/react-ak-basic",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/react-ethers",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/sveltekit-ethers",
+      "type": "none",
+      "oldVersion": "0.0.1",
+      "changesets": [],
+      "newVersion": "0.0.1"
+    },
+    {
+      "name": "@examples/vue-ethers-solana",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/html-wagmi",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/html-wagmi-solana-bitcoin",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/html-wagmi-wallet-button",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/next-bitcoin-app-router",
+      "type": "none",
+      "oldVersion": "1.0.5",
+      "changesets": [],
+      "newVersion": "1.0.5"
+    },
+    {
+      "name": "@examples/next-wagmi-app-router",
+      "type": "none",
+      "oldVersion": "1.0.5",
+      "changesets": [],
+      "newVersion": "1.0.5"
+    },
+    {
+      "name": "@examples/next-wagmi-solana-bitcoin-app-router",
+      "type": "none",
+      "oldVersion": "1.0.5",
+      "changesets": [],
+      "newVersion": "1.0.5"
+    },
+    {
+      "name": "@examples/nuxt-wagmi",
+      "type": "none",
+      "changesets": []
+    },
+    {
+      "name": "@examples/nuxt-wagmi-solana-bitcoin",
+      "type": "none",
+      "changesets": []
+    },
+    {
+      "name": "@examples/parcel-react-wagmi",
+      "type": "none",
+      "oldVersion": "1.0.0",
+      "changesets": [],
+      "newVersion": "1.0.0"
+    },
+    {
+      "name": "@examples/react-wagmi",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/sveltekit-4-wagmi",
+      "type": "none",
+      "oldVersion": "0.0.1",
+      "changesets": [],
+      "newVersion": "0.0.1"
+    },
+    {
+      "name": "@examples/sveltekit-wagmi",
+      "type": "none",
+      "oldVersion": "0.0.1",
+      "changesets": [],
+      "newVersion": "0.0.1"
+    },
+    {
+      "name": "@examples/vue-wagmi",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/vue-wagmi-solana",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/html-ak-basic",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/html-ak-basic-sign-client",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/html-ak-basic-up",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/html-bitcoin",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/html-solana",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/next-ak-basic-app-router",
+      "type": "none",
+      "oldVersion": "1.0.5",
+      "changesets": [],
+      "newVersion": "1.0.5"
+    },
+    {
+      "name": "@examples/next-ak-basic-sign-client-app-router",
+      "type": "none",
+      "oldVersion": "1.0.5",
+      "changesets": [],
+      "newVersion": "1.0.5"
+    },
+    {
+      "name": "@examples/next-ak-basic-up-app-router",
+      "type": "none",
+      "oldVersion": "1.0.5",
+      "changesets": [],
+      "newVersion": "1.0.5"
+    },
+    {
+      "name": "@examples/next-ep-app-router",
+      "type": "none",
+      "oldVersion": "1.0.5",
+      "changesets": [],
+      "newVersion": "1.0.5"
+    },
+    {
+      "name": "@examples/react-ak-basic-sign-client",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/react-ak-basic-up",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/react-ep",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/react-reown-authentication",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/react-solana",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/vue-ak-basic",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/vue-ak-basic-sign-client",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/vue-ak-basic-up",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/vue-reown-authentication",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@examples/vue-solana",
+      "type": "none",
+      "oldVersion": "1.2.0",
+      "changesets": [],
+      "newVersion": "1.2.0"
+    },
+    {
+      "name": "@reown/appkit-adapter-polkadot",
+      "type": "none",
+      "oldVersion": "1.5.2",
+      "changesets": [],
+      "newVersion": "1.5.2"
+    },
+    {
+      "name": "@apps/browser-extension",
+      "type": "none",
+      "oldVersion": "1.0.0",
+      "changesets": [],
+      "newVersion": "1.0.0"
+    },
+    {
+      "name": "@apps/gallery",
+      "type": "none",
+      "oldVersion": "1.5.2",
+      "changesets": [],
+      "newVersion": "1.5.2"
+    },
+    {
+      "name": "@reown/appkit-ui-new",
+      "type": "none",
+      "oldVersion": "1.4.1",
+      "changesets": [],
+      "newVersion": "1.4.1"
+    }
+  ]
+}

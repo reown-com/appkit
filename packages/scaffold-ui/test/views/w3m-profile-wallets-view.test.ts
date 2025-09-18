@@ -544,12 +544,12 @@ describe('W3mProfileWalletsView - Connections List', () => {
 
     activeConnections?.forEach(profile => {
       expect(profile.getAttribute('buttonLabel')).toBe('Switch')
-      expect(profile.getAttribute('buttonVariant')).toBe('accent')
+      expect(profile.getAttribute('buttonVariant')).toBe('accent-secondary')
     })
 
     recentConnections?.forEach(profile => {
       expect(profile.getAttribute('buttonLabel')).toBe('Connect')
-      expect(profile.getAttribute('buttonVariant')).toBe('neutral')
+      expect(profile.getAttribute('buttonVariant')).toBe('neutral-secondary')
     })
   })
 })
@@ -764,7 +764,9 @@ describe('W3mProfileWalletsView - User Actions', () => {
     addConnectionButton?.dispatchEvent(new Event('click'))
 
     expect(ConnectorController.setFilterByNamespace).toHaveBeenCalledWith(ConstantsUtil.CHAIN.EVM)
-    expect(RouterController.push).toHaveBeenCalledWith('Connect')
+    expect(RouterController.push).toHaveBeenCalledWith('Connect', {
+      addWalletForNamespace: ConstantsUtil.CHAIN.EVM
+    })
   })
 
   it('should handle copy address action', async () => {
