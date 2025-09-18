@@ -48,7 +48,7 @@ interface DeleteRecentConnectionProps {
 // -- Hooks ------------------------------------------------------------
 /**
  * React hook to access core network information including CAIP network, chain ID, and network ID.
- * @see https://docs.reown.com/appkit/react/core/hooks#useappkitnetworkcore
+ * This hook used internally by the useAppKitNetwork hook. Not exposed publicly.
  */
 export function useAppKitNetworkCore(): Pick<
   UseAppKitNetworkReturn,
