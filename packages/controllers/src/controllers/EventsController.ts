@@ -81,7 +81,7 @@ export const EventsController = {
       })
 
       state.reportedErrors['FORBIDDEN'] = false
-
+      
       // If the pending events are too large, submit them as sendBeacon has a limit of 64KB
       if (JSON.stringify(state.pendingEvents).length / 1024 > MAX_PENDING_EVENTS_KB) {
         EventsController._submitPendingEvents()
