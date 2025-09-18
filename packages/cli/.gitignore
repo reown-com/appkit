@@ -18,3 +18,7 @@ dist-ssr
 .idea
 .DS_Store
 node_modules
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+bun.lockb
