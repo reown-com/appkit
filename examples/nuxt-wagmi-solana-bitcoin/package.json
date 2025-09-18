@@ -15,13 +15,13 @@
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@tanstack/vue-query": "5.75.5",
-    "@vue/devtools-api": "7.7.2",
-    "@wagmi/core": "2.20.3",
+    "@vue/devtools-api": "8.0.2",
+    "@wagmi/core": "2.21.0",
     "@wagmi/vue": "0.2.5",
     "@walletconnect/logger": "2.1.2",
-    "nuxt": "3.16.0",
+    "nuxt": "4.1.2",
     "viem": "2.37.2",
-    "vue": "3.5.13",
+    "vue": "3.5.21",
     "vue-router": "latest"
   }
 }
