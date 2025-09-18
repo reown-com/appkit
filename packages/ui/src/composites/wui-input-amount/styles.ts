@@ -12,7 +12,7 @@ export default css`
     box-sizing: border-box;
     color: ${({ tokens }) => tokens.theme.textPrimary};
     font-feature-settings: 'case' on;
-    font-size: var(--font-size);
+    font-size: var(--local-font-size);
     caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
     line-height: 130%;
     letter-spacing: -1.28px;
