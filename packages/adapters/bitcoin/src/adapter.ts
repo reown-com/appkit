@@ -96,7 +96,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       accounts: accounts.accounts.map(a => ({
         address: a.address,
         type: a.type,
-        publicKey: a.publicKey
+        publicKey: a.publicKey,
+        path: a.path
       })),
       caipNetwork: chain
     })
@@ -252,7 +253,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         accounts: allAccounts.accounts.map(a => ({
           address: a.address,
           type: a.type,
-          publicKey: a.publicKey
+          publicKey: a.publicKey,
+          path: a.path
         })),
         caipNetwork: connection?.caipNetwork
       })
