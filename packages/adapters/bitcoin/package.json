@@ -34,7 +34,7 @@
     "@reown/appkit-polyfills": "workspace:*",
     "@wallet-standard/app": "1.1.0",
     "@wallet-standard/base": "1.1.0",
-    "@walletconnect/universal-provider": "2.21.7",
+    "@walletconnect/universal-provider": "2.21.9",
     "bitcoinjs-lib": "6.1.7",
     "sats-connect": "3.5.0"
   },
@@ -42,7 +42,7 @@
     "@leather.io/rpc": "2.1.21",
     "@vitest/coverage-v8": "2.1.9",
     "@wallet-standard/features": "1.0.3",
-    "@walletconnect/types": "2.21.7",
+    "@walletconnect/types": "2.21.9",
     "vitest": "2.1.9"
   },
   "author": "Reown (https://discord.gg/reown)",
