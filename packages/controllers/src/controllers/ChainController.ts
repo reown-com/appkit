@@ -479,18 +479,9 @@ const controller = {
 
     try {
       if (namespaceAddress) {
-        console.log('<< namespaceAddress', namespaceAddress, network.chainNamespace, namespace)
         if (network.chainNamespace === namespace) {
-          console.log(
-            '<< switching network from',
-            state.activeCaipNetwork?.caipNetworkId,
-            'to',
-            network.caipNetworkId
-          )
           const adapter = AdapterController.get(network.chainNamespace)
-          console.log('<< adapter', adapter?.switchNetwork)
           await adapter.switchNetwork({ caipNetwork: network })
-          console.log('<< adapter switched')
         }
       }
       ChainController.setActiveCaipNetwork(network)
@@ -504,7 +495,6 @@ const controller = {
         ModalController.close()
       }
     } catch (error) {
-      console.log('<< switchActiveNetwork error', error)
       if (throwOnFailure) {
         throw error
       }
@@ -621,11 +611,11 @@ const controller = {
     return approvedCaipNetworkIds
   },
 
-  async setApprovedCaipNetworksData(namespace: ChainNamespace,  { approvedCaipNetworkIds: CaipNetworkId[], supportsAllNetworks: boolean } ) {
-    ChainController.setAdapterNetworkState(namespace, {
-      approvedCaipNetworkIds,
-      supportsAllNetworks
-    })
+  setApprovedCaipNetworksData(
+    namespace: ChainNamespace,
+    params: { approvedCaipNetworkIds: CaipNetworkId[]; supportsAllNetworks: boolean }
+  ) {
+    ChainController.setAdapterNetworkState(namespace, params)
   },
 
   checkIfSupportedNetwork(namespace: ChainNamespace, caipNetworkId?: CaipNetworkId) {

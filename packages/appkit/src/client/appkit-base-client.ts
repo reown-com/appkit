@@ -372,10 +372,6 @@ export abstract class AppKitBaseClient {
   }
 
   protected initAdapterController() {
-    console.log('<< initAdapterController', this.chainAdapters)
-
-    const switchNetwork = this.chainAdapters.eip155.switchNetwork
-    console.log('<< switchNetwork', switchNetwork)
     AdapterController.initialize(this.chainAdapters)
   }
 
@@ -401,12 +397,9 @@ export abstract class AppKitBaseClient {
     }
 
     ChainController.subscribeKey('activeCaipNetwork', activeCaipNetwork => {
-      console.log('<< activeCaipNetwork changed in appkit base client', activeCaipNetwork)
       if (activeCaipNetwork) {
         const address = ChainController.getAccountData(activeCaipNetwork.chainNamespace)?.address
-        console.log('<< address', address)
         const providerType = ProviderController.getProviderId(activeCaipNetwork.chainNamespace)
-        console.log('<< providerType', providerType)
 
         if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
           this.syncWalletConnectAccount()
@@ -416,7 +409,6 @@ export abstract class AppKitBaseClient {
             chainId: activeCaipNetwork.id,
             chainNamespace: activeCaipNetwork.chainNamespace
           })
-          console.log('<< syncAccount called')
         }
       }
     })
@@ -1535,7 +1527,7 @@ export abstract class AppKitBaseClient {
 
       const data = this.getApprovedCaipNetworksData()
       this.syncConnectedWalletInfo(chainNamespace)
-      await ChainController.setApprovedCaipNetworksData(chainNamespace, {
+      ChainController.setApprovedCaipNetworksData(chainNamespace, {
         approvedCaipNetworkIds: data.approvedCaipNetworkIds,
         supportsAllNetworks: data.supportsAllNetworks
       })

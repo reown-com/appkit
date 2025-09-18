@@ -22,7 +22,6 @@ const state = {
 export const AdapterController = {
   state,
   initialize(adapters: Record<ChainNamespace, AdapterBlueprint>) {
-    console.log('<< initialize adapters', adapters)
     state.adapters = adapters
   },
   get(namespace: ChainNamespace) {
