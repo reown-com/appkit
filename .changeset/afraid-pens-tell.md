@@ -1,12 +1,11 @@
 ---
-'@reown/appkit-scaffold-ui': patch
+'@reown/appkit': patch
 'pay-test-exchange': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-wagmi': patch
-'@reown/appkit': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
@@ -17,6 +16,7 @@
 '@reown/appkit-experimental': patch
 '@reown/appkit-pay': patch
 '@reown/appkit-polyfills': patch
+'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-testing': patch
@@ -26,4 +26,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Replaced "deposit from an exchange" to "deposit from exchange" in appkit header
+Fixed an issue where the `useAppKitConnection` hook returned `null` when wallet is disconnected

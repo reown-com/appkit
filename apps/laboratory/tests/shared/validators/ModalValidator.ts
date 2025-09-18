@@ -40,6 +40,16 @@ export class ModalValidator {
     await this.page.waitForTimeout(500)
   }
 
+  async expectConnectionNotExist(alt: string) {
+    const connection = this.page
+      .getByTestId('active-connection')
+      .filter({ has: this.page.locator(`[alt="${alt}"]`) })
+
+    await expect(connection, `Connection with alt "${alt}" should not exist`).not.toBeVisible({
+      timeout: MAX_WAIT
+    })
+  }
+
   async expectLoading(namespace?: ChainNamespace) {
     const accountButton = namespace
       ? this.page.locator(`appkit-connect-button[namespace="${namespace}"]`)

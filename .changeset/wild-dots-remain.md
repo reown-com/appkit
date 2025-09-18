@@ -1,22 +1,22 @@
 ---
+'@reown/appkit-adapter-ethers5': patch
+'@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-solana': patch
+'@reown/appkit-adapter-wagmi': patch
 '@reown/appkit-controllers': patch
+'@reown/appkit-scaffold-ui': patch
+'@reown/appkit': patch
+'@reown/appkit-common': patch
 'pay-test-exchange': patch
 '@reown/appkit-adapter-bitcoin': patch
-'@reown/appkit-adapter-ethers': patch
-'@reown/appkit-adapter-ethers5': patch
-'@reown/appkit-adapter-wagmi': patch
-'@reown/appkit': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-codemod': patch
-'@reown/appkit-common': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-pay': patch
 '@reown/appkit-polyfills': patch
-'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-testing': patch
@@ -26,4 +26,5 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where Solana token-2022 token transfers failed because the send flow used legacy transfer instructions
+Fixed an issue where a `SEND_ERROR` event was logged when a user rejected a transaction. It now logs a `SEND_REJECTED` event instead
+

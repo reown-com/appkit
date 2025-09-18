@@ -44,7 +44,7 @@ jobs:
         run: chmod +x node_modules/*/bin/*
 
       - name: install
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: run vitest shard
         run: |

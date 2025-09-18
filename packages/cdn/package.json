@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-cdn",
-  "version": "1.8.2",
+  "version": "1.8.5",
   "sideEffects": false,
   "main": "dist/wagmi.js",
   "type": "module",
@@ -52,5 +52,12 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reown-com/appkit.git"
+  },
+  "publishConfig": {
+    "provenance": true
+  }
 }

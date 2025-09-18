@@ -275,4 +275,26 @@ describe('SwapApiUtil', () => {
       expect(result).toEqual([])
     })
   })
+
+  describe('handleSwapError', () => {
+    it('should return "Insufficient liquidity" for insufficient liquidity error', async () => {
+      const error = {
+        cause: { json: async () => ({ reasons: [{ description: 'insufficient liquidity' }] }) }
+      }
+
+      const result = await SwapApiUtil.handleSwapError(error)
+
+      expect(result).toBe('Insufficient liquidity')
+    })
+
+    it('should return undefined for other errors', async () => {
+      const error = {
+        cause: { json: async () => ({ reasons: [{ description: 'some other error' }] }) }
+      }
+
+      const result = await SwapApiUtil.handleSwapError(error)
+
+      expect(result).toBeUndefined()
+    })
+  })
 })

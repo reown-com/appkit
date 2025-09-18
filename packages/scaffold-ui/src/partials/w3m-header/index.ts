@@ -13,9 +13,9 @@ import {
   OptionsController,
   RouterController
 } from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
+import { customElement, vars } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-icon-button'
 import '@reown/appkit-ui/wui-select'
 import '@reown/appkit-ui/wui-tag'
 import '@reown/appkit-ui/wui-text'
@@ -25,6 +25,10 @@ import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //
 const BETA_SCREENS: string[] = ['SmartSessionList']
+const BACKGROUND_OVERRIDES: Record<string, string> = {
+  PayWithExchange: vars.tokens.theme.foregroundPrimary,
+  PayWithExchangeSelectAsset: vars.tokens.theme.foregroundPrimary
+}
 
 // -- Helpers ------------------------------------------- //
 function headings() {
@@ -81,6 +85,7 @@ function headings() {
     WalletSend: 'Send',
     WalletSendPreview: 'Review Send',
     WalletSendSelectToken: 'Select Token',
+    WalletSendConfirmed: 'Confirmed',
     WhatIsANetwork: 'What is a network?',
     WhatIsAWallet: 'What is a Wallet?',
     ConnectWallets: 'Connect Wallet',
@@ -153,6 +158,11 @@ export class W3mHeader extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const backgroundColor =
+      BACKGROUND_OVERRIDES[RouterController.state.view] ?? vars.tokens.theme.backgroundPrimary
+
+    this.style.setProperty('--local-header-background-color', backgroundColor)
+
     return html`
       <wui-flex
         .padding=${['0', '4', '0', '4'] as const}

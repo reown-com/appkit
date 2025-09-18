@@ -10,7 +10,10 @@ import {
   Text
 } from '@chakra-ui/react'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { TokenUtil } from '@reown/appkit-utils'
 import {
+  base,
   bitcoin,
   bitcoinTestnet,
   mainnet,
@@ -29,6 +32,8 @@ import {
 } from '@reown/appkit/react'
 
 import type { Adapter } from '../constants/appKitConfigs'
+import { ConstantsUtil } from '../utils/ConstantsUtil'
+import { useChakraToast } from './Toast'
 
 function getNetworkToSwitch(activeNetwork: CaipNetwork | undefined) {
   if (!activeNetwork) {
@@ -52,6 +57,7 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
   const evmAccount = useAppKitAccount({ namespace: 'eip155' })
   const solanaAccount = useAppKitAccount({ namespace: 'solana' })
   const bitcoinAccount = useAppKitAccount({ namespace: 'bip122' })
+  const toast = useChakraToast()
   const isAnyAccountConnected =
     evmAccount.isConnected || solanaAccount.isConnected || bitcoinAccount.isConnected
 
@@ -82,6 +88,35 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
         toToken: 'ETH'
       }
     })
+  }
+
+  async function handleOpenSendWithArguments() {
+    try {
+      const { hash } = await open({
+        view: 'WalletSend',
+        arguments: {
+          amount: '1',
+          assetAddress: TokenUtil.TOKEN_ADDRESSES_BY_SYMBOL.USDC[base.id],
+          namespace: CommonConstantsUtil.CHAIN.EVM,
+          chainId: base.id,
+          to: evmAccount.address as string
+        }
+      }).then(data => ({ hash: data?.hash }))
+
+      if (hash) {
+        toast({
+          title: ConstantsUtil.SigningSucceededToastTitle,
+          description: hash,
+          type: 'success'
+        })
+      }
+    } catch (err) {
+      toast({
+        title: ConstantsUtil.SigningFailedToastTitle,
+        description: err instanceof Error ? err.message : 'Failed to send',
+        type: 'error'
+      })
+    }
   }
 
   function handleSwitchNetwork() {
@@ -185,6 +220,13 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
                     onClick={handleOpenSwapWithArguments}
                   >
                     Open Swap with Arguments
+                  </Button>
+
+                  <Button
+                    data-testid="open-send-with-arguments-hook-button"
+                    onClick={handleOpenSendWithArguments}
+                  >
+                    Open Send with Arguments
                   </Button>
                 </Box>
               </Box>

@@ -32,7 +32,7 @@ export class W3mConnectFeaturedWidget extends LitElement {
       <wui-flex flexDirection="column" gap="2">
         ${this.wallets.map(
           wallet => html`
-            <wui-list-wallet
+            <w3m-list-wallet
               data-testid=${`wallet-selector-featured-${wallet.id}`}
               imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
               name=${wallet.name ?? 'Unknown'}
@@ -40,8 +40,10 @@ export class W3mConnectFeaturedWidget extends LitElement {
               tabIdx=${ifDefined(this.tabIdx)}
               size="sm"
               ?disabled=${hasWcConnection}
+              rdnsId=${wallet.rdns}
+              walletRank=${wallet.order}
             >
-            </wui-list-wallet>
+            </w3m-list-wallet>
           `
         )}
       </wui-flex>
