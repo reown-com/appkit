@@ -36,7 +36,7 @@ export class WuiInputAmount extends LitElement {
   }
 
   public override updated() {
-    this.style.setProperty('--font-size', vars.textSize[this.fontSize])
+    this.style.setProperty('--local-font-size', vars.textSize[this.fontSize])
     this.resizeInput()
   }
 
