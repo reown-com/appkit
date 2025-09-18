@@ -61,6 +61,10 @@ export function useAppKitNetwork(): UseAppKitNetworkReturn {
   }
 }
 
+/**
+ * React hook to fetch account balance information for the connected wallet.
+ * @see https://docs.reown.com/appkit/react/core/hooks#useappkitbalance
+ */
 export function useAppKitBalance() {
   async function fetchBalance() {
     return await _internalFetchBalance(modal)
