@@ -10,6 +10,7 @@ export default css`
     width: 100%;
     height: 100%;
     background-color: ${({ colors }) => colors.white};
+    border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
   }
 
   :host {
