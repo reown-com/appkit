@@ -76,6 +76,6 @@
     "dotenv": "16.4.7",
     "postcss": "8.5.3",
     "tailwindcss": "3.4.1",
-    "typescript": "5.8.3"
+    "typescript": "5.9.2"
   }
 }
