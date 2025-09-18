@@ -26,8 +26,7 @@ import styles from './styles.js'
 // -- Constants ----------------------------------------- //
 const BETA_SCREENS: string[] = ['SmartSessionList']
 const BACKGROUND_OVERRIDES: Record<string, string> = {
-  PayWithExchange: vars.tokens.theme.foregroundPrimary,
-  PayWithExchangeSelectAsset: vars.tokens.theme.foregroundPrimary
+  PayWithExchange: vars.tokens.theme.foregroundPrimary
 }
 
 // -- Helpers ------------------------------------------- //
