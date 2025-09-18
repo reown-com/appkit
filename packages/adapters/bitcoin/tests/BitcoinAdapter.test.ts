@@ -1023,6 +1023,207 @@ describe('BitcoinAdapter', () => {
     })
   })
 
+  describe('onAccountsChanged', () => {
+    let connector: BitcoinConnector
+    let getAccountsSpy: any
+
+    beforeEach(() => {
+      connector = new SatsConnectConnector({
+        provider: mockSatsConnectProvider().provider,
+        requestedChains: [bitcoin],
+        getActiveNetwork: mockGetActiveNetworks
+      })
+
+      adapter.connectors.push(connector)
+      getAccountsSpy = vi.spyOn(adapter, 'getAccounts')
+    })
+
+    it('should call getAccounts when accounts are provided', async () => {
+      const mockAccounts = [
+        {
+          address: 'mock_address_1',
+          purpose: AddressPurpose.Payment,
+          publicKey: 'mock_public_key_1',
+          path: 'mock_path_1'
+        }
+      ]
+
+      getAccountsSpy.mockResolvedValueOnce({
+        accounts: mockAccounts.map(account => ({
+          address: account.address,
+          type: 'payment',
+          publicKey: account.publicKey,
+          path: account.path,
+          namespace: ConstantsUtil.CHAIN.BITCOIN
+        }))
+      })
+
+      vi.spyOn(adapter, 'getConnectorId').mockReturnValue(connector.id)
+
+      const emitSpy = vi.spyOn(adapter as any, 'emit')
+      const addConnectionSpy = vi.spyOn(adapter as any, 'addConnection')
+
+      await adapter.onAccountsChanged(['mock_address_1'], connector.id)
+
+      expect(getAccountsSpy).toHaveBeenCalledWith({ id: connector.id })
+
+      expect(emitSpy).toHaveBeenCalledWith('accountChanged', {
+        address: 'mock_address_1',
+        chainId: undefined,
+        connector: undefined
+      })
+      expect(emitSpy).toHaveBeenCalledWith('connections', expect.any(Array))
+      expect(addConnectionSpy).toHaveBeenCalledWith({
+        connectorId: connector.id,
+        accounts: mockAccounts.map(account => ({
+          address: account.address,
+          type: 'payment',
+          publicKey: account.publicKey
+        })),
+        caipNetwork: undefined
+      })
+    })
+
+    it('should call getAccounts and handle multiple accounts', async () => {
+      const mockAccounts = [
+        {
+          address: 'mock_address_1',
+          purpose: AddressPurpose.Payment,
+          publicKey: 'mock_public_key_1',
+          path: 'mock_path_1'
+        },
+        {
+          address: 'mock_address_2',
+          purpose: AddressPurpose.Ordinal,
+          publicKey: 'mock_public_key_2',
+          path: 'mock_path_2'
+        }
+      ]
+
+      getAccountsSpy.mockResolvedValueOnce({
+        accounts: mockAccounts.map(account => ({
+          address: account.address,
+          type: account.purpose === AddressPurpose.Payment ? 'payment' : 'ordinal',
+          publicKey: account.publicKey,
+          path: account.path,
+          namespace: ConstantsUtil.CHAIN.BITCOIN
+        }))
+      })
+
+      vi.spyOn(adapter, 'getConnectorId').mockReturnValue(connector.id)
+
+      const addConnectionSpy = vi.spyOn(adapter as any, 'addConnection')
+
+      await adapter.onAccountsChanged(['mock_address_1'], connector.id)
+
+      expect(getAccountsSpy).toHaveBeenCalledWith({ id: connector.id })
+      expect(addConnectionSpy).toHaveBeenCalledWith({
+        connectorId: connector.id,
+        accounts: [
+          {
+            address: 'mock_address_1',
+            type: 'payment',
+            publicKey: 'mock_public_key_1'
+          },
+          {
+            address: 'mock_address_2',
+            type: 'ordinal',
+            publicKey: 'mock_public_key_2'
+          }
+        ],
+        caipNetwork: undefined
+      })
+    })
+
+    it('should call onDisconnect when no accounts are provided and disconnectIfNoAccounts is true', async () => {
+      const onDisconnectSpy = vi.spyOn(adapter as any, 'onDisconnect')
+
+      await adapter.onAccountsChanged([], connector.id, true)
+
+      expect(getAccountsSpy).not.toHaveBeenCalled()
+      expect(onDisconnectSpy).toHaveBeenCalledWith(connector.id)
+    })
+
+    it('should not call onDisconnect when no accounts are provided and disconnectIfNoAccounts is false', async () => {
+      const onDisconnectSpy = vi.spyOn(adapter as any, 'onDisconnect')
+
+      await adapter.onAccountsChanged([], connector.id, false)
+
+      expect(getAccountsSpy).not.toHaveBeenCalled()
+      expect(onDisconnectSpy).not.toHaveBeenCalled()
+    })
+
+    it('should call getAccounts even if getConnection returns undefined', async () => {
+      const mockAccounts = [
+        {
+          address: 'mock_address_1',
+          purpose: AddressPurpose.Payment,
+          publicKey: 'mock_public_key_1',
+          path: 'mock_path_1'
+        }
+      ]
+
+      getAccountsSpy.mockResolvedValueOnce({
+        accounts: mockAccounts.map(account => ({
+          address: account.address,
+          type: 'payment',
+          publicKey: account.publicKey,
+          path: account.path,
+          namespace: ConstantsUtil.CHAIN.BITCOIN
+        }))
+      })
+
+      vi.spyOn(adapter as any, 'connectionManager', 'get').mockReturnValue({
+        getConnection: vi.fn().mockReturnValue(undefined)
+      })
+
+      await adapter.onAccountsChanged(['mock_address_1'], connector.id)
+
+      expect(getAccountsSpy).toHaveBeenCalledWith({ id: connector.id })
+    })
+
+    it('should handle getAccounts errors gracefully', async () => {
+      getAccountsSpy.mockRejectedValueOnce(new Error('Failed to get accounts'))
+
+      await expect(adapter.onAccountsChanged(['mock_address_1'], connector.id)).rejects.toThrow(
+        'Failed to get accounts'
+      )
+
+      expect(getAccountsSpy).toHaveBeenCalledWith({ id: connector.id })
+    })
+
+    it('should always call getAccounts when accounts are provided, regardless of connector matching', async () => {
+      const mockAccounts = [
+        {
+          address: 'mock_address_1',
+          purpose: AddressPurpose.Payment,
+          publicKey: 'mock_public_key_1',
+          path: 'mock_path_1'
+        }
+      ]
+
+      getAccountsSpy.mockResolvedValueOnce({
+        accounts: mockAccounts.map(account => ({
+          address: account.address,
+          type: 'payment',
+          publicKey: account.publicKey,
+          path: account.path,
+          namespace: ConstantsUtil.CHAIN.BITCOIN
+        }))
+      })
+
+      vi.spyOn(adapter, 'getConnectorId').mockReturnValue('different_connector_id')
+
+      const emitSpy = vi.spyOn(adapter as any, 'emit')
+
+      await adapter.onAccountsChanged(['mock_address_1'], connector.id)
+
+      expect(getAccountsSpy).toHaveBeenCalledWith({ id: connector.id })
+      expect(emitSpy).not.toHaveBeenCalledWith('accountChanged', expect.anything())
+      expect(emitSpy).toHaveBeenCalledWith('connections', expect.any(Array))
+    })
+  })
+
   it('should not throw for not used methods', async () => {
     expect(await adapter.estimateGas({} as any)).toEqual({})
     expect(await adapter.sendTransaction({} as any)).toEqual({})
