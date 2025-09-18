@@ -34,7 +34,7 @@ export default css`
     position: absolute;
     visibility: hidden;
     white-space: pre;
-    font-size: var(--font-size);
+    font-size: var(--local-font-size);
     line-height: 130%;
     letter-spacing: -1.28px;
     font-family: ${({ fontFamily }) => fontFamily.mono};
