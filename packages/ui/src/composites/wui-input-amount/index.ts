@@ -36,6 +36,7 @@ export class WuiInputAmount extends LitElement {
   }
 
   public override updated() {
+    this.style.setProperty('--font-size', vars.textSize[this.fontSize])
     this.resizeInput()
   }
 
@@ -50,8 +51,6 @@ export class WuiInputAmount extends LitElement {
     if (this.widthVariant === 'auto') {
       return this.inputTemplate()
     }
-
-    this.style.setProperty('--font-size', vars.textSize[this.fontSize])
 
     return html`
       <div class="wui-input-amount-fit-width">
