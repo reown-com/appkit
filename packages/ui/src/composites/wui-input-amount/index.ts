@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { type Ref, createRef, ref } from 'lit/directives/ref.js'
 
+import { vars } from '../../utils/ThemeHelperUtil.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
@@ -27,6 +28,8 @@ export class WuiInputAmount extends LitElement {
 
   @property({ type: Number }) public maxIntegers?: number = undefined
 
+  @property({ type: String }) public fontSize: keyof typeof vars.textSize = 'h4'
+
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
     this.resizeInput()
@@ -47,6 +50,8 @@ export class WuiInputAmount extends LitElement {
     if (this.widthVariant === 'auto') {
       return this.inputTemplate()
     }
+
+    this.style.setProperty('--font-size', vars.textSize[this.fontSize])
 
     return html`
       <div class="wui-input-amount-fit-width">
