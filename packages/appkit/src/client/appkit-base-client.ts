@@ -662,7 +662,10 @@ export abstract class AppKitBaseClient {
                 })
               }
             } catch (error) {
-              console.warn('Error disconnecting connector', error)
+              console.warn(
+                `Error disconnecting connector (namespace: ${ns}, connectorId: ${connectorIdToDisconnect})`,
+                error
+              )
             }
 
             if (initialDisconnect) {
