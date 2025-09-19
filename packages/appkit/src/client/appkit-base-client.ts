@@ -649,16 +649,20 @@ export abstract class AppKitBaseClient {
           const disconnectPromises = namespacesToDisconnect.map(async ns => {
             const currentConnectorId = ConnectorController.getConnectorId(ns)
             const connectorIdToDisconnect = connectorIdParam || currentConnectorId
-            const disconnectData = await this.disconnectConnector(ns, connectorIdToDisconnect)
+            try {
+              const disconnectData = await this.disconnectConnector(ns, connectorIdToDisconnect)
 
-            if (disconnectData) {
-              if (isAuth) {
-                StorageUtil.deleteConnectedSocialProvider()
+              if (disconnectData) {
+                if (isAuth) {
+                  StorageUtil.deleteConnectedSocialProvider()
+                }
+
+                disconnectData.connections.forEach(connection => {
+                  StorageUtil.addDisconnectedConnectorId(connection.connectorId, ns)
+                })
               }
-
-              disconnectData.connections.forEach(connection => {
-                StorageUtil.addDisconnectedConnectorId(connection.connectorId, ns)
-              })
+            } catch (error) {
+              console.warn('Error disconnecting connector', error)
             }
 
             if (initialDisconnect) {
