@@ -96,7 +96,7 @@ const mockWagmiConfig = {
       }
     },
     {
-      id: 'ID_AUTH',
+      id: 'AUTH',
       getProvider() {
         return Promise.resolve({
           user: {
@@ -1317,7 +1317,7 @@ describe('WagmiAdapter', () => {
         }
       })
 
-      const accounts = await adapter.getAccounts({ id: 'ID_AUTH' })
+      const accounts = await adapter.getAccounts({ id: 'AUTH' })
 
       expect(accounts).toEqual({
         accounts: [

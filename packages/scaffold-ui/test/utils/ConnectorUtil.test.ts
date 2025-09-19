@@ -13,12 +13,9 @@ import {
 
 import { ConnectorUtil } from '../../src/utils/ConnectorUtil'
 
-const INJECTED = { id: 'injected' } as WcWallet
-const RECENT = { id: 'recent' } as WcWallet
 const FEATURED = { id: 'featured' } as WcWallet
 const CUSTOM = { id: 'custom' } as WcWallet
 const EXTERNAL = { id: 'external' } as WcWallet
-const MULTI_CHAIN = { id: 'multiChain' } as WcWallet
 
 const INJECTED_CONNECTOR = {
   id: 'injected',
@@ -51,25 +48,13 @@ describe('ConnectorUtil', () => {
       })
 
       const result = ConnectorUtil.getConnectorTypeOrder({
-        recommended: [],
         featured: [FEATURED],
         custom: [CUSTOM],
-        recent: [RECENT],
-        announced: [INJECTED],
-        injected: [INJECTED],
-        multiChain: [MULTI_CHAIN],
         external: [EXTERNAL],
         overriddenConnectors: ['featured', 'walletConnect', 'injected']
       })
 
-      expect(result).toEqual([
-        'featured',
-        'walletConnect',
-        'injected',
-        'recent',
-        'custom',
-        'external'
-      ])
+      expect(result).toEqual(['featured', 'custom', 'external'])
     })
 
     it('should use default connectorPosition from OptionsController when overriddenConnectors not provided', () => {
@@ -82,24 +67,12 @@ describe('ConnectorUtil', () => {
       })
 
       const result = ConnectorUtil.getConnectorTypeOrder({
-        recommended: [],
         featured: [FEATURED],
         custom: [CUSTOM],
-        recent: [RECENT],
-        announced: [INJECTED],
-        injected: [INJECTED],
-        multiChain: [MULTI_CHAIN],
         external: [EXTERNAL]
       })
 
-      expect(result).toEqual([
-        'injected',
-        'walletConnect',
-        'recent',
-        'featured',
-        'custom',
-        'external'
-      ])
+      expect(result).toEqual(['featured', 'custom', 'external'])
     })
 
     it('should only include enabled connectors', () => {
@@ -112,17 +85,12 @@ describe('ConnectorUtil', () => {
       })
 
       const result = ConnectorUtil.getConnectorTypeOrder({
-        recommended: [],
         featured: [FEATURED],
         custom: [CUSTOM],
-        recent: [RECENT],
-        announced: [],
-        injected: [],
-        multiChain: [],
         external: [EXTERNAL]
       })
 
-      expect(result).toEqual(['walletConnect', 'recent', 'featured', 'custom', 'external'])
+      expect(result).toEqual(['featured', 'custom', 'external'])
 
       expect(result).not.toContain('injected')
     })

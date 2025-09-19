@@ -68,7 +68,7 @@ const mockWalletConnectConnector = {
 } as ConnectorWithProviders
 
 const mockAuthConnector = {
-  id: 'ID_AUTH',
+  id: 'AUTH',
   type: 'AUTH',
   name: 'Auth',
   chain: 'eip155'

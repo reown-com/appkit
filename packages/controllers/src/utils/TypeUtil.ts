@@ -88,7 +88,7 @@ export type ConnectorType =
   | 'ANNOUNCED'
   | 'AUTH'
   | 'MULTI_CHAIN'
-  | 'ID_AUTH'
+  | 'AUTH'
 
 export type SocialProvider =
   | 'google'
@@ -1311,7 +1311,7 @@ export type Features = {
   legalCheckbox?: boolean
   /**
    * @description The order of the connectors
-   * @default ['walletConnect', 'recent', 'injected', 'featured', 'custom', 'external', 'recommended']
+   * @default ['recent', 'injected', 'featured', 'custom', 'external', 'recommended']
    * @type {('walletConnect' | 'recent' | 'injected' | 'featured' | 'custom' | 'external' | 'recommended')[]}
    */
   connectorTypeOrder?: ConnectorTypeOrder[]

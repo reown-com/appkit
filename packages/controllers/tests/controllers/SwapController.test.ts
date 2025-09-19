@@ -149,7 +149,7 @@ describe('SwapController', () => {
     const connectionControllerClientSpy = vi
       .spyOn(ConnectionController, 'sendTransaction')
       .mockImplementationOnce(() => Promise.resolve(null))
-    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('AUTH')
     vi.spyOn(RouterController, 'pushTransactionStack').mockImplementationOnce(() =>
       Promise.resolve()
     )

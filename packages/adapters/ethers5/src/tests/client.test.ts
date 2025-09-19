@@ -336,7 +336,7 @@ describe('Ethers5Adapter', () => {
       Object.defineProperty(ethers5Adapter, 'connectors', {
         value: [
           {
-            id: 'ID_AUTH',
+            id: 'AUTH',
             provider: mockAuthProvider,
             type: 'AUTH'
           }
@@ -344,7 +344,7 @@ describe('Ethers5Adapter', () => {
       })
 
       await ethers5Adapter.disconnect({
-        id: 'ID_AUTH'
+        id: 'AUTH'
       })
 
       expect(mockAuthProvider.disconnect).toHaveBeenCalled()
@@ -471,7 +471,7 @@ describe('Ethers5Adapter', () => {
       Object.defineProperty(ethers5Adapter, 'connectors', {
         value: [
           {
-            id: 'ID_AUTH',
+            id: 'AUTH',
             type: 'AUTH',
             provider: mockAuthProvider
           }
@@ -479,7 +479,7 @@ describe('Ethers5Adapter', () => {
       })
 
       await ethers5Adapter.reconnect({
-        id: 'ID_AUTH',
+        id: 'AUTH',
         type: 'AUTH',
         chainId: 1
       })
@@ -750,7 +750,7 @@ describe('Ethers5Adapter', () => {
 
     it('should not listen to provider events for AUTH and WALLET_CONNECT connectors', async () => {
       const authConnector = {
-        id: 'ID_AUTH',
+        id: 'AUTH',
         type: 'AUTH',
         provider: mockAuthProvider
       }

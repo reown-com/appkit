@@ -1,16 +1,21 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   ApiController,
+  AssetUtil,
   ChainController,
   type Connector,
   ConnectorController,
+  type ConnectorType,
+  type ConnectorWithProviders,
+  type CustomWallet,
+  OptionsController,
+  StorageUtil,
   type WcWallet
 } from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
+import { type TagVariant, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 
 import '../../partials/w3m-connect-announced-widget/index.js'
@@ -23,7 +28,20 @@ import '../../partials/w3m-connect-recent-widget/index.js'
 import '../../partials/w3m-connect-recommended-widget/index.js'
 import '../../partials/w3m-connect-walletconnect-widget/index.js'
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
+import { WalletUtil } from '../../utils/WalletUtil.js'
 import styles from './styles.js'
+
+type ConnectorItem = {
+  icon: string | undefined
+  name: string
+  tag?: {
+    variant?: TagVariant
+    label?: string
+  }
+  type: ConnectorType | 'EXPLORER'
+  explorerWallet?: WcWallet
+  supportedNamespaces: ChainNamespace[]
+}
 
 @customElement('w3m-connector-list')
 export class W3mConnectorList extends LitElement {
@@ -123,96 +141,113 @@ export class W3mConnectorList extends LitElement {
     })
   }
 
-  private connectorListTemplate() {
-    const mappedConnectors = this.mapConnectorsToExplorerWallets(this.connectors, this.wallets)
+  private formatWallet(wallet: WcWallet): ConnectorItem & WcWallet {
+    return {
+      ...wallet,
+      type: 'EXPLORER',
+      explorerWallet: wallet,
+      icon: AssetUtil.getWalletImage(wallet),
+      supportedNamespaces:
+        wallet.chains?.map(chain => ParseUtil.parseCaipNetworkId(chain).chainNamespace) ||
+        ([ChainController.state.activeChain] as ChainNamespace[])
+    }
+  }
 
-    const connectors = ConnectorUtil.getConnectorsByType(
-      mappedConnectors,
-      this.recommended,
-      this.featured
-    )
-
-    const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
-      connectors
-
-    const connectorTypeOrder = ConnectorUtil.getConnectorTypeOrder({
-      custom,
-      recent,
-      announced,
-      injected,
-      multiChain,
-      recommended,
-      featured,
-      external
-    })
-
-    return connectorTypeOrder.map(type => {
-      switch (type) {
-        /*
-         * We merged injected, announced, and multi-chain connectors
-         * into a single connector type (injected) to reduce confusion
-         */
-        case 'injected':
-          return html`
-            ${multiChain.length
-              ? html`<w3m-connect-multi-chain-widget
-                  tabIdx=${ifDefined(this.tabIdx)}
-                  .connectors=${multiChain}
-                ></w3m-connect-multi-chain-widget>`
-              : null}
-            ${announced.length
-              ? html`<w3m-connect-announced-widget
-                  tabIdx=${ifDefined(this.tabIdx)}
-                  .connectors=${announced}
-                ></w3m-connect-announced-widget>`
-              : null}
-            ${injected.length
-              ? html`<w3m-connect-injected-widget
-                  .connectors=${injected}
-                  tabIdx=${ifDefined(this.tabIdx)}
-                ></w3m-connect-injected-widget>`
-              : null}
-          `
-
-        case 'walletConnect':
-          return html`<w3m-connect-walletconnect-widget
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-walletconnect-widget>`
-
-        case 'recent':
-          return html`<w3m-connect-recent-widget
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-recent-widget>`
-
-        case 'featured':
-          return html`<w3m-connect-featured-widget
-            .wallets=${featured}
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-featured-widget>`
-
-        case 'custom':
-          return html`<w3m-connect-custom-widget
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-custom-widget>`
-
-        case 'external':
-          return html`<w3m-connect-external-widget
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-external-widget>`
-
-        case 'recommended':
-          return html`<w3m-connect-recommended-widget
-            .wallets=${recommended}
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-recommended-widget>`
-
-        default:
-          // eslint-disable-next-line no-console
-          console.warn(`Unknown connector type: ${type}`)
-
-          return null
+  private formatConnector(
+    connector: ConnectorWithProviders
+  ): ConnectorItem & ConnectorWithProviders {
+    return {
+      ...connector,
+      icon: AssetUtil.getConnectorImage(connector),
+      supportedNamespaces: connector.connectors?.map(c => c.chain) || [connector.chain],
+      tag: {
+        variant: connector.type === 'EXTERNAL' ? undefined : 'success',
+        label: connector.type === 'EXTERNAL' ? undefined : 'installed'
       }
-    })
+    }
+  }
+
+  private sortByConnectorTypeOrder(params: {
+    featured: ConnectorItem[]
+    external: ConnectorItem[]
+    custom: ConnectorItem[]
+  }) {
+    const order = ConnectorUtil.getConnectorTypeOrder({
+      featured: params.featured.map(f => f.explorerWallet as WcWallet),
+      custom: params.custom.map(c => c.explorerWallet as CustomWallet),
+      external: params.external.map(e => e.explorerWallet as WcWallet)
+    }) as (keyof typeof params)[]
+
+    return order.map(type => params[type])
+  }
+
+  private sortConnectors(connectors: ConnectorWithProviders[]): ConnectorItem[] {
+    /*
+     * WC
+     * Top wallet from ranking
+     * recent if present - top wallet
+     * installed if present - top wallet
+     * featured if present - top wallet as per connectorTypeOrder
+     * external if present - top wallet from ranking as per connectorTypeOrder
+     * custom if present - top wallet from ranking as per connectorTypeOrder
+     * recommended if present - top wallet from ranking as per connectorTypeOrder if there are not enough wallets to fill the list
+     */
+
+    const custom = OptionsController.state.customWallets || []
+    const recent = StorageUtil.getRecentWallets()
+    const formattedConnectors = connectors.map(this.formatConnector)
+    const formattedWallets = WalletUtil.filterOutDuplicateWallets(this.recommended)
+      .concat(WalletUtil.filterOutDuplicateWallets(this.featured))
+      .concat(custom)
+      .concat(recent)
+      .map(this.formatWallet)
+
+    const topWallet = formattedWallets.sort((a, b) => (b.order ?? 0) - (a.order ?? 0))[0]
+    const authConnector = formattedConnectors.find(
+      connector =>
+        connector.type === 'AUTH' ||
+        (connector.type === 'MULTI_CHAIN' && connector.connectors?.some(c => c.type === 'AUTH'))
+    )
+    const installed = formattedConnectors.filter(
+      connector =>
+        (topWallet && connector.explorerWallet?.id !== topWallet?.id) ||
+        connector.type === 'ANNOUNCED' ||
+        connector.type === 'INJECTED' ||
+        connector.type === 'MULTI_CHAIN'
+    )
+    const external = formattedConnectors.filter(connector => connector.type === 'EXTERNAL')
+    const featured = formattedWallets.filter(wallet => this.featured.some(f => f.id === wallet.id))
+    const formattedCustom = custom.map(c => this.formatWallet(c))
+    const others = this.sortByConnectorTypeOrder({ featured, external, custom: formattedCustom })
+
+    const renederedConenctorAmount =
+      installed.length +
+      others.length +
+      recent.length +
+      (authConnector ? 1 : 0) +
+      (topWallet ? 1 : 0)
+
+    const recommended = formattedWallets
+      .filter(wallet => this.recommended.some(r => r.id === wallet.id))
+      .slice(0, 5 - renederedConenctorAmount)
+
+    return [topWallet, ...recent, ...installed, ...others, ...recommended].filter(
+      Boolean
+    ) as ConnectorItem[]
+  }
+
+  private connectorListTemplate() {
+    const connectors = this.mapConnectorsToExplorerWallets(this.connectors, this.wallets)
+    const sortedConnectors = this.sortConnectors(connectors)
+
+    return html`
+      ${sortedConnectors.map(
+        connector =>
+          html`<wui-flex flexDirection="column" gap="2">
+            <w3m-connector-item connector=${connector}></w3m-connector-item>
+          </wui-flex>`
+      )}
+    `
   }
 }
 

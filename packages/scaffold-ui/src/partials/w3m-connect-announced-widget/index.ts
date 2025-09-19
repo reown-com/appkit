@@ -3,12 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { Connector, ConnectorWithProviders } from '@reown/appkit-controllers'
-import {
-  AssetUtil,
-  ConnectionController,
-  CoreHelperUtil,
-  RouterController
-} from '@reown/appkit-controllers'
+import { AssetUtil, ConnectionController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import { HelpersUtil } from '@reown/appkit-utils'
@@ -80,15 +75,7 @@ export class W3mConnectAnnouncedWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
-    if (connector.id === 'walletConnect') {
-      if (CoreHelperUtil.isMobile()) {
-        RouterController.push('AllWallets')
-      } else {
-        RouterController.push('ConnectingWalletConnect')
-      }
-    } else {
-      RouterController.push('ConnectingExternal', { connector, wallet: connector.explorerWallet })
-    }
+    RouterController.push('ConnectingExternal', { connector, wallet: connector.explorerWallet })
   }
 }
 

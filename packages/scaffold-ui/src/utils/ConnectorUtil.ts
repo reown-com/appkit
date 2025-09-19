@@ -20,13 +20,8 @@ import { WalletUtil } from './WalletUtil.js'
 
 // -- Types ------------------------------------------ //
 interface GetConnectorTypeOrderParameters {
-  recommended: WcWallet[]
   featured: WcWallet[]
   custom: CustomWallet[] | undefined
-  recent: WcWallet[]
-  announced: WcWallet[]
-  injected: WcWallet[]
-  multiChain: WcWallet[]
   external: WcWallet[]
   overriddenConnectors?: ConnectorTypeOrder[]
 }
@@ -123,24 +118,15 @@ export const ConnectorUtil = {
    * @returns ConnectorTypeOrder[]
    */
   getConnectorTypeOrder({
-    recommended,
     featured,
     custom,
-    recent,
-    announced,
-    injected,
-    multiChain,
     external,
     overriddenConnectors = OptionsController.state.features?.connectorTypeOrder ?? []
   }: GetConnectorTypeOrderParameters) {
     const allConnectors = [
-      { type: 'walletConnect', isEnabled: true },
-      { type: 'recent', isEnabled: recent.length > 0 },
-      { type: 'injected', isEnabled: [...injected, ...announced, ...multiChain].length > 0 },
       { type: 'featured', isEnabled: featured.length > 0 },
       { type: 'custom', isEnabled: custom && custom.length > 0 },
-      { type: 'external', isEnabled: external.length > 0 },
-      { type: 'recommended', isEnabled: recommended.length > 0 }
+      { type: 'external', isEnabled: external.length > 0 }
     ]
 
     const enabledConnectors = allConnectors.filter(option => option.isEnabled)

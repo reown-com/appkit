@@ -12,5 +12,6 @@ export type {
   ColorType,
   TransactionType,
   IWalletImage,
-  TagType
+  TagType,
+  TagVariant
 } from '../src/utils/TypeUtil.js'
