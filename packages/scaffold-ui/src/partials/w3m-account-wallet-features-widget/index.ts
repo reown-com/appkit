@@ -28,7 +28,6 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import '../w3m-account-activity-widget/index.js'
-import '../w3m-account-nfts-widget/index.js'
 import '../w3m-account-tokens-widget/index.js'
 import '../w3m-tooltip-trigger/index.js'
 import '../w3m-tooltip/index.js'
@@ -62,21 +61,19 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
-  public constructor() {
-    super()
+  public override firstUpdated() {
+    AccountController.fetchTokenBalance()
     this.unsubscribe.push(
-      ...[
-        AccountController.subscribe(val => {
-          if (val.address) {
-            this.address = val.address
-            this.profileName = val.profileName
-            this.currentTab = val.currentTab
-            this.tokenBalance = val.tokenBalance
-          } else {
-            ModalController.close()
-          }
-        })
-      ],
+      AccountController.subscribe(val => {
+        if (val.address) {
+          this.address = val.address
+          this.profileName = val.profileName
+          this.currentTab = val.currentTab
+          this.tokenBalance = val.tokenBalance
+        } else {
+          ModalController.close()
+        }
+      }),
       ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
         this.activeConnectorIds = newActiveConnectorIds
       }),
@@ -91,10 +88,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     clearInterval(this.watchTokenBalance)
-  }
-
-  public override firstUpdated() {
-    AccountController.fetchTokenBalance()
   }
 
   // -- Render -------------------------------------------- //
@@ -286,9 +279,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       return html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`
     }
     if (this.currentTab === 1) {
-      return html`<w3m-account-nfts-widget></w3m-account-nfts-widget>`
-    }
-    if (this.currentTab === 2) {
       return html`<w3m-account-activity-widget></w3m-account-activity-widget>`
     }
 

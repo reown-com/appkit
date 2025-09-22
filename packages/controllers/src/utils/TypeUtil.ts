@@ -22,6 +22,7 @@ import type { AccountControllerState } from '../controllers/AccountController.js
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
+import type { RouterControllerState } from '../controllers/RouterController.js'
 
 type InitializeAppKitConfigs = {
   showWallets?: boolean
@@ -116,6 +117,7 @@ export type Connector = {
   provider?: Provider | W3mFrameProvider | UniversalProvider
   chain: ChainNamespace
   connectors?: Connector[]
+  explorerWallet?: WcWallet
 }
 
 export interface AuthConnector extends Connector {
@@ -181,6 +183,8 @@ export interface ApiGetWalletsRequest {
   badge?: BadgeType
   include?: string[]
   exclude?: string[]
+  names?: string
+  rdns?: string
 }
 
 export interface ApiGetWalletsResponse {
@@ -464,6 +468,8 @@ export type Event =
         name: string
         platform: Platform
         displayIndex?: number
+        walletRank: number | undefined
+        view: RouterControllerState['view']
       }
     }
   | {
@@ -474,6 +480,8 @@ export type Event =
         method: 'qrcode' | 'mobile' | 'browser' | 'email'
         name: string
         reconnect?: boolean
+        walletRank: number | undefined
+        view: RouterControllerState['view']
       }
     }
   | {
@@ -531,7 +539,7 @@ export type Event =
   | {
       type: 'track'
       address?: string
-      event: 'CLICK_GET_WALLET'
+      event: 'CLICK_GET_WALLET_HELP'
     }
   | {
       type: 'track'
@@ -874,6 +882,18 @@ export type Event =
   | {
       type: 'track'
       address?: string
+      event: 'SEND_REJECTED'
+      properties: {
+        message: string
+        isSmartAccount: boolean
+        network: string
+        token: string
+        amount: number
+      }
+    }
+  | {
+      type: 'track'
+      address?: string
       event: 'CONNECT_PROXY_ERROR'
       properties: {
         message: string
@@ -898,6 +918,37 @@ export type Event =
       properties: InitializeAppKitConfigs
     }
   | PayEvent
+  | {
+      type: 'track'
+      address?: string
+      event: 'GET_WALLET'
+      properties: {
+        name: string
+        walletRank: number | undefined
+        explorerId: string
+        type: 'chrome_store' | 'app_store' | 'play_store' | 'homepage'
+      }
+    }
+  | {
+      type: 'track'
+      address?: string
+      event: 'WALLET_IMPRESSION'
+      properties:
+        | {
+            name: string
+            walletRank: number | undefined
+            explorerId: string
+            view: string
+            query?: string
+            certified?: boolean
+          }
+        | {
+            name: string
+            walletRank: number | undefined
+            rdnsId?: string
+            view: string
+          }
+    }
 
 type PayConfiguration = {
   network: string

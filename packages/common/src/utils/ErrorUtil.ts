@@ -17,33 +17,15 @@ type RpcProviderError = {
   code: ProviderRpcErrorCode
 }
 
-// -- Classes ---------------------------------------------------------------- //
-export class ProviderRpcError extends Error {
-  public code: ProviderRpcErrorCode
-  override name = 'ProviderRpcError'
-
-  constructor(cause: unknown, options: RpcProviderError) {
-    super(options.message, { cause })
-    this.code = options.code
-  }
-}
-
-export class UserRejectedRequestError extends ProviderRpcError {
-  override name = 'UserRejectedRequestError'
-
-  constructor(cause: unknown) {
-    super(cause, {
-      code: ErrorUtil.RPC_ERROR_CODE.USER_REJECTED_REQUEST,
-      message: 'User rejected the request'
-    })
-  }
-}
-
 // -- Utils ---------------------------------------------------------------- //
 export const ErrorUtil = {
   RPC_ERROR_CODE: {
     USER_REJECTED_REQUEST: 4001
   } as const,
+  PROVIDER_RPC_ERROR_NAME: {
+    PROVIDER_RPC: 'ProviderRpcError',
+    USER_REJECTED_REQUEST: 'UserRejectedRequestError'
+  },
   isRpcProviderError(error: unknown): error is RpcProviderError {
     try {
       if (typeof error === 'object' && error !== null) {
@@ -60,14 +42,46 @@ export const ErrorUtil = {
       return false
     }
   },
+  isUserRejectedMessage(message: string) {
+    return (
+      message.toLowerCase().includes('user rejected') ||
+      message.toLowerCase().includes('user cancelled') ||
+      message.toLowerCase().includes('user canceled')
+    )
+  },
   isUserRejectedRequestError(error: unknown) {
     if (ErrorUtil.isRpcProviderError(error)) {
       const isUserRejectedCode = error.code === ErrorUtil.RPC_ERROR_CODE.USER_REJECTED_REQUEST
-      const isUserRejectedMessage = error.message.toLowerCase().includes('user rejected')
 
-      return isUserRejectedCode || isUserRejectedMessage
+      return isUserRejectedCode || ErrorUtil.isUserRejectedMessage(error.message)
+    }
+
+    if (error instanceof Error) {
+      return ErrorUtil.isUserRejectedMessage(error.message)
     }
 
     return false
+  }
+}
+
+// -- Classes ---------------------------------------------------------------- //
+export class ProviderRpcError extends Error {
+  public code: ProviderRpcErrorCode
+  override name = ErrorUtil.PROVIDER_RPC_ERROR_NAME.PROVIDER_RPC
+
+  constructor(cause: unknown, options: RpcProviderError) {
+    super(options.message, { cause })
+    this.code = options.code
+  }
+}
+
+export class UserRejectedRequestError extends ProviderRpcError {
+  override name = ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST
+
+  constructor(cause: unknown) {
+    super(cause, {
+      code: ErrorUtil.RPC_ERROR_CODE.USER_REJECTED_REQUEST,
+      message: 'User rejected the request'
+    })
   }
 }

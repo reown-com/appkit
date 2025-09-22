@@ -12,6 +12,7 @@ jobs:
       contents: write
       id-token: write
       pull-requests: write
+      attestations: write
     runs-on: ubuntu-latest
     timeout-minutes: 5
     # Only run on push events to release branches, skip PR events and "back to main" merges
@@ -54,7 +55,7 @@ jobs:
             --head "${{ github.ref_name }}" \
             --base main \
             --title "Merge ${{ github.ref_name }} back to main" \
-            --body  "Auto‑generated after publishing."
+            --body  "Auto‑generated after publishing." \
             --verbose
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

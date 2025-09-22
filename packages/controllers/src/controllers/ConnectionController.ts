@@ -97,6 +97,11 @@ export interface DisconnectParameters {
   initialDisconnect?: boolean
 }
 
+interface DisconnectConnectorParameters {
+  id: string
+  namespace: ChainNamespace
+}
+
 interface ConnectWalletConnectParameters {
   cache?: 'auto' | 'always' | 'never'
 }
@@ -106,6 +111,7 @@ export type DisconnectReason = (typeof DISCONNECT_REASON)[keyof typeof DISCONNEC
 export interface ConnectionControllerClient {
   connectWalletConnect?: (params?: ConnectWalletConnectParameters) => Promise<void>
   disconnect: (params?: DisconnectParameters) => Promise<void>
+  disconnectConnector: (params: DisconnectConnectorParameters) => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
@@ -376,6 +382,7 @@ const controller = {
     state.status = 'disconnected'
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
+    StorageUtil.deleteRecentWallet()
   },
 
   resetUri() {
@@ -406,7 +413,9 @@ const controller = {
         address,
         properties: {
           method: wcLinking ? 'mobile' : 'qrcode',
-          name: RouterController.state.data?.wallet?.name || 'Unknown'
+          name: RouterController.state.data?.wallet?.name || 'Unknown',
+          view: RouterController.state.view,
+          walletRank: recentWallet?.order
         }
       })
     }
@@ -457,6 +466,14 @@ const controller = {
       })
     } catch (error) {
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
+    }
+  },
+
+  async disconnectConnector({ id, namespace }: DisconnectConnectorParameters) {
+    try {
+      await ConnectionController._getClient()?.disconnectConnector({ id, namespace })
+    } catch (error) {
+      throw new AppKitError('Failed to disconnect connector', 'INTERNAL_SDK_ERROR', error)
     }
   },
 

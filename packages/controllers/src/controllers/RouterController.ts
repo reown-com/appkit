@@ -104,6 +104,7 @@ export interface RouterControllerState {
     navigateTo?: RouterControllerState['view']
     navigateWithReplace?: boolean
     swap?: SwapInputArguments
+    addWalletForNamespace?: ChainNamespace
     send?: SendInputArguments
   }
   transactionStack: TransactionAction[]

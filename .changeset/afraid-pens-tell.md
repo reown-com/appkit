@@ -1,5 +1,4 @@
 ---
-'@reown/appkit-controllers': patch
 '@reown/appkit': patch
 'pay-test-exchange': patch
 '@reown/appkit-adapter-bitcoin': patch
@@ -12,6 +11,7 @@
 '@reown/appkit-cli': patch
 '@reown/appkit-codemod': patch
 '@reown/appkit-common': patch
+'@reown/appkit-controllers': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-pay': patch
@@ -26,4 +26,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where using the `open` function with send arguments and attempting to switch networks did not throw, causing the network state to become inconsistent
+Fixed an issue where the `useAppKitConnection` hook returned `null` when wallet is disconnected

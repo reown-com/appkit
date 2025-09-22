@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 
-import { CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
+import { CoreHelperUtil, EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-item'
@@ -92,27 +92,46 @@ export class W3mDownloadsView extends LitElement {
     `
   }
 
+  private openStore(params: {
+    href: string
+    type: 'chrome_store' | 'app_store' | 'play_store' | 'homepage'
+  }) {
+    if (params.href && this.wallet) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'GET_WALLET',
+        properties: {
+          name: this.wallet.name,
+          walletRank: this.wallet.order,
+          explorerId: this.wallet.id,
+          type: params.type
+        }
+      })
+      CoreHelperUtil.openHref(params.href, '_blank')
+    }
+  }
+
   private onChromeStore() {
     if (this.wallet?.chrome_store) {
-      CoreHelperUtil.openHref(this.wallet.chrome_store, '_blank')
+      this.openStore({ href: this.wallet.chrome_store, type: 'chrome_store' })
     }
   }
 
   private onAppStore() {
     if (this.wallet?.app_store) {
-      CoreHelperUtil.openHref(this.wallet.app_store, '_blank')
+      this.openStore({ href: this.wallet.app_store, type: 'app_store' })
     }
   }
 
   private onPlayStore() {
     if (this.wallet?.play_store) {
-      CoreHelperUtil.openHref(this.wallet.play_store, '_blank')
+      this.openStore({ href: this.wallet.play_store, type: 'play_store' })
     }
   }
 
   private onHomePage() {
     if (this.wallet?.homepage) {
-      CoreHelperUtil.openHref(this.wallet.homepage, '_blank')
+      this.openStore({ href: this.wallet.homepage, type: 'homepage' })
     }
   }
 }

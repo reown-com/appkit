@@ -164,6 +164,34 @@ describe('W3mConnectInjectedWidget', () => {
     })
   })
 
+  it('should route to ConnectingExternal with wallet parameter when available', async () => {
+    const connectorWithWallet = {
+      ...MOCK_INJECTED_CONNECTOR,
+      explorerWallet: { id: 'mockInjected', name: 'Mock Injected Wallet' }
+    }
+
+    const setActiveConnectorSpy = vi.spyOn(ConnectorController, 'setActiveConnector')
+    const pushSpy = vi.spyOn(RouterController, 'push')
+
+    const element: W3mConnectInjectedWidget = await fixture(
+      html`<w3m-connect-injected-widget
+        .connectors=${[connectorWithWallet]}
+      ></w3m-connect-injected-widget>`
+    )
+
+    const walletSelector = HelpersUtil.getByTestId(
+      element,
+      `wallet-selector-${connectorWithWallet.id}`
+    )
+    walletSelector.click()
+
+    expect(setActiveConnectorSpy).toHaveBeenCalledWith(connectorWithWallet)
+    expect(pushSpy).toHaveBeenCalledWith('ConnectingExternal', {
+      connector: connectorWithWallet,
+      wallet: connectorWithWallet.explorerWallet
+    })
+  })
+
   it('should handle unknown wallet names', async () => {
     const unknownConnector: ConnectorWithProviders = {
       ...MOCK_INJECTED_CONNECTOR,
@@ -196,7 +224,7 @@ describe('W3mConnectInjectedWidget', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    const walletList = HelpersUtil.querySelectAll(element, 'wui-list-wallet')
+    const walletList = HelpersUtil.querySelectAll(element, 'w3m-list-wallet')
     expect(walletList.length).toBe(0)
 
     const browserWalletSelector = HelpersUtil.getByTestId(
@@ -219,7 +247,7 @@ describe('W3mConnectInjectedWidget', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    const walletList = HelpersUtil.querySelectAll(element, 'wui-list-wallet')
+    const walletList = HelpersUtil.querySelectAll(element, 'w3m-list-wallet')
     expect(walletList.length).toBe(2)
 
     const browserWalletSelector = HelpersUtil.getByTestId(
@@ -255,7 +283,7 @@ describe('W3mConnectInjectedWidget', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    const walletList = HelpersUtil.querySelectAll(element, 'wui-list-wallet')
+    const walletList = HelpersUtil.querySelectAll(element, 'w3m-list-wallet')
     expect(walletList.length).toBe(1)
 
     const walletSelector = HelpersUtil.getByTestId(element, `wallet-selector-${otherConnector.id}`)

@@ -60,7 +60,9 @@ describe('W3mConnectMultiChainWidget', () => {
     })
 
     const element: W3mConnectMultiChainWidget = await fixture(
-      html`<w3m-connect-multi-chain-widget></w3m-connect-multi-chain-widget>`
+      html`<w3m-connect-multi-chain-widget
+        .connectors=${[MOCK_MULTI_CHAIN_CONNECTOR, WALLET_CONNECT_CONNECTOR, INJECTED_CONNECTOR]}
+      ></w3m-connect-multi-chain-widget>`
     )
 
     element.requestUpdate()
@@ -93,13 +95,19 @@ describe('W3mConnectMultiChainWidget', () => {
     })
 
     const element: W3mConnectMultiChainWidget = await fixture(
-      html`<w3m-connect-multi-chain-widget></w3m-connect-multi-chain-widget>`
+      html`<w3m-connect-multi-chain-widget
+        .connectors=${[unknownConnector]}
+      ></w3m-connect-multi-chain-widget>`
     )
+
+    element.requestUpdate()
+    await elementUpdated(element)
 
     const walletSelector = HelpersUtil.getByTestId(
       element,
       `wallet-selector-${unknownConnector.id}`
     )
+    expect(walletSelector).not.toBeNull()
     expect(walletSelector.getAttribute('name')).toBe('Unknown')
   })
 
@@ -112,13 +120,19 @@ describe('W3mConnectMultiChainWidget', () => {
     const pushSpy = vi.spyOn(RouterController, 'push')
 
     const element: W3mConnectMultiChainWidget = await fixture(
-      html`<w3m-connect-multi-chain-widget></w3m-connect-multi-chain-widget>`
+      html`<w3m-connect-multi-chain-widget
+        .connectors=${[MOCK_MULTI_CHAIN_CONNECTOR]}
+      ></w3m-connect-multi-chain-widget>`
     )
+
+    element.requestUpdate()
+    await elementUpdated(element)
 
     const walletSelector = HelpersUtil.getByTestId(
       element,
       `wallet-selector-${MOCK_MULTI_CHAIN_CONNECTOR.id}`
     )
+    expect(walletSelector).not.toBeNull()
     walletSelector.click()
 
     expect(setActiveConnectorSpy).toHaveBeenCalledWith(MOCK_MULTI_CHAIN_CONNECTOR)
@@ -134,13 +148,20 @@ describe('W3mConnectMultiChainWidget', () => {
     })
 
     const element: W3mConnectMultiChainWidget = await fixture(
-      html`<w3m-connect-multi-chain-widget .tabIdx=${2}></w3m-connect-multi-chain-widget>`
+      html`<w3m-connect-multi-chain-widget
+        .tabIdx=${2}
+        .connectors=${[MOCK_MULTI_CHAIN_CONNECTOR]}
+      ></w3m-connect-multi-chain-widget>`
     )
+
+    element.requestUpdate()
+    await elementUpdated(element)
 
     const walletSelector = HelpersUtil.getByTestId(
       element,
       `wallet-selector-${MOCK_MULTI_CHAIN_CONNECTOR.id}`
     )
+    expect(walletSelector).not.toBeNull()
     expect(walletSelector.getAttribute('tabIdx')).toBe('2')
   })
 })

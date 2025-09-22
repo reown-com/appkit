@@ -1,7 +1,7 @@
 import type { ConnectMethod } from '@reown/appkit-controllers'
 
 export const ConstantsUtil = {
-  ACCOUNT_TABS: [{ label: 'Tokens' }, { label: 'NFTs' }, { label: 'Activity' }],
+  ACCOUNT_TABS: [{ label: 'Tokens' }, { label: 'Activity' }],
   SECURE_SITE_ORIGIN:
     // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
     (typeof process !== 'undefined' && typeof process.env !== 'undefined'

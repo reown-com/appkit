@@ -1,5 +1,4 @@
 ---
-'@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-solana': patch
@@ -9,6 +8,7 @@
 '@reown/appkit': patch
 '@reown/appkit-common': patch
 'pay-test-exchange': patch
+'@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
@@ -26,4 +26,5 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where upon user connection rejection a `CONNECT_ERROR` event was logged. It now logs a new event error called `USER_REJECTED`
+Fixed an issue where a `SEND_ERROR` event was logged when a user rejected a transaction. It now logs a `SEND_REJECTED` event instead
+

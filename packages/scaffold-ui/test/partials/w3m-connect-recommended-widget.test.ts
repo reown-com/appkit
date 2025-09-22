@@ -102,7 +102,7 @@ describe('W3mConnectRecommendedWidget', () => {
       ></w3m-connect-recommended-widget>`
     )
 
-    expect(element.shadowRoot?.querySelectorAll('wui-list-wallet')?.length).toBe(1)
+    expect(element.shadowRoot?.querySelectorAll('w3m-list-wallet')?.length).toBe(1)
   })
 
   it('should render correct amount if featuredWalletIds are set', async () => {
@@ -118,7 +118,7 @@ describe('W3mConnectRecommendedWidget', () => {
       ></w3m-connect-recommended-widget>`
     )
 
-    expect(element.shadowRoot?.querySelectorAll('wui-list-wallet')?.length).toBe(1)
+    expect(element.shadowRoot?.querySelectorAll('w3m-list-wallet')?.length).toBe(1)
   })
 
   it('should not render if there are no recommended wallets', async () => {
@@ -153,7 +153,7 @@ describe('W3mConnectRecommendedWidget', () => {
     const walletList = element.shadowRoot?.querySelector('wui-flex')
     expect(walletList).not.toBeNull()
 
-    const walletItem = element.shadowRoot?.querySelector('wui-list-wallet')
+    const walletItem = element.shadowRoot?.querySelector('w3m-list-wallet')
     expect(walletItem).not.toBeNull()
     expect(walletItem?.getAttribute('name')).toBe(MOCK_RECOMMENDED_WALLET.name)
   })
@@ -180,7 +180,7 @@ describe('W3mConnectRecommendedWidget', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    const walletItem = element.shadowRoot?.querySelector('wui-list-wallet')
+    const walletItem = element.shadowRoot?.querySelector('w3m-list-wallet')
     expect(walletItem?.getAttribute('name')).toBe('Unknown')
   })
 
@@ -196,7 +196,7 @@ describe('W3mConnectRecommendedWidget', () => {
       ></w3m-connect-recommended-widget>`
     )
 
-    const walletItem = element.shadowRoot?.querySelector('wui-list-wallet')
+    const walletItem = element.shadowRoot?.querySelector('w3m-list-wallet')
     walletItem?.click()
 
     expect(pushSpy).toHaveBeenCalledWith('ConnectingExternal', {
@@ -216,7 +216,7 @@ describe('W3mConnectRecommendedWidget', () => {
       ></w3m-connect-recommended-widget>`
     )
 
-    const walletItem = element.shadowRoot?.querySelector('wui-list-wallet')
+    const walletItem = element.shadowRoot?.querySelector('w3m-list-wallet')
     walletItem?.click()
 
     expect(pushSpy).toHaveBeenCalledWith('ConnectingWalletConnect', {
@@ -263,7 +263,7 @@ describe('W3mConnectRecommendedWidget', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    const walletItems = element.shadowRoot?.querySelectorAll('wui-list-wallet')
+    const walletItems = element.shadowRoot?.querySelectorAll('w3m-list-wallet')
     expect(walletItems?.length).toBe(1)
   })
 })

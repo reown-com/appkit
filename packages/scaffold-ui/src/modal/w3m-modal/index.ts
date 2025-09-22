@@ -24,7 +24,7 @@ import {
   SwapController,
   ThemeController
 } from '@reown/appkit-controllers'
-import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
+import { UiHelperUtil, customElement, initializeTheming, vars } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-card'
 import '@reown/appkit-ui/wui-flex'
 
@@ -39,6 +39,12 @@ import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
+
+// -- Constants --------------------------------------------- //
+const PADDING_OVERRIDES: Record<string, string> = {
+  PayWithExchange: '0',
+  PayWithExchangeSelectAsset: '0'
+}
 
 export class W3mModalBase extends LitElement {
   public static override styles = styles
@@ -63,6 +69,8 @@ export class W3mModalBase extends LitElement {
 
   @state() private filterByNamespace = ConnectorController.state.filterByNamespace
 
+  @state() private padding = vars.spacing[1]
+
   public constructor() {
     super()
     this.initializeTheming()
@@ -82,6 +90,7 @@ export class W3mModalBase extends LitElement {
         }),
         RouterController.subscribeKey('view', () => {
           this.dataset['border'] = HelpersUtil.hasFooter() ? 'true' : 'false'
+          this.padding = PADDING_OVERRIDES[RouterController.state.view] ?? vars.spacing[1]
         })
       ]
     )
@@ -117,11 +126,11 @@ export class W3mModalBase extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.style.cssText = `
-      --local-border-bottom-mobile-radius: ${
-        this.enableEmbedded ? 'clamp(0px, var(--apkt-borderRadius-8), 44px)' : '0px'
-      };
-    `
+    this.style.setProperty('--local-modal-padding', this.padding)
+    this.style.setProperty(
+      '--local-border-bottom-mobile-radius',
+      this.enableEmbedded ? `clamp(0px, ${vars.borderRadius['8']}, 44px)` : '0px'
+    )
 
     if (this.enableEmbedded) {
       return html`${this.contentTemplate()}

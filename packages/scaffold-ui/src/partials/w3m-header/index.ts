@@ -13,7 +13,7 @@ import {
   OptionsController,
   RouterController
 } from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
+import { customElement, vars } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon-button'
 import '@reown/appkit-ui/wui-select'
@@ -25,6 +25,9 @@ import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //
 const BETA_SCREENS: string[] = ['SmartSessionList']
+const BACKGROUND_OVERRIDES: Record<string, string> = {
+  PayWithExchange: vars.tokens.theme.foregroundPrimary
+}
 
 // -- Helpers ------------------------------------------- //
 function headings() {
@@ -154,6 +157,11 @@ export class W3mHeader extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const backgroundColor =
+      BACKGROUND_OVERRIDES[RouterController.state.view] ?? vars.tokens.theme.backgroundPrimary
+
+    this.style.setProperty('--local-header-background-color', backgroundColor)
+
     return html`
       <wui-flex
         .padding=${['0', '4', '0', '4'] as const}
