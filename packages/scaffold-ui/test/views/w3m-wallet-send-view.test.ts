@@ -110,9 +110,11 @@ describe('W3mWalletSendView', () => {
     await element.updateComplete
     await element.render()
 
-    const button = element.shadowRoot?.querySelector('wui-button')
-    expect(button?.textContent?.trim()).to.equal('Insufficient Funds')
-    expect(button?.disabled).to.be.true
+    const [fundWalletButton, connectDifferentWalletButton] =
+      element.shadowRoot?.querySelectorAll('wui-button') ?? []
+
+    expect(fundWalletButton?.textContent?.trim()).to.equal('Fund Wallet')
+    expect(connectDifferentWalletButton?.textContent?.trim()).to.equal('Connect a different wallet')
   })
 
   it('should show invalid address message for incorrect address and persist when input cleared', async () => {

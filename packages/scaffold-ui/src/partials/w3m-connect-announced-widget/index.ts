@@ -80,14 +80,20 @@ export class W3mConnectAnnouncedWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
+    const redirectView = RouterController.state.data?.redirectView
+
     if (connector.id === 'walletConnect') {
       if (CoreHelperUtil.isMobile()) {
         RouterController.push('AllWallets')
       } else {
-        RouterController.push('ConnectingWalletConnect')
+        RouterController.push('ConnectingWalletConnect', { redirectView })
       }
     } else {
-      RouterController.push('ConnectingExternal', { connector, wallet: connector.explorerWallet })
+      RouterController.push('ConnectingExternal', {
+        connector,
+        redirectView,
+        wallet: connector.explorerWallet
+      })
     }
   }
 }
