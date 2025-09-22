@@ -45,6 +45,8 @@ export class W3mWalletSendView extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
+  private isTryingToChooseDifferentWallet = false
+
   // -- State & Properties -------------------------------- //
   @state() private token = SendController.state.token
 
@@ -71,6 +73,21 @@ export class W3mWalletSendView extends LitElement {
       this.fetchBalances()
       this.fetchNetworkPrice()
     }
+
+    const unsubscribe = ChainController.subscribeKey('activeCaipAddress', val => {
+      console.log('activeCaipAddress', val)
+
+      if (!val && this.isTryingToChooseDifferentWallet) {
+        this.isTryingToChooseDifferentWallet = false
+        ModalController.open({
+          view: 'Connect',
+          data: {
+            redirectView: 'WalletSend'
+          }
+        }).catch(() => null)
+        unsubscribe()
+      }
+    })
 
     this.unsubscribe.push(
       ...[
@@ -143,14 +160,9 @@ export class W3mWalletSendView extends LitElement {
 
   private async onConnectDifferentWalletClick() {
     try {
+      this.isTryingToChooseDifferentWallet = true
       this.disconnecting = true
       await ConnectionController.disconnect()
-      await ModalController.open({
-        view: 'Connect',
-        data: {
-          redirectView: 'WalletSend'
-        }
-      })
     } finally {
       this.disconnecting = false
       RouterController.reset('Connect', {
