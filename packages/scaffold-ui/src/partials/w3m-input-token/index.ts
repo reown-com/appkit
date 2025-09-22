@@ -25,13 +25,11 @@ export class W3mInputToken extends LitElement {
 
   @property({ type: Number }) public sendTokenAmount?: number
 
+  @property({ type: Boolean }) public isInsufficientBalance = false
+
   // -- Render -------------------------------------------- //
   public override render() {
     const isDisabled = this.readOnly || !this.token
-    const isInsufficientBalance =
-      this.token &&
-      this.sendTokenAmount &&
-      this.sendTokenAmount > Number(this.token.quantity.numeric ?? 0)
 
     return html` <wui-flex
       flexDirection="column"
@@ -43,7 +41,7 @@ export class W3mInputToken extends LitElement {
           @inputChange=${this.onInputChange.bind(this)}
           ?disabled=${isDisabled}
           .value=${this.sendTokenAmount ? String(this.sendTokenAmount) : ''}
-          ?error=${Boolean(isInsufficientBalance)}
+          ?error=${Boolean(this.isInsufficientBalance)}
         ></wui-input-amount>
         ${this.buttonTemplate()}
       </wui-flex>

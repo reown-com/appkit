@@ -75,8 +75,6 @@ export class W3mWalletSendView extends LitElement {
     }
 
     const unsubscribe = ChainController.subscribeKey('activeCaipAddress', val => {
-      console.log('activeCaipAddress', val)
-
       if (!val && this.isTryingToChooseDifferentWallet) {
         this.isTryingToChooseDifferentWallet = false
         ModalController.open({
@@ -125,6 +123,7 @@ export class W3mWalletSendView extends LitElement {
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
           ?readOnly=${isReadOnly}
+          ?isInsufficientBalance=${this.message === SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS}
         ></w3m-input-token>
         <wui-icon-box size="md" variant="secondary" icon="arrowBottom"></wui-icon-box>
         <w3m-input-address
@@ -165,9 +164,6 @@ export class W3mWalletSendView extends LitElement {
       await ConnectionController.disconnect()
     } finally {
       this.disconnecting = false
-      RouterController.reset('Connect', {
-        redirectView: 'WalletSend'
-      })
     }
   }
 
