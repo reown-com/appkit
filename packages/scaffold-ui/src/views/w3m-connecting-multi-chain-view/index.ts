@@ -100,6 +100,7 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   private onConnector(provider: Connector) {
     const connector = this.activeConnector?.connectors?.find(p => p.chain === provider.chain)
+    const redirectView = RouterController.state.data?.redirectView
 
     if (!connector) {
       SnackController.showError('Failed to find connector')
@@ -111,11 +112,12 @@ export class W3mConnectingMultiChainView extends LitElement {
       if (CoreHelperUtil.isMobile()) {
         RouterController.push('AllWallets')
       } else {
-        RouterController.push('ConnectingWalletConnect')
+        RouterController.push('ConnectingWalletConnect', { redirectView })
       }
     } else {
       RouterController.push('ConnectingExternal', {
         connector,
+        redirectView,
         wallet: this.activeConnector?.explorerWallet
       })
     }

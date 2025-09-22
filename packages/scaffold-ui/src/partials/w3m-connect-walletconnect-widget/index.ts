@@ -78,7 +78,9 @@ export class W3mConnectWalletConnectWidget extends LitElement {
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
     ConnectorController.setActiveConnector(connector)
-    RouterController.push('ConnectingWalletConnect')
+    RouterController.push('ConnectingWalletConnect', {
+      redirectView: RouterController.state.data?.redirectView
+    })
   }
 }
 

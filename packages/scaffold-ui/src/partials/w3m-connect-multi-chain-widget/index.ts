@@ -61,7 +61,9 @@ export class W3mConnectMultiChainWidget extends LitElement {
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
     ConnectorController.setActiveConnector(connector)
-    RouterController.push('ConnectingMultiChain')
+    RouterController.push('ConnectingMultiChain', {
+      redirectView: RouterController.state.data?.redirectView
+    })
   }
 }
 

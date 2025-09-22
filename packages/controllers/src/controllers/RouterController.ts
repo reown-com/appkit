@@ -204,6 +204,10 @@ const controller = {
       state.data.wallet = undefined
     }
 
+    if (state.data?.redirectView) {
+      state.data.redirectView = undefined
+    }
+
     // Reloading the iframe contentwindow and doing the view animation in the modal causes a small freeze in the transition. Doing these separately fixes that.
     setTimeout(() => {
       if (shouldReload) {

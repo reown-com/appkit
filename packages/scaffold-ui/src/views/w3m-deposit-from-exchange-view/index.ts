@@ -225,6 +225,7 @@ export class W3mDepositFromExchangeView extends LitElement {
 
   private handlePaymentInProgress() {
     const namespace = ChainController.state.activeChain
+    const { redirectView = 'Account' } = RouterController.state.data ?? {}
 
     if (
       this.isPaymentInProgress &&
@@ -249,7 +250,7 @@ export class W3mDepositFromExchangeView extends LitElement {
         }
       })
       SnackController.showLoading('Deposit in progress...')
-      RouterController.replace('Account')
+      RouterController.replace(redirectView)
     }
   }
 

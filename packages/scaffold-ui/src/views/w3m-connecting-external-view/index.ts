@@ -64,11 +64,14 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       ConnectorController.subscribeKey('activeConnectorIds', val => {
         const newActiveConnectorId = val[namespace]
         const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+        const { redirectView } = RouterController.state.data ?? {}
 
         if (newActiveConnectorId !== this.currentActiveConnectorId) {
           if (this.hasMultipleConnections && isMultiWalletEnabled) {
             RouterController.replace('ProfileWallets')
             SnackController.showSuccess('New Wallet Added')
+          } else if (redirectView) {
+            RouterController.replace(redirectView)
           } else {
             ModalController.close()
           }
