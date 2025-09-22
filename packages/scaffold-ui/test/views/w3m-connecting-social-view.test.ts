@@ -5,7 +5,7 @@ import { html } from 'lit'
 
 import type { ChainNamespace, Connection } from '@reown/appkit-common'
 import {
-  AccountController,
+  type AccountState,
   type AuthConnector,
   ChainController,
   ConnectionController,
@@ -34,10 +34,10 @@ describe('W3mConnectingSocialView - disconnectedCallback', () => {
       Promise.resolve(undefined)
     )
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(mockAuthConnector)
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
       socialWindow: mockSocialWindow
-    })
+    } as unknown as AccountState)
     vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
       ...RouterController.state,
       view: 'ConnectingSocial'
@@ -47,7 +47,7 @@ describe('W3mConnectingSocialView - disconnectedCallback', () => {
       activeChain: 'eip155'
     })
 
-    const setSocialWindowSpy = vi.spyOn(AccountController, 'setSocialWindow')
+    const setSocialWindowSpy = vi.spyOn(ChainController, 'setAccountProp')
 
     const element: W3mConnectingSocialView = await fixture(
       html`<w3m-connecting-social-view></w3m-connecting-social-view>`
@@ -56,7 +56,7 @@ describe('W3mConnectingSocialView - disconnectedCallback', () => {
     element.disconnectedCallback()
 
     expect(mockSocialWindow.close).toHaveBeenCalled()
-    expect(setSocialWindowSpy).toHaveBeenCalledWith(undefined, 'eip155')
+    expect(setSocialWindowSpy).toHaveBeenCalledWith('socialWindow', undefined, 'eip155')
   })
 })
 
@@ -80,21 +80,23 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
       ...OptionsController.state,
       enableEmbedded: true
     })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValueOnce({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+      ...ChainController.getAccountData(),
       socialWindow: mockSocialWindow
-    })
+    } as unknown as AccountState)
     vi.spyOn(ModalController, 'state', 'get').mockReturnValueOnce({
       ...ModalController.state,
       open: true
     })
-    vi.spyOn(AccountController, 'subscribe').mockImplementationOnce(() => {
+    vi.spyOn(ChainController, 'subscribe').mockImplementationOnce(() => {
       return () => {}
     })
-    vi.spyOn(AccountController, 'subscribeKey').mockImplementationOnce((_property, callback) => {
-      subscriptionCallback = callback
-      return () => {}
-    })
+    vi.spyOn(ChainController, 'subscribeChainProp').mockImplementationOnce(
+      (_property, callback) => {
+        subscriptionCallback = callback
+        return () => {}
+      }
+    )
 
     await fixture(html`<w3m-connecting-social-view></w3m-connecting-social-view>`)
 
@@ -137,21 +139,23 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
       ...OptionsController.state,
       enableEmbedded: true
     })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValueOnce({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+      ...ChainController.getAccountData(),
       socialWindow: mockSocialWindow
-    })
+    } as unknown as AccountState)
     vi.spyOn(ModalController, 'state', 'get').mockReturnValueOnce({
       ...ModalController.state,
       open: true
     })
-    vi.spyOn(AccountController, 'subscribe').mockImplementationOnce(() => {
+    vi.spyOn(ChainController, 'subscribe').mockImplementationOnce(() => {
       return () => {}
     })
-    vi.spyOn(AccountController, 'subscribeKey').mockImplementationOnce((_property, callback) => {
-      subscriptionCallback = callback
-      return () => {}
-    })
+    vi.spyOn(ChainController, 'subscribeChainProp').mockImplementationOnce(
+      (_property, callback) => {
+        subscriptionCallback = callback
+        return () => {}
+      }
+    )
 
     await fixture(html`<w3m-connecting-social-view></w3m-connecting-social-view>`)
 
@@ -176,15 +180,15 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
       ...OptionsController.state,
       enableEmbedded: false
     })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValueOnce({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+      ...ChainController.getAccountData(),
       socialWindow: mockSocialWindow
-    })
+    } as unknown as AccountState)
     vi.spyOn(ModalController, 'state', 'get').mockReturnValueOnce({
       ...ModalController.state,
       open: false
     })
-    vi.spyOn(AccountController, 'subscribe').mockImplementationOnce(callback => {
+    vi.spyOn(ChainController, 'subscribe').mockImplementationOnce(callback => {
       subscriptionCallback = callback
       return () => {}
     })

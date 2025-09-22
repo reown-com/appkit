@@ -16,7 +16,6 @@ import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AccountController } from './AccountController.js'
 import { AlertController } from './AlertController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
@@ -196,7 +195,8 @@ const controller = {
   getParams() {
     const namespace = ChainController.state.activeChain
     const caipAddress =
-      AccountController.getCaipAddress(namespace) ?? ChainController.state.activeCaipAddress
+      ChainController.getAccountData(namespace)?.caipAddress ??
+      ChainController.state.activeCaipAddress
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
     const networkAddress = getActiveNetworkTokenAddress()
     const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
@@ -533,7 +533,7 @@ const controller = {
 
   // -- Swap -------------------------------------- //
   async swapTokens() {
-    const address = AccountController.state.address as `${string}:${string}:${string}`
+    const address = ChainController.getAccountData()?.address
     const sourceToken = state.sourceToken
     const toToken = state.toToken
     const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).gt(0)
@@ -542,7 +542,7 @@ const controller = {
       SwapController.setToTokenAmount('')
     }
 
-    if (!toToken || !sourceToken || state.loadingPrices || !haveSourceTokenAmount) {
+    if (!toToken || !sourceToken || state.loadingPrices || !haveSourceTokenAmount || !address) {
       return
     }
 

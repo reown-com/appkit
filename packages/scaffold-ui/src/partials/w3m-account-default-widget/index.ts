@@ -4,7 +4,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetUtil,
   ChainController,
   ConnectionController,
@@ -42,19 +41,21 @@ export class W3mAccountDefaultWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public caipAddress = AccountController.state.caipAddress
+  @state() public caipAddress = ChainController.getAccountData()?.caipAddress
 
-  @state() public address = CoreHelperUtil.getPlainAddress(AccountController.state.caipAddress)
+  @state() public address = CoreHelperUtil.getPlainAddress(
+    ChainController.getAccountData()?.caipAddress
+  )
 
-  @state() private profileImage = AccountController.state.profileImage
+  @state() private profileImage = ChainController.getAccountData()?.profileImage
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = ChainController.getAccountData()?.profileName
 
   @state() private disconnecting = false
 
-  @state() private balance = AccountController.state.balance
+  @state() private balance = ChainController.getAccountData()?.balance
 
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
+  @state() private balanceSymbol = ChainController.getAccountData()?.balanceSymbol
 
   @state() private features = OptionsController.state.features
 
@@ -66,17 +67,16 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   public constructor() {
     super()
-
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('caipAddress', val => {
-          this.address = CoreHelperUtil.getPlainAddress(val)
-          this.caipAddress = val
+        ChainController.subscribeChainProp('accountState', val => {
+          this.address = CoreHelperUtil.getPlainAddress(val?.caipAddress)
+          this.caipAddress = val?.caipAddress
+          this.balance = val?.balance
+          this.balanceSymbol = val?.balanceSymbol
+          this.profileName = val?.profileName
+          this.profileImage = val?.profileImage
         }),
-        AccountController.subscribeKey('balance', val => (this.balance = val)),
-        AccountController.subscribeKey('balanceSymbol', val => (this.balanceSymbol = val)),
-        AccountController.subscribeKey('profileName', val => (this.profileName = val)),
-        AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
         OptionsController.subscribeKey('features', val => (this.features = val)),
         OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val)),
         ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
@@ -323,7 +323,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private explorerBtnTemplate() {
-    const addressExplorerUrl = AccountController.state.addressExplorerUrl
+    const addressExplorerUrl = ChainController.getAccountData()?.addressExplorerUrl
 
     if (!addressExplorerUrl) {
       return null
@@ -379,7 +379,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onExplorer() {
-    const addressExplorerUrl = AccountController.state.addressExplorerUrl
+    const addressExplorerUrl = ChainController.getAccountData()?.addressExplorerUrl
 
     if (addressExplorerUrl) {
       CoreHelperUtil.openHref(addressExplorerUrl, '_blank')

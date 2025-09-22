@@ -18,7 +18,7 @@ import type {
 } from '@reown/appkit-common'
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
-import type { AccountControllerState } from '../controllers/AccountController.js'
+import type { AccountState } from '../controllers/ChainController.js'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
@@ -1186,7 +1186,7 @@ export type AdapterNetworkState = {
 export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
-  accountState?: AccountControllerState
+  accountState?: AccountState
   networkState?: AdapterNetworkState
   namespace?: ChainNamespace
   caipNetworks?: CaipNetwork[]
@@ -1361,12 +1361,12 @@ export type UseAppKitAccountReturn = {
   address: string | undefined
   isConnected: boolean
   embeddedWalletInfo?: {
-    user: AccountControllerState['user']
-    authProvider: AccountControllerState['socialProvider'] | 'email'
+    user: AccountState['user']
+    authProvider: AccountState['socialProvider'] | 'email'
     accountType: PreferredAccountTypes[ChainNamespace] | undefined
     isSmartAccountDeployed: boolean
   }
-  status: AccountControllerState['status']
+  status: AccountState['status']
 }
 
 export type UseAppKitNetworkReturn = {

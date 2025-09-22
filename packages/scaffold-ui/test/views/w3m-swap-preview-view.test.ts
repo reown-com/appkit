@@ -3,8 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Address, Hex } from '@reown/appkit-common'
 import {
-  AccountController,
-  type AccountControllerState,
+  type AccountState,
   ChainController,
   type ChainControllerState,
   RouterController,
@@ -124,7 +123,7 @@ const mockSwapState: SwapControllerState = {
   providerFee: undefined
 }
 
-const mockAccountState: AccountControllerState = {
+const mockAccountState: AccountState = {
   balanceSymbol: 'ETH',
   address: '0x123',
   currentTab: 0,
@@ -169,7 +168,7 @@ describe('W3mSwapPreviewView', () => {
     // Mock controller states and methods
     vi.spyOn(SwapController, 'state', 'get').mockReturnValue(mockSwapState)
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue(mockChainState)
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue(mockAccountState)
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue(mockAccountState)
     vi.spyOn(SwapController, 'getTransaction').mockImplementation(
       async () => mockSwapState.swapTransaction
     )

@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   AssetController,
   AssetUtil,
   ChainController,
@@ -37,6 +36,10 @@ function headings() {
   const name = walletName ?? connectorName
   const connectors = ConnectorController.getConnectors()
   const isEmail = connectors.length === 1 && connectors[0]?.id === 'w3m-email'
+  const socialProvider = ChainController.getAccountData()?.socialProvider
+  const socialTitle = socialProvider
+    ? socialProvider.charAt(0).toUpperCase() + socialProvider.slice(1)
+    : 'Connect Social'
 
   return {
     Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
@@ -89,10 +92,7 @@ function headings() {
     WhatIsAWallet: 'What is a Wallet?',
     ConnectWallets: 'Connect Wallet',
     ConnectSocials: 'All Socials',
-    ConnectingSocial: AccountController.state.socialProvider
-      ? AccountController.state.socialProvider.charAt(0).toUpperCase() +
-        AccountController.state.socialProvider.slice(1)
-      : 'Connect Social',
+    ConnectingSocial: socialTitle,
     ConnectingMultiChain: 'Select Chain',
     ConnectingFarcaster: 'Farcaster',
     SwitchActiveChain: 'Switch Chain',

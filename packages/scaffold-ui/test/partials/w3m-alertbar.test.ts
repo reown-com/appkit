@@ -1,5 +1,5 @@
 import { elementUpdated, fixture } from '@open-wc/testing'
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
@@ -35,8 +35,9 @@ const ALERT_VARIANTS = [
 ] as const
 
 describe('W3mAlertBar', () => {
-  beforeAll(() => {
-    Element.prototype.animate = vi.fn()
+  beforeEach(() => {
+    vi.restoreAllMocks()
+    Element.prototype.animate = vi.fn().mockReturnValue({ finished: Promise.resolve() })
   })
 
   afterEach(() => {

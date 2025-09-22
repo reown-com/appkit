@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 
 import { type CaipAddress } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetUtil,
   ChainController,
   ConnectionController,
@@ -60,7 +59,7 @@ export class W3mWalletSendView extends LitElement {
 
   @state() private params = RouterController.state.data?.send
 
-  @state() private caipAddress = AccountController.state.caipAddress
+  @state() private caipAddress = ChainController.getAccountData()?.caipAddress
 
   @state() private message: SendButtonMessage = SEND_BUTTON_MESSAGE.PREVIEW_SEND
 
@@ -89,8 +88,8 @@ export class W3mWalletSendView extends LitElement {
 
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('caipAddress', val => {
-          this.caipAddress = val
+        ChainController.subscribeAccountStateProp('caipAddress', val => {
+          this.caipAddress = val as CaipAddress
         }),
         SendController.subscribe(val => {
           this.token = val.token

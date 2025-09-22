@@ -5,7 +5,6 @@ import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
-import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
@@ -398,13 +397,16 @@ export const SIWXUtil = {
 
     SnackController.showLoading('Authenticating...', { autoClose: false })
 
-    AccountController.setConnectedWalletInfo(
-      {
-        ...result.session.peer.metadata,
-        name: result.session.peer.metadata.name,
-        icon: result.session.peer.metadata.icons?.[0],
-        type: 'WALLET_CONNECT'
-      },
+    const walletInfo = {
+      ...result.session.peer.metadata,
+      name: result.session.peer.metadata.name,
+      icon: result.session.peer.metadata.icons?.[0],
+      type: 'WALLET_CONNECT'
+    }
+
+    ChainController.setAccountProp(
+      'connectedWalletInfo',
+      walletInfo,
       Array.from(namespaces)[0] as ChainNamespace
     )
 

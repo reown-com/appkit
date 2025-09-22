@@ -29,7 +29,6 @@ import type {
   WriteContractArgs
 } from '../utils/TypeUtil.js'
 import { AppKitError, withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AccountController } from './AccountController.js'
 import { ChainController, type ChainControllerState } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
@@ -287,7 +286,7 @@ const controller = {
     if (!authConnector) {
       return
     }
-    AccountController.setPreferredAccountType(accountType, namespace)
+    ChainController.setAccountProp('preferredAccountType', accountType, namespace)
     await authConnector.provider.setPreferredAccount(accountType)
     StorageUtil.setPreferredAccountTypes(
       Object.entries(ChainController.state.chains).reduce((acc, [key, _]) => {
@@ -470,9 +469,8 @@ const controller = {
   },
 
   async handleAuthAccountSwitch({ address, namespace }: HandleAuthAccountSwitchParams) {
-    const smartAccount = AccountController.state.user?.accounts?.find(
-      c => c.type === 'smartAccount'
-    )
+    const accountData = ChainController.getAccountData(namespace)
+    const smartAccount = accountData?.user?.accounts?.find(c => c.type === 'smartAccount')
 
     const accountType =
       smartAccount &&
@@ -608,7 +606,7 @@ const controller = {
   }: SwitchConnectionParams) {
     let currentAddress: string | undefined = undefined
 
-    const caipAddress = AccountController.getCaipAddress(namespace)
+    const caipAddress = ChainController.getAccountData(namespace)?.caipAddress
 
     if (caipAddress) {
       const { address: currentAddressParsed } = ParseUtil.parseCaipAddress(caipAddress)

@@ -851,6 +851,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         ]
       }
     })
+
     await super.switchNetwork(params)
   }
 
