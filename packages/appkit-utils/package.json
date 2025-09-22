@@ -62,12 +62,12 @@
     "@reown/appkit-wallet": "workspace:*",
     "@wallet-standard/wallet": "1.1.0",
     "@walletconnect/logger": "2.1.2",
-    "@walletconnect/universal-provider": "2.21.7",
+    "@walletconnect/universal-provider": "2.21.9",
     "valtio": "2.1.7",
     "viem": ">=2.37.2"
   },
   "devDependencies": {
-    "@walletconnect/types": "2.21.7",
+    "@walletconnect/types": "2.21.9",
     "bs58": "6.0.0",
     "@solana/web3.js": "1.98.2",
     "@wallet-standard/features": "1.1.0",

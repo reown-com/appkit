@@ -63,7 +63,7 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.21.7",
+    "@walletconnect/universal-provider": "2.21.9",
     "valtio": "2.1.7",
     "viem": ">=2.37.2"
   },
