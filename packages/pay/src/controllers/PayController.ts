@@ -9,10 +9,10 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
+  ProviderController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
-import { ProviderUtil } from '@reown/appkit-utils'
 
 import {
   AppKitPayErrorCodes,
@@ -339,7 +339,7 @@ export const PayController = {
       return
     }
 
-    const provider = ProviderUtil.getProvider(chainNamespace)
+    const provider = ProviderController.getProvider(chainNamespace)
 
     if (!provider) {
       return
@@ -510,6 +510,8 @@ export const PayController = {
           type: 'track',
           event: status.status === 'SUCCESS' ? 'PAY_SUCCESS' : 'PAY_ERROR',
           properties: {
+            message:
+              status.status === 'FAILED' ? CoreHelperUtil.parseError(state.error) : undefined,
             source: 'pay',
             paymentId: state.paymentId || DEFAULT_PAYMENT_ID,
             configuration: {
@@ -572,6 +574,10 @@ export const PayController = {
           type: 'track',
           event: eventType as 'PAY_INITIATED' | 'PAY_SUCCESS' | 'PAY_ERROR',
           properties: {
+            message:
+              state.currentPayment.status === 'FAILED'
+                ? CoreHelperUtil.parseError(state.error)
+                : undefined,
             source: 'pay',
             paymentId: state.paymentId || DEFAULT_PAYMENT_ID,
             configuration: {

@@ -32,8 +32,8 @@ export default function DemoContent({
   const evmAdapter = config?.adapters?.find(
     adapter => adapter === 'wagmi' || adapter === 'ethers' || adapter === 'ethers5'
   )
-  const siwxReown = Boolean(config?.siwxReown)
-  const siweEnabled = Boolean(config?.siweConfig)
+  const isSiwxReown = Boolean(config?.siwxReown)
+  const isSiweEnabled = Boolean(config?.siweConfig)
   const isMultiChain = config?.adapters?.length && config?.adapters?.length > 1
   const isPayEnabled = Boolean(config?.features?.pay)
 
@@ -42,8 +42,8 @@ export default function DemoContent({
       <AppKitButtonsMultiChain adapters={config?.adapters} />
       <AppKitInfoMultiChain config={config} />
 
-      {siweEnabled ? <SiweData /> : null}
-      {siwxReown ? <ReownAuthenticationTests /> : null}
+      {isSiweEnabled ? <SiweData /> : null}
+      {isSiwxReown ? <ReownAuthenticationTests /> : null}
 
       <AppKitConnections namespace="eip155" title="EVM Connections" />
       <AppKitConnections namespace="solana" title="Solana Connections" />

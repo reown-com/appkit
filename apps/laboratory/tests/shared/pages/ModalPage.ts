@@ -4,7 +4,7 @@ import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 
 import type { WalletFeature } from '@reown/appkit'
-import type { Address, Hex } from '@reown/appkit-common'
+import type { Address, ChainNamespace, Hex } from '@reown/appkit-common'
 import { WalletPage, WalletValidator } from '@reown/appkit-testing'
 import {
   BASE_URL,
@@ -18,7 +18,6 @@ import { getNamespaceByLibrary } from '@/tests/shared/utils/namespace'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
-import { routeInterceptUrl } from '../utils/verify'
 import type { ModalValidator } from '../validators/ModalValidator'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 
@@ -107,21 +106,8 @@ export class ModalPage {
   }
 
   async load() {
-    if (this.flavor === 'wagmi-verify-evil') {
-      await routeInterceptUrl(
-        this.page,
-        maliciousUrl,
-        this.baseURL,
-        '/appkit?name=wagmi-verify-evil'
-      )
-    }
-    if (this.flavor === 'ethers-verify-evil') {
-      await routeInterceptUrl(
-        this.page,
-        maliciousUrl,
-        this.baseURL,
-        '/appkit?name=ethers-verify-evil'
-      )
+    if (this.flavor === 'wagmi-verify-evil' || this.flavor === 'ethers-verify-evil') {
+      await this.page.goto(maliciousUrl)
     }
 
     await this.page.goto(this.url)
@@ -137,8 +123,47 @@ export class ModalPage {
     return value!
   }
 
-  async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
-    await this.connectButton.click()
+  async getConnectUriMalicious(timingRecords?: TimingRecords): Promise<string> {
+    // Find div with p containing "Testnets Only?" text and get the adjacent div at the same level
+    const testnetsOnlyP = this.page.locator('p:has-text("Testnets Only?")')
+    await expect(testnetsOnlyP).toBeVisible()
+
+    const parentDiv = testnetsOnlyP.locator('..')
+    const adjacentDiv = parentDiv.locator('div').nth(1)
+    await expect(adjacentDiv).toBeVisible()
+
+    // Click the adjacent div
+    await adjacentDiv.click()
+
+    // Find div with Ethereum Goerli text and click it
+    await this.page.getByText('Ethereum').click()
+
+    // Find button with Connect text and click it
+    await this.page.getByRole('button', { name: 'Connect' }).click()
+
+    const qrLoadInitiatedTime = new Date()
+
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
+  }
+
+  async getConnectUri(timingRecords?: TimingRecords, modalOpen?: boolean): Promise<string> {
+    if (!modalOpen) {
+      await this.connectButton.click()
+    }
+
     await this.clickWalletConnect()
     const qrLoadInitiatedTime = new Date()
 
@@ -201,10 +226,12 @@ export class ModalPage {
     return uri
   }
 
+  // eslint-disable-next-line max-params
   async qrCodeFlow(
     page: ModalPage,
     walletPage: WalletPage,
-    qrCodeFlowType?: 'immediate-connect' | 'immediate'
+    qrCodeFlowType?: 'immediate-connect' | 'immediate',
+    modalOpen?: boolean
   ): Promise<void> {
     // eslint-disable-next-line init-declarations
     let uri: string
@@ -214,7 +241,7 @@ export class ModalPage {
     if (qrCodeFlowType === 'immediate-connect' || qrCodeFlowType === 'immediate') {
       uri = await page.getImmidiateConnectUri(undefined, qrCodeFlowType === 'immediate-connect')
     } else {
-      uri = await page.getConnectUri()
+      uri = await page.getConnectUri(undefined, modalOpen)
     }
     await walletPage.connectWithUri(uri)
 
@@ -423,6 +450,13 @@ export class ModalPage {
     })
   }
 
+  async disconnectMalicious() {
+    // Find button with Disconnect text and click it
+    const disconnectButton = this.page.getByRole('button', { name: 'Disconnect' })
+    await expect(disconnectButton, 'Disconnect button should be visible').toBeVisible()
+    await disconnectButton.click()
+  }
+
   async disconnect(clickAccountButton = true) {
     if (clickAccountButton) {
       const accountBtn = this.page.getByTestId('account-button')
@@ -443,6 +477,14 @@ export class ModalPage {
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click()
+  }
+
+  async signMalicious(_namespace?: string) {
+    // Find the first button with personal_sign text and click it
+    const signButton = this.page.getByRole('button', { name: 'personal_sign' }).first()
+
+    await signButton.scrollIntoViewIfNeeded()
+    await signButton.click()
   }
 
   async sign(_namespace?: string) {
@@ -566,7 +608,7 @@ export class ModalPage {
   }
 
   async switchActiveChain() {
-    await this.page.getByText('Switch to', { exact: false }).waitFor()
+    await this.page.locator('w3m-switch-active-chain-view').waitFor()
     await this.page.getByTestId('w3m-switch-active-chain-button').click()
   }
 
@@ -601,7 +643,7 @@ export class ModalPage {
   }
 
   async openProfileWalletsView(
-    namespace?: string,
+    namespace?: ChainNamespace,
     clickButtonType: 'account' | 'connect' = 'account'
   ) {
     if (clickButtonType === 'account') {
@@ -614,7 +656,7 @@ export class ModalPage {
     await this.page.waitForTimeout(500)
   }
 
-  async openConnectModal(namespace?: string) {
+  async openConnectModal(namespace?: ChainNamespace) {
     await this.page.getByTestId(`connect-button${namespace ? `-${namespace}` : ''}`).click()
   }
 
@@ -880,6 +922,17 @@ export class ModalPage {
       .getByTestId('wui-inactive-profile-wallet-item-button')
     await expect(firstActiveConnectionButton).toBeVisible()
     await firstActiveConnectionButton.click()
+  }
+
+  async disconnectConnection(alt?: string) {
+    const connection = this.page
+      .getByTestId('active-connection')
+      .filter({ has: this.page.locator(`[alt="${alt}"]`) })
+
+    const disconnectButton = connection.locator('wui-icon-link[icon="power"]')
+
+    await expect(disconnectButton).toBeVisible()
+    await disconnectButton.click()
   }
 
   async switchAccountByAddress(address: string) {

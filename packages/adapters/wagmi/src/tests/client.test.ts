@@ -240,7 +240,6 @@ describe('WagmiAdapter', () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
       const options = {
-        enableWalletConnect: false,
         enableInjected: false,
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
@@ -260,7 +259,6 @@ describe('WagmiAdapter', () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
       const options = {
-        enableWalletConnect: false,
         enableInjected: false,
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
@@ -280,7 +278,6 @@ describe('WagmiAdapter', () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
       const options = {
-        enableWalletConnect: false,
         enableInjected: false,
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
@@ -300,7 +297,6 @@ describe('WagmiAdapter', () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
       const options = {
-        enableWalletConnect: false,
         enableInjected: false,
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
@@ -322,7 +318,6 @@ describe('WagmiAdapter', () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
       const options = {
-        enableWalletConnect: false,
         enableInjected: false,
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
@@ -344,7 +339,6 @@ describe('WagmiAdapter', () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
       const options = {
-        enableWalletConnect: false,
         enableInjected: false,
         projectId: mockProjectId,
         networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]

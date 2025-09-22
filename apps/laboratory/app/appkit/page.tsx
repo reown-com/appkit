@@ -5,6 +5,7 @@ import { IoArrowBack } from 'react-icons/io5'
 import { Button, Card, Heading } from '@chakra-ui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { WagmiProvider } from 'wagmi'
 
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
@@ -15,12 +16,9 @@ import { getAppKitAdapters, getAppKitConfigByName } from '@/src/utils/AppKitConf
 
 const queryClient = new QueryClient()
 
-type SearchParams = {
-  name: string
-}
-
-export default function Page({ searchParams }: { searchParams: SearchParams }) {
-  const config = getAppKitConfigByName(searchParams['name'] || '')
+export default function Page() {
+  const searchParams = useSearchParams()
+  const config = getAppKitConfigByName(searchParams.get('name') || '')
 
   if (!config) {
     return (

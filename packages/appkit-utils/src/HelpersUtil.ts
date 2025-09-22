@@ -3,7 +3,12 @@ import {
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil
 } from '@reown/appkit-common'
-import { ChainController, ConnectorController, type Tokens } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  ConnectorController,
+  StorageUtil,
+  type Tokens
+} from '@reown/appkit-controllers'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
 
@@ -110,5 +115,23 @@ export const HelpersUtil = {
     const otherAuthNamespaces = authNamespaces.filter(ns => ns !== activeNamespace)
 
     return otherAuthNamespaces
+  },
+
+  /**
+   * Gets the storage info for a connector
+   * @param connectorId - The ID of the connector
+   * @param namespace - The namespace of the connector
+   * @returns
+   */
+  getConnectorStorageInfo(connectorId: string, namespace: ChainNamespace) {
+    const storageConnectionsByNamespace = StorageUtil.getConnections()
+    const storageConnections = storageConnectionsByNamespace[namespace] ?? []
+
+    return {
+      hasDisconnected: StorageUtil.isConnectorDisconnected(connectorId, namespace),
+      hasConnected: storageConnections.some(c =>
+        HelpersUtil.isLowerCaseMatch(c.connectorId, connectorId)
+      )
+    }
   }
 }

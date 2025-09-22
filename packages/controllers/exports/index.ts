@@ -14,6 +14,9 @@ export type { AccountControllerState } from '../src/controllers/AccountControlle
 export { ChainController } from '../src/controllers/ChainController.js'
 export type { ChainControllerState } from '../src/controllers/ChainController.js'
 
+export { ProviderController } from '../src/controllers/ProviderController.js'
+export type { ProviderControllerState } from '../src/controllers/ProviderController.js'
+
 export { OnRampController } from '../src/controllers/OnRampController.js'
 export type { OnRampControllerState, OnRampProvider } from '../src/controllers/OnRampController.js'
 
@@ -98,8 +101,11 @@ export { OptionsUtil } from '../src/utils/OptionsUtil.js'
 export { SIWXUtil } from '../src/utils/SIWXUtil.js'
 export { ModalUtil } from '../src/utils/ModalUtil.js'
 export { NetworkUtil } from '../src/utils/NetworkUtil.js'
+export { ViemUtil } from '../src/utils/ViemUtil.js'
 export { withErrorBoundary, AppKitError } from '../src/utils/withErrorBoundary.js'
 export {
+  baseSepoliaUSDC,
+  baseUSDC,
   formatCaip19Asset,
   getExchanges,
   getPayUrl,

@@ -16,7 +16,7 @@ import {
 } from '@reown/appkit-controllers'
 import { executeSocialLogin } from '@reown/appkit-controllers/utils'
 import { CoreHelperUtil } from '@reown/appkit-controllers/utils'
-import { customElement } from '@reown/appkit-ui'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-social'
 import '@reown/appkit-ui/wui-logo-select'
@@ -124,7 +124,7 @@ export class W3mSocialLoginWidget extends LitElement {
       }}
       size="lg"
       icon=${ifDefined(socials[0])}
-      text=${`Continue with ${socials[0]}`}
+      text=${`Continue with ${UiHelperUtil.capitalize(socials[0])}`}
       tabIdx=${ifDefined(this.tabIdx)}
       ?disabled=${this.isPwaLoading || this.hasConnection()}
     ></wui-list-button>`
