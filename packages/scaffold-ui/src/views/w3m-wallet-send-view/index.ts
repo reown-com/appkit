@@ -7,9 +7,9 @@ import {
   AssetUtil,
   ChainController,
   ConnectionController,
-  ConnectorControllerUtil,
   ConstantsUtil,
   CoreHelperUtil,
+  ModalController,
   RouterController,
   SendController,
   SnackController,
@@ -144,10 +144,13 @@ export class W3mWalletSendView extends LitElement {
   private async onConnectDifferentWalletClick() {
     try {
       this.disconnecting = true
-      ConnectionController.setDisconnectReason(
-        ConnectorControllerUtil.DISCONNECT_REASON.CHOOSE_DIFFERENT_WALLET
-      )
       await ConnectionController.disconnect()
+      await ModalController.open({
+        view: 'Connect',
+        data: {
+          redirectView: 'WalletSend'
+        }
+      })
     } finally {
       this.disconnecting = false
       RouterController.reset('Connect', {

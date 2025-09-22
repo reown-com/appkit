@@ -37,9 +37,6 @@ import { ModalController } from './ModalController.js'
 import { RouterController } from './RouterController.js'
 import { TransactionsController } from './TransactionsController.js'
 
-// -- Constants --------------------------------------------- //
-const DISCONNECT_REASON = ConnectorControllerUtil.DISCONNECT_REASON
-
 // -- Types --------------------------------------------- //
 interface SwitchConnectionParams {
   connection: Connection
@@ -106,8 +103,6 @@ interface ConnectWalletConnectParameters {
   cache?: 'auto' | 'always' | 'never'
 }
 
-export type DisconnectReason = (typeof DISCONNECT_REASON)[keyof typeof DISCONNECT_REASON]
-
 export interface ConnectionControllerClient {
   connectWalletConnect?: (params?: ConnectWalletConnectParameters) => Promise<void>
   disconnect: (params?: DisconnectParameters) => Promise<void>
@@ -151,7 +146,6 @@ export interface ConnectionControllerState {
   recentWallet?: WcWallet
   buffering: boolean
   status?: 'connecting' | 'connected' | 'disconnected'
-  disconnectReason?: DisconnectReason
   connectionControllerClient?: ConnectionControllerClient
 }
 
@@ -280,10 +274,6 @@ const controller = {
     }
   },
 
-  setDisconnectReason(disconnectReason: DisconnectReason) {
-    state.disconnectReason = disconnectReason
-  },
-
   async setPreferredAccountType(
     accountType: W3mFrameTypes.AccountType,
     namespace: ChainControllerState['activeChain']
@@ -389,10 +379,6 @@ const controller = {
     state.wcUri = undefined
     state.wcPairingExpiry = undefined
     wcConnectionPromise = undefined
-  },
-
-  resetDisconnectReason() {
-    state.disconnectReason = undefined
   },
 
   finalizeWcConnection(address?: string) {

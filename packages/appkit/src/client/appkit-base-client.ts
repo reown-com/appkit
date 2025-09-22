@@ -50,7 +50,6 @@ import {
   ConnectionController,
   ConnectionControllerUtil,
   ConnectorController,
-  ConnectorControllerUtil,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
   EnsController,
@@ -577,18 +576,13 @@ export abstract class AppKitBaseClient {
         const connections = ConnectionController.getConnections(activeChain)
         const isMultiWallet = this.remoteFeatures.multiWallet
         const hasConnections = connections.length > 0
-        const isTryingToChooseDifferentWallet =
-          RouterController.state.data?.redirectView === 'WalletSend' &&
-          ConnectionController.state.disconnectReason ===
-            ConnectorControllerUtil.DISCONNECT_REASON.CHOOSE_DIFFERENT_WALLET
 
         if (!adapter) {
           throw new Error('Adapter not found')
         }
 
         const result = await adapter.connectWalletConnect(chainId)
-
-        const shouldClose = !isTryingToChooseDifferentWallet && (!hasConnections || !isMultiWallet)
+        const shouldClose = !hasConnections || !isMultiWallet
 
         if (shouldClose) {
           this.close()
@@ -1182,20 +1176,11 @@ export abstract class AppKitBaseClient {
 
     adapter.on('disconnect', () => {
       const isMultiWallet = this.remoteFeatures.multiWallet
-
       const allConnections = Array.from(ConnectionController.state.connections.values()).flat()
-      const isConnectionsEmpty = allConnections.length === 0
-
-      const isTryingToChooseDifferentWallet =
-        RouterController.state.view === 'WalletSend' &&
-        ConnectionController.state.disconnectReason ===
-          ConnectorControllerUtil.DISCONNECT_REASON.CHOOSE_DIFFERENT_WALLET
-
-      const closeModal = !isTryingToChooseDifferentWallet && (!isMultiWallet || isConnectionsEmpty)
 
       this.onDisconnectNamespace({
         chainNamespace,
-        closeModal
+        closeModal: !isMultiWallet || allConnections.length === 0
       })
     })
 
@@ -1246,7 +1231,6 @@ export abstract class AppKitBaseClient {
       }
 
       StorageUtil.addConnectedNamespace(chainNamespace)
-      ConnectionController.resetDisconnectReason()
     })
   }
 
