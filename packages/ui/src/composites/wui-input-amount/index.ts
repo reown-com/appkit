@@ -29,9 +29,9 @@ export class WuiInputAmount extends LitElement {
   @property({ type: Number }) public maxIntegers?: number = undefined
 
   @property({ type: String }) public fontSize: keyof typeof vars.textSize = 'h4'
-  
+
   @property({ type: Boolean }) public error = false
-  
+
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
     this.resizeInput()
@@ -46,7 +46,7 @@ export class WuiInputAmount extends LitElement {
   public override render() {
     this.dataset['widthVariant'] = this.widthVariant
     this.dataset['error'] = String(this.error)
-    
+
     if (this.inputElementRef?.value && this.value) {
       this.inputElementRef.value.value = this.value
     }

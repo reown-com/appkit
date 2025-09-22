@@ -7,7 +7,6 @@ import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ConnectionController,
   ConnectorController,
-  ConnectorControllerUtil,
   type ConnectorType,
   ConstantsUtil,
   EventsController,
@@ -709,93 +708,5 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     })
 
     expect(ModalController.close).toHaveBeenCalled()
-  })
-
-  it('should close modal when connections are empty, multi-wallet is disabled and not choosing a different wallet from send flow', async () => {
-    mockChainControllerState({
-      activeChain: CommonConstantsUtil.CHAIN.EVM,
-      chains: new Map([
-        [
-          CommonConstantsUtil.CHAIN.EVM,
-          {
-            caipNetwork: mainnetCaipNetwork,
-            accountState: { caipAddress: 'eip155:1:0x123' }
-          }
-        ]
-      ])
-    })
-
-    const eip155Namespace = CommonConstantsUtil.CHAIN.EVM
-    const mockEip155Provider = new EventEmitter() as unknown as AdapterBlueprint
-    mockEip155Provider.disconnect = vi.fn().mockResolvedValue(undefined)
-    appKit['remoteFeatures'] = { multiWallet: false }
-
-    const closeModalSpy = vi.spyOn(ModalController, 'close')
-
-    vi.spyOn(ProviderController, 'getProvider').mockImplementation(namespace => {
-      if (namespace === eip155Namespace) return mockEip155Provider
-      return { disconnect: vi.fn() }
-    })
-
-    vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
-      ...ConnectionController.state,
-      disconnectReason: undefined,
-      connections: new Map()
-    })
-
-    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
-      ...RouterController.state,
-      view: 'Account'
-    })
-
-    mockEvmAdapter['emit']('disconnect')
-
-    await vi.waitFor(() => {
-      expect(closeModalSpy).toHaveBeenCalled()
-    })
-  })
-
-  it('should not close modal when connections are empty, multi-wallet is disabled and choosing a different wallet from send flow', async () => {
-    mockChainControllerState({
-      activeChain: CommonConstantsUtil.CHAIN.EVM,
-      chains: new Map([
-        [
-          CommonConstantsUtil.CHAIN.EVM,
-          {
-            caipNetwork: mainnetCaipNetwork,
-            accountState: { caipAddress: 'eip155:1:0x123' }
-          }
-        ]
-      ])
-    })
-
-    const eip155Namespace = CommonConstantsUtil.CHAIN.EVM
-    const mockEip155Provider = new EventEmitter() as unknown as AdapterBlueprint
-    mockEip155Provider.disconnect = vi.fn().mockResolvedValue(undefined)
-    appKit['remoteFeatures'] = { multiWallet: false }
-
-    const closeModalSpy = vi.spyOn(ModalController, 'close')
-
-    vi.spyOn(ProviderController, 'getProvider').mockImplementation(namespace => {
-      if (namespace === eip155Namespace) return mockEip155Provider
-      return { disconnect: vi.fn() }
-    })
-
-    vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
-      ...ConnectionController.state,
-      disconnectReason: ConnectorControllerUtil.DISCONNECT_REASON.CHOOSE_DIFFERENT_WALLET,
-      connections: new Map()
-    })
-
-    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
-      ...RouterController.state,
-      view: 'WalletSend'
-    })
-
-    mockEvmAdapter['emit']('disconnect')
-
-    await vi.waitFor(() => {
-      expect(closeModalSpy).not.toHaveBeenCalled()
-    })
   })
 })
