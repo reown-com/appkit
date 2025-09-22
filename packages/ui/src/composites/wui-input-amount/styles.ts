@@ -12,7 +12,7 @@ export default css`
     box-sizing: border-box;
     color: ${({ tokens }) => tokens.theme.textPrimary};
     font-feature-settings: 'case' on;
-    font-size: ${({ textSize }) => textSize.h4};
+    font-size: var(--local-font-size);
     caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
     line-height: 130%;
     letter-spacing: -1.28px;
@@ -34,7 +34,7 @@ export default css`
     position: absolute;
     visibility: hidden;
     white-space: pre;
-    font-size: ${({ textSize }) => textSize.h4};
+    font-size: var(--local-font-size);
     line-height: 130%;
     letter-spacing: -1.28px;
     font-family: ${({ fontFamily }) => fontFamily.mono};

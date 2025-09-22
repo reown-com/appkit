@@ -1,5 +1,21 @@
 # @reown/appkit-adapter-solana
 
+## 1.8.6
+
+### Patch Changes
+
+- [#5030](https://github.com/reown-com/appkit/pull/5030) [`a6779f5`](https://github.com/reown-com/appkit/commit/a6779f5143e1f788450814efcf5beadf8573214a) Thanks [@magiziz](https://github.com/magiziz)! - Added `walletRank` property to the `CONNECT_SUCCESS` event and created a new `@appkit/recent_wallet` local storage key to track the most recently connected wallet
+
+- [#4936](https://github.com/reown-com/appkit/pull/4936) [`0bf1921`](https://github.com/reown-com/appkit/commit/0bf192130f857d395135e5d740328fd1419412bd) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Enhanced connection UX by allowing scanning of QR code with main device camera and prompting the target wallet
+
+- Updated dependencies [[`a6779f5`](https://github.com/reown-com/appkit/commit/a6779f5143e1f788450814efcf5beadf8573214a), [`a3582c2`](https://github.com/reown-com/appkit/commit/a3582c22e5b761d0412bdc51322c070717ae77bb), [`a3582c2`](https://github.com/reown-com/appkit/commit/a3582c22e5b761d0412bdc51322c070717ae77bb), [`0bf1921`](https://github.com/reown-com/appkit/commit/0bf192130f857d395135e5d740328fd1419412bd)]:
+  - @reown/appkit-controllers@1.8.6
+  - @reown/appkit@1.8.6
+  - @reown/appkit-common@1.8.6
+  - @reown/appkit-utils@1.8.6
+  - @reown/appkit-polyfills@1.8.6
+  - @reown/appkit-wallet@1.8.6
+
 ## 1.8.5
 
 ### Patch Changes

@@ -313,9 +313,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   private addWagmiConnectors(options: AppKitOptions, appKit: AppKit) {
     const customConnectors: CreateConnectorFn[] = []
 
-    if (options.enableWalletConnect !== false) {
-      customConnectors.push(walletConnect(options, appKit))
-    }
+    customConnectors.push(walletConnect(options, appKit))
 
     if (options.enableInjected !== false) {
       customConnectors.push(injected({ shimDisconnect: true }))

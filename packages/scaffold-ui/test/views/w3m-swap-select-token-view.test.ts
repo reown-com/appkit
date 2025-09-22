@@ -90,6 +90,7 @@ const mockSwapState: SwapControllerState = {
   loadingTransaction: false,
   loadingApprovalTransaction: false,
   loadingBuildTransaction: false,
+  switchingTokens: false,
   fetchError: false,
   approvalTransaction: undefined,
   swapTransaction: undefined,

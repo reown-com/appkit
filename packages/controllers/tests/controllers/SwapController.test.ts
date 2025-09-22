@@ -171,6 +171,23 @@ describe('SwapController', () => {
     })
   })
 
+  it('should correctly swap source and destination token addresses', async () => {
+    // Set up initial state with distinct tokens
+    const initialSourceToken = SwapController.state.myTokensWithBalance?.[0]
+    const initialToToken = SwapController.state.myTokensWithBalance?.[1]
+
+    SwapController.setSourceToken(initialSourceToken)
+    SwapController.setToToken(initialToToken)
+
+    const originalSourceAddress = SwapController.state.sourceToken?.address
+    const originalToAddress = SwapController.state.toToken?.address
+
+    await SwapController.switchTokens()
+
+    expect(SwapController.state.sourceToken?.address).toEqual(originalToAddress)
+    expect(SwapController.state.toToken?.address).toEqual(originalSourceAddress)
+  })
+
   describe('getParams()', () => {
     it('should use ChainController.getAccountData before falling back to activeCaipAddress', () => {
       const mockNamespace = ConstantsUtil.CHAIN.EVM

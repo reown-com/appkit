@@ -7,7 +7,9 @@ import {
   type CaipAddress,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
-  NumberUtil
+  ErrorUtil,
+  NumberUtil,
+  UserRejectedRequestError
 } from '@reown/appkit-common'
 import { ContractUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
@@ -113,6 +115,18 @@ const controller = {
     state.loading = loading
   },
 
+  getSdkEventProperties(error: unknown) {
+    return {
+      message: CoreHelperUtil.parseError(error),
+      isSmartAccount:
+        getPreferredAccountType(ChainController.state.activeChain) ===
+        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+      token: state.token?.symbol || '',
+      amount: state.sendTokenAmount ?? 0,
+      network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+    }
+  },
+
   async sendToken() {
     try {
       SendController.setLoading(true)
@@ -128,6 +142,12 @@ const controller = {
         default:
           throw new Error('Unsupported chain')
       }
+    } catch (err) {
+      if (ErrorUtil.isUserRejectedRequestError(err)) {
+        throw new UserRejectedRequestError(err)
+      }
+
+      throw err
     } finally {
       SendController.setLoading(false)
     }

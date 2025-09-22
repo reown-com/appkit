@@ -161,6 +161,7 @@ export class W3mDepositFromExchangeView extends LitElement {
             text=${this.paymentAsset?.metadata.symbol || ''}
             imageSrc=${this.paymentAsset?.metadata.iconUrl || ''}
             @click=${() => RouterController.push('PayWithExchangeSelectAsset')}
+            size="lg"
           >
           </wui-token-button>
         </wui-flex>
@@ -185,7 +186,7 @@ export class W3mDepositFromExchangeView extends LitElement {
               html`<wui-chip-button
                 @click=${() => ExchangeController.setAmount(amount)}
                 type="neutral"
-                size="sm"
+                size="lg"
                 text=${`$${amount}`}
               ></wui-chip-button>`
           )}
