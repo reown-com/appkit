@@ -11,7 +11,6 @@ import {
 import type { AccountState } from '../../exports/index.js'
 import type {
   ChainAdapter,
-  ConnectionControllerClient,
   Connector,
   ConnectorType,
   ModalControllerState,
@@ -39,73 +38,33 @@ const caipNetworks = [
   { ...polygon, chainNamespace: chain, caipNetworkId: 'eip155:137' } as CaipNetwork
 ]
 
-const client: ConnectionControllerClient = {
-  connectWalletConnect: async () => {},
-  disconnect: async () => Promise.resolve(),
-  disconnectConnector: async () => Promise.resolve(),
-  signMessage: async (message: string) => Promise.resolve(message),
-  estimateGas: async () => Promise.resolve(BigInt(0)),
-  connectExternal: async _id => Promise.resolve({ address: '' }),
-  checkInstalled: _id => true,
-  parseUnits: value => BigInt(value),
-  formatUnits: value => value.toString(),
-  sendTransaction: () => Promise.resolve('0x'),
-  writeContract: () => Promise.resolve('0x'),
-  getEnsAddress: async (value: string) => Promise.resolve(value),
-  getEnsAvatar: async (value: string) => Promise.resolve(value),
-  getCapabilities: async () => Promise.resolve(''),
-  grantPermissions: async () => Promise.resolve('0x'),
-  revokePermissions: async () => Promise.resolve('0x'),
-  walletGetAssets: async () => Promise.resolve({}),
-  updateBalance: () => Promise.resolve()
-}
-
-const clientConnectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
-const clientConnectExternalSpy = vi.spyOn(client, 'connectExternal')
-const clientCheckInstalledSpy = vi.spyOn(client, 'checkInstalled')
-
-const partialClient: ConnectionControllerClient = {
-  connectWalletConnect: async () => Promise.resolve(),
-  disconnect: async () => Promise.resolve(),
-  disconnectConnector: async () => Promise.resolve(),
-  estimateGas: async () => Promise.resolve(BigInt(0)),
-  signMessage: async (message: string) => Promise.resolve(message),
-  parseUnits: value => BigInt(value),
-  formatUnits: value => value.toString(),
-  sendTransaction: () => Promise.resolve('0x'),
-  writeContract: () => Promise.resolve('0x'),
-  getEnsAddress: async (value: string) => Promise.resolve(value),
-  getEnsAvatar: async (value: string) => Promise.resolve(value),
-  getCapabilities: async () => Promise.resolve(''),
-  grantPermissions: async () => Promise.resolve('0x'),
-  revokePermissions: async () => Promise.resolve('0x'),
-  walletGetAssets: async () => Promise.resolve({}),
-  updateBalance: () => Promise.resolve()
+const baseAdapter = {
+  connectWalletConnect: vi.fn(),
+  connectExternal: vi.fn(),
+  checkInstalled: vi.fn(),
+  disconnect: vi.fn()
 }
 
 const evmAdapter = {
-  namespace: CommonConstantsUtil.CHAIN.EVM,
-  connectionControllerClient: client
+  ...baseAdapter,
+  namespace: CommonConstantsUtil.CHAIN.EVM
 }
 
 const solanaAdapter = {
-  namespace: CommonConstantsUtil.CHAIN.SOLANA,
-  connectionControllerClient: client
+  ...baseAdapter,
+  namespace: CommonConstantsUtil.CHAIN.SOLANA
 }
 
 const bip122Adapter = {
-  namespace: CommonConstantsUtil.CHAIN.BITCOIN,
-  connectionControllerClient: client
+  ...baseAdapter,
+  namespace: CommonConstantsUtil.CHAIN.BITCOIN
 }
 
 const adapters = [evmAdapter, solanaAdapter, bip122Adapter] as ChainAdapter[]
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize(adapters, [], {
-    connectionControllerClient: client
-  })
-  ConnectionController.setClient(evmAdapter.connectionControllerClient)
+  ChainController.initialize(adapters, [])
 })
 
 describe('ConnectionController', () => {
@@ -114,14 +73,10 @@ describe('ConnectionController', () => {
       [
         {
           namespace: CommonConstantsUtil.CHAIN.EVM,
-          connectionControllerClient: client,
           caipNetworks
         }
       ],
-      caipNetworks,
-      {
-        connectionControllerClient: client
-      }
+      caipNetworks
     )
 
     expect(ConnectionController.state).toEqual({
@@ -130,15 +85,14 @@ describe('ConnectionController', () => {
       wcError: false,
       buffering: false,
       isSwitchingConnection: false,
-      status: 'disconnected',
-      _client: evmAdapter.connectionControllerClient
+      status: 'disconnected'
     })
   })
   it('should update state correctly and set wcPromisae on connectWalletConnect()', async () => {
     const setConnectorIdSpy = vi.spyOn(ConnectorController, 'setConnectorId')
     // Await on set promise and check results
     await ConnectionController.connectWalletConnect()
-    expect(clientConnectWalletConnectSpy).toHaveBeenCalled()
+    expect(evmAdapter.connectWalletConnect).toHaveBeenCalled()
     expect(setConnectorIdSpy).not.toBeCalled()
     // Just in case
     vi.useRealTimers()
@@ -147,17 +101,17 @@ describe('ConnectionController', () => {
   it('connectExternal() should trigger internal client call and set connector in storage', async () => {
     const options = { id: externalId, type }
     await ConnectionController.connectExternal(options, chain)
-    expect(clientConnectExternalSpy).toHaveBeenCalledWith(options)
+    expect(evmAdapter.connectExternal).toHaveBeenCalledWith(options)
   })
 
   it('checkInstalled() should trigger internal client call', () => {
     ConnectionController.checkInstalled([externalId])
-    expect(clientCheckInstalledSpy).toHaveBeenCalledWith([externalId])
+    expect(evmAdapter.checkInstalled).toHaveBeenCalledWith([externalId])
   })
 
   it('should not throw on checkInstalled() without ids', () => {
     ConnectionController.checkInstalled()
-    expect(clientCheckInstalledSpy).toHaveBeenCalledWith(undefined)
+    expect(evmAdapter.checkInstalled).toHaveBeenCalledWith(undefined)
   })
 
   it('should not throw when optional methods are undefined', async () => {
@@ -165,20 +119,15 @@ describe('ConnectionController', () => {
       [
         {
           namespace: CommonConstantsUtil.CHAIN.EVM,
-          connectionControllerClient: partialClient,
           caipNetworks: []
         }
       ],
-      [],
-      {
-        connectionControllerClient: partialClient
-      }
+      []
     )
     await ConnectionController.connectExternal({ id: externalId, type }, chain)
     ConnectionController.checkInstalled([externalId])
-    expect(clientCheckInstalledSpy).toHaveBeenCalledWith([externalId])
-    expect(clientCheckInstalledSpy).toHaveBeenCalledWith(undefined)
-    expect(ConnectionController._getClient()).toEqual(evmAdapter.connectionControllerClient)
+    expect(evmAdapter.checkInstalled).toHaveBeenCalledWith([externalId])
+    expect(evmAdapter.checkInstalled).toHaveBeenCalledWith(undefined)
   })
 
   it('should update state correctly on resetWcConnection()', () => {
@@ -200,14 +149,14 @@ describe('ConnectionController', () => {
   })
 
   it('should disconnect correctly', async () => {
-    const disconnectSpy = vi.spyOn(client, 'disconnect')
+    const disconnectSpy = vi.spyOn(evmAdapter, 'disconnect')
     await ConnectionController.disconnect()
 
     expect(disconnectSpy).toHaveBeenCalled()
   })
 
   it('should handle connectWalletConnect correctly on telegram or safari on ios', async () => {
-    const connectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
+    const connectWalletConnectSpy = vi.spyOn(evmAdapter, 'connectWalletConnect')
 
     vi.spyOn(CoreHelperUtil, 'isPairingExpired').mockReturnValue(true)
     vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(true)
@@ -225,9 +174,9 @@ describe('ConnectionController', () => {
     vi.spyOn(CoreHelperUtil, 'isSafari').mockReturnValue(true)
     vi.spyOn(CoreHelperUtil, 'isIos').mockReturnValue(true)
 
-    const connectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
+    const connectWalletConnectSpy = vi.spyOn(evmAdapter, 'connectWalletConnect')
 
-    await ConnectionController.connectWalletConnect({ cache: 'never' })
+    await ConnectionController.connectWalletConnect()
 
     expect(connectWalletConnectSpy).toHaveBeenCalledTimes(1)
   })

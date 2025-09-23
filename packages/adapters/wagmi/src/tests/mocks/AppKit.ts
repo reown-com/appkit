@@ -101,12 +101,6 @@ export const mockAppKit = {
   walletGetAssets: vi.fn(),
   getUniversalProvider: vi.fn().mockResolvedValue(mockProvider),
   getProvider: vi.fn(),
-  universalAdapter: {
-    connectionControllerClient: {
-      connectWalletConnect: vi.fn(),
-      disconnect: vi.fn()
-    }
-  },
   getConnectorImage: vi.fn(),
   handleUnsafeRPCRequest: vi.fn().mockImplementation(() => {
     if (mockAppKit.isOpen()) {

@@ -4,8 +4,8 @@ import { WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
-  type ConnectionControllerClient,
-  type Provider as CoreProvider
+  type Provider as CoreProvider,
+  ProviderController
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
@@ -72,9 +72,7 @@ describe('SolanaAdapter', () => {
       namespace: ConstantsUtil.CHAIN.SOLANA,
       adapterType: ConstantsUtil.ADAPTER_TYPES.SOLANA
     })
-    ChainController.initialize([adapter], mockCaipNetworks, {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
-    })
+    ChainController.initialize([adapter], mockCaipNetworks)
     ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'solana')
   })
 
@@ -631,10 +629,10 @@ describe('SolanaAdapter', () => {
         getUser: mockAuthConnector.connect
       })
 
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(provider)
+
       await adapter.switchNetwork({
-        caipNetwork: mockCaipNetworks[0],
-        provider: provider,
-        providerType: 'AUTH'
+        caipNetwork: mockCaipNetworks[0]
       })
 
       expect(switchNetworkSpy).toHaveBeenCalled()

@@ -442,14 +442,6 @@ describe('BalanceUtil', () => {
         iconUrl: 'https://example.com/icon.png'
       }
 
-      vi.mocked(ConnectionController.getCapabilities).mockResolvedValue({
-        [mockEthChainIdAsHex]: {
-          assetDiscovery: {
-            supported: true
-          }
-        }
-      })
-      vi.mocked(ConnectionController.walletGetAssets).mockResolvedValue(mockAssetsResponse)
       vi.mocked(ERC7811Utils.isWalletGetAssetsResponse).mockReturnValue(true)
       vi.mocked(ERC7811Utils.createBalance).mockReturnValue(mockBalance)
 

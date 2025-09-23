@@ -247,15 +247,18 @@ export class AppKit extends AppKitBaseClient {
         enabledNetworks?.smartAccountEnabledNetworks || [],
         chainNamespace
       )
-      if (isConnected && this.connectionControllerClient?.connectExternal) {
-        await this.connectionControllerClient?.connectExternal({
-          id: ConstantsUtil.CONNECTOR_ID.AUTH,
-          info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },
-          type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
-          provider,
-          chainId: ChainController.getNetworkData(chainNamespace)?.caipNetwork?.id,
-          chain: chainNamespace
-        })
+      if (isConnected) {
+        await ConnectionController.connectExternal(
+          {
+            id: ConstantsUtil.CONNECTOR_ID.AUTH,
+            info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },
+            type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
+            provider,
+            chainId: ChainController.getNetworkData(chainNamespace)?.caipNetwork?.id,
+            chain: chainNamespace
+          },
+          chainNamespace
+        )
         this.setStatus('connected', chainNamespace)
         const socialProvider = StorageUtil.getConnectedSocialProvider()
         if (socialProvider) {
@@ -479,14 +482,17 @@ export class AppKit extends AppKitBaseClient {
               caipNetwork
             })
           } else {
-            await this.connectionControllerClient?.connectExternal?.({
-              id: ConstantsUtil.CONNECTOR_ID.AUTH,
-              provider: this.authProvider,
-              chain: networkNamespace,
-              chainId: caipNetwork.id,
-              type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
-              caipNetwork
-            })
+            await ConnectionController.connectExternal(
+              {
+                id: ConstantsUtil.CONNECTOR_ID.AUTH,
+                provider: this.authProvider,
+                chain: networkNamespace,
+                chainId: caipNetwork.id,
+                type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
+                caipNetwork
+              },
+              networkNamespace
+            )
           }
           this.setCaipNetwork(caipNetwork)
         } catch (error) {

@@ -46,12 +46,6 @@ export const mockAppKit = {
   fetchIdentity: vi.fn().mockResolvedValue(null),
   getActiveChainNamespace: vi.fn(),
   setClientId: vi.fn(),
-  universalAdapter: {
-    connectionControllerClient: {
-      connectWalletConnect: vi.fn(),
-      disconnect: vi.fn()
-    }
-  },
   getConnectorImage: vi.fn(),
   handleUnsafeRPCRequest: vi.fn().mockImplementation(() => {
     if (mockAppKit.isOpen()) {

@@ -48,29 +48,6 @@ const mockChainState: ChainControllerState = {
   },
   activeCaipAddress: 'eip155:1:0x123456789abcdef123456789abcdef123456789a',
   chains: new Map(),
-  universalAdapter: {
-    connectionControllerClient: {
-      connectWalletConnect: vi.fn(),
-      connectExternal: vi.fn(),
-      reconnectExternal: vi.fn(),
-      checkInstalled: vi.fn(),
-      disconnect: vi.fn(),
-      disconnectConnector: vi.fn(),
-      signMessage: vi.fn(),
-      sendTransaction: vi.fn(),
-      estimateGas: vi.fn(),
-      parseUnits: vi.fn(),
-      formatUnits: vi.fn(),
-      writeContract: vi.fn(),
-      getEnsAddress: vi.fn(),
-      getEnsAvatar: vi.fn(),
-      grantPermissions: vi.fn(),
-      revokePermissions: vi.fn(),
-      getCapabilities: vi.fn(),
-      walletGetAssets: vi.fn(),
-      updateBalance: vi.fn()
-    }
-  },
   noAdapters: false,
   isSwitchingNamespace: false
 }

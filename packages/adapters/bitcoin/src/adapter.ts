@@ -9,7 +9,7 @@ import {
 } from '@reown/appkit'
 import { ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ChainController, StorageUtil } from '@reown/appkit-controllers'
+import { ChainController, ProviderController, StorageUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import { type BitcoinConnector, BitcoinConstantsUtil } from '@reown/appkit-utils/bitcoin'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -48,7 +48,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   ): Promise<AdapterBlueprint.ConnectResult> {
     const connector = this.connectors.find(c => c.id === params.id)
     if (!connector) {
-      throw new Error('connectionControllerClient:connectExternal - connector is undefined')
+      throw new Error('Bitcoin Adapter:connectExternal - connector is undefined')
     }
 
     const chain = connector.chains.find(c => c.id === params.chainId) || connector.chains[0]
@@ -425,14 +425,16 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   }
 
   override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
-    if (params.providerType === 'WALLET_CONNECT' || params.providerType === 'AUTH') {
+    const providerType = ProviderController.getProviderId(params.caipNetwork.chainNamespace)
+    if (providerType === 'WALLET_CONNECT' || providerType === 'AUTH') {
       return await super.switchNetwork(params)
     }
 
-    const connector = params.provider as BitcoinConnector
-
+    const connector = ProviderController.getProvider<BitcoinConnector>(
+      params.caipNetwork.chainNamespace
+    )
     if (!connector) {
-      throw new Error('BitcoinAdapter:switchNetwork - provider is undefined')
+      throw new Error('BitcoinAdapter:switchNetwork - connector is undefined')
     }
 
     return await connector.switchNetwork(params.caipNetwork.caipNetworkId)

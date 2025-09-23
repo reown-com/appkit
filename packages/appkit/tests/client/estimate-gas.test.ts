@@ -1,40 +1,28 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type Address, ConstantsUtil, type Hex } from '@reown/appkit-common'
-import { ProviderController } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  ConnectionController,
+  ProviderController
+} from '@reown/appkit-controllers'
 import type { EstimateGasTransactionArgs } from '@reown/appkit-controllers'
 import { mockChainControllerState } from '@reown/appkit-controllers/testing'
 
-import { AppKitBaseClient } from '../../src/client/appkit-base-client.js'
 import { mockEvmAdapter } from '../mocks/Adapter.js'
 import { mainnet } from '../mocks/Networks.js'
-import { mockOptions } from '../mocks/Options.js'
 import {
   mockBlockchainApiController,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
 
-class TestAppKit extends AppKitBaseClient {
-  protected async injectModalUi(): Promise<void> {}
-  public async syncIdentity(): Promise<void> {}
-
-  // Expose protected connectionControllerClient for testing
-  public get testConnectionControllerClient() {
-    return this.connectionControllerClient
-  }
-}
-
 describe('AppKit Gas Estimation', () => {
-  let appKit: TestAppKit
-
   beforeEach(() => {
     vi.restoreAllMocks()
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
-
-    appKit = new TestAppKit(mockOptions)
   })
 
   it('should return estimated gas for EVM chain', async () => {
@@ -56,7 +44,7 @@ describe('AppKit Gas Estimation', () => {
       data: '0x' as Hex
     }
 
-    const result = await appKit.testConnectionControllerClient?.estimateGas(transactionArgs)
+    const result = await ConnectionController.estimateGas(transactionArgs)
 
     expect(ProviderController.getProvider).toHaveBeenCalledWith(ConstantsUtil.CHAIN.EVM)
     expect(mockEvmAdapter.estimateGas).toHaveBeenCalledWith({
@@ -77,7 +65,7 @@ describe('AppKit Gas Estimation', () => {
       chainNamespace: ConstantsUtil.CHAIN.SOLANA
     } as EstimateGasTransactionArgs
 
-    const result = await appKit.testConnectionControllerClient?.estimateGas(transactionArgs)
+    const result = await ConnectionController.estimateGas(transactionArgs)
 
     expect(mockEvmAdapter.estimateGas).not.toHaveBeenCalled()
     expect(result).toBe(0n)
@@ -101,16 +89,16 @@ describe('AppKit Gas Estimation', () => {
       data: '0x' as Hex
     }
 
-    await expect(
-      appKit.testConnectionControllerClient?.estimateGas(transactionArgs)
-    ).rejects.toThrow('Gas estimation failed')
+    await expect(ConnectionController.estimateGas(transactionArgs)).rejects.toThrow(
+      'Gas estimation failed'
+    )
   })
 
   it('should throw error when CaipNetwork is undefined', async () => {
     const mockProvider = { provider: 'mock' }
 
     // Mock the getCaipNetwork method to return undefined
-    vi.spyOn(appKit, 'getCaipNetwork').mockReturnValue(undefined)
+    vi.spyOn(ChainController, 'getCaipNetwork').mockReturnValue(undefined)
 
     mockChainControllerState({
       activeChain: ConstantsUtil.CHAIN.EVM,
@@ -127,9 +115,9 @@ describe('AppKit Gas Estimation', () => {
       data: '0x' as Hex
     }
 
-    await expect(
-      appKit.testConnectionControllerClient?.estimateGas(transactionArgs)
-    ).rejects.toThrow('estimateGas: caipNetwork is required but got undefined')
+    await expect(ConnectionController.estimateGas(transactionArgs)).rejects.toThrow(
+      'estimateGas: caipNetwork is required but got undefined'
+    )
   })
 
   it('should handle missing adapter gracefully', async () => {
@@ -150,7 +138,7 @@ describe('AppKit Gas Estimation', () => {
       data: '0x' as Hex
     }
 
-    const result = await appKit.testConnectionControllerClient?.estimateGas(transactionArgs)
+    const result = await ConnectionController.estimateGas(transactionArgs)
 
     expect(result).toBe(0n)
   })

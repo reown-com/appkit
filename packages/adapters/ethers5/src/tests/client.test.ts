@@ -10,7 +10,6 @@ import {
 } from '@reown/appkit-common'
 import {
   ChainController,
-  type ConnectionControllerClient,
   type Provider,
   ProviderController,
   SIWXUtil
@@ -78,9 +77,7 @@ describe('Ethers5Adapter', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     adapter = new Ethers5Adapter()
-    ChainController.initialize([adapter], mockCaipNetworks, {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
-    })
+    ChainController.initialize([adapter], mockCaipNetworks)
     ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })
 
@@ -885,9 +882,7 @@ describe('Ethers5Adapter', () => {
     })
     it('should switch network with Auth provider', async () => {
       await adapter.switchNetwork({
-        caipNetwork: mockCaipNetworks[0],
-        provider: mockAuthProvider,
-        providerType: 'AUTH'
+        caipNetwork: mockCaipNetworks[0]
       })
 
       expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith({ chainId: 'eip155:1' })

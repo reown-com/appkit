@@ -95,11 +95,9 @@ export const SmartSessionsController = {
     if (!activeCaipAddress || !chainAndAddress) {
       throw new Error(ERROR_MESSAGES.INVALID_ADDRESS)
     }
-    // Fetch the ConnectionController client
-    const connectionControllerClient = ConnectionController._getClient()
 
     //Check for connected wallet supports permissions capabilities
-    const walletCapabilities = (await connectionControllerClient?.getCapabilities(
+    const walletCapabilities = (await ConnectionController.getCapabilities(
       chainAndAddress.address
     )) as WalletCapabilities
 
@@ -207,9 +205,6 @@ export const SmartSessionsController = {
         throw new Error(ERROR_MESSAGES.INVALID_ADDRESS)
       }
 
-      // Fetch the ConnectionController client
-      const connectionControllerClient = ConnectionController._getClient()
-
       // Retrieve state values
       const { projectId } = OptionsController.state
 
@@ -222,7 +217,7 @@ export const SmartSessionsController = {
         }
       })
 
-      const signature = await connectionControllerClient?.revokePermissions({
+      const signature = await ConnectionController.revokePermissions({
         pci: session.pci,
         permissions: [...session.permissions.map(p => JSON.parse(JSON.stringify(p)))],
         expiry: Math.floor(session.expiry / 1000),

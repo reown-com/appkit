@@ -19,7 +19,6 @@ import type {
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 import type { AccountState } from '../controllers/ChainController.js'
-import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 import type { RouterControllerState } from '../controllers/RouterController.js'
@@ -1175,7 +1174,6 @@ export type AdapterNetworkState = {
 }
 
 export type ChainAdapter = {
-  connectionControllerClient?: ConnectionControllerClient
   accountState?: AccountState
   networkState?: AdapterNetworkState
   namespace?: ChainNamespace

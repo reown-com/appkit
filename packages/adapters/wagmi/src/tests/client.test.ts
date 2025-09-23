@@ -20,12 +20,7 @@ import { checksumAddress } from 'viem'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork, type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
-import {
-  ChainController,
-  type ConnectionControllerClient,
-  CoreHelperUtil,
-  type SocialProvider
-} from '@reown/appkit-controllers'
+import { ChainController, CoreHelperUtil, type SocialProvider } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
@@ -153,9 +148,7 @@ describe('WagmiAdapter', () => {
       projectId: mockProjectId
     })
     adapter.wagmiConfig = mockWagmiConfig
-    ChainController.initialize([adapter], mockCaipNetworks, {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
-    })
+    ChainController.initialize([adapter], mockCaipNetworks)
     ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })
 
@@ -868,9 +861,7 @@ describe('WagmiAdapter', () => {
       })
 
       await adapter.switchNetwork({
-        caipNetwork: mockCaipNetworks[0],
-        provider: mockAuthProvider,
-        providerType: 'AUTH'
+        caipNetwork: mockCaipNetworks[0]
       })
 
       expect(mockAuthProvider.getUser).toHaveBeenCalledWith({

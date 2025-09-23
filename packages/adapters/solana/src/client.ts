@@ -11,6 +11,7 @@ import {
   ChainController,
   CoreHelperUtil,
   type Provider as CoreProvider,
+  ProviderController,
   StorageUtil
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
@@ -166,9 +167,11 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   public async signMessage(
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
-    const provider = params.provider as SolanaProvider
+    const provider = ProviderController.getProvider<SolanaProvider>(
+      CommonConstantsUtil.CHAIN.SOLANA
+    )
     if (!provider) {
-      throw new Error('connectionControllerClient:signMessage - provider is undefined')
+      throw new Error('Solana Adapter:signMessage - provider is undefined')
     }
 
     const signature = await provider.signMessage(new TextEncoder().encode(params.message))
@@ -183,17 +186,19 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   ): Promise<AdapterBlueprint.EstimateGasTransactionResult> {
     const connection = SolStoreUtil.state.connection
 
-    if (!connection || !params.provider) {
+    const provider = ProviderController.getProvider<SolanaProvider>(
+      CommonConstantsUtil.CHAIN.SOLANA
+    )
+    if (!connection || !provider) {
       throw new Error('Connection is not set')
     }
 
     const transaction = await createSendTransaction({
-      provider: params.provider as SolanaProvider,
+      provider,
       connection,
       to: '11111111111111111111111111111111',
-      value: 1
+      value: params?.value ? Number(params.value) : 1
     })
-
     const fee = await transaction.getEstimatedFee(connection)
 
     return {
@@ -206,11 +211,12 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   ): Promise<AdapterBlueprint.SendTransactionResult> {
     const connection = SolStoreUtil.state.connection
 
-    if (!connection || !params.provider) {
+    const provider = ProviderController.getProvider<SolanaProvider>(
+      CommonConstantsUtil.CHAIN.SOLANA
+    )
+    if (!connection || !provider) {
       throw new Error('Connection is not set')
     }
-
-    const provider = params.provider as SolanaProvider
 
     const transaction = params.tokenMint
       ? await createSPLTokenTransaction({

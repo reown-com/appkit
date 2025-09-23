@@ -7,7 +7,6 @@ import { W3mFrameProvider } from '@reown/appkit-wallet'
 import {
   ChainController,
   ConnectionController,
-  type ConnectionControllerClient,
   ConnectorController,
   EnsController
 } from '../../exports/index.js'
@@ -87,10 +86,7 @@ beforeAll(() => {
         }
       }
     ],
-    [{ ...mainnet, caipNetworkId: 'eip155:1', chainNamespace: ConstantsUtil.CHAIN.EVM }],
-    {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
-    }
+    [{ ...mainnet, caipNetworkId: 'eip155:1', chainNamespace: ConstantsUtil.CHAIN.EVM }]
   )
   ChainController.setAccountProp('address', '0x123', chain)
 })

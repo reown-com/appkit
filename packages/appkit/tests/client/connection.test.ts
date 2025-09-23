@@ -5,6 +5,7 @@ import type { CaipNetwork } from '@reown/appkit-common'
 import {
   type AccountType,
   ChainController,
+  ConnectionController,
   type Connector,
   ConnectorController,
   type ConnectorType,
@@ -253,13 +254,16 @@ describe('syncConnectedWalletInfo', () => {
         accounts: [{ namespace: 'eip155', address: '0x123', type: 'eoa' }]
       })
 
-      await (appKit as any).connectionControllerClient.connectExternal({
-        id: 'test-connector',
-        info: { name: 'Test Connector' },
-        type: 'INJECTED',
-        provider: {} as any,
-        chain: 'eip155'
-      })
+      await ConnectionController.connectExternal(
+        {
+          id: 'test-connector',
+          info: { name: 'Test Connector' },
+          type: 'INJECTED',
+          provider: {} as any,
+          chain: 'eip155'
+        },
+        'eip155'
+      )
 
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
     })
@@ -276,13 +280,16 @@ describe('syncConnectedWalletInfo', () => {
         accounts: [{ namespace: 'eip155', address: '0x123', type: 'eoa' }]
       })
 
-      await (appKit as any).connectionControllerClient.connectExternal({
-        id: 'test-connector',
-        info: { name: 'Test Connector' },
-        type: 'INJECTED',
-        provider: {} as any,
-        chain: 'eip155'
-      })
+      await ConnectionController.connectExternal(
+        {
+          id: 'test-connector',
+          info: { name: 'Test Connector' },
+          type: 'INJECTED',
+          provider: {} as any,
+          chain: 'eip155'
+        },
+        'eip155'
+      )
 
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
     })
@@ -302,13 +309,16 @@ describe('syncConnectedWalletInfo', () => {
         accounts: allAccounts
       })
 
-      await (appKit as any).connectionControllerClient.connectExternal({
-        id: 'test-connector',
-        info: { name: 'Test Connector' },
-        type: 'INJECTED',
-        provider: {} as any,
-        chain: 'eip155'
-      })
+      await ConnectionController.connectExternal(
+        {
+          id: 'test-connector',
+          info: { name: 'Test Connector' },
+          type: 'INJECTED',
+          provider: {} as any,
+          chain: 'eip155'
+        },
+        'eip155'
+      )
 
       //@ts-expect-error
       expect(mockEvmAdapter.getAccounts.mock.calls).toHaveLength(0)
@@ -328,13 +338,16 @@ describe('syncConnectedWalletInfo', () => {
         type: 'INJECTED'
       })
 
-      await (appKit as any).connectionControllerClient.connectExternal({
-        id: 'test-connector',
-        info: { name: 'Test Connector' },
-        type: 'INJECTED',
-        provider: {} as any,
-        chain: 'eip155'
-      })
+      await ConnectionController.connectExternal(
+        {
+          id: 'test-connector',
+          info: { name: 'Test Connector' },
+          type: 'INJECTED',
+          provider: {} as any,
+          chain: 'eip155'
+        },
+        'eip155'
+      )
 
       expect(removeDisconnectedConnectorIdSpy).toHaveBeenCalledWith('test-connector', 'eip155')
     })
@@ -351,11 +364,12 @@ describe('syncConnectedWalletInfo', () => {
         })
       })
 
-      await (appKit as any).connectionControllerClient.reconnectExternal({
+      await ConnectionController.reconnectExternal({
         id: 'test-connector',
         info: { name: 'Test Connector' },
         type: 'INJECTED',
-        provider: {} as any
+        provider: {} as any,
+        chain: 'eip155'
       })
 
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
@@ -366,7 +380,7 @@ describe('syncConnectedWalletInfo', () => {
         clientId: 'test-client'
       })
 
-      await (appKit as any).connectionControllerClient.connectWalletConnect()
+      await ConnectionController.connectWalletConnect()
 
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
     })
@@ -463,17 +477,20 @@ describe('syncConnectedWalletInfo', () => {
   describe('connectExternal', () => {
     it('should throw an error if connection gets declined', async () => {
       const appKit = new AppKit(mockOptions)
+      await appKit.ready()
 
       vi.spyOn(mockEvmAdapter, 'connect').mockRejectedValue(new Error('Connection declined'))
 
       await expect(
-        (appKit as any).connectionControllerClient['connectExternal']({
-          id: 'test-connector',
-          info: { name: 'Test Connector' },
-          type: 'injected',
-          provider: {},
-          chain: 'eip155'
-        })
+        ConnectionController.connectExternal(
+          {
+            id: 'test-connector',
+            info: { name: 'Test Connector' },
+            type: 'INJECTED',
+            chain: 'eip155'
+          },
+          'eip155'
+        )
       ).rejects.toThrow('Connection declined')
     })
   })

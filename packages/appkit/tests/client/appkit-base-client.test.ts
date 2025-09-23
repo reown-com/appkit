@@ -193,8 +193,7 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
       { connectorId: 'existing-connector', accounts: [{ address: '0x123' }] }
     ])
 
-    const connectionControllerClient = (baseClient as any).connectionControllerClient
-    await connectionControllerClient.connectWalletConnect()
+    await ConnectionController.connectWalletConnect()
 
     expect(closeSpy).not.toHaveBeenCalled()
   })
@@ -202,8 +201,7 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
   it('should call close when hasConnections is false', async () => {
     vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([])
 
-    const connectionControllerClient = (baseClient as any).connectionControllerClient
-    await connectionControllerClient.connectWalletConnect()
+    await ConnectionController.connectWalletConnect()
 
     expect(closeSpy).toHaveBeenCalled()
   })
@@ -217,8 +215,7 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
     })
     baseClient.remoteFeatures = { multiWallet: false }
 
-    const connectionControllerClient = (baseClient as any).connectionControllerClient
-    await connectionControllerClient.connectWalletConnect()
+    await ConnectionController.connectWalletConnect()
 
     expect(closeSpy).toHaveBeenCalled()
   })

@@ -8,7 +8,6 @@ import {
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   type Connection,
-  ConstantsUtil,
   ParseUtil
 } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
@@ -17,6 +16,7 @@ import { AssetUtil } from '../utils/AssetUtil.js'
 import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
 import { ConnectionControllerUtil } from '../utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../utils/ConnectorControllerUtil.js'
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SIWXUtil } from '../utils/SIWXUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
@@ -26,8 +26,6 @@ import type {
   Connector,
   EstimateGasTransactionArgs,
   SendTransactionArgs,
-  WalletGetAssetsParams,
-  WalletGetAssetsResponse,
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil.js'
@@ -37,6 +35,7 @@ import { AlertController } from './AlertController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController, type ChainControllerState } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
+import { EnsController } from './EnsController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
@@ -367,51 +366,182 @@ const controller = {
   },
 
   async signMessage(message: string) {
-    return ConnectionController._getClient()?.signMessage(message)
+    const namespace = ChainController.state.activeChain
+
+    if (!namespace) {
+      throw new Error('signMessage: namespace not found')
+    }
+
+    const adapter = AdapterController.get(namespace)
+
+    if (!namespace) {
+      throw new Error('signMessage: namespace not found')
+    }
+
+    if (!adapter) {
+      throw new Error('signMessage: adapter not found')
+    }
+
+    const address = ChainController.getAccountData(namespace)?.address
+
+    if (!address) {
+      throw new Error('signMessage: address not found')
+    }
+
+    const result = await adapter?.signMessage({
+      message,
+      address
+    })
+
+    return result?.signature || ''
   },
 
   parseUnits(value: string, decimals: number) {
-    return ConnectionController._getClient()?.parseUnits(value, decimals)
+    const namespace = ChainController.state.activeChain
+
+    if (!namespace) {
+      throw new Error('parseUnits: namespace not found')
+    }
+
+    const adapter = AdapterController.get(namespace)
+
+    if (!adapter) {
+      throw new Error('parseUnits: adapter is required but got undefined')
+    }
+
+    return adapter?.parseUnits({ value, decimals }) ?? 0n
   },
 
   formatUnits(value: bigint, decimals: number) {
-    return ConnectionController._getClient()?.formatUnits(value, decimals)
+    const namespace = ChainController.state.activeChain
+
+    if (!namespace) {
+      throw new Error('formatUnits: namespace not found')
+    }
+
+    const adapter = AdapterController.get(namespace)
+
+    if (!adapter) {
+      throw new Error('formatUnits: adapter is required but got undefined')
+    }
+
+    return adapter?.formatUnits({ value, decimals }) ?? '0'
   },
 
-  updateBalance(namespace: ChainNamespace) {
-    return ConnectionController._getClient()?.updateBalance(namespace)
+  async updateBalance(namespace: ChainNamespace) {
+    const address = ChainController.getAccountData(namespace)?.address
+    const caipNetwork = ChainController.getCaipNetwork(namespace)
+    if (!caipNetwork || !address) {
+      return
+    }
+
+    const adapter = AdapterController.get(namespace)
+
+    if (adapter) {
+      const balance = await adapter.getBalance({
+        address,
+        chainId: caipNetwork.id,
+        caipNetwork,
+        tokens: OptionsController.state.tokens
+      })
+      ChainController.setAccountProp('balance', balance, namespace)
+      ChainController.setAccountProp('balanceSymbol', balance.symbol, namespace)
+    }
   },
 
   async sendTransaction(args: SendTransactionArgs) {
-    return ConnectionController._getClient()?.sendTransaction(args)
-  },
+    const namespace = args.chainNamespace
 
-  async getCapabilities(params: string) {
-    return ConnectionController._getClient()?.getCapabilities(params)
-  },
+    if (!namespace) {
+      throw new Error('sendTransaction: namespace not found')
+    }
 
-  async grantPermissions(params: object | readonly unknown[]) {
-    return ConnectionController._getClient()?.grantPermissions(params)
-  },
+    if (ConstantsUtil.SEND_SUPPORTED_NAMESPACES.includes(namespace)) {
+      const adapter = AdapterController.get(namespace)
 
-  async walletGetAssets(params: WalletGetAssetsParams): Promise<WalletGetAssetsResponse> {
-    return ConnectionController._getClient()?.walletGetAssets(params) ?? {}
+      if (!adapter) {
+        throw new Error('sendTransaction: adapter not found')
+      }
+
+      const result = await adapter?.sendTransaction({
+        ...args,
+        caipNetwork: ChainController.getCaipNetwork(namespace)
+      })
+
+      return result?.hash || ''
+    }
+
+    return ''
   },
 
   async estimateGas(args: EstimateGasTransactionArgs) {
-    return ConnectionController._getClient()?.estimateGas(args)
+    const namespace = args.chainNamespace
+
+    if (namespace === CommonConstantsUtil.CHAIN.EVM) {
+      const adapter = AdapterController.get(namespace)
+
+      if (!adapter) {
+        throw new Error('estimateGas: adapter is required but got undefined')
+      }
+
+      const provider = ProviderController.getProvider(namespace)
+      const caipNetwork = ChainController.getCaipNetwork(namespace)
+
+      if (!caipNetwork) {
+        throw new Error('estimateGas: caipNetwork is required but got undefined')
+      }
+
+      const result = await adapter?.estimateGas({ ...args, provider, caipNetwork })
+
+      return result?.gas || 0n
+    }
+
+    return 0n
   },
 
   async writeContract(args: WriteContractArgs) {
-    return ConnectionController._getClient()?.writeContract(args)
+    const namespace = args.chainNamespace || ChainController.state.activeChain
+    if (!namespace) {
+      throw new Error('writeContract: namespace is required but got undefined')
+    }
+
+    const adapter = AdapterController.get(namespace)
+    if (!adapter) {
+      throw new Error('writeContract: adapter is required but got undefined')
+    }
+
+    const caipNetwork = ChainController.getCaipNetwork(namespace)
+    const caipAddress = ChainController.getAccountData(namespace)?.caipAddress
+    const provider = ProviderController.getProvider(namespace)
+
+    if (!caipNetwork || !caipAddress) {
+      throw new Error('writeContract: caipNetwork or caipAddress is required but got undefined')
+    }
+
+    const result = await adapter?.writeContract({ ...args, caipNetwork, provider, caipAddress })
+
+    return result?.hash as `0x${string}` | null
   },
 
-  async getEnsAddress(value: string) {
-    return ConnectionController._getClient()?.getEnsAddress(value)
+  async getEnsAddress(name: string) {
+    const wcNameAddress = await EnsController.resolveName(name)
+    const networkNameAddresses = Object.values(wcNameAddress?.addresses) || []
+
+    return networkNameAddresses[0]?.address || false
   },
 
-  async getEnsAvatar(value: string) {
-    return ConnectionController._getClient()?.getEnsAvatar(value)
+  async getEnsAvatar(address: string) {
+    const namespace = ChainController.state.activeChain
+
+    if (!namespace) {
+      throw new Error('getEnsAvatar: namespace is required but got undefined')
+    }
+
+    const avatar = await BlockchainApiController.fetchIdentity({
+      address
+    })
+
+    return avatar.avatar || false
   },
 
   checkInstalled(ids?: string[]) {
@@ -507,8 +637,8 @@ const controller = {
     const namespaceConnectorId = ConnectorController.getConnectorId(namespace)
     const connectorId = connectorIdParam || namespaceConnectorId
 
-    const isAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
-    const isWalletConnect = connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    const isAuth = connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
+    const isWalletConnect = connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     const shouldDisconnectAll = isAuth || isWalletConnect || !chainNamespace
 
     try {

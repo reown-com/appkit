@@ -51,12 +51,6 @@ export const mockAppKit = {
   fetchIdentity: vi.fn().mockResolvedValue(null),
   getActiveChainNamespace: vi.fn().mockReturnValue('solana'),
   setClientId: vi.fn(),
-  universalAdapter: {
-    connectionControllerClient: {
-      connectWalletConnect: vi.fn(),
-      disconnect: vi.fn()
-    }
-  },
   getConnectorImage: vi.fn()
 } as unknown as AppKit
 

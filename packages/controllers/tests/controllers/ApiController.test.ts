@@ -6,7 +6,6 @@ import {
   ApiController,
   AssetController,
   ChainController,
-  type ConnectionControllerClient,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -87,10 +86,7 @@ beforeAll(() => {
         caipNetworks: []
       }
     ],
-    [],
-    {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
-    }
+    []
   )
 })
 
@@ -263,10 +259,7 @@ describe('ApiController', () => {
           caipNetworks: reuqestedCaipNetworks
         }
       ],
-      reuqestedCaipNetworks,
-      {
-        connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
-      }
+      reuqestedCaipNetworks
     )
 
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()

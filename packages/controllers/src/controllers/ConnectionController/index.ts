@@ -52,13 +52,6 @@ export type SwitchConnectionParameters = {
   address?: string
 }
 
-export type ConnectionControllerClient = {
-  connect: (params: ConnectParameters) => Promise<void>
-  disconnect: (params?: DisconnectParameters) => Promise<void>
-  reconnect: (params: ReconnectParameters) => Promise<void>
-  switchConnection: (params: SwitchConnectionParameters) => Promise<void>
-}
-
 export type ConnectParameters = {
   connectorId: string
   namespace: ChainNamespace

@@ -47,9 +47,6 @@ describe('SIWXUtil', () => {
       vi.spyOn(CoreHelperUtil, 'getPlainAddress').mockReturnValue(
         '0x1234567890123456789012345678901234567890'
       )
-      vi.spyOn(ConnectionController, '_getClient').mockReturnValue({
-        signMessage: vi.fn()
-      } as any)
 
       await SIWXUtil.requestSignMessage()
 

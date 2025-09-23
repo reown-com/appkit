@@ -10,7 +10,6 @@ import {
 } from '@reown/appkit-common'
 import {
   ChainController,
-  type ConnectionControllerClient,
   CoreHelperUtil,
   type Provider,
   ProviderController,
@@ -134,9 +133,7 @@ describe('EthersAdapter', () => {
     }))
 
     adapter = new EthersAdapter()
-    ChainController.initialize([adapter], mockCaipNetworks, {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
-    })
+    ChainController.initialize([adapter], mockCaipNetworks)
     ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })
 
@@ -962,9 +959,7 @@ describe('EthersAdapter', () => {
 
         const mockCaipNetwork = mockCaipNetworks[0]
         await adapter.switchNetwork({
-          caipNetwork: mockCaipNetwork,
-          provider: mockProvider,
-          providerType: 'EXTERNAL'
+          caipNetwork: mockCaipNetwork
         })
 
         expect(mockProvider.request).toHaveBeenCalledWith({
@@ -989,9 +984,7 @@ describe('EthersAdapter', () => {
 
     it('should switch network with Auth provider', async () => {
       await adapter.switchNetwork({
-        caipNetwork: mockCaipNetworks[0],
-        provider: mockAuthProvider,
-        providerType: 'AUTH'
+        caipNetwork: mockCaipNetworks[0]
       })
 
       expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith({ chainId: 'eip155:1' })
@@ -1020,9 +1013,7 @@ describe('EthersAdapter', () => {
       const mockCaipNetwork = mockCaipNetworks[0]
       await expect(
         adapter.switchNetwork({
-          caipNetwork: mockCaipNetwork,
-          provider: mockProvider,
-          providerType: 'EXTERNAL'
+          caipNetwork: mockCaipNetwork
         })
       ).rejects.toThrow('Chain is not supported')
     })
@@ -1035,13 +1026,13 @@ describe('EthersAdapter', () => {
         setDefaultChain: vi.fn()
       } as unknown as UniversalProvider
 
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
+
       const params = {
         caipNetwork: {
           id: 1,
           caipNetworkId: 'eip155:1'
-        },
-        provider: mockProvider,
-        providerType: 'WALLET_CONNECT'
+        }
       } as unknown as any
 
       await adapter.switchNetwork(params)

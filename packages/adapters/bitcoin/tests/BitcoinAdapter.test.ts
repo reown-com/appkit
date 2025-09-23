@@ -12,11 +12,7 @@ import {
 
 import { WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import {
-  ChainController,
-  type ConnectionControllerClient,
-  StorageUtil
-} from '@reown/appkit-controllers'
+import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 
@@ -53,9 +49,7 @@ describe('BitcoinAdapter', () => {
   beforeEach(() => {
     api = mockBitcoinApi()
     adapter = new BitcoinAdapter({ api, networks: [bitcoin] })
-    ChainController.initialize([adapter], [bitcoin], {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
-    })
+    ChainController.initialize([adapter], [bitcoin])
     ChainController.setRequestedCaipNetworks([bitcoin], 'bip122')
   })
 
@@ -681,9 +675,7 @@ describe('BitcoinAdapter', () => {
       const switchNetworkSpy = vi.spyOn(provider, 'switchNetwork').mockResolvedValue(undefined)
 
       await adapter.switchNetwork({
-        caipNetwork: bitcoinTestnet,
-        provider,
-        providerType: provider.type
+        caipNetwork: bitcoinTestnet
       })
 
       expect(switchNetworkSpy).toHaveBeenCalledWith(bitcoinTestnet.caipNetworkId)
@@ -707,9 +699,7 @@ describe('BitcoinAdapter', () => {
         .mockResolvedValue(undefined)
 
       await adapter.switchNetwork({
-        caipNetwork: bitcoinTestnet,
-        provider: xverseConnector,
-        providerType: xverseConnector.type
+        caipNetwork: bitcoinTestnet
       })
 
       expect(switchNetworkSpy).toHaveBeenCalledWith(bitcoinTestnet.caipNetworkId)
@@ -722,9 +712,7 @@ describe('BitcoinAdapter', () => {
       >
 
       await adapter.switchNetwork({
-        caipNetwork: bitcoinTestnet,
-        provider,
-        providerType: 'WALLET_CONNECT'
+        caipNetwork: bitcoinTestnet
       })
 
       expect(setDefaultChainSpy).toHaveBeenCalledWith(bitcoinTestnet.caipNetworkId)
@@ -742,9 +730,7 @@ describe('BitcoinAdapter', () => {
 
       await expect(
         adapter.switchNetwork({
-          caipNetwork: bitcoinTestnet,
-          provider,
-          providerType: provider.type
+          caipNetwork: bitcoinTestnet
         })
       ).rejects.toThrow('Network switching failed')
     })

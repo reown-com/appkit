@@ -771,7 +771,6 @@ export namespace AdapterBlueprint {
   export type SignMessageParams = {
     message: string
     address: string
-    provider?: AppKitConnector['provider']
   }
 
   export type SignMessageResult = {
@@ -783,7 +782,6 @@ export namespace AdapterBlueprint {
     to: string
     data: string
     caipNetwork: CaipNetwork
-    provider?: AppKitConnector['provider']
     value?: bigint | number
   }
 
@@ -793,7 +791,6 @@ export namespace AdapterBlueprint {
 
   export type WriteContractParams = WriteContractArgs & {
     caipNetwork: CaipNetwork
-    provider?: AppKitConnector['provider']
     caipAddress: CaipAddress
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }
@@ -817,7 +814,6 @@ export namespace AdapterBlueprint {
   export type FormatUnitsResult = string
 
   export type GetWalletConnectProviderParams = {
-    provider: AppKitConnector['provider']
     caipNetworks: CaipNetwork[]
     activeCaipNetwork: CaipNetwork
   }
@@ -859,7 +855,6 @@ export namespace AdapterBlueprint {
     gasPrice?: bigint | number
     gas?: bigint | number
     caipNetwork?: CaipNetwork
-    provider?: AppKitConnector['provider']
     tokenMint?: string
   }
 

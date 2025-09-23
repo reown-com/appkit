@@ -7,7 +7,6 @@ import {
   AssetUtil,
   ChainController,
   type ChainControllerState,
-  type ConnectionControllerClient,
   CoreHelperUtil,
   RouterController,
   SnackController
@@ -40,28 +39,6 @@ const mockNetwork: CaipNetwork = {
 const mockAddress = '0x123456789abcdef123456789abcdef123456789a'
 const mockProfileName = 'Test User'
 
-const mockConnectionControllerClient: ConnectionControllerClient = {
-  connectWalletConnect: vi.fn(),
-  connectExternal: vi.fn(),
-  reconnectExternal: vi.fn(),
-  checkInstalled: vi.fn(),
-  disconnect: vi.fn(),
-  disconnectConnector: vi.fn(),
-  signMessage: vi.fn(),
-  sendTransaction: vi.fn(),
-  estimateGas: vi.fn(),
-  parseUnits: vi.fn(),
-  formatUnits: vi.fn(),
-  writeContract: vi.fn(),
-  getEnsAddress: vi.fn(),
-  getEnsAvatar: vi.fn(),
-  grantPermissions: vi.fn(),
-  revokePermissions: vi.fn(),
-  getCapabilities: vi.fn(),
-  walletGetAssets: vi.fn(),
-  updateBalance: vi.fn()
-}
-
 // Create partial mock states to satisfy TypeScript
 const mockAccountState: Partial<AccountState> = {
   address: mockAddress,
@@ -79,14 +56,10 @@ const mockChainControllerState: Partial<ChainControllerState> = {
     [
       'eip155',
       {
-        namespace: ConstantsUtil.CHAIN.EVM,
-        connectionControllerClient: mockConnectionControllerClient
+        namespace: ConstantsUtil.CHAIN.EVM
       }
     ]
   ]),
-  universalAdapter: {
-    connectionControllerClient: mockConnectionControllerClient
-  },
   noAdapters: false,
   isSwitchingNamespace: false
 }

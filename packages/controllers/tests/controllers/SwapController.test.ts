@@ -9,7 +9,6 @@ import {
   BlockchainApiController,
   ChainController,
   ConnectionController,
-  type ConnectionControllerClient,
   ConnectorController,
   RouterController,
   SwapController
@@ -58,9 +57,7 @@ beforeAll(async () => {
     namespace: ConstantsUtil.CHAIN.EVM,
     caipNetworks: [caipNetwork]
   }
-  ChainController.initialize([mockAdapter], [caipNetwork], {
-    connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
-  })
+  ChainController.initialize([mockAdapter], [caipNetwork])
 
   ChainController.setActiveCaipNetwork(caipNetwork)
   ChainController.setAccountProp('caipAddress', caipAddress, chain)
@@ -139,12 +136,12 @@ describe('SwapController', () => {
   })
 
   it('should replace SwapPreview view when approval transaction is approved', async () => {
-    const connectionControllerClientSpy = vi
-      .spyOn(ConnectionController, 'sendTransaction')
-      .mockImplementationOnce(() => Promise.resolve(null))
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
     vi.spyOn(RouterController, 'pushTransactionStack').mockImplementationOnce(() =>
       Promise.resolve()
+    )
+    vi.spyOn(ConnectionController, 'sendTransaction').mockImplementationOnce(() =>
+      Promise.resolve(null)
     )
     const onEmbeddedWalletApprovalSuccessSpy = vi.spyOn(
       SwapController,
@@ -157,7 +154,7 @@ describe('SwapController', () => {
       toAmount: '1'
     }
     await SwapController.sendTransactionForApproval(SwapController.state.approvalTransaction)
-    expect(connectionControllerClientSpy).toHaveBeenCalled()
+    expect(ConnectionController.sendTransaction).toHaveBeenCalled()
     expect(RouterController.pushTransactionStack).toHaveBeenCalledWith({
       onSuccess: onEmbeddedWalletApprovalSuccessSpy
     })
