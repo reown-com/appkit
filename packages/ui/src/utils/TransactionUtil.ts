@@ -67,12 +67,12 @@ export const TransactionUtil = {
     return undefined
   },
 
-  getTransactionDescriptions(transaction: Transaction) {
+  getTransactionDescriptions(transaction: Transaction, mergedTransfers?: TransactionTransfer[]) {
     const type = transaction?.metadata?.operationType as TransactionType
 
-    const transfers = transaction?.transfers
-    const haveTransfer = transaction?.transfers?.length > 0
-    const haveMultipleTransfers = transaction?.transfers?.length > 1
+    const transfers = mergedTransfers || transaction?.transfers
+    const haveTransfer = transfers?.length > 0
+    const haveMultipleTransfers = transfers?.length > 1
     const isFungible =
       haveTransfer && transfers?.every(transfer => Boolean(transfer?.fungible_info))
     const [firstTransfer, secondTransfer] = transfers
@@ -146,26 +146,99 @@ export const TransactionUtil = {
     return description
   },
   mergeTransfers(transfers: TransactionTransfer[]) {
-    let mergedTransfers = transfers
-    // If we have more than two transfers, we need to merge transfers with same direction and same token
-    if (transfers?.length > 1) {
-      mergedTransfers = transfers.reduce<TransactionTransfer[]>((acc, t) => {
-        const name = t?.fungible_info?.name
-        const existingTransfer = acc.find(
-          ({ fungible_info }) => name && name === fungible_info?.name
-        )
-        if (existingTransfer) {
-          const quantity = Number(existingTransfer.quantity.numeric) + Number(t.quantity.numeric)
-          existingTransfer.quantity.numeric = quantity.toString()
-        } else {
-          acc.push(t)
-        }
-
-        return acc
-      }, [])
+    if (transfers?.length <= 1) {
+      return transfers
     }
 
+    // Filter out gas fee transfers (small opposite-direction amounts of same token)
+    const filteredTransfers = this.filterGasFeeTransfers(transfers)
+
+    // Merge transfers with same token and same direction
+    const mergedTransfers = filteredTransfers.reduce<TransactionTransfer[]>((acc, t) => {
+      const name = t?.fungible_info?.name
+      const existingTransfer = acc.find(
+        ({ fungible_info, direction }) =>
+          name && name === fungible_info?.name && direction === t.direction
+      )
+      if (existingTransfer) {
+        const quantity = Number(existingTransfer.quantity.numeric) + Number(t.quantity.numeric)
+        existingTransfer.quantity.numeric = quantity.toString()
+
+        existingTransfer.value = (existingTransfer.value || 0) + (t.value || 0)
+      } else {
+        acc.push(t)
+      }
+
+      return acc
+    }, [])
+
     return mergedTransfers
+  },
+
+  filterGasFeeTransfers(transfers: TransactionTransfer[]): TransactionTransfer[] {
+    // Group transfers by token name
+    const tokenGroups = transfers.reduce<Record<string, TransactionTransfer[]>>(
+      (groups, transfer) => {
+        const tokenName = transfer?.fungible_info?.name
+        if (tokenName) {
+          if (!groups[tokenName]) {
+            groups[tokenName] = []
+          }
+          groups[tokenName].push(transfer)
+        }
+
+        return groups
+      },
+      {}
+    )
+
+    const filteredTransfers: TransactionTransfer[] = []
+
+    Object.values(tokenGroups).forEach(tokenTransfers => {
+      if (tokenTransfers.length === 1) {
+        const firstTransfer = tokenTransfers[0]
+        if (firstTransfer) {
+          filteredTransfers.push(firstTransfer)
+        }
+      } else {
+        // Multiple transfers for same token, check for gas fee pattern
+        const inTransfers = tokenTransfers.filter(t => t.direction === 'in')
+        const outTransfers = tokenTransfers.filter(t => t.direction === 'out')
+
+        if (inTransfers.length === 1 && outTransfers.length === 1) {
+          const inTransfer = inTransfers[0]
+          const outTransfer = outTransfers[0]
+
+          if (inTransfer && outTransfer) {
+            const inAmount = Number(inTransfer.quantity.numeric)
+            const outAmount = Number(outTransfer.quantity.numeric)
+
+            const gasThreshold = 0.1
+
+            // If one amount is less than 10% of the other, consider it gas and merge the transfer
+            if (outAmount < inAmount * gasThreshold) {
+              filteredTransfers.push(inTransfer)
+            } else if (inAmount < outAmount * gasThreshold) {
+              filteredTransfers.push(outTransfer)
+            } else {
+              filteredTransfers.push(...tokenTransfers)
+            }
+          } else {
+            filteredTransfers.push(...tokenTransfers)
+          }
+        } else {
+          filteredTransfers.push(...tokenTransfers)
+        }
+      }
+    })
+
+    transfers.forEach(transfer => {
+      if (!transfer?.fungible_info?.name) {
+        filteredTransfers.push(transfer)
+      }
+    })
+
+    return filteredTransfers
   },
 
   getQuantityFixedValue(value: string | undefined) {

@@ -244,4 +244,51 @@ describe('TransactionUtil.mergeTransfers', () => {
     expect(result.find(t => t?.fungible_info?.name === 'Token1')?.quantity.numeric).toBe('100')
     expect(result.find(t => !t?.fungible_info?.name)?.quantity.numeric).toBe('50')
   })
+
+  it('filters out gas fee transfers (small opposite-direction amounts)', () => {
+    const usdcInTransfer = {
+      fungible_info: {
+        name: 'USD Coin',
+        symbol: 'USDC',
+        icon: { url: 'usdc-url' }
+      },
+      direction: 'in' as const,
+      quantity: { numeric: '0.224784' },
+      value: 0.2246140943611488
+    }
+
+    const usdcOutTransfer = {
+      fungible_info: {
+        name: 'USD Coin',
+        symbol: 'USDC',
+        icon: { url: 'usdc-url' }
+      },
+      direction: 'out' as const,
+      quantity: { numeric: '0.005830' },
+      value: 0.005825593325706
+    }
+
+    const polOutTransfer = {
+      fungible_info: {
+        name: 'Polygon',
+        symbol: 'POL',
+        icon: { url: 'pol-url' }
+      },
+      direction: 'out' as const,
+      quantity: { numeric: '1.000000000000000000' },
+      value: 0.2267439626
+    }
+
+    const result = TransactionUtil.mergeTransfers([usdcInTransfer, polOutTransfer, usdcOutTransfer])
+
+    expect(result.length).toBe(2)
+
+    const usdcResult = result.find(t => t?.fungible_info?.name === 'USD Coin')
+    expect(usdcResult?.direction).toBe('in')
+    expect(usdcResult?.quantity.numeric).toBe('0.224784')
+
+    const polResult = result.find(t => t?.fungible_info?.name === 'Polygon')
+    expect(polResult?.direction).toBe('out')
+    expect(polResult?.quantity.numeric).toBe('1.000000000000000000')
+  })
 })
