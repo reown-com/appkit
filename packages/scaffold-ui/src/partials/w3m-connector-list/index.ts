@@ -2,14 +2,8 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConstantsUtil } from '@reown/appkit-common'
-import {
-  ApiController,
-  ChainController,
-  type Connector,
-  ConnectorController,
-  type WcWallet
-} from '@reown/appkit-controllers'
+import { ApiController, ConnectorController } from '@reown/appkit-controllers'
+import type { Connector, ConnectorWithProviders, WcWallet } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 
@@ -33,7 +27,7 @@ export class W3mConnectorList extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property() public tabIdx?: number = undefined
+  @property({ type: Number }) public tabIdx?: number
 
   @state() private connectors = ConnectorController.state.connectors
 
@@ -41,41 +35,24 @@ export class W3mConnectorList extends LitElement {
 
   @state() private featured = ApiController.state.featured
 
-  @state() private wallets: WcWallet[] = []
+  @state() private explorerWallets?: WcWallet[] = ApiController.state.explorerWallets
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
       ApiController.subscribeKey('recommended', val => (this.recommended = val)),
-      ApiController.subscribeKey('featured', val => (this.featured = val))
+      ApiController.subscribeKey('featured', val => (this.featured = val)),
+      // Consume explorer wallets for ranking only
+      ApiController.subscribeKey('explorerFilteredWallets', val => {
+        this.explorerWallets = val?.length ? val : ApiController.state.explorerWallets
+      }),
+      ApiController.subscribeKey('explorerWallets', val => {
+        if (!this.explorerWallets?.length) {
+          this.explorerWallets = val
+        }
+      })
     )
-  }
-
-  public override async connectedCallback() {
-    super.connectedCallback()
-
-    const params = {
-      page: 1,
-      entries: 20,
-      badge: 'certified' as const,
-      names: '',
-      rdns: ''
-    }
-
-    // Use RDNS for EIP155 chains
-    if (ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM) {
-      const rdns = this.connectors
-        .flatMap(c => c.connectors?.map(c => c.info?.rdns) || [])
-        .concat(this.connectors.map(c => c.info?.rdns) || [])
-        .filter(Boolean)
-      params.rdns = rdns.join(',')
-    }
-
-    params.names = this.connectors.map(connector => connector.name).join(',')
-
-    const { data } = await ApiController.fetchWallets(params)
-    this.wallets = data
   }
 
   public override disconnectedCallback() {
@@ -90,14 +67,17 @@ export class W3mConnectorList extends LitElement {
   }
 
   // -- Private ------------------------------------------ //
-  private mapConnectorsToExplorerWallets(connectors: Connector[], explorerWallets: WcWallet[]) {
+  private mapConnectorsToExplorerWallets(
+    connectors: ConnectorWithProviders[],
+    explorerWallets: WcWallet[]
+  ): ConnectorWithProviders[] {
     return connectors.map(connector => {
       if (connector.type === 'MULTI_CHAIN' && connector.connectors) {
         const connectorIds = connector.connectors.map(c => c.id)
         const connectorNames = connector.connectors.map(c => c.name)
         const connectorRdns = connector.connectors.map(c => c.info?.rdns)
 
-        const explorerWallet = explorerWallets.find(
+        const explorerWallet = explorerWallets?.find(
           wallet =>
             connectorIds.includes(wallet.id) ||
             connectorNames.includes(wallet.name) ||
@@ -105,35 +85,57 @@ export class W3mConnectorList extends LitElement {
               (connectorRdns.includes(wallet.rdns) || connectorIds.includes(wallet.rdns)))
         )
 
-        connector.explorerWallet = explorerWallet
+        connector.explorerWallet = explorerWallet ?? connector.explorerWallet
 
         return connector
       }
 
-      const explorerWallet = explorerWallets.find(
+      const explorerWallet = explorerWallets?.find(
         wallet =>
           wallet.id === connector.id ||
           wallet.rdns === connector.info?.rdns ||
           wallet.name === connector.name
       )
 
-      connector.explorerWallet = explorerWallet
+      connector.explorerWallet = explorerWallet ?? connector.explorerWallet
 
       return connector
     })
   }
 
-  private connectorListTemplate() {
-    const mappedConnectors = this.mapConnectorsToExplorerWallets(this.connectors, this.wallets)
+  private processConnectorsByType(
+    connectors: ConnectorWithProviders[],
+    shouldFilter = true
+  ): ConnectorWithProviders[] {
+    if (!this.explorerWallets?.length) {
+      return connectors
+    }
 
-    const connectors = ConnectorUtil.getConnectorsByType(
+    const sorted = ConnectorUtil.sortConnectorsByExplorerWallet([...connectors])
+
+    return shouldFilter ? sorted.filter(ConnectorUtil.showConnector) : sorted
+  }
+
+  private connectorListTemplate() {
+    const mappedConnectors: ConnectorWithProviders[] = this.mapConnectorsToExplorerWallets(
+      this.connectors,
+      this.explorerWallets ?? []
+    )
+
+    const byType = ConnectorUtil.getConnectorsByType(
       mappedConnectors,
       this.recommended,
       this.featured
     )
 
-    const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
-      connectors
+    const announced = this.processConnectorsByType(byType.announced)
+    const injected = this.processConnectorsByType(byType.injected)
+    const multiChain = this.processConnectorsByType(byType.multiChain, false)
+    const custom = byType.custom
+    const recent = byType.recent
+    const external = byType.external
+    const recommended = byType.recommended
+    const featured = byType.featured
 
     const connectorTypeOrder = ConnectorUtil.getConnectorTypeOrder({
       custom,
@@ -163,7 +165,7 @@ export class W3mConnectorList extends LitElement {
             ${announced.length
               ? html`<w3m-connect-announced-widget
                   tabIdx=${ifDefined(this.tabIdx)}
-                  .connectors=${announced}
+                  .connectors=${announced as Connector[]}
                 ></w3m-connect-announced-widget>`
               : null}
             ${injected.length

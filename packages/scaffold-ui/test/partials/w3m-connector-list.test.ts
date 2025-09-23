@@ -100,8 +100,8 @@ describe('W3mConnectorList', () => {
       html`<w3m-connector-list .connectors=${allConnectors}></w3m-connector-list>`
     )
 
-    // Wait for async initialization
-    await new Promise(resolve => setTimeout(resolve, 0))
+    ;(element as any).explorerWallets = [{ id: 'MetaMask', name: 'MetaMask' }]
+    await element.updateComplete
 
     const flexChildren = element.shadowRoot?.querySelector('wui-flex')?.children
 
@@ -141,8 +141,8 @@ describe('W3mConnectorList', () => {
       html`<w3m-connector-list .connectors=${testConnectors}></w3m-connector-list>`
     )
 
-    // Wait for async initialization
-    await new Promise(resolve => setTimeout(resolve, 0))
+    ;(element as any).explorerWallets = [{ id: 'MetaMask', name: 'MetaMask' }]
+    await element.updateComplete
 
     const flexChildren = element.shadowRoot?.querySelector('wui-flex')?.children
 
@@ -190,111 +190,5 @@ describe('W3mConnectorList', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(element.shadowRoot?.querySelector('wui-flex')?.children.length).toBe(0)
-  })
-
-  it('should fetch wallets using rdns and names for eip155 chains', async () => {
-    const fetchWalletsSpy = vi.spyOn(ApiController, 'fetchWallets')
-
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'eip155'
-    })
-
-    const connectorsWithRdns = [
-      {
-        id: 'announced1',
-        name: 'Announced Wallet',
-        info: { rdns: 'com.announced.wallet' }
-      },
-      {
-        id: 'announced2',
-        name: 'Another Wallet',
-        info: { rdns: 'com.another.wallet' }
-      }
-    ]
-
-    await fixture(html`<w3m-connector-list .connectors=${connectorsWithRdns}></w3m-connector-list>`)
-
-    // Wait for async initialization
-    await new Promise(resolve => setTimeout(resolve, 0))
-
-    expect(fetchWalletsSpy).toHaveBeenCalledWith({
-      page: 1,
-      entries: 20,
-      badge: 'certified',
-      names: 'Announced Wallet,Another Wallet',
-      rdns: 'com.announced.wallet,com.another.wallet'
-    })
-  })
-
-  it('should fetch wallets using names for non-eip155 chains', async () => {
-    const fetchWalletsSpy = vi.spyOn(ApiController, 'fetchWallets')
-
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'solana'
-    })
-
-    const connectorsWithNames = [
-      {
-        id: 'wallet1',
-        name: 'Solana Wallet'
-      },
-      {
-        id: 'wallet2',
-        name: 'Another Solana Wallet'
-      }
-    ]
-
-    await fixture(
-      html`<w3m-connector-list .connectors=${connectorsWithNames}></w3m-connector-list>`
-    )
-
-    // Wait for async initialization
-    await new Promise(resolve => setTimeout(resolve, 0))
-
-    expect(fetchWalletsSpy).toHaveBeenCalledWith({
-      page: 1,
-      entries: 20,
-      badge: 'certified',
-      names: 'Solana Wallet,Another Solana Wallet',
-      rdns: ''
-    })
-  })
-
-  it('should handle empty rdns gracefully by filtering them out', async () => {
-    const fetchWalletsSpy = vi.spyOn(ApiController, 'fetchWallets')
-
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'eip155'
-    })
-
-    const connectorsWithEmptyRdns = [
-      {
-        id: 'wallet1',
-        name: 'Wallet Without RDNS'
-      },
-      {
-        id: 'wallet2',
-        name: 'Another Wallet',
-        info: { rdns: 'com.valid.wallet' }
-      }
-    ]
-
-    await fixture(
-      html`<w3m-connector-list .connectors=${connectorsWithEmptyRdns}></w3m-connector-list>`
-    )
-
-    // Wait for async initialization
-    await new Promise(resolve => setTimeout(resolve, 0))
-
-    expect(fetchWalletsSpy).toHaveBeenCalledWith({
-      page: 1,
-      entries: 20,
-      badge: 'certified',
-      names: 'Wallet Without RDNS,Another Wallet',
-      rdns: 'com.valid.wallet'
-    })
   })
 })
