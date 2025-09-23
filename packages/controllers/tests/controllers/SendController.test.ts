@@ -3,7 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { type Balance } from '@reown/appkit-common'
 
 import {
-  AccountController,
+  type AccountState,
+  ChainController,
   ConnectionController,
   CoreHelperUtil,
   RouterController,
@@ -168,9 +169,9 @@ describe('SendController', () => {
       expect(SendController.state.loading).toBe(false)
     })
 
-    it('should use AccountController.getCaipAddress before falling back to activeCaipAddress', async () => {
+    it('should use ChainController.getAccountData before falling back to activeCaipAddress', async () => {
       const mockNamespace = 'eip155'
-      const mockCaipAddressFromAccount = 'eip155:1:0xAccountController'
+      const mockCaipAddressFromAccount = 'eip155:1:0xChainController'
       const mockActiveCaipAddress = 'eip155:1:0xChainController'
 
       mockChainControllerState({
@@ -179,9 +180,9 @@ describe('SendController', () => {
         activeCaipAddress: mockActiveCaipAddress
       })
 
-      const getCaipAddressSpy = vi
-        .spyOn(AccountController, 'getCaipAddress')
-        .mockReturnValue(mockCaipAddressFromAccount)
+      const getCaipAddressSpy = vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        caipAddress: mockCaipAddressFromAccount
+      } as unknown as AccountState)
 
       vi.spyOn(BalanceUtil, 'getMyTokensWithBalance').mockResolvedValue([])
 
@@ -190,7 +191,7 @@ describe('SendController', () => {
       expect(getCaipAddressSpy).toHaveBeenCalledWith(mockNamespace)
     })
 
-    it('should fallback to activeCaipAddress when AccountController.getCaipAddress returns undefined', async () => {
+    it('should fallback to activeCaipAddress when ChainController.getAccountData returns undefined', async () => {
       const mockNamespace = 'eip155'
       const mockActiveCaipAddress = 'eip155:1:0xFallback'
 
@@ -201,7 +202,7 @@ describe('SendController', () => {
       })
 
       const getCaipAddressSpy = vi
-        .spyOn(AccountController, 'getCaipAddress')
+        .spyOn(ChainController, 'getAccountData')
         .mockReturnValue(undefined)
 
       const getPlainAddressSpy = vi.spyOn(CoreHelperUtil, 'getPlainAddress')

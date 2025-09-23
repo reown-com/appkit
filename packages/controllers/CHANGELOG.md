@@ -1,5 +1,21 @@
 # @reown/appkit-core
 
+## 1.8.6
+
+### Patch Changes
+
+- [#5030](https://github.com/reown-com/appkit/pull/5030) [`a6779f5`](https://github.com/reown-com/appkit/commit/a6779f5143e1f788450814efcf5beadf8573214a) Thanks [@magiziz](https://github.com/magiziz)! - Added `walletRank` property to the `CONNECT_SUCCESS` event and created a new `@appkit/recent_wallet` local storage key to track the most recently connected wallet
+
+- [#5024](https://github.com/reown-com/appkit/pull/5024) [`a3582c2`](https://github.com/reown-com/appkit/commit/a3582c22e5b761d0412bdc51322c070717ae77bb) Thanks [@tomiir](https://github.com/tomiir)! - Adds main view wallet sorting according to wallet-rank. Adds wallet-rank to main view impression events
+
+- [#5024](https://github.com/reown-com/appkit/pull/5024) [`a3582c2`](https://github.com/reown-com/appkit/commit/a3582c22e5b761d0412bdc51322c070717ae77bb) Thanks [@tomiir](https://github.com/tomiir)! - Emits GET_WALLET event when selecting a wallet to download on w3m-downloads-view
+
+- [#4936](https://github.com/reown-com/appkit/pull/4936) [`0bf1921`](https://github.com/reown-com/appkit/commit/0bf192130f857d395135e5d740328fd1419412bd) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Enhanced connection UX by allowing scanning of QR code with main device camera and prompting the target wallet
+
+- Updated dependencies [[`a6779f5`](https://github.com/reown-com/appkit/commit/a6779f5143e1f788450814efcf5beadf8573214a), [`0bf1921`](https://github.com/reown-com/appkit/commit/0bf192130f857d395135e5d740328fd1419412bd)]:
+  - @reown/appkit-common@1.8.6
+  - @reown/appkit-wallet@1.8.6
+
 ## 1.8.5
 
 ### Patch Changes

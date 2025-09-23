@@ -1,5 +1,5 @@
 import { elementUpdated, fixture } from '@open-wc/testing'
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
@@ -33,12 +33,17 @@ const ACCOUNT_SELECT_NETWORK_TEST_ID = 'w3m-account-select-network'
 describe('W3mHeader', () => {
   let element: W3mHeader
 
-  beforeAll(() => {
-    Element.prototype.animate = vi.fn().mockReturnValue({ finished: Promise.resolve() })
-  })
-
   beforeEach(async () => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
+    Element.prototype.animate = vi.fn().mockReturnValue({ finished: Promise.resolve() })
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      currentTab: 0,
+      tokenBalance: [],
+      smartAccountDeployed: false,
+      addressLabels: new Map(),
+      address: '0xAddress',
+      caipAddress: 'eip155:1:0xAddress'
+    })
     RouterController.reset('Connect')
     element = await fixture(html`<w3m-header></w3m-header>`)
     await element.updateComplete
@@ -46,7 +51,7 @@ describe('W3mHeader', () => {
 
   describe('Network Selection', () => {
     it('should render network select in Account view', async () => {
-      RouterController.state.view = 'Account'
+      RouterController.push('Account')
       element.requestUpdate()
       await element.updateComplete
       await elementUpdated(element)
@@ -56,7 +61,7 @@ describe('W3mHeader', () => {
     })
 
     it('should update network image when network changes', async () => {
-      RouterController.state.view = 'Account'
+      RouterController.push('Account')
       element.requestUpdate()
       await element.updateComplete
 
@@ -70,7 +75,7 @@ describe('W3mHeader', () => {
     })
 
     it('should update network image when AssetController emits new images', async () => {
-      RouterController.state.view = 'Account'
+      RouterController.push('Account')
       element.requestUpdate()
       await element.updateComplete
 
@@ -108,7 +113,7 @@ describe('W3mHeader', () => {
     })
 
     it('should not show back button in ApproveTransaction view', async () => {
-      RouterController.state.view = 'ApproveTransaction'
+      RouterController.push('ApproveTransaction')
       element.requestUpdate()
       await element.updateComplete
       await elementUpdated(element)
@@ -148,7 +153,7 @@ describe('W3mHeader', () => {
 
     it('should shake modal when trying to close in UnsupportedChain view', async () => {
       const shakeSpy = vi.spyOn(ModalController, 'shake')
-      RouterController.state.view = 'UnsupportedChain'
+      RouterController.push('UnsupportedChain')
       element.requestUpdate()
       await element.updateComplete
       await elementUpdated(element)
@@ -162,7 +167,7 @@ describe('W3mHeader', () => {
 
   describe('Smart Sessions', () => {
     it('should show smart sessions button in Account view when enabled', async () => {
-      RouterController.state.view = 'Account'
+      RouterController.push('Account')
       OptionsController.state.features = { smartSessions: true }
       element.requestUpdate()
       await element.updateComplete
@@ -173,7 +178,7 @@ describe('W3mHeader', () => {
     })
 
     it('should not show smart sessions button when disabled', async () => {
-      RouterController.state.view = 'Account'
+      RouterController.push('Account')
       OptionsController.state.features = { smartSessions: false }
       element.requestUpdate()
       await element.updateComplete
@@ -184,7 +189,7 @@ describe('W3mHeader', () => {
     })
 
     it('should navigate to SmartSessionList when smart sessions button is clicked', async () => {
-      RouterController.state.view = 'Account'
+      RouterController.push('Account')
       OptionsController.state.features = { smartSessions: true }
       element.requestUpdate()
       await element.updateComplete
@@ -199,7 +204,7 @@ describe('W3mHeader', () => {
 
   describe('Help Button', () => {
     it('should show help button in Connect view', async () => {
-      RouterController.state.view = 'Connect'
+      RouterController.push('Connect')
       element.requestUpdate()
       await element.updateComplete
       await elementUpdated(element)
@@ -209,7 +214,7 @@ describe('W3mHeader', () => {
     })
 
     it('should navigate to WhatIsAWallet when help button is clicked', async () => {
-      RouterController.state.view = 'Connect'
+      RouterController.push('Connect')
       element.requestUpdate()
       await element.updateComplete
       await elementUpdated(element)
@@ -222,7 +227,7 @@ describe('W3mHeader', () => {
 
     it('should track help button click event', async () => {
       const trackSpy = vi.spyOn(EventsController, 'sendEvent')
-      RouterController.state.view = 'Connect'
+      RouterController.push('Connect')
       element.requestUpdate()
       await element.updateComplete
       await elementUpdated(element)

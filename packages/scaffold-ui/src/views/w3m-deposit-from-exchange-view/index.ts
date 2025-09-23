@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   type CurrentPayment,
@@ -225,6 +224,7 @@ export class W3mDepositFromExchangeView extends LitElement {
 
   private handlePaymentInProgress() {
     const namespace = ChainController.state.activeChain
+    const { redirectView = 'Account' } = RouterController.state.data ?? {}
 
     if (
       this.isPaymentInProgress &&
@@ -241,7 +241,7 @@ export class W3mDepositFromExchangeView extends LitElement {
           SnackController.showSuccess('Deposit completed')
 
           if (namespace) {
-            AccountController.fetchTokenBalance()
+            ChainController.fetchTokenBalance()
             ConnectionController.updateBalance(namespace)
           }
         } else if (status.status === 'FAILED') {
@@ -249,7 +249,7 @@ export class W3mDepositFromExchangeView extends LitElement {
         }
       })
       SnackController.showLoading('Deposit in progress...')
-      RouterController.replace('Account')
+      RouterController.replace(redirectView)
     }
   }
 

@@ -10,7 +10,6 @@ import {
 } from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetUtil,
   ChainController,
   ConnectionController,
@@ -104,7 +103,7 @@ export class W3mProfileWalletsView extends LitElement {
   @state() private lastSelectedConnectorId = ''
   @state() private isSwitching = false
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
-  @state() private user = AccountController.state.user
+  @state() private user = ChainController.getAccountData()?.user
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
   constructor() {
@@ -122,7 +121,9 @@ export class W3mProfileWalletsView extends LitElement {
           this.activeConnectorIds = ids
         }),
         ChainController.subscribeKey('activeCaipNetwork', val => (this.caipNetwork = val)),
-        AccountController.subscribeKey('user', val => (this.user = val)),
+        ChainController.subscribeChainProp('accountState', val => {
+          this.user = val?.user
+        }),
         OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
       ]
     )
