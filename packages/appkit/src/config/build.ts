@@ -1,5 +1,3 @@
-import { ConstantsUtil } from '@reown/appkit-controllers'
-
 import type { ApiEntry, FeatureBag, Json, Layer } from './types.js'
 
 /**
@@ -37,19 +35,39 @@ function getFeatureValue(
   context: { locals?: Layer; defaults?: Layer; key: string; skipEmptyArrayCheck?: boolean }
 ): Json {
   // If API doesn't provide explicit config, use local config or defaults
-  if (cfg === undefined) {
-    return context.locals?.[context.key] === undefined
-      ? ((context.defaults?.[context.key] as Json) ?? true)
-      : (context.locals[context.key] as Json)
+  if (cfg === undefined || cfg === null) {
+    const localValue = context.locals?.[context.key]
+
+    // Prefer local value when present
+    if (localValue !== undefined) {
+      // Map boolean true to default provider arrays when applicable
+      if (localValue === true && Array.isArray(context.defaults?.[context.key])) {
+        return context.defaults?.[context.key] as Json
+      }
+
+      return localValue as Json
+    }
+
+    // No local value — fall back to defaults (from ConstantsUtil)
+    return (context.defaults?.[context.key] as Json) ?? false
   }
 
   /*
-   * Special case: Empty array from API should disable the feature
-   * This handles cases like social_login: { isEnabled: true, config: [] }
-   * BUT skip this for already-transformed social_login values to preserve empty arrays
+   * Empty array from API indicates the config was set in the Dashboard.
+   * In that case:
+   * - For features that require provider lists (onramp, socials), preserve the empty array
+   *   so the UI can render based on the explicit provider list (even if empty).
+   * - For all other features, use the boolean isEnabled state (handled by caller) by
+   *   returning true here when isEnabled=true. If isEnabled=false, caller won't reach here.
+   *
+   * Note: For social_login-derived keys we skip this check via skipEmptyArrayCheck.
    */
   if (Array.isArray(cfg) && cfg.length === 0 && !context.skipEmptyArrayCheck) {
-    return false
+    if (context.key === 'onramp' || context.key === 'socials') {
+      return cfg
+    }
+
+    return true
   }
 
   // Use the explicit config value from API
@@ -76,22 +94,18 @@ function mapApiIdToSdkKey(apiId: string): string {
 function transformSocialLogin(config: Json): { email: Json; socials: Json } {
   if (Array.isArray(config)) {
     if (config.length === 0) {
-      // Empty array config should disable both features
       return { email: false, socials: false }
     }
-    const email = config.includes('email')
+    const hasEmail = config.includes('email')
     const socials = config.filter(x => x !== 'email')
 
-    return { email, socials }
+    return { email: hasEmail, socials }
   } else if (config === false) {
     return { email: false, socials: false }
   } else if (config === true) {
     return { email: false, socials: false }
   } else if (config === null) {
-    return {
-      email: ConstantsUtil.DEFAULT_REMOTE_FEATURES.email,
-      socials: ConstantsUtil.DEFAULT_REMOTE_FEATURES.socials
-    }
+    return { email: null, socials: null }
   } else if (config !== null && config !== undefined) {
     throw new Error(
       `Invalid social_login configuration: expected array, boolean (true/false, both treated as disabled), null, or undefined, got ${typeof config}`

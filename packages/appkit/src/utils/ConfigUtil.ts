@@ -51,6 +51,6 @@ export const ConfigUtil = {
       )
     }
 
-    return result?.featureBag || {}
+    return result?.featureBag || ConstantsUtil.DEFAULT_REMOTE_FEATURES
   }
 }
