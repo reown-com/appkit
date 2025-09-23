@@ -22,7 +22,7 @@ export class W3mConnectAnnouncedWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Number }) public tabIdx?: number = undefined
+  @property({ type: Number }) public tabIdx?: number
 
   @property({ attribute: false }) public connectors: Connector[] = []
 
