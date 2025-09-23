@@ -232,11 +232,20 @@ describe('ConfigUtil', () => {
       expect(AlertController.open).toHaveBeenCalledTimes(1)
       expect(AlertController.open).toHaveBeenCalledWith(
         expect.objectContaining({
-          debugMessage: expect.stringContaining(
-            'Your local configuration for "features.email", "features.socials", "features.swaps", "features.onramp", "features.history" (now "activity") was ignored because a remote configuration was successfully fetched'
-          )
+          debugMessage: expect.stringContaining('Your local configuration for')
         }),
         'warning'
+      )
+      // Verify all expected features are mentioned in the warning
+      const call = vi.mocked(AlertController.open).mock.calls[0]
+      const message = call[0].debugMessage
+      expect(message).toContain('"features.email"')
+      expect(message).toContain('"features.socials"')
+      expect(message).toContain('"features.swaps"')
+      expect(message).toContain('"features.onramp"')
+      expect(message).toContain('"features.history" (now "activity")')
+      expect(message).toContain(
+        'was ignored because a remote configuration was successfully fetched'
       )
     })
 
@@ -350,8 +359,8 @@ describe('ConfigUtil', () => {
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(apiResponse)
       mockOptions.features = {}
       const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
-      expect(features.email).toBe(false)
-      expect(features.socials).toBe(false)
+      expect(features['email']).toBe(false)
+      expect(features['socials']).toBe(false)
       expect(features.swaps).toEqual(['1inch'])
     })
 
