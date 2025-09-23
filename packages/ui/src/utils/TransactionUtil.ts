@@ -6,6 +6,7 @@ import { UiHelperUtil } from './UiHelperUtil.js'
 
 // -- Helpers --------------------------------------------- //
 const FLOAT_FIXED_VALUE = 3
+const GAS_FEE_THRESHOLD = 0.1
 const plusTypes: TransactionType[] = ['receive', 'deposit', 'borrow', 'claim']
 const minusTypes: TransactionType[] = ['withdraw', 'repay', 'burn']
 
@@ -213,12 +214,10 @@ export const TransactionUtil = {
             const inAmount = Number(inTransfer.quantity.numeric)
             const outAmount = Number(outTransfer.quantity.numeric)
 
-            const gasThreshold = 0.1
-
             // If one amount is less than 10% of the other, consider it gas and merge the transfer
-            if (outAmount < inAmount * gasThreshold) {
+            if (outAmount < inAmount * GAS_FEE_THRESHOLD) {
               filteredTransfers.push(inTransfer)
-            } else if (inAmount < outAmount * gasThreshold) {
+            } else if (inAmount < outAmount * GAS_FEE_THRESHOLD) {
               filteredTransfers.push(outTransfer)
             } else {
               filteredTransfers.push(...tokenTransfers)
