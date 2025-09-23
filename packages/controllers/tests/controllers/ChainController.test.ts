@@ -8,7 +8,7 @@ import {
 } from '@reown/appkit-common'
 import { SafeLocalStorage } from '@reown/appkit-common'
 
-import { CoreHelperUtil, ModalController, OptionsController } from '../../exports/index.js'
+import { CoreHelperUtil, OptionsController } from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
 import { getActiveNetworkTokenAddress } from '../../src/utils/ChainControllerUtil.js'

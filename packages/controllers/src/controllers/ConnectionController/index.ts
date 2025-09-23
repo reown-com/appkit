@@ -147,30 +147,26 @@ class ConnectionController {
     }
   }
 
-  public async connect(params: ConnectParameters): Promise<void> {
+  public async connect(_params: ConnectParameters): Promise<void> {
     // Connection logic will be implemented here
-    console.log('connect', params)
 
     return Promise.resolve()
   }
 
-  public async disconnect(params?: DisconnectParameters): Promise<void> {
+  public async disconnect(_params?: DisconnectParameters): Promise<void> {
     // Disconnection logic will be implemented here
-    console.log('disconnect', params)
 
     return Promise.resolve()
   }
 
-  public async reconnect(params: ReconnectParameters): Promise<void> {
+  public async reconnect(_params: ReconnectParameters): Promise<void> {
     // Reconnection logic will be implemented here
-    console.log('reconnect', params)
 
     return Promise.resolve()
   }
 
-  public async switchConnection(params: SwitchConnectionParameters): Promise<void> {
+  public async switchConnection(_params: SwitchConnectionParameters): Promise<void> {
     // Connection switching logic will be implemented here
-    console.log('switchConnection', params)
 
     return Promise.resolve()
   }
