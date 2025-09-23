@@ -516,9 +516,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
           try {
             await this.switchNetwork({
-              caipNetwork,
-              provider: selectedProvider,
-              providerType: type as ConnectorType
+              caipNetwork
             })
           } catch (error) {
             throw new Error('Ethers5Adapter:connect - Switch network failed')
@@ -739,16 +737,22 @@ export class Ethers5Adapter extends AdapterBlueprint {
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
-    const { caipNetwork, provider, providerType } = params
+    const { caipNetwork } = params
+    const providerType = ProviderController.getProviderId(caipNetwork.chainNamespace)
+    const provider = ProviderController.getProvider<Provider>(caipNetwork.chainNamespace)
 
-    if (providerType === 'AUTH') {
+    if (providerType === 'AUTH' || providerType === 'WALLET_CONNECT') {
       await super.switchNetwork(params)
 
       return
     }
 
+    if (!provider) {
+      throw new Error('Provider not found')
+    }
+
     try {
-      await (provider as Provider).request({
+      await provider.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.id) }]
       })
@@ -760,7 +764,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
         switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
         switchError?.data?.originalError?.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
       ) {
-        await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
+        await EthersHelpersUtil.addEthereumChain(provider, caipNetwork)
       } else if (
         providerType === 'ANNOUNCED' ||
         providerType === 'EXTERNAL' ||

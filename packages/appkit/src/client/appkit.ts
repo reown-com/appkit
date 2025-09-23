@@ -435,10 +435,8 @@ export class AppKit extends AppKitBaseClient {
 
     if (isSameNamespace && ChainController.getAccountData(networkNamespace)?.caipAddress) {
       const adapter = this.getAdapter(networkNamespace)
-      const provider = ProviderController.getProvider(networkNamespace)
-      const providerType = ProviderController.getProviderId(networkNamespace)
 
-      await adapter?.switchNetwork({ caipNetwork, provider, providerType })
+      await adapter?.switchNetwork({ caipNetwork })
       this.setCaipNetwork(caipNetwork)
     } else {
       const currentNamespaceProviderType = ProviderController.getProviderId(currentNamespace)
@@ -478,9 +476,7 @@ export class AppKit extends AppKitBaseClient {
           if (namespaceAddress) {
             const adapter = this.getAdapter(networkNamespace)
             await adapter?.switchNetwork({
-              caipNetwork,
-              provider: this.authProvider,
-              providerType: newNamespaceProviderType
+              caipNetwork
             })
           } else {
             await this.connectionControllerClient?.connectExternal?.({
@@ -496,9 +492,7 @@ export class AppKit extends AppKitBaseClient {
         } catch (error) {
           const adapter = this.getAdapter(networkNamespace)
           await adapter?.switchNetwork({
-            caipNetwork,
-            provider: this.authProvider,
-            providerType: newNamespaceProviderType
+            caipNetwork
           })
         }
       } else if (newNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
@@ -508,10 +502,8 @@ export class AppKit extends AppKitBaseClient {
          */
         if (!ChainController.state.noAdapters) {
           const adapter = this.getAdapter(networkNamespace)
-          const provider = ProviderController.getProvider(networkNamespace)
-          const providerType = ProviderController.getProviderId(networkNamespace)
 
-          await adapter?.switchNetwork({ caipNetwork, provider, providerType })
+          await adapter?.switchNetwork({ caipNetwork })
         }
         this.setCaipNetwork(caipNetwork)
         this.syncWalletConnectAccount()

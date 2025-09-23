@@ -952,12 +952,11 @@ export abstract class AppKitBaseClient {
     const namespaceAddress = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
 
     if (namespaceAddress) {
-      const provider = ProviderController.getProvider(networkNamespace)
       const providerType = ProviderController.getProviderId(networkNamespace)
 
       if (caipNetwork.chainNamespace === ChainController.state.activeChain) {
         const adapter = this.getAdapter(networkNamespace)
-        await adapter?.switchNetwork({ caipNetwork, provider, providerType })
+        await adapter?.switchNetwork({ caipNetwork })
       } else {
         this.setCaipNetwork(caipNetwork)
         if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
