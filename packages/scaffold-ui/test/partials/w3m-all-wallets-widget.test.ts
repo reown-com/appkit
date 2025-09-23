@@ -38,7 +38,8 @@ const mockConnectorState: ConnectorControllerState = {
     bip122: undefined,
     cosmos: undefined,
     sui: undefined,
-    stacks: undefined
+    stacks: undefined,
+    ton: undefined
   },
   filterByNamespaceMap: {
     eip155: true,
@@ -47,7 +48,8 @@ const mockConnectorState: ConnectorControllerState = {
     bip122: true,
     cosmos: true,
     sui: true,
-    stacks: true
+    stacks: true,
+    ton: true
   }
 }
 
