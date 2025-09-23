@@ -119,15 +119,15 @@ export class W3mConnectorList extends LitElement {
       ? ConnectorUtil.sortConnectorsByExplorerWallet([...byType.announced]).filter(
           ConnectorUtil.showConnector
         )
-      : []
+      : byType.announced
     const injected = this.explorerWallets?.length
       ? ConnectorUtil.sortConnectorsByExplorerWallet([...byType.injected]).filter(
           ConnectorUtil.showConnector
         )
-      : []
+      : byType.injected
     const multiChain = this.explorerWallets?.length
       ? ConnectorUtil.sortConnectorsByExplorerWallet([...byType.multiChain])
-      : []
+      : byType.multiChain
     const custom = byType.custom
     const recent = byType.recent
     const external = byType.external
