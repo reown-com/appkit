@@ -4,7 +4,8 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import {
-  AccountController,
+  type AccountState,
+  ChainController,
   ConnectionController,
   ConnectorController,
   ModalController,
@@ -74,12 +75,12 @@ describe('W3mConnectingFarcasterView', () => {
       })
       vi.spyOn(OptionsController, 'subscribeKey').mockImplementation(() => () => {})
 
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        ...ChainController.getAccountData(),
         socialProvider: 'farcaster',
         farcasterUrl: '...'
-      })
-      vi.spyOn(AccountController, 'subscribeKey').mockImplementation(() => () => {})
+      } as unknown as AccountState)
+      vi.spyOn(ChainController, 'subscribeKey').mockImplementation(() => () => {})
 
       element = await fixture(html`<w3m-connecting-farcaster-view></w3m-connecting-farcaster-view>`)
     })

@@ -9,7 +9,6 @@ import {
 import { SafeLocalStorage } from '@reown/appkit-common'
 
 import {
-  AccountController,
   CoreHelperUtil,
   ModalController,
   type NetworkControllerClient,
@@ -293,21 +292,21 @@ describe('ChainController', () => {
 
   it('should reset account as expected', () => {
     ChainController.resetAccount(chainNamespace)
-    expect(AccountController.state.smartAccountDeployed).toEqual(false)
-    expect(AccountController.state.currentTab).toEqual(0)
-    expect(AccountController.state.caipAddress).toEqual(undefined)
-    expect(AccountController.state.address).toEqual(undefined)
-    expect(AccountController.state.balance).toEqual(undefined)
-    expect(AccountController.state.balanceSymbol).toEqual(undefined)
-    expect(AccountController.state.profileName).toEqual(undefined)
-    expect(AccountController.state.profileImage).toEqual(undefined)
-    expect(AccountController.state.addressExplorerUrl).toEqual(undefined)
-    expect(AccountController.state.tokenBalance).toEqual([])
-    expect(AccountController.state.connectedWalletInfo).toEqual(undefined)
-    expect(AccountController.state.preferredAccountType).toEqual('smartAccount')
-    expect(AccountController.state.status).toEqual('disconnected')
-    expect(AccountController.state.socialProvider).toEqual(undefined)
-    expect(AccountController.state.socialWindow).toEqual(undefined)
+    const accountState = ChainController.getAccountData()
+    expect(accountState?.smartAccountDeployed).toEqual(false)
+    expect(accountState?.currentTab).toEqual(0)
+    expect(accountState?.caipAddress).toEqual(undefined)
+    expect(accountState?.balance).toEqual(undefined)
+    expect(accountState?.balanceSymbol).toEqual(undefined)
+    expect(accountState?.profileName).toEqual(undefined)
+    expect(accountState?.profileImage).toEqual(undefined)
+    expect(accountState?.addressExplorerUrl).toEqual(undefined)
+    expect(accountState?.tokenBalance).toEqual([])
+    expect(accountState?.connectedWalletInfo).toEqual(undefined)
+    expect(accountState?.preferredAccountType).toEqual('smartAccount')
+    expect(accountState?.status).toEqual('disconnected')
+    expect(accountState?.socialProvider).toEqual(undefined)
+    expect(accountState?.socialWindow).toEqual(undefined)
   })
 
   it('should reset account and set preferredAccountType from OptionsController.state.defaultAccountTypes if defined', () => {

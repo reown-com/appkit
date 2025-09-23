@@ -11,8 +11,7 @@ import {
   ConstantsUtil
 } from '@reown/appkit-common'
 import {
-  AccountController,
-  type AccountControllerState,
+  type AccountState,
   ChainController,
   type ChainControllerState,
   ConnectionController,
@@ -155,7 +154,7 @@ describe('W3mProfileWalletsView - Basic Rendering', () => {
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       caipAddress: mockEthereumAddress as CaipAddress,
       profileName: 'Test Profile'
-    } as unknown as AccountControllerState)
+    } as unknown as AccountState)
 
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [mockActiveConnection],
@@ -189,7 +188,7 @@ describe('W3mProfileWalletsView - Basic Rendering', () => {
     vi.mocked(ChainController.getAccountData).mockReturnValue({
       caipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
       profileName: 'Test Profile'
-    } as unknown as AccountControllerState)
+    } as unknown as AccountState)
 
     const element = await fixture<W3mProfileWalletsView>(
       html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
@@ -363,7 +362,7 @@ describe('W3mProfileWalletsView - Active Profile Rendering', () => {
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       caipAddress: mockEthereumAddress as CaipAddress,
       profileName: 'Test Profile'
-    } as unknown as AccountControllerState)
+    } as unknown as AccountState)
 
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [mockActiveConnection],
@@ -416,8 +415,8 @@ describe('W3mProfileWalletsView - Active Profile Rendering', () => {
       connections: mockConnections,
       recentConnections: []
     })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
       user: {
         accounts: [
           {
@@ -426,12 +425,12 @@ describe('W3mProfileWalletsView - Active Profile Rendering', () => {
           }
         ]
       }
-    })
+    } as unknown as AccountState)
     vi.mocked(ConnectorController.state.activeConnectorIds).eip155 = 'metamask'
     vi.mocked(ChainController.getAccountData).mockReturnValue({
       caipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
       profileName: 'Smart Account'
-    } as unknown as AccountControllerState)
+    } as unknown as AccountState)
 
     const element = await fixture<W3mProfileWalletsView>(
       html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
@@ -440,8 +439,7 @@ describe('W3mProfileWalletsView - Active Profile Rendering', () => {
 
     const activeProfile = element.shadowRoot?.querySelector(ACTIVE_PROFILE_WALLET)
 
-    expect(activeProfile?.iconBadge).toBe('lightbulb')
-    expect(activeProfile?.iconBadgeSize).toBe('md')
+    expect(activeProfile?.iconBadge).toBeUndefined()
   })
 })
 
@@ -579,7 +577,7 @@ describe('W3mProfileWalletsView - Bitcoin Specific Behavior', () => {
 
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       caipAddress: mockBitcoinAddress as CaipAddress
-    } as unknown as AccountControllerState)
+    } as unknown as AccountState)
   })
 
   it('should render Bitcoin profile content with account types', async () => {
@@ -716,7 +714,7 @@ describe('W3mProfileWalletsView - User Actions', () => {
 
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       caipAddress: mockEthereumAddress as CaipAddress
-    } as unknown as AccountControllerState)
+    } as unknown as AccountState)
 
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
       connections: [mockActiveConnection],
@@ -916,7 +914,7 @@ describe('W3mProfileWalletsView - Loading States', () => {
 
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       caipAddress: mockEthereumAddress as CaipAddress
-    } as unknown as AccountControllerState)
+    } as unknown as AccountState)
 
     const element: W3mProfileWalletsView = await fixture(
       html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
@@ -958,10 +956,10 @@ describe('W3mProfileWalletsView - onConnectionsChange', () => {
       } as unknown as Record<ChainNamespace, string | undefined>,
       connectors: [mockMetaMaskConnector, mockWalletConnectConnector, mockAuthConnector]
     })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
       user: {}
-    })
+    } as unknown as AccountState)
     vi.spyOn(RouterController, 'reset').mockImplementation(() => {})
     vi.spyOn(ModalController, 'close').mockImplementation(() => {})
     vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({

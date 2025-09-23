@@ -152,7 +152,9 @@ export class W3mFundWalletView extends LitElement {
   }
 
   private onDepositFromExchange() {
-    RouterController.push('PayWithExchange')
+    RouterController.push('PayWithExchange', {
+      redirectView: RouterController.state.data?.redirectView
+    })
   }
 }
 
