@@ -994,7 +994,6 @@ export abstract class AppKitBaseClient {
     )
     const activeCaipNetwork = ChainController.state.activeCaipNetwork
     const activeAdapter = this.getAdapter(activeCaipNetwork?.chainNamespace)
-    const activeProvider = ProviderController.getProvider(activeCaipNetwork?.chainNamespace)
 
     if (isConnectingToAuth) {
       await Promise.all(
@@ -1034,9 +1033,7 @@ export abstract class AppKitBaseClient {
       // Make the secure site back to current network after reconnecting the other namespaces
       if (activeCaipNetwork) {
         await activeAdapter?.switchNetwork({
-          caipNetwork: activeCaipNetwork,
-          provider: activeProvider,
-          providerType: params.type
+          caipNetwork: activeCaipNetwork
         })
       }
     }
@@ -1068,12 +1065,11 @@ export abstract class AppKitBaseClient {
     const namespaceAddress = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
 
     if (namespaceAddress) {
-      const provider = ProviderController.getProvider(networkNamespace)
       const providerType = ProviderController.getProviderId(networkNamespace)
 
       if (caipNetwork.chainNamespace === ChainController.state.activeChain) {
         const adapter = this.getAdapter(networkNamespace)
-        await adapter?.switchNetwork({ caipNetwork, provider, providerType })
+        await adapter?.switchNetwork({ caipNetwork })
       } else {
         this.setCaipNetwork(caipNetwork)
         if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
