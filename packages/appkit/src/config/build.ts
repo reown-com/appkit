@@ -1,3 +1,5 @@
+import { ConstantsUtil } from '@reown/appkit-controllers'
+
 import type { ApiEntry, FeatureBag, Json, Layer } from './types.js'
 
 /**
@@ -85,6 +87,11 @@ function transformSocialLogin(config: Json): { email: Json; socials: Json } {
     return { email: false, socials: false }
   } else if (config === true) {
     return { email: false, socials: false }
+  } else if (config === null) {
+    return {
+      email: ConstantsUtil.DEFAULT_REMOTE_FEATURES.email,
+      socials: ConstantsUtil.DEFAULT_REMOTE_FEATURES.socials
+    }
   } else if (config !== null && config !== undefined) {
     throw new Error(
       `Invalid social_login configuration: expected array, boolean (true/false, both treated as disabled), null, or undefined, got ${typeof config}`
@@ -201,7 +208,7 @@ export function buildFeatureBag(params: {
        * For social_login, use the transformed values directly (don't apply empty array logic)
        */
       if (id === 'social_login') {
-        const { email: hasEmail, socials } = transformSocialLogin(config ?? false)
+        const { email: hasEmail, socials } = transformSocialLogin(config ?? null)
         apiMap['email'] = {
           isEnabled: Boolean(isEnabled),
           cfg: hasEmail as Json,
