@@ -27,7 +27,7 @@ export class W3mConnectorList extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Number }) public tabIdx?: number = undefined
+  @property({ type: Number }) public tabIdx?: number
 
   @state() private connectors = ConnectorController.state.connectors
 
