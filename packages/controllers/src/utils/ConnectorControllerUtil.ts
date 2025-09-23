@@ -1,4 +1,6 @@
 /* eslint-disable max-depth */
+import { ref } from 'valtio'
+
 import { type ChainNamespace, ParseUtil, type ParsedCaipAddress } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
@@ -257,7 +259,7 @@ export const ConnectorControllerUtil = {
               })
 
               if (popupWindow && uri) {
-                ChainController.setAccountProp('socialWindow', popupWindow, namespaceToUse)
+                ChainController.setAccountProp('socialWindow', ref(popupWindow), namespaceToUse)
                 socialWindow = accountData?.socialWindow
                 popupWindow.location.href = uri
 
