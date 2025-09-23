@@ -28,8 +28,12 @@ export const NetworkUtil = {
       return
     }
 
-    const isCurrentNamespaceConnected = Boolean(ChainController.getAccountData(currentNamespace))
-    const isNextNamespaceConnected = Boolean(ChainController.getAccountData(network.chainNamespace))
+    const isCurrentNamespaceConnected = Boolean(
+      ChainController.getAccountData(currentNamespace)?.address
+    )
+    const isNextNamespaceConnected = Boolean(
+      ChainController.getAccountData(network.chainNamespace)?.address
+    )
 
     const isDifferentNamespace = network.chainNamespace !== currentNamespace
     const connectorId = ConnectorController.getConnectorId(currentNamespace)
@@ -48,6 +52,7 @@ export const NetworkUtil = {
      * 2. If user connected with auth connector and the next network is supported by the auth connector,
      * we should switch to the network without confirmation screen.
      */
+
     if (ignoreSwitchConfirmation || (isConnectedWithAuth && isSupportedForAuthConnector)) {
       RouterController.push('SwitchNetwork', { ...routerData, network })
     } else if (

@@ -10,6 +10,33 @@ export default defineNuxtConfig({
   ssr: false,
   modules: ['@wagmi/vue/nuxt'],
   css: ['~/assets/main.css'],
+
+  // Add Vite configuration to handle native dependencies
+  vite: {
+    optimizeDeps: {
+      exclude: ['oxc-parser', '@oxc-parser/binding-darwin-arm64']
+    },
+    define: {
+      global: 'globalThis'
+    }
+  },
+
+  // Add Node.js compatibility for native bindings
+  nitro: {
+    experimental: {
+      wasm: true
+    },
+    // Exclude native bindings from bundling
+    externals: {
+      inline: ['oxc-parser']
+    }
+  },
+
+  // Build configuration to handle native modules
+  build: {
+    transpile: []
+  },
+
   app: {
     head: {
       title: 'AppKit Nuxt Wagmi-Solana-Bitcoin Example',

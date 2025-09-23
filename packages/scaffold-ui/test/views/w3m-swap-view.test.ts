@@ -85,6 +85,7 @@ describe('W3mSwapView', () => {
       loadingTransaction: false,
       loadingApprovalTransaction: false,
       loadingBuildTransaction: false,
+      switchingTokens: false,
       fetchError: false,
       approvalTransaction: undefined,
       swapTransaction: undefined,
@@ -122,10 +123,10 @@ describe('W3mSwapView', () => {
     vi.spyOn(SwapController, 'getNetworkTokenPrice').mockImplementation(async () => {})
     vi.spyOn(SwapController, 'getMyTokensWithBalance').mockImplementation(async () => {})
     vi.spyOn(SwapController, 'swapTokens').mockImplementation(async () => {})
-    vi.spyOn(SwapController, 'switchTokens').mockImplementation(() => {})
+    vi.spyOn(SwapController, 'switchTokens').mockImplementation(async () => {})
     vi.spyOn(SwapController, 'resetState').mockImplementation(() => {})
-    vi.spyOn(SwapController, 'setSourceToken').mockImplementation(() => {})
-    vi.spyOn(SwapController, 'setToToken').mockImplementation(() => {})
+    vi.spyOn(SwapController, 'setSourceToken').mockImplementation(async () => {})
+    vi.spyOn(SwapController, 'setToToken').mockImplementation(async () => {})
     vi.spyOn(SwapController, 'setSourceTokenAmount').mockImplementation(() => {})
     vi.spyOn(RouterController, 'push').mockImplementation(() => {})
 

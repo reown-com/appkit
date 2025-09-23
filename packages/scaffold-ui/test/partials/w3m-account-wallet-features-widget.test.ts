@@ -69,6 +69,12 @@ const ACCOUNT = {
   type: 'eoa'
 } as const
 
+class MockIntersectionObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
 describe('W3mAccountWalletFeaturesWidget', () => {
   beforeAll(() => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
@@ -220,9 +226,95 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     vi.restoreAllMocks()
   })
 })
+
+describe('list content template', () => {
+  beforeAll(() => {
+    global.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver
+  })
+
+  beforeEach(() => {
+    vi.restoreAllMocks()
+    // Mock fetchTokenBalance to prevent network calls and "is not a function" errors
+    vi.spyOn(ChainController, 'fetchTokenBalance').mockResolvedValue([])
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: CommonConstantsUtil.CHAIN.EVM
+    })
+  })
+
+  it('renders tokens widget when currentTab is 0', async () => {
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
+      address: MOCK_ADDRESS,
+      currentTab: 0,
+      addressLabels: new Map()
+    })
+
+    const element: W3mAccountWalletFeaturesWidget = await fixture(
+      html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+    )
+
+    await elementUpdated(element)
+
+    const tokens = HelpersUtil.querySelect(element, 'w3m-account-tokens-widget')
+    const activity = HelpersUtil.querySelect(element, 'w3m-account-activity-widget')
+
+    expect(tokens).not.toBeNull()
+    expect(activity).toBeNull()
+  })
+
+  it('renders activity widget when currentTab is 1', async () => {
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
+      address: MOCK_ADDRESS,
+      currentTab: 1,
+      addressLabels: new Map()
+    })
+
+    const element: W3mAccountWalletFeaturesWidget = await fixture(
+      html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+    )
+
+    await elementUpdated(element)
+
+    const tokens = HelpersUtil.querySelect(element, 'w3m-account-tokens-widget')
+    const activity = HelpersUtil.querySelect(element, 'w3m-account-activity-widget')
+
+    expect(tokens).toBeNull()
+    expect(activity).not.toBeNull()
+  })
+
+  it('falls back to tokens widget for any other currentTab value', async () => {
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
+      address: MOCK_ADDRESS,
+      currentTab: 2,
+      addressLabels: new Map()
+    })
+
+    const element: W3mAccountWalletFeaturesWidget = await fixture(
+      html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+    )
+
+    await elementUpdated(element)
+
+    const tokens = HelpersUtil.querySelect(element, 'w3m-account-tokens-widget')
+    const activity = HelpersUtil.querySelect(element, 'w3m-account-activity-widget')
+
+    expect(tokens).not.toBeNull()
+    expect(activity).toBeNull()
+  })
+})
+
 describe('wallet features visibility', () => {
   beforeAll(() => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+  })
+
+  beforeEach(() => {
+    vi.restoreAllMocks()
+    // Mock fetchTokenBalance to prevent network calls and "is not a function" errors
+    vi.spyOn(ChainController, 'fetchTokenBalance').mockResolvedValue([])
   })
 
   afterEach(() => {

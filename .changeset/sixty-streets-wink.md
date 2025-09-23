@@ -4,4 +4,4 @@
 '@reown/appkit': patch
 ---
 
-Emits GET_WALLET event when selecting a wallet to download on w3m-downloads-view
+Fixes an issue where switching tokens in swap view causes unexpected errors

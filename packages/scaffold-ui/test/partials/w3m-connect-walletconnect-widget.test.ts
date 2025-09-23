@@ -162,7 +162,9 @@ describe('W3mConnectWalletConnectWidget', () => {
     walletSelector.click()
 
     expect(setActiveConnectorSpy).toHaveBeenCalledWith(WALLET_CONNECT_CONNECTOR)
-    expect(pushSpy).toHaveBeenCalledWith('ConnectingWalletConnect')
+    expect(pushSpy).toHaveBeenCalledWith('ConnectingWalletConnect', {
+      redirectView: undefined
+    })
   })
 
   it('should handle unknown wallet name', async () => {
