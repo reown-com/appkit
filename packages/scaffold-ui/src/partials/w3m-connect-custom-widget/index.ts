@@ -105,7 +105,10 @@ export class W3mConnectCustomWidget extends LitElement {
     if (this.loading) {
       return
     }
-    RouterController.push('ConnectingWalletConnect', { wallet })
+    RouterController.push('ConnectingWalletConnect', {
+      wallet,
+      redirectView: RouterController.state.data?.redirectView
+    })
   }
 }
 

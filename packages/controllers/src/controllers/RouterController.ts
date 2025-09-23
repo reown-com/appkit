@@ -5,7 +5,6 @@ import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 import type { Connector, Metadata, WcWallet } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
@@ -204,10 +203,14 @@ const controller = {
       state.data.wallet = undefined
     }
 
+    if (state.data?.redirectView) {
+      state.data.redirectView = undefined
+    }
+
     // Reloading the iframe contentwindow and doing the view animation in the modal causes a small freeze in the transition. Doing these separately fixes that.
     setTimeout(() => {
       if (shouldReload) {
-        AccountController.setFarcasterUrl(undefined, ChainController.state.activeChain)
+        ChainController.setAccountProp('farcasterUrl', undefined, ChainController.state.activeChain)
         const authConnector = ConnectorController.getAuthConnector()
         authConnector?.provider?.reload()
 
