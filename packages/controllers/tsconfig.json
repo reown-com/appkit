@@ -6,5 +6,5 @@
     "removeComments": false
   },
   "extends": "../../tsconfig.json",
-  "include": ["exports", "src"]
+  "include": ["exports", "src", "tests"]
 }

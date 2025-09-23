@@ -11,6 +11,7 @@ import {
   SIWXUtil
 } from '@reown/appkit-controllers'
 import { type AppKitSIWEClient, createSIWEConfig } from '@reown/appkit-siwe'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 import * as networks from '@reown/appkit/networks'
 
 import { mockUniversalAdapter } from './mocks/Adapter'
@@ -211,9 +212,10 @@ describe('SIWE mapped to SIWX', () => {
         signature: 'mock-signature'
       })
       expect(setLastConnectedSIWECaipNetworkSpy).toHaveBeenCalledWith({
-        ...networks.mainnet,
-        caipNetworkId: 'eip155:1',
-        chainNamespace: 'eip155'
+        ...CaipNetworksUtil.extendCaipNetwork(networks.mainnet, {
+          projectId: 'mock-project-id',
+          customNetworkImageUrls: {}
+        })
       })
       expect(authenticateSpy).toHaveBeenCalledWith({
         chainId: 'eip155:1',

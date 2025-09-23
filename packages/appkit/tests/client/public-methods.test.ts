@@ -561,15 +561,6 @@ describe('Base Public methods', () => {
     expect(appKit.getApprovedCaipNetworkIds()).toEqual(['eip155:1'])
   })
 
-  it('should set approved CAIP networks data', () => {
-    const setApprovedCaipNetworksData = vi.spyOn(ChainController, 'setApprovedCaipNetworksData')
-
-    const appKit = new AppKit(mockOptions)
-    appKit.setApprovedCaipNetworksData('eip155')
-
-    expect(setApprovedCaipNetworksData).toHaveBeenCalledWith('eip155')
-  })
-
   it('should reset network', () => {
     const resetNetwork = vi.spyOn(ChainController, 'resetNetwork')
 
