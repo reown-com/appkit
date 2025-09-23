@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ApiController, ConnectorController } from '@reown/appkit-controllers'
-import type { ConnectorWithProviders, WcWallet } from '@reown/appkit-controllers'
+import type { Connector, ConnectorWithProviders, WcWallet } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 
@@ -103,6 +103,19 @@ export class W3mConnectorList extends LitElement {
     })
   }
 
+  private processConnectorsByType(
+    connectors: ConnectorWithProviders[],
+    shouldFilter = true
+  ): ConnectorWithProviders[] {
+    if (!this.explorerWallets?.length) {
+      return connectors
+    }
+
+    const sorted = ConnectorUtil.sortConnectorsByExplorerWallet([...connectors])
+
+    return shouldFilter ? sorted.filter(ConnectorUtil.showConnector) : sorted
+  }
+
   private connectorListTemplate() {
     const mappedConnectors: ConnectorWithProviders[] = this.mapConnectorsToExplorerWallets(
       this.connectors,
@@ -115,19 +128,9 @@ export class W3mConnectorList extends LitElement {
       this.featured
     )
 
-    const announced = this.explorerWallets?.length
-      ? ConnectorUtil.sortConnectorsByExplorerWallet([...byType.announced]).filter(
-          ConnectorUtil.showConnector
-        )
-      : byType.announced
-    const injected = this.explorerWallets?.length
-      ? ConnectorUtil.sortConnectorsByExplorerWallet([...byType.injected]).filter(
-          ConnectorUtil.showConnector
-        )
-      : byType.injected
-    const multiChain = this.explorerWallets?.length
-      ? ConnectorUtil.sortConnectorsByExplorerWallet([...byType.multiChain])
-      : byType.multiChain
+    const announced = this.processConnectorsByType(byType.announced)
+    const injected = this.processConnectorsByType(byType.injected)
+    const multiChain = this.processConnectorsByType(byType.multiChain, false)
     const custom = byType.custom
     const recent = byType.recent
     const external = byType.external
@@ -162,7 +165,7 @@ export class W3mConnectorList extends LitElement {
             ${announced.length
               ? html`<w3m-connect-announced-widget
                   tabIdx=${ifDefined(this.tabIdx)}
-                  .connectors=${announced}
+                  .connectors=${announced as Connector[]}
                 ></w3m-connect-announced-widget>`
               : null}
             ${injected.length

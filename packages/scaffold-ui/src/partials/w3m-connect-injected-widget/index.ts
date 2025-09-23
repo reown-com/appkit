@@ -70,8 +70,8 @@ export class W3mConnectInjectedWidget extends LitElement {
                 size="sm"
                 @click=${() => this.onConnector(connector)}
                 tabIdx=${ifDefined(this.tabIdx)}
-                .rdnsId=${connector.explorerWallet?.rdns ?? undefined}
-                .walletRank=${connector.explorerWallet?.order ?? undefined}
+                rdnsId=${ifDefined(connector.explorerWallet?.rdns || undefined)}
+                walletRank=${ifDefined(connector.explorerWallet?.order)}
               >
               </w3m-list-wallet>
             `

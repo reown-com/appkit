@@ -71,8 +71,8 @@ export class W3mConnectAnnouncedWidget extends LitElement {
                 data-testid=${`wallet-selector-${connector.id}`}
                 .installed=${true}
                 tabIdx=${ifDefined(this.tabIdx)}
-                .rdnsId=${connector.explorerWallet?.rdns ?? undefined}
-                .walletRank=${connector.explorerWallet?.order ?? undefined}
+                rdnsId=${ifDefined(connector.explorerWallet?.rdns || undefined)}
+                walletRank=${ifDefined(connector.explorerWallet?.order)}
               >
               </w3m-list-wallet>
             `

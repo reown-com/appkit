@@ -58,6 +58,7 @@ interface PrefetchParameters {
   fetchFeaturedWallets?: boolean
   fetchRecommendedWallets?: boolean
   fetchNetworkImages?: boolean
+  fetchWalletRanks?: boolean
 }
 
 type StateKey = keyof ApiControllerState
@@ -436,7 +437,8 @@ export const ApiController = {
     fetchConnectorImages = true,
     fetchFeaturedWallets = true,
     fetchRecommendedWallets = true,
-    fetchNetworkImages = true
+    fetchNetworkImages = true,
+    fetchWalletRanks = true
   }: PrefetchParameters = {}) {
     const promises = [
       fetchConnectorImages &&
@@ -447,7 +449,8 @@ export const ApiController = {
         ApiController.initPromise('recommendedWallets', ApiController.fetchRecommendedWallets),
       fetchNetworkImages &&
         ApiController.initPromise('networkImages', ApiController.fetchNetworkImages),
-      ApiController.initPromise('walletRanks', ApiController.prefetchWalletRanks)
+      fetchWalletRanks &&
+        ApiController.initPromise('walletRanks', ApiController.prefetchWalletRanks)
     ].filter(Boolean)
 
     return Promise.allSettled(promises)
