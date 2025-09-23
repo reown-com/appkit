@@ -214,7 +214,7 @@ export const TransactionUtil = {
             const inAmount = Number(inTransfer.quantity.numeric)
             const outAmount = Number(outTransfer.quantity.numeric)
 
-            // If one amount is less than 10% of the other, consider it gas and merge the transfer
+            // If one amount is less than 10% of the other, consider it gas and filter out the gas transfer
             if (outAmount < inAmount * GAS_FEE_THRESHOLD) {
               filteredTransfers.push(inTransfer)
             } else if (inAmount < outAmount * GAS_FEE_THRESHOLD) {
