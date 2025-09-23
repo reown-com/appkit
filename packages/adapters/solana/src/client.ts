@@ -565,8 +565,15 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   public getWalletConnectProvider(
     params: AdapterBlueprint.GetWalletConnectProviderParams
   ): AdapterBlueprint.GetWalletConnectProviderResult {
+    // Review this
+    const provider = ProviderController.getProvider(this.namespace)
+
+    if (!provider) {
+      throw new Error('SolanaAdapter:getWalletConnectProvider - provider is undefined')
+    }
+
     const walletConnectProvider = new SolanaWalletConnectProvider({
-      provider: params.provider as UniversalProvider,
+      provider,
       chains: params.caipNetworks,
       getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
     })

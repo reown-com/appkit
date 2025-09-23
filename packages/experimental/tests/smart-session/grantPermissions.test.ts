@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   ChainController,
   ConnectionController,
-  type ConnectionControllerClient,
   OptionsController,
   ProviderController
 } from '@reown/appkit-controllers'
@@ -74,47 +73,50 @@ describe('grantPermissions', () => {
       }
     })
 
-    vi.mocked(ConnectionController._getClient).mockReturnValue({
-      getCapabilities: vi.fn().mockResolvedValue({
-        '0x1': {
-          permissions: {
-            supported: true,
-            permissionTypes: ['contract-call'],
-            signerTypes: ['keys'],
-            policyTypes: []
-          }
-        }
-      }),
-      grantPermissions: vi.fn().mockResolvedValue({
-        permissions: [
-          {
-            type: 'contract-call',
-            data: {
-              address: '0x2E65BAfA07238666c3b239E94F32DaD3cDD6498D',
-              abi: donutContractAbi,
-              functions: [
-                {
-                  functionName: 'purchase'
-                }
-              ]
+    vi.mocked(ConnectionController.request).mockImplementation(method => {
+      const handlers = {
+        wallet_getCapabilities: vi.fn().mockResolvedValue({
+          '0x1': {
+            permissions: {
+              supported: true,
+              permissionTypes: ['contract-call'],
+              signerTypes: ['keys'],
+              policyTypes: []
             }
           }
-        ],
-        signer: {
-          type: 'keys',
-          data: {
-            keys: [
-              { type: 'secp256k1', publicKey: '0xtest-key' },
-              { type: 'secp256k1', publicKey: '0x123456' }
-            ]
-          }
-        },
-        context: '0xcontext',
-        expiry: expiry,
-        address: '0x1234567890123456789012345678901234567890',
-        chainId: '0x1'
-      })
-    } as unknown as ConnectionControllerClient)
+        }),
+        wallet_grantPermissions: vi.fn().mockResolvedValue({
+          permissions: [
+            {
+              type: 'contract-call',
+              data: {
+                address: '0x2E65BAfA07238666c3b239E94F32DaD3cDD6498D',
+                abi: donutContractAbi,
+                functions: [
+                  {
+                    functionName: 'purchase'
+                  }
+                ]
+              }
+            }
+          ],
+          signer: {
+            type: 'keys',
+            data: {
+              keys: [
+                { type: 'secp256k1', publicKey: '0xtest-key' },
+                { type: 'secp256k1', publicKey: '0x123456' }
+              ]
+            }
+          },
+          context: '0xcontext',
+          expiry: expiry,
+          address: '0x1234567890123456789012345678901234567890',
+          chainId: '0x1'
+        })
+      }
+      return handlers[method as keyof typeof handlers]?.() ?? Promise.resolve(undefined)
+    })
 
     vi.mocked(CosignerService.prototype.activatePermissions).mockResolvedValue(undefined)
   })
@@ -157,19 +159,22 @@ describe('grantPermissions', () => {
   })
 
   it('should throw an error when grantPermissions returns null', async () => {
-    vi.mocked(ConnectionController._getClient).mockReturnValueOnce({
-      getCapabilities: vi.fn().mockResolvedValue({
-        '0x1': {
-          permissions: {
-            supported: true,
-            permissionTypes: ['contract-call'],
-            signerTypes: ['keys'],
-            policyTypes: []
+    vi.mocked(ConnectionController.request).mockImplementationOnce(method => {
+      const handlers = {
+        wallet_getCapabilities: vi.fn().mockResolvedValue({
+          '0x1': {
+            permissions: {
+              supported: true,
+              permissionTypes: ['contract-call'],
+              signerTypes: ['keys'],
+              policyTypes: []
+            }
           }
-        }
-      }),
-      grantPermissions: vi.fn().mockResolvedValue(null)
-    } as unknown as ConnectionControllerClient)
+        }),
+        wallet_grantPermissions: vi.fn().mockResolvedValue(null)
+      }
+      return handlers[method as keyof typeof handlers]?.() ?? Promise.resolve(undefined)
+    })
 
     await expect(SmartSessionsController.grantPermissions(mockRequest)).rejects.toThrow(
       ERROR_MESSAGES.NO_RESPONSE_RECEIVED
@@ -261,19 +266,22 @@ describe('grantPermissions', () => {
   })
 
   it('should throw an error when ConnectionController grantPermissions fails', async () => {
-    vi.mocked(ConnectionController._getClient).mockReturnValueOnce({
-      getCapabilities: vi.fn().mockResolvedValue({
-        '0x1': {
-          permissions: {
-            supported: true,
-            permissionTypes: ['contract-call'],
-            signerTypes: ['keys'],
-            policyTypes: []
+    vi.mocked(ConnectionController.request).mockImplementationOnce(method => {
+      const handlers = {
+        wallet_getCapabilities: vi.fn().mockResolvedValue({
+          '0x1': {
+            permissions: {
+              supported: true,
+              permissionTypes: ['contract-call'],
+              signerTypes: ['keys'],
+              policyTypes: []
+            }
           }
-        }
-      }),
-      grantPermissions: vi.fn().mockRejectedValue(new Error('Connection error'))
-    } as unknown as ConnectionControllerClient)
+        }),
+        wallet_grantPermissions: vi.fn().mockRejectedValue(new Error('Connection error'))
+      }
+      return handlers[method as keyof typeof handlers]?.() ?? Promise.resolve(undefined)
+    })
 
     await expect(SmartSessionsController.grantPermissions(mockRequest)).rejects.toThrow(
       'Connection error'

@@ -242,7 +242,7 @@ export class W3mDepositFromExchangeView extends LitElement {
 
           if (namespace) {
             ChainController.fetchTokenBalance()
-            ConnectionController.updateBalance(namespace)
+            ConnectionController.updateBalance({ namespace })
           }
         } else if (status.status === 'FAILED') {
           SnackController.showError('Deposit failed')

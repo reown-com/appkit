@@ -96,7 +96,7 @@ describe('W3mInputAddress', () => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
     const mockAddress = '0x13aa2Eb0a99Af2F847119dC4Ac632fFe196d0B0f'
 
-    vi.spyOn(ConnectionController, 'getEnsAddress').mockResolvedValue(undefined)
+    vi.spyOn(ConnectionController, 'getEnsAddress').mockResolvedValue(false)
     const setReceiverAddressSpy = vi.spyOn(SendController, 'setReceiverAddress')
     const setReceiverProfileNameSpy = vi.spyOn(SendController, 'setReceiverProfileName')
     const setReceiverProfileImageUrlSpy = vi.spyOn(SendController, 'setReceiverProfileImageUrl')

@@ -306,13 +306,13 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   override async signMessage(
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
-    const connector = params.provider as BitcoinConnector
+    const provider = ProviderController.getProvider<BitcoinConnector>(this.namespace)
 
-    if (!connector) {
-      throw new Error('BitcoinAdapter:signMessage - connector is undefined')
+    if (!provider) {
+      throw new Error('BitcoinAdapter:signMessage - provider is undefined')
     }
 
-    const signature = await connector.signMessage({
+    const signature = await provider.signMessage({
       message: params.message,
       address: params.address
     })
@@ -323,8 +323,15 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   public getWalletConnectProvider(
     params: AdapterBlueprint.GetWalletConnectProviderParams
   ): AdapterBlueprint.GetWalletConnectProviderResult {
+    // Review this
+    const provider = ProviderController.getProvider(this.namespace)
+
+    if (!provider) {
+      throw new Error('BitcoinAdapter:getWalletConnectProvider - provider is undefined')
+    }
+
     const walletConnectProvider = new BitcoinWalletConnectConnector({
-      provider: params.provider as UniversalProvider,
+      provider,
       chains: params.caipNetworks,
       getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
     })

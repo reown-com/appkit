@@ -308,7 +308,7 @@ const controller = {
       }
     })
 
-    ConnectionController._getClient()?.updateBalance('eip155')
+    ConnectionController.updateBalance({ namespace: 'eip155' })
     SendController.resetSend()
 
     return { hash }
@@ -399,7 +399,7 @@ const controller = {
       state.hash = hash
     }
 
-    ConnectionController._getClient()?.updateBalance('solana')
+    ConnectionController.updateBalance({ namespace: 'solana' })
     SendController.resetSend()
   },
 

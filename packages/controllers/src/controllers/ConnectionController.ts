@@ -5,6 +5,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import {
   type CaipAddress,
   type CaipNetwork,
+  type CaipNetworkId,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   type Connection,
@@ -25,6 +26,7 @@ import type {
   ConnectedWalletInfo,
   Connector,
   EstimateGasTransactionArgs,
+  Provider,
   SendTransactionArgs,
   WcWallet,
   WriteContractArgs
@@ -396,6 +398,22 @@ const controller = {
     return result?.signature || ''
   },
 
+  request<Params extends object | readonly unknown[], Response>(
+    method: string,
+    params: Params
+  ): Promise<Response> {
+    const namespace = ChainController.state.activeChain
+    if (!namespace) {
+      throw new Error('request: namespace not found')
+    }
+    const provider = ProviderController.getProvider<Provider>(namespace)
+    if (!provider) {
+      throw new Error('request: adapter not found')
+    }
+
+    return provider.request<Response>({ method, params })
+  },
+
   parseUnits(value: string, decimals: number) {
     const namespace = ChainController.state.activeChain
 
@@ -428,10 +446,20 @@ const controller = {
     return adapter?.formatUnits({ value, decimals }) ?? '0'
   },
 
-  async updateBalance(namespace: ChainNamespace) {
-    const address = ChainController.getAccountData(namespace)?.address
-    const caipNetwork = ChainController.getCaipNetwork(namespace)
-    if (!caipNetwork || !address) {
+  async updateBalance({
+    namespace,
+    address,
+    chainId
+  }: {
+    namespace: ChainNamespace
+    address?: string
+    chainId?: string | number
+  }) {
+    const addressToUse = address || ChainController.getAccountData(namespace)?.address
+    const caipNetwork = chainId
+      ? ChainController.getCaipNetworkByNamespace(namespace, chainId)
+      : ChainController.getCaipNetwork(namespace)
+    if (!caipNetwork || !addressToUse) {
       return
     }
 
@@ -439,7 +467,7 @@ const controller = {
 
     if (adapter) {
       const balance = await adapter.getBalance({
-        address,
+        address: addressToUse,
         chainId: caipNetwork.id,
         caipNetwork,
         tokens: OptionsController.state.tokens
@@ -942,10 +970,150 @@ const controller = {
       default:
         throw new Error(`Invalid connection status: ${status}`)
     }
+  },
+  async syncAccount(params: {
+    chainNamespace: ChainNamespace
+    chainId: string | number
+    address: string
+  }) {
+    const isActiveNamespace = params.chainNamespace === ChainController.state.activeChain
+    const networkOfChain = ChainController.getCaipNetworkByNamespace(
+      params.chainNamespace,
+      params.chainId
+    )
+
+    const { address, chainId, chainNamespace } = params
+
+    const { chainId: activeChainId } = StorageUtil.getActiveNetworkProps()
+    const chainIdToUse = chainId || activeChainId
+    const isUnsupportedNetwork =
+      ChainController.state.activeCaipNetwork?.name === CommonConstantsUtil.UNSUPPORTED_NETWORK_NAME
+    const shouldSupportAllNetworks = ChainController.getNetworkProp(
+      'supportsAllNetworks',
+      chainNamespace
+    )
+
+    tempUtils.setStatus('connected', chainNamespace)
+    if (isUnsupportedNetwork && !shouldSupportAllNetworks) {
+      return
+    }
+    if (chainIdToUse) {
+      const caipNetworks = ChainController.getCaipNetworks()
+      let caipNetwork = caipNetworks.find(n => n.id.toString() === chainIdToUse.toString())
+      let fallbackCaipNetwork = caipNetworks.find(n => n.chainNamespace === chainNamespace)
+
+      // If doesn't support all networks, we need to use approved networks
+      if (!shouldSupportAllNetworks && !caipNetwork && !fallbackCaipNetwork) {
+        // Connection can be requested for a chain that is not supported by the wallet so we need to use approved networks here
+        const caipNetworkIds = ChainController.getAllApprovedCaipNetworkIds() || []
+        const caipNetworkId = caipNetworkIds.find(
+          id => ParseUtil.parseCaipNetworkId(id)?.chainId === chainIdToUse.toString()
+        )
+        const fallBackCaipNetworkId = caipNetworkIds.find(
+          id => ParseUtil.parseCaipNetworkId(id)?.chainNamespace === chainNamespace
+        )
+
+        caipNetwork = caipNetworks.find(n => n.caipNetworkId === caipNetworkId)
+        fallbackCaipNetwork = caipNetworks.find(
+          n =>
+            n.caipNetworkId === fallBackCaipNetworkId ||
+            // This is a workaround used in Solana network to support deprecated caipNetworkId
+            ('deprecatedCaipNetworkId' in n && n.deprecatedCaipNetworkId === fallBackCaipNetworkId)
+        )
+      }
+
+      const network = caipNetwork || (fallbackCaipNetwork as CaipNetwork)
+
+      if (network?.chainNamespace === ChainController.state.activeChain) {
+        // If the network is unsupported and the user doesn't allow unsupported chains, we show the unsupported chain UI
+        if (
+          OptionsController.state.enableNetworkSwitch &&
+          !OptionsController.state.allowUnsupportedChain &&
+          ChainController.state.activeCaipNetwork?.name ===
+            CommonConstantsUtil.UNSUPPORTED_NETWORK_NAME
+        ) {
+          ChainController.showUnsupportedChainUI()
+        } else {
+          ChainController.setActiveCaipNetwork(network)
+        }
+      } else if (!isActiveNamespace) {
+        if (networkOfChain) {
+          ChainController.setChainNetworkData(chainNamespace, { caipNetwork: networkOfChain })
+        }
+      }
+
+      tempUtils.syncConnectedWalletInfo(chainNamespace)
+
+      const currentAddress = ChainController.getAccountData(chainNamespace)?.address
+      if (address.toLowerCase() !== currentAddress?.toLowerCase()) {
+        ConnectionController.syncAccount({
+          address,
+          chainId: network.id,
+          chainNamespace
+        })
+      }
+
+      if (isActiveNamespace) {
+        await ConnectionController.updateBalance({
+          address,
+          chainId: network?.id,
+          namespace: chainNamespace
+        })
+      } else {
+        await ConnectionController.updateBalance({
+          address,
+          chainId: networkOfChain?.id,
+          namespace: chainNamespace
+        })
+      }
+
+      tempUtils.syncIdentity({
+        address,
+        chainId,
+        chainNamespace
+      })
+    }
   }
 }
 
 const tempUtils = {
+  async syncIdentity(params: {
+    address: string
+    chainId: string | number
+    chainNamespace: ChainNamespace
+  }) {
+    const { address, chainId, chainNamespace } = params
+    const caipNetworkId: CaipNetworkId = `${chainNamespace}:${chainId}`
+    const caipNetworks = ChainController.getCaipNetworks()
+    const activeCaipNetwork = caipNetworks.find(n => n.caipNetworkId === caipNetworkId)
+
+    if (activeCaipNetwork?.testnet) {
+      ChainController.setAccountProp('profileName', null, chainNamespace)
+      ChainController.setAccountProp('profileImage', null, chainNamespace)
+
+      return
+    }
+
+    const isAuthConnector =
+      ConnectorController.getConnectorId(chainNamespace) === CommonConstantsUtil.CONNECTOR_ID.AUTH
+
+    try {
+      const { name, avatar } = await BlockchainApiController.fetchIdentity({
+        address
+      })
+
+      if (!name && isAuthConnector) {
+        await EnsController.getNamesForAddress(address)
+      } else {
+        ChainController.setAccountProp('profileName', name, chainNamespace)
+        ChainController.setAccountProp('profileImage', avatar, chainNamespace)
+      }
+    } catch {
+      if (chainId !== 1) {
+        ChainController.setAccountProp('profileImage', null, chainNamespace)
+      }
+    }
+  },
   setConnectedWalletInfo(
     connectedWalletInfo: ConnectedWalletInfo | null,
     chainNamespace: ChainNamespace
@@ -974,7 +1142,11 @@ const tempUtils = {
         if (connector) {
           const { info, name, imageUrl } = connector
           const icon = imageUrl || AssetUtil.getConnectorImage(connector)
-          tempUtils.setConnectedWalletInfo({ name, icon, ...info }, chainNamespace)
+          ChainController.setAccountProp(
+            'connectedWalletInfo',
+            { name, icon, ...info },
+            chainNamespace
+          )
         }
       }
     } else if (providerType === 'WALLET_CONNECT') {
@@ -1070,7 +1242,7 @@ const tempUtils = {
             if (res) {
               StorageUtil.addConnectedNamespace(ns)
               StorageUtil.removeDisconnectedConnectorId(params.id, ns)
-              this.setStatus('connected', ns)
+              tempUtils.setStatus('connected', ns)
               this.syncConnectedWalletInfo(ns)
             }
           } catch (error) {
@@ -1107,10 +1279,6 @@ const tempUtils = {
     const syncTasks = ChainController.state.chains.keys().map(async chainNamespace => {
       const adapter = AdapterController.get(chainNamespace)
 
-      if (!adapter) {
-        return
-      }
-
       const namespaceAccounts =
         universalProvider.session?.namespaces?.[chainNamespace]?.accounts || []
 
@@ -1138,7 +1306,6 @@ const tempUtils = {
         ) {
           const provider = adapter.getWalletConnectProvider({
             caipNetworks,
-            provider: universalProvider,
             activeCaipNetwork: ChainController.state.activeCaipNetwork
           })
           ProviderController.setProvider(chainNamespace, provider)
@@ -1151,12 +1318,13 @@ const tempUtils = {
 
         /*
          * CHECK THIS
-         * await this.syncAccount({
-         *   address,
-         *   chainId,
-         *   chainNamespace
-         * })
+         *
          */
+        await ConnectionController.syncAccount({
+          address: sessionAddress,
+          chainId: activeChainId as string | number,
+          chainNamespace
+        })
       } else if (sessionNamespaces.includes(chainNamespace)) {
         tempUtils.setStatus('disconnected', chainNamespace)
       }
