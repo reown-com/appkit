@@ -100,7 +100,7 @@ describe('W3mConnectorList', () => {
       html`<w3m-connector-list .connectors=${allConnectors}></w3m-connector-list>`
     )
 
-    ;(element as any).explorerWallets = [{ id: 'dummy', name: 'Dummy' }]
+    ;(element as any).explorerWallets = [{ id: 'MetaMask', name: 'MetaMask' }]
     await element.updateComplete
 
     const flexChildren = element.shadowRoot?.querySelector('wui-flex')?.children
@@ -141,8 +141,7 @@ describe('W3mConnectorList', () => {
       html`<w3m-connector-list .connectors=${testConnectors}></w3m-connector-list>`
     )
 
-    // Provide explorer wallets so gated sections render
-    ;(element as any).explorerWallets = [{ id: 'dummy', name: 'Dummy' }]
+    ;(element as any).explorerWallets = [{ id: 'MetaMask', name: 'MetaMask' }]
     await element.updateComplete
 
     const flexChildren = element.shadowRoot?.querySelector('wui-flex')?.children
