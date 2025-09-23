@@ -302,43 +302,6 @@ describe('ChainController', () => {
     ).toEqual('eoa')
   })
 
-  it('Expect modal to close after switching from unsupported network to supported network', async () => {
-    // Mock ModalController.close
-    const modalCloseSpy = vi.spyOn(ModalController, 'close')
-
-    // Setup adapter with limited network support
-    const limitedEvmAdapter = {
-      namespace: ConstantsUtil.CHAIN.EVM,
-      connectionControllerClient,
-      caipNetworks: [
-        {
-          id: 1,
-          caipNetworkId: 'eip155:1',
-          name: 'Ethereum',
-          chainNamespace: ConstantsUtil.CHAIN.EVM
-        }
-      ] as unknown as CaipNetwork[]
-    }
-
-    ChainController.state.activeCaipNetwork = {
-      id: 42161,
-      caipNetworkId: 'eip155:42161',
-      name: 'Arbitrum One',
-      chainNamespace: ConstantsUtil.CHAIN.EVM,
-      nativeCurrency: {
-        name: 'Arbitrum',
-        symbol: 'ARB',
-        decimals: 18
-      }
-    } as unknown as CaipNetwork
-    ChainController.state.chains.set(ConstantsUtil.CHAIN.EVM, limitedEvmAdapter)
-    await ChainController.switchActiveNetwork(mainnetCaipNetwork)
-
-    expect(modalCloseSpy).toHaveBeenCalled()
-
-    modalCloseSpy.mockRestore()
-  })
-
   it('should initialize with active network from local storage', () => {
     const getItemSpy = vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue('eip155')
 

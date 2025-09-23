@@ -32,7 +32,6 @@ import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
-import { RouterController } from './RouterController.js'
 import { SendController } from './SendController.js'
 import { SnackController } from './SnackController.js'
 
@@ -473,33 +472,19 @@ const controller = {
       throw new Error('ChainController:switchActiveNetwork - namespace is required')
     }
 
-    const activeAdapter = ChainController.state.chains.get(namespace)
-
     const namespaceAddress = ChainController.getAccountData(namespace)?.address
 
     try {
-      if (namespaceAddress) {
-        if (network.chainNamespace === namespace) {
-          const adapter = AdapterController.get(network.chainNamespace)
-          await adapter.switchNetwork({ caipNetwork: network })
-        }
+      // If connected to the namespace and switching on same namespace, we should notify the wallet
+      if (namespaceAddress && network.chainNamespace === namespace) {
+        const adapter = AdapterController.get(network.chainNamespace)
+        await adapter.switchNetwork({ caipNetwork: network })
       }
       ChainController.setActiveCaipNetwork(network)
-
-      const isNetworkSupported = activeAdapter?.caipNetworks?.some(
-        caipNetwork => caipNetwork.id === state.activeCaipNetwork?.id
-      )
-
-      // Review, probably we should not close the modal here
-      if (!isNetworkSupported) {
-        ModalController.close()
-      }
     } catch (error) {
       if (throwOnFailure) {
         throw error
       }
-
-      RouterController.goBack()
     }
 
     EventsController.sendEvent({
