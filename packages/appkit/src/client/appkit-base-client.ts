@@ -18,7 +18,6 @@ import type {
   ConnectExternalOptions,
   ConnectMethod,
   ConnectedWalletInfo,
-  ConnectionControllerClient,
   ConnectionControllerState,
   ConnectorType,
   EstimateGasTransactionArgs,
@@ -128,7 +127,6 @@ interface AppKitSwitchNetworkOptions {
 
 export abstract class AppKitBaseClient {
   protected universalProvider?: UniversalProvider
-  protected connectionControllerClient?: ConnectionControllerClient
   protected static instance?: AppKitBaseClient
   protected universalProviderInitPromise?: Promise<void>
   protected caipNetworks?: [CaipNetwork, ...CaipNetwork[]]
@@ -385,12 +383,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected initializeChainController(options: AppKitOptions) {
-    if (!this.connectionControllerClient) {
-      throw new Error('ConnectionControllerClient must be set')
-    }
-    ChainController.initialize(options.adapters ?? [], this.caipNetworks, {
-      connectionControllerClient: this.connectionControllerClient
-    })
+    ChainController.initialize(options.adapters ?? [], this.caipNetworks)
     const network = this.getDefaultNetwork()
     if (network) {
       ChainController.setActiveCaipNetwork(network)
@@ -588,55 +581,6 @@ export abstract class AppKitBaseClient {
   // -- Client Initialization ---------------------------------------------------
   protected createClients() {
     this.connectionControllerClient = {
-      connectWalletConnect: async () => {
-        const activeChain = ChainController.state.activeChain
-        const adapter = this.getAdapter(activeChain)
-        const chainId = this.getCaipNetwork(activeChain)?.id
-        const connections = ConnectionController.getConnections(activeChain)
-        const isMultiWallet = this.remoteFeatures.multiWallet
-        const hasConnections = connections.length > 0
-
-        if (!adapter) {
-          throw new Error('Adapter not found')
-        }
-
-        const result = await adapter.connectWalletConnect(chainId)
-        const shouldClose = !hasConnections || !isMultiWallet
-
-        if (shouldClose) {
-          this.close()
-        }
-
-        this.setClientId(result?.clientId || null)
-        StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
-        await this.syncWalletConnectAccount()
-        await SIWXUtil.initializeIfEnabled()
-      },
-      connectExternal: async params => {
-        const connectResult = await this.onConnectExternal(params)
-
-        await this.connectInactiveNamespaces(params, connectResult)
-
-        return connectResult ? { address: connectResult.address } : undefined
-      },
-      reconnectExternal: async ({ id, info, type, provider }) => {
-        const namespace = ChainController.state.activeChain
-        const adapter = this.getAdapter(namespace)
-
-        if (!namespace) {
-          throw new Error('reconnectExternal: namespace not found')
-        }
-
-        if (!adapter) {
-          throw new Error('reconnectExternal: adapter not found')
-        }
-
-        if (adapter?.reconnect) {
-          await adapter?.reconnect({ id, info, type, provider, chainId: this.getCaipNetwork()?.id })
-          StorageUtil.addConnectedNamespace(namespace)
-          this.syncConnectedWalletInfo(namespace)
-        }
-      },
       disconnectConnector: async params => {
         await this.disconnectConnector(params.namespace, params.id)
       },
@@ -915,8 +859,6 @@ export abstract class AppKitBaseClient {
         this.updateNativeBalance(address, caipNetwork?.id, namespace)
       }
     }
-
-    ConnectionController.setClient(this.connectionControllerClient)
   }
 
   protected async onConnectExternal(params: ConnectExternalOptions) {
@@ -982,64 +924,6 @@ export abstract class AppKitBaseClient {
     StorageUtil.removeDisconnectedConnectorId(params.id, namespace)
 
     return { address: res.address, connectedCaipNetwork: caipNetworkToUse }
-  }
-
-  protected async connectInactiveNamespaces(
-    params: ConnectExternalOptions,
-    connectResult: { address: string; connectedCaipNetwork: CaipNetwork | undefined } | undefined
-  ) {
-    const isConnectingToAuth = params.type === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
-    const otherAuthNamespaces = HelpersUtil.getOtherAuthNamespaces(
-      connectResult?.connectedCaipNetwork?.chainNamespace
-    )
-    const activeCaipNetwork = ChainController.state.activeCaipNetwork
-    const activeAdapter = this.getAdapter(activeCaipNetwork?.chainNamespace)
-    const activeProvider = ProviderController.getProvider(activeCaipNetwork?.chainNamespace)
-
-    if (isConnectingToAuth) {
-      await Promise.all(
-        otherAuthNamespaces.map(async ns => {
-          try {
-            const provider = ProviderController.getProvider(ns)
-            const caipNetworkToUse = this.getCaipNetwork(ns)
-
-            const adapter = this.getAdapter(ns)
-            const res = await adapter?.connect({
-              ...params,
-              provider,
-              socialUri: undefined,
-              chainId: caipNetworkToUse?.id,
-              rpcUrl: caipNetworkToUse?.rpcUrls?.default?.http?.[0]
-            })
-
-            if (res) {
-              StorageUtil.addConnectedNamespace(ns)
-              StorageUtil.removeDisconnectedConnectorId(params.id, ns)
-              this.setStatus('connected', ns)
-              this.syncConnectedWalletInfo(ns)
-            }
-          } catch (error) {
-            AlertController.warn(
-              ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.displayMessage,
-              ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.debugMessage(
-                ns,
-                error instanceof Error ? error.message : undefined
-              ),
-              ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.code
-            )
-          }
-        })
-      )
-
-      // Make the secure site back to current network after reconnecting the other namespaces
-      if (activeCaipNetwork) {
-        await activeAdapter?.switchNetwork({
-          caipNetwork: activeCaipNetwork,
-          provider: activeProvider,
-          providerType: params.type
-        })
-      }
-    }
   }
 
   protected getApprovedCaipNetworksData() {
@@ -1678,6 +1562,7 @@ export abstract class AppKitBaseClient {
     }
   }
 
+  // Review and remove this (already on connectioncontroller)
   protected syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
     const connectorId = ConnectorController.getConnectorId(chainNamespace)
     const providerType = ProviderController.getProviderId(chainNamespace)

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
+import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import {
@@ -8,18 +8,20 @@ import {
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   type Connection,
-  type Hex,
   ParseUtil
 } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
+import { AssetUtil } from '../utils/AssetUtil.js'
 import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
 import { ConnectionControllerUtil } from '../utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { SIWXUtil } from '../utils/SIWXUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   ChainAdapter,
+  ConnectedWalletInfo,
   Connector,
   EstimateGasTransactionArgs,
   SendTransactionArgs,
@@ -29,10 +31,15 @@ import type {
   WriteContractArgs
 } from '../utils/TypeUtil.js'
 import { AppKitError, withErrorBoundary } from '../utils/withErrorBoundary.js'
+import { AdapterController } from './AdapterController.js'
+import { AlertController } from './AlertController.js'
+import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController, type ChainControllerState } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
+import { OptionsController } from './OptionsController.js'
+import { ProviderController } from './ProviderController.js'
 import { RouterController } from './RouterController.js'
 import { TransactionsController } from './TransactionsController.js'
 
@@ -98,42 +105,10 @@ interface DisconnectConnectorParameters {
   namespace: ChainNamespace
 }
 
-interface ConnectWalletConnectParameters {
-  cache?: 'auto' | 'always' | 'never'
-}
-
-export interface ConnectionControllerClient {
-  connectWalletConnect?: (params?: ConnectWalletConnectParameters) => Promise<void>
-  disconnect: (params?: DisconnectParameters) => Promise<void>
-  disconnectConnector: (params: DisconnectConnectorParameters) => Promise<void>
-  signMessage: (message: string) => Promise<string>
-  sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
-  estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
-  parseUnits: (value: string, decimals: number) => bigint
-  formatUnits: (value: bigint, decimals: number) => string
-  connectExternal?: (options: ConnectExternalOptions) => Promise<{ address: string } | undefined>
-  reconnectExternal?: (options: ConnectExternalOptions) => Promise<void>
-  checkInstalled?: (ids?: string[]) => boolean
-  writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>
-  getEnsAddress: (value: string) => Promise<false | string>
-  getEnsAvatar: (value: string) => Promise<false | string>
-  grantPermissions: (params: readonly unknown[] | object) => Promise<unknown>
-  revokePermissions: (params: {
-    pci: string
-    permissions: unknown[]
-    expiry: number
-    address: CaipAddress
-  }) => Promise<Hex>
-  getCapabilities: (params: string) => Promise<unknown>
-  walletGetAssets: (params: WalletGetAssetsParams) => Promise<WalletGetAssetsResponse>
-  updateBalance: (chainNamespace: ChainNamespace) => void
-}
-
 export interface ConnectionControllerState {
   isSwitchingConnection: boolean
   connections: Map<ChainNamespace, Connection[]>
   recentConnections: Map<ChainNamespace, Connection[]>
-  _client?: ConnectionControllerClient
   wcUri?: string
   wcPairingExpiry?: number
   wcLinking?: {
@@ -145,7 +120,6 @@ export interface ConnectionControllerState {
   recentWallet?: WcWallet
   buffering: boolean
   status?: 'connecting' | 'connected' | 'disconnected'
-  connectionControllerClient?: ConnectionControllerClient
 }
 
 type StateKey = keyof ConnectionControllerState
@@ -160,9 +134,6 @@ const state = proxy<ConnectionControllerState>({
   status: 'disconnected'
 })
 
-// eslint-disable-next-line init-declarations
-let wcConnectionPromise: Promise<void> | undefined
-
 // -- Controller ---------------------------------------- //
 const controller = {
   state,
@@ -176,14 +147,6 @@ const controller = {
     callback: (value: ConnectionControllerState[K]) => void
   ) {
     return subKey(state, key, callback)
-  },
-
-  _getClient() {
-    return state._client
-  },
-
-  setClient(client: ConnectionControllerClient) {
-    state._client = ref(client)
   },
 
   initialize(adapters: ChainAdapter[]) {
@@ -220,35 +183,38 @@ const controller = {
       .some(({ connectorId: _connectorId }) => _connectorId === connectorId)
   },
 
-  async connectWalletConnect({ cache = 'auto' }: ConnectWalletConnectParameters = {}) {
-    const isInTelegramOrSafariIos =
-      CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())
+  async connectWalletConnect() {
+    if (!CoreHelperUtil.isPairingExpired(state?.wcPairingExpiry)) {
+      const link = state.wcUri
+      state.wcUri = link
 
-    if (cache === 'always' || (cache === 'auto' && isInTelegramOrSafariIos)) {
-      if (wcConnectionPromise) {
-        await wcConnectionPromise
-        wcConnectionPromise = undefined
-
-        return
-      }
-
-      if (!CoreHelperUtil.isPairingExpired(state?.wcPairingExpiry)) {
-        const link = state.wcUri
-        state.wcUri = link
-
-        return
-      }
-      wcConnectionPromise = ConnectionController._getClient()
-        ?.connectWalletConnect?.()
-        .catch(() => undefined)
-      ConnectionController.state.status = 'connecting'
-      await wcConnectionPromise
-      wcConnectionPromise = undefined
-      state.wcPairingExpiry = undefined
-      ConnectionController.state.status = 'connected'
-    } else {
-      await ConnectionController._getClient()?.connectWalletConnect?.()
+      return
     }
+    try {
+      ConnectionController.state.status = 'connecting'
+      const activeChain = ChainController.state.activeChain
+      if (!activeChain) {
+        throw new Error('activeChain not found')
+      }
+
+      const adapter = AdapterController.get(activeChain)
+      const chainId = ChainController.getCaipNetwork(activeChain)?.id
+
+      if (!adapter) {
+        throw new Error('Adapter not found')
+      }
+
+      const result = await adapter.connectWalletConnect(chainId)
+
+      BlockchainApiController.setClientId(result?.clientId || null)
+      StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
+      await tempUtils.syncWalletConnectAccount()
+      await SIWXUtil.initializeIfEnabled()
+    } catch {
+      return
+    }
+    state.wcPairingExpiry = undefined
+    ConnectionController.state.status = 'connected'
   },
 
   async connectExternal(
@@ -256,7 +222,72 @@ const controller = {
     chain: ChainControllerState['activeChain'],
     setChain = true
   ) {
-    const connectData = await ConnectionController._getClient()?.connectExternal?.(options)
+    const activeChain = ChainController.state.activeChain
+    const namespace = options.chain || activeChain
+
+    if (!namespace) {
+      throw new Error('connectExternal: namespace not found')
+    }
+
+    const adapter = AdapterController.get(namespace)
+
+    if (!adapter) {
+      throw new Error('connectExternal: adapter not found')
+    }
+
+    let shouldUpdateNetwork = true
+
+    if (options.type === 'AUTH') {
+      const authNamespaces = CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS
+      const hasConnectedAuthNamespace = authNamespaces.some(
+        ns => ConnectorController.getConnectorId(ns) === options.type
+      )
+
+      if (hasConnectedAuthNamespace && options.chain !== activeChain) {
+        shouldUpdateNetwork = false
+      }
+    }
+
+    if (options.chain && options.chain !== activeChain && !options.caipNetwork) {
+      const toConnectNetwork = ChainController.getCaipNetworks().find(
+        network => network.chainNamespace === options.chain
+      )
+      if (toConnectNetwork && shouldUpdateNetwork) {
+        ChainController.setActiveCaipNetwork(toConnectNetwork)
+      }
+    }
+
+    const fallbackCaipNetwork = ChainController.getCaipNetwork(namespace)
+    const caipNetworkToUse = options.caipNetwork || fallbackCaipNetwork
+
+    const res = await adapter.connect({
+      id: options.id,
+      address: options.address,
+      info: options.info,
+      type: options.type,
+      provider: options.provider,
+      socialUri: options.socialUri,
+      chainId: options.caipNetwork?.id || fallbackCaipNetwork?.id,
+      rpcUrl:
+        options.caipNetwork?.rpcUrls?.default?.http?.[0] ||
+        fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
+    })
+
+    if (!res) {
+      return undefined
+    }
+
+    StorageUtil.addConnectedNamespace(namespace)
+    tempUtils.syncProvider({ ...res, chainNamespace: namespace })
+    tempUtils.setStatus('connected', namespace)
+    tempUtils.syncConnectedWalletInfo(namespace)
+    StorageUtil.removeDisconnectedConnectorId(options.id, namespace)
+
+    const connectResult = { address: res.address, connectedCaipNetwork: caipNetworkToUse }
+
+    await tempUtils.connectInactiveNamespaces(options)
+
+    const connectData = connectResult ? { address: connectResult.address } : undefined
 
     if (setChain) {
       ChainController.setActiveNamespace(chain)
@@ -266,8 +297,24 @@ const controller = {
   },
 
   async reconnectExternal(options: ConnectExternalOptions) {
-    await ConnectionController._getClient()?.reconnectExternal?.(options)
     const namespace = options.chain || ChainController.state.activeChain
+
+    if (!namespace) {
+      throw new Error('reconnectExternal: namespace not found')
+    }
+
+    const adapter = AdapterController.get(namespace)
+
+    if (!adapter) {
+      throw new Error('reconnectExternal: adapter not found')
+    }
+
+    if (adapter?.reconnect) {
+      await adapter?.reconnect(options)
+      StorageUtil.addConnectedNamespace(namespace)
+      tempUtils.syncConnectedWalletInfo(namespace)
+    }
+
     if (namespace) {
       ConnectorController.setConnectorId(options.id, namespace)
     }
@@ -377,7 +424,6 @@ const controller = {
   resetUri() {
     state.wcUri = undefined
     state.wcPairingExpiry = undefined
-    wcConnectionPromise = undefined
   },
 
   finalizeWcConnection(address?: string) {
@@ -659,6 +705,232 @@ const controller = {
       default:
         throw new Error(`Invalid connection status: ${status}`)
     }
+  }
+}
+
+const tempUtils = {
+  setConnectedWalletInfo(
+    connectedWalletInfo: ConnectedWalletInfo | null,
+    chainNamespace: ChainNamespace
+  ) {
+    const type = ProviderController.getProviderId(chainNamespace)
+    const walletInfo = connectedWalletInfo ? { ...connectedWalletInfo, type } : undefined
+    ChainController.setAccountProp('connectedWalletInfo', walletInfo, chainNamespace)
+  },
+  syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
+    const connectorId = ConnectorController.getConnectorId(chainNamespace)
+    const providerType = ProviderController.getProviderId(chainNamespace)
+
+    if (providerType === 'ANNOUNCED' || providerType === 'INJECTED') {
+      if (connectorId) {
+        const connectors = ConnectorController.getConnectors()
+        const connector = connectors.find(c => {
+          const isConnectorId = c.id === connectorId
+          const isRdns = c.info?.rdns === connectorId
+
+          const hasMultiChainConnector = c.connectors?.some(
+            _c => _c.id === connectorId || _c.info?.rdns === connectorId
+          )
+
+          return isConnectorId || isRdns || Boolean(hasMultiChainConnector)
+        })
+        if (connector) {
+          const { info, name, imageUrl } = connector
+          const icon = imageUrl || AssetUtil.getConnectorImage(connector)
+          tempUtils.setConnectedWalletInfo({ name, icon, ...info }, chainNamespace)
+        }
+      }
+    } else if (providerType === 'WALLET_CONNECT') {
+      const provider = ProviderController.getProvider(chainNamespace)
+
+      if (provider?.session) {
+        tempUtils.setConnectedWalletInfo(
+          {
+            ...provider.session.peer.metadata,
+            name: provider.session.peer.metadata.name,
+            icon: provider.session.peer.metadata.icons?.[0]
+          },
+          chainNamespace
+        )
+      }
+    } else if (connectorId) {
+      if (
+        connectorId === CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK ||
+        connectorId === CommonConstantsUtil.CONNECTOR_ID.COINBASE
+      ) {
+        const connector = ConnectorController.getConnectors().find(c => c.id === connectorId)
+        const name = connector?.name || 'Coinbase Wallet'
+        const icon = connector?.imageUrl || AssetUtil.getConnectorImage(connector)
+        const info = connector?.info
+
+        tempUtils.setConnectedWalletInfo(
+          {
+            ...info,
+            name,
+            icon
+          },
+          chainNamespace
+        )
+      }
+    }
+  },
+  setStatus(status: ConnectionControllerState['status'], namespace: ChainNamespace) {
+    ChainController.setAccountProp('status', status, namespace)
+
+    // If at least one namespace is connected, set the connection status
+    if (ConnectorController.isConnected()) {
+      StorageUtil.setConnectionStatus('connected')
+    } else {
+      StorageUtil.setConnectionStatus('disconnected')
+    }
+  },
+  syncProvider({
+    type,
+    provider,
+    id,
+    chainNamespace
+  }: {
+    type: Connector['type']
+    provider: Connector['provider']
+    id: Connector['id']
+    chainNamespace: ChainNamespace
+  }) {
+    ProviderController.setProviderId(chainNamespace, type)
+    ProviderController.setProvider(chainNamespace, provider)
+    ConnectorController.setConnectorId(id, chainNamespace)
+  },
+  async connectInactiveNamespaces(params: ConnectExternalOptions) {
+    const isConnectingToAuth = params.type === 'AUTH'
+
+    const authNamespaces = CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS
+    const otherAuthNamespaces = authNamespaces.filter(ns => ns !== params.chain)
+
+    const activeCaipNetwork = ChainController.state.activeCaipNetwork
+    const activeNamespace = activeCaipNetwork?.chainNamespace
+    if (!activeNamespace) {
+      throw new Error('connectInactiveNamespaces: active namespace not found')
+    }
+
+    const activeAdapter = AdapterController.get(activeCaipNetwork?.chainNamespace)
+    const activeProvider = ProviderController.getProvider(activeCaipNetwork?.chainNamespace)
+
+    if (isConnectingToAuth) {
+      await Promise.all(
+        otherAuthNamespaces.map(async ns => {
+          try {
+            const provider = ProviderController.getProvider(ns)
+            const caipNetworkToUse = ChainController.getCaipNetwork(ns)
+
+            const adapter = AdapterController.get(ns)
+            const res = await adapter?.connect({
+              ...params,
+              provider,
+              socialUri: undefined,
+              chainId: caipNetworkToUse?.id,
+              rpcUrl: caipNetworkToUse?.rpcUrls?.default?.http?.[0]
+            })
+
+            if (res) {
+              StorageUtil.addConnectedNamespace(ns)
+              StorageUtil.removeDisconnectedConnectorId(params.id, ns)
+              this.setStatus('connected', ns)
+              this.syncConnectedWalletInfo(ns)
+            }
+          } catch (error) {
+            // Check this later, need to move the errors
+            AlertController.warn(
+              'ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.displayMessage',
+              `ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.debugMessage(
+                ns,
+                error instanceof Error ? error.message : undefined
+              )`,
+              'ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.code'
+            )
+          }
+        })
+      )
+
+      // Make the secure site back to current network after reconnecting the other namespaces
+      if (activeCaipNetwork) {
+        await activeAdapter?.switchNetwork({
+          caipNetwork: activeCaipNetwork,
+          provider: activeProvider,
+          providerType: params.type
+        })
+      }
+    }
+  },
+  async syncWalletConnectAccount() {
+    const universalProvider = ProviderController.getProvider(ChainController.state.activeChain)
+    if (!universalProvider?.session) {
+      return
+    }
+
+    const sessionNamespaces = Object.keys(universalProvider.session?.namespaces || {})
+    const syncTasks = ChainController.state.chains.keys().map(async chainNamespace => {
+      const adapter = AdapterController.get(chainNamespace)
+
+      if (!adapter) {
+        return
+      }
+
+      const namespaceAccounts =
+        universalProvider.session?.namespaces?.[chainNamespace]?.accounts || []
+
+      // We try and find the address for this network in the session object.
+      const activeChainId = ChainController.state.activeCaipNetwork?.id
+
+      const sessionAddress =
+        namespaceAccounts.find(account => {
+          const { chainId } = ParseUtil.parseCaipAddress(account as CaipAddress)
+
+          return chainId === activeChainId?.toString()
+        }) || namespaceAccounts[0]
+
+      if (sessionAddress) {
+        const caipAddress = ParseUtil.validateCaipAddress(sessionAddress)
+        const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
+        ProviderController.setProviderId(chainNamespace, 'WALLET_CONNECT')
+        const caipNetworks = ChainController.getCaipNetworks(chainNamespace)
+        if (
+          caipNetworks &&
+          ChainController.state.activeCaipNetwork &&
+          adapter.namespace !== CommonConstantsUtil.CHAIN.EVM
+        ) {
+          const provider = adapter.getWalletConnectProvider({
+            caipNetworks,
+            provider: universalProvider,
+            activeCaipNetwork: ChainController.state.activeCaipNetwork
+          })
+          ProviderController.setProvider(chainNamespace, provider)
+        } else {
+          ProviderController.setProvider(chainNamespace, universalProvider)
+        }
+
+        ConnectorController.setConnectorId('WALLET_CONNECT', chainNamespace)
+        StorageUtil.addConnectedNamespace(chainNamespace)
+
+        /*
+         * CHECK THIS
+         * await this.syncAccount({
+         *   address,
+         *   chainId,
+         *   chainNamespace
+         * })
+         */
+      } else if (sessionNamespaces.includes(chainNamespace)) {
+        tempUtils.setStatus('disconnected', chainNamespace)
+      }
+
+      const data = this.getApprovedCaipNetworksData()
+      this.syncConnectedWalletInfo(chainNamespace)
+      ChainController.setApprovedCaipNetworksData(chainNamespace, {
+        approvedCaipNetworkIds: data.approvedCaipNetworkIds,
+        supportsAllNetworks: data.supportsAllNetworks
+      })
+    })
+
+    await Promise.all(syncTasks)
   }
 }
 
