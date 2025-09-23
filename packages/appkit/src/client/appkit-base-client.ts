@@ -544,46 +544,9 @@ export abstract class AppKitBaseClient {
     return extendedNetwork
   }
 
-  /**
-   * Disconnects a connector with the given namespace and id. If the connector id is not provided, disconnects the adapter (namespace).
-   * @param namespace ChainNamespace
-   * @param id string
-   * @returns
-   */
-  private async disconnectConnector(namespace: ChainNamespace, id: string | undefined) {
-    try {
-      this.setLoading(true, namespace)
-
-      let disconnectResult: AdapterBlueprint.DisconnectResult = {
-        connections: []
-      }
-
-      const adapter = this.getAdapter(namespace)
-      const caipAddress = ChainController.state.chains.get(namespace)?.accountState?.caipAddress
-
-      /**
-       * When the page loaded, the controller doesn't have address yet.
-       * To disconnect, we are checking enableReconnect flag to disconnect the namespace.
-       */
-      if ((caipAddress || !OptionsController.state.enableReconnect) && adapter?.disconnect) {
-        disconnectResult = await adapter.disconnect({ id })
-      }
-
-      this.setLoading(false, namespace)
-
-      return disconnectResult
-    } catch (error) {
-      this.setLoading(false, namespace)
-      throw new Error(`Failed to disconnect chains: ${(error as Error).message}`)
-    }
-  }
-
   // -- Client Initialization ---------------------------------------------------
   protected createClients() {
     this.connectionControllerClient = {
-      disconnectConnector: async params => {
-        await this.disconnectConnector(params.namespace, params.id)
-      },
       disconnect: async params => {
         const { id: connectorIdParam, chainNamespace, initialDisconnect } = params || {}
 

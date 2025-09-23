@@ -8,6 +8,7 @@ import {
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   type Connection,
+  ConstantsUtil,
   ParseUtil
 } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
@@ -41,7 +42,14 @@ import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
 import { ProviderController } from './ProviderController.js'
 import { RouterController } from './RouterController.js'
+import { SendController } from './SendController.js'
 import { TransactionsController } from './TransactionsController.js'
+
+declare global {
+  interface Window {
+    ethereum?: Record<string, unknown>
+  }
+}
 
 // -- Types --------------------------------------------- //
 interface SwitchConnectionParams {
@@ -407,7 +415,11 @@ const controller = {
   },
 
   checkInstalled(ids?: string[]) {
-    return ConnectionController._getClient()?.checkInstalled?.(ids) || false
+    if (!ids) {
+      return Boolean(window.ethereum)
+    }
+
+    return ids.some(id => Boolean(window.ethereum?.[String(id)]))
   },
 
   resetWcConnection() {
@@ -488,22 +500,117 @@ const controller = {
     state.isSwitchingConnection = isSwitchingConnection
   },
 
-  async disconnect({ id, namespace, initialDisconnect }: DisconnectParams = {}) {
+  async disconnect(params: DisconnectParams = {}) {
+    const { id: connectorIdParam, namespace: chainNamespace, initialDisconnect } = params || {}
+
+    const namespace = chainNamespace || ChainController.state.activeChain
+    const namespaceConnectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = connectorIdParam || namespaceConnectorId
+
+    const isAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
+    const isWalletConnect = connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    const shouldDisconnectAll = isAuth || isWalletConnect || !chainNamespace
+
     try {
-      await ConnectionController._getClient()?.disconnect({
-        id,
-        chainNamespace: namespace,
-        initialDisconnect
+      const namespaces = Array.from(ChainController.state.chains.keys())
+      /*
+       * If the connector is WalletConnect or Auth, disconnect all namespaces
+       * since they share a single connector instance across all adapters
+       */
+      const namespacesToDisconnect = shouldDisconnectAll ? namespaces : [chainNamespace]
+
+      const disconnectPromises = namespacesToDisconnect.map(async ns => {
+        const currentConnectorId = ConnectorController.getConnectorId(ns)
+        const connectorIdToDisconnect = connectorIdParam || currentConnectorId
+        if (connectorIdToDisconnect) {
+          const disconnectData = await ConnectionController.disconnectConnector({
+            id: connectorIdToDisconnect,
+            namespace: ns
+          })
+          if (disconnectData) {
+            if (isAuth) {
+              StorageUtil.deleteConnectedSocialProvider()
+            }
+
+            disconnectData.connections.forEach(connection => {
+              StorageUtil.addDisconnectedConnectorId(connection.connectorId, ns)
+            })
+          }
+
+          if (initialDisconnect) {
+            ChainController.resetAccount(ns)
+            ChainController.resetNetwork(ns)
+            StorageUtil.removeConnectedNamespace(ns)
+            StorageUtil.addDisconnectedConnectorId(ConnectorController.getConnectorId(ns) || '', ns)
+            ConnectorController.removeConnectorId(ns)
+            ProviderController.resetChain(ns)
+
+            ChainController.setAccountProp('user', null, ns)
+            tempUtils.setStatus('disconnected', ns)
+            tempUtils.setConnectedWalletInfo(null, ns)
+          }
+        }
+      })
+
+      const disconnectResults = await Promise.allSettled(disconnectPromises)
+
+      SendController.resetSend()
+      ConnectionController.resetWcConnection()
+
+      if (SIWXUtil.getSIWX()?.signOutOnDisconnect) {
+        await SIWXUtil.clearSessions()
+      }
+
+      ConnectorController.setFilterByNamespace(undefined)
+      ConnectionController.syncStorageConnections()
+
+      const failures = disconnectResults.filter(
+        (result): result is PromiseRejectedResult => result.status === 'rejected'
+      )
+
+      if (failures.length > 0) {
+        throw new Error(failures.map(f => f.reason.message).join(', '))
+      }
+
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'DISCONNECT_SUCCESS',
+        properties: {
+          namespace: chainNamespace || 'all'
+        }
       })
     } catch (error) {
       throw new AppKitError('Failed to disconnect', 'INTERNAL_SDK_ERROR', error)
     }
   },
 
-  async disconnectConnector({ id, namespace }: DisconnectConnectorParameters) {
+  async disconnectConnector({
+    id,
+    namespace
+  }: DisconnectConnectorParameters): Promise<{ connections: Connection[] }> {
     try {
-      await ConnectionController._getClient()?.disconnectConnector({ id, namespace })
+      ModalController.setLoading(true, namespace)
+
+      let disconnectResult = {
+        connections: []
+      }
+
+      const adapter = AdapterController.get(namespace)
+      const caipAddress = ChainController.state.chains.get(namespace)?.accountState?.caipAddress
+
+      /**
+       * When the page loaded, the controller doesn't have address yet.
+       * To disconnect, we are checking enableReconnect flag to disconnect the namespace.
+       */
+      if (caipAddress || !OptionsController.state.enableReconnect) {
+        disconnectResult = await adapter?.disconnect({ id })
+      }
+
+      ModalController.setLoading(false, namespace)
+
+      return disconnectResult
     } catch (error) {
+      ModalController.setLoading(false, namespace)
       throw new AppKitError('Failed to disconnect connector', 'INTERNAL_SDK_ERROR', error)
     }
   },
@@ -888,8 +995,10 @@ const tempUtils = {
         }) || namespaceAccounts[0]
 
       if (sessionAddress) {
-        const caipAddress = ParseUtil.validateCaipAddress(sessionAddress)
-        const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
+        /*
+         * Const caipAddress = ParseUtil.validateCaipAddress(sessionAddress)
+         * const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
+         */
         ProviderController.setProviderId(chainNamespace, 'WALLET_CONNECT')
         const caipNetworks = ChainController.getCaipNetworks(chainNamespace)
         if (
@@ -922,8 +1031,8 @@ const tempUtils = {
         tempUtils.setStatus('disconnected', chainNamespace)
       }
 
-      const data = this.getApprovedCaipNetworksData()
-      this.syncConnectedWalletInfo(chainNamespace)
+      const data = ChainController.getApprovedCaipNetworksData()
+      tempUtils.syncConnectedWalletInfo(chainNamespace)
       ChainController.setApprovedCaipNetworksData(chainNamespace, {
         approvedCaipNetworkIds: data.approvedCaipNetworkIds,
         supportsAllNetworks: data.supportsAllNetworks

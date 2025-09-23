@@ -1,3 +1,4 @@
+import type { SessionTypes } from '@walletconnect/types'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { proxyMap, subscribeKey as subKey } from 'valtio/vanilla/utils'
 
@@ -31,6 +32,7 @@ import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
+import { ProviderController } from './ProviderController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { SendController } from './SendController.js'
 import { SnackController } from './SnackController.js'
@@ -538,6 +540,38 @@ const controller = {
     })
 
     return approvedCaipNetworkIds
+  },
+
+  getApprovedCaipNetworksData() {
+    const providerType = ProviderController.getProviderId(ChainController.state.activeChain)
+    const provider = ProviderController.getProvider(ChainController.state.activeChain)
+
+    if (providerType === 'WALLET_CONNECT') {
+      const { namespaces, peer } = provider?.session || {}
+
+      return {
+        /*
+         * MetaMask Wallet only returns 1 namespace in the session object. This makes it imposible
+         * to switch to other networks. Setting supportsAllNetworks to true for MetaMask Wallet
+         * will make it possible to switch to other networks.
+         */
+        supportsAllNetworks: peer?.metadata.name === 'MetaMask Wallet',
+        approvedCaipNetworkIds: Object.values(namespaces || {}).flatMap(
+          (namespace: SessionTypes.BaseNamespace) => {
+            const chains = (namespace.chains || []) as CaipNetworkId[]
+            const accountsChains = namespace.accounts.map(account => {
+              const { chainId, chainNamespace } = ParseUtil.parseCaipAddress(account as CaipAddress)
+
+              return `${chainNamespace}:${chainId}`
+            })
+
+            return Array.from(new Set([...chains, ...accountsChains]))
+          }
+        ) as CaipNetworkId[]
+      }
+    }
+
+    return { supportsAllNetworks: true, approvedCaipNetworkIds: [] }
   },
 
   getActiveCaipNetwork(chainNamespace?: ChainNamespace) {
