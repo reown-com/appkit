@@ -238,7 +238,7 @@ describe('ConfigUtil', () => {
       )
       // Verify all expected features are mentioned in the warning
       const call = vi.mocked(AlertController.open).mock.calls[0]
-      const message = call[0].debugMessage
+      const message = call?.[0].debugMessage
       expect(message).toContain('"features.email"')
       expect(message).toContain('"features.socials"')
       expect(message).toContain('"features.swaps"')
@@ -327,29 +327,29 @@ describe('ConfigUtil', () => {
       vi.mocked(ApiController.fetchProjectConfig).mockRejectedValue(new Error())
       mockOptions.features = { swaps: true } as any
       const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
-      expect(features.swaps).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps)
-      expect(features.email).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES.email)
+      expect(features['swaps']).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps)
+      expect(features['email']).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES.email)
     })
 
     it('should use default onramp providers for local features.onramp=true on API failure', async () => {
       vi.mocked(ApiController.fetchProjectConfig).mockRejectedValue(new Error())
       mockOptions.features = { onramp: true } as any
       const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
-      expect(features.onramp).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp)
+      expect(features['onramp']).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp)
     })
 
     it('should use default social providers for local features.socials=true on API failure', async () => {
       vi.mocked(ApiController.fetchProjectConfig).mockRejectedValue(new Error())
       mockOptions.features = { socials: true } as any
       const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
-      expect(features.socials).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES.socials)
+      expect(features['socials']).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES.socials)
     })
 
     it('should correctly set socials to false for local features.socials=false on API failure', async () => {
       vi.mocked(ApiController.fetchProjectConfig).mockRejectedValue(new Error())
       mockOptions.features = { socials: false } as any
       const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
-      expect(features.socials).toBe(false)
+      expect(features['socials']).toBe(false)
     })
 
     it('should result in email:false and socials:false if social_login API is explicitly missing (on API success)', async () => {
@@ -361,7 +361,7 @@ describe('ConfigUtil', () => {
       const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
       expect(features['email']).toBe(false)
       expect(features['socials']).toBe(false)
-      expect(features.swaps).toEqual(['1inch'])
+      expect(features['swaps']).toEqual(['1inch'])
     })
 
     it('should result in activity:false if activity API is explicitly missing (on API success)', async () => {
@@ -371,8 +371,8 @@ describe('ConfigUtil', () => {
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(apiResponse)
       mockOptions.features = {}
       const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
-      expect(features.activity).toBe(false)
-      expect(features.swaps).toEqual(['1inch'])
+      expect(features['activity']).toBe(false)
+      expect(features['swaps']).toEqual(['1inch'])
     })
 
     it('should use default config when configuration processing throws an error', async () => {

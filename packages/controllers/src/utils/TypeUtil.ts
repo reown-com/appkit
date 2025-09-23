@@ -1232,8 +1232,6 @@ export type ConnectorTypeOrder =
   | 'external'
   | 'recommended'
 
-export type Json = null | boolean | number | string | Json[] | { [key: string]: Json }
-
 export type RemoteFeatures = {
   swaps?: SwapProvider[] | false
   email?: boolean
@@ -1247,7 +1245,7 @@ export type RemoteFeatures = {
   payWithExchange?: boolean
   payments?: boolean
   onramp?: OnRampProvider[] | false
-} & Record<string, Json>
+}
 
 export type Features = {
   /**

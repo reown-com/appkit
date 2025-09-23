@@ -87,7 +87,7 @@ function transformSocialLogin(config: Json): { email: Json; socials: Json } {
     return { email: false, socials: false }
   } else if (config !== null && config !== undefined) {
     throw new Error(
-      `Invalid social_login configuration: expected array, boolean, null, or undefined, got ${typeof config}`
+      `Invalid social_login configuration: expected array, boolean (true/false, both treated as disabled), null, or undefined, got ${typeof config}`
     )
   }
 
@@ -201,7 +201,7 @@ export function buildFeatureBag(params: {
        * For social_login, use the transformed values directly (don't apply empty array logic)
        */
       if (id === 'social_login') {
-        const { email: hasEmail, socials } = transformSocialLogin(config ?? {})
+        const { email: hasEmail, socials } = transformSocialLogin(config ?? false)
         apiMap['email'] = {
           isEnabled: Boolean(isEnabled),
           cfg: hasEmail as Json,
