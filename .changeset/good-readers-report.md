@@ -5,4 +5,4 @@
 "@apps/gallery": patch
 ---
 
-copilot-setup-steps
+Add GitHub Copilot configuration and setup instructions
