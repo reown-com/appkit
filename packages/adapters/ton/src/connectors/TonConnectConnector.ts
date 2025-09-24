@@ -1,11 +1,8 @@
 import { TonConnect } from '@tonconnect/sdk'
-import type { SendTransactionResponse, SignDataResponse, WalletInfo } from '@tonconnect/sdk'
+import type { WalletInfo } from '@tonconnect/sdk'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import type { TonConnector } from '@reown/appkit-utils/ton'
-import { TonConstantsUtil } from '@reown/appkit-utils/ton'
-
-// assume type
 
 export class TonConnectConnector implements TonConnector {
   id: string
@@ -16,9 +13,8 @@ export class TonConnectConnector implements TonConnector {
   // @ts-ignore
   provider: TonConnect
 
-  private wallet: WalletInfo
-
   constructor({ wallet, chains }: { wallet: WalletInfo; chains: CaipNetwork[] }) {
+    // @ts-expect-error will fix
     this.wallet = wallet
     this.id = wallet.name.toLowerCase().replace(/\s+/g, '-')
     this.name = wallet.name
@@ -29,14 +25,7 @@ export class TonConnectConnector implements TonConnector {
     })
   }
 
-  async connect(params?: { chainId?: string }): Promise<string> {
-    const chainId = params?.chainId ?? this.chains[0]?.caipNetworkId
-    const network = chainId === TonConstantsUtil.MAINNET ? 'mainnet' : 'testnet'
-
-    const link = this.provider.connect(this.wallet)
-
-    // TBD: Display custom QR with link or open universal link
-
+  async connect(): Promise<string> {
     return new Promise((resolve, reject) => {
       const unsubscribe = this.provider.onStatusChange(status => {
         if (
@@ -69,7 +58,7 @@ export class TonConnectConnector implements TonConnector {
     return this.provider.account?.address
   }
 
-  async signMessage(params: { message: string }): Promise<string> {
+  async signMessage(): Promise<string> {
     if (!this.provider) {
       throw new Error('Not connected')
     }
@@ -96,8 +85,5 @@ export class TonConnectConnector implements TonConnector {
     return response.signature // Adjust based on actual response structure
   }
 
-  async switchNetwork(chainId: string): Promise<void> {
-    // Update network if possible
-    // May require reconnection
-  }
+  async switchNetwork(): Promise<void> {}
 }

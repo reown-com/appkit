@@ -258,6 +258,13 @@ export const appKitConfigs = {
     networks: ConstantsUtil.BitcoinNetworks
   },
 
+  // ----- TON Variants ------------------------------
+  ton: {
+    ...commonAppKitConfig,
+    adapters: ['ton'],
+    networks: ConstantsUtil.TonNetworks
+  },
+
   // ----- Solana Variants ------------------------------
   solana: {
     ...commonAppKitConfig,

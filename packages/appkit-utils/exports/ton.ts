@@ -1,2 +1,2 @@
-export * from '../src/ton/TonTypesUtil'
+export type * from '../src/ton/TonTypesUtil'
 export * from '../src/ton/TonConstantsUtil'

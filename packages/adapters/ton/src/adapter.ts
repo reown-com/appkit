@@ -7,8 +7,7 @@ import { ton } from '@reown/appkit/networks'
 
 import { TonConnectConnector } from './connectors/TonConnectConnector'
 
-// to be created
-
+// @ts-expect-error will fix
 export class TonAdapter extends AdapterBlueprint<TonConnector> {
   constructor(params?: AdapterBlueprint.Params) {
     super({
@@ -43,8 +42,10 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     // Set connection, emit events, etc.
     // Mirror logic from BitcoinAdapter
     const chainId = params.chainId || ton.caipNetworkId
+    // @ts-expect-error will fix
     this.emit('accountChanged', { address, chainId, connector })
     this.connector = connector // Set active connector
+
     return {
       id: connector.id,
       address,
@@ -59,17 +60,11 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     return this.connector
   }
 
-  override async getAccounts(
-    params: AdapterBlueprint.GetAccountsParams
-  ): Promise<AdapterBlueprint.GetAccountsResult> {
-    const connector = this.getActiveConnector()
-
+  override async getAccounts(): Promise<AdapterBlueprint.GetAccountsResult> {
     return { accounts: [] }
   }
 
-  override async signMessage(
-    params: AdapterBlueprint.SignMessageParams
-  ): Promise<AdapterBlueprint.SignMessageResult> {
+  override async signMessage(): Promise<AdapterBlueprint.SignMessageResult> {
     const connector = this.getActiveConnector()
     if (!connector) throw new Error('No active connector')
 
@@ -77,9 +72,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     return connector.signMessage({} as any)
   }
 
-  override async sendTransaction(
-    params: AdapterBlueprint.SendTransactionParams
-  ): Promise<AdapterBlueprint.SendTransactionResult> {
+  override async sendTransaction(): Promise<AdapterBlueprint.SendTransactionResult> {
     const connector = this.getActiveConnector()
     if (!connector) throw new Error('No active connector')
 
@@ -87,9 +80,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     return connector.sendTransaction({ transaction: {} as any })
   }
 
-  override async disconnect(
-    params: AdapterBlueprint.DisconnectParams
-  ): Promise<AdapterBlueprint.DisconnectResult> {
+  override async disconnect(): Promise<AdapterBlueprint.DisconnectResult> {
     const connector = this.getActiveConnector()
 
     if (connector) {
@@ -110,20 +101,18 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     }
   }
 
-  override async getBalance(
-    params: AdapterBlueprint.GetBalanceParams
-  ): Promise<AdapterBlueprint.GetBalanceResult> {
+  override async getBalance(): Promise<AdapterBlueprint.GetBalanceResult> {
     // Implement using TON RPC
     return { balance: '0', symbol: 'TON' } // Placeholder
   }
 
   // Other methods as empty or throw 'Not supported for TON'
-  override parseUnits(params: AdapterBlueprint.ParseUnitsParams): bigint {
+  override parseUnits(): bigint {
     // Implement if needed
     return BigInt(0)
   }
 
-  override formatUnits(params: AdapterBlueprint.FormatUnitsParams): string {
+  override formatUnits(): string {
     return ''
   }
 
@@ -136,9 +125,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     return Promise.resolve()
   }
 
-  override async syncConnection(
-    params: AdapterBlueprint.SyncConnectionParams
-  ): Promise<AdapterBlueprint.ConnectResult> {
+  override async syncConnection(): Promise<AdapterBlueprint.ConnectResult> {
     return { id: '', address: '', chainId: '', provider: undefined, type: 'EXTERNAL' } // Placeholder
   }
 
@@ -178,9 +165,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     return {} as AdapterBlueprint.WalletGetAssetsResponse // Cast to satisfy type
   }
 
-  override getWalletConnectProvider(
-    params: AdapterBlueprint.GetWalletConnectProviderParams
-  ): AdapterBlueprint.GetWalletConnectProviderResult {
+  override getWalletConnectProvider(): AdapterBlueprint.GetWalletConnectProviderResult {
     // TODO: Implement if needed
     return undefined // Placeholder
   }

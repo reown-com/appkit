@@ -171,6 +171,11 @@ export const multichainSdkOptions: SdkOption[] = [
     title: 'Basic',
     link: '/appkit?name=multichain-no-adapters',
     description: 'Configuration with no adapters enabled for AppKit'
+  },
+  {
+    title: 'TON (experimental)',
+    link: '/appkit?name=ton',
+    description: 'Configuration using TON adapter'
   }
 ]
 

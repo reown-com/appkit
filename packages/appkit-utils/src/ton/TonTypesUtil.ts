@@ -1,6 +1,6 @@
-import type { ChainAdapterConnector } from '@reown/appkit/adapters'
+import type { Connector } from '@reown/appkit-controllers'
 
-export interface TonConnector extends ChainAdapterConnector {
+export interface TonConnector extends Connector {
   connect(params?: { chainId: string }): Promise<string> // returns address
   disconnect(): Promise<void>
   signMessage(params: { message: string }): Promise<string>
