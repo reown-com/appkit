@@ -151,7 +151,6 @@ export const TransactionUtil = {
       return transfers
     }
 
-    // Filter out gas fee transfers (small opposite-direction amounts of same token)
     const filteredTransfers = this.filterGasFeeTransfers(transfers)
 
     // Merge transfers with same token and same direction
@@ -173,7 +172,12 @@ export const TransactionUtil = {
       return acc
     }, [])
 
-    return mergedTransfers
+    let finalTransfers = mergedTransfers
+    if (mergedTransfers.length > 2) {
+      finalTransfers = mergedTransfers.sort((a, b) => (b.value || 0) - (a.value || 0)).slice(0, 2)
+    }
+
+    return finalTransfers
   },
 
   filterGasFeeTransfers(transfers: TransactionTransfer[]): TransactionTransfer[] {
@@ -226,7 +230,8 @@ export const TransactionUtil = {
             filteredTransfers.push(...tokenTransfers)
           }
         } else {
-          filteredTransfers.push(...tokenTransfers)
+          const significantTransfers = this.filterGasFeesFromTokenGroup(tokenTransfers)
+          filteredTransfers.push(...significantTransfers)
         }
       }
     })
@@ -238,6 +243,54 @@ export const TransactionUtil = {
     })
 
     return filteredTransfers
+  },
+
+  filterGasFeesFromTokenGroup(tokenTransfers: TransactionTransfer[]): TransactionTransfer[] {
+    if (tokenTransfers.length <= 1) {
+      return tokenTransfers
+    }
+
+    const amounts = tokenTransfers.map(t => Number(t.quantity.numeric))
+    const maxAmount = Math.max(...amounts)
+    const minAmount = Math.min(...amounts)
+
+    // If minimum amount is extremely small compared to maximum (less than 1% of max), it's likely gas
+    const extremeGasThreshold = 0.01
+
+    if (minAmount < maxAmount * extremeGasThreshold) {
+      // Filter out extremely small amounts that are likely gas fees
+
+      const filtered = tokenTransfers.filter(t => {
+        const amount = Number(t.quantity.numeric)
+
+        return amount >= maxAmount * extremeGasThreshold
+      })
+
+      return filtered
+    }
+
+    // If no extremely small amounts, apply standard gas fee logic
+    const inTransfers = tokenTransfers.filter(t => t.direction === 'in')
+    const outTransfers = tokenTransfers.filter(t => t.direction === 'out')
+
+    if (inTransfers.length === 1 && outTransfers.length === 1) {
+      const inTransfer = inTransfers[0]
+      const outTransfer = outTransfers[0]
+
+      if (inTransfer && outTransfer) {
+        const inAmount = Number(inTransfer.quantity.numeric)
+        const outAmount = Number(outTransfer.quantity.numeric)
+
+        if (outAmount < inAmount * GAS_FEE_THRESHOLD) {
+          return [inTransfer]
+        } else if (inAmount < outAmount * GAS_FEE_THRESHOLD) {
+          return [outTransfer]
+        }
+      }
+    }
+
+    // Default: keep all transfers if no gas fee pattern detected
+    return tokenTransfers
   },
 
   getQuantityFixedValue(value: string | undefined) {

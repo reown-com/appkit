@@ -291,4 +291,76 @@ describe('TransactionUtil.mergeTransfers', () => {
     expect(polResult?.direction).toBe('out')
     expect(polResult?.quantity.numeric).toBe('1.000000000000000000')
   })
+
+  it('filters out extremely small amounts from multiple transfers of same token', () => {
+    // Simulate complex bridge transaction with multiple POL transfers and tiny gas fee
+    const polInTransfer = {
+      fungible_info: {
+        name: 'Polygon',
+        symbol: 'POL',
+        icon: { url: 'pol-url' }
+      },
+      direction: 'in' as const,
+      quantity: { numeric: '0.335409423006602078' },
+      value: 0.09438223449613203
+    }
+
+    const polOutTransfer1 = {
+      fungible_info: {
+        name: 'Polygon',
+        symbol: 'POL',
+        icon: { url: 'pol-url' }
+      },
+      direction: 'out' as const,
+      quantity: { numeric: '0.03067133025286914' },
+      value: 0.008630731534866924
+    }
+
+    const polOutTransfer2 = {
+      fungible_info: {
+        name: 'Polygon',
+        symbol: 'POL',
+        icon: { url: 'pol-url' }
+      },
+      direction: 'out' as const,
+      quantity: { numeric: '0.000000000002869140' }, // Extremely tiny gas fee
+      value: 8.073478275162302e-13
+    }
+
+    const usdcOutTransfer = {
+      fungible_info: {
+        name: 'USD Coin',
+        symbol: 'USDC',
+        icon: { url: 'usdc-url' }
+      },
+      direction: 'out' as const,
+      quantity: { numeric: '0.095419' },
+      value: 0.0955182425156652
+    }
+
+    const result = TransactionUtil.mergeTransfers([
+      polInTransfer,
+      usdcOutTransfer,
+      polOutTransfer1,
+      polOutTransfer2
+    ])
+
+    expect(result.length).toBe(2)
+
+    const usdcResult = result.find(t => t?.fungible_info?.name === 'USD Coin')
+    expect(usdcResult?.quantity.numeric).toBe('0.095419')
+
+    const polInResult = result.find(
+      t => t?.fungible_info?.name === 'Polygon' && t?.direction === 'in'
+    )
+    expect(polInResult?.quantity.numeric).toBe('0.335409423006602078')
+
+    const polOutResult = result.find(
+      t => t?.fungible_info?.name === 'Polygon' && t?.direction === 'out'
+    )
+    expect(polOutResult).toBeUndefined()
+
+    const tinyGasFee = result.find(t => t?.quantity.numeric === '0.000000000002869140')
+    expect(tinyGasFee).toBeUndefined()
+  })
 })
