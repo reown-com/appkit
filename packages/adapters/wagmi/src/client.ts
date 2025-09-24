@@ -572,6 +572,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     try {
       // Attempt one click auth first, if authenticated, still connect with wagmi to store the session
       const walletConnectConnector = this.getWalletConnectConnector()
+
       await walletConnectConnector.authenticate()
 
       const wagmiConnector = this.getWagmiConnector('walletConnect')

@@ -1114,6 +1114,7 @@ const controller = {
   },
   async syncWalletConnectAccount() {
     const universalProvider = ProviderController.getProvider(ChainController.state.activeChain)
+
     if (!universalProvider?.session) {
       return
     }
@@ -1136,10 +1137,6 @@ const controller = {
         }) || namespaceAccounts[0]
 
       if (sessionAddress) {
-        /*
-         * Const caipAddress = ParseUtil.validateCaipAddress(sessionAddress)
-         * const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
-         */
         ProviderController.setProviderId(chainNamespace, 'WALLET_CONNECT')
         const caipNetworks = ChainController.getCaipNetworks(chainNamespace)
         if (
@@ -1156,15 +1153,12 @@ const controller = {
           ProviderController.setProvider(chainNamespace, universalProvider)
         }
 
-        ConnectorController.setConnectorId('WALLET_CONNECT', chainNamespace)
+        ConnectorController.setConnectorId('walletConnect', chainNamespace)
         StorageUtil.addConnectedNamespace(chainNamespace)
 
-        /*
-         * CHECK THIS
-         *
-         */
+        const { address } = ParseUtil.parseCaipAddress(sessionAddress as CaipAddress)
         await ConnectionController.syncAccount({
-          address: sessionAddress,
+          address,
           chainId: activeChainId as string | number,
           chainNamespace
         })

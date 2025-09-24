@@ -199,11 +199,6 @@ export const BlockchainApiController = {
       }
 
       const activeCaipAddress = ChainController.getAccountData()?.caipAddress
-      console.log(
-        '>> BlockchainApiController:fetchIdentity:activeCaipAddress',
-        activeCaipAddress,
-        ChainController.state.activeCaipAddress
-      )
 
       const result = await BlockchainApiController.get<BlockchainApiIdentityResponse>({
         path: `/v1/identity/${address}`,
