@@ -1,3 +1,5 @@
+import { ref } from 'valtio'
+
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import { ChainController } from '../controllers/ChainController.js'
@@ -61,7 +63,7 @@ export async function connectSocial(
       if (popupWindow) {
         ChainController.setAccountProp(
           'socialWindow',
-          popupWindow,
+          ref(popupWindow),
           ChainController.state.activeChain
         )
       } else if (!CoreHelperUtil.isTelegram()) {
