@@ -556,8 +556,6 @@ export abstract class AppKitBaseClient {
 
   // -- Adapter Initialization ---------------------------------------------------
   protected createAdapters(blueprints?: AdapterBlueprint[]): AdapterBlueprint[] {
-    console.log('>> AppKitBaseClient:createAdapters', this.chainNamespaces, blueprints)
-
     return this.chainNamespaces.map(namespace => {
       const adapter = blueprints?.find(b => b.namespace === namespace)
       if (adapter) {
@@ -580,11 +578,10 @@ export abstract class AppKitBaseClient {
   }
 
   protected async initChainAdapter(adapter: AdapterBlueprint) {
-    console.log('>> AppKitBaseClient:initChainAdapter', adapter)
     this.onConnectors(adapter)
     this.listenAdapter(adapter)
     await adapter.syncConnectors(this.options, this)
-    await this.createUniversalProviderForAdapter(adapter.namespace as ChainNamespace)
+    await this.createUniversalProviderForAdapter(adapter)
   }
 
   protected onConnectors(adapter: AdapterBlueprint) {
@@ -726,12 +723,36 @@ export abstract class AppKitBaseClient {
     }
   }
 
-  protected async createUniversalProviderForAdapter(chainNamespace: ChainNamespace) {
-    await this.getUniversalProvider()
+  protected async createUniversalProviderForAdapter(adapter: AdapterBlueprint) {
+    try {
+      if (
+        !this.universalProvider &&
+        !this.universalProviderInitPromise &&
+        CoreHelperUtil.isClient() &&
+        this.options?.projectId
+      ) {
+        // Set promise so it can be awaited externally for sync purposes (legacy)
+        this.universalProviderInitPromise = this.initializeUniversalProvider()
+      }
 
-    if (this.universalProvider) {
-      const adapter = this.getAdapter(chainNamespace)
-      await adapter?.setUniversalProvider(this.universalProvider)
+      // Await the promise to ensure the universal provider is initialized
+      await this.universalProviderInitPromise
+
+      if (this.universalProvider) {
+        await adapter?.setUniversalProvider(this.universalProvider)
+      }
+    } catch (err) {
+      EventsController.sendEvent({
+        type: 'error',
+        event: 'INTERNAL_SDK_ERROR',
+        properties: {
+          errorType: 'UniversalProviderInitError',
+          errorMessage: err instanceof Error ? err.message : 'Unknown',
+          uncaught: false
+        }
+      })
+      // eslint-disable-next-line no-console
+      console.error('AppKit:getUniversalProvider - Cannot create provider', err)
     }
   }
 
@@ -1011,7 +1032,7 @@ export abstract class AppKitBaseClient {
   }
 
   // -- Universal Provider ---------------------------------------------------
-  protected async initializeUniversalAdapter() {
+  protected async initializeUniversalProvider() {
     const logger = LoggerUtil.createLogger((error, ...args) => {
       if (error) {
         this.handleAlertError(error)
@@ -1120,37 +1141,7 @@ export abstract class AppKitBaseClient {
     }
   }
 
-  protected createUniversalProvider() {
-    if (
-      !this.universalProviderInitPromise &&
-      CoreHelperUtil.isClient() &&
-      this.options?.projectId
-    ) {
-      this.universalProviderInitPromise = this.initializeUniversalAdapter()
-    }
-
-    return this.universalProviderInitPromise
-  }
-
-  public async getUniversalProvider() {
-    if (!this.universalProvider) {
-      try {
-        await this.createUniversalProvider()
-      } catch (err) {
-        EventsController.sendEvent({
-          type: 'error',
-          event: 'INTERNAL_SDK_ERROR',
-          properties: {
-            errorType: 'UniversalProviderInitError',
-            errorMessage: err instanceof Error ? err.message : 'Unknown',
-            uncaught: false
-          }
-        })
-        // eslint-disable-next-line no-console
-        console.error('AppKit:getUniversalProvider - Cannot create provider', err)
-      }
-    }
-
+  public getUniversalProvider() {
     return this.universalProvider
   }
 
