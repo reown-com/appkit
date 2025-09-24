@@ -29,8 +29,8 @@ export interface OptionsControllerStatePublic {
    */
   allWallets?: 'SHOW' | 'HIDE' | 'ONLY_MOBILE'
   /**
-   * The project ID for the AppKit. You can find or create your project ID in the Cloud.
-   * @see https://cloud.walletconnect.com/
+   * The project ID for the AppKit. You can find or create your project ID in our Dashboard.
+   * @see https://dashboard.reown.com/
    */
   projectId: ProjectId
   /**

@@ -7,9 +7,11 @@
       •
       <a href="https://github.com/reown-com/appkit" target="_blank" rel="noreferrer">GitHub</a>
       •
-      <a href="https://cloud.reown.com" target="_blank" rel="noreferrer">Cloud</a>
+      <a href="https://dashboard.reown.com" target="_blank" rel="noreferrer">Dashboard</a>
     </div>
-    <p class="warning">This project ID only works on localhost. Go to Cloud to get your own.</p>
+    <p class="warning">
+      This project ID only works on localhost. Visit our Dashboard to get your own.
+    </p>
   </div>
 </template>
 
