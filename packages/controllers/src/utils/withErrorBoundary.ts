@@ -73,7 +73,11 @@ function errorHandler(err: any, defaultCategory: TelemetryErrorCategory) {
     } else if (typeof err === 'string') {
       errMessage = err
     } else if (typeof err === 'object' && err !== null) {
-      errMessage = err?.message || JSON.stringify(err)
+      if (Object.keys(err).length === 0) {
+        errMessage = 'Unknown error'
+      } else {
+        errMessage = err?.message || JSON.stringify(err)
+      }
     } else {
       errMessage = String(err)
     }
