@@ -21,7 +21,7 @@
     "buffer": "6.0.3"
   },
   "devDependencies": {
-    "@types/node": "22.13.9"
+    "@types/node": "22.10.6"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "SEE LICENSE IN LICENSE.md",
