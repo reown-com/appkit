@@ -472,7 +472,7 @@ const controller = {
         caipNetwork,
         tokens: OptionsController.state.tokens
       })
-      ChainController.setAccountProp('balance', balance, namespace)
+      ChainController.setAccountProp('balance', balance.balance, namespace)
       ChainController.setAccountProp('balanceSymbol', balance.symbol, namespace)
     }
   },
@@ -1042,7 +1042,16 @@ const controller = {
 
       const currentAddress = ChainController.getAccountData(chainNamespace)?.address
       if (address.toLowerCase() !== currentAddress?.toLowerCase()) {
-        ConnectionController.syncAccountInfo(address, network.id, chainNamespace)
+        const caipAddress = ChainController.getAccountData(chainNamespace)?.caipAddress
+        const newChainId = chainId || caipAddress?.split(':')[1]
+
+        if (!newChainId) {
+          return
+        }
+
+        const newCaipAddress = `${chainNamespace}:${newChainId}:${address}`
+
+        ConnectionController.setCaipAddress(newCaipAddress as CaipAddress, chainNamespace, true)
       }
 
       if (isActiveNamespace) {
@@ -1181,27 +1190,6 @@ const controller = {
       chain,
       shouldRefresh
     )
-  },
-  async syncAccountInfo(
-    address: string,
-    chainId: string | number | undefined,
-    chainNamespace: ChainNamespace
-  ) {
-    const caipAddress = ChainController.getAccountData(chainNamespace)?.caipAddress
-    const newChainId = chainId || caipAddress?.split(':')[1]
-
-    if (!newChainId) {
-      return
-    }
-
-    const newCaipAddress = `${chainNamespace}:${newChainId}:${address}`
-
-    ConnectionController.setCaipAddress(newCaipAddress as CaipAddress, chainNamespace, true)
-    await ConnectionController.syncIdentity({
-      address,
-      chainId: newChainId,
-      chainNamespace
-    })
   },
   syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
     const connectorId = ConnectorController.getConnectorId(chainNamespace)

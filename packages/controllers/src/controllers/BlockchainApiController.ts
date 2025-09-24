@@ -192,27 +192,36 @@ export const BlockchainApiController = {
   },
 
   async fetchIdentity({ address }: BlockchainApiIdentityRequest) {
-    const identityCache = StorageUtil.getIdentityFromCacheForAddress(address)
-    if (identityCache) {
-      return identityCache
-    }
-
-    const result = await BlockchainApiController.get<BlockchainApiIdentityResponse>({
-      path: `/v1/identity/${address}`,
-      params: {
-        sender: ChainController.state.activeCaipAddress
-          ? CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress)
-          : undefined
+    try {
+      const identityCache = StorageUtil.getIdentityFromCacheForAddress(address)
+      if (identityCache) {
+        return identityCache
       }
-    })
 
-    StorageUtil.updateIdentityCache({
-      address,
-      identity: result,
-      timestamp: Date.now()
-    })
+      const activeCaipAddress = ChainController.getAccountData()?.caipAddress
+      console.log(
+        '>> BlockchainApiController:fetchIdentity:activeCaipAddress',
+        activeCaipAddress,
+        ChainController.state.activeCaipAddress
+      )
 
-    return result
+      const result = await BlockchainApiController.get<BlockchainApiIdentityResponse>({
+        path: `/v1/identity/${address}`,
+        params: {
+          sender: activeCaipAddress ? CoreHelperUtil.getPlainAddress(activeCaipAddress) : undefined
+        }
+      })
+
+      StorageUtil.updateIdentityCache({
+        address,
+        identity: result,
+        timestamp: Date.now()
+      })
+
+      return result
+    } catch (e) {
+      return { name: null, avatar: null }
+    }
   },
 
   async fetchTransactions({
