@@ -42,6 +42,7 @@ export class W3mNetworksView extends LitElement {
       AssetController.subscribeNetworkImages(() => this.requestUpdate()),
       ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
       ChainController.subscribe(() => {
+        console.log('W3mNetworksView subscribe', ChainController.getAllRequestedCaipNetworks())
         this.requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
       })
     )
@@ -53,6 +54,8 @@ export class W3mNetworksView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    console.log('W3mNetworksView constructor', this.requestedCaipNetworks)
+
     return html`
       ${this.templateSearchInput()}
       <wui-flex

@@ -11,7 +11,7 @@ import {
   type Connection,
   ParseUtil
 } from '@reown/appkit-common'
-import type { W3mFrameTypes } from '@reown/appkit-wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { AssetUtil } from '../utils/AssetUtil.js'
 import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
@@ -217,7 +217,7 @@ const controller = {
 
       BlockchainApiController.setClientId(result?.clientId || null)
       StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
-      await tempUtils.syncWalletConnectAccount()
+      await ConnectionController.syncWalletConnectAccount()
       await SIWXUtil.initializeIfEnabled()
     } catch {
       return
@@ -287,14 +287,14 @@ const controller = {
     }
 
     StorageUtil.addConnectedNamespace(namespace)
-    tempUtils.syncProvider({ ...res, chainNamespace: namespace })
-    tempUtils.setStatus('connected', namespace)
-    tempUtils.syncConnectedWalletInfo(namespace)
+    ConnectionController.syncProvider({ ...res, chainNamespace: namespace })
+    ConnectionController.setStatus('connected', namespace)
+    ConnectionController.syncConnectedWalletInfo(namespace)
     StorageUtil.removeDisconnectedConnectorId(options.id, namespace)
 
     const connectResult = { address: res.address, connectedCaipNetwork: caipNetworkToUse }
 
-    await tempUtils.connectInactiveNamespaces(options)
+    await ConnectionController.connectInactiveNamespaces(options)
 
     const connectData = connectResult ? { address: connectResult.address } : undefined
 
@@ -321,7 +321,7 @@ const controller = {
     if (adapter?.reconnect) {
       await adapter?.reconnect(options)
       StorageUtil.addConnectedNamespace(namespace)
-      tempUtils.syncConnectedWalletInfo(namespace)
+      ConnectionController.syncConnectedWalletInfo(namespace)
     }
 
     if (namespace) {
@@ -648,10 +648,6 @@ const controller = {
     state.buffering = buffering
   },
 
-  setStatus(status: ConnectionControllerState['status']) {
-    state.status = status
-  },
-
   setIsSwitchingConnection(
     isSwitchingConnection: ConnectionControllerState['isSwitchingConnection']
   ) {
@@ -704,8 +700,8 @@ const controller = {
             ProviderController.resetChain(ns)
 
             ChainController.setAccountProp('user', null, ns)
-            tempUtils.setStatus('disconnected', ns)
-            tempUtils.setConnectedWalletInfo(null, ns)
+            ConnectionController.setStatus('disconnected', ns)
+            ConnectionController.setConnectedWalletInfo(null, ns)
           }
         }
       })
@@ -993,7 +989,7 @@ const controller = {
       chainNamespace
     )
 
-    tempUtils.setStatus('connected', chainNamespace)
+    ConnectionController.setStatus('connected', chainNamespace)
     if (isUnsupportedNetwork && !shouldSupportAllNetworks) {
       return
     }
@@ -1042,7 +1038,7 @@ const controller = {
         }
       }
 
-      tempUtils.syncConnectedWalletInfo(chainNamespace)
+      ConnectionController.syncConnectedWalletInfo(chainNamespace)
 
       const currentAddress = ChainController.getAccountData(chainNamespace)?.address
       if (address.toLowerCase() !== currentAddress?.toLowerCase()) {
@@ -1067,16 +1063,13 @@ const controller = {
         })
       }
 
-      tempUtils.syncIdentity({
+      ConnectionController.syncIdentity({
         address,
         chainId,
         chainNamespace
       })
     }
-  }
-}
-
-const tempUtils = {
+  },
   async syncIdentity(params: {
     address: string
     chainId: string | number
@@ -1111,161 +1104,6 @@ const tempUtils = {
     } catch {
       if (chainId !== 1) {
         ChainController.setAccountProp('profileImage', null, chainNamespace)
-      }
-    }
-  },
-  setConnectedWalletInfo(
-    connectedWalletInfo: ConnectedWalletInfo | null,
-    chainNamespace: ChainNamespace
-  ) {
-    const type = ProviderController.getProviderId(chainNamespace)
-    const walletInfo = connectedWalletInfo ? { ...connectedWalletInfo, type } : undefined
-    ChainController.setAccountProp('connectedWalletInfo', walletInfo, chainNamespace)
-  },
-  syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
-    const connectorId = ConnectorController.getConnectorId(chainNamespace)
-    const providerType = ProviderController.getProviderId(chainNamespace)
-
-    if (providerType === 'ANNOUNCED' || providerType === 'INJECTED') {
-      if (connectorId) {
-        const connectors = ConnectorController.getConnectors()
-        const connector = connectors.find(c => {
-          const isConnectorId = c.id === connectorId
-          const isRdns = c.info?.rdns === connectorId
-
-          const hasMultiChainConnector = c.connectors?.some(
-            _c => _c.id === connectorId || _c.info?.rdns === connectorId
-          )
-
-          return isConnectorId || isRdns || Boolean(hasMultiChainConnector)
-        })
-        if (connector) {
-          const { info, name, imageUrl } = connector
-          const icon = imageUrl || AssetUtil.getConnectorImage(connector)
-          ChainController.setAccountProp(
-            'connectedWalletInfo',
-            { name, icon, ...info },
-            chainNamespace
-          )
-        }
-      }
-    } else if (providerType === 'WALLET_CONNECT') {
-      const provider = ProviderController.getProvider(chainNamespace)
-
-      if (provider?.session) {
-        tempUtils.setConnectedWalletInfo(
-          {
-            ...provider.session.peer.metadata,
-            name: provider.session.peer.metadata.name,
-            icon: provider.session.peer.metadata.icons?.[0]
-          },
-          chainNamespace
-        )
-      }
-    } else if (connectorId) {
-      if (
-        connectorId === CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK ||
-        connectorId === CommonConstantsUtil.CONNECTOR_ID.COINBASE
-      ) {
-        const connector = ConnectorController.getConnectors().find(c => c.id === connectorId)
-        const name = connector?.name || 'Coinbase Wallet'
-        const icon = connector?.imageUrl || AssetUtil.getConnectorImage(connector)
-        const info = connector?.info
-
-        tempUtils.setConnectedWalletInfo(
-          {
-            ...info,
-            name,
-            icon
-          },
-          chainNamespace
-        )
-      }
-    }
-  },
-  setStatus(status: ConnectionControllerState['status'], namespace: ChainNamespace) {
-    ChainController.setAccountProp('status', status, namespace)
-
-    // If at least one namespace is connected, set the connection status
-    if (ConnectorController.isConnected()) {
-      StorageUtil.setConnectionStatus('connected')
-    } else {
-      StorageUtil.setConnectionStatus('disconnected')
-    }
-  },
-  syncProvider({
-    type,
-    provider,
-    id,
-    chainNamespace
-  }: {
-    type: Connector['type']
-    provider: Connector['provider']
-    id: Connector['id']
-    chainNamespace: ChainNamespace
-  }) {
-    ProviderController.setProviderId(chainNamespace, type)
-    ProviderController.setProvider(chainNamespace, provider)
-    ConnectorController.setConnectorId(id, chainNamespace)
-  },
-  async connectInactiveNamespaces(params: ConnectExternalOptions) {
-    const isConnectingToAuth = params.type === 'AUTH'
-
-    const authNamespaces = CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS
-    const otherAuthNamespaces = authNamespaces.filter(ns => ns !== params.chain)
-
-    const activeCaipNetwork = ChainController.state.activeCaipNetwork
-    const activeNamespace = activeCaipNetwork?.chainNamespace
-    if (!activeNamespace) {
-      throw new Error('connectInactiveNamespaces: active namespace not found')
-    }
-
-    const activeAdapter = AdapterController.get(activeCaipNetwork?.chainNamespace)
-    const activeProvider = ProviderController.getProvider(activeCaipNetwork?.chainNamespace)
-
-    if (isConnectingToAuth) {
-      await Promise.all(
-        otherAuthNamespaces.map(async ns => {
-          try {
-            const provider = ProviderController.getProvider(ns)
-            const caipNetworkToUse = ChainController.getCaipNetwork(ns)
-
-            const adapter = AdapterController.get(ns)
-            const res = await adapter?.connect({
-              ...params,
-              provider,
-              socialUri: undefined,
-              chainId: caipNetworkToUse?.id,
-              rpcUrl: caipNetworkToUse?.rpcUrls?.default?.http?.[0]
-            })
-
-            if (res) {
-              StorageUtil.addConnectedNamespace(ns)
-              StorageUtil.removeDisconnectedConnectorId(params.id, ns)
-              tempUtils.setStatus('connected', ns)
-              this.syncConnectedWalletInfo(ns)
-            }
-          } catch (error) {
-            // Check this later, need to move the errors
-            AlertController.warn(
-              'ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.displayMessage',
-              `ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.debugMessage(
-                ns,
-                error instanceof Error ? error.message : undefined
-              )`,
-              'ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.code'
-            )
-          }
-        })
-      )
-
-      // Make the secure site back to current network after reconnecting the other namespaces
-      if (activeCaipNetwork) {
-        await activeAdapter?.switchNetwork({
-          caipNetwork: activeCaipNetwork,
-          provider: activeProvider,
-          providerType: params.type
-        })
       }
     }
   },
@@ -1326,11 +1164,11 @@ const tempUtils = {
           chainNamespace
         })
       } else if (sessionNamespaces.includes(chainNamespace)) {
-        tempUtils.setStatus('disconnected', chainNamespace)
+        ConnectionController.setStatus('disconnected', chainNamespace)
       }
 
       const data = ChainController.getApprovedCaipNetworksData()
-      tempUtils.syncConnectedWalletInfo(chainNamespace)
+      ConnectionController.syncConnectedWalletInfo(chainNamespace)
       ChainController.setApprovedCaipNetworksData(chainNamespace, {
         approvedCaipNetworkIds: data.approvedCaipNetworkIds,
         supportsAllNetworks: data.supportsAllNetworks
@@ -1338,6 +1176,205 @@ const tempUtils = {
     })
 
     await Promise.all(syncTasks)
+  },
+  setCaipAddress(caipAddress: CaipAddress | null, chain: ChainNamespace, shouldRefresh = false) {
+    ChainController.setAccountProp('caipAddress', caipAddress, chain, shouldRefresh)
+    ChainController.setAccountProp(
+      'address',
+      CoreHelperUtil.getPlainAddress(caipAddress as CaipAddress),
+      chain,
+      shouldRefresh
+    )
+  },
+  async syncAccountInfo(
+    address: string,
+    chainId: string | number | undefined,
+    chainNamespace: ChainNamespace
+  ) {
+    const caipAddress = ChainController.getAccountData(chainNamespace)?.caipAddress
+    const newChainId = chainId || caipAddress?.split(':')[1]
+
+    if (!newChainId) {
+      return
+    }
+
+    const newCaipAddress = `${chainNamespace}:${newChainId}:${address}`
+
+    ConnectionController.setCaipAddress(newCaipAddress as CaipAddress, chainNamespace, true)
+    await ConnectionController.syncIdentity({
+      address,
+      chainId: newChainId,
+      chainNamespace
+    })
+  },
+  syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
+    const connectorId = ConnectorController.getConnectorId(chainNamespace)
+    const providerType = ProviderController.getProviderId(chainNamespace)
+    if (providerType === 'AUTH') {
+      const provider = ProviderController.getProvider<W3mFrameProvider>(chainNamespace)
+
+      if (provider) {
+        const social = StorageUtil.getConnectedSocialProvider() ?? 'email'
+        const identifier = provider.getEmail() ?? provider.getUsername()
+
+        ConnectionController.setConnectedWalletInfo(
+          { name: providerType, identifier, social },
+          chainNamespace
+        )
+      }
+    }
+    if (providerType === 'ANNOUNCED' || providerType === 'INJECTED') {
+      if (connectorId) {
+        const connectors = ConnectorController.getConnectors()
+        const connector = connectors.find(c => {
+          const isConnectorId = c.id === connectorId
+          const isRdns = c.info?.rdns === connectorId
+
+          const hasMultiChainConnector = c.connectors?.some(
+            _c => _c.id === connectorId || _c.info?.rdns === connectorId
+          )
+
+          return isConnectorId || isRdns || Boolean(hasMultiChainConnector)
+        })
+        if (connector) {
+          const { info, name, imageUrl } = connector
+          const icon = imageUrl || AssetUtil.getConnectorImage(connector)
+          ChainController.setAccountProp(
+            'connectedWalletInfo',
+            { name, icon, ...info },
+            chainNamespace
+          )
+        }
+      }
+    } else if (providerType === 'WALLET_CONNECT') {
+      const provider = ProviderController.getProvider(chainNamespace)
+
+      if (provider?.session) {
+        ConnectionController.setConnectedWalletInfo(
+          {
+            ...provider.session.peer.metadata,
+            name: provider.session.peer.metadata.name,
+            icon: provider.session.peer.metadata.icons?.[0]
+          },
+          chainNamespace
+        )
+      }
+    } else if (connectorId) {
+      if (
+        connectorId === CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK ||
+        connectorId === CommonConstantsUtil.CONNECTOR_ID.COINBASE
+      ) {
+        const connector = ConnectorController.getConnectors().find(c => c.id === connectorId)
+        const name = connector?.name || 'Coinbase Wallet'
+        const icon = connector?.imageUrl || AssetUtil.getConnectorImage(connector)
+        const info = connector?.info
+
+        ConnectionController.setConnectedWalletInfo(
+          {
+            ...info,
+            name,
+            icon
+          },
+          chainNamespace
+        )
+      }
+    }
+  },
+  setConnectedWalletInfo(
+    connectedWalletInfo: ConnectedWalletInfo | null,
+    chainNamespace: ChainNamespace
+  ) {
+    const type = ProviderController.getProviderId(chainNamespace)
+    const walletInfo = connectedWalletInfo ? { ...connectedWalletInfo, type } : undefined
+    ChainController.setAccountProp('connectedWalletInfo', walletInfo, chainNamespace)
+  },
+
+  setStatus(status: ConnectionControllerState['status'], namespace: ChainNamespace) {
+    state.status = status
+    ChainController.setAccountProp('status', status, namespace)
+
+    // If at least one namespace is connected, set the connection status
+    if (ConnectorController.isConnected()) {
+      StorageUtil.setConnectionStatus('connected')
+    } else {
+      StorageUtil.setConnectionStatus('disconnected')
+    }
+  },
+  syncProvider({
+    type,
+    provider,
+    id,
+    chainNamespace
+  }: {
+    type: Connector['type']
+    provider: Connector['provider']
+    id: Connector['id']
+    chainNamespace: ChainNamespace
+  }) {
+    ProviderController.setProviderId(chainNamespace, type)
+    ProviderController.setProvider(chainNamespace, provider)
+    ConnectorController.setConnectorId(id, chainNamespace)
+  },
+  async connectInactiveNamespaces(params: ConnectExternalOptions) {
+    const isConnectingToAuth = params.type === 'AUTH'
+
+    const authNamespaces = CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS
+    const otherAuthNamespaces = authNamespaces.filter(ns => ns !== params.chain)
+
+    const activeCaipNetwork = ChainController.state.activeCaipNetwork
+    const activeNamespace = activeCaipNetwork?.chainNamespace
+    if (!activeNamespace) {
+      throw new Error('connectInactiveNamespaces: active namespace not found')
+    }
+
+    const activeAdapter = AdapterController.get(activeCaipNetwork?.chainNamespace)
+    const activeProvider = ProviderController.getProvider(activeCaipNetwork?.chainNamespace)
+
+    if (isConnectingToAuth) {
+      await Promise.all(
+        otherAuthNamespaces.map(async ns => {
+          try {
+            const provider = ProviderController.getProvider(ns)
+            const caipNetworkToUse = ChainController.getCaipNetwork(ns)
+
+            const adapter = AdapterController.get(ns)
+            const res = await adapter?.connect({
+              ...params,
+              provider,
+              socialUri: undefined,
+              chainId: caipNetworkToUse?.id,
+              rpcUrl: caipNetworkToUse?.rpcUrls?.default?.http?.[0]
+            })
+
+            if (res) {
+              StorageUtil.addConnectedNamespace(ns)
+              StorageUtil.removeDisconnectedConnectorId(params.id, ns)
+              ConnectionController.setStatus('connected', ns)
+              ConnectionController.syncConnectedWalletInfo(ns)
+            }
+          } catch (error) {
+            // Check this later, need to move the errors
+            AlertController.warn(
+              'ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.displayMessage',
+              `ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.debugMessage(
+                ns,
+                error instanceof Error ? error.message : undefined
+              )`,
+              'ErrorUtil.ALERT_WARNINGS.INACTIVE_NAMESPACE_NOT_CONNECTED.code'
+            )
+          }
+        })
+      )
+
+      // Make the secure site back to current network after reconnecting the other namespaces
+      if (activeCaipNetwork) {
+        await activeAdapter?.switchNetwork({
+          caipNetwork: activeCaipNetwork,
+          provider: activeProvider,
+          providerType: params.type
+        })
+      }
+    }
   }
 }
 

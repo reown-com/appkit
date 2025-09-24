@@ -4,6 +4,7 @@ import type { MockInstance } from 'vitest'
 import type { CaipNetwork } from '@reown/appkit-common'
 import {
   type AccountType,
+  AdapterController,
   ChainController,
   ConnectionController,
   type Connector,
@@ -97,7 +98,9 @@ describe('syncExistingConnection', () => {
 
 describe('syncConnectedWalletInfo', () => {
   let appKit: AppKit
-  let setConnectedWalletInfoSpy: MockInstance<AppKit['setConnectedWalletInfo']>
+  let setConnectedWalletInfoSpy: MockInstance<
+    (typeof ConnectionController)['setConnectedWalletInfo']
+  >
 
   beforeEach(() => {
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('mock-connector-id')
@@ -107,7 +110,7 @@ describe('syncConnectedWalletInfo', () => {
       } as unknown as Connector
     ])
     appKit = new AppKit(mockOptions)
-    setConnectedWalletInfoSpy = vi.spyOn(appKit, 'setConnectedWalletInfo')
+    setConnectedWalletInfoSpy = vi.spyOn(ConnectionController, 'setConnectedWalletInfo')
   })
 
   it.each([
@@ -126,7 +129,7 @@ describe('syncConnectedWalletInfo', () => {
       }
     ])
 
-    appKit['syncConnectedWalletInfo']('eip155')
+    ConnectionController.syncConnectedWalletInfo('eip155')
 
     expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(
       {
@@ -153,7 +156,7 @@ describe('syncConnectedWalletInfo', () => {
       }
     })
 
-    appKit['syncConnectedWalletInfo']('eip155')
+    ConnectionController.syncConnectedWalletInfo('eip155')
 
     expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(
       {
@@ -172,7 +175,7 @@ describe('syncConnectedWalletInfo', () => {
 
     appKit['authProvider'] = mockFrameProvider
 
-    appKit['syncConnectedWalletInfo']('eip155')
+    ConnectionController.syncConnectedWalletInfo('eip155')
 
     expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(
       {
@@ -196,7 +199,7 @@ describe('syncConnectedWalletInfo', () => {
 
     vi.spyOn(StorageUtil, 'getConnectedSocialProvider').mockReturnValueOnce('mock-social')
 
-    appKit['syncConnectedWalletInfo']('eip155')
+    ConnectionController.syncConnectedWalletInfo('eip155')
 
     expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(
       {
@@ -212,14 +215,16 @@ describe('syncConnectedWalletInfo', () => {
     vi.spyOn(ProviderController, 'getProviderId').mockReturnValue(
       'mock-provider-id' as ConnectorType
     )
-    appKit['syncConnectedWalletInfo']('eip155')
+    ConnectionController.syncConnectedWalletInfo('eip155')
 
     expect(setConnectedWalletInfoSpy).not.toHaveBeenCalled()
   })
 
   describe('should be called on connection methods', () => {
     let appKit: AppKit
-    let syncConnectedWalletInfoSpy: MockInstance<(chainNamespace: string) => void>
+    let syncConnectedWalletInfoSpy: MockInstance<
+      (typeof ConnectionController)['syncConnectedWalletInfo']
+    >
 
     beforeEach(() => {
       vi.clearAllMocks()
@@ -227,7 +232,7 @@ describe('syncConnectedWalletInfo', () => {
       mockStorageUtil()
       mockBlockchainApiController()
       appKit = new AppKit(mockOptions)
-      syncConnectedWalletInfoSpy = vi.spyOn(appKit as any, 'syncConnectedWalletInfo')
+      syncConnectedWalletInfoSpy = vi.spyOn(ConnectionController, 'syncConnectedWalletInfo')
     })
 
     it('should call syncConnectedWalletInfo when using connectExternal', async () => {
@@ -353,7 +358,7 @@ describe('syncConnectedWalletInfo', () => {
     })
 
     it('should call syncConnectedWalletInfo when using reconnectExternal', async () => {
-      vi.spyOn(appKit as any, 'getAdapter').mockReturnValueOnce({
+      vi.spyOn(AdapterController, 'get').mockReturnValueOnce({
         ...mockEvmAdapter,
         reconnect: vi.fn().mockResolvedValue({
           address: '0x123',
@@ -389,7 +394,7 @@ describe('syncConnectedWalletInfo', () => {
   describe('syncAdapterConnection', () => {
     it('should successfully sync adapter connection and account', async () => {
       const appKit = new AppKit(mockOptions)
-      vi.spyOn(appKit as any, 'getAdapter').mockReturnValueOnce({
+      vi.spyOn(AdapterController, 'get').mockReturnValueOnce({
         syncConnection: vi.fn().mockResolvedValue({
           address: '0x123',
           chainId: '1',
@@ -425,7 +430,7 @@ describe('syncConnectedWalletInfo', () => {
 
     it('should emit CONNECT_SUCCESS event on reconnection', async () => {
       const appKit = new AppKit(mockOptions)
-      vi.spyOn(appKit as any, 'getAdapter').mockReturnValueOnce({
+      vi.spyOn(AdapterController, 'get').mockReturnValueOnce({
         syncConnection: vi.fn().mockResolvedValue({
           address: '0xabc',
           chainId: '1',
@@ -456,7 +461,7 @@ describe('syncConnectedWalletInfo', () => {
 
     it('should handle missing caipNetwork', async () => {
       const appKit = new AppKit(mockOptions)
-      vi.spyOn(appKit as any, 'getAdapter').mockReturnValueOnce({
+      vi.spyOn(AdapterController, 'get').mockReturnValueOnce({
         syncConnection: vi.fn()
       })
       vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('test-connector')

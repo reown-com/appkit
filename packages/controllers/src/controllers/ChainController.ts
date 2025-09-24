@@ -159,6 +159,7 @@ const controller = {
   },
 
   initialize(adapters: ChainAdapter[], caipNetworks: CaipNetwork[] | undefined) {
+    console.log('>> Initializing', adapters, caipNetworks)
     const { chainId: activeChainId, namespace: activeNamespace } =
       StorageUtil.getActiveNetworkProps()
     const activeCaipNetwork = caipNetworks?.find(
@@ -194,6 +195,7 @@ const controller = {
     }
 
     namespaces.forEach(namespace => {
+      console.log('>> Initializing namespace', namespace)
       const namespaceNetworks = caipNetworks?.filter(
         network => network.chainNamespace === namespace
       )
@@ -201,6 +203,7 @@ const controller = {
       const storedAccountTypes = StorageUtil.getPreferredAccountTypes() || {}
       const defaultTypes = { ...OptionsController.state.defaultAccountTypes, ...storedAccountTypes }
 
+      console.log('>> Setting namespace', namespaceNetworks)
       ChainController.state.chains.set(namespace, {
         namespace,
         networkState: proxy({ ...networkState, caipNetwork: namespaceNetworks?.[0] }),

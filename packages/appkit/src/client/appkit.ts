@@ -1,7 +1,6 @@
 /* eslint-disable max-depth */
 import {
   type CaipAddress,
-  type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace,
   ConstantsUtil,
@@ -30,7 +29,6 @@ import {
   ChainController,
   CoreHelperUtil,
   OptionsController,
-  ProviderController,
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
@@ -39,7 +37,6 @@ import { W3mFrameHelpers, W3mFrameProvider } from '@reown/appkit-wallet'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
-import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { W3mFrameProviderSingleton } from '../auth-provider/W3MFrameProviderSingleton.js'
 import { AppKitBaseClient, type AppKitOptionsWithSdk } from './appkit-base-client.js'
 
@@ -413,7 +410,8 @@ export class AppKit extends AppKitBaseClient {
     this.createAuthProvider(chainNamespace)
 
     if (this.authProvider) {
-      this.chainAdapters?.[chainNamespace]?.setAuthProvider?.(this.authProvider)
+      const adapter = this.getAdapter(chainNamespace)
+      adapter?.setAuthProvider(this.authProvider)
     }
   }
 
@@ -426,106 +424,6 @@ export class AppKit extends AppKitBaseClient {
     }
   }
 
-  protected override async switchCaipNetwork(caipNetwork: CaipNetwork) {
-    if (!caipNetwork) {
-      return
-    }
-
-    const currentNamespace = ChainController.state.activeChain
-    const networkNamespace = caipNetwork.chainNamespace
-    const namespaceAddress = this.getAddressByChainNamespace(networkNamespace)
-    const isSameNamespace = networkNamespace === currentNamespace
-
-    if (isSameNamespace && ChainController.getAccountData(networkNamespace)?.caipAddress) {
-      const adapter = this.getAdapter(networkNamespace)
-
-      await adapter?.switchNetwork({ caipNetwork })
-      this.setCaipNetwork(caipNetwork)
-    } else {
-      const currentNamespaceProviderType = ProviderController.getProviderId(currentNamespace)
-      const isCurrentNamespaceAuthProvider =
-        currentNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
-
-      const newNamespaceProviderType = ProviderController.getProviderId(networkNamespace)
-      const isNewNamespaceAuthProvider =
-        newNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
-      const isNewNamespaceSupportsAuthConnector =
-        ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(networkNamespace)
-
-      if (!networkNamespace) {
-        throw new Error('AppKit:switchCaipNetwork - networkNamespace is required')
-      }
-
-      /*
-       * Only connect with the auth connector if:
-       * 1. The current namespace is an auth connector AND
-       *    the new namespace provider type is undefined
-       * OR
-       * 2. The new namespace provider type is auth connector AND
-       *    the new namespace supports auth connector
-       *
-       * Note: There are cases where the current namespace is an auth connector
-       * but the new namespace uses a different connector type (injected, walletconnect, etc).
-       * In those cases, we should not connect with the auth connector.
-       */
-      if (
-        ((isCurrentNamespaceAuthProvider && newNamespaceProviderType === undefined) ||
-          isNewNamespaceAuthProvider) &&
-        isNewNamespaceSupportsAuthConnector
-      ) {
-        try {
-          ChainController.state.activeChain = caipNetwork.chainNamespace
-
-          if (namespaceAddress) {
-            const adapter = this.getAdapter(networkNamespace)
-            await adapter?.switchNetwork({
-              caipNetwork
-            })
-          } else {
-            await ConnectionController.connectExternal(
-              {
-                id: ConstantsUtil.CONNECTOR_ID.AUTH,
-                provider: this.authProvider,
-                chain: networkNamespace,
-                chainId: caipNetwork.id,
-                type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
-                caipNetwork
-              },
-              networkNamespace
-            )
-          }
-          this.setCaipNetwork(caipNetwork)
-        } catch (error) {
-          const adapter = this.getAdapter(networkNamespace)
-          await adapter?.switchNetwork({
-            caipNetwork
-          })
-        }
-      } else if (newNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
-        /*
-         * Switch network for adapters, as each manages
-         * its own connections state and requires network updates
-         */
-        if (!ChainController.state.noAdapters) {
-          const adapter = this.getAdapter(networkNamespace)
-
-          await adapter?.switchNetwork({ caipNetwork })
-        }
-        this.setCaipNetwork(caipNetwork)
-        this.syncWalletConnectAccount()
-      } else {
-        this.setCaipNetwork(caipNetwork)
-        if (namespaceAddress) {
-          this.syncAccount({
-            address: namespaceAddress,
-            chainId: caipNetwork.id,
-            chainNamespace: networkNamespace
-          })
-        }
-      }
-    }
-  }
-
   protected override async initialize(options: AppKitOptionsWithSdk) {
     await super.initialize(options)
 
@@ -534,60 +432,6 @@ export class AppKit extends AppKitBaseClient {
     })
     await this.injectModalUi()
     PublicStateController.set({ initialized: true })
-  }
-
-  public override async syncIdentity({
-    address,
-    chainId,
-    chainNamespace
-  }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
-    chainNamespace: ChainNamespace
-  }) {
-    const caipNetworkId: CaipNetworkId = `${chainNamespace}:${chainId}`
-    const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
-
-    if (activeCaipNetwork?.testnet) {
-      this.setProfileName(null, chainNamespace)
-      this.setProfileImage(null, chainNamespace)
-
-      return
-    }
-
-    const isAuthConnector =
-      ConnectorController.getConnectorId(chainNamespace) === ConstantsUtil.CONNECTOR_ID.AUTH
-
-    try {
-      const { name, avatar } = await this.fetchIdentity({
-        address
-      })
-
-      if (!name && isAuthConnector) {
-        await this.syncReownName(address, chainNamespace)
-      } else {
-        this.setProfileName(name, chainNamespace)
-        this.setProfileImage(avatar, chainNamespace)
-      }
-    } catch {
-      if (chainId !== 1) {
-        this.setProfileImage(null, chainNamespace)
-      }
-    }
-  }
-
-  protected override syncConnectedWalletInfo(chainNamespace: ChainNamespace): void {
-    const providerType = ProviderController.getProviderId(chainNamespace)
-    if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
-      const provider = this.authProvider
-
-      if (provider) {
-        const social = StorageUtil.getConnectedSocialProvider() ?? 'email'
-        const identifier = provider.getEmail() ?? provider.getUsername()
-
-        this.setConnectedWalletInfo({ name: providerType, identifier, social }, chainNamespace)
-      }
-    } else {
-      super.syncConnectedWalletInfo(chainNamespace)
-    }
   }
 
   protected override async injectModalUi() {
