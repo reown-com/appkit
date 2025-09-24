@@ -43,6 +43,8 @@ export interface ApiControllerState {
   recommended: WcWallet[]
   allRecommended: WcWallet[]
   wallets: WcWallet[]
+  explorerWallets: WcWallet[]
+  explorerFilteredWallets: WcWallet[]
   filteredWallets: WcWallet[]
   search: WcWallet[]
   isAnalyticsEnabled: boolean
@@ -56,6 +58,7 @@ interface PrefetchParameters {
   fetchFeaturedWallets?: boolean
   fetchRecommendedWallets?: boolean
   fetchNetworkImages?: boolean
+  fetchWalletRanks?: boolean
 }
 
 type StateKey = keyof ApiControllerState
@@ -74,7 +77,9 @@ const state = proxy<ApiControllerState>({
   search: [],
   isAnalyticsEnabled: false,
   excludedWallets: [],
-  isFetchingRecommendedWallets: false
+  isFetchingRecommendedWallets: false,
+  explorerWallets: [],
+  explorerFilteredWallets: []
 })
 
 // -- Controller ---------------------------------------- //
@@ -249,6 +254,41 @@ export const ApiController = {
     }
   },
 
+  async prefetchWalletRanks() {
+    const connectors = ConnectorController.state.connectors
+    if (!connectors?.length) {
+      return
+    }
+
+    const params: Omit<ApiGetWalletsRequest, 'chains'> & { chains?: string } = {
+      page: 1,
+      entries: 20,
+      badge: 'certified'
+    }
+
+    params.names = connectors.map(c => c.name).join(',')
+
+    if (ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM) {
+      const rdnsCandidates = [
+        ...connectors.flatMap(c => c.connectors?.map(sc => sc.info?.rdns) || []),
+        ...connectors.map(c => c.info?.rdns)
+      ].filter((val): val is string => typeof val === 'string' && val.length > 0)
+
+      if (rdnsCandidates.length) {
+        params.rdns = rdnsCandidates.join(',')
+      }
+    }
+
+    const { data } = await ApiController.fetchWallets(params)
+
+    state.explorerWallets = data
+
+    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
+    state.explorerFilteredWallets = data.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
+  },
+
   async fetchFeaturedWallets() {
     const { featuredWalletIds } = OptionsController.state
     if (featuredWalletIds?.length) {
@@ -397,7 +437,8 @@ export const ApiController = {
     fetchConnectorImages = true,
     fetchFeaturedWallets = true,
     fetchRecommendedWallets = true,
-    fetchNetworkImages = true
+    fetchNetworkImages = true,
+    fetchWalletRanks = true
   }: PrefetchParameters = {}) {
     const promises = [
       fetchConnectorImages &&
@@ -407,7 +448,9 @@ export const ApiController = {
       fetchRecommendedWallets &&
         ApiController.initPromise('recommendedWallets', ApiController.fetchRecommendedWallets),
       fetchNetworkImages &&
-        ApiController.initPromise('networkImages', ApiController.fetchNetworkImages)
+        ApiController.initPromise('networkImages', ApiController.fetchNetworkImages),
+      fetchWalletRanks &&
+        ApiController.initPromise('walletRanks', ApiController.prefetchWalletRanks)
     ].filter(Boolean)
 
     return Promise.allSettled(promises)

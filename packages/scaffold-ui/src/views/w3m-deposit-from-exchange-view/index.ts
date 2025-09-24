@@ -1,7 +1,9 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
+  AssetUtil,
   ChainController,
   ConnectionController,
   type CurrentPayment,
@@ -162,6 +164,7 @@ export class W3mDepositFromExchangeView extends LitElement {
             imageSrc=${this.paymentAsset?.metadata.iconUrl || ''}
             @click=${() => RouterController.push('PayWithExchangeSelectAsset')}
             size="lg"
+            .chainImageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
           >
           </wui-token-button>
         </wui-flex>

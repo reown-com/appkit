@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { repeat } from 'lit/directives/repeat.js'
 
 import type { Connector, ConnectorWithProviders } from '@reown/appkit-controllers'
 import {
@@ -22,9 +23,9 @@ export class W3mConnectInjectedWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property() public tabIdx?: number = undefined
+  @property({ type: Number }) public tabIdx?: number
 
-  @property() public connectors: ConnectorWithProviders[] = []
+  @property({ attribute: false }) public connectors: ConnectorWithProviders[] = []
 
   @state() private connections = ConnectionController.state.connections
 
@@ -37,7 +38,9 @@ export class W3mConnectInjectedWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const injectedConnectors = this.connectors.filter(ConnectorUtil.showConnector)
+    const injectedConnectors = ConnectorUtil.sortConnectorsByExplorerWallet(
+      this.connectors.filter(ConnectorUtil.showConnector)
+    )
 
     if (injectedConnectors.length === 0) {
       this.style.cssText = `display: none`
@@ -45,33 +48,35 @@ export class W3mConnectInjectedWidget extends LitElement {
       return null
     }
 
-    const sortedConnectors = ConnectorUtil.sortConnectorsByExplorerWallet(injectedConnectors)
-
     return html`
       <wui-flex flexDirection="column" gap="2">
-        ${sortedConnectors.map(connector => {
-          const connectionsByNamespace = this.connections.get(connector.chain) ?? []
-          const isAlreadyConnected = connectionsByNamespace.some(c =>
-            HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
-          )
+        ${repeat(
+          injectedConnectors,
+          connector => connector.id,
+          connector => {
+            const connectionsByNamespace = this.connections.get(connector.chain) ?? []
+            const isAlreadyConnected = connectionsByNamespace.some(c =>
+              HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
+            )
 
-          return html`
-            <w3m-list-wallet
-              imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-              .installed=${true}
-              name=${connector.name ?? 'Unknown'}
-              tagVariant=${isAlreadyConnected ? 'info' : 'success'}
-              tagLabel=${isAlreadyConnected ? 'connected' : 'installed'}
-              data-testid=${`wallet-selector-${connector.id}`}
-              size="sm"
-              @click=${() => this.onConnector(connector)}
-              tabIdx=${ifDefined(this.tabIdx)}
-              rdnsId=${connector.explorerWallet?.rdns}
-              walletRank=${connector.explorerWallet?.order}
-            >
-            </w3m-list-wallet>
-          `
-        })}
+            return html`
+              <w3m-list-wallet
+                imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+                .installed=${true}
+                name=${connector.name ?? 'Unknown'}
+                tagVariant=${isAlreadyConnected ? 'info' : 'success'}
+                tagLabel=${isAlreadyConnected ? 'connected' : 'installed'}
+                data-testid=${`wallet-selector-${connector.id}`}
+                size="sm"
+                @click=${() => this.onConnector(connector)}
+                tabIdx=${ifDefined(this.tabIdx)}
+                rdnsId=${ifDefined(connector.explorerWallet?.rdns || undefined)}
+                walletRank=${ifDefined(connector.explorerWallet?.order)}
+              >
+              </w3m-list-wallet>
+            `
+          }
+        )}
       </wui-flex>
     `
   }

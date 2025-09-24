@@ -65,7 +65,9 @@ describe('W3mAllWalletsSearch', () => {
       wallets: [],
       isAnalyticsEnabled: false,
       excludedWallets: [],
-      isFetchingRecommendedWallets: false
+      isFetchingRecommendedWallets: false,
+      explorerWallets: [],
+      explorerFilteredWallets: []
     }
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue(mockState)
     vi.spyOn(ApiController, 'searchWallet').mockResolvedValue()
@@ -95,7 +97,9 @@ describe('W3mAllWalletsSearch', () => {
       wallets: mockWallets,
       isAnalyticsEnabled: false,
       excludedWallets: [],
-      isFetchingRecommendedWallets: false
+      isFetchingRecommendedWallets: false,
+      explorerWallets: [],
+      explorerFilteredWallets: []
     }
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue(mockState)
     vi.spyOn(ApiController, 'searchWallet').mockResolvedValue()

@@ -211,6 +211,27 @@ describe('withErrorBoundary', () => {
         expect(appKitError.originalError).toBe(errorObject)
       }
       expect(sendErrorSpy).toHaveBeenCalledWith(expect.any(AppKitError), 'SECURE_SITE_ERROR')
+
+      // empty object
+      const emptyObject = {}
+      const mockController2 = {
+        async errorMethod() {
+          throw emptyObject
+        }
+      }
+
+      const wrappedController2 = withErrorBoundary(mockController2, 'SECURE_SITE_ERROR')
+
+      try {
+        await wrappedController2.errorMethod()
+      } catch (err: unknown) {
+        expect(err).toBeInstanceOf(AppKitError)
+        const appKitError = err as AppKitError
+        expect(appKitError.message).toBe('Unknown error')
+        expect(appKitError.category).toBe('SECURE_SITE_ERROR')
+        expect(appKitError.originalError).toBe(emptyObject)
+      }
+      expect(sendErrorSpy).toHaveBeenCalledWith(expect.any(AppKitError), 'SECURE_SITE_ERROR')
     })
 
     it('should handle null errors correctly', async () => {
