@@ -66,7 +66,7 @@ export class WuiTokenButton extends LitElement {
     }
 
     if (this.imageSrc) {
-      return html`<wui-image src=${this.imageSrc}></wui-image>`
+      return html`<wui-image src=${this.imageSrc} class="token-image"></wui-image>`
     }
 
     const iconSize = ICON_SIZE_BY_SIZE[this.size]
