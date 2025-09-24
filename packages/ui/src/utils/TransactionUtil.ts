@@ -21,16 +21,10 @@ export const TransactionUtil = {
   },
 
   getTransactionImages(transfers: TransactionTransfer[]): TransactionImage[] {
-    const [transfer, secondTransfer] = transfers
-    const isAllNFT = Boolean(transfer) && transfers?.every(item => Boolean(item.nft_info))
-    const haveMultipleTransfers = transfers?.length > 1
-    const haveTwoTransfers = transfers?.length === 2
+    const [transfer] = transfers
+    const hasMultipleTransfers = transfers?.length > 1
 
-    if (haveTwoTransfers && !isAllNFT) {
-      return [this.getTransactionImage(secondTransfer), this.getTransactionImage(transfer)]
-    }
-
-    if (haveMultipleTransfers) {
+    if (hasMultipleTransfers) {
       return transfers.map(item => this.getTransactionImage(item))
     }
 
@@ -72,16 +66,15 @@ export const TransactionUtil = {
     const type = transaction?.metadata?.operationType as TransactionType
 
     const transfers = mergedTransfers || transaction?.transfers
-    const haveTransfer = transfers?.length > 0
-    const haveMultipleTransfers = transfers?.length > 1
-    const isFungible =
-      haveTransfer && transfers?.every(transfer => Boolean(transfer?.fungible_info))
+    const hasTransfer = transfers?.length > 0
+    const hasMultipleTransfers = transfers?.length > 1
+    const isFungible = hasTransfer && transfers?.every(transfer => Boolean(transfer?.fungible_info))
     const [firstTransfer, secondTransfer] = transfers
 
     let firstDescription = this.getTransferDescription(firstTransfer)
     let secondDescription = this.getTransferDescription(secondTransfer)
 
-    if (!haveTransfer) {
+    if (!hasTransfer) {
       const isSendOrReceive = type === 'send' || type === 'receive'
 
       if (isSendOrReceive && isFungible) {
@@ -104,8 +97,8 @@ export const TransactionUtil = {
       return [transaction.metadata.status]
     }
 
-    if (haveMultipleTransfers) {
-      return transfers.map(item => this.getTransferDescription(item)).reverse()
+    if (hasMultipleTransfers) {
+      return transfers.map(item => this.getTransferDescription(item))
     }
 
     let prefix = ''
@@ -177,6 +170,18 @@ export const TransactionUtil = {
       finalTransfers = mergedTransfers.sort((a, b) => (b.value || 0) - (a.value || 0)).slice(0, 2)
     }
 
+    // Correctly order transfers for display
+    finalTransfers = finalTransfers.sort((a, b) => {
+      if (a.direction === 'out' && b.direction === 'in') {
+        return -1
+      }
+      if (a.direction === 'in' && b.direction === 'out') {
+        return 1
+      }
+
+      return 0
+    })
+
     return finalTransfers
   },
 
@@ -214,6 +219,7 @@ export const TransactionUtil = {
           const inTransfer = inTransfers[0]
           const outTransfer = outTransfers[0]
 
+          let didApplyGasFeeFilter = false
           if (inTransfer && outTransfer) {
             const inAmount = Number(inTransfer.quantity.numeric)
             const outAmount = Number(outTransfer.quantity.numeric)
@@ -221,12 +227,14 @@ export const TransactionUtil = {
             // If one amount is less than 10% of the other, consider it gas and filter out the gas transfer
             if (outAmount < inAmount * GAS_FEE_THRESHOLD) {
               filteredTransfers.push(inTransfer)
+              didApplyGasFeeFilter = true
             } else if (inAmount < outAmount * GAS_FEE_THRESHOLD) {
               filteredTransfers.push(outTransfer)
-            } else {
-              filteredTransfers.push(...tokenTransfers)
+              didApplyGasFeeFilter = true
             }
-          } else {
+          }
+
+          if (!didApplyGasFeeFilter) {
             filteredTransfers.push(...tokenTransfers)
           }
         } else {

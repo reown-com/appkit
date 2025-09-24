@@ -46,10 +46,10 @@ describe('TransactionUtil.getTransactionImages', () => {
     expect(images[0]?.url).toBe('token-url')
   })
 
-  it('returns images in reverse order for two non-NFT transfers', () => {
+  it('returns images in same order for multiple transfers', () => {
     const images = TransactionUtil.getTransactionImages([fungibleTransfer, secondFungibleTransfer])
-    expect(images[0]?.url).toBe('token2-url')
-    expect(images[1]?.url).toBe('token-url')
+    expect(images[0]?.url).toBe('token-url')
+    expect(images[1]?.url).toBe('token2-url')
   })
 
   it('returns all images for multiple transfers', () => {
@@ -87,7 +87,7 @@ describe('TransactionUtil.getTransactionDescriptions', () => {
     expect(desc[0]).toContain('Cool NFT')
   })
 
-  it('returns reversed descriptions for multiple transfers', () => {
+  it('returns descriptions in same order for multiple transfers', () => {
     const tx = {
       ...baseTx,
       transfers: [fungibleTransfer, secondFungibleTransfer],
@@ -95,8 +95,8 @@ describe('TransactionUtil.getTransactionDescriptions', () => {
     } as unknown as Transaction
     const desc = TransactionUtil.getTransactionDescriptions(tx)
     expect(desc.length).toBe(2)
-    expect(desc[0]).toContain('10.000 TOK2')
-    expect(desc[1]).toContain('123.457 TOK')
+    expect(desc[0]).toContain('123.457 TOK')
+    expect(desc[1]).toContain('10.000 TOK2')
   })
 
   it('returns status if no transfers and not send/receive', () => {
@@ -362,5 +362,37 @@ describe('TransactionUtil.mergeTransfers', () => {
 
     const tinyGasFee = result.find(t => t?.quantity.numeric === '0.000000000002869140')
     expect(tinyGasFee).toBeUndefined()
+  })
+
+  it('orders transfers with out direction first, then in direction', () => {
+    const inTransfer = {
+      fungible_info: {
+        name: 'USD Coin',
+        symbol: 'USDC',
+        icon: { url: 'usdc-url' }
+      },
+      direction: 'in' as const,
+      quantity: { numeric: '100' },
+      value: 100
+    }
+
+    const outTransfer = {
+      fungible_info: {
+        name: 'Ethereum',
+        symbol: 'ETH',
+        icon: { url: 'eth-url' }
+      },
+      direction: 'out' as const,
+      quantity: { numeric: '0.05' },
+      value: 120
+    }
+
+    const result = TransactionUtil.mergeTransfers([inTransfer, outTransfer])
+
+    expect(result.length).toBe(2)
+    expect(result[0]?.direction).toBe('out')
+    expect(result[0]?.fungible_info?.symbol).toBe('ETH')
+    expect(result[1]?.direction).toBe('in')
+    expect(result[1]?.fungible_info?.symbol).toBe('USDC')
   })
 })
