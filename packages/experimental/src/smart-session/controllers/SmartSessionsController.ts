@@ -3,15 +3,14 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { ConstantsUtil as CommonConstantsUtil, type Hex } from '@reown/appkit-common'
 import {
-  AccountController,
   BlockchainApiController,
   ChainController,
   ConnectionController,
   OptionsController,
+  ProviderController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
-import { ProviderUtil } from '@reown/appkit-utils'
 
 import {
   assertWalletGrantPermissionsResponse,
@@ -56,7 +55,7 @@ export const SmartSessionsController = {
   },
   async getSmartSessions() {
     try {
-      const caipAddress = AccountController.state.caipAddress
+      const caipAddress = ChainController.getActiveCaipAddress()
       if (!caipAddress) {
         return []
       }
@@ -180,7 +179,7 @@ export const SmartSessionsController = {
   },
 
   isSmartSessionSupported(): boolean {
-    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    const provider = ProviderController.getProvider(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       return false

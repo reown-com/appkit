@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
-  AccountController,
   AssetUtil,
   ChainController,
   ConnectionController,
@@ -53,15 +52,15 @@ export class W3mPayLoadingView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        .padding=${['xl', 'xl', 'xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['7', '5', '5', '5'] as const}
+        gap="9"
       >
         <wui-flex justifyContent="center" alignItems="center"> ${this.getStateIcon()} </wui-flex>
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text align="center" variant="paragraph-500" color="fg-100">
+        <wui-flex flexDirection="column" alignItems="center" gap="2">
+          <wui-text align="center" variant="lg-medium" color="primary">
             ${this.loadingMessage}
           </wui-text>
-          <wui-text align="center" variant="small-400" color="fg-200">
+          <wui-text align="center" variant="lg-regular" color="secondary">
             ${this.subMessage}
           </wui-text>
         </wui-flex>
@@ -186,7 +185,7 @@ export class W3mPayLoadingView extends LitElement {
     }
 
     if (currentPayment.type === 'wallet') {
-      const walletIcon = AccountController.state.connectedWalletInfo?.icon
+      const walletIcon = ChainController.getAccountData()?.connectedWalletInfo?.icon
       if (walletIcon) {
         return walletIcon
       }
@@ -214,11 +213,11 @@ export class W3mPayLoadingView extends LitElement {
   }
 
   private successTemplate() {
-    return html`<wui-icon size="xl" color="success-100" name="checkmark"></wui-icon>`
+    return html`<wui-icon size="xl" color="success" name="checkmark"></wui-icon>`
   }
 
   private errorTemplate() {
-    return html`<wui-icon size="xl" color="error-100" name="close"></wui-icon>`
+    return html`<wui-icon size="xl" color="error" name="close"></wui-icon>`
   }
 }
 

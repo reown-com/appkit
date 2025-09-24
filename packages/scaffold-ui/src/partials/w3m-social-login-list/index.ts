@@ -71,7 +71,7 @@ export class W3mSocialLoginList extends LitElement {
       socials = ConstantsUtil.DEFAULT_SOCIALS
     }
 
-    return html` <wui-flex flexDirection="column" gap="xs">
+    return html` <wui-flex flexDirection="column" gap="2">
       ${socials.map(
         social =>
           html`<wui-list-social

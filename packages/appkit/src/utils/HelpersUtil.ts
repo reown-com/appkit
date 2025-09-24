@@ -10,11 +10,7 @@ import {
   ParseUtil,
   type ParsedCaipAddress
 } from '@reown/appkit-common'
-import {
-  CoreHelperUtil,
-  EnsController,
-  type OptionsControllerState
-} from '@reown/appkit-controllers'
+import { EnsController, type OptionsControllerState } from '@reown/appkit-controllers'
 
 import { solana, solanaDevnet } from '../networks/index.js'
 
@@ -70,6 +66,10 @@ export const DEFAULT_METHODS = {
 }
 
 export const WcHelpersUtil = {
+  RPC_ERROR_CODE: {
+    USER_REJECTED: 5000,
+    USER_REJECTED_METHODS: 5002
+  },
   getMethodsByChainNamespace(chainNamespace: ChainNamespace): string[] {
     return DEFAULT_METHODS[chainNamespace as keyof typeof DEFAULT_METHODS] || []
   },
@@ -246,6 +246,26 @@ export const WcHelpersUtil = {
     )
   },
 
+  isUserRejectedRequestError(error: unknown) {
+    try {
+      if (typeof error === 'object' && error !== null) {
+        const objErr = error as Record<string, unknown>
+
+        const hasCode = typeof objErr['code'] === 'number'
+        const hasUserRejectedMethods =
+          hasCode && objErr['code'] === WcHelpersUtil.RPC_ERROR_CODE.USER_REJECTED_METHODS
+        const hasUserRejected =
+          hasCode && objErr['code'] === WcHelpersUtil.RPC_ERROR_CODE.USER_REJECTED
+
+        return hasUserRejectedMethods || hasUserRejected
+      }
+
+      return false
+    } catch {
+      return false
+    }
+  },
+
   isOriginAllowed(
     currentOrigin: string,
     allowedPatterns: string[],
@@ -306,18 +326,47 @@ export const WcHelpersUtil = {
     }
 
     if (onAccountsChanged) {
-      universalProvider.on('session_event', (callbackData: unknown) => {
-        if (WcHelpersUtil.isSessionEventData(callbackData)) {
-          const { name, data } = callbackData.params.event
+      /*
+       * In multichain scenario - every adapter will listen to accountsChanged event
+       * so make sure to call `onAccountsChanged` only on the namespace that actually has accounts changed
+       */
+      universalProvider.on('accountsChanged', (accounts: string[]) => {
+        try {
+          const allAccounts = universalProvider.session?.namespaces?.[namespace]?.accounts || []
+          const defaultChain = universalProvider.rpcProviders?.[namespace]?.getDefaultChain()
 
-          if (name === 'accountsChanged' && Array.isArray(data)) {
-            const parsedCaipAddresses = data
-              .filter(account => CoreHelperUtil.isCaipAddress(account))
-              .map(account => ParseUtil.parseCaipAddress(account))
-              .filter(caipAddress => caipAddress.chainNamespace === namespace)
+          const parsedAccounts = accounts
+            .map(account => {
+              const caipAccount = allAccounts.find(acc =>
+                acc.includes(`${namespace}:${defaultChain}:${account}`)
+              )
+              if (!caipAccount) {
+                return undefined
+              }
 
-            onAccountsChanged(parsedCaipAddresses)
+              const { chainId, chainNamespace } = ParseUtil.parseCaipAddress(
+                caipAccount as CaipAddress
+              )
+
+              return {
+                address: account,
+                chainId,
+                chainNamespace
+              }
+            })
+            .filter(account => account !== undefined)
+
+          // Emit accountsChanged event only if there are accounts
+          if (parsedAccounts.length > 0) {
+            onAccountsChanged(parsedAccounts)
           }
+        } catch (error) {
+          console.warn(
+            'Failed to parse accounts for namespace on accountsChanged event',
+            namespace,
+            accounts,
+            error
+          )
         }
       })
     }

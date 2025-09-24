@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { AppKit, type CaipNetwork } from '@reown/appkit'
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   CoreHelperUtil,
@@ -157,7 +156,11 @@ describe('SIWE mapped to SIWX', () => {
     it('should universalProviderAuthenticate', async () => {
       const getNonceSpy = vi.spyOn(siweConfig.methods, 'getNonce')
       const verifyMessageSpy = vi.spyOn(siweConfig.methods, 'verifyMessage')
-      const setConnectedWalletInfoSpy = vi.spyOn(AccountController, 'setConnectedWalletInfo')
+      const setAccountPropSpy = vi.spyOn(ChainController, 'setAccountProp')
+      const setLastConnectedSIWECaipNetworkSpy = vi.spyOn(
+        ChainController,
+        'setLastConnectedSIWECaipNetwork'
+      )
 
       const cacao = {
         h: {
@@ -207,6 +210,11 @@ describe('SIWE mapped to SIWX', () => {
         message: 'Formatted auth message',
         signature: 'mock-signature'
       })
+      expect(setLastConnectedSIWECaipNetworkSpy).toHaveBeenCalledWith({
+        ...networks.mainnet,
+        caipNetworkId: 'eip155:1',
+        chainNamespace: 'eip155'
+      })
       expect(authenticateSpy).toHaveBeenCalledWith({
         chainId: 'eip155:1',
         chains: ['eip155:1', 'eip155:10', 'eip155:137'], // must be active chain first
@@ -222,7 +230,8 @@ describe('SIWE mapped to SIWX', () => {
         uri: 'mock-uri',
         version: '1'
       })
-      expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(
+      expect(setAccountPropSpy).toHaveBeenCalledWith(
+        'connectedWalletInfo',
         {
           icons: ['mock-icon'],
           name: 'mock-name',

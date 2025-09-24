@@ -5,7 +5,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { CaipNetworkId } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   CoreHelperUtil,
@@ -44,7 +43,7 @@ export class W3mPayView extends LitElement {
   @state() private exchanges = PayController.state.exchanges
   @state() private isLoading = PayController.state.isLoading
   @state() private loadingExchangeId: string | null = null
-  @state() private connectedWalletInfo = AccountController.state.connectedWalletInfo
+  @state() private connectedWalletInfo = ChainController.getAccountData()?.connectedWalletInfo
 
   public constructor() {
     super()
@@ -52,9 +51,9 @@ export class W3mPayView extends LitElement {
     this.unsubscribe.push(PayController.subscribeKey('exchanges', val => (this.exchanges = val)))
     this.unsubscribe.push(PayController.subscribeKey('isLoading', val => (this.isLoading = val)))
     this.unsubscribe.push(
-      AccountController.subscribe(
-        newState => (this.connectedWalletInfo = newState.connectedWalletInfo)
-      )
+      ChainController.subscribeChainProp('accountState', val => {
+        this.connectedWalletInfo = val?.connectedWalletInfo
+      })
     )
 
     PayController.fetchExchanges()
@@ -65,17 +64,19 @@ export class W3mPayView extends LitElement {
    * Check if wallet is connected based on active address
    */
   private get isWalletConnected(): boolean {
-    return AccountController.state.status === 'connected'
+    const accountData = ChainController.getAccountData()
+
+    return accountData?.status === 'connected'
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
       <wui-flex flexDirection="column">
-        <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const} gap="s">
+        <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const} gap="3">
           ${this.renderPaymentHeader()}
 
-          <wui-flex flexDirection="column" gap="s">
+          <wui-flex flexDirection="column" gap="3">
             ${this.renderPayWithWallet()} ${this.renderExchangeOptions()}
           </wui-flex>
         </wui-flex>
@@ -96,7 +97,7 @@ export class W3mPayView extends LitElement {
       return html``
     }
 
-    return html`<wui-flex flexDirection="column" gap="s">
+    return html`<wui-flex flexDirection="column" gap="3">
         ${this.isWalletConnected ? this.renderConnectedView() : this.renderDisconnectedView()}
       </wui-flex>
       <wui-separator text="or"></wui-separator>`
@@ -114,15 +115,17 @@ export class W3mPayView extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" alignItems="center">
-        <wui-flex alignItems="center" gap="xs">
-          <wui-text variant="large-700" color="fg-100">${this.amount || '0.0000'}</wui-text>
-          <wui-flex class="token-display" alignItems="center" gap="xxs">
-            <wui-text variant="paragraph-600" color="fg-100">
+        <wui-flex alignItems="center" gap="2">
+          <wui-text variant="h1-regular" color="primary">${this.amount || '0.0000'}</wui-text>
+          <wui-flex class="token-display" alignItems="center" gap="1">
+            <wui-text variant="md-medium" color="primary">
               ${this.tokenSymbol || 'Unknown Asset'}
             </wui-text>
             ${displayNetworkName
               ? html`
-                  <wui-text variant="small-500" color="fg-200"> on ${displayNetworkName} </wui-text>
+                  <wui-text variant="sm-medium" color="secondary">
+                    on ${displayNetworkName}
+                  </wui-text>
                 `
               : ''}
           </wui-flex>
@@ -138,27 +141,23 @@ export class W3mPayView extends LitElement {
       <wui-list-item
         @click=${this.onWalletPayment}
         ?chevron=${true}
+        ?fullSize=${true}
+        ?rounded=${true}
         data-testid="wallet-payment-option"
+        imageSrc=${ifDefined(this.connectedWalletInfo?.icon)}
       >
-        <wui-flex alignItems="center" gap="s">
-          <wui-wallet-image
-            size="sm"
-            imageSrc=${ifDefined(this.connectedWalletInfo?.icon)}
-            name=${ifDefined(this.connectedWalletInfo?.name)}
-          ></wui-wallet-image>
-          <wui-text variant="paragraph-500" color="inherit">Pay with ${walletName}</wui-text>
-        </wui-flex>
+        <wui-text variant="lg-regular" color="primary">Pay with ${walletName}</wui-text>
       </wui-list-item>
 
       <wui-list-item
-        variant="icon"
-        iconVariant="overlay"
-        icon="disconnect"
+        icon="power"
+        ?rounded=${true}
+        iconColor="error"
         @click=${this.onDisconnect}
         data-testid="disconnect-button"
         ?chevron=${false}
       >
-        <wui-text variant="paragraph-500" color="fg-200">Disconnect</wui-text>
+        <wui-text variant="lg-regular" color="secondary">Disconnect</wui-text>
       </wui-list-item>
     `
   }
@@ -167,12 +166,13 @@ export class W3mPayView extends LitElement {
     return html`<wui-list-item
       variant="icon"
       iconVariant="overlay"
-      icon="walletPlaceholder"
+      icon="wallet"
+      ?rounded=${true}
       @click=${this.onWalletPayment}
       ?chevron=${true}
       data-testid="wallet-payment-option"
     >
-      <wui-text variant="paragraph-500" color="inherit">Pay from wallet</wui-text>
+      <wui-text variant="lg-regular" color="primary">Pay from wallet</wui-text>
     </wui-list-item>`
   }
 
@@ -184,7 +184,7 @@ export class W3mPayView extends LitElement {
     }
     if (this.exchanges.length === 0) {
       return html`<wui-flex justifyContent="center" alignItems="center">
-        <wui-text variant="paragraph-500" color="fg-100">No exchanges available</wui-text>
+        <wui-text variant="md-medium" color="primary">No exchanges available</wui-text>
       </wui-flex>`
     }
 
@@ -195,17 +195,12 @@ export class W3mPayView extends LitElement {
           data-testid="exchange-option-${exchange.id}"
           ?chevron=${true}
           ?disabled=${this.loadingExchangeId !== null}
+          ?loading=${this.loadingExchangeId === exchange.id}
+          imageSrc=${ifDefined(exchange.imageUrl)}
         >
-          <wui-flex alignItems="center" gap="s">
-            ${this.loadingExchangeId === exchange.id
-              ? html`<wui-loading-spinner color="accent-100" size="md"></wui-loading-spinner>`
-              : html`<wui-wallet-image
-                  size="sm"
-                  imageSrc=${ifDefined(exchange.imageUrl)}
-                  name=${exchange.name}
-                ></wui-wallet-image>`}
-            <wui-text flexGrow="1" variant="paragraph-500" color="inherit"
-              >Pay with ${exchange.name} <wui-spinner size="sm" color="fg-200"></wui-spinner
+          <wui-flex alignItems="center" gap="3">
+            <wui-text flexGrow="1" variant="md-medium" color="primary"
+              >Pay with ${exchange.name} <wui-spinner size="sm" color="secondary"></wui-spinner
             ></wui-text>
           </wui-flex>
         </wui-list-item>

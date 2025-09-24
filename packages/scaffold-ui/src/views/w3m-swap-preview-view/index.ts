@@ -1,13 +1,9 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import {
-  AccountController,
-  ChainController,
-  RouterController,
-  SwapController
-} from '@reown/appkit-controllers'
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import { NumberUtil } from '@reown/appkit-common'
+import { ChainController, RouterController, SwapController } from '@reown/appkit-controllers'
+import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
@@ -38,6 +34,8 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private sourceTokenPriceInUSD = SwapController.state.sourceTokenPriceInUSD
 
+  @state() private balanceSymbol = ChainController.getAccountData()?.balanceSymbol
+
   @state() private toToken = SwapController.state.toToken
 
   @state() private toTokenAmount = SwapController.state.toTokenAmount ?? ''
@@ -45,8 +43,6 @@ export class W3mSwapPreviewView extends LitElement {
   @state() private toTokenPriceInUSD = SwapController.state.toTokenPriceInUSD
 
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
-
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
 
   @state() private inputError = SwapController.state.inputError
 
@@ -64,10 +60,9 @@ export class W3mSwapPreviewView extends LitElement {
 
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('balanceSymbol', newBalanceSymbol => {
-          if (this.balanceSymbol !== newBalanceSymbol) {
+        ChainController.subscribeChainProp('accountState', val => {
+          if (val?.balanceSymbol !== this.balanceSymbol) {
             RouterController.goBack()
-            // Maybe reset state as well?
           }
         }),
         ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {
@@ -109,7 +104,7 @@ export class W3mSwapPreviewView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l']} gap="s">
+      <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4']} gap="3">
         ${this.templateSwap()}
       </wui-flex>
     `
@@ -125,17 +120,17 @@ export class W3mSwapPreviewView extends LitElement {
   }
 
   private templateSwap() {
-    const sourceTokenText = `${UiHelperUtil.formatNumberToLocalString(
+    const sourceTokenText = `${NumberUtil.formatNumberToLocalString(
       parseFloat(this.sourceTokenAmount)
     )} ${this.sourceToken?.symbol}`
-    const toTokenText = `${UiHelperUtil.formatNumberToLocalString(
+    const toTokenText = `${NumberUtil.formatNumberToLocalString(
       parseFloat(this.toTokenAmount)
     )} ${this.toToken?.symbol}`
 
     const sourceTokenValue = parseFloat(this.sourceTokenAmount) * this.sourceTokenPriceInUSD
     const toTokenValue = parseFloat(this.toTokenAmount) * this.toTokenPriceInUSD
-    const sentPrice = UiHelperUtil.formatNumberToLocalString(sourceTokenValue)
-    const receivePrice = UiHelperUtil.formatNumberToLocalString(toTokenValue)
+    const sentPrice = NumberUtil.formatNumberToLocalString(sourceTokenValue)
+    const receivePrice = NumberUtil.formatNumberToLocalString(toTokenValue)
 
     const loading =
       this.loadingQuote ||
@@ -144,17 +139,17 @@ export class W3mSwapPreviewView extends LitElement {
       this.loadingApprovalTransaction
 
     return html`
-      <wui-flex flexDirection="column" alignItems="center" gap="l">
-        <wui-flex class="preview-container" flexDirection="column" alignItems="flex-start" gap="l">
+      <wui-flex flexDirection="column" alignItems="center" gap="4">
+        <wui-flex class="preview-container" flexDirection="column" alignItems="flex-start" gap="4">
           <wui-flex
             class="preview-token-details-container"
             alignItems="center"
             justifyContent="space-between"
-            gap="l"
+            gap="4"
           >
-            <wui-flex flexDirection="column" alignItems="flex-start" gap="4xs">
-              <wui-text variant="small-400" color="fg-150">Send</wui-text>
-              <wui-text variant="paragraph-400" color="fg-100">$${sentPrice}</wui-text>
+            <wui-flex flexDirection="column" alignItems="flex-start" gap="01">
+              <wui-text variant="sm-regular" color="secondary">Send</wui-text>
+              <wui-text variant="md-regular" color="primary">$${sentPrice}</wui-text>
             </wui-flex>
             <wui-token-button
               flexDirection="row-reverse"
@@ -163,16 +158,16 @@ export class W3mSwapPreviewView extends LitElement {
             >
             </wui-token-button>
           </wui-flex>
-          <wui-icon name="recycleHorizontal" color="fg-200" size="md"></wui-icon>
+          <wui-icon name="recycleHorizontal" color="default" size="md"></wui-icon>
           <wui-flex
             class="preview-token-details-container"
             alignItems="center"
             justifyContent="space-between"
-            gap="l"
+            gap="4"
           >
-            <wui-flex flexDirection="column" alignItems="flex-start" gap="4xs">
-              <wui-text variant="small-400" color="fg-150">Receive</wui-text>
-              <wui-text variant="paragraph-400" color="fg-100">$${receivePrice}</wui-text>
+            <wui-flex flexDirection="column" alignItems="flex-start" gap="01">
+              <wui-text variant="sm-regular" color="secondary">Receive</wui-text>
+              <wui-text variant="md-regular" color="primary">$${receivePrice}</wui-text>
             </wui-flex>
             <wui-token-button
               flexDirection="row-reverse"
@@ -185,9 +180,9 @@ export class W3mSwapPreviewView extends LitElement {
 
         ${this.templateDetails()}
 
-        <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="xs">
-          <wui-icon size="sm" color="fg-200" name="infoCircle"></wui-icon>
-          <wui-text variant="small-400" color="fg-200">Review transaction carefully</wui-text>
+        <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="2">
+          <wui-icon size="sm" color="default" name="info"></wui-icon>
+          <wui-text variant="sm-regular" color="secondary">Review transaction carefully</wui-text>
         </wui-flex>
 
         <wui-flex
@@ -195,31 +190,29 @@ export class W3mSwapPreviewView extends LitElement {
           flexDirection="row"
           alignItems="center"
           justifyContent="space-between"
-          gap="xs"
+          gap="2"
         >
           <wui-button
             class="cancel-button"
             fullWidth
             size="lg"
             borderRadius="xs"
-            variant="neutral"
+            variant="neutral-secondary"
             @click=${this.onCancelTransaction.bind(this)}
           >
-            <wui-text variant="paragraph-600" color="fg-200">Cancel</wui-text>
+            <wui-text variant="md-medium" color="secondary">Cancel</wui-text>
           </wui-button>
           <wui-button
             class="action-button"
             fullWidth
             size="lg"
             borderRadius="xs"
-            variant="main"
+            variant="accent-primary"
             ?loading=${loading}
             ?disabled=${loading}
             @click=${this.onSendTransaction.bind(this)}
           >
-            <wui-text variant="paragraph-600" color="inverse-100">
-              ${this.actionButtonLabel()}
-            </wui-text>
+            <wui-text variant="md-medium" color="invert"> ${this.actionButtonLabel()} </wui-text>
           </wui-button>
         </wui-flex>
       </wui-flex>

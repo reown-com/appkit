@@ -3,12 +3,10 @@ import { property, state } from 'lit/decorators.js'
 
 import { NumberUtil } from '@reown/appkit-common'
 
-import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -70,22 +68,22 @@ export class WuiTokenListItem extends LitElement {
     return html`
       <wui-flex alignItems="center">
         ${this.visualTemplate()}
-        <wui-flex flexDirection="column" gap="3xs">
+        <wui-flex flexDirection="column" gap="1">
           <wui-flex justifyContent="space-between">
-            <wui-text variant="paragraph-500" color="fg-100" lineClamp="1">${this.name}</wui-text>
+            <wui-text variant="md-medium" color="primary" lineClamp="1">${this.name}</wui-text>
             ${value
               ? html`
-                  <wui-text variant="paragraph-500" color="fg-100">
-                    $${UiHelperUtil.formatNumberToLocalString(value, 3)}
+                  <wui-text variant="md-medium" color="primary">
+                    $${NumberUtil.formatNumberToLocalString(value, 3)}
                   </wui-text>
                 `
               : null}
           </wui-flex>
           <wui-flex justifyContent="space-between">
-            <wui-text variant="small-400" color="fg-200" lineClamp="1">${this.symbol}</wui-text>
+            <wui-text variant="sm-regular" color="secondary" lineClamp="1">${this.symbol}</wui-text>
             ${this.amount
-              ? html`<wui-text variant="small-400" color="fg-200">
-                  ${UiHelperUtil.formatNumberToLocalString(this.amount, 3)}
+              ? html`<wui-text variant="sm-regular" color="secondary">
+                  ${NumberUtil.formatNumberToLocalString(this.amount, 5)}
                 </wui-text>`
               : null}
           </wui-flex>

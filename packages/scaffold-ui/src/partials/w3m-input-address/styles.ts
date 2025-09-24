@@ -1,19 +1,20 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
     width: 100%;
     height: 100px;
-    border-radius: var(--wui-border-radius-s);
-    border: 1px solid var(--wui-color-gray-glass-002);
-    background-color: var(--wui-color-gray-glass-002);
-    transition: background-color var(--wui-ease-out-power-1) var(--wui-duration-lg);
+    border-radius: ${({ borderRadius }) => borderRadius['5']};
+    border: 1px solid ${({ tokens }) => tokens.theme.foregroundPrimary};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-1']};
     will-change: background-color;
     position: relative;
   }
 
   :host(:hover) {
-    background-color: var(--wui-color-gray-glass-005);
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
 
   wui-flex {
@@ -23,8 +24,8 @@ export default css`
 
   wui-button {
     display: ruby;
-    color: var(--wui-color-fg-100);
-    margin: 0 var(--wui-spacing-xs);
+    color: ${({ tokens }) => tokens.theme.textPrimary};
+    margin: 0 ${({ spacing }) => spacing['2']};
   }
 
   .instruction {
@@ -41,14 +42,14 @@ export default css`
   textarea {
     background: transparent;
     width: 100%;
-    font-family: var(--w3m-font-family);
-    font-size: var(--wui-font-size-medium);
+    font-family: ${({ fontFamily }) => fontFamily.regular};
     font-style: normal;
-    font-weight: var(--wui-font-weight-light);
-    line-height: 130%;
-    letter-spacing: var(--wui-letter-spacing-medium);
-    color: var(--wui-color-fg-100);
-    caret-color: var(--wui-color-accent-100);
+    font-size: ${({ textSize }) => textSize.large};
+    font-weight: ${({ fontWeight }) => fontWeight.regular};
+    line-height: ${({ typography }) => typography['lg-regular'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['lg-regular'].letterSpacing};
+    color: ${({ tokens }) => tokens.theme.textSecondary};
+    caret-color: ${({ tokens }) => tokens.core.backgroundAccentPrimary};
     box-sizing: border-box;
     -webkit-appearance: none;
     -moz-appearance: textfield;

@@ -3,6 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ApiController, ConnectorController } from '@reown/appkit-controllers'
+import type { Connector, ConnectorWithProviders, WcWallet } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 
@@ -26,7 +27,7 @@ export class W3mConnectorList extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property() public tabIdx?: number = undefined
+  @property({ type: Number }) public tabIdx?: number
 
   @state() private connectors = ConnectorController.state.connectors
 
@@ -34,12 +35,23 @@ export class W3mConnectorList extends LitElement {
 
   @state() private featured = ApiController.state.featured
 
+  @state() private explorerWallets?: WcWallet[] = ApiController.state.explorerWallets
+
   public constructor() {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
       ApiController.subscribeKey('recommended', val => (this.recommended = val)),
-      ApiController.subscribeKey('featured', val => (this.featured = val))
+      ApiController.subscribeKey('featured', val => (this.featured = val)),
+      // Consume explorer wallets for ranking only
+      ApiController.subscribeKey('explorerFilteredWallets', val => {
+        this.explorerWallets = val?.length ? val : ApiController.state.explorerWallets
+      }),
+      ApiController.subscribeKey('explorerWallets', val => {
+        if (!this.explorerWallets?.length) {
+          this.explorerWallets = val
+        }
+      })
     )
   }
 
@@ -50,14 +62,80 @@ export class W3mConnectorList extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" gap="xs"> ${this.connectorListTemplate()} </wui-flex>
+      <wui-flex flexDirection="column" gap="2"> ${this.connectorListTemplate()} </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------ //
+  private mapConnectorsToExplorerWallets(
+    connectors: ConnectorWithProviders[],
+    explorerWallets: WcWallet[]
+  ): ConnectorWithProviders[] {
+    return connectors.map(connector => {
+      if (connector.type === 'MULTI_CHAIN' && connector.connectors) {
+        const connectorIds = connector.connectors.map(c => c.id)
+        const connectorNames = connector.connectors.map(c => c.name)
+        const connectorRdns = connector.connectors.map(c => c.info?.rdns)
+
+        const explorerWallet = explorerWallets?.find(
+          wallet =>
+            connectorIds.includes(wallet.id) ||
+            connectorNames.includes(wallet.name) ||
+            (wallet.rdns &&
+              (connectorRdns.includes(wallet.rdns) || connectorIds.includes(wallet.rdns)))
+        )
+
+        connector.explorerWallet = explorerWallet ?? connector.explorerWallet
+
+        return connector
+      }
+
+      const explorerWallet = explorerWallets?.find(
+        wallet =>
+          wallet.id === connector.id ||
+          wallet.rdns === connector.info?.rdns ||
+          wallet.name === connector.name
+      )
+
+      connector.explorerWallet = explorerWallet ?? connector.explorerWallet
+
+      return connector
+    })
+  }
+
+  private processConnectorsByType(
+    connectors: ConnectorWithProviders[],
+    shouldFilter = true
+  ): ConnectorWithProviders[] {
+    if (!this.explorerWallets?.length) {
+      return connectors
+    }
+
+    const sorted = ConnectorUtil.sortConnectorsByExplorerWallet([...connectors])
+
+    return shouldFilter ? sorted.filter(ConnectorUtil.showConnector) : sorted
+  }
+
   private connectorListTemplate() {
-    const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
-      ConnectorUtil.getConnectorsByType(this.connectors, this.recommended, this.featured)
+    const mappedConnectors: ConnectorWithProviders[] = this.mapConnectorsToExplorerWallets(
+      this.connectors,
+      this.explorerWallets ?? []
+    )
+
+    const byType = ConnectorUtil.getConnectorsByType(
+      mappedConnectors,
+      this.recommended,
+      this.featured
+    )
+
+    const announced = this.processConnectorsByType(byType.announced)
+    const injected = this.processConnectorsByType(byType.injected)
+    const multiChain = this.processConnectorsByType(byType.multiChain, false)
+    const custom = byType.custom
+    const recent = byType.recent
+    const external = byType.external
+    const recommended = byType.recommended
+    const featured = byType.featured
 
     const connectorTypeOrder = ConnectorUtil.getConnectorTypeOrder({
       custom,
@@ -81,11 +159,13 @@ export class W3mConnectorList extends LitElement {
             ${multiChain.length
               ? html`<w3m-connect-multi-chain-widget
                   tabIdx=${ifDefined(this.tabIdx)}
+                  .connectors=${multiChain}
                 ></w3m-connect-multi-chain-widget>`
               : null}
             ${announced.length
               ? html`<w3m-connect-announced-widget
                   tabIdx=${ifDefined(this.tabIdx)}
+                  .connectors=${announced as Connector[]}
                 ></w3m-connect-announced-widget>`
               : null}
             ${injected.length

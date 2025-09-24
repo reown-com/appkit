@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import * as AppKitCore from '@reown/appkit/core'
 
-import { UniversalConnector } from '../src/UniversalConnector'
+import { type Config, UniversalConnector } from '../src/UniversalConnector'
 
 // Create lightweight in-file mocks to avoid cross-package type issues
 const provider = {
@@ -37,8 +37,14 @@ const baseConfig = {
       methods: ['eth_sendTransaction'],
       events: []
     }
-  ]
-} as any // Cast to any to avoid importing internal types
+  ],
+  modalConfig: {
+    themeMode: 'light'
+  },
+  providerConfig: {
+    logger: 'debug'
+  }
+} as Config
 
 describe('UniversalConnector', () => {
   beforeEach(() => {
@@ -57,10 +63,13 @@ describe('UniversalConnector', () => {
       // Assert
       expect(UniversalProvider.init).toHaveBeenCalledWith({
         projectId: baseConfig.projectId,
-        metadata: baseConfig.metadata
+        metadata: baseConfig.metadata,
+        ...baseConfig.providerConfig
       })
 
-      expect(AppKitCore.createAppKit).toHaveBeenCalled()
+      expect(AppKitCore.createAppKit).toHaveBeenCalledWith(
+        expect.objectContaining(baseConfig.modalConfig)
+      )
       expect(connector).toBeInstanceOf(UniversalConnector)
       expect(connector.provider).toBe(provider)
     })

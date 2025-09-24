@@ -1,13 +1,16 @@
 import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi } from 'vitest'
 
+import type { CaipAddress } from '@reown/appkit-common'
 import {
+  BlockchainApiController,
   RouterController,
   type RouterControllerState,
   SwapController,
   type SwapControllerState,
   type SwapTokenWithBalance
 } from '@reown/appkit-controllers'
+import { extendedMainnet, mockChainControllerState } from '@reown/appkit-controllers/testing'
 
 import { W3mSwapSelectTokenView } from '../../src/views/w3m-swap-select-token-view'
 
@@ -41,6 +44,35 @@ const mockTokens: SwapTokenWithBalance[] = [
   }
 ]
 
+const tokensResponse = {
+  tokens: [
+    {
+      name: 'MATIC',
+      symbol: 'MATIC',
+      address: 'eip155:137:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' as CaipAddress,
+      decimals: 18,
+      logoUri: 'https://tokens.1inch.io/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png',
+      eip2612: false
+    },
+    {
+      name: 'Avalanche Token',
+      symbol: 'AVAX',
+      address: 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b' as CaipAddress,
+      decimals: 18,
+      logoUri: 'https://tokens.1inch.io/0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b.png',
+      eip2612: false
+    },
+    {
+      name: 'USD Coin',
+      symbol: 'USDC',
+      address: 'eip155:137:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359' as CaipAddress,
+      decimals: 6,
+      logoUri: 'https://tokens.1inch.io/0x3c499c542cef5e3811e1192ce70d8cc03d5c3359.png',
+      eip2612: false
+    }
+  ]
+}
+
 const mockRouterState: RouterControllerState = {
   view: 'SwapSelectToken',
   history: ['Connect', 'SwapSelectToken'],
@@ -58,6 +90,7 @@ const mockSwapState: SwapControllerState = {
   loadingTransaction: false,
   loadingApprovalTransaction: false,
   loadingBuildTransaction: false,
+  switchingTokens: false,
   fetchError: false,
   approvalTransaction: undefined,
   swapTransaction: undefined,
@@ -126,10 +159,13 @@ describe('W3mSwapSelectTokenView', () => {
     // Mock controller states and methods
     vi.spyOn(SwapController, 'state', 'get').mockReturnValue(mockSwapState)
     vi.spyOn(RouterController, 'state', 'get').mockReturnValue(mockRouterState)
-    vi.spyOn(SwapController, 'setSourceToken').mockImplementation(() => {})
-    vi.spyOn(SwapController, 'setToToken').mockImplementation(() => {})
-    vi.spyOn(SwapController, 'swapTokens').mockImplementation(async () => {})
-    vi.spyOn(RouterController, 'goBack').mockImplementation(() => {})
+    vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)
+
+    mockChainControllerState({
+      activeCaipNetwork: extendedMainnet,
+      activeCaipAddress: 'eip155:1:0x123' as CaipAddress
+    })
+    SwapController.setBalances(mockTokens)
   })
 
   afterEach(() => {

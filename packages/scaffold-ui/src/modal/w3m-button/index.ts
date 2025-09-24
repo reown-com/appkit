@@ -36,14 +36,10 @@ class W3mButtonBase extends LitElement {
   @state() private caipAddress: CaipAddress | undefined
 
   // -- Lifecycle ----------------------------------------- //
-  public override connectedCallback() {
-    super.connectedCallback()
-    this.caipAddress = this.namespace
-      ? ChainController.state.chains.get(this.namespace)?.accountState?.caipAddress
-      : ChainController.state.activeCaipAddress
-  }
-
   public override firstUpdated() {
+    this.caipAddress = this.namespace
+      ? ChainController.getAccountData(this.namespace)?.caipAddress
+      : ChainController.state.activeCaipAddress
     if (this.namespace) {
       this.unsubscribe.push(
         ChainController.subscribeChainProp(

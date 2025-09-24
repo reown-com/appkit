@@ -4,7 +4,7 @@ import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 
 import type { WalletFeature } from '@reown/appkit'
-import type { Address, Hex } from '@reown/appkit-common'
+import type { Address, ChainNamespace, Hex } from '@reown/appkit-common'
 import { WalletPage, WalletValidator } from '@reown/appkit-testing'
 import {
   BASE_URL,
@@ -18,7 +18,6 @@ import { getNamespaceByLibrary } from '@/tests/shared/utils/namespace'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
-import { routeInterceptUrl } from '../utils/verify'
 import type { ModalValidator } from '../validators/ModalValidator'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 
@@ -47,19 +46,19 @@ export type ModalFlavor =
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
   const urlsByFlavor: Partial<Record<ModalFlavor, string>> = {
-    default: `${baseUrl}library/${library}/`,
-    external: `${baseUrl}library/external/`,
-    siwx: `${baseUrl}library/siwx-default/`,
-    'wagmi-verify-valid': `${baseUrl}library/wagmi-verify-valid/`,
-    'wagmi-verify-domain-mismatch': `${baseUrl}library/wagmi-verify-domain-mismatch/`,
+    default: `${baseUrl}appkit?name=${library}`,
+    external: `${baseUrl}appkit?name=external`,
+    siwx: `${baseUrl}appkit?name=siwx-default`,
+    'wagmi-verify-valid': `${baseUrl}appkit?name=wagmi-verify-valid`,
+    'wagmi-verify-domain-mismatch': `${baseUrl}appkit?name=wagmi-verify-domain-mismatch`,
     'wagmi-verify-evil': maliciousUrl,
-    'ethers-verify-valid': `${baseUrl}library/ethers-verify-valid/`,
-    'ethers-verify-domain-mismatch': `${baseUrl}library/ethers-verify-domain-mismatch/`,
+    'ethers-verify-valid': `${baseUrl}appkit?name=ethers-verify-valid`,
+    'ethers-verify-domain-mismatch': `${baseUrl}appkit?name=ethers-verify-domain-mismatch`,
     'ethers-verify-evil': maliciousUrl,
-    'core-sign-client': `${baseUrl}core/sign-client/`
+    'core-sign-client': `${baseUrl}appkit-core/sign-client`
   }
 
-  return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
+  return urlsByFlavor[flavor] || `${baseUrl}appkit?name=${library}-${flavor}`
 }
 
 export class ModalPage {
@@ -79,11 +78,13 @@ export class ModalPage {
     this.connectButton = this.page.getByTestId('connect-button').first()
 
     if (library === 'multichain-ethers-solana') {
-      this.url = `${this.baseURL}library/multichain-ethers-solana/`
+      this.url = `${this.baseURL}appkit?name=multichain-ethers-solana`
     } else if (library === 'default-account-types-sa' || library === 'default-account-types-eoa') {
-      this.url = `${this.baseURL}flag/${library}/`
+      this.url = `${this.baseURL}appkit?name=flag-${library}`
     } else if (flavor === 'flag-enable-reconnect') {
-      this.url = `${this.baseURL}flag/enable-reconnect/${library}`
+      this.url = `${this.baseURL}appkit?name=${flavor}-${library}`
+    } else if (flavor === 'siwe') {
+      this.url = `${this.baseURL}appkit?name=${library}-all`
     } else {
       this.url = getUrlByFlavor(this.baseURL, library, flavor)
     }
@@ -105,11 +106,8 @@ export class ModalPage {
   }
 
   async load() {
-    if (this.flavor === 'wagmi-verify-evil') {
-      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/wagmi-verify-evil/')
-    }
-    if (this.flavor === 'ethers-verify-evil') {
-      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/ethers-verify-evil/')
+    if (this.flavor === 'wagmi-verify-evil' || this.flavor === 'ethers-verify-evil') {
+      await this.page.goto(maliciousUrl)
     }
 
     await this.page.goto(this.url)
@@ -125,8 +123,47 @@ export class ModalPage {
     return value!
   }
 
-  async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
-    await this.connectButton.click()
+  async getConnectUriMalicious(timingRecords?: TimingRecords): Promise<string> {
+    // Find div with p containing "Testnets Only?" text and get the adjacent div at the same level
+    const testnetsOnlyP = this.page.locator('p:has-text("Testnets Only?")')
+    await expect(testnetsOnlyP).toBeVisible()
+
+    const parentDiv = testnetsOnlyP.locator('..')
+    const adjacentDiv = parentDiv.locator('div').nth(1)
+    await expect(adjacentDiv).toBeVisible()
+
+    // Click the adjacent div
+    await adjacentDiv.click()
+
+    // Find div with Ethereum Goerli text and click it
+    await this.page.getByText('Ethereum').click()
+
+    // Find button with Connect text and click it
+    await this.page.getByRole('button', { name: 'Connect' }).click()
+
+    const qrLoadInitiatedTime = new Date()
+
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
+  }
+
+  async getConnectUri(timingRecords?: TimingRecords, modalOpen?: boolean): Promise<string> {
+    if (!modalOpen) {
+      await this.connectButton.click()
+    }
+
     await this.clickWalletConnect()
     const qrLoadInitiatedTime = new Date()
 
@@ -189,10 +226,12 @@ export class ModalPage {
     return uri
   }
 
+  // eslint-disable-next-line max-params
   async qrCodeFlow(
     page: ModalPage,
     walletPage: WalletPage,
-    qrCodeFlowType?: 'immediate-connect' | 'immediate'
+    qrCodeFlowType?: 'immediate-connect' | 'immediate',
+    modalOpen?: boolean
   ): Promise<void> {
     // eslint-disable-next-line init-declarations
     let uri: string
@@ -202,7 +241,7 @@ export class ModalPage {
     if (qrCodeFlowType === 'immediate-connect' || qrCodeFlowType === 'immediate') {
       uri = await page.getImmidiateConnectUri(undefined, qrCodeFlowType === 'immediate-connect')
     } else {
-      uri = await page.getConnectUri()
+      uri = await page.getConnectUri(undefined, modalOpen)
     }
     await walletPage.connectWithUri(uri)
 
@@ -407,8 +446,15 @@ export class ModalPage {
     }
 
     await expect(this.page.getByText(headerTitle)).not.toBeVisible({
-      timeout: 20_000
+      timeout: 30_000
     })
+  }
+
+  async disconnectMalicious() {
+    // Find button with Disconnect text and click it
+    const disconnectButton = this.page.getByRole('button', { name: 'Disconnect' })
+    await expect(disconnectButton, 'Disconnect button should be visible').toBeVisible()
+    await disconnectButton.click()
   }
 
   async disconnect(clickAccountButton = true) {
@@ -431,6 +477,14 @@ export class ModalPage {
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click()
+  }
+
+  async signMalicious(_namespace?: string) {
+    // Find the first button with personal_sign text and click it
+    const signButton = this.page.getByRole('button', { name: 'personal_sign' }).first()
+
+    await signButton.scrollIntoViewIfNeeded()
+    await signButton.click()
   }
 
   async sign(_namespace?: string) {
@@ -554,7 +608,7 @@ export class ModalPage {
   }
 
   async switchActiveChain() {
-    await this.page.getByText('Switch to', { exact: false }).waitFor()
+    await this.page.locator('w3m-switch-active-chain-view').waitFor()
     await this.page.getByTestId('w3m-switch-active-chain-button').click()
   }
 
@@ -589,7 +643,7 @@ export class ModalPage {
   }
 
   async openProfileWalletsView(
-    namespace?: string,
+    namespace?: ChainNamespace,
     clickButtonType: 'account' | 'connect' = 'account'
   ) {
     if (clickButtonType === 'account') {
@@ -602,7 +656,7 @@ export class ModalPage {
     await this.page.waitForTimeout(500)
   }
 
-  async openConnectModal(namespace?: string) {
+  async openConnectModal(namespace?: ChainNamespace) {
     await this.page.getByTestId(`connect-button${namespace ? `-${namespace}` : ''}`).click()
   }
 
@@ -611,7 +665,7 @@ export class ModalPage {
   }
 
   async openOnramp() {
-    await this.page.getByTestId('w3m-account-default-onramp-button').click()
+    await this.page.getByTestId('wallet-features-onramp-button').click()
   }
 
   async closeModal() {
@@ -828,20 +882,31 @@ export class ModalPage {
     await profileButton.waitFor({ state: 'hidden', timeout: 15_000 })
   }
 
-  async getWalletFeaturesButton(feature: WalletFeature) {
+  async getWalletFeaturesButton(feature: WalletFeature | 'fund-wallet') {
     const walletFeatureButton = this.page.getByTestId(`wallet-features-${feature}-button`)
     await expect(walletFeatureButton).toBeVisible()
 
     return walletFeatureButton
   }
 
+  async getDefaultWalletFeaturesButton(feature: WalletFeature | 'fund-wallet') {
+    const walletFeatureButton = this.page.getByTestId(`w3m-account-default-${feature}-button`)
+    await expect(walletFeatureButton).toBeVisible()
+
+    return walletFeatureButton
+  }
+
   async sendCalls() {
+    const fetchCapabilitiesButton = this.page.getByTestId('fetch-capabilities-button')
+    await fetchCapabilitiesButton.click()
     const sendCallsButton = this.page.getByTestId('send-calls-button')
     await sendCallsButton.isVisible()
     await sendCallsButton.scrollIntoViewIfNeeded()
     await sendCallsButton.click()
   }
   async getCallsStatus(batchCallId: string) {
+    const fetchCapabilitiesButton = this.page.getByTestId('fetch-capabilities-button')
+    await fetchCapabilitiesButton.click()
     const sendCallsInput = this.page.getByTestId('get-calls-id-input')
     const sendCallsButton = this.page.getByTestId('get-calls-status-button')
     await sendCallsButton.scrollIntoViewIfNeeded()
@@ -857,6 +922,17 @@ export class ModalPage {
       .getByTestId('wui-inactive-profile-wallet-item-button')
     await expect(firstActiveConnectionButton).toBeVisible()
     await firstActiveConnectionButton.click()
+  }
+
+  async disconnectConnection(alt?: string) {
+    const connection = this.page
+      .getByTestId('active-connection')
+      .filter({ has: this.page.locator(`[alt="${alt}"]`) })
+
+    const disconnectButton = connection.locator('wui-icon-link[icon="power"]')
+
+    await expect(disconnectButton).toBeVisible()
+    await disconnectButton.click()
   }
 
   async switchAccountByAddress(address: string) {

@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-utils",
-  "version": "1.7.16",
+  "version": "1.8.6",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -62,28 +62,28 @@
     "@reown/appkit-wallet": "workspace:*",
     "@wallet-standard/wallet": "1.1.0",
     "@walletconnect/logger": "2.1.2",
-    "@walletconnect/universal-provider": "2.21.5",
-    "valtio": "2.1.5",
-    "viem": ">=2.32.0"
+    "@walletconnect/universal-provider": "2.21.7",
+    "valtio": "2.1.7",
+    "viem": ">=2.37.2"
   },
   "devDependencies": {
-    "@walletconnect/types": "2.21.5",
+    "@walletconnect/types": "2.21.7",
     "bs58": "6.0.0",
     "@solana/web3.js": "1.98.2",
     "@wallet-standard/features": "1.1.0",
     "@wallet-standard/base": "1.1.0",
     "@solana/wallet-standard-features": "1.3.0",
-    "@coinbase/wallet-sdk": "4.3.0",
+    "@coinbase/wallet-sdk": "4.3.7",
     "@safe-global/safe-apps-provider": "0.18.6",
     "@solana/wallet-adapter-base": "0.9.26",
     "@vitest/coverage-v8": "2.1.9",
     "vitest": "3.1.3"
   },
   "peerDependencies": {
-    "valtio": "2.1.5"
+    "valtio": "2.1.7"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
@@ -103,5 +103,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

@@ -15,7 +15,6 @@ import {
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-wallet'
 
 @customElement('w3m-connect-custom-widget')
 export class W3mConnectCustomWidget extends LitElement {
@@ -62,19 +61,22 @@ export class W3mConnectCustomWidget extends LitElement {
       CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     )
 
-    return html`<wui-flex flexDirection="column" gap="xs">
+    return html`<wui-flex flexDirection="column" gap="2">
       ${wallets.map(
         wallet => html`
-          <wui-list-wallet
+          <w3m-list-wallet
             imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
             name=${wallet.name ?? 'Unknown'}
             @click=${() => this.onConnectWallet(wallet)}
+            size="sm"
             data-testid=${`wallet-selector-${wallet.id}`}
             tabIdx=${ifDefined(this.tabIdx)}
             ?loading=${this.loading}
             ?disabled=${hasWcConnection}
+            rdnsId=${wallet.rdns}
+            walletRank=${wallet.order}
           >
-          </wui-list-wallet>
+          </w3m-list-wallet>
         `
       )}
     </wui-flex>`
@@ -103,7 +105,10 @@ export class W3mConnectCustomWidget extends LitElement {
     if (this.loading) {
       return
     }
-    RouterController.push('ConnectingWalletConnect', { wallet })
+    RouterController.push('ConnectingWalletConnect', {
+      wallet,
+      redirectView: RouterController.state.data?.redirectView
+    })
   }
 }
 

@@ -4,10 +4,10 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   ConnectorController,
+  CoreHelperUtil,
   EventsController,
   ModalController,
   OptionsController,
@@ -35,9 +35,9 @@ export class W3mConnectingSocialView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private socialProvider = AccountController.state.socialProvider
+  @state() private socialProvider = ChainController.getAccountData()?.socialProvider
 
-  @state() private socialWindow = AccountController.state.socialWindow
+  @state() private socialWindow = ChainController.getAccountData()?.socialWindow
 
   @state() protected error = false
 
@@ -47,7 +47,7 @@ export class W3mConnectingSocialView extends LitElement {
 
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
-  private address = AccountController.state.address
+  private address = ChainController.getAccountData()?.address
 
   private connectionsByNamespace = ConnectionController.getConnections(
     ChainController.state.activeChain
@@ -64,33 +64,35 @@ export class W3mConnectingSocialView extends LitElement {
     abortController.signal.addEventListener('abort', () => {
       if (this.socialWindow) {
         this.socialWindow.close()
-        AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
+        ChainController.setAccountProp('socialWindow', undefined, ChainController.state.activeChain)
       }
     })
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.socialProvider) {
+        ChainController.subscribeChainProp('accountState', val => {
+          if (val) {
             this.socialProvider = val.socialProvider
-          }
-          if (val.socialWindow) {
-            this.socialWindow = val.socialWindow
+            if (val.socialWindow) {
+              this.socialWindow = val.socialWindow
+            }
+
+            if (val.address) {
+              const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+
+              if (val.address !== this.address) {
+                if (this.hasMultipleConnections && isMultiWalletEnabled) {
+                  RouterController.replace('ProfileWallets')
+                  SnackController.showSuccess('New Wallet Added')
+                  this.address = val.address
+                } else if (ModalController.state.open || OptionsController.state.enableEmbedded) {
+                  ModalController.close()
+                }
+              }
+            }
           }
         }),
         OptionsController.subscribeKey('remoteFeatures', val => {
           this.remoteFeatures = val
-        }),
-        AccountController.subscribeKey('address', val => {
-          const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
-
-          if (val && val !== this.address) {
-            if (this.hasMultipleConnections && isMultiWalletEnabled) {
-              RouterController.replace('ProfileWallets')
-              SnackController.showSuccess('New Wallet Added')
-            } else if (ModalController.state.open || OptionsController.state.enableEmbedded) {
-              ModalController.close()
-            }
-          }
         })
       ]
     )
@@ -103,7 +105,7 @@ export class W3mConnectingSocialView extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     window.removeEventListener('message', this.handleSocialConnection, false)
     this.socialWindow?.close()
-    AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
+    ChainController.setAccountProp('socialWindow', undefined, ChainController.state.activeChain)
   }
 
   // -- Render -------------------------------------------- //
@@ -113,28 +115,20 @@ export class W3mConnectingSocialView extends LitElement {
         data-error=${ifDefined(this.error)}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', 'xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['10', '5', '5', '5'] as const}
+        gap="6"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-logo logo=${ifDefined(this.socialProvider)}></wui-logo>
           ${this.error ? null : this.loaderTemplate()}
-          <wui-icon-box
-            backgroundColor="error-100"
-            background="opaque"
-            iconColor="error-100"
-            icon="close"
-            size="sm"
-            border
-            borderColor="wui-color-bg-125"
-          ></wui-icon-box>
+          <wui-icon-box color="error" icon="close" size="sm"></wui-icon-box>
         </wui-flex>
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text align="center" variant="paragraph-500" color="fg-100"
+        <wui-flex flexDirection="column" alignItems="center" gap="2">
+          <wui-text align="center" variant="lg-medium" color="primary"
             >Log in with
             <span class="capitalize">${this.socialProvider ?? 'Social'}</span></wui-text
           >
-          <wui-text align="center" variant="small-400" color=${this.error ? 'error-100' : 'fg-200'}
+          <wui-text align="center" variant="lg-regular" color=${this.error ? 'error' : 'secondary'}
             >${this.message}</wui-text
           ></wui-flex
         >
@@ -158,7 +152,11 @@ export class W3mConnectingSocialView extends LitElement {
           if (this.authConnector && !this.connecting) {
             if (this.socialWindow) {
               this.socialWindow.close()
-              AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
+              ChainController.setAccountProp(
+                'socialWindow',
+                undefined,
+                ChainController.state.activeChain
+              )
             }
             this.connecting = true
             this.updateMessage()
@@ -186,10 +184,7 @@ export class W3mConnectingSocialView extends LitElement {
               EventsController.sendEvent({
                 type: 'track',
                 event: 'SOCIAL_LOGIN_SUCCESS',
-                properties: {
-                  provider: this.socialProvider,
-                  caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
-                }
+                properties: { provider: this.socialProvider }
               })
             }
           }
@@ -200,7 +195,10 @@ export class W3mConnectingSocialView extends LitElement {
             EventsController.sendEvent({
               type: 'track',
               event: 'SOCIAL_LOGIN_ERROR',
-              properties: { provider: this.socialProvider }
+              properties: {
+                provider: this.socialProvider,
+                message: CoreHelperUtil.parseError(error)
+              }
             })
           }
         }
@@ -211,7 +209,10 @@ export class W3mConnectingSocialView extends LitElement {
           EventsController.sendEvent({
             type: 'track',
             event: 'SOCIAL_LOGIN_ERROR',
-            properties: { provider: this.socialProvider }
+            properties: {
+              provider: this.socialProvider,
+              message: 'Untrusted Origin'
+            }
           })
         }
       }

@@ -1,14 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
-  AccountController,
+  type AccountState,
   BlockchainApiController,
   ChainController,
   ConnectorController,
   ModalController,
+  ProviderController,
   StorageUtil
 } from '@reown/appkit-controllers'
-import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { emitter, mockEvmAdapter, solanaEmitter } from '../mocks/Adapter'
@@ -34,7 +34,7 @@ describe('Listeners', () => {
 
   it('should set caip address, profile name and profile image on accountChanged event', async () => {
     const identity = { name: 'vitalik.eth', avatar: null } as const
-    const setCaipAddressSpy = vi.spyOn(AccountController, 'setCaipAddress')
+    const setCaipAddressSpy = vi.spyOn(ChainController, 'setAccountProp')
     const fetchIdentitySpy = vi
       .spyOn(BlockchainApiController, 'fetchIdentity')
       .mockResolvedValueOnce(identity)
@@ -54,25 +54,26 @@ describe('Listeners', () => {
     mockEvmAdapter.emit('accountChanged', mockAccount)
 
     expect(setCaipAddressSpy).toHaveBeenCalledWith(
+      'caipAddress',
       `${mockAccount.chainNamespace}:${mockAccount.chainId}:${mockAccount.address}`,
-      'eip155'
+      'eip155',
+      true
     )
     expect(fetchIdentitySpy).toHaveBeenCalledWith({
-      address: mockAccount.address,
-      caipNetworkId: `${mockAccount.chainNamespace}:${mockAccount.chainId}`
+      address: mockAccount.address
     })
     expect(setProfileNameSpy).toHaveBeenCalledWith(identity.name, 'eip155')
     expect(setProfileImageSpy).toHaveBeenCalledWith(identity.avatar, 'eip155')
   })
 
   it('should call syncAccountInfo when namespace is different than active namespace', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      caipAddress: `${mainnet.chainNamespace}:${mainnet.id}:0x1234`,
       address: '0x1234'
-    })
+    } as unknown as AccountState)
     const appKit = new AppKit({ ...mockOptions, defaultNetwork: solana })
     await appKit.ready()
-    const setCaipAddressSpy = vi.spyOn(appKit, 'setCaipAddress')
+    const setCaipAddressSpy = vi.spyOn(ChainController, 'setAccountProp')
 
     const mockAccount = {
       address: '0x123',
@@ -82,26 +83,11 @@ describe('Listeners', () => {
     emitter.emit('accountChanged', mockAccount)
 
     expect(setCaipAddressSpy).toHaveBeenCalledWith(
+      'caipAddress',
       `${mockAccount.chainNamespace}:${mockAccount.chainId}:${mockAccount.address}`,
-      'eip155'
+      'eip155',
+      true
     )
-  })
-
-  it('should reset profile info if switched namespace is not EVM', async () => {
-    const appKit = new AppKit({ ...mockOptions, defaultNetwork: mainnet })
-    await appKit.ready()
-    const setProfileNameSpy = vi.spyOn(appKit, 'setProfileName')
-    const setProfileImageSpy = vi.spyOn(appKit, 'setProfileImage')
-
-    const mockAccount = {
-      address: 'C3k5AvYqoXjsfrkXdFBkUhqHHApeC8amP7y85LkLHL5X',
-      chainId: solana.id,
-      chainNamespace: solana.chainNamespace
-    }
-    solanaEmitter.emit('accountChanged', mockAccount)
-
-    expect(setProfileNameSpy).toHaveBeenCalledWith(null, solana.chainNamespace)
-    expect(setProfileImageSpy).toHaveBeenCalledWith(null, solana.chainNamespace)
   })
 
   it('should show unsupported chain UI when network is unsupported and allowUnsupportedChain is false', async () => {
@@ -131,7 +117,7 @@ describe('Listeners', () => {
     const resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
     const removeConnectorIdSpy = vi.spyOn(ConnectorController, 'removeConnectorId')
     const removeConnectedNamespaceSpy = vi.spyOn(StorageUtil, 'removeConnectedNamespace')
-    const resetChainSpy = vi.spyOn(ProviderUtil, 'resetChain')
+    const resetChainSpy = vi.spyOn(ProviderController, 'resetChain')
     const modalCloseSpy = vi.spyOn(ModalController, 'close')
 
     const appKit = new AppKit(mockOptions)
@@ -148,9 +134,9 @@ describe('Listeners', () => {
     expect(removeConnectorIdSpy).toHaveBeenCalledWith(chainNamespace)
     expect(removeConnectedNamespaceSpy).toHaveBeenCalledWith(chainNamespace)
     expect(resetChainSpy).toHaveBeenCalledWith(chainNamespace)
-    expect(setUserSpy).toHaveBeenCalledWith(undefined, chainNamespace)
+    expect(setUserSpy).toHaveBeenCalledWith(null, chainNamespace)
     expect(setStatusSpy).toHaveBeenCalledWith('disconnected', chainNamespace)
-    expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(undefined, chainNamespace)
+    expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(null, chainNamespace)
     expect(modalCloseSpy).toHaveBeenCalled()
   })
 

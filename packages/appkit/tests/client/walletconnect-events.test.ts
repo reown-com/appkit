@@ -1,6 +1,11 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
-import { ChainController, ConnectionController } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  ConnectionController,
+  CoreHelperUtil,
+  EventsController
+} from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mainnet, sepolia } from '../mocks/Networks.js'
@@ -92,6 +97,10 @@ describe('WalletConnect Events', () => {
 
   describe('connect', () => {
     it('should call finalizeWcConnection once connected', async () => {
+      vi.spyOn(CoreHelperUtil, 'getAccount').mockReturnValueOnce({
+        address: '0x123',
+        chainId: '1'
+      })
       const finalizeWcConnectionSpy = vi
         .spyOn(ConnectionController, 'finalizeWcConnection')
         .mockReturnValueOnce()
@@ -114,7 +123,44 @@ describe('WalletConnect Events', () => {
 
       connectCallback()
 
-      expect(finalizeWcConnectionSpy).toHaveBeenCalledOnce()
+      expect(finalizeWcConnectionSpy).toHaveBeenCalledWith('0x123')
+    })
+  })
+
+  describe('finalizeWcConnection', () => {
+    it('should not send CONNECT_SUCCESS event when called without address', () => {
+      const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
+
+      // Call finalizeWcConnection without address
+      ConnectionController.finalizeWcConnection()
+
+      // Verify that EventsController.sendEvent was not called with CONNECT_SUCCESS
+      const connectSuccessCalls = sendEventSpy.mock.calls.filter(
+        ([event]) => event?.event === 'CONNECT_SUCCESS'
+      )
+      expect(connectSuccessCalls).toHaveLength(0)
+
+      sendEventSpy.mockRestore()
+    })
+
+    it('should send CONNECT_SUCCESS event when called with address', () => {
+      const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
+
+      // Call finalizeWcConnection with address
+      ConnectionController.finalizeWcConnection('0x123')
+
+      // Verify that EventsController.sendEvent was called with CONNECT_SUCCESS
+      const connectSuccessCalls = sendEventSpy.mock.calls.filter(
+        ([event]) => event?.event === 'CONNECT_SUCCESS'
+      )
+      expect(connectSuccessCalls).toHaveLength(1)
+      expect(connectSuccessCalls[0]![0]).toMatchObject({
+        type: 'track',
+        event: 'CONNECT_SUCCESS',
+        address: '0x123'
+      })
+
+      sendEventSpy.mockRestore()
     })
   })
 })

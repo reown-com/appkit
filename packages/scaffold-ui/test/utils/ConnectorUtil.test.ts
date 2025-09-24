@@ -45,7 +45,6 @@ describe('ConnectorUtil', () => {
       vi.spyOn(ConnectorUtil, 'getIsConnectedWithWC').mockReturnValue(false)
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
-        enableWalletConnect: true,
         features: {
           connectorTypeOrder: ['injected', 'walletConnect']
         }
@@ -77,7 +76,6 @@ describe('ConnectorUtil', () => {
       vi.spyOn(ConnectorUtil, 'getIsConnectedWithWC').mockReturnValue(false)
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
-        enableWalletConnect: true,
         features: {
           connectorTypeOrder: ['injected', 'walletConnect']
         }
@@ -108,7 +106,6 @@ describe('ConnectorUtil', () => {
       vi.spyOn(ConnectorUtil, 'getIsConnectedWithWC').mockReturnValue(false)
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
-        enableWalletConnect: true,
         features: {
           connectorTypeOrder: ['injected', 'recommended']
         }
@@ -128,31 +125,6 @@ describe('ConnectorUtil', () => {
       expect(result).toEqual(['walletConnect', 'recent', 'featured', 'custom', 'external'])
 
       expect(result).not.toContain('injected')
-    })
-
-    it('should handle disabled walletConnect connector properly', () => {
-      vi.spyOn(ConnectorUtil, 'getIsConnectedWithWC').mockReturnValue(false)
-      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        ...OptionsController.state,
-        enableWalletConnect: false,
-        features: {
-          connectorTypeOrder: ['walletConnect', 'injected']
-        }
-      })
-
-      const result = ConnectorUtil.getConnectorTypeOrder({
-        recommended: [],
-        featured: [],
-        custom: [],
-        recent: [],
-        announced: [],
-        injected: [INJECTED],
-        multiChain: [],
-        external: []
-      })
-
-      expect(result).toEqual(['injected'])
-      expect(result).not.toContain('walletConnect')
     })
   })
 

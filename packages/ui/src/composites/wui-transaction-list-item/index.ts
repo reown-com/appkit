@@ -8,9 +8,7 @@ import type {
   TransactionStatus
 } from '@reown/appkit-common'
 
-import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
-import '../../layout/wui-flex/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import { type TransactionType, TransactionTypePastTense } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
@@ -36,12 +34,6 @@ export class WuiTransactionListItem extends LitElement {
 
   @property({ type: Array }) public images: TransactionImage[] = []
 
-  @property({ type: Array }) public price: TransactionImage[] = []
-
-  @property({ type: Array }) public amount: TransactionImage[] = []
-
-  @property({ type: Array }) public symbol: TransactionImage[] = []
-
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -50,18 +42,18 @@ export class WuiTransactionListItem extends LitElement {
           .status=${this.status}
           direction=${ifDefined(this.direction)}
           type=${this.type}
-          onlyDirectionIcon=${ifDefined(this.onlyDirectionIcon)}
+          .onlyDirectionIcon=${this.onlyDirectionIcon}
           .images=${this.images}
         ></wui-transaction-visual>
-        <wui-flex flexDirection="column" gap="3xs">
-          <wui-text variant="paragraph-600" color="fg-100">
+        <wui-flex flexDirection="column" gap="1">
+          <wui-text variant="lg-medium" color="primary">
             ${TransactionTypePastTense[this.type] || this.type}
           </wui-text>
           <wui-flex class="description-container">
             ${this.templateDescription()} ${this.templateSecondDescription()}
           </wui-flex>
         </wui-flex>
-        <wui-text variant="micro-700" color="fg-300"><span>${this.date}</span></wui-text>
+        <wui-text variant="sm-medium" color="secondary"><span>${this.date}</span></wui-text>
       </wui-flex>
     `
   }
@@ -72,7 +64,7 @@ export class WuiTransactionListItem extends LitElement {
 
     return description
       ? html`
-          <wui-text variant="small-500" color="fg-200">
+          <wui-text variant="md-regular" color="secondary">
             <span>${description}</span>
           </wui-text>
         `
@@ -84,8 +76,8 @@ export class WuiTransactionListItem extends LitElement {
 
     return description
       ? html`
-          <wui-icon class="description-separator-icon" size="xxs" name="arrowRight"></wui-icon>
-          <wui-text variant="small-400" color="fg-200">
+          <wui-icon class="description-separator-icon" size="sm" name="arrowRight"></wui-icon>
+          <wui-text variant="md-regular" color="secondary">
             <span>${description}</span>
           </wui-text>
         `

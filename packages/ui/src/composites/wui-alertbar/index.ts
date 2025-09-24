@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { AlertController } from '@reown/appkit-controllers'
 
@@ -7,9 +8,16 @@ import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { ColorType, IconType } from '../../utils/TypeUtil.js'
+import type { AlertType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
+
+const TYPE_ICON_NAME = {
+  info: 'info',
+  success: 'checkmark',
+  warning: 'warningCircle',
+  error: 'warning'
+} as Record<AlertType, IconType>
 
 @customElement('wui-alertbar')
 export class WuiAlertBar extends LitElement {
@@ -18,36 +26,34 @@ export class WuiAlertBar extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public message = ''
 
-  @property() public backgroundColor: ColorType = 'accent-100'
-
-  @property() public iconColor: ColorType = 'accent-100'
-
-  @property() public icon: IconType = 'info'
+  @property() public type: AlertType = 'info'
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.style.cssText = `
-      --local-icon-bg-value: var(--wui-color-${this.backgroundColor});
-   `
-
     return html`
-      <wui-flex flexDirection="row" justifyContent="space-between" alignItems="center">
-        <wui-flex columnGap="xs" flexDirection="row" alignItems="center">
+      <wui-flex
+        data-type=${ifDefined(this.type)}
+        flexDirection="row"
+        justifyContent="space-between"
+        alignItems="center"
+        gap="2"
+      >
+        <wui-flex columnGap="2" flexDirection="row" alignItems="center">
           <wui-flex
             flexDirection="row"
             alignItems="center"
             justifyContent="center"
             class="icon-box"
           >
-            <wui-icon color=${this.iconColor} size="md" name=${this.icon}></wui-icon>
+            <wui-icon color="inherit" size="md" name=${TYPE_ICON_NAME[this.type]}></wui-icon>
           </wui-flex>
-          <wui-text variant="small-500" color="bg-350" data-testid="wui-alertbar-text"
+          <wui-text variant="md-medium" color="inherit" data-testid="wui-alertbar-text"
             >${this.message}</wui-text
           >
         </wui-flex>
         <wui-icon
           class="close"
-          color="bg-350"
+          color="inherit"
           size="sm"
           name="close"
           @click=${this.onClose}

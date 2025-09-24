@@ -22,7 +22,9 @@ packages:
   - 'apps/*'
   - 'examples/*'
   - 'services/*'
-  - 'packages/ui-new'
   - '!packages/appkit-new'
   - '!apps/gallery-new'
   - '!apps/laboratory-new'
+
+# 4320 minutes = 3 days
+minimumReleaseAge: 4320

@@ -54,7 +54,7 @@ describe('W3mConnectExternalWidget', () => {
       html`<w3m-connect-external-widget></w3m-connect-external-widget>`
     )
 
-    const walletElements = element.shadowRoot?.querySelectorAll('wui-list-wallet')
+    const walletElements = element.shadowRoot?.querySelectorAll('w3m-list-wallet')
     expect(walletElements?.length).toBe(3)
 
     const walletNames = Array.from(walletElements || []).map(el => el.getAttribute('name'))
@@ -72,7 +72,7 @@ describe('W3mConnectExternalWidget', () => {
       html`<w3m-connect-external-widget></w3m-connect-external-widget>`
     )
 
-    const walletElements = element.shadowRoot?.querySelectorAll('wui-list-wallet')
+    const walletElements = element.shadowRoot?.querySelectorAll('w3m-list-wallet')
     expect(walletElements?.length).toBe(2)
 
     const walletNames = Array.from(walletElements || []).map(el => el.getAttribute('name'))
@@ -91,7 +91,7 @@ describe('W3mConnectExternalWidget', () => {
       html`<w3m-connect-external-widget></w3m-connect-external-widget>`
     )
 
-    const walletElements = element.shadowRoot?.querySelectorAll('wui-list-wallet')
+    const walletElements = element.shadowRoot?.querySelectorAll('w3m-list-wallet')
     expect(walletElements?.length).toBe(2)
 
     const walletNames = Array.from(walletElements || []).map(el => el.getAttribute('name'))

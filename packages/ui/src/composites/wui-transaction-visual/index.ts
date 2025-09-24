@@ -8,7 +8,7 @@ import type {
 } from '@reown/appkit-common'
 
 import '../../components/wui-image/index.js'
-import type { TransactionIconType, TransactionType } from '../../utils/TypeUtil.js'
+import type { IconColorType, TransactionIconType, TransactionType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
@@ -37,11 +37,15 @@ export class WuiTransactionVisual extends LitElement {
   public override render() {
     const [firstImage, secondImage] = this.images
 
+    if (!this.images.length) {
+      this.dataset['noImages'] = 'true'
+    }
+
     const isLeftNFT = firstImage?.type === 'NFT'
     const isRightNFT = secondImage?.url ? secondImage.type === 'NFT' : isLeftNFT
 
-    const leftRadius = isLeftNFT ? 'var(--wui-border-radius-xxs)' : 'var(--wui-border-radius-s)'
-    const rightRadius = isRightNFT ? 'var(--wui-border-radius-xxs)' : 'var(--wui-border-radius-s)'
+    const leftRadius = isLeftNFT ? 'var(--apkt-borderRadius-3)' : 'var(--apkt-borderRadius-5)'
+    const rightRadius = isRightNFT ? 'var(--apkt-borderRadius-3)' : 'var(--apkt-borderRadius-5)'
 
     this.style.cssText = `
     --local-left-border-radius: ${leftRadius};
@@ -55,8 +59,8 @@ export class WuiTransactionVisual extends LitElement {
   private templateVisual() {
     const [firstImage, secondImage] = this.images
     const firstImageType = firstImage?.type
-    const haveTwoImages = this.images.length === 2
-    if (haveTwoImages && (firstImage?.url || secondImage?.url)) {
+    const hasTwoImages = this.images.length === 2
+    if (hasTwoImages && (firstImage?.url || secondImage?.url)) {
       return html`<div class="swap-images-container">
         ${firstImage?.url
           ? html`<wui-image src=${firstImage.url} alt="Transaction image"></wui-image>`
@@ -68,14 +72,14 @@ export class WuiTransactionVisual extends LitElement {
     } else if (firstImage?.url) {
       return html`<wui-image src=${firstImage.url} alt="Transaction image"></wui-image>`
     } else if (firstImageType === 'NFT') {
-      return html`<wui-icon size="inherit" color="fg-200" name="nftPlaceholder"></wui-icon>`
+      return html`<wui-icon size="inherit" color="default" name="nftPlaceholder"></wui-icon>`
     }
 
-    return html`<wui-icon size="inherit" color="fg-200" name="coinPlaceholder"></wui-icon>`
+    return html`<wui-icon size="inherit" color="default" name="coinPlaceholder"></wui-icon>`
   }
 
   private templateIcon() {
-    let color: 'accent-100' | 'error-100' | 'success-100' | 'inverse-100' = 'accent-100'
+    let color: IconColorType = 'accent-primary'
     let icon: TransactionIconType | undefined = undefined
 
     icon = this.getIcon()
@@ -89,15 +93,9 @@ export class WuiTransactionVisual extends LitElement {
     }
 
     return html`
-      <wui-icon-box
-        size="xxs"
-        iconColor=${color}
-        backgroundColor=${color}
-        background="opaque"
-        icon=${icon}
-        ?border=${true}
-        borderColor="wui-color-bg-125"
-      ></wui-icon-box>
+      <wui-flex alignItems="center" justifyContent="center" class="status-box">
+        <wui-icon-box size="sm" color=${color} icon=${icon}></wui-icon-box>
+      </wui-flex>
     `
   }
 
@@ -118,7 +116,7 @@ export class WuiTransactionVisual extends LitElement {
     }
 
     if (this.type === 'trade') {
-      return 'swapHorizontalBold'
+      return 'swapHorizontal'
     } else if (this.type === 'approve') {
       return 'checkmark'
     } else if (this.type === 'cancel') {
@@ -128,16 +126,16 @@ export class WuiTransactionVisual extends LitElement {
     return this.getDirectionIcon()
   }
 
-  private getStatusColor() {
+  private getStatusColor(): IconColorType {
     switch (this.status) {
       case 'confirmed':
-        return 'success-100'
+        return 'success'
       case 'failed':
-        return 'error-100'
+        return 'error'
       case 'pending':
-        return 'inverse-100'
+        return 'inverse'
       default:
-        return 'accent-100'
+        return 'accent-primary'
     }
   }
 }

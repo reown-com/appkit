@@ -51,18 +51,20 @@ export class W3mOnRampActivityItem extends LitElement {
     return html`
       <wui-flex>
         ${this.imageTemplate()}
-        <wui-flex flexDirection="column" gap="4xs" flexGrow="1">
-          <wui-flex gap="xxs" alignItems="center" justifyContent="flex-start">
+        <wui-flex flexDirection="column" gap="01" flexGrow="1">
+          <wui-flex gap="1" alignItems="center" justifyContent="flex-start">
             ${this.statusIconTemplate()}
-            <wui-text variant="paragraph-500" color="fg-100"> ${this.label}</wui-text>
+            <wui-text variant="md-regular" color="primary"> ${this.label}</wui-text>
           </wui-flex>
-          <wui-text variant="small-400" color="fg-200">
+          <wui-text variant="sm-regular" color="secondary">
             + ${this.purchaseValue} ${this.purchaseCurrency}
           </wui-text>
         </wui-flex>
         ${this.inProgress
-          ? html`<wui-loading-spinner color="fg-200" size="md"></wui-loading-spinner>`
-          : html`<wui-text variant="micro-700" color="fg-300"><span>${this.date}</span></wui-text>`}
+          ? html`<wui-loading-spinner color="secondary" size="md"></wui-loading-spinner>`
+          : html`<wui-text variant="sm-medium" color="tertiary"
+              ><span>${this.date}</span></wui-text
+            >`}
       </wui-flex>
     `
   }
@@ -81,14 +83,7 @@ export class W3mOnRampActivityItem extends LitElement {
   }
 
   private errorIconTemplate() {
-    return html`<wui-icon-box
-      size="xxs"
-      iconColor="error-100"
-      backgroundColor="error-100"
-      background="opaque"
-      icon="close"
-      borderColor="wui-color-bg-125"
-    ></wui-icon-box>`
+    return html`<wui-icon-box size="sm" color="error" icon="close"></wui-icon-box>`
   }
 
   private imageTemplate() {
@@ -100,14 +95,7 @@ export class W3mOnRampActivityItem extends LitElement {
   }
 
   private boughtIconTemplate() {
-    return html`<wui-icon-box
-      size="xxs"
-      iconColor="success-100"
-      backgroundColor="success-100"
-      background="opaque"
-      icon="arrowBottom"
-      borderColor="wui-color-bg-125"
-    ></wui-icon-box>`
+    return html`<wui-icon-box size="sm" color="success" icon="arrowBottom"></wui-icon-box>`
   }
 }
 

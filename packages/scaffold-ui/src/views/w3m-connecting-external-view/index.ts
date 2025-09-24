@@ -1,8 +1,12 @@
-import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import {
+  type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil,
+  ErrorUtil
+} from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 import type { BaseError, Connector } from '@reown/appkit-controllers'
 import {
-  ChainController,
+  AppKitError,
   ConnectionController,
   ConnectionControllerUtil,
   ConnectorController,
@@ -48,7 +52,9 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       properties: {
         name: this.connector.name ?? 'Unknown',
         platform: 'browser',
-        displayIndex: this.wallet?.display_index
+        displayIndex: this.wallet?.display_index,
+        walletRank: this.wallet?.order,
+        view: RouterController.state.view
       }
     })
     this.onConnect = this.onConnectProxy.bind(this)
@@ -58,11 +64,14 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
       ConnectorController.subscribeKey('activeConnectorIds', val => {
         const newActiveConnectorId = val[namespace]
         const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+        const { redirectView } = RouterController.state.data ?? {}
 
         if (newActiveConnectorId !== this.currentActiveConnectorId) {
           if (this.hasMultipleConnections && isMultiWalletEnabled) {
             RouterController.replace('ProfileWallets')
             SnackController.showSuccess('New Wallet Added')
+          } else if (redirectView) {
+            RouterController.replace(redirectView)
           } else {
             ModalController.close()
           }
@@ -100,17 +109,31 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
             properties: {
               method: 'browser',
               name: this.connector.name || 'Unknown',
-              caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
+              view: RouterController.state.view,
+              walletRank: this.wallet?.order
             }
           })
         }
       }
     } catch (error) {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'CONNECT_ERROR',
-        properties: { message: (error as BaseError)?.message ?? 'Unknown' }
-      })
+      const isUserRejectedRequestError =
+        error instanceof AppKitError &&
+        error.originalName === ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST
+
+      if (isUserRejectedRequestError) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'USER_REJECTED',
+          properties: { message: error.message }
+        })
+      } else {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_ERROR',
+          properties: { message: (error as BaseError)?.message ?? 'Unknown' }
+        })
+      }
+
       this.error = true
     }
   }

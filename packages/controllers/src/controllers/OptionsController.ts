@@ -116,6 +116,7 @@ export interface OptionsControllerStatePublic {
    */
   enableReconnect?: boolean
   /**
+   * @deprecated This flag is deprecated and will be removed in a future major release.
    * Enable or disable the WalletConnect QR code.
    * @default true
    */
@@ -147,7 +148,6 @@ export interface OptionsControllerStatePublic {
    */
   features?: Features
   /**
-   * @experimental - This feature is not production ready.
    * Enable Sign In With X (SIWX) feature.
    * @default undefined
    */
@@ -341,10 +341,6 @@ export const OptionsController = {
 
   setDebug(debug: OptionsControllerState['debug']) {
     state.debug = debug
-  },
-
-  setEnableWalletConnect(enableWalletConnect: OptionsControllerState['enableWalletConnect']) {
-    state.enableWalletConnect = enableWalletConnect
   },
 
   setEnableWalletGuide(enableWalletGuide: OptionsControllerState['enableWalletGuide']) {

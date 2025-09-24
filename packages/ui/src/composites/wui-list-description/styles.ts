@@ -1,23 +1,32 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
+  :host {
+    width: 100%;
+  }
+
   button {
     width: 100%;
     display: flex;
-    gap: var(--wui-spacing-s);
+    justify-content: space-between;
     align-items: center;
-    justify-content: flex-start;
-    padding: var(--wui-spacing-s) var(--wui-spacing-m) var(--wui-spacing-s) var(--wui-spacing-s);
-    background-color: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
+    gap: ${({ spacing }) => spacing[4]};
+    padding: ${({ spacing }) => spacing[4]};
+    background-color: transparent;
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
   }
 
-  wui-icon-box {
-    width: var(--wui-spacing-2xl);
-    height: var(--wui-spacing-2xl);
+  wui-text {
+    max-width: 174px;
   }
 
-  wui-flex {
-    width: auto;
+  .tag-container {
+    width: fit-content;
+  }
+
+  @media (hover: hover) {
+    button:hover:enabled {
+      background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    }
   }
 `

@@ -12,7 +12,6 @@ import {
   RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-list-wallet'
 
 @customElement('w3m-connect-walletconnect-widget')
 export class W3mConnectWalletConnectWidget extends LitElement {
@@ -60,24 +59,28 @@ export class W3mConnectWalletConnectWidget extends LitElement {
     )
 
     return html`
-      <wui-list-wallet
+      <w3m-list-wallet
         imageSrc=${ifDefined(connectorImage)}
         name=${connector.name ?? 'Unknown'}
         @click=${() => this.onConnector(connector)}
         tagLabel="qr code"
-        tagVariant="main"
+        tagVariant="accent"
         tabIdx=${ifDefined(this.tabIdx)}
         data-testid="wallet-selector-walletconnect"
+        size="sm"
         ?disabled=${hasWcConnection}
+        rdnsId=${connector.explorerWallet?.rdns}
       >
-      </wui-list-wallet>
+      </w3m-list-wallet>
     `
   }
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
     ConnectorController.setActiveConnector(connector)
-    RouterController.push('ConnectingWalletConnect')
+    RouterController.push('ConnectingWalletConnect', {
+      redirectView: RouterController.state.data?.redirectView
+    })
   }
 }
 

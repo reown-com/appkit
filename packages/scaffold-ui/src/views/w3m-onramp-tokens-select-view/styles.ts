@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host > wui-grid {
@@ -7,7 +7,8 @@ export default css`
   }
 
   wui-flex {
-    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    transition: opacity ${({ easings }) => easings['ease-out-power-1']}
+      ${({ durations }) => durations['md']};
     will-change: opacity;
   }
 

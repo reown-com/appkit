@@ -26,7 +26,9 @@ export class W3mConnectingWcUnsupported extends LitElement {
       properties: {
         name: this.wallet.name,
         platform: 'browser',
-        displayIndex: this.wallet?.display_index
+        displayIndex: this.wallet?.display_index,
+        walletRank: this.wallet?.order,
+        view: RouterController.state.view
       }
     })
   }
@@ -37,15 +39,15 @@ export class W3mConnectingWcUnsupported extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', 'xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['10', '5', '5', '5'] as const}
+        gap="5"
       >
         <wui-wallet-image
           size="lg"
           imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet))}
         ></wui-wallet-image>
 
-        <wui-text variant="paragraph-500" color="fg-100">Not Detected</wui-text>
+        <wui-text variant="md-regular" color="primary">Not Detected</wui-text>
       </wui-flex>
 
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>

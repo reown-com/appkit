@@ -56,18 +56,35 @@ walletFeaturesTest.afterAll(async () => {
 walletFeaturesTest('it should initialize swap as expected', async () => {
   await page.openAccount()
   const walletFeatureButton = await page.getWalletFeaturesButton('swaps')
+  const selectSourceTokenButton = page.page.getByTestId('swap-select-token-button-sourceToken')
+  const selectToTokenButton = page.page.getByTestId('swap-select-token-button-toToken')
+  const sourceTokenButton = page.page.getByTestId('swap-input-sourceToken')
+  const swapActionButton = page.page.getByTestId('swap-action-button')
   await walletFeatureButton.click()
-  await expect(page.page.getByTestId('swap-input-sourceToken')).toHaveValue('0')
-  await expect(page.page.getByTestId('swap-input-token-sourceToken')).toHaveText('ETH')
-  await expect(page.page.getByTestId('swap-action-button')).toHaveText('Select token')
-  await page.page.getByTestId('swap-input-sourceToken').fill('1')
-  await page.page.getByTestId('swap-select-token-button-toToken').click()
+
+  await expect(selectSourceTokenButton).toBeVisible()
+  await expect(selectToTokenButton).toBeVisible()
+  await expect(swapActionButton).toHaveText('Select token')
+
+  await selectSourceTokenButton.click()
+  await page.page
+    .getByTestId('swap-select-token-search-input')
+    .getByPlaceholder('Search token')
+    .fill('ETH')
+  await page.page.getByTestId('swap-select-token-item-ETH').click()
+
+  await selectToTokenButton.click()
   await page.page
     .getByTestId('swap-select-token-search-input')
     .getByPlaceholder('Search token')
     .fill('USDC')
   await page.page.getByTestId('swap-select-token-item-USDC').click()
-  await expect(page.page.getByTestId('swap-action-button')).toHaveText('Insufficient balance')
+
+  await expect(swapActionButton).toHaveText('Enter amount')
+
+  await sourceTokenButton.fill('1')
+  await expect(swapActionButton).toHaveText('Insufficient balance')
+
   await page.closeModal()
 })
 
@@ -84,8 +101,10 @@ walletFeaturesTest('it should show swap view with preselected tokens', async () 
 
 walletFeaturesTest('it should initialize onramp as expected', async () => {
   await page.openAccount()
-  const walletFeatureButton = await page.getWalletFeaturesButton('onramp')
+  const walletFeatureButton = await page.getWalletFeaturesButton('fund-wallet')
   await walletFeatureButton.click()
+  const onrampButton = await page.getWalletFeaturesButton('onramp')
+  await onrampButton.click()
   await expect(page.page.getByText('Meld.io')).toBeVisible()
   await page.closeModal()
 })
@@ -95,11 +114,13 @@ walletFeaturesTest('it should find account name as expected', async () => {
   await page.clickProfileWalletsMoreButton()
   await page.openChooseNameIntro()
   await page.openChooseName()
-  await page.typeName('test-ens-check')
-  await validator.expectAccountNameFound('test-ens-check')
-  await page.clickAccountName('test-ens-check')
+  await page.typeName('CHRIS')
+  await validator.reownNameInput('chris')
+  await validator.expectAccountNameIndex(0, false)
+  await validator.expectAccountNameIndex(1, true)
+  await page.clickAccountName('chrisman.reown.id')
   await validator.expectHeaderText('Approve Transaction')
-  await validator.expectAccountNameApproveTransaction('test-ens-check.reown.id')
+  await validator.expectAccountNameApproveTransaction('chrisman.reown.id')
   await page.closeModal()
 })
 

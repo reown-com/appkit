@@ -2,15 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type Address, type CaipNetworkId, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   EventsController,
   ModalController,
+  ProviderController,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
-import { ProviderUtil } from '@reown/appkit-utils'
 
 import { PayController } from '../../src/controllers/PayController'
 import { AppKitPayError, AppKitPayErrorCodes, AppKitPayErrorMessages } from '../../src/types/errors'
@@ -92,8 +91,8 @@ describe('PayController', () => {
       configurable: true
     })
 
-    // Mock AccountController state
-    Object.defineProperty(AccountController.state, 'caipAddress', {
+    // Mock Account state
+    Object.defineProperty(ChainController.state, 'activeCaipAddress', {
       get: vi.fn(() => 'eip155:1:0x1234567890123456789012345678901234567890'),
       configurable: true
     })
@@ -112,13 +111,13 @@ describe('PayController', () => {
     vi.spyOn(ApiUtil, 'getExchanges').mockResolvedValue(mockExchangesResponse as any)
     vi.spyOn(ApiUtil, 'getPayUrl').mockResolvedValue(mockPayUrlResponse)
 
-    // Mock ProviderUtil
-    vi.spyOn(ProviderUtil, 'subscribeProviders').mockImplementation(callback => {
+    // Mock ProviderController
+    vi.spyOn(ProviderController, 'subscribeProviders').mockImplementation(callback => {
       // Simulate a provider update - use any to bypass complex annoying type requirements
       callback({} as any)
       return () => {}
     })
-    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue({} as any)
+    vi.spyOn(ProviderController, 'getProvider').mockReturnValue({} as any)
 
     // Mock ParseUtil
     vi.spyOn(ParseUtil, 'parseCaipAddress').mockReturnValue({
@@ -248,6 +247,7 @@ describe('PayController', () => {
         type: 'track',
         event: 'PAY_EXCHANGE_SELECTED',
         properties: {
+          source: 'pay',
           exchange: {
             id: 'coinbase'
           },
@@ -279,6 +279,7 @@ describe('PayController', () => {
         event: 'PAY_INITIATED',
         properties: {
           paymentId: mockPaymentId,
+          source: 'pay',
           configuration: {
             network: params.network,
             asset: params.asset,
@@ -590,7 +591,7 @@ describe('PayController', () => {
 
   describe('handlePayWithWallet', () => {
     it('should redirect to Connect if no caipAddress', () => {
-      Object.defineProperty(AccountController.state, 'caipAddress', {
+      Object.defineProperty(ChainController.state, 'activeCaipAddress', {
         get: vi.fn(() => null),
         configurable: true
       })
@@ -828,7 +829,7 @@ describe('PayController', () => {
   describe('subscribeEvents', () => {
     it('should not subscribe if already configured', () => {
       PayController.state.isConfigured = true
-      const subscribeSpy = vi.spyOn(ProviderUtil, 'subscribeProviders')
+      const subscribeSpy = vi.spyOn(ProviderController, 'subscribeProviders')
 
       PayController.subscribeEvents()
 
@@ -901,6 +902,7 @@ describe('PayController', () => {
         event: 'PAY_SUCCESS',
         properties: {
           paymentId: mockPaymentId,
+          source: 'pay',
           configuration: {
             network: mockPaymentOptions.paymentAsset.network,
             asset: mockPaymentOptions.paymentAsset.asset,
@@ -929,6 +931,7 @@ describe('PayController', () => {
         event: 'PAY_ERROR',
         properties: {
           paymentId: mockPaymentId,
+          source: 'pay',
           configuration: {
             network: mockPaymentOptions.paymentAsset.network,
             asset: mockPaymentOptions.paymentAsset.asset,
@@ -940,7 +943,8 @@ describe('PayController', () => {
             exchangeId,
             sessionId,
             result: mockFailedStatus.txHash
-          }
+          },
+          message: 'Unknown error'
         }
       })
     })

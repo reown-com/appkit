@@ -94,6 +94,7 @@ emailTestAfterFarcaster(
     await page.closeModal()
     await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
 
+    await page.page.waitForTimeout(2000)
     await page.sign('eip155')
     await page.approveSign()
     await validator.expectAcceptedSign()

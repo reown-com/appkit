@@ -53,9 +53,12 @@ export class WuiListAccordion extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button @click=${() => this.onClick()}>
+      <button
+        data-active=${this.enableAccordion ? Boolean(this.toggled) : true}
+        @click=${() => this.onClick()}
+      >
         <wui-flex justifyContent="space-between" alignItems="center">
-          <wui-text variant="paragraph-500" color="fg-100">${this.textTitle}</wui-text>
+          <wui-text variant="lg-regular" color="secondary">${this.textTitle}</wui-text>
           ${this.chevronTemplate()}
         </wui-flex>
         <div
@@ -63,7 +66,11 @@ export class WuiListAccordion extends LitElement {
           class="overflowedContent"
         >
           <div class="heightContent">
-            <wui-text class="textContent" variant="paragraph-400" color="fg-200">
+            <wui-text
+              class="textContent"
+              variant="md-regular"
+              color=${this.toggled ? 'tertiary' : 'secondary'}
+            >
               <pre>${this.overflowedContent}</pre>
             </wui-text>
           </div>
@@ -110,7 +117,7 @@ export class WuiListAccordion extends LitElement {
 
   public chevronTemplate() {
     if (this.enableAccordion) {
-      return html` <wui-icon color="fg-100" size="sm" name="chevronBottom"></wui-icon>`
+      return html` <wui-icon color="default" size="sm" name="chevronBottom"></wui-icon>`
     }
 
     return null

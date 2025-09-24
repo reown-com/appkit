@@ -35,14 +35,16 @@ export const networkTokenPriceResponse = {
       name: 'MATIC',
       symbol: 'MATIC',
       iconUrl: 'https://tokens.1inch.io/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png',
-      price: 0.7207
+      price: 0.7207,
+      address: 'eip155:137:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
     },
     {
       name: 'USD Coin',
       symbol: 'USDC',
       iconUrl:
         'https://token-icons.s3.amazonaws.com/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
-      price: 1.0000718186
+      price: 1.0000718186,
+      address: 'eip155:137:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359'
     }
   ]
 }

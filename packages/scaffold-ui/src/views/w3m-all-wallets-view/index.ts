@@ -1,6 +1,5 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
   type BadgeType,
@@ -22,18 +21,18 @@ export class W3mAllWalletsView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private search = ''
 
-  @state() private badge?: BadgeType
+  @state() private badge: BadgeType | undefined = undefined
 
   // -- Render -------------------------------------------- //
   public override render() {
     const isSearch = this.search.length >= 2
 
     return html`
-      <wui-flex .padding=${['0', 's', 's', 's']} gap="xs">
+      <wui-flex .padding=${['1', '3', '3', '3'] as const} gap="2" alignItems="center">
         <wui-search-bar @inputChange=${this.onInputChange.bind(this)}></wui-search-bar>
         <wui-certified-switch
-          ?checked=${this.badge}
-          @click=${this.onClick.bind(this)}
+          ?checked=${this.badge === 'certified'}
+          @certifiedSwitchChange=${this.onCertifiedSwitchChange.bind(this)}
           data-testid="wui-certified-switch"
         ></wui-certified-switch>
         ${this.qrButtonTemplate()}
@@ -41,9 +40,9 @@ export class W3mAllWalletsView extends LitElement {
       ${isSearch || this.badge
         ? html`<w3m-all-wallets-search
             query=${this.search}
-            badge=${ifDefined(this.badge)}
+            .badge=${this.badge}
           ></w3m-all-wallets-search>`
-        : html`<w3m-all-wallets-list badge=${ifDefined(this.badge)}></w3m-all-wallets-list>`}
+        : html`<w3m-all-wallets-list .badge=${this.badge}></w3m-all-wallets-list>`}
     `
   }
 
@@ -52,18 +51,16 @@ export class W3mAllWalletsView extends LitElement {
     this.onDebouncedSearch(event.detail)
   }
 
-  private onClick() {
-    if (this.badge === 'certified') {
+  private onCertifiedSwitchChange(event: CustomEvent<boolean>) {
+    if (event.detail) {
+      this.badge = 'certified'
+      SnackController.showSvg('Only WalletConnect certified', {
+        icon: 'walletConnectBrown',
+        iconColor: 'accent-100'
+      })
+    } else {
       this.badge = undefined
-
-      return
     }
-
-    this.badge = 'certified'
-    SnackController.showSvg('Only WalletConnect certified', {
-      icon: 'walletConnectBrown',
-      iconColor: 'accent-100'
-    })
   }
 
   private onDebouncedSearch = CoreHelperUtil.debounce((value: string) => {
@@ -74,12 +71,10 @@ export class W3mAllWalletsView extends LitElement {
     if (CoreHelperUtil.isMobile()) {
       return html`
         <wui-icon-box
-          size="lg"
+          size="xl"
           iconSize="xl"
-          iconColor="accent-100"
-          backgroundColor="accent-100"
+          color="accent-primary"
           icon="qrCode"
-          background="transparent"
           border
           borderColor="wui-accent-glass-010"
           @click=${this.onWalletConnectQr.bind(this)}

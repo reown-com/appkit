@@ -35,7 +35,6 @@ import type {
   PaymentCurrency,
   PurchaseCurrency
 } from '../utils/TypeUtil.js'
-import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 import { SnackController } from './SnackController.js'
@@ -192,18 +191,7 @@ export const BlockchainApiController = {
     }
   },
 
-  async fetchIdentity({
-    address,
-    caipNetworkId
-  }: BlockchainApiIdentityRequest & {
-    caipNetworkId: CaipNetworkId
-  }) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(caipNetworkId)
-
-    if (!isSupported) {
-      return { avatar: '', name: '' }
-    }
-
+  async fetchIdentity({ address }: BlockchainApiIdentityRequest) {
     const identityCache = StorageUtil.getIdentityFromCacheForAddress(address)
     if (identityCache) {
       return identityCache
@@ -507,10 +495,12 @@ export const BlockchainApiController = {
       return []
     }
 
+    const sender = ChainController.getAccountData()?.address
+
     return BlockchainApiController.get<BlockchainApiLookupEnsName[]>({
       path: `/v1/profile/reverse/${address}`,
       params: {
-        sender: AccountController.state.address,
+        sender,
         apiVersion: '2'
       }
     })

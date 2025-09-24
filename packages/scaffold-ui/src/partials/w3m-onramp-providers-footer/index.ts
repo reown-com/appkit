@@ -30,13 +30,13 @@ export class W3mOnRampProvidersFooter extends LitElement {
 
     return html`
       <wui-flex
-        .padding=${['m', 's', 's', 's'] as const}
+        .padding=${['4', '3', '3', '3'] as const}
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
-        gap="s"
+        gap="3"
       >
-        <wui-text color="fg-250" variant="small-400" align="center">
+        <wui-text color="secondary" variant="md-regular" align="center">
           We work with the best providers to give you the lowest fees and best support. More options
           coming soon!
         </wui-text>
@@ -49,7 +49,7 @@ export class W3mOnRampProvidersFooter extends LitElement {
   // -- Private ------------------------------------------- //
   private howDoesItWorkTemplate() {
     return html` <wui-link @click=${this.onWhatIsBuy.bind(this)}>
-      <wui-icon size="xs" color="accent-100" slot="iconLeft" name="helpCircle"></wui-icon>
+      <wui-icon size="xs" color="accent-primary" slot="iconLeft" name="helpCircle"></wui-icon>
       How does it work?
     </wui-link>`
   }

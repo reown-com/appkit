@@ -1,18 +1,17 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { repeat } from 'lit/directives/repeat.js'
 
 import type { Connector } from '@reown/appkit-controllers'
 import {
   AssetUtil,
   ConnectionController,
-  ConnectorController,
   CoreHelperUtil,
   RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-wallet'
 import { HelpersUtil } from '@reown/appkit-utils'
 
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
@@ -23,16 +22,15 @@ export class W3mConnectAnnouncedWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property() public tabIdx?: number = undefined
+  @property({ type: Number }) public tabIdx?: number
 
-  @state() private connectors = ConnectorController.state.connectors
+  @property({ attribute: false }) public connectors: Connector[] = []
 
   @state() private connections = ConnectionController.state.connections
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
       ConnectionController.subscribeKey('connections', val => (this.connections = val))
     )
   }
@@ -52,41 +50,54 @@ export class W3mConnectAnnouncedWidget extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" gap="xs">
-        ${announcedConnectors.filter(ConnectorUtil.showConnector).map(connector => {
-          const connectionsByNamespace = this.connections.get(connector.chain) ?? []
-          const isAlreadyConnected = connectionsByNamespace.some(c =>
-            HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
-          )
+      <wui-flex flexDirection="column" gap="2">
+        ${repeat(
+          announcedConnectors.filter(ConnectorUtil.showConnector),
+          connector => connector.id,
+          connector => {
+            const connectionsByNamespace = this.connections.get(connector.chain) ?? []
+            const isAlreadyConnected = connectionsByNamespace.some(c =>
+              HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
+            )
 
-          return html`
-            <wui-list-wallet
-              imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-              name=${connector.name ?? 'Unknown'}
-              @click=${() => this.onConnector(connector)}
-              tagVariant=${isAlreadyConnected ? 'shade' : 'success'}
-              tagLabel=${isAlreadyConnected ? 'connected' : 'installed'}
-              data-testid=${`wallet-selector-${connector.id}`}
-              .installed=${true}
-              tabIdx=${ifDefined(this.tabIdx)}
-            >
-            </wui-list-wallet>
-          `
-        })}
+            return html`
+              <w3m-list-wallet
+                imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+                name=${connector.name ?? 'Unknown'}
+                @click=${() => this.onConnector(connector)}
+                tagVariant=${isAlreadyConnected ? 'info' : 'success'}
+                tagLabel=${isAlreadyConnected ? 'connected' : 'installed'}
+                size="sm"
+                data-testid=${`wallet-selector-${connector.id}`}
+                .installed=${true}
+                tabIdx=${ifDefined(this.tabIdx)}
+                rdnsId=${ifDefined(connector.explorerWallet?.rdns || undefined)}
+                walletRank=${ifDefined(connector.explorerWallet?.order)}
+              >
+              </w3m-list-wallet>
+            `
+          }
+        )}
       </wui-flex>
     `
   }
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
+    const redirectView = RouterController.state.data?.redirectView
+
     if (connector.id === 'walletConnect') {
       if (CoreHelperUtil.isMobile()) {
         RouterController.push('AllWallets')
       } else {
-        RouterController.push('ConnectingWalletConnect')
+        RouterController.push('ConnectingWalletConnect', { redirectView })
       }
     } else {
-      RouterController.push('ConnectingExternal', { connector })
+      RouterController.push('ConnectingExternal', {
+        connector,
+        redirectView,
+        wallet: connector.explorerWallet
+      })
     }
   }
 }

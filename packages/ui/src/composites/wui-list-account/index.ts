@@ -3,7 +3,6 @@ import { property } from 'lit/decorators.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   BlockchainApiController,
   ChainController,
   ConnectorController,
@@ -31,7 +30,7 @@ export class WuiListAccount extends LitElement {
 
   @property() public accountType = ''
 
-  private labels = AccountController.state.addressLabels
+  private labels = ChainController.getAccountData()?.addressLabels
 
   private caipNetwork = ChainController.state.activeCaipNetwork
 
@@ -80,23 +79,21 @@ export class WuiListAccount extends LitElement {
       <wui-flex
         flexDirection="row"
         justifyContent="space-between"
-        .padding=${['0', '0', 's', '1xs'] as const}
+        .padding=${['0', '0', '3', '2'] as const}
       >
-        <wui-flex gap="md" alignItems="center">
+        <wui-flex gap="l" alignItems="center">
           <wui-avatar address=${this.accountAddress}></wui-avatar>
           ${this.shouldShowIcon
             ? html`<wui-icon-box
                 size="sm"
-                iconcolor="fg-200"
-                backgroundcolor="fg-300"
+                color="default"
                 icon=${this.accountType === W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
                   ? (this.socialProvider ?? 'mail')
                   : 'lightbulb'}
-                background="fg-300"
               ></wui-icon-box>`
-            : html`<wui-flex .padding="${['0', '0', '0', 's'] as const}"></wui-flex>`}
+            : html`<wui-flex .padding="${['0', '0', '0', '2'] as const}"></wui-flex>`}
           <wui-flex flexDirection="column">
-            <wui-text class="address" variant="paragraph-500" color="fg-100"
+            <wui-text class="address" variant="md-medium" color="primary"
               >${UiHelperUtil.getTruncateString({
                 string: this.accountAddress,
                 charsStart: 4,
@@ -104,14 +101,14 @@ export class WuiListAccount extends LitElement {
                 truncate: 'middle'
               })}</wui-text
             >
-            <wui-text class="address-description" variant="small-400">${label}</wui-text></wui-flex
+            <wui-text class="address-description" variant="sm-regular">${label}</wui-text></wui-flex
           >
         </wui-flex>
-        <wui-flex gap="s" alignItems="center">
+        <wui-flex gap="3" alignItems="center">
           <slot name="action"></slot>
           ${this.fetchingBalance
             ? html`<wui-loading-spinner size="sm" color="accent-100"></wui-loading-spinner>`
-            : html` <wui-text variant="small-400">$${this.balance.toFixed(2)}</wui-text>`}
+            : html` <wui-text variant="sm-regular">$${this.balance.toFixed(2)}</wui-text>`}
         </wui-flex>
       </wui-flex>
     `

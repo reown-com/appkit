@@ -19,9 +19,10 @@ import {
   RouterController,
   SIWXUtil,
   SnackController,
+  SwapController,
   ThemeController
 } from '@reown/appkit-controllers'
-import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
+import { UiHelperUtil, customElement, initializeTheming, vars } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-card'
 import '@reown/appkit-ui/wui-flex'
 
@@ -29,11 +30,19 @@ import '../../partials/w3m-alertbar/index.js'
 import '../../partials/w3m-header/index.js'
 import '../../partials/w3m-snackbar/index.js'
 import '../../partials/w3m-tooltip/index.js'
+import { HelpersUtil } from '../../utils/HelpersUtil.js'
+import '../w3m-footer/index.js'
 import '../w3m-router/index.js'
 import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
+
+// -- Constants --------------------------------------------- //
+const PADDING_OVERRIDES: Record<string, string> = {
+  PayWithExchange: '0',
+  PayWithExchangeSelectAsset: '0'
+}
 
 export class W3mModalBase extends LitElement {
   public static override styles = styles
@@ -58,6 +67,8 @@ export class W3mModalBase extends LitElement {
 
   @state() private filterByNamespace = ConnectorController.state.filterByNamespace
 
+  @state() private padding = vars.spacing[1]
+
   public constructor() {
     super()
     this.initializeTheming()
@@ -74,12 +85,18 @@ export class W3mModalBase extends LitElement {
             ApiController.fetchRecommendedWallets()
             this.filterByNamespace = val
           }
+        }),
+        RouterController.subscribeKey('view', () => {
+          this.dataset['border'] = HelpersUtil.hasFooter() ? 'true' : 'false'
+          this.padding = PADDING_OVERRIDES[RouterController.state.view] ?? vars.spacing[1]
         })
       ]
     )
   }
 
   public override firstUpdated() {
+    this.dataset['border'] = HelpersUtil.hasFooter() ? 'true' : 'false'
+
     if (this.caipAddress) {
       if (this.enableEmbedded) {
         ModalController.close()
@@ -107,11 +124,11 @@ export class W3mModalBase extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.style.cssText = `
-      --local-border-bottom-mobile-radius: ${
-        this.enableEmbedded ? 'clamp(0px, var(--wui-border-radius-l), 44px)' : '0px'
-      };
-    `
+    this.style.setProperty('--local-modal-padding', this.padding)
+    this.style.setProperty(
+      '--local-border-bottom-mobile-radius',
+      this.enableEmbedded ? `clamp(0px, ${vars.borderRadius['8']}, 44px)` : '0px'
+    )
 
     if (this.enableEmbedded) {
       return html`${this.contentTemplate()}
@@ -140,10 +157,12 @@ export class W3mModalBase extends LitElement {
     >
       <w3m-header></w3m-header>
       <w3m-router></w3m-router>
+      <w3m-footer></w3m-footer>
       <w3m-snackbar></w3m-snackbar>
       <w3m-alertbar></w3m-alertbar>
     </wui-card>`
   }
+
   private async onOverlayClick(event: PointerEvent) {
     if (event.target === event.currentTarget) {
       await this.handleClose()
@@ -308,6 +327,10 @@ export class W3mModalBase extends LitElement {
 
     if (this.enableEmbedded && RouterController.state.view === 'SwitchNetwork') {
       shouldGoBack = true
+    }
+
+    if (networkIdChanged) {
+      SwapController.resetState()
     }
 
     if (isModalOpen && !isConnectingExternal && !isInProfileWalletsView) {

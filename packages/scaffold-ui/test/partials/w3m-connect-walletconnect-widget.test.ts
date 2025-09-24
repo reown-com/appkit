@@ -93,7 +93,7 @@ describe('W3mConnectWalletConnectWidget', () => {
     expect(walletSelector).not.toBeNull()
     expect(walletSelector.getAttribute('name')).toBe(WALLET_CONNECT_CONNECTOR.name)
     expect(walletSelector.getAttribute('tagLabel')).toBe('qr code')
-    expect(walletSelector.getAttribute('tagVariant')).toBe('main')
+    expect(walletSelector.getAttribute('tagVariant')).toBe('accent')
   })
 
   it('should render WalletConnect connector with custom image URL', async () => {
@@ -162,7 +162,9 @@ describe('W3mConnectWalletConnectWidget', () => {
     walletSelector.click()
 
     expect(setActiveConnectorSpy).toHaveBeenCalledWith(WALLET_CONNECT_CONNECTOR)
-    expect(pushSpy).toHaveBeenCalledWith('ConnectingWalletConnect')
+    expect(pushSpy).toHaveBeenCalledWith('ConnectingWalletConnect', {
+      redirectView: undefined
+    })
   })
 
   it('should handle unknown wallet name', async () => {

@@ -29,7 +29,6 @@ import type {
   WriteContractArgs
 } from '../utils/TypeUtil.js'
 import { AppKitError, withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AccountController } from './AccountController.js'
 import { ChainController, type ChainControllerState } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
@@ -94,9 +93,19 @@ export interface DisconnectParameters {
   initialDisconnect?: boolean
 }
 
+interface DisconnectConnectorParameters {
+  id: string
+  namespace: ChainNamespace
+}
+
+interface ConnectWalletConnectParameters {
+  cache?: 'auto' | 'always' | 'never'
+}
+
 export interface ConnectionControllerClient {
-  connectWalletConnect?: () => Promise<void>
+  connectWalletConnect?: (params?: ConnectWalletConnectParameters) => Promise<void>
   disconnect: (params?: DisconnectParameters) => Promise<void>
+  disconnectConnector: (params: DisconnectConnectorParameters) => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
@@ -211,8 +220,11 @@ const controller = {
       .some(({ connectorId: _connectorId }) => _connectorId === connectorId)
   },
 
-  async connectWalletConnect() {
-    if (CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())) {
+  async connectWalletConnect({ cache = 'auto' }: ConnectWalletConnectParameters = {}) {
+    const isInTelegramOrSafariIos =
+      CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())
+
+    if (cache === 'always' || (cache === 'auto' && isInTelegramOrSafariIos)) {
       if (wcConnectionPromise) {
         await wcConnectionPromise
         wcConnectionPromise = undefined
@@ -274,7 +286,7 @@ const controller = {
     if (!authConnector) {
       return
     }
-    AccountController.setPreferredAccountType(accountType, namespace)
+    ChainController.setAccountProp('preferredAccountType', accountType, namespace)
     await authConnector.provider.setPreferredAccount(accountType)
     StorageUtil.setPreferredAccountTypes(
       Object.entries(ChainController.state.chains).reduce((acc, [key, _]) => {
@@ -309,6 +321,10 @@ const controller = {
 
   formatUnits(value: bigint, decimals: number) {
     return ConnectionController._getClient()?.formatUnits(value, decimals)
+  },
+
+  updateBalance(namespace: ChainNamespace) {
+    return ConnectionController._getClient()?.updateBalance(namespace)
   },
 
   async sendTransaction(args: SendTransactionArgs) {
@@ -355,6 +371,7 @@ const controller = {
     state.status = 'disconnected'
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
+    StorageUtil.deleteRecentWallet()
   },
 
   resetUri() {
@@ -363,7 +380,7 @@ const controller = {
     wcConnectionPromise = undefined
   },
 
-  finalizeWcConnection() {
+  finalizeWcConnection(address?: string) {
     const { wcLinking, recentWallet } = ConnectionController.state
 
     if (wcLinking) {
@@ -374,15 +391,19 @@ const controller = {
       StorageUtil.setAppKitRecent(recentWallet)
     }
 
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'CONNECT_SUCCESS',
-      properties: {
-        method: wcLinking ? 'mobile' : 'qrcode',
-        name: RouterController.state.data?.wallet?.name || 'Unknown',
-        caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
-      }
-    })
+    if (address) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'CONNECT_SUCCESS',
+        address,
+        properties: {
+          method: wcLinking ? 'mobile' : 'qrcode',
+          name: RouterController.state.data?.wallet?.name || 'Unknown',
+          view: RouterController.state.view,
+          walletRank: recentWallet?.order
+        }
+      })
+    }
   },
 
   setWcBasic(wcBasic: ConnectionControllerState['wcBasic']) {
@@ -433,6 +454,14 @@ const controller = {
     }
   },
 
+  async disconnectConnector({ id, namespace }: DisconnectConnectorParameters) {
+    try {
+      await ConnectionController._getClient()?.disconnectConnector({ id, namespace })
+    } catch (error) {
+      throw new AppKitError('Failed to disconnect connector', 'INTERNAL_SDK_ERROR', error)
+    }
+  },
+
   setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
     const connectionsMap = new Map(state.connections)
     connectionsMap.set(chainNamespace, connections)
@@ -440,9 +469,8 @@ const controller = {
   },
 
   async handleAuthAccountSwitch({ address, namespace }: HandleAuthAccountSwitchParams) {
-    const smartAccount = AccountController.state.user?.accounts?.find(
-      c => c.type === 'smartAccount'
-    )
+    const accountData = ChainController.getAccountData(namespace)
+    const smartAccount = accountData?.user?.accounts?.find(c => c.type === 'smartAccount')
 
     const accountType =
       smartAccount &&
@@ -533,7 +561,12 @@ const controller = {
         connector,
         closeModalOnConnect,
         onOpen(isMobile) {
-          ModalController.open({ view: isMobile ? 'AllWallets' : 'ConnectingWalletConnect' })
+          const view = isMobile ? 'AllWallets' : 'ConnectingWalletConnect'
+          if (ModalController.state.open) {
+            RouterController.push(view)
+          } else {
+            ModalController.open({ view })
+          }
         },
         onConnect() {
           RouterController.replace('ProfileWallets')
@@ -573,7 +606,7 @@ const controller = {
   }: SwitchConnectionParams) {
     let currentAddress: string | undefined = undefined
 
-    const caipAddress = AccountController.getCaipAddress(namespace)
+    const caipAddress = ChainController.getAccountData(namespace)?.caipAddress
 
     if (caipAddress) {
       const { address: currentAddressParsed } = ParseUtil.parseCaipAddress(caipAddress)

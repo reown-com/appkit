@@ -37,9 +37,6 @@ const MOCK_NATIVE_TOKEN: Balance = {
 
 describe('W3mInputToken', () => {
   beforeAll(() => {
-    vi.spyOn(UiHelperUtil, 'formatNumberToLocalString').mockImplementation(
-      num => num?.toString() ?? ''
-    )
     vi.spyOn(UiHelperUtil, 'roundNumber').mockImplementation(num => num?.toString() ?? '')
   })
 
@@ -85,7 +82,7 @@ describe('W3mInputToken', () => {
     )
 
     const totalValue = element.shadowRoot?.querySelector('.totalValue')
-    expect(totalValue?.textContent).toBe('$50')
+    expect(totalValue?.textContent).toBe('$50.00')
   })
 
   it('should handle max amount click for non-native token', async () => {
@@ -111,27 +108,6 @@ describe('W3mInputToken', () => {
 
     // Should subtract gas from max amount for native token
     expect(setTokenAmountSpy).toHaveBeenCalled()
-  })
-
-  it('should show buy link when amount exceeds balance', async () => {
-    const element: W3mInputToken = await fixture(
-      html`<w3m-input-token .token=${MOCK_TOKEN} .sendTokenAmount=${150}></w3m-input-token>`
-    )
-
-    const buyLink = element.shadowRoot?.querySelector('wui-link')
-    expect(buyLink?.textContent?.trim()).toBe('Buy')
-  })
-
-  it('should navigate to OnRampProviders when buy link is clicked', async () => {
-    const pushSpy = vi.spyOn(RouterController, 'push')
-    const element: W3mInputToken = await fixture(
-      html`<w3m-input-token .token=${MOCK_TOKEN} .sendTokenAmount=${150}></w3m-input-token>`
-    )
-
-    const buyLink = element.shadowRoot?.querySelector('wui-link')
-    buyLink?.click()
-
-    expect(pushSpy).toHaveBeenCalledWith('OnRampProviders')
   })
 
   it('should update token amount when input changes', async () => {

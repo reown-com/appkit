@@ -19,17 +19,63 @@ updates:
           - 'viem'
           - '@wagmi/*'
   - package-ecosystem: 'npm'
+    directory: '/apps/laboratory'
+    schedule:
+      interval: 'weekly'
+    labels:
+      - 'chore: update third party dependencies for AppKit Lab'
+    groups:
+      'lab-third-parties':
+        dependency-type: 'production'
+        patterns:
+          - '@bitcoinerlab/*'
+          - '@chakra-ui/*'
+          - '@coinbase/*'
+          - '@safe-global/*'
+          - '@tanstack/*'
+          - '@sentry/*'
+          - '@wallet-standard/*'
+          - 'bitcoinjs-lib'
+          - 'bs58'
+          - 'date-fns'
+          - 'framer-motion'
+          - 'next'
+          - 'next-auth'
+          - 'react-icons'
+          - 'rpc-websockets'
+          - 'webauthn-p256'
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+  - package-ecosystem: 'npm'
     directory: '/apps/demo'
     schedule:
       interval: 'weekly'
     labels:
-      - 'chore: update `@reown/*` dependencies for AppKit Demo'
+      - 'chore: update third party dependencies for AppKit Demo'
     groups:
-      # All @reown/* dependencies in any package.json in the repo
-      'reown-appkit':
+      'demo-third-parties':
         dependency-type: 'production'
         patterns:
           - '@reown/*'
+          - '@radix-ui/*'
+          - '@dnd-kit/*'
+          - '@hookform/resolvers'
+          - '@next/third-parties'
+          - '@sentry/*'
+          - '@solana/web3.js'
+          - '@tanstack/react-query'
+          - 'autoprefixer'
+          - 'class-variance-authority'
+          - 'classnames'
+          - 'clsx'
+          - 'next'
+          - 'next-themes'
+          - 'react'
+          - 'react-dom'
+          - 'sonner'
+          - 'tailwind-merge'
+          - 'tailwindcss-animate'
     ignore:
       - dependency-name: '*'
         update-types: ['version-update:semver-major']

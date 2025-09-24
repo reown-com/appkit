@@ -7,7 +7,6 @@ import { EnsUtil } from '../utils/EnsUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type { BlockchainApiEnsError } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AccountController } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
@@ -71,11 +70,7 @@ const controller = {
       state.loading = true
       state.suggestions = []
       const response = await BlockchainApiController.getEnsNameSuggestions(value)
-      state.suggestions =
-        response.suggestions.map(suggestion => ({
-          ...suggestion,
-          name: suggestion.name
-        })) || []
+      state.suggestions = response.suggestions || []
 
       return state.suggestions
     } catch (e) {
@@ -114,7 +109,7 @@ const controller = {
 
   async registerName(name: ReownName) {
     const network = ChainController.state.activeCaipNetwork
-    const address = AccountController.state.address
+    const address = ChainController.getAccountData(network?.chainNamespace)?.address
     const emailConnector = ConnectorController.getAuthConnector()
 
     if (!network) {
@@ -157,7 +152,20 @@ const controller = {
         message
       })
 
-      AccountController.setProfileName(name, network.chainNamespace)
+      ChainController.setAccountProp('profileName', name, network.chainNamespace)
+      StorageUtil.updateEnsCache({
+        address,
+        ens: [
+          {
+            name,
+            registered_at: new Date().toISOString(),
+            updated_at: undefined,
+            addresses: {},
+            attributes: []
+          }
+        ],
+        timestamp: Date.now()
+      })
       RouterController.replace('RegisterAccountNameSuccess')
     } catch (e) {
       const errorMessage = EnsController.parseEnsApiError(e, `Error registering name ${name}`)

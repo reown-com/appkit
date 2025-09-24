@@ -5,11 +5,11 @@ import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 import type { Connector, Metadata, WcWallet } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
+import type { SendInputArguments } from './SendController.js'
 import type { SwapInputArguments, SwapInputTarget } from './SwapController.js'
 
 // -- Types --------------------------------------------- //
@@ -71,6 +71,7 @@ export interface RouterControllerState {
     | 'WalletSend'
     | 'WalletSendPreview'
     | 'WalletSendSelectToken'
+    | 'WalletSendConfirmed'
     | 'WhatIsANetwork'
     | 'WhatIsAWallet'
     | 'WhatIsABuy'
@@ -84,6 +85,9 @@ export interface RouterControllerState {
     | 'SIWXSignMessage'
     | 'Pay'
     | 'PayLoading'
+    | 'FundWallet'
+    | 'PayWithExchange'
+    | 'PayWithExchangeSelectAsset'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
@@ -99,6 +103,8 @@ export interface RouterControllerState {
     navigateTo?: RouterControllerState['view']
     navigateWithReplace?: boolean
     swap?: SwapInputArguments
+    addWalletForNamespace?: ChainNamespace
+    send?: SendInputArguments
   }
   transactionStack: TransactionAction[]
 }
@@ -197,10 +203,14 @@ const controller = {
       state.data.wallet = undefined
     }
 
+    if (state.data?.redirectView) {
+      state.data.redirectView = undefined
+    }
+
     // Reloading the iframe contentwindow and doing the view animation in the modal causes a small freeze in the transition. Doing these separately fixes that.
     setTimeout(() => {
       if (shouldReload) {
-        AccountController.setFarcasterUrl(undefined, ChainController.state.activeChain)
+        ChainController.setAccountProp('farcasterUrl', undefined, ChainController.state.activeChain)
         const authConnector = ConnectorController.getAuthConnector()
         authConnector?.provider?.reload()
 

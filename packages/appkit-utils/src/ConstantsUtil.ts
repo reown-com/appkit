@@ -13,6 +13,7 @@ export const ConstantsUtil = {
   FRONTIER_CONNECTOR_NAME: 'Frontier',
   XVERSE_CONNECTOR_NAME: 'Xverse Wallet',
   LEATHER_CONNECTOR_NAME: 'Leather',
+  OKX_CONNECTOR_NAME: 'OKX Wallet',
 
   EIP155: CommonConstantsUtil.CHAIN.EVM,
   ADD_CHAIN_METHOD: 'wallet_addEthereumChain',
@@ -28,5 +29,28 @@ export const ConstantsUtil = {
   CONNECTOR_TYPE_ANNOUNCED: 'ANNOUNCED',
   CONNECTOR_TYPE_AUTH: 'AUTH',
   CONNECTOR_TYPE_MULTI_CHAIN: 'MULTI_CHAIN',
-  CONNECTOR_TYPE_W3M_AUTH: 'ID_AUTH'
+  CONNECTOR_TYPE_W3M_AUTH: 'ID_AUTH',
+  getSDKVersionWarningMessage(currentVersion: string, latestVersion: string) {
+    return `
+     @@@@@@@           @@@@@@@@@@@@@@@@@@      
+   @@@@@@@@@@@      @@@@@@@@@@@@@@@@@@@@@@@@   
+  @@@@@@@@@@@@@    @@@@@@@@@@@@@@@@@@@@@@@@@@  
+ @@@@@@@@@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@@  
+ @@@@@@@@@@@@@@@  @@@@@@@@@@@@@@   @@@@@@@@@@@ 
+ @@@@@@@@@@@@@@@  @@@@@@@@@@@@@   @@@@@@@@@@@@ 
+ @@@@@@@@@@@@@@@  @@@@@@@@@@@@@  @@@@@@@@@@@@@
+ @@@@@@@@@@@@@@@  @@@@@@@@@@@@   @@@@@@@@@@@@@    
+ @@@@@@   @@@@@@  @@@@@@@@@@@   @@@@@@@@@@@@@@    
+ @@@@@@   @@@@@@  @@@@@@@@@@@  @@@@@@@@@@@@@@@ 
+ @@@@@@@@@@@@@@@  @@@@@@@@@@   @@@@@@@@@@@@@@@ 
+ @@@@@@@@@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@@  
+  @@@@@@@@@@@@@    @@@@@@@@@@@@@@@@@@@@@@@@@@  
+   @@@@@@@@@@@      @@@@@@@@@@@@@@@@@@@@@@@@   
+      @@@@@            @@@@@@@@@@@@@@@@@@  
+      
+AppKit SDK version ${currentVersion} is outdated. Latest version is ${latestVersion}. Please update to the latest version for bug fixes and new features.
+            
+Changelog: https://github.com/reown-com/appkit/releases
+NPM Registry: https://www.npmjs.com/package/@reown/appkit`
+  }
 }
