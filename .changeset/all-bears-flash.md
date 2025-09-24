@@ -26,4 +26,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where the universal provider threw a random object error when a wallet rejected a request
+Fixed an issue where the universal provider threw a random object error when the wallet rejected connection request
