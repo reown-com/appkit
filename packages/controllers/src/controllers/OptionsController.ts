@@ -194,6 +194,11 @@ export interface OptionsControllerStatePublic {
    * @default true
    */
   enableNetworkSwitch?: boolean
+  /**
+   * Disable smart accounts when using social/email (Auth) login. Forces EOA for AUTH flows.
+   * @default false
+   */
+  disableAuthSmartAccounts?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -216,7 +221,8 @@ const state = proxy<OptionsControllerState>({
   defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES,
   enableNetworkSwitch: true,
   experimental_preferUniversalLinks: false,
-  remoteFeatures: {}
+  remoteFeatures: {},
+  disableAuthSmartAccounts: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -432,6 +438,12 @@ export const OptionsController = {
         state.defaultAccountTypes[namespace] = accountType
       }
     })
+  },
+
+  setDisableAuthSmartAccounts(
+    disableAuthSmartAccounts: OptionsControllerState['disableAuthSmartAccounts']
+  ) {
+    state.disableAuthSmartAccounts = Boolean(disableAuthSmartAccounts)
   },
 
   setUniversalProviderConfigOverride(

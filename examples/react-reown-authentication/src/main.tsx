@@ -22,6 +22,10 @@ createAppKit({
   },
   projectId,
   themeMode: 'light',
+  // Example: force EOA for social/email logins
+  disableAuthSmartAccounts: true,
+  // To default to Smart Account instead (if you enable it later), set:
+  // defaultAccountTypes: { eip155: 'smartAccount' },
   siwx: new ReownAuthentication()
 })
 

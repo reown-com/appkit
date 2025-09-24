@@ -611,6 +611,11 @@ const controller = {
       return false
     }
 
+    // If smart accounts are disabled for Auth flows, treat as disabled
+    if (OptionsController.state.disableAuthSmartAccounts) {
+      return false
+    }
+
     const smartAccountEnabledNetworks = ChainController.getNetworkProp(
       'smartAccountEnabledNetworks',
       activeChain
