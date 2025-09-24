@@ -4,7 +4,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { type AuthConnector, ChainController, ConnectorController } from '@reown/appkit-controllers'
+import {
+  type AccountState,
+  type AuthConnector,
+  ChainController,
+  ConnectorController
+} from '@reown/appkit-controllers'
 
 import { W3mAccountView } from '../../src/views/w3m-account-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -26,10 +31,11 @@ describe('W3mAccountView', () => {
     })
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('')
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(undefined)
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       ...ChainController.state,
-      activeCaipAddress: 'eip155:1:0x1234567890abcdef1234567890abcdef12345678'
-    })
+      address: 'eip155:1:0x1234567890abcdef1234567890abcdef12345678'
+    } as unknown as AccountState)
+    vi.spyOn(ChainController, 'setChainAccountData').mockReturnValue(undefined)
   })
 
   it('should render', async () => {
