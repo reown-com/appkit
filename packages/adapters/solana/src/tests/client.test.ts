@@ -104,7 +104,7 @@ describe('SolanaAdapter', () => {
     it('should initialize with correct parameters', () => {
       expect(adapter.namespace).toBe(ConstantsUtil.CHAIN.SOLANA)
       expect(adapter.adapterType).toBe(ConstantsUtil.ADAPTER_TYPES.SOLANA)
-      expect(adapter.networks).toEqual(mockNetworks)
+      expect(adapter['networks']).toEqual(mockNetworks)
       expect(adapter.projectId).toBe('test-project-id')
       expect(SolStoreUtil.setConnection).toHaveBeenCalledWith(
         expect.objectContaining({ rpcEndpoint: solana.rpcUrls.default.http[0] })
@@ -609,10 +609,10 @@ describe('SolanaAdapter', () => {
 
   describe('SolanaAdapter - signMessage', () => {
     it('should sign message successfully', async () => {
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
       const result = await adapter.signMessage({
         message: 'Hello',
-        address: 'mock-address',
-        provider: mockProvider as unknown as CoreProvider
+        address: 'mock-address'
       })
 
       expect(result.signature).toBeDefined()
@@ -630,6 +630,7 @@ describe('SolanaAdapter', () => {
       })
 
       vi.spyOn(ProviderController, 'getProvider').mockReturnValue(provider)
+      vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('AUTH')
 
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0]
@@ -652,8 +653,10 @@ describe('SolanaAdapter', () => {
 
   describe('SolanaAdapter - getWalletConnectProvider', () => {
     it('should return WalletConnect provider', () => {
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(
+        mockWalletConnectConnector.provider
+      )
       const result = adapter.getWalletConnectProvider({
-        provider: mockUniversalProvider(),
         caipNetworks: mockCaipNetworks,
         activeCaipNetwork: mockCaipNetworks[0]
       })
