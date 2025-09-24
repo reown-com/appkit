@@ -3,20 +3,21 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { type Address, ConstantsUtil, type Hex } from '@reown/appkit-common'
 
 import { ConnectorController } from '../../exports'
-import { AccountController } from '../../src/controllers/AccountController'
 import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
+import { type AccountState } from '../../src/controllers/ChainController'
 import { ChainController } from '../../src/controllers/ChainController'
 import { ConnectionController } from '../../src/controllers/ConnectionController'
 import { BalanceUtil } from '../../src/utils/BalanceUtil'
 import { ERC7811Utils, type WalletGetAssetsResponse } from '../../src/utils/ERC7811Util'
 import { StorageUtil } from '../../src/utils/StorageUtil'
+import { ViemUtil } from '../../src/utils/ViemUtil'
 
-vi.mock('../../src/controllers/AccountController')
 vi.mock('../../src/controllers/BlockchainApiController')
 vi.mock('../../src/controllers/ChainController')
 vi.mock('../../src/controllers/ConnectionController')
 vi.mock('../../src/utils/ERC7811Util')
 vi.mock('../../src/utils/StorageUtil')
+vi.mock('../../src/utils/ViemUtil')
 
 const mockEthereumNetwork = {
   id: '1',
@@ -62,7 +63,10 @@ describe('BalanceUtil', () => {
 
   describe('getMyTokensWithBalance', () => {
     beforeEach(() => {
-      AccountController.state.address = mockEthereumAddress
+      vi.restoreAllMocks()
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: mockEthereumAddress
+      } as AccountState)
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       vi.mocked(ERC7811Utils.getChainIdHexFromCAIP2ChainId).mockReturnValue(mockEthChainIdAsHex)
       ConnectorController.state.activeConnectorIds = {
@@ -78,7 +82,9 @@ describe('BalanceUtil', () => {
     })
 
     it('should return empty array when address is missing', async () => {
-      AccountController.state.address = undefined
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: undefined
+      } as AccountState)
       const result = await BalanceUtil.getMyTokensWithBalance()
       expect(result).toEqual([])
     })
@@ -108,7 +114,9 @@ describe('BalanceUtil', () => {
         ]
       }
 
-      AccountController.state.address = mockEthereumAddress
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: mockEthereumAddress
+      } as AccountState)
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       const mockBalance = {
         symbol: 'ETH',
@@ -151,7 +159,9 @@ describe('BalanceUtil', () => {
         }
       ]
 
-      AccountController.state.address = mockSolanaAddress
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: mockSolanaAddress
+      } as AccountState)
       ChainController.state.activeCaipNetwork = mockSolanaNetwork
       vi.mocked(BlockchainApiController.getBalance).mockResolvedValue({ balances: mockBalances })
 
@@ -177,7 +187,9 @@ describe('BalanceUtil', () => {
         }
       ]
 
-      AccountController.state.address = mockEthereumAddress
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: mockEthereumAddress
+      } as AccountState)
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(
         ConstantsUtil.CONNECTOR_ID.INJECTED
@@ -277,7 +289,9 @@ describe('BalanceUtil', () => {
   describe('getEIP155Balances', () => {
     beforeEach(() => {
       vi.restoreAllMocks()
-      AccountController.state.address = mockEthereumAddress
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: mockEthereumAddress
+      } as AccountState)
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       ConnectorController.state.activeConnectorIds = {
         eip155: ConstantsUtil.CONNECTOR_ID.AUTH,
@@ -447,6 +461,215 @@ describe('BalanceUtil', () => {
         timestamp: expect.any(Number)
       })
       expect(result).toEqual([mockBalance])
+    })
+  })
+
+  describe('fetchERC20Balance', () => {
+    const mockCaipAddress = 'eip155:1:0x1234567890123456789012345678901234567890'
+    const mockAssetAddress = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
+    const mockCaipNetwork = mockEthereumNetwork
+    const mockAddress = '0x1234567890123456789012345678901234567890'
+
+    let mockPublicClient: any
+
+    beforeEach(() => {
+      vi.restoreAllMocks()
+
+      mockPublicClient = {
+        multicall: vi.fn()
+      }
+
+      vi.mocked(ViemUtil.createViemPublicClient).mockReturnValue(mockPublicClient)
+    })
+
+    it('should successfully fetch ERC20 balance with valid data', async () => {
+      const mockMulticallResult = [
+        { result: 'Test Token' },
+        { result: 'TEST' },
+        { result: BigInt('1000000000000000000') },
+        { result: 18 }
+      ]
+
+      mockPublicClient.multicall.mockResolvedValue(mockMulticallResult)
+
+      const result = await BalanceUtil.fetchERC20Balance({
+        caipAddress: mockCaipAddress,
+        assetAddress: mockAssetAddress,
+        caipNetwork: mockCaipNetwork
+      })
+
+      expect(ViemUtil.createViemPublicClient).toHaveBeenCalledWith(mockCaipNetwork)
+      expect(mockPublicClient.multicall).toHaveBeenCalledWith({
+        contracts: [
+          {
+            address: mockAssetAddress,
+            functionName: 'name',
+            args: [],
+            abi: expect.any(Object)
+          },
+          {
+            address: mockAssetAddress,
+            functionName: 'symbol',
+            args: [],
+            abi: expect.any(Object)
+          },
+          {
+            address: mockAssetAddress,
+            functionName: 'balanceOf',
+            args: [mockAddress],
+            abi: expect.any(Object)
+          },
+          {
+            address: mockAssetAddress,
+            functionName: 'decimals',
+            args: [],
+            abi: expect.any(Object)
+          }
+        ]
+      })
+
+      expect(result).toEqual({
+        name: 'Test Token',
+        symbol: 'TEST',
+        decimals: 18,
+        balance: '1'
+      })
+    })
+
+    it('should return zero balance when balance is zero', async () => {
+      const mockMulticallResult = [
+        { result: 'Test Token' },
+        { result: 'TEST' },
+        { result: BigInt('0') },
+        { result: 18 }
+      ]
+
+      mockPublicClient.multicall.mockResolvedValue(mockMulticallResult)
+
+      const result = await BalanceUtil.fetchERC20Balance({
+        caipAddress: mockCaipAddress,
+        assetAddress: mockAssetAddress,
+        caipNetwork: mockCaipNetwork
+      })
+
+      expect(result).toEqual({
+        name: 'Test Token',
+        symbol: 'TEST',
+        decimals: 18,
+        balance: '0'
+      })
+    })
+
+    it('should return zero balance when balance or decimals are null', async () => {
+      const mockMulticallResult = [
+        { result: 'Test Token' },
+        { result: 'TEST' },
+        { result: null },
+        { result: 18 }
+      ]
+
+      mockPublicClient.multicall.mockResolvedValue(mockMulticallResult)
+
+      const result = await BalanceUtil.fetchERC20Balance({
+        caipAddress: mockCaipAddress,
+        assetAddress: mockAssetAddress,
+        caipNetwork: mockCaipNetwork
+      })
+
+      expect(result).toEqual({
+        name: 'Test Token',
+        symbol: 'TEST',
+        decimals: 18,
+        balance: '0'
+      })
+    })
+
+    it('should return zero balance when decimals are undefined', async () => {
+      const mockMulticallResult = [
+        { result: 'Test Token' },
+        { result: 'TEST' },
+        { result: BigInt('1000000000000000000') },
+        { result: undefined }
+      ]
+
+      mockPublicClient.multicall.mockResolvedValue(mockMulticallResult)
+
+      const result = await BalanceUtil.fetchERC20Balance({
+        caipAddress: mockCaipAddress,
+        assetAddress: mockAssetAddress,
+        caipNetwork: mockCaipNetwork
+      })
+
+      expect(result).toEqual({
+        name: 'Test Token',
+        symbol: 'TEST',
+        decimals: undefined,
+        balance: '0'
+      })
+    })
+
+    it('should handle network errors gracefully', async () => {
+      const networkError = new Error('Network error')
+      mockPublicClient.multicall.mockRejectedValue(networkError)
+
+      await expect(
+        BalanceUtil.fetchERC20Balance({
+          caipAddress: mockCaipAddress,
+          assetAddress: mockAssetAddress,
+          caipNetwork: mockCaipNetwork
+        })
+      ).rejects.toThrow('Network error')
+
+      expect(ViemUtil.createViemPublicClient).toHaveBeenCalledWith(mockCaipNetwork)
+      expect(mockPublicClient.multicall).toHaveBeenCalled()
+    })
+
+    it('should handle different decimal values correctly', async () => {
+      const mockMulticallResult = [
+        { result: 'USDC Token' },
+        { result: 'USDC' },
+        { result: BigInt('1000000') },
+        { result: 6 }
+      ]
+
+      mockPublicClient.multicall.mockResolvedValue(mockMulticallResult)
+
+      const result = await BalanceUtil.fetchERC20Balance({
+        caipAddress: mockCaipAddress,
+        assetAddress: mockAssetAddress,
+        caipNetwork: mockCaipNetwork
+      })
+
+      expect(result).toEqual({
+        name: 'USDC Token',
+        symbol: 'USDC',
+        decimals: 6,
+        balance: '1'
+      })
+    })
+
+    it('should handle large balance values correctly', async () => {
+      const mockMulticallResult = [
+        { result: 'Large Token' },
+        { result: 'LARGE' },
+        { result: BigInt('123456789012345678901234567890') },
+        { result: 18 }
+      ]
+
+      mockPublicClient.multicall.mockResolvedValue(mockMulticallResult)
+
+      const result = await BalanceUtil.fetchERC20Balance({
+        caipAddress: mockCaipAddress,
+        assetAddress: mockAssetAddress,
+        caipNetwork: mockCaipNetwork
+      })
+
+      expect(result).toEqual({
+        name: 'Large Token',
+        symbol: 'LARGE',
+        decimals: 18,
+        balance: '123456789012.34567890123456789'
+      })
     })
   })
 })

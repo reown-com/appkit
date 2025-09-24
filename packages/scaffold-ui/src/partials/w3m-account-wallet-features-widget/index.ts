@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 
 import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ConnectorController,
   ConstantsUtil as CoreConstantsUtil,
@@ -18,8 +17,8 @@ import {
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-balance'
+import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon-button'
 import '@reown/appkit-ui/wui-tabs'
 import '@reown/appkit-ui/wui-tooltip'
 import '@reown/appkit-ui/wui-wallet-switch'
@@ -28,7 +27,6 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import '../w3m-account-activity-widget/index.js'
-import '../w3m-account-nfts-widget/index.js'
 import '../w3m-account-tokens-widget/index.js'
 import '../w3m-tooltip-trigger/index.js'
 import '../w3m-tooltip/index.js'
@@ -44,15 +42,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private address = AccountController.state.address
-
-  @state() private profileName = AccountController.state.profileName
-
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private currentTab = AccountController.state.currentTab
+  @state() private profileName = ChainController.getAccountData()?.profileName
 
-  @state() private tokenBalance = AccountController.state.tokenBalance
+  @state() private address = ChainController.getAccountData()?.address
+
+  @state() private currentTab = ChainController.getAccountData()?.currentTab
+
+  @state() private tokenBalance = ChainController.getAccountData()?.tokenBalance
 
   @state() private features = OptionsController.state.features
 
@@ -62,12 +60,12 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
-  public constructor() {
-    super()
+  public override firstUpdated() {
+    ChainController.fetchTokenBalance()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.address) {
+        ChainController.subscribeChainProp('accountState', val => {
+          if (val?.address) {
             this.address = val.address
             this.profileName = val.profileName
             this.currentTab = val.currentTab
@@ -77,6 +75,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           }
         })
       ],
+
       ConnectorController.subscribeKey('activeConnectorIds', newActiveConnectorIds => {
         this.activeConnectorIds = newActiveConnectorIds
       }),
@@ -93,14 +92,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     clearInterval(this.watchTokenBalance)
   }
 
-  public override firstUpdated() {
-    AccountController.fetchTokenBalance()
-  }
-
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.address) {
-      throw new Error('w3m-account-view: No account provided')
+      throw new Error('w3m-account-features-widget: No account provided')
     }
 
     if (!this.namespace) {
@@ -115,7 +110,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
     return html`<wui-flex
       flexDirection="column"
-      .padding=${['0', '5', '4', '5'] as const}
+      .padding=${['0', '3', '4', '3'] as const}
       alignItems="center"
       gap="4"
       data-testid="w3m-account-wallet-features-widget"
@@ -166,7 +161,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     })
     const deduplicatedFeaturesOrder = [...new Set(mergedFeaturesOrder)]
 
-    return html`<wui-flex gap="3">
+    return html`<wui-flex gap="2">
       ${deduplicatedFeaturesOrder.map(feature => {
         switch (feature) {
           case 'fund':
@@ -204,13 +199,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
     return html`
       <w3m-tooltip-trigger text="Fund wallet">
-        <wui-icon-button
+        <wui-button
           data-testid="wallet-features-fund-wallet-button"
           @click=${this.onFundWalletClick.bind(this)}
-          icon="dollar"
-          variant="accent"
+          variant="accent-secondary"
+          size="lg"
           fullWidth
-        ></wui-icon-button>
+        >
+          <wui-icon name="dollar"></wui-icon>
+        </wui-button>
       </w3m-tooltip-trigger>
     `
   }
@@ -225,14 +222,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
     return html`
       <w3m-tooltip-trigger text="Swap">
-        <wui-icon-button
+        <wui-button
           fullWidth
           data-testid="wallet-features-swaps-button"
           @click=${this.onSwapClick.bind(this)}
-          icon="recycleHorizontal"
-          variant="accent"
+          variant="accent-secondary"
+          size="lg"
         >
-        </wui-icon-button>
+          <wui-icon name="recycleHorizontal"></wui-icon>
+        </wui-button>
       </w3m-tooltip-trigger>
     `
   }
@@ -248,20 +246,22 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
     return html`
       <w3m-tooltip-trigger text="Send">
-        <wui-icon-button
+        <wui-button
           fullWidth
           data-testid="wallet-features-send-button"
           @click=${this.onSendClick.bind(this)}
-          icon="send"
-          variant="accent"
-        ></wui-icon-button>
+          variant="accent-secondary"
+          size="lg"
+        >
+          <wui-icon name="send"></wui-icon>
+        </wui-button>
       </w3m-tooltip-trigger>
     `
   }
 
   private watchSwapValues() {
     this.watchTokenBalance = setInterval(
-      () => AccountController.fetchTokenBalance(error => this.onTokenBalanceError(error)),
+      () => ChainController.fetchTokenBalance(error => this.onTokenBalanceError(error)),
       10_000
     )
   }
@@ -281,9 +281,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       return html`<w3m-account-tokens-widget></w3m-account-tokens-widget>`
     }
     if (this.currentTab === 1) {
-      return html`<w3m-account-nfts-widget></w3m-account-nfts-widget>`
-    }
-    if (this.currentTab === 2) {
       return html`<w3m-account-activity-widget></w3m-account-activity-widget>`
     }
 
@@ -316,7 +313,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onTabChange(index: number) {
-    AccountController.setCurrentTab(index)
+    ChainController.setAccountProp('currentTab', index, this.namespace)
   }
 
   private onFundWalletClick() {

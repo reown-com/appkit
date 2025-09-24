@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-siwe",
-  "version": "1.7.20",
+  "version": "1.8.6",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -26,11 +26,11 @@
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/utils": "2.21.7",
     "lit": "3.1.0",
-    "valtio": "2.1.5",
-    "viem": "2.33.3"
+    "valtio": "2.1.7",
+    "viem": "2.37.2"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
@@ -50,5 +50,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

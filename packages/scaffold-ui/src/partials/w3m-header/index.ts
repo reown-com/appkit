@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   AssetController,
   AssetUtil,
   ChainController,
@@ -13,9 +12,9 @@ import {
   OptionsController,
   RouterController
 } from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
+import { customElement, vars } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-icon-button'
 import '@reown/appkit-ui/wui-select'
 import '@reown/appkit-ui/wui-tag'
 import '@reown/appkit-ui/wui-text'
@@ -25,6 +24,9 @@ import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //
 const BETA_SCREENS: string[] = ['SmartSessionList']
+const BACKGROUND_OVERRIDES: Record<string, string> = {
+  PayWithExchange: vars.tokens.theme.foregroundPrimary
+}
 
 // -- Helpers ------------------------------------------- //
 function headings() {
@@ -34,6 +36,10 @@ function headings() {
   const name = walletName ?? connectorName
   const connectors = ConnectorController.getConnectors()
   const isEmail = connectors.length === 1 && connectors[0]?.id === 'w3m-email'
+  const socialProvider = ChainController.getAccountData()?.socialProvider
+  const socialTitle = socialProvider
+    ? socialProvider.charAt(0).toUpperCase() + socialProvider.slice(1)
+    : 'Connect Social'
 
   return {
     Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
@@ -76,18 +82,17 @@ function headings() {
     WalletReceive: 'Receive',
     WalletCompatibleNetworks: 'Compatible Networks',
     Swap: 'Swap',
-    SwapSelectToken: 'Select token',
+    SwapSelectToken: 'Select Token',
     SwapPreview: 'Preview Swap',
     WalletSend: 'Send',
     WalletSendPreview: 'Review Send',
     WalletSendSelectToken: 'Select Token',
+    WalletSendConfirmed: 'Confirmed',
     WhatIsANetwork: 'What is a network?',
-    WhatIsAWallet: 'What is a wallet?',
+    WhatIsAWallet: 'What is a Wallet?',
     ConnectWallets: 'Connect Wallet',
     ConnectSocials: 'All Socials',
-    ConnectingSocial: AccountController.state.socialProvider
-      ? AccountController.state.socialProvider
-      : 'Connect Social',
+    ConnectingSocial: socialTitle,
     ConnectingMultiChain: 'Select Chain',
     ConnectingFarcaster: 'Farcaster',
     SwitchActiveChain: 'Switch Chain',
@@ -98,7 +103,7 @@ function headings() {
     DataCapture: 'Profile',
     DataCaptureOtpConfirm: 'Confirm Email',
     FundWallet: 'Fund Wallet',
-    PayWithExchange: 'Deposit from an Exchange',
+    PayWithExchange: 'Deposit from Exchange',
     PayWithExchangeSelectAsset: 'Select Asset'
   }
 }
@@ -152,9 +157,14 @@ export class W3mHeader extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const backgroundColor =
+      BACKGROUND_OVERRIDES[RouterController.state.view] ?? vars.tokens.theme.backgroundPrimary
+
+    this.style.setProperty('--local-header-background-color', backgroundColor)
+
     return html`
       <wui-flex
-        .padding=${['0', '5', '0', '5'] as const}
+        .padding=${['0', '4', '0', '4'] as const}
         justifyContent="space-between"
         alignItems="center"
       >
@@ -183,24 +193,28 @@ export class W3mHeader extends LitElement {
     }
 
     return html`<wui-flex>
-      <wui-icon-link
+      <wui-icon-button
         icon="clock"
+        size="lg"
+        type="neutral"
         variant="primary"
         @click=${() => RouterController.push('SmartSessionList')}
         data-testid="w3m-header-smart-sessions"
-      ></wui-icon-link>
+      ></wui-icon-button>
       ${this.closeButtonTemplate()}
     </wui-flex> `
   }
 
   private closeButtonTemplate() {
     return html`
-      <wui-icon-link
+      <wui-icon-button
         icon="close"
+        size="lg"
+        type="neutral"
         variant="primary"
         @click=${this.onClose.bind(this)}
         data-testid="w3m-header-close"
-      ></wui-icon-link>
+      ></wui-icon-button>
     `
   }
 
@@ -245,22 +259,26 @@ export class W3mHeader extends LitElement {
     }
 
     if (this.showBack && !shouldHideBack) {
-      return html`<wui-icon-link
+      return html`<wui-icon-button
         data-testid="header-back"
         id="dynamic"
         icon="chevronLeft"
+        size="lg"
+        type="neutral"
         variant="primary"
         @click=${this.onGoBack.bind(this)}
-      ></wui-icon-link>`
+      ></wui-icon-button>`
     }
 
-    return html`<wui-icon-link
+    return html`<wui-icon-button
       data-hidden=${!isConnectHelp}
       id="dynamic"
       icon="helpCircle"
+      size="lg"
+      type="neutral"
       variant="primary"
       @click=${this.onWalletHelp.bind(this)}
-    ></wui-icon-link>`
+    ></wui-icon-button>`
   }
 
   private onNetworks() {

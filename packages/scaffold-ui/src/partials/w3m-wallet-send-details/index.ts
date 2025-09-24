@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit'
-import { property } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { type CaipNetwork } from '@reown/appkit-common'
@@ -19,6 +19,8 @@ export class W3mWalletSendDetails extends LitElement {
   @property() public receiverAddress?: string
 
   @property({ type: Object }) public caipNetwork?: CaipNetwork
+
+  @state() private params = RouterController.state.data?.send
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -53,7 +55,7 @@ export class W3mWalletSendDetails extends LitElement {
   }
 
   private onNetworkClick(network?: CaipNetwork) {
-    if (network) {
+    if (network && !this.params) {
       RouterController.push('Networks', { network })
     }
   }

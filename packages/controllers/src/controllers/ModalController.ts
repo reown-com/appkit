@@ -61,10 +61,15 @@ const controller = {
     const currentNamespace = ChainController.state.activeChain
     const isSwitchingNamespace = namespace && namespace !== currentNamespace
     const caipAddress = ChainController.getAccountData(options?.namespace)?.caipAddress
+    const hasNoAdapters = ChainController.state.noAdapters
 
     if (ConnectionController.state.wcBasic) {
       // No need to add an await here if we are use basic
-      ApiController.prefetch({ fetchNetworkImages: false, fetchConnectorImages: false })
+      ApiController.prefetch({
+        fetchNetworkImages: false,
+        fetchConnectorImages: false,
+        fetchWalletRanks: false
+      })
     } else {
       await ApiController.prefetch()
     }
@@ -78,24 +83,25 @@ const controller = {
         ChainController.getRequestedCaipNetworks(namespace)[0]
 
       if (namespaceNetwork) {
-        NetworkUtil.onSwitchNetwork({ network: namespaceNetwork, ignoreSwitchConfirmation: true })
-      }
-    } else {
-      const hasNoAdapters = ChainController.state.noAdapters
-
-      if (OptionsController.state.manualWCControl || (hasNoAdapters && !caipAddress)) {
-        if (CoreHelperUtil.isMobile()) {
-          RouterController.reset('AllWallets')
+        if (hasNoAdapters) {
+          await ChainController.switchActiveNetwork(namespaceNetwork)
+          RouterController.push('ConnectingWalletConnectBasic')
         } else {
-          RouterController.reset('ConnectingWalletConnectBasic')
+          NetworkUtil.onSwitchNetwork({ network: namespaceNetwork, ignoreSwitchConfirmation: true })
         }
-      } else if (options?.view) {
-        RouterController.reset(options.view, options.data)
-      } else if (caipAddress) {
-        RouterController.reset('Account')
-      } else {
-        RouterController.reset('Connect')
       }
+    } else if (OptionsController.state.manualWCControl || (hasNoAdapters && !caipAddress)) {
+      if (CoreHelperUtil.isMobile()) {
+        RouterController.reset('AllWallets')
+      } else {
+        RouterController.reset('ConnectingWalletConnectBasic')
+      }
+    } else if (options?.view) {
+      RouterController.reset(options.view, options.data)
+    } else if (caipAddress) {
+      RouterController.reset('Account')
+    } else {
+      RouterController.reset('Connect')
     }
 
     state.open = true

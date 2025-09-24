@@ -24,11 +24,11 @@ export function SolanaSignAllTransactionsTest() {
   const toast = useChakraToast()
   const { walletProvider } = useAppKitProvider<Provider>('solana')
   const { connection } = useAppKitConnection()
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   async function onSignTransaction(type: 'legacy' | 'versioned') {
     try {
-      setLoading(true)
+      setIsLoading(true)
       if (!walletProvider?.publicKey) {
         throw Error('user is disconnected')
       }
@@ -69,7 +69,7 @@ export function SolanaSignAllTransactionsTest() {
         type: 'error'
       })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -78,14 +78,14 @@ export function SolanaSignAllTransactionsTest() {
       <Button
         data-testid="sign-transaction-button"
         onClick={onSignTransaction.bind(null, 'legacy')}
-        isDisabled={loading}
+        isDisabled={isLoading}
       >
         Sign All Transactions
       </Button>
       <Button
         data-test-id="sign-transaction-button"
         onClick={onSignTransaction.bind(null, 'versioned')}
-        isDisabled={loading}
+        isDisabled={isLoading}
       >
         Sign All Versioned Transactions
       </Button>

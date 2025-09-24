@@ -5,7 +5,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { CaipNetworkId } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   CoreHelperUtil,
@@ -44,7 +43,7 @@ export class W3mPayView extends LitElement {
   @state() private exchanges = PayController.state.exchanges
   @state() private isLoading = PayController.state.isLoading
   @state() private loadingExchangeId: string | null = null
-  @state() private connectedWalletInfo = AccountController.state.connectedWalletInfo
+  @state() private connectedWalletInfo = ChainController.getAccountData()?.connectedWalletInfo
 
   public constructor() {
     super()
@@ -52,9 +51,9 @@ export class W3mPayView extends LitElement {
     this.unsubscribe.push(PayController.subscribeKey('exchanges', val => (this.exchanges = val)))
     this.unsubscribe.push(PayController.subscribeKey('isLoading', val => (this.isLoading = val)))
     this.unsubscribe.push(
-      AccountController.subscribe(
-        newState => (this.connectedWalletInfo = newState.connectedWalletInfo)
-      )
+      ChainController.subscribeChainProp('accountState', val => {
+        this.connectedWalletInfo = val?.connectedWalletInfo
+      })
     )
 
     PayController.fetchExchanges()
@@ -65,7 +64,9 @@ export class W3mPayView extends LitElement {
    * Check if wallet is connected based on active address
    */
   private get isWalletConnected(): boolean {
-    return AccountController.state.status === 'connected'
+    const accountData = ChainController.getAccountData()
+
+    return accountData?.status === 'connected'
   }
 
   // -- Render -------------------------------------------- //
@@ -171,7 +172,7 @@ export class W3mPayView extends LitElement {
       ?chevron=${true}
       data-testid="wallet-payment-option"
     >
-      <wui-text variant="lg-regular" color="inherit">Pay from wallet</wui-text>
+      <wui-text variant="lg-regular" color="primary">Pay from wallet</wui-text>
     </wui-list-item>`
   }
 
@@ -194,16 +195,11 @@ export class W3mPayView extends LitElement {
           data-testid="exchange-option-${exchange.id}"
           ?chevron=${true}
           ?disabled=${this.loadingExchangeId !== null}
+          ?loading=${this.loadingExchangeId === exchange.id}
+          imageSrc=${ifDefined(exchange.imageUrl)}
         >
           <wui-flex alignItems="center" gap="3">
-            ${this.loadingExchangeId === exchange.id
-              ? html`<wui-loading-spinner color="accent-primary" size="md"></wui-loading-spinner>`
-              : html`<wui-wallet-image
-                  size="sm"
-                  imageSrc=${ifDefined(exchange.imageUrl)}
-                  name=${exchange.name}
-                ></wui-wallet-image>`}
-            <wui-text flexGrow="1" variant="md-medium" color="inherit"
+            <wui-text flexGrow="1" variant="md-medium" color="primary"
               >Pay with ${exchange.name} <wui-spinner size="sm" color="secondary"></wui-spinner
             ></wui-text>
           </wui-flex>

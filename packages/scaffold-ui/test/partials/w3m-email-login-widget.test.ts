@@ -106,10 +106,16 @@ describe('W3mEmailLoginWidget', () => {
   describe('Form Submission', () => {
     it('redirects to network switch when on unsupported chain', async () => {
       vi.mocked(ChainController.state).activeChain = 'unsupported' as ChainNamespace
+      vi.spyOn(ChainController, 'getFirstCaipNetworkSupportsAuthConnector').mockReturnValue(mainnet)
 
       const element: W3mEmailLoginWidget = await fixture(
         html`<w3m-email-login-widget></w3m-email-login-widget>`
       )
+
+      const emailInput = HelpersUtil.querySelect(element, 'wui-email-input')
+      emailInput?.dispatchEvent(new CustomEvent('inputChange', { detail: mockEmail }))
+      await elementUpdated(element)
+
       const form = HelpersUtil.querySelect(element, 'form')
       form?.dispatchEvent(new Event('submit'))
 

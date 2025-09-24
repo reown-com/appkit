@@ -31,11 +31,11 @@ export function WagmiSignMessageTest() {
     }
 
     const chainId = Number(caipAddress.split(':')[1])
-    const address = caipAddress.split(':')[2]
+    const parsedAddress = caipAddress.split(':')[2]
 
     try {
       const isValid = await verifySignature({
-        address: address as Address,
+        address: parsedAddress as Address,
         message: 'Hello AppKit!',
         signature,
         chainId

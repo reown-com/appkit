@@ -23,10 +23,6 @@ interface BaseSyncConnectionsParams<Connector = unknown, P = unknown> {
   universalProvider: UniversalProvider
   onConnection: (connection: ConnectionType) => void
   onListenProvider: (connectorId: string, provider: P) => void
-  getConnectionStatusInfo: (connectorId: string) => {
-    hasDisconnected: boolean
-    hasConnected: boolean
-  }
 }
 
 type SyncEvmConnections = BaseSyncConnectionsParams<
@@ -76,14 +72,16 @@ export class ConnectionManager {
     connectors,
     caipNetworks,
     universalProvider,
-    getConnectionStatusInfo,
     onConnection,
     onListenProvider
   }: SyncEvmConnections) {
     await Promise.all(
       connectors
         .filter(c => {
-          const { hasDisconnected, hasConnected } = getConnectionStatusInfo(c.id)
+          const { hasDisconnected, hasConnected } = HelpersUtil.getConnectorStorageInfo(
+            c.id,
+            this.namespace
+          )
 
           return !hasDisconnected && hasConnected
         })
@@ -137,14 +135,16 @@ export class ConnectionManager {
     connectors,
     caipNetwork,
     universalProvider,
-    getConnectionStatusInfo,
     onConnection,
     onListenProvider
   }: SyncSolanaConnections) {
     await Promise.all(
       connectors
         .filter(c => {
-          const { hasDisconnected, hasConnected } = getConnectionStatusInfo(c.id)
+          const { hasDisconnected, hasConnected } = HelpersUtil.getConnectorStorageInfo(
+            c.id,
+            this.namespace
+          )
 
           return !hasDisconnected && hasConnected
         })
@@ -185,14 +185,16 @@ export class ConnectionManager {
     connectors,
     caipNetwork,
     universalProvider,
-    getConnectionStatusInfo,
     onConnection,
     onListenProvider
   }: SyncBitcoinConnections) {
     await Promise.all(
       connectors
         .filter(c => {
-          const { hasDisconnected, hasConnected } = getConnectionStatusInfo(c.id)
+          const { hasDisconnected, hasConnected } = HelpersUtil.getConnectorStorageInfo(
+            c.id,
+            this.namespace
+          )
 
           return !hasDisconnected && hasConnected
         })
@@ -256,7 +258,12 @@ export class ConnectionManager {
             onListenProvider(connector.id, connector.provider as BitcoinConnector)
             onConnection({
               connectorId: connector.id,
-              accounts: accounts.map(a => ({ address: a.address, type: a.type })),
+              accounts: accounts.map(a => ({
+                address: a.address,
+                type: a.type,
+                publicKey: a.publicKey,
+                path: a.path
+              })),
               caipNetwork
             })
           }

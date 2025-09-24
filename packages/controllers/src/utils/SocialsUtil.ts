@@ -1,6 +1,7 @@
+import { ref } from 'valtio'
+
 import { ConstantsUtil } from '@reown/appkit-common'
 
-import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { EventsController } from '../controllers/EventsController.js'
@@ -27,10 +28,11 @@ export async function connectFarcaster() {
   const authConnector = ConnectorController.getAuthConnector()
 
   if (authConnector) {
-    if (!AccountController.state.farcasterUrl) {
+    const accountData = ChainController.getAccountData()
+    if (!accountData?.farcasterUrl) {
       try {
         const { url } = await authConnector.provider.getFarcasterUri()
-        AccountController.setFarcasterUrl(url, ChainController.state.activeChain)
+        ChainController.setAccountProp('farcasterUrl', url, ChainController.state.activeChain)
       } catch (error) {
         RouterController.goBack()
         SnackController.showError(error)
@@ -59,7 +61,11 @@ export async function connectSocial(
       }
 
       if (popupWindow) {
-        AccountController.setSocialWindow(popupWindow, ChainController.state.activeChain)
+        ChainController.setAccountProp(
+          'socialWindow',
+          ref(popupWindow),
+          ChainController.state.activeChain
+        )
       } else if (!CoreHelperUtil.isTelegram()) {
         throw new Error('Could not create social popup')
       }
@@ -93,7 +99,11 @@ export async function connectSocial(
 }
 
 export async function executeSocialLogin(socialProvider: SocialProvider) {
-  AccountController.setSocialProvider(socialProvider, ChainController.state.activeChain)
+  ChainController.setAccountProp(
+    'socialProvider',
+    socialProvider,
+    ChainController.state.activeChain
+  )
   EventsController.sendEvent({
     type: 'track',
     event: 'SOCIAL_LOGIN_STARTED',

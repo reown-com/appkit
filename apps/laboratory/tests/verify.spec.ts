@@ -12,7 +12,6 @@ import { testMWagmiVerifyEvil } from './shared/fixtures/w3m-wagmi-verify-evil-fi
 import { testMWagmiVerifyValid } from './shared/fixtures/w3m-wagmi-verify-valid-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
 import { getCanaryTagAndAnnotation } from './shared/utils/metrics'
-import { routeInterceptUrl } from './shared/utils/verify'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 testMWagmiVerifyValid(
@@ -85,26 +84,26 @@ testMWagmiVerifyEvil(
     await walletPage.load()
     const walletValidator = new WalletValidator(walletPage.page)
 
-    const uri = await modalPage.getConnectUri()
+    const uri = await modalPage.getConnectUriMalicious()
     await walletPage.connectWithUri(uri)
     await expect(walletPage.page.getByText('Website flagged')).toBeVisible()
     await walletPage.page.getByText('Proceed anyway').click()
     await expect(walletPage.page.getByText('Potential threat')).toBeVisible()
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await modalValidator.expectConnected()
+    await modalValidator.expectConnectedMalicious()
     await walletValidator.expectConnected()
 
-    await modalPage.sign()
+    await modalPage.signMalicious()
     const chainName = DEFAULT_CHAIN_NAME
     await expect(walletPage.page.getByText('Website flagged')).toBeVisible()
     await walletPage.page.getByText('Proceed anyway').click()
     await walletValidator.expectReceivedSign({ chainName })
     await expect(walletPage.page.getByText('Potential threat')).toBeVisible()
     await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
+    await modalValidator.expectAcceptedSignMalicious()
 
-    await modalPage.disconnect()
-    await modalValidator.expectDisconnected()
+    await modalPage.disconnectMalicious()
+    await modalValidator.expectDisconnectedMalicious()
     await walletValidator.expectDisconnected()
   }
 )
@@ -177,21 +176,54 @@ testMEthersVerifyEvil(
     await walletPage.load()
     const walletValidator = new WalletValidator(walletPage.page)
 
-    const uri = await modalPage.getConnectUri()
+    const uri = await modalPage.getConnectUriMalicious()
     await walletPage.connectWithUri(uri)
     await expect(walletPage.page.getByText('Website flagged')).toBeVisible()
     await walletPage.page.getByText('Proceed anyway').click()
     await expect(walletPage.page.getByText('Potential threat')).toBeVisible()
+    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+    await modalValidator.expectConnectedMalicious()
+    await walletValidator.expectConnected()
+
+    await modalPage.signMalicious()
+    const chainName = DEFAULT_CHAIN_NAME
+    await expect(walletPage.page.getByText('Website flagged')).toBeVisible()
+    await walletPage.page.getByText('Proceed anyway').click()
+    await walletValidator.expectReceivedSign({ chainName })
+    await expect(walletPage.page.getByText('Potential threat')).toBeVisible()
+    await walletPage.handleRequest({ accept: true })
+    await modalValidator.expectAcceptedSignMalicious()
+
+    await modalPage.disconnectMalicious()
+    await modalValidator.expectDisconnectedMalicious()
+    await walletValidator.expectDisconnected()
+  }
+)
+
+testMWagmiVerifyValid(
+  'wagmi: can sign even if Verify API is blocked',
+  async ({ modalPage, context }) => {
+    test.skip(modalPage.library !== 'wagmi', 'fixture always uses wagmi')
+
+    const modalValidator = new ModalValidator(modalPage.page)
+    const walletPage = new WalletPage(await context.newPage())
+    await walletPage.load()
+    const walletValidator = new WalletValidator(walletPage.page)
+
+    await modalPage.page.route('*://verify.walletconnect.{org,com}/**', route => route.abort())
+    await walletPage.page.route('*://verify.walletconnect.{org,com}/**', route => route.abort())
+
+    const uri = await modalPage.getConnectUri()
+    await walletPage.connectWithUri(uri)
+    await expect(walletPage.page.getByText('Cannot Verify')).toBeVisible()
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     await modalValidator.expectConnected()
     await walletValidator.expectConnected()
 
     await modalPage.sign()
     const chainName = DEFAULT_CHAIN_NAME
-    await expect(walletPage.page.getByText('Website flagged')).toBeVisible()
-    await walletPage.page.getByText('Proceed anyway').click()
     await walletValidator.expectReceivedSign({ chainName })
-    await expect(walletPage.page.getByText('Potential threat')).toBeVisible()
+    await expect(walletPage.page.getByText('Cannot Verify')).toBeVisible()
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
 
@@ -200,11 +232,6 @@ testMEthersVerifyEvil(
     await walletValidator.expectDisconnected()
   }
 )
-
-const prodVerifyServer = 'https://verify.walletconnect.org'
-
-// "https://verify-server-staging.walletconnect-v1-bridge.workers.dev"
-const altVerifyServer = null
 
 interface TimingFixtureWithLibrary {
   library: string
@@ -218,15 +245,13 @@ timingFixture.extend<TimingFixtureWithLibrary>({
   const verifyApiNestedIframesTestOuterDomain =
     'https://verify-api-nested-iframes-test-outer-domain.com'
   const outerUrl = verifyApiNestedIframesTestOuterDomain
-  const innerUrl = `${BASE_URL}library/wagmi-verify-valid`
+  const innerUrl = `${BASE_URL}appkit?name=wagmi-verify-valid`
   await rootPage.route(outerUrl, async route => {
     await route.fulfill({
       body: `<iframe name="innerFrame" src="${innerUrl}" style="width:100vw; height:100vh"></iframe>`
     })
   })
-  if (altVerifyServer) {
-    await routeInterceptUrl(rootPage, prodVerifyServer, altVerifyServer, '/')
-  }
+
   await rootPage.goto(outerUrl)
 
   const frame = rootPage.frame({ name: 'innerFrame' })
@@ -248,9 +273,7 @@ timingFixture.extend<TimingFixtureWithLibrary>({
 
   const modalValidator = new ModalValidator(modalPage.page)
   const walletPagePage = await context.newPage()
-  if (altVerifyServer) {
-    await routeInterceptUrl(walletPagePage, prodVerifyServer, altVerifyServer, '/')
-  }
+
   const walletPage = new WalletPage(walletPagePage)
   await walletPage.load()
   const walletValidator = new WalletValidator(walletPage.page)

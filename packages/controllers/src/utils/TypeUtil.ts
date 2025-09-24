@@ -18,10 +18,11 @@ import type {
 } from '@reown/appkit-common'
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
-import type { AccountControllerState } from '../controllers/AccountController.js'
+import type { AccountState } from '../controllers/ChainController.js'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
+import type { RouterControllerState } from '../controllers/RouterController.js'
 
 type InitializeAppKitConfigs = {
   showWallets?: boolean
@@ -116,6 +117,7 @@ export type Connector = {
   provider?: Provider | W3mFrameProvider | UniversalProvider
   chain: ChainNamespace
   connectors?: Connector[]
+  explorerWallet?: WcWallet
 }
 
 export interface AuthConnector extends Connector {
@@ -181,6 +183,8 @@ export interface ApiGetWalletsRequest {
   badge?: BadgeType
   include?: string[]
   exclude?: string[]
+  names?: string
+  rdns?: string
 }
 
 export interface ApiGetWalletsResponse {
@@ -419,6 +423,17 @@ export type CustomWallet = Pick<
 
 // -- EventsController Types ----------------------------------------------------
 
+export type PendingEvent = {
+  eventId: string
+  url: string
+  domain: string
+  timestamp: number
+  props: {
+    address?: string
+    properties: unknown
+  }
+}
+
 export type Event =
   | {
       type: 'track'
@@ -453,6 +468,8 @@ export type Event =
         name: string
         platform: Platform
         displayIndex?: number
+        walletRank: number | undefined
+        view: RouterControllerState['view']
       }
     }
   | {
@@ -463,12 +480,22 @@ export type Event =
         method: 'qrcode' | 'mobile' | 'browser' | 'email'
         name: string
         reconnect?: boolean
+        walletRank: number | undefined
+        view: RouterControllerState['view']
       }
     }
   | {
       type: 'track'
       address?: string
       event: 'CONNECT_ERROR'
+      properties: {
+        message: string
+      }
+    }
+  | {
+      type: 'track'
+      address?: string
+      event: 'USER_REJECTED'
       properties: {
         message: string
       }
@@ -512,7 +539,7 @@ export type Event =
   | {
       type: 'track'
       address?: string
-      event: 'CLICK_GET_WALLET'
+      event: 'CLICK_GET_WALLET_HELP'
     }
   | {
       type: 'track'
@@ -581,6 +608,7 @@ export type Event =
       properties: {
         network: string
         isSmartAccount: boolean
+        message: string | undefined
       }
     }
   | {
@@ -752,6 +780,7 @@ export type Event =
       event: 'SOCIAL_LOGIN_ERROR'
       properties: {
         provider: SocialProvider
+        message: string
       }
     }
   | {
@@ -834,6 +863,7 @@ export type Event =
         isSmartAccount: boolean
         network: string
         token: string
+        hash: string
         amount: number
       }
     }
@@ -841,6 +871,18 @@ export type Event =
       type: 'track'
       address?: string
       event: 'SEND_ERROR'
+      properties: {
+        message: string
+        isSmartAccount: boolean
+        network: string
+        token: string
+        amount: number
+      }
+    }
+  | {
+      type: 'track'
+      address?: string
+      event: 'SEND_REJECTED'
       properties: {
         message: string
         isSmartAccount: boolean
@@ -876,6 +918,37 @@ export type Event =
       properties: InitializeAppKitConfigs
     }
   | PayEvent
+  | {
+      type: 'track'
+      address?: string
+      event: 'GET_WALLET'
+      properties: {
+        name: string
+        walletRank: number | undefined
+        explorerId: string
+        type: 'chrome_store' | 'app_store' | 'play_store' | 'homepage'
+      }
+    }
+  | {
+      type: 'track'
+      address?: string
+      event: 'WALLET_IMPRESSION'
+      properties:
+        | {
+            name: string
+            walletRank: number | undefined
+            explorerId: string
+            view: string
+            query?: string
+            certified?: boolean
+          }
+        | {
+            name: string
+            walletRank: number | undefined
+            rdnsId?: string
+            view: string
+          }
+    }
 
 type PayConfiguration = {
   network: string
@@ -907,6 +980,7 @@ type PayEvent =
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
         caipNetworkId?: CaipNetworkId
+        message?: string
       }
     }
   | {
@@ -919,6 +993,7 @@ type PayEvent =
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
         caipNetworkId?: CaipNetworkId
+        message?: string
       }
     }
   | {
@@ -931,6 +1006,7 @@ type PayEvent =
         configuration: PayConfiguration
         currentPayment: PayCurrentPayment
         caipNetworkId?: CaipNetworkId
+        message?: string
       }
     }
   | {
@@ -941,6 +1017,7 @@ type PayEvent =
         exchanges: PayExchange[]
         configuration: PayConfiguration
         caipNetworkId?: CaipNetworkId
+        message?: string
       }
     }
   | {
@@ -954,6 +1031,7 @@ type PayEvent =
         headless: boolean
         caipNetworkId?: CaipNetworkId
         source: 'pay' | 'fund-from-exchange'
+        message?: string
       }
     }
 
@@ -1108,7 +1186,7 @@ export type AdapterNetworkState = {
 export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
-  accountState?: AccountControllerState
+  accountState?: AccountState
   networkState?: AdapterNetworkState
   namespace?: ChainNamespace
   caipNetworks?: CaipNetwork[]
@@ -1283,19 +1361,19 @@ export type UseAppKitAccountReturn = {
   address: string | undefined
   isConnected: boolean
   embeddedWalletInfo?: {
-    user: AccountControllerState['user']
-    authProvider: AccountControllerState['socialProvider'] | 'email'
+    user: AccountState['user']
+    authProvider: AccountState['socialProvider'] | 'email'
     accountType: PreferredAccountTypes[ChainNamespace] | undefined
     isSmartAccountDeployed: boolean
   }
-  status: AccountControllerState['status']
+  status: AccountState['status']
 }
 
 export type UseAppKitNetworkReturn = {
   caipNetwork: CaipNetwork | undefined
   chainId: number | string | undefined
   caipNetworkId: CaipNetworkId | undefined
-  switchNetwork: (network: AppKitNetwork) => void
+  switchNetwork: (network: AppKitNetwork) => Promise<void>
 }
 
 export type BadgeType = 'none' | 'certified'

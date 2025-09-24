@@ -31,7 +31,8 @@ describe('SIWXUtil', () => {
         .spyOn(SIWXUtil, 'getSIWXEventProperties')
         .mockReturnValue({
           network: 'eip155:1',
-          isSmartAccount: false
+          isSmartAccount: false,
+          message: 'Test error'
         })
 
       const mockSIWX = {
@@ -58,7 +59,8 @@ describe('SIWXUtil', () => {
         event: 'SIWX_AUTH_ERROR',
         properties: {
           network: 'eip155:1',
-          isSmartAccount: false
+          isSmartAccount: false,
+          message: 'Test error'
         }
       })
       expect(getSIWXEventPropertiesSpy).toHaveBeenCalled()

@@ -3,7 +3,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { ProviderUtil } from '@reown/appkit-utils'
+import { ProviderController } from '@reown/appkit-controllers'
 
 import { type ConnectorType, createAppKit, useAppKitProvider } from '../../exports/vue-core.js'
 import { mainnet } from '../mocks/Networks.js'
@@ -36,8 +36,8 @@ describe('useAppKitProvider', () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    vi.spyOn(ProviderUtil, 'state', 'get').mockReturnValue({
-      ...ProviderUtil.state,
+    vi.spyOn(ProviderController, 'state', 'get').mockReturnValue({
+      ...ProviderController.state,
       providers: {
         eip155: { test: 'provider' }
       } as unknown as Record<ChainNamespace, ConnectorType>,
@@ -46,7 +46,7 @@ describe('useAppKitProvider', () => {
       } as unknown as Record<ChainNamespace, ConnectorType>
     })
 
-    vi.spyOn(ProviderUtil, 'subscribe').mockImplementation(callback => {
+    vi.spyOn(ProviderController, 'subscribe').mockImplementation(callback => {
       mockSubscribe(callback)
 
       return mockUnsubscribe
@@ -64,7 +64,7 @@ describe('useAppKitProvider', () => {
     mount(TestComponent)
 
     expect(mockSubscribe).toHaveBeenCalled()
-    expect(ProviderUtil.subscribe).toHaveBeenCalled()
+    expect(ProviderController.subscribe).toHaveBeenCalled()
   })
 
   it('should update state when provider changes', async () => {

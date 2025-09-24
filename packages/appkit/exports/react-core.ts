@@ -14,7 +14,7 @@ export * from '../src/library/react/index.js'
 export * from '../src/utils/index.js'
 export type * from '@reown/appkit-controllers'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@reown/appkit-common'
-export { CoreHelperUtil, AccountController } from '@reown/appkit-controllers'
+export { CoreHelperUtil } from '@reown/appkit-controllers'
 
 export let modal: AppKit | undefined = undefined
 
@@ -42,8 +42,8 @@ export * from '../src/library/react/index.js'
 export function useAppKitNetwork(): UseAppKitNetworkReturn {
   const { caipNetwork, caipNetworkId, chainId } = useAppKitNetworkCore()
 
-  function switchNetwork(network: AppKitNetwork) {
-    modal?.switchNetwork(network)
+  async function switchNetwork(network: AppKitNetwork) {
+    await modal?.switchNetwork(network)
   }
 
   return {

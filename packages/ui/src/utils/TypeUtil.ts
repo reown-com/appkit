@@ -67,7 +67,7 @@ export type SelectSize = 'lg' | 'md' | 'sm'
 
 export type SpacingType = keyof typeof vars.spacing
 
-export type IconSizeType = 'sm' | 'md' | 'lg' | 'xl' | 'inherit'
+export type IconSizeType = 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | 'inherit'
 
 export type BorderRadiusType = Exclude<SpacingType, '1xs' | 'xl' | 'xxl'> | 'xs'
 
@@ -186,6 +186,7 @@ export type IconType =
   | 'verifyFilled'
   | 'wallet'
   | 'walletConnect'
+  | 'walletConnectInvert'
   | 'walletConnectLightBrown'
   | 'walletConnectBrown'
   | 'warning'
@@ -325,7 +326,7 @@ export type TransactionIconType =
   | 'arrowBottom'
   | 'arrowTop'
   | 'swapVertical'
-  | 'swapHorizontalBold'
+  | 'swapHorizontal'
   | 'checkmark'
   | 'close'
 
@@ -396,4 +397,10 @@ export interface TokenInfo {
   eip2612?: boolean
   isFoT?: boolean
   tags?: string[]
+}
+
+export type MaskInputOptions = {
+  value: string
+  decimals?: number
+  integers?: number
 }

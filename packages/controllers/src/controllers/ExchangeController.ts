@@ -1,9 +1,10 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type CaipNetworkId } from '@reown/appkit-common'
+import { type CaipNetworkId, NumberUtil } from '@reown/appkit-common'
 
 import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import {
   type GetBuyStatusResult,
@@ -14,16 +15,17 @@ import {
   getPaymentAssetsForNetwork
 } from '../utils/ExchangeUtil.js'
 import type { CurrentPayment, Exchange, PayUrlParams, PaymentAsset } from '../utils/ExchangeUtil.js'
-import { AccountController } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
+import { ChainController } from './ChainController.js'
 import { EventsController } from './EventsController.js'
+import { OptionsController } from './OptionsController.js'
 import { SnackController } from './SnackController.js'
 
 // -- Constants ----------------------------------------- //
 const DEFAULT_PAGE = 0
-const DEFAULT_STATE: ExchangeControllerState = {
+export const DEFAULT_STATE: ExchangeControllerState = {
   paymentAsset: null,
-  amount: 10,
+  amount: null,
   tokenAmount: 0,
   priceLoading: false,
   error: null,
@@ -37,7 +39,7 @@ const DEFAULT_STATE: ExchangeControllerState = {
 
 // -- Types --------------------------------------------- //
 export interface ExchangeControllerState {
-  amount: number
+  amount: number | null
   tokenAmount: number
   priceLoading: boolean
   error: string | null
@@ -116,15 +118,13 @@ export const ExchangeController = {
       throw new Error('Cannot get token price')
     }
 
-    const tokenAmount = new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 8
-    }).format(state.amount / state.paymentAsset.price)
+    const bigAmount = NumberUtil.bigNumber(state.amount ?? 0).round(8)
+    const bigPrice = NumberUtil.bigNumber(state.paymentAsset.price).round(8)
 
-    return Number(tokenAmount)
+    return bigAmount.div(bigPrice).round(8).toNumber()
   },
 
-  setAmount(amount: number) {
+  setAmount(amount: number | null) {
     state.amount = amount
     if (state.paymentAsset?.price) {
       state.tokenAmount = ExchangeController.getTokenAmount()
@@ -135,10 +135,30 @@ export const ExchangeController = {
     state.paymentAsset = asset
   },
 
+  isPayWithExchangeEnabled() {
+    return (
+      OptionsController.state.remoteFeatures?.payWithExchange ||
+      OptionsController.state.remoteFeatures?.payments ||
+      OptionsController.state.features?.pay
+    )
+  },
+
+  isPayWithExchangeSupported() {
+    return (
+      ExchangeController.isPayWithExchangeEnabled() &&
+      ChainController.state.activeCaipNetwork &&
+      ConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(
+        ChainController.state.activeCaipNetwork.chainNamespace
+      )
+    )
+  },
+
   // -- Getters ----------------------------------------- //
   async fetchExchanges() {
     try {
-      if (!state.paymentAsset) {
+      const isPayWithExchangeSupported = ExchangeController.isPayWithExchangeSupported()
+
+      if (!state.paymentAsset || !isPayWithExchangeSupported) {
         state.exchanges = []
         state.isLoading = false
 
@@ -149,7 +169,7 @@ export const ExchangeController = {
       const response = await getExchanges({
         page: DEFAULT_PAGE,
         asset: formatCaip19Asset(state.paymentAsset.network, state.paymentAsset.asset),
-        amount: state.amount.toString()
+        amount: state.amount?.toString() ?? '0'
       })
       // Putting this here in order to maintain backawrds compatibility with the UI when we introduce more exchanges
       state.exchanges = response.exchanges.slice(0, 2)
@@ -205,7 +225,8 @@ export const ExchangeController = {
 
   async handlePayWithExchange(exchangeId: string) {
     try {
-      if (!AccountController.state.address) {
+      const address = ChainController.getAccountData()?.address
+      if (!address) {
         throw new Error('No account connected')
       }
 
@@ -236,7 +257,7 @@ export const ExchangeController = {
         network,
         asset,
         amount: state.tokenAmount,
-        recipient: AccountController.state.address
+        recipient: address
       }
       const payUrl = await ExchangeController.getPayUrl(exchangeId, payUrlParams)
       if (!payUrl) {
@@ -303,19 +324,22 @@ export const ExchangeController = {
       const status = await getBuyStatus({ sessionId, exchangeId })
       state.currentPayment.status = status.status
       if (status.status === 'SUCCESS' || status.status === 'FAILED') {
+        const address = ChainController.getAccountData()?.address
         state.currentPayment.result = status.txHash
         state.isPaymentInProgress = false
         EventsController.sendEvent({
           type: 'track',
           event: status.status === 'SUCCESS' ? 'PAY_SUCCESS' : 'PAY_ERROR',
           properties: {
+            message:
+              status.status === 'FAILED' ? CoreHelperUtil.parseError(state.error) : undefined,
             source: 'fund-from-exchange',
             paymentId,
             configuration: {
               network: state.paymentAsset?.network || '',
               asset: state.paymentAsset?.asset || '',
-              recipient: AccountController.state.address || '',
-              amount: state.amount
+              recipient: address || '',
+              amount: state.amount ?? 0
             },
             currentPayment: {
               type: 'exchange',

@@ -44,6 +44,8 @@ export const ConstantsUtil = {
 
   SECURE_SITE_FAVICON: `${SECURE_SITE}/images/favicon.png`,
 
+  SOLANA_NATIVE_TOKEN_ADDRESS: 'So11111111111111111111111111111111111111111',
+
   RESTRICTED_TIMEZONES: [
     'ASIA/SHANGHAI',
     'ASIA/URUMQI',
@@ -151,6 +153,7 @@ export const ConstantsUtil = {
     CommonConstantsUtil.CHAIN.EVM,
     CommonConstantsUtil.CHAIN.SOLANA
   ] as ChainNamespace[],
+  SEND_PARAMS_SUPPORTED_CHAINS: [CommonConstantsUtil.CHAIN.EVM] as ChainNamespace[],
   SWAP_SUPPORTED_NETWORKS: [
     // Ethereum'
     'eip155:1',

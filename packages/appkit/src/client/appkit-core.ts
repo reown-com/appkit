@@ -1,7 +1,7 @@
 import { type ChainNamespace } from '@reown/appkit-common'
 import type { ChainAdapter } from '@reown/appkit-controllers'
 import {
-  AccountController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
@@ -20,9 +20,6 @@ declare global {
     ethereum?: Record<string, unknown>
   }
 }
-
-// -- Export Controllers -------------------------------------------------------
-export { AccountController }
 
 // -- Types --------------------------------------------------------------------
 export type OpenOptions<View extends Views> = Omit<BaseOpenOptions<View>, 'namespace'>
@@ -54,7 +51,8 @@ export class AppKit extends AppKitBaseClient {
     await super.close()
 
     if (this.options.manualWCControl) {
-      ConnectionController.finalizeWcConnection(AccountController.state.address as string)
+      const address = ChainController.getAccountData(this.activeChainNamespace)?.address
+      ConnectionController.finalizeWcConnection(address)
     }
   }
 
