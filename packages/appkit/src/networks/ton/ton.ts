@@ -1,7 +1,7 @@
 import { defineChain } from '../utils.js'
 
 export const ton = defineChain({
-  id: 'mainnet',
+  id: '-239',
   name: 'TON',
   network: 'ton-mainnet',
   nativeCurrency: { name: 'TON', symbol: 'TON', decimals: 9 },
@@ -11,5 +11,5 @@ export const ton = defineChain({
   blockExplorers: { default: { name: 'Tonscan', url: 'https://tonscan.org' } },
   testnet: false,
   chainNamespace: 'ton',
-  caipNetworkId: 'ton:mainnet'
+  caipNetworkId: 'ton:-239'
 })

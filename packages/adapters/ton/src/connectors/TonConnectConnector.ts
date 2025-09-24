@@ -5,38 +5,59 @@ import type { CaipNetwork } from '@reown/appkit-common'
 import type { TonConnector } from '@reown/appkit-utils/ton'
 
 export class TonConnectConnector implements TonConnector {
-  id: string
-  name: string
   chains: CaipNetwork[]
-  // @ts-ignore
-  type: string
-  // @ts-ignore
-  provider: TonConnect
+  readonly chain = 'ton'
+  readonly type = 'EXTERNAL'
+  private client: TonConnect
+
+  readonly wallet: WalletInfo
 
   constructor({ wallet, chains }: { wallet: WalletInfo; chains: CaipNetwork[] }) {
-    // @ts-expect-error will fix
+    console.log('[TonConnectConnector] constructor wallet', wallet)
     this.wallet = wallet
-    this.id = wallet.name.toLowerCase().replace(/\s+/g, '-')
-    this.name = wallet.name
     this.chains = chains
 
-    this.provider = new TonConnect({
-      manifestUrl: 'https://your-dapp.com/tonconnect-manifest.json' // TODO: make configurable
-    })
+    this.client = new TonConnect({})
+    console.log('[TonConnectConnector] provider initialized')
+  }
+
+  public get id(): string {
+    return this.name
+  }
+
+  public get name(): string {
+    return this.wallet.name
+  }
+
+  public get explorerId(): string | undefined {
+    return ''
+  }
+
+  public get imageUrl(): string {
+    return this.wallet.imageUrl
   }
 
   async connect(): Promise<string> {
+    console.log('[TonConnectConnector] connect: start')
+
+    this.client.connect({
+      // @ts-expect-error will fix
+      bridgeUrl: this.wallet.bridgeUrl,
+      // @ts-expect-error will fix
+      jsBridgeKey: this.wallet.jsBridgeKey,
+      // @ts-expect-error will fix
+      universalLink: this.wallet.universalLink
+    })
+
     return new Promise((resolve, reject) => {
-      const unsubscribe = this.provider.onStatusChange(status => {
-        if (
-          status &&
-          status.connectItems &&
-          status.connectItems.tonProof &&
-          status.account.address
-        ) {
+      const unsubscribe = this.client.onStatusChange(status => {
+        console.log('[TonConnectConnector] status change', status)
+        if (status && status.account.address) {
+          console.log('[TonConnectConnector] connected, address', status.account.address)
           unsubscribe()
           resolve(status.account.address)
         } else {
+          console.log('[TonConnectConnector] connect: missing address in status')
           unsubscribe()
           reject('Cannot connect to wallet')
         }
@@ -45,43 +66,47 @@ export class TonConnectConnector implements TonConnector {
   }
 
   async disconnect(): Promise<void> {
-    if (this.provider) {
-      await this.provider.disconnect()
+    if (this.client) {
+      await this.client.disconnect()
     }
   }
 
   async getAccount(): Promise<string | undefined> {
-    if (!this.provider) {
+    console.log('[TonConnectConnector] getAccount: called')
+    if (!this.client) {
       throw new Error('Not connected')
     }
 
-    return this.provider.account?.address
+    return this.client.account?.address
   }
 
   async signMessage(): Promise<string> {
-    if (!this.provider) {
+    console.log('[TonConnectConnector] signMessage: called')
+    if (!this.client) {
       throw new Error('Not connected')
     }
     // Adjust to actual SDK method
     // @ts-ignore
-    const response = await this.provider.signData({} as any) // or whatever
+    const response = await this.client.signData({} as any) // or whatever
     return response.signature // Adjust
   }
 
   async sendTransaction(params: { transaction: any }): Promise<string> {
-    if (!this.provider) {
-      throw new Error('Not connected')
+    console.log('[TonConnectConnector] sendTransaction: called', params)
+    if (!this.client) {
+      throw new Error('TonConnector not found')
     }
-    const response = await this.provider.sendTransaction(params.transaction)
+    const response = await this.client.sendTransaction(params.transaction)
     // @ts-ignore
     return response.boc // Assume it has an ID or hash
   }
 
   async signData(params: { data: any }): Promise<string> {
-    if (!this.provider) {
-      throw new Error('Not connected')
+    console.log('[TonConnectConnector] signData: called')
+    if (!this.client) {
+      throw new Error('TonConnector not found')
     }
-    const response = await this.provider.signData(params.data)
+    const response = await this.client.signData(params.data)
     return response.signature // Adjust based on actual response structure
   }
 

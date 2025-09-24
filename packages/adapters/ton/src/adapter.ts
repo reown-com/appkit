@@ -1,7 +1,13 @@
-import type UniversalProvider from '@walletconnect/universal-provider'
+import {
+  TonConnect,
+  isWalletInfoCurrentlyEmbedded,
+  isWalletInfoCurrentlyInjected,
+  isWalletInfoInjectable,
+  isWalletInfoRemote
+} from '@tonconnect/sdk'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import { type TonConnector } from '@reown/appkit-utils/ton'
+import type { TonConnector } from '@reown/appkit-utils/ton'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { ton } from '@reown/appkit/networks'
 
@@ -9,36 +15,40 @@ import { TonConnectConnector } from './connectors/TonConnectConnector'
 
 // @ts-expect-error will fix
 export class TonAdapter extends AdapterBlueprint<TonConnector> {
+  private tonClient = new TonConnect({
+    manifestUrl: 'https://your-dapp.com/tonconnect-manifest.json'
+  })
+
   constructor(params?: AdapterBlueprint.Params) {
-    super({
-      namespace: ConstantsUtil.CHAIN.TON,
-      ...params
-    })
+    super({ namespace: ConstantsUtil.CHAIN.TON, ...params })
   }
 
   override async syncConnectors() {
-    const { TonConnect } = await import('@tonconnect/sdk')
-    const wallets = await TonConnect.getWallets()
+    try {
+      console.log('[TonAdapter] syncConnectors: start')
+      const wallets = (await this.tonClient.getWallets()).filter(isWalletInfoCurrentlyInjected)
 
-    wallets.forEach(wallet => {
-      const connector = new TonConnectConnector({
-        wallet,
-        chains: this.getCaipNetworks()
+      wallets.forEach(wallet => {
+        this.addConnector(new TonConnectConnector({ wallet, chains: [] }))
       })
 
-      // @ts-ignore
-      this.addConnector(connector)
-    })
+      console.log('[TonAdapter] syncConnectors: completed', wallets)
+    } catch (err) {
+      console.error('[TonAdapter] syncConnectors error', err)
+    }
   }
 
   override async connect(
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {
+    console.log('[TonAdapter] connect: start', params)
+
     const connector = this.connectors.find(c => c.id === params.id)
     if (!connector) {
       throw new Error('Connector not found')
     }
     const address = await connector.connect({ chainId: params.chainId as string })
+    console.log('[TonAdapter] connect: address2', address, params)
     // Set connection, emit events, etc.
     // Mirror logic from BitcoinAdapter
     const chainId = params.chainId || ton.caipNetworkId
@@ -114,11 +124,6 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
 
   override formatUnits(): string {
     return ''
-  }
-
-  override async setUniversalProvider(_universalProvider: UniversalProvider) {
-    // TODO: Implement if WC support for TON is added
-    return Promise.resolve()
   }
 
   override async syncConnections(_params: AdapterBlueprint.SyncConnectionsParams): Promise<void> {

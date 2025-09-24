@@ -907,6 +907,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected async onConnectExternal(params: ConnectExternalOptions) {
+    console.log('[AppKitBaseClient] onConnectExternal: start', params)
     const activeChain = ChainController.state.activeChain
     const namespace = params.chain || activeChain
     const adapter = this.getAdapter(namespace)
@@ -1628,6 +1629,7 @@ export abstract class AppKitBaseClient {
     chainId: string | number | undefined,
     chainNamespace: ChainNamespace
   ) {
+    console.log('[AppKitBaseClient] syncAccountInfo: start', address, chainId, chainNamespace)
     const caipAddress = this.getCaipAddress(chainNamespace)
     const newChainId = chainId || caipAddress?.split(':')[1]
 
