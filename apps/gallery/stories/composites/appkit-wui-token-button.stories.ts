@@ -28,6 +28,9 @@ export default {
     imageSrc: {
       control: { type: 'text' }
     },
+    chainImageSrc: {
+      control: { type: 'text' }
+    },
     disabled: {
       control: { type: 'boolean' }
     }
@@ -39,6 +42,7 @@ export const Default: Component = {
     html`<wui-token-button
       text=${args.text}
       .imageSrc=${args.imageSrc}
+      .chainImageSrc=${args.chainImageSrc}
       size=${args.size}
       ?disabled=${args.disabled}
     >
