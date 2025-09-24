@@ -231,9 +231,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         this.clearConnections()
         this.addConnection(
           ...connections.map(connection => {
-            const caipNetwork = this.getCaipNetworks().find(
-              network => network.id === connection.chainId
-            )
+            const caipNetwork = this.networks.find(network => network.id === connection.chainId)
 
             const isAuth = connection.connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
 
@@ -711,7 +709,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const address = params.address
-    const caipNetwork = this.getCaipNetworks().find(network => network.id === params.chainId)
+    const caipNetwork = this.networks.find(network => network.id === params.chainId)
 
     if (!address) {
       return Promise.resolve({ balance: '0.00', symbol: 'ETH' })
@@ -1001,7 +999,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
-        caipNetworks: this.getCaipNetworks(),
+        caipNetworks: this.networks,
         namespace: 'eip155'
       })
     )

@@ -343,7 +343,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
   }: AdapterBlueprint.SyncConnectionsParams) {
     await this.connectionManager?.syncConnections({
       connectors: this.connectors,
-      caipNetworks: this.getCaipNetworks(),
+      caipNetworks: this.networks,
       universalProvider: this.universalProvider as UniversalProvider,
       onConnection: this.addConnection.bind(this),
       onListenProvider: this.listenProviderEvents.bind(this)
@@ -371,7 +371,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
-        caipNetworks: this.getCaipNetworks(),
+        caipNetworks: this.networks,
         namespace: CommonConstantsUtil.CHAIN.EVM
       })
     )
@@ -477,9 +477,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
             preferredAccountType: getPreferredAccountType('eip155')
           })
 
-        const caipNetwork = this.getCaipNetworks().find(
-          n => n.id.toString() === chainId?.toString()
-        )
+        const caipNetwork = this.networks.find(n => n.id.toString() === chainId?.toString())
 
         accounts = [_address]
 
@@ -509,9 +507,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
           method: 'eth_chainId'
         })
 
-        const caipNetwork = this.getCaipNetworks().find(
-          n => n.id.toString() === chainId?.toString()
-        )
+        const caipNetwork = this.networks.find(n => n.id.toString() === chainId?.toString())
 
         if (requestChainId !== chainId) {
           if (!caipNetwork) {
@@ -676,7 +672,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const address = params.address
-    const caipNetwork = this.getCaipNetworks().find(
+    const caipNetwork = this.networks.find(
       network => network.id.toString() === params.chainId?.toString()
     )
 

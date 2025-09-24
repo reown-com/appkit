@@ -969,7 +969,7 @@ const controller = {
   },
   async syncAccount(params: {
     chainNamespace: ChainNamespace
-    chainId: string | number
+    chainId?: string | number
     address: string
   }) {
     const isActiveNamespace = params.chainNamespace === ChainController.state.activeChain
@@ -1070,7 +1070,7 @@ const controller = {
 
       ConnectionController.syncIdentity({
         address,
-        chainId,
+        chainId: chainIdToUse,
         chainNamespace
       })
     }

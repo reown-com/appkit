@@ -146,7 +146,7 @@ export abstract class AppKitBaseClient {
 
   protected async initialize(options: AppKitOptionsWithSdk) {
     this.initializeProjectSettings(options)
-    this.initControllers(options)
+    await this.initControllers(options)
     this.sendInitializeEvent(options)
     if (OptionsController.state.enableReconnect) {
       await this.syncExistingConnection()
@@ -333,10 +333,10 @@ export abstract class AppKitBaseClient {
   }
 
   // -- Controllers initialization ---------------------------------------------------
-  protected initControllers(options: AppKitOptionsWithSdk) {
-    this.initAdapterController(options)
+  protected async initControllers(options: AppKitOptionsWithSdk) {
     this.initializeOptionsController(options)
     this.initializeChainController(options)
+    await this.initAdapterController(options)
     this.initializeThemeController(options)
     this.initializeConnectionController(options)
     this.initializeConnectorController()
@@ -572,7 +572,8 @@ export abstract class AppKitBaseClient {
 
       return new UniversalAdapter({
         namespace,
-        networks: this.getCaipNetworks()
+        networks: this.getCaipNetworks(),
+        projectId: this.options?.projectId
       })
     })
   }
@@ -682,14 +683,14 @@ export abstract class AppKitBaseClient {
           chainNamespace
         })
       } else if (!isActiveChain && syncAccountChainId) {
-        ConnectionController.syncAccountInfo(address, syncAccountChainId, chainNamespace)
+        ConnectionController.syncAccount({ address, chainId: syncAccountChainId, chainNamespace })
         ConnectionController.updateBalance({
           address,
           chainId: syncAccountChainId,
           namespace: chainNamespace
         })
       } else {
-        ConnectionController.syncAccountInfo(address, chainId, chainNamespace)
+        ConnectionController.syncAccount({ address, chainId, chainNamespace })
       }
 
       StorageUtil.addConnectedNamespace(chainNamespace)
@@ -1172,34 +1173,6 @@ export abstract class AppKitBaseClient {
     }
 
     return AdapterController.get(namespace)
-  }
-
-  protected createAdapter(blueprint: AdapterBlueprint) {
-    if (!blueprint) {
-      return
-    }
-
-    const namespace = blueprint.namespace
-    if (!namespace) {
-      return
-    }
-
-    const adapterBlueprint: AdapterBlueprint = blueprint
-    adapterBlueprint.namespace = namespace
-    adapterBlueprint.construct({
-      namespace,
-      projectId: this.options?.projectId,
-      networks: this.getCaipNetworks()?.filter(({ chainNamespace }) => chainNamespace === namespace)
-    })
-
-    if (!this.chainNamespaces.includes(namespace)) {
-      this.chainNamespaces.push(namespace)
-    }
-
-    const adapter = AdapterController.get(namespace)
-    if (adapter) {
-      AdapterController.set(namespace, adapterBlueprint)
-    }
   }
 
   // -- Public Internal ---------------------------------------------------

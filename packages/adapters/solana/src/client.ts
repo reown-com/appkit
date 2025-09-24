@@ -94,7 +94,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       new AuthProvider({
         w3mFrameProvider,
         getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace),
-        chains: this.getCaipNetworks()
+        chains: this.networks
       })
     )
   }
@@ -111,14 +111,14 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       this.addConnector(
         new CoinbaseWalletProvider({
           provider: window.coinbaseSolana as SolanaCoinbaseWallet,
-          chains: this.getCaipNetworks(),
+          chains: this.networks,
           getActiveChain
         })
       )
     }
 
     // Watch for standard wallet adapters
-    watchStandard(this.getCaipNetworks(), getActiveChain, this.addConnector.bind(this))
+    watchStandard(this.networks, getActiveChain, this.addConnector.bind(this))
   }
 
   // -- Transaction methods ---------------------------------------------------
@@ -295,8 +295,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     }
 
     const rpcUrl =
-      params.rpcUrl ||
-      this.getCaipNetworks()?.find(n => n.id === params.chainId)?.rpcUrls.default.http[0]
+      params.rpcUrl || this.networks?.find(n => n.id === params.chainId)?.rpcUrls.default.http[0]
 
     if (!rpcUrl) {
       throw new Error(`RPC URL not found for chainId: ${params.chainId}`)
@@ -339,7 +338,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     })
 
     const isAuth = connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
-    const caipNetwork = this.getCaipNetworks()?.find(network => network.id === params.chainId)
+    const caipNetwork = this.networks?.find(network => network.id === params.chainId)
 
     this.addConnection({
       connectorId: connector.id,
@@ -370,7 +369,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const address = params.address
-    const caipNetwork = this.getCaipNetworks()?.find(network => network.id === params.chainId)
+    const caipNetwork = this.networks?.find(network => network.id === params.chainId)
 
     if (!address) {
       return Promise.resolve({ balance: '0.00', symbol: 'SOL' })
@@ -479,7 +478,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     const solanaProvider = new SolanaWalletConnectProvider({
       provider: universalProvider,
-      chains: this.getCaipNetworks(),
+      chains: this.networks,
       getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
     })
 
@@ -498,8 +497,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   public override async connectWalletConnect(chainId?: string | number) {
     const result = await super.connectWalletConnect(chainId)
 
-    const rpcUrl = this.getCaipNetworks()?.find(n => n.id === chainId)?.rpcUrls.default
-      .http[0] as string
+    const rpcUrl = this.networks?.find(n => n.id === chainId)?.rpcUrls.default.http[0] as string
     const connection = new SolanaConnection(rpcUrl, this.connectionSettings)
 
     SolStoreUtil.setConnection(connection)
@@ -551,7 +549,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     await this.connectionManager?.syncConnections({
       connectors: this.connectors,
       caipNetwork,
-      caipNetworks: this.getCaipNetworks(),
+      caipNetworks: this.networks,
       universalProvider: this.universalProvider as UniversalProvider,
       onConnection: this.addConnection.bind(this),
       onListenProvider: this.listenSolanaProviderEvents.bind(this)

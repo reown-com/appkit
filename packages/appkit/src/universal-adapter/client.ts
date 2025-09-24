@@ -22,7 +22,7 @@ export class UniversalAdapter extends AdapterBlueprint {
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
-        caipNetworks: this.getCaipNetworks(),
+        caipNetworks: this.networks,
         namespace: this.namespace
       })
     )

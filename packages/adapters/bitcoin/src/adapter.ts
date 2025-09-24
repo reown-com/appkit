@@ -83,6 +83,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     const address = await connector.connect().catch(err => {
       throw new UserRejectedRequestError(err)
     })
+
     const accounts = await this.getAccounts({ id: connector.id })
 
     this.emit('accountChanged', {
@@ -270,7 +271,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     await this.connectionManager?.syncConnections({
       connectors: this.connectors,
       caipNetwork,
-      caipNetworks: this.getCaipNetworks(),
+      caipNetworks: this.networks,
       universalProvider: this.universalProvider as UniversalProvider,
       onConnection: this.addConnection.bind(this),
       onListenProvider: this.listenProviderEvents.bind(this)
@@ -562,7 +563,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     this.addConnector(
       new BitcoinWalletConnectConnector({
         provider: universalProvider,
-        chains: this.getCaipNetworks(),
+        chains: this.networks,
         getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
       })
     )
