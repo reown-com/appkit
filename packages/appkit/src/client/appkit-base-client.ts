@@ -328,6 +328,9 @@ export abstract class AppKitBaseClient {
     OptionsController.setUniversalProviderConfigOverride(options.universalProviderConfigOverride)
     OptionsController.setPreferUniversalLinks(options.experimental_preferUniversalLinks)
 
+    // New: Disable smart accounts for AUTH flows if requested
+    OptionsController.setDisableAuthSmartAccounts(options.disableAuthSmartAccounts)
+
     // Save option in controller
     OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
 

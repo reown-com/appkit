@@ -13,7 +13,8 @@ import {
   type Provider,
   SIWXUtil,
   StorageUtil,
-  getPreferredAccountType
+  getPreferredAccountType,
+  OptionsController
 } from '@reown/appkit-controllers'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import { ProviderUtil } from '@reown/appkit-utils'
@@ -462,7 +463,8 @@ export class Ethers5Adapter extends AdapterBlueprint {
           chainNamespace: CommonConstantsUtil.CHAIN.EVM,
           chainId,
           socialUri,
-          preferredAccountType: getPreferredAccountType('eip155')
+          preferredAccountType:
+            (OptionsController.state.disableAuthSmartAccounts ? 'eoa' : getPreferredAccountType('eip155'))
         })
 
       const caipNetwork = this.getCaipNetworks().find(n => n.id.toString() === chainId?.toString())
@@ -598,7 +600,8 @@ export class Ethers5Adapter extends AdapterBlueprint {
         authConnector: connector.provider as unknown as W3mFrameProvider,
         chainNamespace: CommonConstantsUtil.CHAIN.EVM,
         chainId,
-        preferredAccountType: getPreferredAccountType('eip155')
+        preferredAccountType:
+          (OptionsController.state.disableAuthSmartAccounts ? 'eoa' : getPreferredAccountType('eip155'))
       })
     }
   }

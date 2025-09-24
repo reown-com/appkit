@@ -103,6 +103,11 @@ export type AppKitOptions = {
    * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
    */
   defaultAccountTypes?: Partial<OptionsControllerState['defaultAccountTypes']>
+  /**
+   * Disable smart accounts when using social/email (Auth) login. Forces EOA for AUTH flows.
+   * @default false
+   */
+  disableAuthSmartAccounts?: boolean
 } & Omit<OptionsControllerState, 'defaultAccountTypes'>
 
 export interface FeatureConfigItem {

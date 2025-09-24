@@ -267,7 +267,7 @@ export const ConstantsUtil = {
 
   DEFAULT_ACCOUNT_TYPES: {
     bip122: 'payment',
-    eip155: 'smartAccount',
+    eip155: 'eoa',
     polkadot: 'eoa',
     solana: 'eoa'
   } as const satisfies PreferredAccountTypes,

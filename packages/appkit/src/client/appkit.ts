@@ -101,10 +101,13 @@ export class AppKit extends AppKitBaseClient {
 
     const defaultAccountType = OptionsController.state.defaultAccountTypes[namespace]
     const currentAccountType = getPreferredAccountType(namespace)
-    const preferredAccountType =
+    const resolvedPreferred =
       (user.preferredAccountType as W3mFrameTypes.AccountType) ||
       currentAccountType ||
       defaultAccountType
+    const preferredAccountType = OptionsController.state.disableAuthSmartAccounts
+      ? (W3mFrameRpcConstants.ACCOUNT_TYPES.EOA as W3mFrameTypes.AccountType)
+      : resolvedPreferred
 
     /*
      * This covers the case where user switches back from a smart account supported
