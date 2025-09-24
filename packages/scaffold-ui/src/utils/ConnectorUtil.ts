@@ -164,7 +164,7 @@ export const ConnectorUtil = {
     )
   },
   sortConnectorsByExplorerWallet(connectors: ConnectorWithProviders[]) {
-    return connectors.sort((a, b) => {
+    return [...connectors].sort((a, b) => {
       if (a.explorerWallet && b.explorerWallet) {
         return (a.explorerWallet.order ?? 0) - (b.explorerWallet.order ?? 0)
       }
