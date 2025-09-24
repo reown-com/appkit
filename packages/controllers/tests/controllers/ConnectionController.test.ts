@@ -3,6 +3,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   type CaipNetwork,
+  type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   ParseUtil,
   type ParsedCaipAddress
@@ -17,6 +18,7 @@ import type {
   RouterControllerState
 } from '../../exports/index.js'
 import {
+  AdapterController,
   ChainController,
   ConnectionController,
   ConnectionControllerUtil,
@@ -35,14 +37,21 @@ const walletConnectUri = 'wc://uri?=123'
 const externalId = 'coinbaseWallet'
 const type = 'WALLET_CONNECT' as ConnectorType
 const caipNetworks = [
-  { ...polygon, chainNamespace: chain, caipNetworkId: 'eip155:137' } as CaipNetwork
-]
+  { ...polygon, chainNamespace: chain, caipNetworkId: 'eip155:137' },
+  {
+    chainNamespace: 'solana' as const,
+    caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    id: '1'
+  },
+  { chainNamespace: 'bip122' as const, caipNetworkId: 'bip122:1', id: '1' }
+] as CaipNetwork[]
 
 const baseAdapter = {
   connectWalletConnect: vi.fn(),
   connectExternal: vi.fn(),
   checkInstalled: vi.fn(),
-  disconnect: vi.fn()
+  disconnect: vi.fn(),
+  connect: vi.fn()
 }
 
 const evmAdapter = {
@@ -65,6 +74,7 @@ const adapters = [evmAdapter, solanaAdapter, bip122Adapter] as ChainAdapter[]
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
   ChainController.initialize(adapters, [])
+  AdapterController.initialize(adapters)
 })
 
 describe('ConnectionController', () => {
@@ -98,20 +108,16 @@ describe('ConnectionController', () => {
     vi.useRealTimers()
   })
 
-  it('connectExternal() should trigger internal client call and set connector in storage', async () => {
+  it('connectExternal() should trigger adapter call and set connector in storage', async () => {
     const options = { id: externalId, type }
     await ConnectionController.connectExternal(options, chain)
-    expect(evmAdapter.connectExternal).toHaveBeenCalledWith(options)
-  })
-
-  it('checkInstalled() should trigger internal client call', () => {
-    ConnectionController.checkInstalled([externalId])
-    expect(evmAdapter.checkInstalled).toHaveBeenCalledWith([externalId])
-  })
-
-  it('should not throw on checkInstalled() without ids', () => {
-    ConnectionController.checkInstalled()
-    expect(evmAdapter.checkInstalled).toHaveBeenCalledWith(undefined)
+    expect(evmAdapter.connect).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: externalId,
+        type,
+        chainId: polygon.id
+      })
+    )
   })
 
   it('should not throw when optional methods are undefined', async () => {
@@ -125,9 +131,6 @@ describe('ConnectionController', () => {
       []
     )
     await ConnectionController.connectExternal({ id: externalId, type }, chain)
-    ConnectionController.checkInstalled([externalId])
-    expect(evmAdapter.checkInstalled).toHaveBeenCalledWith([externalId])
-    expect(evmAdapter.checkInstalled).toHaveBeenCalledWith(undefined)
   })
 
   it('should update state correctly on resetWcConnection()', () => {
@@ -149,6 +152,27 @@ describe('ConnectionController', () => {
   })
 
   it('should disconnect correctly', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      chains: new Map([
+        [chain, { accountState: { caipAddress: 'eip155:137:0x123' } as unknown as AccountState }],
+        [
+          CommonConstantsUtil.CHAIN.SOLANA,
+          {
+            accountState: {
+              caipAddress: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:0x123'
+            } as unknown as AccountState
+          }
+        ],
+        [
+          CommonConstantsUtil.CHAIN.BITCOIN,
+          { accountState: { caipAddress: 'bip122:1:0x123' } as unknown as AccountState }
+        ]
+      ]),
+      activeChain: chain,
+      activeCaipAddress: 'eip155:137:0x123',
+      noAdapters: false,
+      isSwitchingNamespace: false
+    })
     const disconnectSpy = vi.spyOn(evmAdapter, 'disconnect')
     await ConnectionController.disconnect()
 

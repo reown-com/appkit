@@ -80,7 +80,6 @@ interface HandleActiveConnectionParams {
 }
 
 interface DisconnectParams {
-  id?: string
   namespace?: ChainNamespace
   initialDisconnect?: boolean
 }
@@ -655,11 +654,11 @@ const controller = {
   },
 
   async disconnect(params: DisconnectParams = {}) {
-    const { id: connectorIdParam, namespace: chainNamespace, initialDisconnect } = params || {}
+    const { namespace: chainNamespace, initialDisconnect } = params || {}
 
     const namespace = chainNamespace || ChainController.state.activeChain
     const namespaceConnectorId = ConnectorController.getConnectorId(namespace)
-    const connectorId = connectorIdParam || namespaceConnectorId
+    const connectorId = namespaceConnectorId
 
     const isAuth = connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
     const isWalletConnect = connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
@@ -673,36 +672,34 @@ const controller = {
        */
       const namespacesToDisconnect = shouldDisconnectAll ? namespaces : [chainNamespace]
 
+      console.log('>> Namespaces to disconnect', namespacesToDisconnect)
       const disconnectPromises = namespacesToDisconnect.map(async ns => {
-        const currentConnectorId = ConnectorController.getConnectorId(ns)
-        const connectorIdToDisconnect = connectorIdParam || currentConnectorId
-        if (connectorIdToDisconnect) {
-          const disconnectData = await ConnectionController.disconnectConnector({
-            id: connectorIdToDisconnect,
-            namespace: ns
+        const adapter = AdapterController.get(ns)
+        console.log('>> Adapter to disconnect', adapter)
+        const disconnectData = await adapter?.disconnect({
+          namespace: ns
+        })
+        if (disconnectData) {
+          if (isAuth) {
+            StorageUtil.deleteConnectedSocialProvider()
+          }
+
+          disconnectData?.connections.forEach((connection: Connection) => {
+            StorageUtil.addDisconnectedConnectorId(connection.connectorId, ns)
           })
-          if (disconnectData) {
-            if (isAuth) {
-              StorageUtil.deleteConnectedSocialProvider()
-            }
+        }
 
-            disconnectData.connections.forEach(connection => {
-              StorageUtil.addDisconnectedConnectorId(connection.connectorId, ns)
-            })
-          }
+        if (initialDisconnect) {
+          ChainController.resetAccount(ns)
+          ChainController.resetNetwork(ns)
+          StorageUtil.removeConnectedNamespace(ns)
+          StorageUtil.addDisconnectedConnectorId(ConnectorController.getConnectorId(ns) || '', ns)
+          ConnectorController.removeConnectorId(ns)
+          ProviderController.resetChain(ns)
 
-          if (initialDisconnect) {
-            ChainController.resetAccount(ns)
-            ChainController.resetNetwork(ns)
-            StorageUtil.removeConnectedNamespace(ns)
-            StorageUtil.addDisconnectedConnectorId(ConnectorController.getConnectorId(ns) || '', ns)
-            ConnectorController.removeConnectorId(ns)
-            ProviderController.resetChain(ns)
-
-            ChainController.setAccountProp('user', null, ns)
-            ConnectionController.setStatus('disconnected', ns)
-            ConnectionController.setConnectedWalletInfo(null, ns)
-          }
+          ChainController.setAccountProp('user', null, ns)
+          ConnectionController.setStatus('disconnected', ns)
+          ConnectionController.setConnectedWalletInfo(null, ns)
         }
       })
 
@@ -750,12 +747,13 @@ const controller = {
       }
 
       const adapter = AdapterController.get(namespace)
-      const caipAddress = ChainController.state.chains.get(namespace)?.accountState?.caipAddress
+      const caipAddress = ChainController.getAccountData(namespace)?.caipAddress
 
       /**
        * When the page loaded, the controller doesn't have address yet.
        * To disconnect, we are checking enableReconnect flag to disconnect the namespace.
        */
+      console.log('>> Disconnect connector', caipAddress, OptionsController.state.enableReconnect)
       if (caipAddress || !OptionsController.state.enableReconnect) {
         disconnectResult = await adapter?.disconnect({ id })
       }
