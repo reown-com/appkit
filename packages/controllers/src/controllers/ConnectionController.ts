@@ -1042,11 +1042,7 @@ const controller = {
 
       const currentAddress = ChainController.getAccountData(chainNamespace)?.address
       if (address.toLowerCase() !== currentAddress?.toLowerCase()) {
-        ConnectionController.syncAccount({
-          address,
-          chainId: network.id,
-          chainNamespace
-        })
+        ConnectionController.syncAccountInfo(address, network.id, chainNamespace)
       }
 
       if (isActiveNamespace) {

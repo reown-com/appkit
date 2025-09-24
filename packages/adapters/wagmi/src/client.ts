@@ -505,8 +505,12 @@ export class WagmiAdapter extends AdapterBlueprint {
      * Watch for new connectors. This is needed because some EIP6963
      * connectors are added later in the process the initial setup
      */
+    const connectors = this.wagmiConfig.connectors
+    console.log('>> WagmiAdapter:syncConnectors', connectors)
+    console.log('>> Watching for connectors')
     watchConnectors(this.wagmiConfig, {
       onChange: connectors => {
+        console.log('>> WagmiAdapter:syncConnectors:onChange', connectors)
         connectors.forEach(connector => this.addWagmiConnector(connector, options))
       }
     })

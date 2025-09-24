@@ -120,8 +120,6 @@ export abstract class AppKitBaseClient {
   protected universalProvider?: UniversalProvider
   protected static instance?: AppKitBaseClient
   protected universalProviderInitPromise?: Promise<void>
-
-  public chainNamespaces: ChainNamespace[] = []
   public options: AppKitOptions
   public features: Features = {}
   public remoteFeatures: RemoteFeatures = {}
@@ -136,6 +134,14 @@ export abstract class AppKitBaseClient {
     this.readyPromise = this.initialize(options)
 
     SemVerUtils.checkSDKVersion(options.sdkVersion)
+  }
+
+  get chainNamespaces(): ChainNamespace[] {
+    const caipNetworks = this.extendCaipNetworks(this.options)
+
+    return Array.from(
+      new Set(caipNetworks.map(network => network.chainNamespace))
+    ) as ChainNamespace[]
   }
 
   protected async initialize(options: AppKitOptionsWithSdk) {
@@ -328,6 +334,7 @@ export abstract class AppKitBaseClient {
 
   // -- Controllers initialization ---------------------------------------------------
   protected initControllers(options: AppKitOptionsWithSdk) {
+    this.initAdapterController(options)
     this.initializeOptionsController(options)
     this.initializeChainController(options)
     this.initializeThemeController(options)
@@ -549,6 +556,8 @@ export abstract class AppKitBaseClient {
 
   // -- Adapter Initialization ---------------------------------------------------
   protected createAdapters(blueprints?: AdapterBlueprint[]): AdapterBlueprint[] {
+    console.log('>> AppKitBaseClient:createAdapters', this.chainNamespaces, blueprints)
+
     return this.chainNamespaces.map(namespace => {
       const adapter = blueprints?.find(b => b.namespace === namespace)
       if (adapter) {
@@ -571,6 +580,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected async initChainAdapter(adapter: AdapterBlueprint) {
+    console.log('>> AppKitBaseClient:initChainAdapter', adapter)
     this.onConnectors(adapter)
     this.listenAdapter(adapter)
     await adapter.syncConnectors(this.options, this)
