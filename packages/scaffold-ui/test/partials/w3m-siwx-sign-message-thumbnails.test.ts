@@ -3,8 +3,11 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
-  AccountController,
+  type AccountState,
+  type ChainAdapter,
+  ChainController,
   type ConnectedWalletInfo,
   type Metadata,
   OptionsController
@@ -25,10 +28,23 @@ describe('W3mSIWXSignMessageThumbnails', () => {
       ...OptionsController.state,
       metadata: { icons: ['https://dapp/img.png'] } as Metadata
     })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      connectedWalletInfo: { icon: 'https://wallet/img.png' } as ConnectedWalletInfo
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipAddress: 'eip155:1:0x1234567890abcdef1234567890abcdef12345678',
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              connectedWalletInfo: { icon: 'https://wallet/img.png' } as ConnectedWalletInfo
+            }
+          }
+        ]
+      ]) as unknown as Map<ChainNamespace, ChainAdapter>
     })
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      connectedWalletInfo: { icon: 'https://wallet/img.png' } as ConnectedWalletInfo
+    } as unknown as AccountState)
   })
 
   it('renders two visual thumbnails with correct images and border flag', async () => {

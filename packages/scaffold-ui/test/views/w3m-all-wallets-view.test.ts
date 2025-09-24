@@ -21,6 +21,13 @@ beforeAll(() => {
     unobserve() {}
     disconnect() {}
   }
+
+  if (!(HTMLElement.prototype as any).animate) {
+    ;(HTMLElement.prototype as any).animate = vi.fn().mockReturnValue({
+      finished: Promise.resolve(),
+      cancel: vi.fn()
+    })
+  }
 })
 
 describe('W3mAllWalletsView', () => {

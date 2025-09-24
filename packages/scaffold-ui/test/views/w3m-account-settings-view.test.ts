@@ -1,5 +1,5 @@
 import { fixture } from '@open-wc/testing'
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
@@ -10,7 +10,7 @@ import {
   type Connection
 } from '@reown/appkit-common'
 import {
-  AccountController,
+  type AccountState,
   AssetController,
   type AuthConnector,
   ChainController,
@@ -36,12 +36,9 @@ const WALLET_UPGRADE_CARD_TEST_ID = 'w3m-wallet-upgrade-card'
 describe('W3mAccountSettingsView', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      address: '0x1234567890abcdef1234567890abcdef12345678',
-      profileImage: undefined,
-      profileName: undefined
-    })
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      address: 'eip155:1:0x1234567890abcdef1234567890abcdef12345678'
+    } as unknown as AccountState)
     vi.spyOn(AssetController, 'state', 'get').mockReturnValue({
       ...AssetController.state,
       networkImages: {}
@@ -66,10 +63,9 @@ describe('W3mAccountSettingsView', () => {
   })
 
   it('should throw when no account provided', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       address: undefined
-    })
+    } as unknown as AccountState)
     await expect(
       fixture<W3mAccountSettingsView>(html`<w3m-account-settings-view></w3m-account-settings-view>`)
     ).rejects.toThrowError(/No account provided/)
@@ -145,9 +141,9 @@ describe('W3mAccountSettingsView', () => {
 
   it('should toggle preferred account type on click', async () => {
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
-      ...AccountController.state,
+      address: 'eip155:1:0x1234567890abcdef1234567890abcdef12345678',
       preferredAccountType: 'smartAccount'
-    })
+    } as AccountState)
     vi.spyOn(ChainController, 'checkIfSmartAccountEnabled').mockReturnValue(true)
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: { getEmail: vi.fn().mockReturnValue('user@example.com') }
