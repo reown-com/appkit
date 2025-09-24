@@ -95,9 +95,11 @@ export class WagmiAdapter extends AdapterBlueprint {
     }) as [CaipNetwork, ...CaipNetwork[]]
 
     super()
+
     this.namespace = CommonConstantsUtil.CHAIN.EVM
-    this.adapterType = CommonConstantsUtil.ADAPTER_TYPES.WAGMI
+    this.networks = networks
     this.projectId = configParams.projectId
+    this.adapterType = CommonConstantsUtil.ADAPTER_TYPES.WAGMI
 
     this.pendingTransactionsFilter = {
       ...DEFAULT_PENDING_TRANSACTIONS_FILTER,
@@ -109,6 +111,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   override construct(_options: AdapterBlueprint.Params) {
+    // Call parent construct to set networks and other properties
     this.checkChainId()
     this.setupWatchers()
   }
@@ -202,7 +205,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private setupWatchPendingTransactions() {
-    if (!this.pendingTransactionsFilter.enable || this.unwatchPendingTransactions) {
+    if (!this.pendingTransactionsFilter?.enable || this.unwatchPendingTransactions) {
       return
     }
 
@@ -831,6 +834,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     const { caipNetwork } = params
 
+    // Handle regular wagmi chain switching
     const wagmiChain = this.wagmiConfig.chains.find(
       chain => chain.id.toString() === caipNetwork.id.toString()
     )
@@ -850,8 +854,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         ]
       }
     })
-
-    await super.switchNetwork(params)
+    super.switchNetwork(params)
   }
 
   public async getCapabilities(params: string) {

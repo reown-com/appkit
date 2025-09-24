@@ -717,7 +717,7 @@ export abstract class AppKitBaseClient {
 
     try {
       if (shouldDisconnectPreviousConnector) {
-        await ConnectionController.disconnect({ id: currentConnectorId, namespace })
+        await ConnectionController.disconnectConnector({ id: currentConnectorId, namespace })
       }
     } catch (error) {
       console.warn('Error disconnecting previous connector', error)

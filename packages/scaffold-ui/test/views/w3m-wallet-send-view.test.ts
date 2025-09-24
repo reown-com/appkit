@@ -1,10 +1,11 @@
-import { fixture, html } from '@open-wc/testing'
+import { elementUpdated, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Balance } from '@reown/appkit-common'
+import type { Balance, CaipNetwork } from '@reown/appkit-common'
 import {
   type AccountState,
   ChainController,
+  type ChainControllerState,
   ConnectionController,
   RouterController,
   SendController,
@@ -39,6 +40,16 @@ describe('W3mWalletSendView', () => {
       ...ChainController.getAccountData(),
       address: '0x123456789abcdef123456789abcdef123456789a'
     } as unknown as AccountState)
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      activeChain: 'eip155',
+      activeCaipNetwork: {
+        chainNamespace: 'eip155',
+        id: 1,
+        caipNetworkId: 'eip155:1'
+      } as unknown as CaipNetwork
+    } as unknown as ChainControllerState)
+
     vi.spyOn(SwapController, 'getNetworkTokenPrice').mockResolvedValue()
     vi.spyOn(SendController, 'fetchTokenBalance').mockResolvedValue([])
     vi.spyOn(ConnectionController, 'getEnsAddress').mockImplementation((ensName: string) => {
@@ -160,8 +171,8 @@ describe('W3mWalletSendView', () => {
     const textarea = addressInput.shadowRoot?.querySelector('textarea') as HTMLTextAreaElement
     textarea.value = 'enes.wcn.id'
     textarea.dispatchEvent(new InputEvent('input'))
-    await new Promise(resolve => setTimeout(resolve, 500)) // Wait for debounce
-    await element.updateComplete
+    await new Promise(resolve => setTimeout(resolve, 1500)) // Wait for debounce
+    await elementUpdated(element)
     await element.render()
 
     const button = element.shadowRoot?.querySelector('wui-button')
@@ -183,7 +194,7 @@ describe('W3mWalletSendView', () => {
     const textarea = addressInput.shadowRoot?.querySelector('textarea') as HTMLTextAreaElement
     textarea.value = 'enestest.wcn.id'
     textarea.dispatchEvent(new InputEvent('input'))
-    await new Promise(resolve => setTimeout(resolve, 500)) // Wait for debounce
+    await new Promise(resolve => setTimeout(resolve, 1000)) // Wait for debounce
     await element.updateComplete
     await element.render()
 

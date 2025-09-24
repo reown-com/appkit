@@ -3,7 +3,6 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   type CaipNetwork,
-  type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   ParseUtil,
   type ParsedCaipAddress

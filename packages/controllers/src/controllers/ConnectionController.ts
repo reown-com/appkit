@@ -672,10 +672,8 @@ const controller = {
        */
       const namespacesToDisconnect = shouldDisconnectAll ? namespaces : [chainNamespace]
 
-      console.log('>> Namespaces to disconnect', namespacesToDisconnect)
       const disconnectPromises = namespacesToDisconnect.map(async ns => {
         const adapter = AdapterController.get(ns)
-        console.log('>> Adapter to disconnect', adapter)
         const disconnectData = await adapter?.disconnect({
           namespace: ns
         })
@@ -753,7 +751,6 @@ const controller = {
        * When the page loaded, the controller doesn't have address yet.
        * To disconnect, we are checking enableReconnect flag to disconnect the namespace.
        */
-      console.log('>> Disconnect connector', caipAddress, OptionsController.state.enableReconnect)
       if (caipAddress || !OptionsController.state.enableReconnect) {
         disconnectResult = await adapter?.disconnect({ id })
       }
@@ -1298,13 +1295,13 @@ const controller = {
     const otherAuthNamespaces = authNamespaces.filter(ns => ns !== params.chain)
 
     const activeCaipNetwork = ChainController.state.activeCaipNetwork
-    const activeNamespace = activeCaipNetwork?.chainNamespace
+    const activeNamespace = ChainController.state.activeChain
     if (!activeNamespace) {
       throw new Error('connectInactiveNamespaces: active namespace not found')
     }
 
-    const activeAdapter = AdapterController.get(activeCaipNetwork?.chainNamespace)
-    const activeProvider = ProviderController.getProvider(activeCaipNetwork?.chainNamespace)
+    const activeAdapter = AdapterController.get(activeNamespace)
+    const activeProvider = ProviderController.getProvider(activeNamespace)
 
     if (isConnectingToAuth) {
       await Promise.all(
