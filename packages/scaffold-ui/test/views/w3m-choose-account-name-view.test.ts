@@ -1,5 +1,5 @@
 import { fixture } from '@open-wc/testing'
-import {   beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
