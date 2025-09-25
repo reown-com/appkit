@@ -87,7 +87,6 @@ export type ConnectorType =
   | 'ANNOUNCED'
   | 'AUTH'
   | 'MULTI_CHAIN'
-  | 'ID_AUTH'
 
 export type SocialProvider =
   | 'google'

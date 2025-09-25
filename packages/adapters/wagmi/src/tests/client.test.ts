@@ -22,6 +22,9 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 import { type AppKitNetwork, type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
+  ConnectorController,
+  type ConnectionControllerClient,
+  ConnectorController,
   CoreHelperUtil,
   ProviderController,
   type SocialProvider
@@ -94,7 +97,7 @@ const mockWagmiConfig = {
       }
     },
     {
-      id: 'ID_AUTH',
+      id: 'AUTH',
       getProvider() {
         return Promise.resolve({
           user: {
@@ -129,7 +132,9 @@ const mockAuthProvider = {
   connect: vi.fn(),
   disconnect: vi.fn(),
   switchNetwork: vi.fn(),
-  getUser: vi.fn()
+  getUser: vi.fn(),
+  syncDappData: vi.fn(),
+  syncTheme: vi.fn()
 } as unknown as W3mFrameProvider
 
 describe('WagmiAdapter', () => {
@@ -926,6 +931,11 @@ describe('WagmiAdapter', () => {
       vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('AUTH')
       vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockAuthProvider)
 
+      // Mock ConnectorController.getAuthConnector to return our mock provider
+      vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
+        provider: mockAuthProvider
+      } as any)
+
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0]
       })
@@ -1409,7 +1419,7 @@ describe('WagmiAdapter', () => {
         }
       })
 
-      const accounts = await adapter.getAccounts({ id: 'ID_AUTH' })
+      const accounts = await adapter.getAccounts({ id: 'AUTH' })
 
       expect(accounts).toEqual({
         accounts: [

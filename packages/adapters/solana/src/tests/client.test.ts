@@ -2,7 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import { ChainController, ProviderController } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  ConnectorController,
+  type ConnectionControllerClient,
+  ConnectorController,
+  type Provider as CoreProvider,
+  ProviderController
+} from '@reown/appkit-controllers'
 import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
 
@@ -622,11 +629,18 @@ describe('SolanaAdapter', () => {
       const provider = Object.assign(Object.create(AuthProvider.prototype), {
         type: 'AUTH',
         switchNetwork: switchNetworkSpy,
-        getUser: mockAuthConnector.connect
+        getUser: mockAuthConnector.connect,
+        syncDappData: vi.fn(),
+        syncTheme: vi.fn()
       })
 
       vi.spyOn(ProviderController, 'getProvider').mockReturnValue(provider)
       vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('AUTH')
+
+      // Mock ConnectorController.getAuthConnector to return our mock provider
+      vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
+        provider
+      } as any)
 
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0]

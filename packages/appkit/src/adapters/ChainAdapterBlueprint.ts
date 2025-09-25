@@ -354,7 +354,12 @@ export abstract class AdapterBlueprint<
     }
 
     if (providerType === 'AUTH') {
-      const authProvider = provider as W3mFrameProvider
+      const authProvider = ConnectorController.getAuthConnector()?.provider
+
+      if (!authProvider) {
+        throw new Error('Auth provider not found')
+      }
+
       const preferredAccountType = getPreferredAccountType(caipNetwork.chainNamespace)
       await authProvider.switchNetwork({ chainId: caipNetwork.caipNetworkId })
       const user = await authProvider.getUser({

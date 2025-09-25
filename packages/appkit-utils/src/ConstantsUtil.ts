@@ -29,7 +29,7 @@ export const ConstantsUtil = {
   CONNECTOR_TYPE_ANNOUNCED: 'ANNOUNCED',
   CONNECTOR_TYPE_AUTH: 'AUTH',
   CONNECTOR_TYPE_MULTI_CHAIN: 'MULTI_CHAIN',
-  CONNECTOR_TYPE_W3M_AUTH: 'ID_AUTH',
+  CONNECTOR_TYPE_W3M_AUTH: 'AUTH',
   getSDKVersionWarningMessage(currentVersion: string, latestVersion: string) {
     return `
      @@@@@@@           @@@@@@@@@@@@@@@@@@      

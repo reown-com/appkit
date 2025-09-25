@@ -10,6 +10,9 @@ import {
 } from '@reown/appkit-common'
 import {
   ChainController,
+  ConnectorController,
+  type ConnectionControllerClient,
+  ConnectorController,
   CoreHelperUtil,
   type Provider,
   ProviderController,
@@ -83,7 +86,9 @@ const mockAuthProvider = {
   connect: vi.fn().mockResolvedValue({ address: '0x123' }),
   disconnect: vi.fn(),
   switchNetwork: vi.fn(),
-  getUser: vi.fn()
+  getUser: vi.fn(),
+  syncDappData: vi.fn(),
+  syncTheme: vi.fn()
 } as unknown as W3mFrameProvider
 
 const mockNetworks = [mainnet, polygon]
@@ -402,7 +407,7 @@ describe('EthersAdapter', () => {
       Object.defineProperty(ethersAdapter, 'connectors', {
         value: [
           {
-            id: 'ID_AUTH',
+            id: 'AUTH',
             type: 'AUTH',
             provider: mockAuthProvider
           }
@@ -410,7 +415,7 @@ describe('EthersAdapter', () => {
       })
 
       await ethersAdapter.reconnect({
-        id: 'ID_AUTH',
+        id: 'AUTH',
         type: 'AUTH',
         chainId: 1
       })
@@ -451,7 +456,7 @@ describe('EthersAdapter', () => {
       Object.defineProperty(ethersAdapter, 'connectors', {
         value: [
           {
-            id: 'ID_AUTH',
+            id: 'AUTH',
             type: 'AUTH',
             provider: mockAuthProvider
           }
@@ -459,7 +464,7 @@ describe('EthersAdapter', () => {
       })
 
       await ethersAdapter.disconnect({
-        id: 'ID_AUTH'
+        id: 'AUTH'
       })
 
       expect(mockAuthProvider.disconnect).toHaveBeenCalled()
@@ -833,7 +838,7 @@ describe('EthersAdapter', () => {
 
     it('should not listen to provider events for AUTH and WALLET_CONNECT connectors', async () => {
       const authConnector = {
-        id: 'ID_AUTH',
+        id: 'AUTH',
         type: 'AUTH',
         provider: mockAuthProvider
       }
@@ -1012,8 +1017,15 @@ describe('EthersAdapter', () => {
     })
 
     it('should switch network with Auth provider', async () => {
-      vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('AUTH')
-      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockAuthProvider)
+      // Set up provider in ProviderController
+      ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, mockAuthProvider)
+      ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'AUTH')
+
+      // Mock ConnectorController.getAuthConnector to return our mock provider
+      vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
+        provider: mockAuthProvider
+      } as any)
+
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0]
       })
