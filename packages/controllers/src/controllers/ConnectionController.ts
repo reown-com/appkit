@@ -127,7 +127,7 @@ export interface ConnectionControllerState {
   wcError?: boolean
   recentWallet?: WcWallet
   buffering: boolean
-  status?: 'connecting' | 'connected' | 'disconnected'
+  status?: 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
 }
 
 type StateKey = keyof ConnectionControllerState
@@ -1114,6 +1114,7 @@ const controller = {
       return
     }
 
+    console.log('>> universalProvider session', universalProvider.session)
     const sessionNamespaces = Object.keys(universalProvider.session?.namespaces || {})
     const syncTasks = ChainController.state.chains.keys().map(async chainNamespace => {
       const adapter = AdapterController.get(chainNamespace)
@@ -1131,6 +1132,7 @@ const controller = {
           return chainId === activeChainId?.toString()
         }) || namespaceAccounts[0]
 
+      console.log('>> sessionAddress', sessionAddress)
       if (sessionAddress) {
         ProviderController.setProviderId(chainNamespace, 'WALLET_CONNECT')
         const caipNetworks = ChainController.getCaipNetworks(chainNamespace)

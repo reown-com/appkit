@@ -13,11 +13,9 @@ import type {
 } from '@reown/appkit-common'
 import { ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import type {
-  AccountState,
   ConnectMethod,
   ConnectedWalletInfo,
   ConnectionControllerState,
-  ConnectorType,
   EventsControllerState,
   Features,
   ModalControllerState,
@@ -594,18 +592,18 @@ export abstract class AppKitBaseClient {
     const connectionStatus = StorageUtil.getConnectionStatus()
 
     if (OptionsController.state.enableReconnect === false) {
-      this.setStatus('disconnected', chainNamespace)
+      ConnectionController.setStatus('disconnected', chainNamespace)
     } else if (connectionStatus === 'connected') {
-      this.setStatus('connecting', chainNamespace)
+      ConnectionController.setStatus('connecting', chainNamespace)
     } else if (connectionStatus === 'disconnected') {
       /*
        * Address cache is kept after disconnecting from the wallet
        * but should be cleared if appkit is launched in disconnected state
        */
       StorageUtil.clearAddressCache()
-      this.setStatus(connectionStatus, chainNamespace)
+      ConnectionController.setStatus(connectionStatus, chainNamespace)
     } else {
-      this.setStatus(connectionStatus, chainNamespace)
+      ConnectionController.setStatus(connectionStatus, chainNamespace)
     }
 
     adapter.on('switchNetwork', ({ address, chainId }) => {
@@ -781,7 +779,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected async reconnectWalletConnect() {
-    await this.syncWalletConnectAccount()
+    await ConnectionController.syncWalletConnectAccount()
     const address = this.getAddress()
 
     if (!this.getCaipAddress()) {
@@ -812,7 +810,7 @@ export abstract class AppKitBaseClient {
 
       const connectorId = ConnectorController.getConnectorId(namespace)
 
-      this.setStatus('connecting', namespace)
+      ConnectionController.setStatus('connecting', namespace)
 
       switch (connectorId) {
         case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
@@ -826,7 +824,7 @@ export abstract class AppKitBaseClient {
       }
     } catch (err) {
       console.warn("AppKit couldn't sync existing connection", err)
-      this.setStatus('disconnected', namespace)
+      ConnectionController.setStatus('disconnected', namespace)
     }
   }
 
@@ -851,7 +849,7 @@ export abstract class AppKitBaseClient {
     ProviderController.resetChain(chainNamespace)
 
     this.setUser(null, chainNamespace)
-    this.setStatus('disconnected', chainNamespace)
+    ConnectionController.setStatus('disconnected', chainNamespace)
     this.setConnectedWalletInfo(null, chainNamespace)
 
     if (closeModal !== false) {
@@ -900,7 +898,7 @@ export abstract class AppKitBaseClient {
       if (connection) {
         this.syncProvider({ ...connection, chainNamespace: namespace })
         await ConnectionController.syncAccount({ ...connection, chainNamespace: namespace })
-        this.setStatus('connected', namespace)
+        ConnectionController.setStatus('connected', namespace)
         EventsController.sendEvent({
           type: 'track',
           event: 'CONNECT_SUCCESS',
@@ -914,82 +912,11 @@ export abstract class AppKitBaseClient {
           }
         })
       } else {
-        this.setStatus('disconnected', namespace)
+        ConnectionController.setStatus('disconnected', namespace)
       }
     } catch (e) {
       this.onDisconnectNamespace({ chainNamespace: namespace, closeModal: false })
     }
-  }
-
-  protected async syncWalletConnectAccount() {
-    const sessionNamespaces = Object.keys(this.universalProvider?.session?.namespaces || {})
-    const syncTasks = this.chainNamespaces.map(async chainNamespace => {
-      const adapter = this.getAdapter(chainNamespace)
-
-      if (!adapter) {
-        return
-      }
-
-      const namespaceAccounts =
-        this.universalProvider?.session?.namespaces?.[chainNamespace]?.accounts || []
-
-      // We try and find the address for this network in the session object.
-      const activeChainId = ChainController.state.activeCaipNetwork?.id
-
-      const sessionAddress =
-        namespaceAccounts.find(account => {
-          const { chainId } = ParseUtil.parseCaipAddress(account as CaipAddress)
-
-          return chainId === activeChainId?.toString()
-        }) || namespaceAccounts[0]
-
-      if (sessionAddress) {
-        const caipAddress = ParseUtil.validateCaipAddress(sessionAddress)
-        const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
-        ProviderController.setProviderId(
-          chainNamespace,
-          UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT as ConnectorType
-        )
-
-        const caipNetworks = this.getCaipNetworks()
-        if (
-          caipNetworks &&
-          ChainController.state.activeCaipNetwork &&
-          adapter.namespace !== ConstantsUtil.CHAIN.EVM
-        ) {
-          const provider = adapter.getWalletConnectProvider({
-            caipNetworks,
-            activeCaipNetwork: ChainController.state.activeCaipNetwork
-          })
-          ProviderController.setProvider(chainNamespace, provider)
-        } else {
-          ProviderController.setProvider(chainNamespace, this.universalProvider)
-        }
-
-        ConnectorController.setConnectorId(
-          ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
-          chainNamespace
-        )
-        StorageUtil.addConnectedNamespace(chainNamespace)
-
-        await ConnectionController.syncAccount({
-          address,
-          chainId,
-          chainNamespace
-        })
-      } else if (sessionNamespaces.includes(chainNamespace)) {
-        this.setStatus('disconnected', chainNamespace)
-      }
-
-      const data = this.getApprovedCaipNetworksData()
-      ConnectionController.syncConnectedWalletInfo(chainNamespace)
-      ChainController.setApprovedCaipNetworksData(chainNamespace, {
-        approvedCaipNetworkIds: data.approvedCaipNetworkIds,
-        supportsAllNetworks: data.supportsAllNetworks
-      })
-    })
-
-    await Promise.all(syncTasks)
   }
 
   protected syncProvider({
@@ -1230,7 +1157,7 @@ export abstract class AppKitBaseClient {
       return ChainController.state.activeCaipAddress
     }
 
-    return ChainController.state.chains.get(chainNamespace)?.accountState?.caipAddress
+    return ChainController.getAccountData(chainNamespace)?.caipAddress
   }
 
   public setClientId: (typeof BlockchainApiController)['setClientId'] = clientId => {
@@ -1286,17 +1213,6 @@ export abstract class AppKitBaseClient {
 
   public setCaipNetworkOfNamespace = (caipNetwork: CaipNetwork, chainNamespace: ChainNamespace) => {
     ChainController.setChainNetworkData(chainNamespace, { caipNetwork })
-  }
-
-  public setStatus = (status: AccountState['status'], chain: ChainNamespace) => {
-    ChainController.setAccountProp('status', status, chain)
-
-    // If at least one namespace is connected, set the connection status
-    if (ConnectorController.isConnected()) {
-      StorageUtil.setConnectionStatus('connected')
-    } else {
-      StorageUtil.setConnectionStatus('disconnected')
-    }
   }
 
   public getAddressByChainNamespace = (chainNamespace: ChainNamespace) =>
@@ -1511,7 +1427,7 @@ export abstract class AppKitBaseClient {
 
   public getWalletInfo(namespace?: ChainNamespace) {
     if (namespace) {
-      return ChainController.state.chains.get(namespace)?.accountState?.connectedWalletInfo
+      return ChainController.getAccountData(namespace)?.connectedWalletInfo
     }
 
     const accountData = ChainController.getAccountData()

@@ -1,10 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConstantsUtil } from '@reown/appkit-common'
 import {
   type AccountState,
   ApiController,
-  BlockchainApiController,
   ChainController,
   ConnectionController,
   ConnectorController,
@@ -89,30 +87,6 @@ describe('AppKitCore', () => {
       })
 
       expect(ApiController.initializeExcludedWallets).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('syncAccount', () => {
-    let appKit: AppKit
-    const mockParams = {
-      address: '0x123',
-      chainId: '1',
-      chainNamespace: ConstantsUtil.CHAIN.EVM
-    }
-
-    beforeEach(() => {
-      appKit = new AppKit({
-        ...mockOptions
-      })
-    })
-
-    it('should not make any blockchain API calls', async () => {
-      const blockchainApiSpy = vi.spyOn(BlockchainApiController, 'fetchIdentity')
-
-      await appKit.syncBalance(mockParams)
-      await appKit.syncIdentity(mockParams)
-
-      expect(blockchainApiSpy).not.toHaveBeenCalled()
     })
   })
 })
