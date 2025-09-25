@@ -5,6 +5,7 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   type ConnectionControllerClient,
+  ConnectorController,
   type Provider as CoreProvider,
   ProviderController
 } from '@reown/appkit-controllers'
@@ -629,12 +630,19 @@ describe('SolanaAdapter', () => {
       const provider = Object.assign(Object.create(AuthProvider.prototype), {
         type: 'AUTH',
         switchNetwork: switchNetworkSpy,
-        getUser: mockAuthConnector.connect
+        getUser: mockAuthConnector.connect,
+        syncDappData: vi.fn(),
+        syncTheme: vi.fn()
       })
 
       // Set up provider in ProviderController for super.switchNetwork() call
       ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, provider)
       ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'AUTH')
+
+      // Mock ConnectorController.getAuthConnector to return our mock provider
+      vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
+        provider
+      } as any)
 
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0]

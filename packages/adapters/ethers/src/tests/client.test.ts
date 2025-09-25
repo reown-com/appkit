@@ -11,6 +11,7 @@ import {
 import {
   ChainController,
   type ConnectionControllerClient,
+  ConnectorController,
   CoreHelperUtil,
   type Provider,
   ProviderController,
@@ -84,7 +85,9 @@ const mockAuthProvider = {
   connect: vi.fn().mockResolvedValue({ address: '0x123' }),
   disconnect: vi.fn(),
   switchNetwork: vi.fn(),
-  getUser: vi.fn()
+  getUser: vi.fn(),
+  syncDappData: vi.fn(),
+  syncTheme: vi.fn()
 } as unknown as W3mFrameProvider
 
 const mockNetworks = [mainnet, polygon]
@@ -1002,6 +1005,11 @@ describe('EthersAdapter', () => {
       // Set up provider in ProviderController
       ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, mockAuthProvider)
       ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'AUTH')
+
+      // Mock ConnectorController.getAuthConnector to return our mock provider
+      vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
+        provider: mockAuthProvider
+      } as any)
 
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0]

@@ -23,6 +23,7 @@ import { type AppKitNetwork, type CaipAddress, ConstantsUtil } from '@reown/appk
 import {
   ChainController,
   type ConnectionControllerClient,
+  ConnectorController,
   CoreHelperUtil,
   ProviderController,
   type SocialProvider
@@ -130,7 +131,9 @@ const mockAuthProvider = {
   connect: vi.fn(),
   disconnect: vi.fn(),
   switchNetwork: vi.fn(),
-  getUser: vi.fn()
+  getUser: vi.fn(),
+  syncDappData: vi.fn(),
+  syncTheme: vi.fn()
 } as unknown as W3mFrameProvider
 
 describe('WagmiAdapter', () => {
@@ -876,6 +879,11 @@ describe('WagmiAdapter', () => {
       // Set up provider in ProviderController for super.switchNetwork() call
       ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, mockAuthProvider)
       ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'AUTH')
+
+      // Mock ConnectorController.getAuthConnector to return our mock provider
+      vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
+        provider: mockAuthProvider
+      } as any)
 
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0]
