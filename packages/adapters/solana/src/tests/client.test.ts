@@ -5,7 +5,8 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   type ConnectionControllerClient,
-  type Provider as CoreProvider
+  type Provider as CoreProvider,
+  ProviderController
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
@@ -631,10 +632,12 @@ describe('SolanaAdapter', () => {
         getUser: mockAuthConnector.connect
       })
 
+      // Set up provider in ProviderController for super.switchNetwork() call
+      ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, provider)
+      ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'AUTH')
+
       await adapter.switchNetwork({
-        caipNetwork: mockCaipNetworks[0],
-        provider: provider,
-        providerType: 'AUTH'
+        caipNetwork: mockCaipNetworks[0]
       })
 
       expect(switchNetworkSpy).toHaveBeenCalled()

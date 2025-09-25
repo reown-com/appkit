@@ -24,6 +24,7 @@ import {
   ChainController,
   type ConnectionControllerClient,
   CoreHelperUtil,
+  ProviderController,
   type SocialProvider
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
@@ -834,6 +835,11 @@ describe('WagmiAdapter', () => {
 
   describe('WagmiAdapter - switchNetwork', () => {
     it('should switch network successfully', async () => {
+      // Set up a mock provider in ProviderController for super.switchNetwork() call
+      const mockProvider = { setDefaultChain: vi.fn() }
+      ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, mockProvider)
+      ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'WALLET_CONNECT')
+
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0]
       })
@@ -867,10 +873,12 @@ describe('WagmiAdapter', () => {
         preferredAccountType: 'smartAccount'
       })
 
+      // Set up provider in ProviderController for super.switchNetwork() call
+      ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, mockAuthProvider)
+      ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'AUTH')
+
       await adapter.switchNetwork({
-        caipNetwork: mockCaipNetworks[0],
-        provider: mockAuthProvider,
-        providerType: 'AUTH'
+        caipNetwork: mockCaipNetworks[0]
       })
 
       expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
