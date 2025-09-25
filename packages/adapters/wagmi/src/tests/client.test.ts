@@ -22,6 +22,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 import { type AppKitNetwork, type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
+  ConnectorController,
   type ConnectionControllerClient,
   ConnectorController,
   CoreHelperUtil,

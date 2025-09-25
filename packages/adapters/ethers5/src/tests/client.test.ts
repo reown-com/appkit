@@ -10,6 +10,7 @@ import {
 } from '@reown/appkit-common'
 import {
   ChainController,
+  ConnectorController,
   type ConnectionControllerClient,
   ConnectorController,
   type Provider,
