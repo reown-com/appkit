@@ -77,7 +77,7 @@ export const SIWXUtil = {
       })
 
       // eslint-disable-next-line no-console
-      await ConnectionController._getClient()?.disconnect().catch(console.error)
+      await ConnectionController.disconnect().catch(console.error)
       RouterController.reset('Connect')
       SnackController.showError('A problem occurred while trying initialize authentication')
     }
@@ -86,7 +86,6 @@ export const SIWXUtil = {
     const siwx = OptionsController.state.siwx
     const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
     const network = getActiveCaipNetwork()
-    const client = ConnectionController._getClient()
 
     if (!siwx) {
       throw new Error('SIWX is not enabled')
@@ -98,10 +97,6 @@ export const SIWXUtil = {
 
     if (!network) {
       throw new Error('No ActiveCaipNetwork or client found')
-    }
-
-    if (!client) {
-      throw new Error('No ConnectionController client found')
     }
 
     try {
@@ -117,7 +112,7 @@ export const SIWXUtil = {
         RouterController.pushTransactionStack({})
       }
 
-      const signature = await client.signMessage(message)
+      const signature = await ConnectionController.signMessage(message)
 
       await siwx.addSession({
         data: siwxMessage,

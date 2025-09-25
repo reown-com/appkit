@@ -15,7 +15,7 @@ export const BitcoinApi: BitcoinApi.Interface = {
       return []
     }
 
-    return (await response.json()) as BitcoinApi.UTXO[]
+    return await response.json()
   }
 }
 

@@ -41,9 +41,9 @@ export class W3mNetworksView extends LitElement {
     this.unsubscribe.push(
       AssetController.subscribeNetworkImages(() => this.requestUpdate()),
       ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
-      ChainController.subscribe(() => {
-        this.requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
-      })
+      ChainController.subscribe(
+        () => (this.requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks())
+      )
     )
   }
 

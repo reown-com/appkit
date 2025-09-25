@@ -221,9 +221,7 @@ describe('SendController', () => {
       vi.spyOn(RouterController, 'pushTransactionStack').mockImplementation(() => {})
       vi.spyOn(RouterController, 'replace').mockImplementation(() => {})
       vi.spyOn(ConnectionController, 'sendTransaction').mockResolvedValue(undefined)
-      vi.spyOn(ConnectionController, '_getClient').mockReturnValue({
-        updateBalance: vi.fn()
-      } as any)
+      vi.spyOn(ConnectionController, 'updateBalance').mockResolvedValue(undefined)
       vi.spyOn(CoreHelperUtil, 'isCaipAddress').mockReturnValue(false)
       vi.spyOn(SendController, 'resetSend').mockImplementation(() => {})
     })
@@ -231,6 +229,7 @@ describe('SendController', () => {
     it('should call sendTransaction without tokenMint', async () => {
       SendController.setTokenAmount(0.1)
       SendController.setReceiverAddress('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')
+      vi.spyOn(ConnectionController, 'updateBalance').mockResolvedValue(undefined)
 
       await SendController.sendSolanaToken()
 
@@ -243,7 +242,7 @@ describe('SendController', () => {
         to: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
         value: 0.1
       })
-      expect(ConnectionController._getClient()?.updateBalance).toHaveBeenCalledWith('solana')
+      expect(ConnectionController.updateBalance).toHaveBeenCalledWith({ namespace: 'solana' })
       expect(SendController.resetSend).toHaveBeenCalled()
     })
 
@@ -278,7 +277,7 @@ describe('SendController', () => {
         to: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
         value: 50
       })
-      expect(ConnectionController._getClient()?.updateBalance).toHaveBeenCalledWith('solana')
+      expect(ConnectionController.updateBalance).toHaveBeenCalledWith({ namespace: 'solana' })
       expect(SendController.resetSend).toHaveBeenCalled()
     })
   })

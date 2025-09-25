@@ -142,13 +142,14 @@ export class Ethers5Adapter extends AdapterBlueprint {
   public async signMessage(
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
-    const { message, address, provider } = params
+    const { message, address } = params
+    const provider = ProviderController.getProvider<Provider>(CommonConstantsUtil.CHAIN.EVM)
 
     if (!provider) {
       throw new Error('Provider is undefined')
     }
     try {
-      const signature = await Ethers5Methods.signMessage(message, provider as Provider, address)
+      const signature = await Ethers5Methods.signMessage(message, provider, address)
 
       return { signature }
     } catch (error) {
@@ -159,7 +160,8 @@ export class Ethers5Adapter extends AdapterBlueprint {
   public async sendTransaction(
     params: AdapterBlueprint.SendTransactionParams
   ): Promise<AdapterBlueprint.SendTransactionResult> {
-    if (!params.provider) {
+    const provider = ProviderController.getProvider<Provider>(CommonConstantsUtil.CHAIN.EVM)
+    if (!provider) {
       throw new Error('Provider is undefined')
     }
 
@@ -178,7 +180,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
         gasPrice: params.gasPrice ? BigInt(params.gasPrice) : undefined,
         address: address as Address
       },
-      params.provider as Provider,
+      provider,
       address as Address,
       Number(params.caipNetwork?.id)
     )
@@ -189,14 +191,15 @@ export class Ethers5Adapter extends AdapterBlueprint {
   public async writeContract(
     params: AdapterBlueprint.WriteContractParams
   ): Promise<AdapterBlueprint.WriteContractResult> {
-    if (!params.provider) {
+    const provider = ProviderController.getProvider<Provider>(CommonConstantsUtil.CHAIN.EVM)
+    if (!provider) {
       throw new Error('Provider is undefined')
     }
 
     const { address } = ParseUtil.parseCaipAddress(params.caipAddress)
     const result = await Ethers5Methods.writeContract(
       params,
-      params.provider as Provider,
+      provider,
       address,
       Number(params.caipNetwork?.id)
     )
@@ -207,7 +210,8 @@ export class Ethers5Adapter extends AdapterBlueprint {
   public async estimateGas(
     params: AdapterBlueprint.EstimateGasTransactionArgs
   ): Promise<AdapterBlueprint.EstimateGasTransactionResult> {
-    const { provider, caipNetwork, address } = params
+    const { caipNetwork, address } = params
+    const provider = ProviderController.getProvider<Provider>(CommonConstantsUtil.CHAIN.EVM)
     if (!provider) {
       throw new Error('Provider is undefined')
     }
@@ -219,7 +223,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
           to: params.to as Address,
           address: address as Address
         },
-        provider as Provider,
+        provider,
         address as Address,
         Number(caipNetwork?.id)
       )
@@ -339,7 +343,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
   }: AdapterBlueprint.SyncConnectionsParams) {
     await this.connectionManager?.syncConnections({
       connectors: this.connectors,
-      caipNetworks: this.getCaipNetworks(),
+      caipNetworks: this.networks,
       universalProvider: this.universalProvider as UniversalProvider,
       onConnection: this.addConnection.bind(this),
       onListenProvider: this.listenProviderEvents.bind(this)
@@ -367,7 +371,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
-        caipNetworks: this.getCaipNetworks(),
+        caipNetworks: this.networks,
         namespace: CommonConstantsUtil.CHAIN.EVM
       })
     )
@@ -473,9 +477,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
             preferredAccountType: getPreferredAccountType('eip155')
           })
 
-        const caipNetwork = this.getCaipNetworks().find(
-          n => n.id.toString() === chainId?.toString()
-        )
+        const caipNetwork = this.networks.find(n => n.id.toString() === chainId?.toString())
 
         accounts = [_address]
 
@@ -505,9 +507,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
           method: 'eth_chainId'
         })
 
-        const caipNetwork = this.getCaipNetworks().find(
-          n => n.id.toString() === chainId?.toString()
-        )
+        const caipNetwork = this.networks.find(n => n.id.toString() === chainId?.toString())
 
         if (requestChainId !== chainId) {
           if (!caipNetwork) {
@@ -673,7 +673,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const address = params.address
-    const caipNetwork = this.getCaipNetworks().find(
+    const caipNetwork = this.networks.find(
       network => network.id.toString() === params.chainId?.toString()
     )
 

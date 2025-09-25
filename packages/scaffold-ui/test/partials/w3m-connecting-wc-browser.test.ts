@@ -1,10 +1,11 @@
-import { fixture } from '@open-wc/testing'
+import { elementUpdated, fixture } from '@open-wc/testing'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import {
+  AdapterController,
   ChainController,
   ConnectionController,
   type Connector,
@@ -30,10 +31,31 @@ const CONNECTOR = {
 describe('W3mConnectingWcBrowser', () => {
   beforeAll(() => {
     Element.prototype.animate = vi.fn()
+    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+      ...RouterController.state,
+      data: {
+        wallet: WALLET
+      }
+    })
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
     vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue({
       caipNetworkId: 'eip155:1'
     } as unknown as CaipNetwork)
+    ChainController.initialize(
+      [
+        {
+          namespace: 'eip155',
+          caipNetworks: [
+            {
+              chainNamespace: 'eip155',
+              id: 1,
+              caipNetworkId: 'eip155:1'
+            } as unknown as CaipNetwork
+          ]
+        }
+      ],
+      []
+    )
   })
 
   afterEach(() => {
@@ -41,13 +63,6 @@ describe('W3mConnectingWcBrowser', () => {
   })
 
   it('it should send SELECT_WALLET event when constructor is called', async () => {
-    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
-      ...RouterController.state,
-      data: {
-        wallet: WALLET
-      }
-    })
-
     vi.spyOn(EventsController, 'sendEvent')
 
     await fixture(html`<w3m-connecting-wc-browser></w3m-connecting-wc-browser>`)
@@ -67,8 +82,17 @@ describe('W3mConnectingWcBrowser', () => {
       connectors: [CONNECTOR]
     })
 
-    await fixture(html`<w3m-connecting-wc-browser></w3m-connecting-wc-browser>`)
-
+    vi.spyOn(AdapterController, 'get').mockReturnValue({
+      connect: vi.fn().mockResolvedValue({
+        address: '0x123',
+        chainId: '1',
+        provider: {} as any,
+        id: 'test-connector',
+        type: 'INJECTED'
+      })
+    })
+    const element = await fixture(html`<w3m-connecting-wc-browser></w3m-connecting-wc-browser>`)
+    await elementUpdated(element)
     expect(ConnectionController.connectExternal).toHaveBeenCalledWith(CONNECTOR, CONNECTOR.chain)
     expect(EventsController.sendEvent).toHaveBeenCalledWith({
       type: 'track',

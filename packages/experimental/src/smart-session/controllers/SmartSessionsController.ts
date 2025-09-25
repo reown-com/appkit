@@ -95,13 +95,14 @@ export const SmartSessionsController = {
     if (!activeCaipAddress || !chainAndAddress) {
       throw new Error(ERROR_MESSAGES.INVALID_ADDRESS)
     }
-    // Fetch the ConnectionController client
-    const connectionControllerClient = ConnectionController._getClient()
 
     //Check for connected wallet supports permissions capabilities
-    const walletCapabilities = (await connectionControllerClient?.getCapabilities(
-      chainAndAddress.address
-    )) as WalletCapabilities
+    const walletCapabilities = await ConnectionController.request<object, WalletCapabilities>(
+      'wallet_getCapabilities',
+      {
+        address: chainAndAddress.address
+      }
+    )
 
     const hexChainId: `0x${string}` = `0x${parseInt(chainAndAddress.chain, 10).toString(16)}`
     const permissionsCapabilities = walletCapabilities?.[hexChainId]?.permissions
@@ -126,7 +127,10 @@ export const SmartSessionsController = {
     })
 
     const versionedRequest = { ...request, version: 2 }
-    const rawResponse = await connectionControllerClient?.grantPermissions([versionedRequest])
+    const rawResponse = await ConnectionController.request<
+      [SmartSessionGrantPermissionsRequest],
+      SmartSessionGrantPermissionsResponse
+    >('wallet_grantPermissions', [versionedRequest])
 
     // Validate and type guard the response
     const response = assertWalletGrantPermissionsResponse(rawResponse)
@@ -207,9 +211,6 @@ export const SmartSessionsController = {
         throw new Error(ERROR_MESSAGES.INVALID_ADDRESS)
       }
 
-      // Fetch the ConnectionController client
-      const connectionControllerClient = ConnectionController._getClient()
-
       // Retrieve state values
       const { projectId } = OptionsController.state
 
@@ -222,15 +223,18 @@ export const SmartSessionsController = {
         }
       })
 
-      const signature = await connectionControllerClient?.revokePermissions({
-        pci: session.pci,
-        permissions: [...session.permissions.map(p => JSON.parse(JSON.stringify(p)))],
-        expiry: Math.floor(session.expiry / 1000),
-        address: activeCaipAddress
-      })
+      const signature = await ConnectionController.request<object, Hex>(
+        'wallet_revokePermissions',
+        {
+          pci: session.pci,
+          permissions: [...session.permissions.map(p => JSON.parse(JSON.stringify(p)))],
+          expiry: Math.floor(session.expiry / 1000),
+          address: activeCaipAddress
+        }
+      )
 
       // Activate the permissions using CosignerService
-      await cosignerService.revokePermissions(activeCaipAddress, session.pci, signature as Hex)
+      await cosignerService.revokePermissions(activeCaipAddress, session.pci, signature)
       state.sessions = state.sessions.filter(s => s.pci !== session.pci)
     } catch (e) {
       SnackController.showError('Error revoking smart session')

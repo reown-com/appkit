@@ -1,5 +1,7 @@
 import type { ChainNamespace } from '@reown/appkit-common'
 
+// REVIEW THIS
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AdapterBlueprint = any
 
@@ -21,10 +23,17 @@ const state = {
 
 export const AdapterController = {
   state,
-  initialize(adapters: Record<ChainNamespace, AdapterBlueprint>) {
-    state.adapters = adapters
+  initialize(adapters: AdapterBlueprint[]) {
+    state.adapters = adapters.reduce<Record<ChainNamespace, AdapterBlueprint>>((acc, adapter) => {
+      acc[adapter.namespace as ChainNamespace] = adapter
+
+      return acc
+    }, state.adapters)
   },
   get(namespace: ChainNamespace) {
     return state.adapters[namespace] as AdapterBlueprint
+  },
+  set(namespace: ChainNamespace, adapter: AdapterBlueprint) {
+    state.adapters[namespace] = adapter
   }
 }
