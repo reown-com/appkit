@@ -224,7 +224,7 @@ export class AppKit extends AppKitBaseClient {
     this.setLoading(isLoginEmailUsed, chainNamespace)
 
     if (isLoginEmailUsed) {
-      this.setStatus('connecting', chainNamespace)
+      ConnectionController.setStatus('connecting', chainNamespace)
     }
 
     const email = provider.getEmail()
@@ -256,7 +256,7 @@ export class AppKit extends AppKitBaseClient {
           },
           chainNamespace
         )
-        this.setStatus('connected', chainNamespace)
+        ConnectionController.setStatus('connected', chainNamespace)
         const socialProvider = StorageUtil.getConnectedSocialProvider()
         if (socialProvider) {
           EventsController.sendEvent({
@@ -285,7 +285,7 @@ export class AppKit extends AppKitBaseClient {
       } else if (
         ConnectorController.getConnectorId(chainNamespace) === ConstantsUtil.CONNECTOR_ID.AUTH
       ) {
-        this.setStatus('disconnected', chainNamespace)
+        ConnectionController.setStatus('disconnected', chainNamespace)
         StorageUtil.removeConnectedNamespace(chainNamespace)
       }
     }

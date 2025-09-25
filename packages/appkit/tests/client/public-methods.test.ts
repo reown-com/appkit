@@ -1130,7 +1130,7 @@ describe('Base Public methods', () => {
       return undefined
     })
 
-    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('AUTH')
 
     const connectedConnectorId = StorageUtil.getConnectedConnectorId(
       ChainController.state.activeChain

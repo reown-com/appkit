@@ -23,8 +23,6 @@ import { type AppKitNetwork, type CaipAddress, ConstantsUtil } from '@reown/appk
 import {
   ChainController,
   ConnectorController,
-  type ConnectionControllerClient,
-  ConnectorController,
   CoreHelperUtil,
   ProviderController,
   type SocialProvider

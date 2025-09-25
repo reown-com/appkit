@@ -11,8 +11,6 @@ import {
 import {
   ChainController,
   ConnectorController,
-  type ConnectionControllerClient,
-  ConnectorController,
   CoreHelperUtil,
   type Provider,
   ProviderController,
@@ -1017,21 +1015,28 @@ describe('EthersAdapter', () => {
     })
 
     it('should switch network with Auth provider', async () => {
-      // Set up provider in ProviderController
-      ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, mockAuthProvider)
-      ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'AUTH')
+      // Recreate mock functions after vi.clearAllMocks()
+      const mockAuthProviderWithSpies = {
+        ...mockAuthProvider,
+        switchNetwork: vi.fn(),
+        getUser: vi.fn()
+      }
+
+      // Mock ProviderController methods directly to ensure they return what we expect
+      vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('AUTH')
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockAuthProviderWithSpies)
 
       // Mock ConnectorController.getAuthConnector to return our mock provider
       vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
-        provider: mockAuthProvider
+        provider: mockAuthProviderWithSpies
       } as any)
 
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0]
       })
 
-      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith({ chainId: 'eip155:1' })
-      expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
+      expect(mockAuthProviderWithSpies.switchNetwork).toHaveBeenCalledWith({ chainId: 'eip155:1' })
+      expect(mockAuthProviderWithSpies.getUser).toHaveBeenCalledWith({
         chainId: 'eip155:1',
         preferredAccountType: 'smartAccount'
       })

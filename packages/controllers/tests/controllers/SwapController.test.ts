@@ -136,9 +136,6 @@ describe('SwapController', () => {
   })
 
   it('should replace SwapPreview view when approval transaction is approved', async () => {
-    const connectionControllerClientSpy = vi
-      .spyOn(ConnectionController, 'sendTransaction')
-      .mockImplementationOnce(() => Promise.resolve(null))
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('AUTH')
     vi.spyOn(RouterController, 'pushTransactionStack').mockImplementationOnce(() =>
       Promise.resolve()
