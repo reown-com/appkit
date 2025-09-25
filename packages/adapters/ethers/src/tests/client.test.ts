@@ -290,6 +290,10 @@ describe('EthersAdapter', () => {
         value: connectors
       })
 
+      // Set up provider in ProviderController for switchNetwork call in connect
+      ProviderController.setProvider('eip155', mockProvider)
+      ProviderController.setProviderId('eip155', 'EXTERNAL')
+
       const result = await adapter.connect({
         id: 'test',
         provider: mockProvider,
@@ -323,6 +327,10 @@ describe('EthersAdapter', () => {
       Object.defineProperty(adapter, 'connectors', {
         value: connectors
       })
+
+      // Set up provider in ProviderController for switchNetwork call in connect
+      ProviderController.setProvider('eip155', mockProvider)
+      ProviderController.setProviderId('eip155', 'EXTERNAL')
 
       const result = await adapter.connect({
         id: 'test',
@@ -974,6 +982,11 @@ describe('EthersAdapter', () => {
         vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
 
         const mockCaipNetwork = mockCaipNetworks[0]
+
+        // Set up provider in ProviderController
+        ProviderController.setProvider(mockCaipNetwork.chainNamespace, mockProvider)
+        ProviderController.setProviderId(mockCaipNetwork.chainNamespace, 'EXTERNAL')
+
         await adapter.switchNetwork({
           caipNetwork: mockCaipNetwork
         })
@@ -1033,6 +1046,11 @@ describe('EthersAdapter', () => {
         })
 
       const mockCaipNetwork = mockCaipNetworks[0]
+
+      // Set up provider in ProviderController
+      ProviderController.setProvider(mockCaipNetwork.chainNamespace, mockProvider)
+      ProviderController.setProviderId(mockCaipNetwork.chainNamespace, 'EXTERNAL')
+
       await expect(
         adapter.switchNetwork({
           caipNetwork: mockCaipNetwork
@@ -1053,9 +1071,14 @@ describe('EthersAdapter', () => {
       const params = {
         caipNetwork: {
           id: 1,
-          caipNetworkId: 'eip155:1'
+          caipNetworkId: 'eip155:1',
+          chainNamespace: 'eip155'
         }
       } as unknown as any
+
+      // Set up provider in ProviderController
+      ProviderController.setProvider('eip155', mockProvider)
+      ProviderController.setProviderId('eip155', 'WALLET_CONNECT')
 
       await adapter.switchNetwork(params)
 
@@ -1178,6 +1201,10 @@ describe('EthersAdapter', () => {
         value: [{ id: 'test', provider: mockProvider }]
       })
 
+      // Set up provider in ProviderController for switchNetwork call in connect
+      ProviderController.setProvider('eip155', mockProvider)
+      ProviderController.setProviderId('eip155', 'EXTERNAL')
+
       await adapter.connect({
         id: 'test',
         type: 'EXTERNAL',
@@ -1210,6 +1237,10 @@ describe('EthersAdapter', () => {
       Object.defineProperty(adapter, 'connectors', {
         value: [{ id: 'test', provider: mockProvider }]
       })
+
+      // Set up provider in ProviderController for switchNetwork call in connect
+      ProviderController.setProvider('eip155', mockProvider)
+      ProviderController.setProviderId('eip155', 'EXTERNAL')
 
       const accountChangedSpy = vi.fn()
 

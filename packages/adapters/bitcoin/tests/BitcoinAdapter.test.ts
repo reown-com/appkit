@@ -679,6 +679,10 @@ describe('BitcoinAdapter', () => {
         getActiveNetwork: mockGetActiveNetworks
       })
 
+      // Set up provider in ProviderController
+      ProviderController.setProvider(bitcoinTestnet.chainNamespace, provider)
+      ProviderController.setProviderId(bitcoinTestnet.chainNamespace, provider.type)
+
       const switchNetworkSpy = vi.spyOn(provider, 'switchNetwork').mockResolvedValue(undefined)
 
       // Mock ProviderController to return EXTERNAL provider type so it calls connector's switchNetwork
@@ -709,6 +713,10 @@ describe('BitcoinAdapter', () => {
         requestedChains: [bitcoin, bitcoinTestnet],
         getActiveNetwork: mockGetActiveNetworks
       })
+
+      // Set up provider in ProviderController
+      ProviderController.setProvider(bitcoinTestnet.chainNamespace, xverseConnector)
+      ProviderController.setProviderId(bitcoinTestnet.chainNamespace, xverseConnector.type)
 
       const switchNetworkSpy = vi
         .spyOn(xverseConnector, 'switchNetwork')
@@ -752,6 +760,10 @@ describe('BitcoinAdapter', () => {
         requestedChains: [bitcoin],
         getActiveNetwork: mockGetActiveNetworks
       })
+
+      // Set up provider in ProviderController
+      ProviderController.setProvider(bitcoinTestnet.chainNamespace, provider)
+      ProviderController.setProviderId(bitcoinTestnet.chainNamespace, provider.type)
 
       const error = new Error('Network switching failed')
       vi.spyOn(provider, 'switchNetwork').mockRejectedValue(error)

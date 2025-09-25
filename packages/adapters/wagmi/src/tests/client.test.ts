@@ -884,6 +884,11 @@ describe('WagmiAdapter', () => {
 
   describe('WagmiAdapter - switchNetwork', () => {
     it('should switch network successfully', async () => {
+      // Set up a mock provider in ProviderController for super.switchNetwork() call
+      const mockProvider = { setDefaultChain: vi.fn() }
+      ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, mockProvider)
+      ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'WALLET_CONNECT')
+
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0]
       })
