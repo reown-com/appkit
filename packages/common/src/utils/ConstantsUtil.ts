@@ -18,7 +18,7 @@ export const ConstantsUtil = {
     LEDGER: 'ledger',
     OKX: 'okx',
     EIP6963: 'eip6963',
-    AUTH: 'ID_AUTH'
+    AUTH: 'AUTH'
   },
   CONNECTOR_NAMES: {
     AUTH: 'Auth'

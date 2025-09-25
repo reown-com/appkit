@@ -18,7 +18,7 @@ export type ProviderType =
   | 'injected'
   | 'coinbaseWallet'
   | 'eip6963'
-  | 'ID_AUTH'
+  | 'AUTH'
   | 'coinbaseWalletSDK'
 
 const CLEAN_PROVIDERS_STATE = {

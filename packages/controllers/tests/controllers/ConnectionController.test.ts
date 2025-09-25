@@ -15,7 +15,6 @@ import type {
   Connector,
   ConnectorType,
   ModalControllerState,
-  NetworkControllerClient,
   RouterControllerState
 } from '../../exports/index.js'
 import {
@@ -104,8 +103,7 @@ const adapters = [evmAdapter, solanaAdapter, bip122Adapter] as ChainAdapter[]
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
   ChainController.initialize(adapters, [], {
-    connectionControllerClient: client,
-    networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    connectionControllerClient: client
   })
   ConnectionController.setClient(evmAdapter.connectionControllerClient)
 })
@@ -122,8 +120,7 @@ describe('ConnectionController', () => {
       ],
       caipNetworks,
       {
-        connectionControllerClient: client,
-        networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+        connectionControllerClient: client
       }
     )
 
@@ -174,8 +171,7 @@ describe('ConnectionController', () => {
       ],
       [],
       {
-        connectionControllerClient: partialClient,
-        networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+        connectionControllerClient: partialClient
       }
     )
     await ConnectionController.connectExternal({ id: externalId, type }, chain)

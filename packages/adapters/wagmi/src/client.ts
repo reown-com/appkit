@@ -837,7 +837,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     )
 
     await switchChain(this.wagmiConfig, {
-      chainId: caipNetwork.id as number,
+      chainId: wagmiChain?.id as number,
       addEthereumChainParameter: {
         chainName: wagmiChain?.name ?? caipNetwork.name,
         nativeCurrency: wagmiChain?.nativeCurrency ?? caipNetwork.nativeCurrency,

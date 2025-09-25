@@ -136,6 +136,7 @@ export class W3mNetworkSwitchView extends LitElement {
       }
       if (this.network) {
         await ChainController.switchActiveNetwork(this.network)
+        RouterController.goBackOrCloseModal()
       }
     } catch (error) {
       this.error = true

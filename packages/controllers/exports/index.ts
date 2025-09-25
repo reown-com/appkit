@@ -17,6 +17,9 @@ export type { ProviderControllerState } from '../src/controllers/ProviderControl
 export { OnRampController } from '../src/controllers/OnRampController.js'
 export type { OnRampControllerState, OnRampProvider } from '../src/controllers/OnRampController.js'
 
+export { AdapterController } from '../src/controllers/AdapterController.js'
+export type { AdapterControllerState } from '../src/controllers/AdapterController.js'
+
 export { ConnectionController } from '../src/controllers/ConnectionController.js'
 export { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 export type {

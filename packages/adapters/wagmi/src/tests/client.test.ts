@@ -22,9 +22,11 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 import { type AppKitNetwork, type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
+  ConnectorController,
   type ConnectionControllerClient,
+  ConnectorController,
   CoreHelperUtil,
-  type NetworkControllerClient,
+  ProviderController,
   type SocialProvider
 } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
@@ -95,7 +97,7 @@ const mockWagmiConfig = {
       }
     },
     {
-      id: 'ID_AUTH',
+      id: 'AUTH',
       getProvider() {
         return Promise.resolve({
           user: {
@@ -130,7 +132,9 @@ const mockAuthProvider = {
   connect: vi.fn(),
   disconnect: vi.fn(),
   switchNetwork: vi.fn(),
-  getUser: vi.fn()
+  getUser: vi.fn(),
+  syncDappData: vi.fn(),
+  syncTheme: vi.fn()
 } as unknown as W3mFrameProvider
 
 describe('WagmiAdapter', () => {
@@ -155,8 +159,7 @@ describe('WagmiAdapter', () => {
     })
     adapter.wagmiConfig = mockWagmiConfig
     ChainController.initialize([adapter], mockCaipNetworks, {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
     })
     ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })
@@ -836,6 +839,11 @@ describe('WagmiAdapter', () => {
 
   describe('WagmiAdapter - switchNetwork', () => {
     it('should switch network successfully', async () => {
+      // Set up a mock provider in ProviderController for super.switchNetwork() call
+      const mockProvider = { setDefaultChain: vi.fn() }
+      ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, mockProvider)
+      ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'WALLET_CONNECT')
+
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0]
       })
@@ -869,10 +877,17 @@ describe('WagmiAdapter', () => {
         preferredAccountType: 'smartAccount'
       })
 
+      // Set up provider in ProviderController for super.switchNetwork() call
+      ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, mockAuthProvider)
+      ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'AUTH')
+
+      // Mock ConnectorController.getAuthConnector to return our mock provider
+      vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
+        provider: mockAuthProvider
+      } as any)
+
       await adapter.switchNetwork({
-        caipNetwork: mockCaipNetworks[0],
-        provider: mockAuthProvider,
-        providerType: 'AUTH'
+        caipNetwork: mockCaipNetworks[0]
       })
 
       expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
@@ -1325,7 +1340,7 @@ describe('WagmiAdapter', () => {
         }
       })
 
-      const accounts = await adapter.getAccounts({ id: 'ID_AUTH' })
+      const accounts = await adapter.getAccounts({ id: 'AUTH' })
 
       expect(accounts).toEqual({
         accounts: [

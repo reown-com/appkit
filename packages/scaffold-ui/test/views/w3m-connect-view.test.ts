@@ -30,7 +30,7 @@ const INSTALLED_WALLET = {
   type: 'ANNOUNCED'
 } as ConnectorWithProviders
 const AUTH_CONNECTOR = {
-  id: 'ID_AUTH',
+  id: 'AUTH',
   type: 'AUTH',
   name: 'Auth',
   chain: 'eip155'

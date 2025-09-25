@@ -10,8 +10,9 @@ import {
 } from '@reown/appkit-common'
 import {
   ChainController,
+  ConnectorController,
   type ConnectionControllerClient,
-  type NetworkControllerClient,
+  ConnectorController,
   type Provider,
   ProviderController,
   SIWXUtil
@@ -64,7 +65,9 @@ const mockAuthProvider = {
   connect: vi.fn().mockResolvedValue({ address: '0x123' }),
   disconnect: vi.fn(),
   switchNetwork: vi.fn(),
-  getUser: vi.fn()
+  getUser: vi.fn(),
+  syncDappData: vi.fn(),
+  syncTheme: vi.fn()
 } as unknown as W3mFrameProvider
 
 const mockNetworks = [mainnet, polygon]
@@ -80,8 +83,7 @@ describe('Ethers5Adapter', () => {
     vi.clearAllMocks()
     adapter = new Ethers5Adapter()
     ChainController.initialize([adapter], mockCaipNetworks, {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
     })
     ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })
@@ -227,6 +229,10 @@ describe('Ethers5Adapter', () => {
         value: connectors
       })
 
+      // Set up provider in ProviderController for switchNetwork call in connect
+      ProviderController.setProvider('eip155', mockProvider)
+      ProviderController.setProviderId('eip155', 'EXTERNAL')
+
       const result = await adapter.connect({
         id: 'test',
         provider: mockProvider,
@@ -259,6 +265,10 @@ describe('Ethers5Adapter', () => {
       Object.defineProperty(adapter, 'connectors', {
         value: connectors
       })
+
+      // Set up provider in ProviderController for switchNetwork call in connect
+      ProviderController.setProvider('eip155', mockProvider)
+      ProviderController.setProviderId('eip155', 'EXTERNAL')
 
       const result = await adapter.connect({
         id: 'test',
@@ -348,7 +358,7 @@ describe('Ethers5Adapter', () => {
       Object.defineProperty(ethers5Adapter, 'connectors', {
         value: [
           {
-            id: 'ID_AUTH',
+            id: 'AUTH',
             provider: mockAuthProvider,
             type: 'AUTH'
           }
@@ -356,7 +366,7 @@ describe('Ethers5Adapter', () => {
       })
 
       await ethers5Adapter.disconnect({
-        id: 'ID_AUTH'
+        id: 'AUTH'
       })
 
       expect(mockAuthProvider.disconnect).toHaveBeenCalled()
@@ -484,7 +494,7 @@ describe('Ethers5Adapter', () => {
       Object.defineProperty(ethers5Adapter, 'connectors', {
         value: [
           {
-            id: 'ID_AUTH',
+            id: 'AUTH',
             type: 'AUTH',
             provider: mockAuthProvider
           }
@@ -492,7 +502,7 @@ describe('Ethers5Adapter', () => {
       })
 
       await ethers5Adapter.reconnect({
-        id: 'ID_AUTH',
+        id: 'AUTH',
         type: 'AUTH',
         chainId: 1
       })
@@ -763,7 +773,7 @@ describe('Ethers5Adapter', () => {
 
     it('should not listen to provider events for AUTH and WALLET_CONNECT connectors', async () => {
       const authConnector = {
-        id: 'ID_AUTH',
+        id: 'AUTH',
         type: 'AUTH',
         provider: mockAuthProvider
       }
@@ -886,10 +896,17 @@ describe('Ethers5Adapter', () => {
       ChainController.setAccountProp('preferredAccountType', 'smartAccount', 'eip155')
     })
     it('should switch network with Auth provider', async () => {
+      // Set up provider in ProviderController
+      ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, mockAuthProvider)
+      ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'AUTH')
+
+      // Mock ConnectorController.getAuthConnector to return our mock provider
+      vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
+        provider: mockAuthProvider
+      } as any)
+
       await adapter.switchNetwork({
-        caipNetwork: mockCaipNetworks[0],
-        provider: mockAuthProvider,
-        providerType: 'AUTH'
+        caipNetwork: mockCaipNetworks[0]
       })
 
       expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith({ chainId: 'eip155:1' })
@@ -910,18 +927,18 @@ describe('Ethers5Adapter', () => {
       const params = {
         caipNetwork: {
           id: 1,
-          caipNetworkId: 'eip155:1'
-        },
-        provider: mockProvider,
-        providerType: 'WALLET_CONNECT'
+          caipNetworkId: 'eip155:1',
+          chainNamespace: 'eip155'
+        }
       } as unknown as any
+
+      // Set up provider in ProviderController
+      ProviderController.setProvider('eip155', mockProvider)
+      ProviderController.setProviderId('eip155', 'WALLET_CONNECT')
 
       await adapter.switchNetwork(params)
 
-      expect(mockProvider.request).toHaveBeenCalledWith({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: '0x1' }]
-      })
+      expect(mockProvider.setDefaultChain).toHaveBeenCalledWith('eip155:1')
     })
   })
 
@@ -1049,6 +1066,10 @@ describe('Ethers5Adapter', () => {
         value: [{ id: 'test', provider: mockProvider }]
       })
 
+      // Set up provider in ProviderController for switchNetwork call in connect
+      ProviderController.setProvider('eip155', mockProvider)
+      ProviderController.setProviderId('eip155', 'EXTERNAL')
+
       await adapter.connect({
         id: 'test',
         type: 'EXTERNAL',
@@ -1081,6 +1102,10 @@ describe('Ethers5Adapter', () => {
       Object.defineProperty(adapter, 'connectors', {
         value: [{ id: 'test', provider: mockProvider }]
       })
+
+      // Set up provider in ProviderController for switchNetwork call in connect
+      ProviderController.setProvider('eip155', mockProvider)
+      ProviderController.setProviderId('eip155', 'EXTERNAL')
 
       const accountChangedSpy = vi.fn()
 

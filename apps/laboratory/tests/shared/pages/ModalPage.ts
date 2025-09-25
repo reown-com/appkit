@@ -922,6 +922,9 @@ export class ModalPage {
       .getByTestId('wui-inactive-profile-wallet-item-button')
     await expect(firstActiveConnectionButton).toBeVisible()
     await firstActiveConnectionButton.click()
+
+    // Wait until the active connection is updated
+    await this.page.waitForTimeout(100)
   }
 
   async disconnectConnection(alt?: string) {

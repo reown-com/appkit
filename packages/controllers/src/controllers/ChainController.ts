@@ -22,17 +22,16 @@ import type {
   ChainAdapter,
   ConnectedWalletInfo,
   NamespaceTypeMap,
-  NetworkControllerClient,
   User
 } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
+import { AdapterController } from './AdapterController.js'
 import { ConnectionController, type ConnectionControllerClient } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
-import { RouterController } from './RouterController.js'
 import { SendController } from './SendController.js'
 import { SnackController } from './SnackController.js'
 
@@ -54,7 +53,6 @@ const networkState: AdapterNetworkState = {
 
 // -- Types --------------------------------------------- //
 export type ChainControllerClients = {
-  networkControllerClient: NetworkControllerClient
   connectionControllerClient: ConnectionControllerClient
 }
 
@@ -87,7 +85,7 @@ export interface ChainControllerState {
   activeCaipAddress: CaipAddress | undefined
   activeCaipNetwork?: CaipNetwork
   chains: Map<ChainNamespace, ChainAdapter>
-  universalAdapter: Pick<ChainAdapter, 'networkControllerClient' | 'connectionControllerClient'>
+  universalAdapter: Pick<ChainAdapter, 'connectionControllerClient'>
   noAdapters: boolean
   isSwitchingNamespace: boolean
   lastConnectedSIWECaipNetwork?: CaipNetwork
@@ -107,7 +105,6 @@ const state = proxy<ChainControllerState>({
   activeCaipNetwork: undefined,
   noAdapters: false,
   universalAdapter: {
-    networkControllerClient: undefined,
     connectionControllerClient: undefined
   },
   isSwitchingNamespace: false
@@ -172,7 +169,6 @@ const controller = {
     caipNetworks: CaipNetwork[] | undefined,
     clients: {
       connectionControllerClient: ConnectionControllerClient
-      networkControllerClient: NetworkControllerClient
     }
   ) {
     const { chainId: activeChainId, namespace: activeNamespace } =
@@ -248,7 +244,7 @@ const controller = {
 
   addAdapter(
     adapter: ChainAdapter,
-    { networkControllerClient, connectionControllerClient }: ChainControllerClients,
+    { connectionControllerClient }: ChainControllerClients,
     caipNetworks: [CaipNetwork, ...CaipNetwork[]]
   ) {
     if (!adapter.namespace) {
@@ -260,8 +256,7 @@ const controller = {
       networkState: { ...networkState, caipNetwork: caipNetworks[0] },
       accountState: { ...defaultAccountState },
       caipNetworks,
-      connectionControllerClient,
-      networkControllerClient
+      connectionControllerClient
     })
     ChainController.setRequestedCaipNetworks(
       caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === adapter.namespace) ?? [],
@@ -477,56 +472,26 @@ const controller = {
       throw new Error('ChainController:switchActiveNetwork - namespace is required')
     }
 
-    const activeAdapter = ChainController.state.chains.get(namespace)
+    const namespaceAddress = ChainController.getAccountData(namespace)?.address
 
-    const unsupportedNetwork = !activeAdapter?.caipNetworks?.some(
-      caipNetwork => caipNetwork.id === state.activeCaipNetwork?.id
-    )
-
-    const networkControllerClient = ChainController.getNetworkControllerClient(
-      network.chainNamespace
-    )
-
-    if (networkControllerClient) {
-      try {
-        await networkControllerClient.switchCaipNetwork(network)
-        if (unsupportedNetwork) {
-          ModalController.close()
-        }
-      } catch (error) {
-        if (throwOnFailure) {
-          throw error
-        }
-
-        RouterController.goBack()
+    try {
+      // If connected to the namespace and switching on same namespace, we should notify the wallet
+      if (namespaceAddress && network.chainNamespace === namespace) {
+        const adapter = AdapterController.get(network.chainNamespace)
+        await adapter.switchNetwork({ caipNetwork: network })
       }
-
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SWITCH_NETWORK',
-        properties: { network: network.caipNetworkId }
-      })
-    }
-  },
-
-  getNetworkControllerClient(chainNamespace?: ChainNamespace) {
-    const chain = chainNamespace || state.activeChain
-
-    if (!chain) {
-      throw new Error('ChainController:getNetworkControllerClient - chain is required')
+      ChainController.setActiveCaipNetwork(network)
+    } catch (error) {
+      if (throwOnFailure) {
+        throw error
+      }
     }
 
-    const chainAdapter = state.chains.get(chain)
-
-    if (!chainAdapter) {
-      throw new Error('Chain adapter not found')
-    }
-
-    if (!chainAdapter.networkControllerClient) {
-      throw new Error('NetworkController client not set')
-    }
-
-    return chainAdapter.networkControllerClient
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SWITCH_NETWORK',
+      properties: { network: network.caipNetworkId }
+    })
   },
 
   getConnectionControllerClient(_chain?: ChainNamespace) {
@@ -631,14 +596,11 @@ const controller = {
     return approvedCaipNetworkIds
   },
 
-  async setApprovedCaipNetworksData(namespace: ChainNamespace) {
-    const networkControllerClient = ChainController.getNetworkControllerClient()
-    const data = await networkControllerClient?.getApprovedCaipNetworksData()
-
-    ChainController.setAdapterNetworkState(namespace, {
-      approvedCaipNetworkIds: data?.approvedCaipNetworkIds,
-      supportsAllNetworks: data?.supportsAllNetworks
-    })
+  setApprovedCaipNetworksData(
+    namespace: ChainNamespace,
+    params: { approvedCaipNetworkIds: CaipNetworkId[]; supportsAllNetworks: boolean }
+  ) {
+    ChainController.setAdapterNetworkState(namespace, params)
   },
 
   checkIfSupportedNetwork(namespace: ChainNamespace, caipNetworkId?: CaipNetworkId) {

@@ -18,6 +18,7 @@ import {
   ChainController,
   ConnectorController,
   CoreHelperUtil,
+  ProviderController,
   type Tokens,
   type WriteContractArgs,
   getPreferredAccountType
@@ -344,22 +345,31 @@ export abstract class AdapterBlueprint<
    * @param {AdapterBlueprint.SwitchNetworkParams} params - Network switching parameters
    */
   public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
-    const { caipNetwork, providerType } = params
+    const { caipNetwork } = params
 
-    if (!params.provider) {
-      return
+    const providerType = ProviderController.getProviderId(caipNetwork.chainNamespace)
+    const provider = ProviderController.getProvider<Connector['provider']>(
+      caipNetwork.chainNamespace
+    )
+
+    if (!provider) {
+      throw new Error('Provider not found')
     }
-
-    const provider = 'provider' in params.provider ? params.provider.provider : params.provider
 
     if (providerType === 'WALLET_CONNECT') {
-      ;(provider as UniversalProvider).setDefaultChain(caipNetwork.caipNetworkId)
+      const walletConnectProvider = provider as UniversalProvider
+      walletConnectProvider.setDefaultChain(caipNetwork.caipNetworkId)
 
       return
     }
 
-    if (provider && providerType === 'AUTH') {
-      const authProvider = provider as W3mFrameProvider
+    if (providerType === 'AUTH') {
+      const authProvider = ConnectorController.getAuthConnector()?.provider
+
+      if (!authProvider) {
+        throw new Error('Auth provider not found')
+      }
+
       const preferredAccountType = getPreferredAccountType(caipNetwork.chainNamespace)
       await authProvider.switchNetwork({ chainId: caipNetwork.caipNetworkId })
       const user = await authProvider.getUser({
@@ -724,8 +734,6 @@ export namespace AdapterBlueprint {
 
   export type SwitchNetworkParams = {
     caipNetwork: CaipNetwork
-    provider?: AppKitConnector['provider']
-    providerType?: AppKitConnector['type']
   }
 
   export type GetBalanceParams = {
