@@ -97,12 +97,12 @@ export const SmartSessionsController = {
     }
 
     //Check for connected wallet supports permissions capabilities
-    const walletCapabilities = (await ConnectionController.request<object, WalletCapabilities>(
+    const walletCapabilities = await ConnectionController.request<object, WalletCapabilities>(
       'wallet_getCapabilities',
       {
         address: chainAndAddress.address
       }
-    )) as WalletCapabilities
+    )
 
     const hexChainId: `0x${string}` = `0x${parseInt(chainAndAddress.chain, 10).toString(16)}`
     const permissionsCapabilities = walletCapabilities?.[hexChainId]?.permissions
@@ -234,7 +234,7 @@ export const SmartSessionsController = {
       )
 
       // Activate the permissions using CosignerService
-      await cosignerService.revokePermissions(activeCaipAddress, session.pci, signature as Hex)
+      await cosignerService.revokePermissions(activeCaipAddress, session.pci, signature)
       state.sessions = state.sessions.filter(s => s.pci !== session.pci)
     } catch (e) {
       SnackController.showError('Error revoking smart session')

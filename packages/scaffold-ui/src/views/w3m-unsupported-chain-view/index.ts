@@ -142,10 +142,11 @@ export class W3mUnsupportedChainView extends LitElement {
       const hasConnections = connectionsByNamespace.length > 0
       const connectorId = namespace && ConnectorController.state.activeConnectorIds[namespace]
       const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
+
       if (isMultiWalletEnabled && connectorId && namespace) {
         await ConnectionController.disconnectConnector({ id: connectorId, namespace })
       } else {
-        await ConnectionController.disconnect()
+        await ConnectionController.disconnect({ namespace })
       }
       if (hasConnections && isMultiWalletEnabled) {
         RouterController.push('ProfileWallets')

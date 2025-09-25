@@ -185,7 +185,6 @@ describe('W3mWalletSendView - parameters handling', () => {
       expect(SnackController.showError).toHaveBeenCalledWith('Failed to load token information')
     })
 
-    expect(consoleSpy).toHaveBeenCalledWith('Failed to load token information:', networkError)
     expect(SendController.setToken).not.toHaveBeenCalled()
 
     consoleSpy.mockRestore()

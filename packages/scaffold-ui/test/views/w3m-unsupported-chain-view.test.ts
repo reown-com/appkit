@@ -76,11 +76,11 @@ describe('W3mUnsupportedChainView', () => {
 
     it('should navigate to ProfileWallets and show success message when has connections and multiWallet is enabled', async () => {
       vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([MOCK_CONNECTION])
-      vi.spyOn(ConnectionController, 'disconnect').mockResolvedValue(undefined)
+      vi.spyOn(ConnectionController, 'disconnectConnector').mockResolvedValue({ connections: [] })
 
       await element['onDisconnect']()
 
-      expect(ConnectionController.disconnect).toHaveBeenCalledWith({
+      expect(ConnectionController.disconnectConnector).toHaveBeenCalledWith({
         id: TEST_CONNECTOR_ID,
         namespace: TEST_CHAIN
       })
@@ -91,11 +91,13 @@ describe('W3mUnsupportedChainView', () => {
     it('should only disconnect when has no connections and multiWallet is enabled', async () => {
       vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([])
       vi.spyOn(ConnectionController, 'disconnect').mockResolvedValue(undefined)
+      vi.spyOn(ConnectorController.state, 'activeConnectorIds', 'get').mockReturnValue({
+        [TEST_CHAIN]: undefined
+      } as Record<ChainNamespace, string | undefined>)
 
       await element['onDisconnect']()
 
       expect(ConnectionController.disconnect).toHaveBeenCalledWith({
-        id: TEST_CONNECTOR_ID,
         namespace: TEST_CHAIN
       })
       expect(RouterController.reset).not.toHaveBeenCalled()
@@ -120,7 +122,7 @@ describe('W3mUnsupportedChainView', () => {
 
       await element['onDisconnect']()
 
-      expect(ConnectionController.disconnect).toHaveBeenCalledWith({})
+      expect(ConnectionController.disconnect).toHaveBeenCalledWith({ namespace: TEST_CHAIN })
       expect(RouterController.reset).not.toHaveBeenCalled()
       expect(RouterController.push).not.toHaveBeenCalled()
       expect(SnackController.showSuccess).not.toHaveBeenCalled()
@@ -128,7 +130,7 @@ describe('W3mUnsupportedChainView', () => {
 
     it('should show error message when disconnect fails', async () => {
       const error = new Error('Disconnect failed')
-      vi.spyOn(ConnectionController, 'disconnect').mockRejectedValue(error)
+      vi.spyOn(ConnectionController, 'disconnectConnector').mockRejectedValue(error)
 
       await element['onDisconnect']()
 

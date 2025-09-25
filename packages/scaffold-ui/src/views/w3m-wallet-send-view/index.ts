@@ -314,8 +314,7 @@ export class W3mWalletSendView extends LitElement {
       })
       SendController.setTokenAmount(amount)
       SendController.setReceiverAddress(this.params.to)
-    } catch (err) {
-      // eslint-disable-next-line no-console
+    } catch {
       SnackController.showError('Failed to load token information')
     } finally {
       this.loading = false

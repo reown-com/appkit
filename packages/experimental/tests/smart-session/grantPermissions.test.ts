@@ -159,9 +159,9 @@ describe('grantPermissions', () => {
   })
 
   it('should throw an error when grantPermissions returns null', async () => {
-    vi.mocked(ConnectionController.request).mockImplementationOnce(method => {
+    vi.mocked(ConnectionController.request).mockImplementation(method => {
       const handlers = {
-        wallet_getCapabilities: vi.fn().mockResolvedValue({
+        wallet_getCapabilities: {
           '0x1': {
             permissions: {
               supported: true,
@@ -170,10 +170,10 @@ describe('grantPermissions', () => {
               policyTypes: []
             }
           }
-        }),
-        wallet_grantPermissions: vi.fn().mockResolvedValue(null)
+        },
+        wallet_grantPermissions: null
       }
-      return handlers[method as keyof typeof handlers]?.() ?? Promise.resolve(undefined)
+      return Promise.resolve(handlers[method as keyof typeof handlers])
     })
 
     await expect(SmartSessionsController.grantPermissions(mockRequest)).rejects.toThrow(
@@ -266,21 +266,19 @@ describe('grantPermissions', () => {
   })
 
   it('should throw an error when ConnectionController grantPermissions fails', async () => {
-    vi.mocked(ConnectionController.request).mockImplementationOnce(method => {
-      const handlers = {
-        wallet_getCapabilities: vi.fn().mockResolvedValue({
-          '0x1': {
-            permissions: {
-              supported: true,
-              permissionTypes: ['contract-call'],
-              signerTypes: ['keys'],
-              policyTypes: []
+    vi.mocked(ConnectionController.request).mockImplementation(method => {
+      return method === 'wallet_getCapabilities'
+        ? Promise.resolve({
+            '0x1': {
+              permissions: {
+                supported: true,
+                permissionTypes: ['contract-call'],
+                signerTypes: ['keys'],
+                policyTypes: []
+              }
             }
-          }
-        }),
-        wallet_grantPermissions: vi.fn().mockRejectedValue(new Error('Connection error'))
-      }
-      return handlers[method as keyof typeof handlers]?.() ?? Promise.resolve(undefined)
+          })
+        : Promise.reject(new Error('Connection error'))
     })
 
     await expect(SmartSessionsController.grantPermissions(mockRequest)).rejects.toThrow(
