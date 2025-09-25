@@ -11,7 +11,7 @@ import {
   type Connection,
   ParseUtil
 } from '@reown/appkit-common'
-import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
+import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { AssetUtil } from '../utils/AssetUtil.js'
 import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
@@ -1186,7 +1186,7 @@ const controller = {
     const connectorId = ConnectorController.getConnectorId(chainNamespace)
     const providerType = ProviderController.getProviderId(chainNamespace)
     if (providerType === 'AUTH') {
-      const provider = ProviderController.getProvider<W3mFrameProvider>(chainNamespace)
+      const provider = ConnectorController.getAuthConnector()?.provider
 
       if (provider) {
         const social = StorageUtil.getConnectedSocialProvider() ?? 'email'
