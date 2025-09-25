@@ -32,6 +32,8 @@ export class WuiTokenButton extends LitElement {
 
   @property() public imageSrc?: string
 
+  @property() public chainImageSrc?: string
+
   @property({ type: Boolean }) public disabled = false
 
   @property() public text = ''
@@ -56,13 +58,20 @@ export class WuiTokenButton extends LitElement {
 
   // -- Private ------------------------------------------- //
   private imageTemplate() {
+    if (this.imageSrc && this.chainImageSrc) {
+      return html`<wui-flex class="left-image-container">
+        <wui-image src=${this.imageSrc} class="token-image"></wui-image>
+        <wui-image src=${this.chainImageSrc} class="chain-image"></wui-image>
+      </wui-flex>`
+    }
+
     if (this.imageSrc) {
-      return html`<wui-image src=${this.imageSrc}></wui-image>`
+      return html`<wui-image src=${this.imageSrc} class="token-image"></wui-image>`
     }
 
     const iconSize = ICON_SIZE_BY_SIZE[this.size]
 
-    return html` <wui-flex class="left-icon-container">
+    return html`<wui-flex class="left-icon-container">
       <wui-icon size=${iconSize} name="networkPlaceholder"></wui-icon>
     </wui-flex>`
   }
