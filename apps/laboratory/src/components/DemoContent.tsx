@@ -17,6 +17,8 @@ import { Ethers5Tests } from './Ethers/Ethers5Tests'
 import { EthersTests } from './Ethers/EthersTests'
 import { ReownAuthenticationTests } from './ReownAuthentication'
 import { SiweData } from './Siwe/SiweData'
+import { TonSendTransactionTest } from './Ton/TonSendTransactionTest'
+import { TonSignDataTest } from './Ton/TonSignDataTest'
 import { UpaTests } from './UPA/UpaTests'
 
 const embeddedWalletOptions = [...ConstantsUtil.Socials, ConstantsUtil.Email]
@@ -56,7 +58,12 @@ export default function DemoContent({
       {evmAdapter === 'ethers' && <EthersTests />}
       {solanaAdapter ? <SolanaTests /> : null}
       {bitcoinAdapter ? <BitcoinTests /> : null}
-      {/* TODO: Add TonTests when available */}
+      {tonAdapter ? (
+        <>
+          <TonSignDataTest />
+          <TonSendTransactionTest />
+        </>
+      ) : null}
       {hasNoAdapters ? <UpaTests /> : null}
 
       {isPayEnabled ? <AppKitPay /> : null}

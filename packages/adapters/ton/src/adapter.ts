@@ -1,24 +1,14 @@
-import {
-  TonConnect,
-  isWalletInfoCurrentlyEmbedded,
-  isWalletInfoCurrentlyInjected,
-  isWalletInfoInjectable,
-  isWalletInfoRemote
-} from '@tonconnect/sdk'
-
 import { ConstantsUtil } from '@reown/appkit-common'
 import type { TonConnector } from '@reown/appkit-utils/ton'
+import { getWallets as getTonWallets } from '@reown/appkit-utils/ton'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { ton } from '@reown/appkit/networks'
 
 import { TonConnectConnector } from './connectors/TonConnectConnector'
+import { isWalletInfoInjectable } from './utils/TonWalletUtils'
 
 // @ts-expect-error will fix
 export class TonAdapter extends AdapterBlueprint<TonConnector> {
-  private tonClient = new TonConnect({
-    manifestUrl: 'https://your-dapp.com/tonconnect-manifest.json'
-  })
-
   constructor(params?: AdapterBlueprint.Params) {
     super({ namespace: ConstantsUtil.CHAIN.TON, ...params })
   }
@@ -26,13 +16,16 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   override async syncConnectors() {
     try {
       console.log('[TonAdapter] syncConnectors: start')
-      const wallets = (await this.tonClient.getWallets()).filter(isWalletInfoCurrentlyInjected)
+      const wallets = await getTonWallets({ cacheTTLMs: 60_000 })
+      const currentlyInjected = wallets.filter(isWalletInfoInjectable)
 
-      wallets.forEach(wallet => {
-        this.addConnector(new TonConnectConnector({ wallet, chains: [] }))
-      })
+      console.log('[TonAdapter] syncConnectors: wallets', currentlyInjected)
 
-      console.log('[TonAdapter] syncConnectors: completed', wallets)
+      const chains = this.getCaipNetworks()
+      currentlyInjected.forEach(wallet =>
+        this.addConnector(new TonConnectConnector({ wallet, chains }))
+      )
+      console.log('[TonAdapter] syncConnectors: completed', wallets.length)
     } catch (err) {
       console.error('[TonAdapter] syncConnectors error', err)
     }
@@ -47,22 +40,44 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     if (!connector) {
       throw new Error('Connector not found')
     }
-    const address = await connector.connect({ chainId: params.chainId as string })
-    console.log('[TonAdapter] connect: address2', address, params)
-    // Set connection, emit events, etc.
-    // Mirror logic from BitcoinAdapter
-    const chainId = params.chainId || ton.caipNetworkId
-    // @ts-expect-error will fix
-    this.emit('accountChanged', { address, chainId, connector })
-    this.connector = connector // Set active connector
+    try {
+      const address = await connector.connect({ chainId: params.chainId as string })
+      console.log('[TonAdapter] connect: address2', address, params)
+      // Set connection, emit events, etc.
+      // Mirror logic from BitcoinAdapter
+      const chainId = params.chainId || ton.caipNetworkId
+      // @ts-expect-error will fix
+      this.emit('accountChanged', { address, chainId, connector })
+      this.connector = connector // Set active connector
 
-    return {
-      id: connector.id,
-      address,
-      chainId,
-      // @ts-ignore
-      provider: connector,
-      type: connector.type
+      const caipNetwork =
+        this.getCaipNetworks()?.find(n => n.id === chainId) || this.getCaipNetworks()[0]
+      if (caipNetwork) {
+        this.addConnection({
+          connectorId: connector.id,
+          accounts: [{ address }],
+          caipNetwork
+        })
+      }
+
+      return {
+        id: connector.id,
+        address,
+        chainId,
+        // @ts-ignore
+        provider: connector,
+        type: connector.type
+      }
+    } catch (error) {
+      console.error('[TonAdapter] connect: error', error)
+
+      return {
+        id: connector.id,
+        address: '',
+        chainId: '',
+        provider: undefined,
+        type: connector.type
+      }
     }
   }
 
@@ -71,7 +86,12 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   }
 
   override async getAccounts(): Promise<AdapterBlueprint.GetAccountsResult> {
-    return { accounts: [] }
+    const address = await this.connector?.getAccount().catch(() => undefined)
+    return {
+      accounts: address
+        ? [{ namespace: this.namespace as any, address, type: 'payment' as any }]
+        : []
+    }
   }
 
   override async signMessage(): Promise<AdapterBlueprint.SignMessageResult> {
@@ -90,17 +110,44 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     return connector.sendTransaction({ transaction: {} as any })
   }
 
-  override async disconnect(): Promise<AdapterBlueprint.DisconnectResult> {
-    const connector = this.getActiveConnector()
+  override async disconnect(
+    params?: AdapterBlueprint.DisconnectParams
+  ): Promise<AdapterBlueprint.DisconnectResult> {
+    if (params?.id) {
+      const connector = this.connectors.find(c => c.id === params.id)
+      if (!connector) {
+        return { connections: [] }
+      }
 
-    if (connector) {
-      await connector.disconnect()
+      const connection = this.connectionManager?.getConnection({
+        connectorId: connector.id,
+        connections: this.connections,
+        connectors: this.connectors
+      })
+
+      try {
+        await connector.disconnect()
+      } catch {}
+
+      // Update AppKit state and emit events
+      this.onDisconnect(connector.id)
+
+      return { connections: connection ? [connection] : [] }
     }
 
-    this.connector = undefined // Clear active connector
-
-    // Clean up
-    return { connections: [] }
+    // No id: disconnect all
+    const removed = await Promise.all(
+      this.connections.map(async c => {
+        const conn = this.connectors.find(cc => cc.id === c.connectorId)
+        try {
+          await conn?.disconnect()
+        } catch {}
+        return c
+      })
+    )
+    this.clearConnections(true)
+    this.emit('disconnect')
+    return { connections: removed }
   }
 
   override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
@@ -130,8 +177,38 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     return Promise.resolve()
   }
 
-  override async syncConnection(): Promise<AdapterBlueprint.ConnectResult> {
-    return { id: '', address: '', chainId: '', provider: undefined, type: 'EXTERNAL' } // Placeholder
+  override async syncConnection(
+    params: AdapterBlueprint.SyncConnectionParams
+  ): Promise<AdapterBlueprint.ConnectResult> {
+    try {
+      const connector = this.connectors.find(c => c.id === params.id) || this.connectors[0]
+      if (!connector) {
+        throw new Error('Connector not found')
+      }
+
+      const address = await (connector as any).restoreConnection?.()
+      const chainId = params.chainId || ton.caipNetworkId
+
+      if (address) {
+        this.emit('accountChanged', { address, chainId, connector })
+        this.connector = connector
+        const caipNetwork = this.getCaipNetworks()[0]
+        if (caipNetwork) {
+          this.addConnection({ connectorId: connector.id, accounts: [{ address }], caipNetwork })
+        }
+
+        return {
+          id: connector.id,
+          address,
+          chainId,
+          // @ts-ignore
+          provider: connector,
+          type: connector.type
+        }
+      }
+    } catch {}
+
+    return { id: '', address: '', chainId: '', provider: undefined, type: 'EXTERNAL' }
   }
 
   override async estimateGas(

@@ -30,8 +30,7 @@
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
-    "@reown/appkit-polyfills": "workspace:*",
-    "@tonconnect/sdk": "3.3.1"
+    "@reown/appkit-polyfills": "workspace:*"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",
