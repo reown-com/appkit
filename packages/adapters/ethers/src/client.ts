@@ -512,8 +512,9 @@ export class EthersAdapter extends AdapterBlueprint {
           }
 
           try {
-            await this.switchNetwork({
-              caipNetwork
+            await selectedProvider?.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.id) }]
             })
           } catch (error) {
             throw new Error('EthersAdapter:connect - Switch network failed')
