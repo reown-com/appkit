@@ -1060,7 +1060,7 @@ describe('Base Public methods', () => {
 
   it('should get account information with embedded wallet info even if no chain namespace is provided in getAccount', () => {
     const authConnector = {
-      id: 'ID_AUTH',
+      id: 'AUTH',
       name: 'ID Auth',
       imageUrl: 'https://example.com/id-auth.png'
     } as AuthConnector
@@ -1082,7 +1082,7 @@ describe('Base Public methods', () => {
     vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
       const connectorKey = getSafeConnectorIdKey(mainnet.chainNamespace)
       if (key === connectorKey) {
-        return 'ID_AUTH'
+        return 'AUTH'
       }
       if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
         return mainnet.caipNetworkId
@@ -1094,7 +1094,7 @@ describe('Base Public methods', () => {
       ChainController.state.activeChain
     )
 
-    expect(connectedConnectorId).toBe('ID_AUTH')
+    expect(connectedConnectorId).toBe('AUTH')
 
     const appKit = new AppKit(mockOptions)
     const account = appKit.getAccount()
@@ -1116,12 +1116,12 @@ describe('Base Public methods', () => {
 
   it('should get account information', () => {
     const authConnector = {
-      id: 'ID_AUTH',
+      id: 'AUTH',
       name: 'ID Auth',
       imageUrl: 'https://example.com/id-auth.png'
     } as AuthConnector
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(authConnector)
-    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('AUTH')
     vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       caipAddress: 'eip155:1:0x123',

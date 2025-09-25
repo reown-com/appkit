@@ -298,7 +298,7 @@ const controller = {
   },
 
   syncIfAuthConnector(connector: Connector | AuthConnector) {
-    if (connector.id !== 'ID_AUTH') {
+    if (connector.id !== 'AUTH') {
       return
     }
 
