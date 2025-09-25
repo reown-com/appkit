@@ -194,6 +194,13 @@ export interface OptionsControllerStatePublic {
    * @default true
    */
   enableNetworkSwitch?: boolean
+  /**
+   * Render the modal as full height on mobile web browsers.
+   * When enabled, the modal takes 100svh and internal content height is
+   * calculated as viewport height minus header and footer.
+   * @default false
+   */
+  enableMobileFullScreen?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -216,7 +223,8 @@ const state = proxy<OptionsControllerState>({
   defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES,
   enableNetworkSwitch: true,
   experimental_preferUniversalLinks: false,
-  remoteFeatures: {}
+  remoteFeatures: {},
+  enableMobileFullScreen: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -413,6 +421,12 @@ export const OptionsController = {
 
   setEnableNetworkSwitch(enableNetworkSwitch: OptionsControllerState['enableNetworkSwitch']) {
     state.enableNetworkSwitch = enableNetworkSwitch
+  },
+
+  setEnableMobileFullScreen(
+    enableMobileFullScreen: OptionsControllerState['enableMobileFullScreen']
+  ) {
+    state.enableMobileFullScreen = enableMobileFullScreen
   },
 
   setEnableReconnect(enableReconnect: OptionsControllerState['enableReconnect']) {

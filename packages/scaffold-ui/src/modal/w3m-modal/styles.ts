@@ -132,11 +132,27 @@ export default css`
   }
 
   @media (max-width: 430px) {
-    wui-flex {
+    :host([data-mobile-fullheight='true']) {
+      height: 100svh;
+    }
+    :host([data-mobile-fullheight='true']) wui-flex {
+      align-items: stretch;
+    }
+    :host([data-mobile-fullheight='true']) wui-card {
+      max-width: 100%;
+      height: 100%;
+      border-radius: 0;
+      border: none;
+    }
+    :host(:not([data-mobile-fullheight='true'])) wui-flex {
       align-items: flex-end;
     }
 
-    wui-card {
+    :host(:not([data-mobile-fullheight='true'])) wui-card::before {
+      border-radius: 0px;
+    }
+
+    :host(:not([data-mobile-fullheight='true'])) wui-card {
       max-width: 100%;
       border-bottom-left-radius: var(--local-border-bottom-mobile-radius);
       border-bottom-right-radius: var(--local-border-bottom-mobile-radius);

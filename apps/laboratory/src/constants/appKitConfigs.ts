@@ -52,7 +52,8 @@ export const appKitConfigs = {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
     wagmiConfig: commonWagmiConfig,
-    networks: ConstantsUtil.EvmNetworks
+    networks: ConstantsUtil.EvmNetworks,
+    enableMobileFullScreen: true
   },
   'wagmi-all': {
     ...commonAppKitConfig,
@@ -311,7 +312,8 @@ export const appKitConfigs = {
   'multichain-no-adapters': {
     ...commonAppKitConfig,
     adapters: [],
-    networks: ConstantsUtil.AllNetworks
+    networks: ConstantsUtil.AllNetworks,
+    enableMobileFullScreen: true
   },
   'multichain-wagmi-solana': {
     ...commonAppKitConfig,

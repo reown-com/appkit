@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
+import { CoreHelperUtil, OptionsController } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'
@@ -27,6 +28,11 @@ export class W3mRouterContainer extends LitElement {
   @state() private historyState = ''
 
   @state() private previousHeight = '0px'
+
+  // -- Handlers ----------------------------------------- //
+  private onViewportResize = () => {
+    this.updateContainerHeight()
+  }
 
   public override updated(changedProps: Map<string, unknown>) {
     if (changedProps.has('history')) {
@@ -61,12 +67,21 @@ export class W3mRouterContainer extends LitElement {
             getComputedStyle(document.documentElement).getPropertyValue('--apkt-footer-height') ||
               '0'
           )
-          const totalHeight = newHeight + footerHeight
-          newHeight = totalHeight
-          this.style.setProperty(
-            '--local-border-bottom-radius',
-            footerHeight ? 'var(--apkt-borderRadius-5)' : '0px'
-          )
+          const isMobileFullScreen =
+            OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()
+          if (isMobileFullScreen) {
+            const viewportHeight = window.visualViewport?.height || window.innerHeight
+            const headerHeight = this.getHeaderHeight()
+            newHeight = viewportHeight - headerHeight - footerHeight
+            this.style.setProperty('--local-border-bottom-radius', '0px')
+          } else {
+            const totalHeight = newHeight + footerHeight
+            newHeight = totalHeight
+            this.style.setProperty(
+              '--local-border-bottom-radius',
+              footerHeight ? 'var(--apkt-borderRadius-5)' : '0px'
+            )
+          }
 
           this.style.setProperty('--local-container-height', `${newHeight}px`)
           if (this.previousHeight !== '0px') {
@@ -78,6 +93,13 @@ export class W3mRouterContainer extends LitElement {
     })
 
     this.resizeObserver.observe(this.getWrapper())
+
+    // Compute height immediately and after a short delay to ensure header height is available
+    this.updateContainerHeight()
+    setTimeout(() => this.updateContainerHeight(), 50)
+
+    window.addEventListener('resize', this.onViewportResize)
+    window.visualViewport?.addEventListener('resize', this.onViewportResize as EventListener)
   }
 
   public override disconnectedCallback() {
@@ -85,6 +107,8 @@ export class W3mRouterContainer extends LitElement {
     if (wrapper && this.resizeObserver) {
       this.resizeObserver.unobserve(wrapper)
     }
+    window.removeEventListener('resize', this.onViewportResize)
+    window.visualViewport?.removeEventListener('resize', this.onViewportResize as EventListener)
   }
 
   // -- Render -------------------------------------------- //
@@ -134,6 +158,44 @@ export class W3mRouterContainer extends LitElement {
 
   private getWrapper() {
     return this.shadowRoot?.querySelector('div.page') as HTMLElement
+  }
+
+  private updateContainerHeight() {
+    const wrapper = this.getWrapper()
+    if (!wrapper) {
+      return
+    }
+
+    const footerHeight = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--apkt-footer-height') || '0'
+    )
+    const isMobileFullScreen =
+      OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()
+
+    let newHeight = 0
+    if (isMobileFullScreen) {
+      const viewportHeight = window.visualViewport?.height || window.innerHeight
+      const headerHeight = this.getHeaderHeight()
+      newHeight = viewportHeight - headerHeight - footerHeight
+      this.style.setProperty('--local-border-bottom-radius', '0px')
+    } else {
+      newHeight = wrapper.getBoundingClientRect().height + footerHeight
+      this.style.setProperty(
+        '--local-border-bottom-radius',
+        footerHeight ? 'var(--apkt-borderRadius-5)' : '0px'
+      )
+    }
+
+    this.style.setProperty('--local-container-height', `${newHeight}px`)
+    if (this.previousHeight !== '0px') {
+      this.style.setProperty('--local-duration-height', this.transitionDuration)
+    }
+    this.previousHeight = `${newHeight}px`
+  }
+
+  private getHeaderHeight() {
+    // Header is always 60px
+    return 60
   }
 }
 

@@ -69,6 +69,9 @@ export class W3mModalBase extends LitElement {
 
   @state() private padding = vars.spacing[1]
 
+  @state() private mobileFullScreen =
+    OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()
+
   public constructor() {
     super()
     this.initializeTheming()
@@ -80,6 +83,14 @@ export class W3mModalBase extends LitElement {
         ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
         ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
         OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val)),
+        OptionsController.subscribeKey('enableMobileFullScreen', val => {
+          this.mobileFullScreen = Boolean(val) && CoreHelperUtil.isMobile()
+          if (this.mobileFullScreen) {
+            this.setAttribute('data-mobile-fullScreen', 'true')
+          } else {
+            this.removeAttribute('data-mobile-fullScreen')
+          }
+        }),
         ConnectorController.subscribeKey('filterByNamespace', val => {
           if (this.filterByNamespace !== val && !ChainController.getAccountData(val)?.caipAddress) {
             ApiController.fetchRecommendedWallets()
@@ -96,6 +107,10 @@ export class W3mModalBase extends LitElement {
 
   public override firstUpdated() {
     this.dataset['border'] = HelpersUtil.hasFooter() ? 'true' : 'false'
+
+    if (this.mobileFullScreen) {
+      this.setAttribute('data-mobile-fullScreen', 'true')
+    }
 
     if (this.caipAddress) {
       if (this.enableEmbedded) {
@@ -125,10 +140,14 @@ export class W3mModalBase extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.setProperty('--local-modal-padding', this.padding)
-    this.style.setProperty(
-      '--local-border-bottom-mobile-radius',
-      this.enableEmbedded ? `clamp(0px, ${vars.borderRadius['8']}, 44px)` : '0px'
-    )
+    if (this.mobileFullScreen) {
+      this.style.setProperty('--local-border-bottom-mobile-radius', '0px')
+    } else {
+      this.style.setProperty(
+        '--local-border-bottom-mobile-radius',
+        this.enableEmbedded ? `clamp(0px, ${vars.borderRadius['8']}, 44px)` : '0px'
+      )
+    }
 
     if (this.enableEmbedded) {
       return html`${this.contentTemplate()}
@@ -165,6 +184,9 @@ export class W3mModalBase extends LitElement {
 
   private async onOverlayClick(event: PointerEvent) {
     if (event.target === event.currentTarget) {
+      if (this.mobileFullScreen) {
+        return
+      }
       await this.handleClose()
     }
   }

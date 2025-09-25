@@ -33,6 +33,11 @@ export default css`
     border-bottom-right-radius: var(--local-border-bottom-radius);
     transition: border-bottom-left-radius var(--local-duration) var(--local-transition);
   }
+  .page-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
 
   .footer {
     height: var(--apkt-footer-height);
