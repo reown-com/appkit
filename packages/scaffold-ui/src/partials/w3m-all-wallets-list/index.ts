@@ -70,7 +70,7 @@ export class W3mAllWalletsList extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     if (this.mobileFullScreen) {
-      this.setAttribute('data-mobile-fullScreen', 'true')
+      this.setAttribute('data-mobile-fullscreen', 'true')
     }
 
     return html`

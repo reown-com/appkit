@@ -41,7 +41,7 @@ export class W3mAllWalletsSearch extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     if (this.mobileFullScreen) {
-      this.setAttribute('data-mobile-fullScreen', 'true')
+      this.setAttribute('data-mobile-fullscreen', 'true')
     }
 
     this.onSearch()

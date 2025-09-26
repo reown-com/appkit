@@ -161,15 +161,6 @@ export class W3mHeader extends LitElement {
       BACKGROUND_OVERRIDES[RouterController.state.view] ?? vars.tokens.theme.backgroundPrimary
 
     this.style.setProperty('--local-header-background-color', backgroundColor)
-    // Expose header height to global CSS var for router height computation
-    const headerHost = this.shadowRoot?.host as HTMLElement
-    const headerRect = headerHost?.getBoundingClientRect()
-    if (headerRect) {
-      document.documentElement.style.setProperty(
-        '--apkt-header-height',
-        `${Math.round(headerRect.height)}px`
-      )
-    }
 
     return html`
       <wui-flex

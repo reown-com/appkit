@@ -101,7 +101,7 @@ export class W3mModalBase extends LitElement {
     this.dataset['border'] = HelpersUtil.hasFooter() ? 'true' : 'false'
 
     if (this.mobileFullScreen) {
-      this.setAttribute('data-mobile-fullScreen', 'true')
+      this.setAttribute('data-mobile-fullscreen', 'true')
     }
 
     if (this.caipAddress) {

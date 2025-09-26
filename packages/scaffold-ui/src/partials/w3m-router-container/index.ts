@@ -7,6 +7,8 @@ import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'
 
+const HEADER_HEIGHT = 60
+
 @customElement('w3m-router-container')
 export class W3mRouterContainer extends LitElement {
   static override styles = [styles]
@@ -198,7 +200,7 @@ export class W3mRouterContainer extends LitElement {
   }
 
   private getHeaderHeight() {
-    return 60
+    return HEADER_HEIGHT
   }
 }
 
