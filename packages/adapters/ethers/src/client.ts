@@ -17,7 +17,8 @@ import {
   type Provider,
   SIWXUtil,
   StorageUtil,
-  getPreferredAccountType
+  getPreferredAccountType,
+  OptionsController
 } from '@reown/appkit-controllers'
 import { ProviderController } from '@reown/appkit-controllers'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
@@ -460,15 +461,16 @@ export class EthersAdapter extends AdapterBlueprint {
 
       let requestChainId: string | undefined = undefined
 
-      if (type === ConstantsUtil.CONNECTOR_TYPE_AUTH) {
-        const { address: _address, accounts: authAccounts } =
-          await SIWXUtil.authConnectorAuthenticate({
-            authConnector: selectedProvider as unknown as W3mFrameProvider,
-            chainNamespace: CommonConstantsUtil.CHAIN.EVM,
-            chainId,
-            socialUri,
-            preferredAccountType: getPreferredAccountType('eip155')
-          })
+    if (type === ConstantsUtil.CONNECTOR_TYPE_AUTH) {
+      const { address: _address, accounts: authAccounts } =
+        await SIWXUtil.authConnectorAuthenticate({
+          authConnector: selectedProvider as unknown as W3mFrameProvider,
+          chainNamespace: CommonConstantsUtil.CHAIN.EVM,
+          chainId,
+          socialUri,
+          preferredAccountType:
+            (OptionsController.state.disableAuthSmartAccounts ? 'eoa' : getPreferredAccountType('eip155'))
+        })
 
         const caipNetwork = this.getCaipNetworks().find(
           n => n.id.toString() === chainId?.toString()
@@ -565,7 +567,8 @@ export class EthersAdapter extends AdapterBlueprint {
         authConnector: connector.provider as unknown as W3mFrameProvider,
         chainNamespace: CommonConstantsUtil.CHAIN.EVM,
         chainId,
-        preferredAccountType: getPreferredAccountType('eip155')
+        preferredAccountType:
+          (OptionsController.state.disableAuthSmartAccounts ? 'eoa' : getPreferredAccountType('eip155'))
       })
     }
   }

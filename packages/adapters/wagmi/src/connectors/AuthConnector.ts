@@ -15,7 +15,8 @@ import {
   ConnectorController,
   SIWXUtil,
   getActiveCaipNetwork,
-  getPreferredAccountType
+  getPreferredAccountType,
+  OptionsController
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -100,7 +101,9 @@ export function authConnector(parameters: AuthParameters) {
       }
     }
 
-    const preferredAccountType = getPreferredAccountType('eip155')
+    const preferredAccountType = OptionsController.state.disableAuthSmartAccounts
+      ? 'eoa'
+      : getPreferredAccountType('eip155')
 
     const {
       address,
