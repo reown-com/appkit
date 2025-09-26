@@ -1,7 +1,8 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import { AccountController, type RequestArguments, WcHelpersUtil } from '@reown/appkit'
+import { type RequestArguments, WcHelpersUtil } from '@reown/appkit'
 import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ChainController } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
@@ -122,7 +123,9 @@ export class BitcoinWalletConnectConnector
   private getAccount<Required extends boolean>(
     required?: Required
   ): Required extends true ? string : string | undefined {
-    const caipAddress = AccountController.getCaipAddress(CommonConstantsUtil.CHAIN.BITCOIN)
+    const caipAddress = ChainController.getAccountData(
+      CommonConstantsUtil.CHAIN.BITCOIN
+    )?.caipAddress
     const account = this.provider.session?.namespaces[
       CommonConstantsUtil.CHAIN.BITCOIN
     ]?.accounts.find(_account => HelpersUtil.isLowerCaseMatch(_account, caipAddress))

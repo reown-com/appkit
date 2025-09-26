@@ -1,8 +1,10 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
+import { ErrorUtil } from '@reown/appkit-common'
 import type { BaseError, Platform } from '@reown/appkit-controllers'
 import {
+  AppKitError,
   ChainController,
   ConnectionController,
   CoreHelperUtil,
@@ -89,7 +91,7 @@ export class W3mConnectingWcView extends LitElement {
 
     try {
       const { wcPairingExpiry, status } = ConnectionController.state
-
+      const { redirectView } = RouterController.state.data ?? {}
       if (
         retry ||
         OptionsController.state.enableEmbedded ||
@@ -107,6 +109,8 @@ export class W3mConnectingWcView extends LitElement {
           if (hasConnections && isMultiWalletEnabled) {
             RouterController.replace('ProfileWallets')
             SnackController.showSuccess('New Wallet Added')
+          } else if (redirectView) {
+            RouterController.replace(redirectView)
           } else {
             ModalController.close()
           }
@@ -135,11 +139,24 @@ export class W3mConnectingWcView extends LitElement {
         }
       }
 
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'CONNECT_ERROR',
-        properties: { message: (error as BaseError)?.message ?? 'Unknown' }
-      })
+      const isUserRejectedRequestError =
+        error instanceof AppKitError &&
+        error.originalName === ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST
+
+      if (isUserRejectedRequestError) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'USER_REJECTED',
+          properties: { message: error.message }
+        })
+      } else {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_ERROR',
+          properties: { message: (error as BaseError)?.message ?? 'Unknown' }
+        })
+      }
+
       ConnectionController.setWcError(true)
       SnackController.showError((error as BaseError).message ?? 'Connection error')
       ConnectionController.resetWcConnection()

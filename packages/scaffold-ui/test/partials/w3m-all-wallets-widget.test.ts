@@ -89,7 +89,9 @@ const mockApiState: ApiControllerState = {
   isAnalyticsEnabled: false,
   excludedWallets: [],
   isFetchingRecommendedWallets: false,
-  filteredWallets: []
+  filteredWallets: [],
+  explorerWallets: [],
+  explorerFilteredWallets: []
 }
 
 describe('W3mAllWalletsWidget', () => {
@@ -180,7 +182,7 @@ describe('W3mAllWalletsWidget', () => {
     walletList.click()
 
     expect(sendEventSpy).toHaveBeenCalledWith({ type: 'track', event: 'CLICK_ALL_WALLETS' })
-    expect(routerPushSpy).toHaveBeenCalledWith('AllWallets')
+    expect(routerPushSpy).toHaveBeenCalledWith('AllWallets', { redirectView: undefined })
   })
 
   it('should update wallet count when filteredWallets changes', async () => {

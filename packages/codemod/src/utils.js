@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import chalk from 'chalk'
 import fs from 'fs'
 import latestVersion from 'latest-version'
 import path from 'path'
@@ -111,7 +110,7 @@ export async function updatePackageVersion(packageJson, pkg, packageJsonPath) {
 
       fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
       console.log(
-        `Updated ${chalk.bgBlue(pkg)} in ${chalk.bold(JSON.parse(fs.readFileSync(packageJsonPath)).name)} from ${chalk.bgRed(currentVersion)} to ${chalk.bgGreen(newVersion)}`
+        `Updated ${pkg} in ${JSON.parse(fs.readFileSync(packageJsonPath)).name} from ${currentVersion} to ${newVersion}`
       )
     }
   } catch (error) {

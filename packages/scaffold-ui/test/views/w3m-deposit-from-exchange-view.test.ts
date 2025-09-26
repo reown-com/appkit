@@ -5,6 +5,7 @@ import { html } from 'lit'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ChainController, ExchangeController, RouterController } from '@reown/appkit-controllers'
+import type { WuiTokenButton } from '@reown/appkit-ui/wui-token-button'
 
 import { W3mDepositFromExchangeView } from '../../src/views/w3m-deposit-from-exchange-view'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -138,7 +139,7 @@ describe('W3mDepositFromExchangeView', () => {
 
     // Clicking a preset amount should delegate to controller
     const setAmountSpy = vi.spyOn(ExchangeController, 'setAmount')
-    const presetButtons = HelpersUtil.querySelectAll(element, 'wui-button')
+    const presetButtons = HelpersUtil.querySelectAll(element, 'wui-chip-button')
     // Click the first preset ($10)
     presetButtons?.[0]?.click()
     await elementUpdated(element)
@@ -173,5 +174,31 @@ describe('W3mDepositFromExchangeView', () => {
     await elementUpdated(element)
 
     expect(ExchangeController.state.amount).toBe(10)
+  })
+
+  it('shows chainImageSrc on token button', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipNetwork: {
+        ...(mockMainnet as unknown as CaipNetwork),
+        assets: { imageUrl: 'https://chain.example/eth.png' }
+      } as unknown as CaipNetwork
+    })
+
+    vi.spyOn(ExchangeController, 'getAssetsForNetwork').mockResolvedValue([])
+    vi.spyOn(ExchangeController, 'fetchExchanges').mockResolvedValue()
+
+    const element: W3mDepositFromExchangeView = await fixture(
+      html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`
+    )
+    await elementUpdated(element)
+
+    const assetButton = HelpersUtil.getByTestId(
+      element,
+      'deposit-from-exchange-asset-button'
+    ) as WuiTokenButton
+
+    expect(assetButton).toBeTruthy()
+    expect(assetButton.chainImageSrc).toBe('https://chain.example/eth.png')
   })
 })

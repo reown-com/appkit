@@ -1,6 +1,13 @@
-import { type Address, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { erc20Abi, formatUnits } from 'viem'
 
-import { AccountController } from '../controllers/AccountController.js'
+import {
+  type Address,
+  type CaipAddress,
+  type CaipNetwork,
+  ConstantsUtil,
+  ParseUtil
+} from '@reown/appkit-common'
+
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
@@ -8,6 +15,14 @@ import { ConnectorController } from '../controllers/ConnectorController.js'
 import { ERC7811Utils } from './ERC7811Util.js'
 import { StorageUtil } from './StorageUtil.js'
 import type { BlockchainApiBalanceResponse } from './TypeUtil.js'
+import { ViemUtil } from './ViemUtil.js'
+
+// -- Types -------------------------------------------------------------------- //
+interface FetchER20BalanceParams {
+  caipAddress: CaipAddress
+  assetAddress: string
+  caipNetwork: CaipNetwork
+}
 
 // -- Controller ---------------------------------------- //
 export const BalanceUtil = {
@@ -20,7 +35,7 @@ export const BalanceUtil = {
   async getMyTokensWithBalance(
     forceUpdate?: string
   ): Promise<BlockchainApiBalanceResponse['balances']> {
-    const address = AccountController.state.address
+    const address = ChainController.getAccountData()?.address
     const caipNetwork = ChainController.state.activeCaipNetwork
     const isAuthConnector =
       ConnectorController.getConnectorId('eip155') === ConstantsUtil.CONNECTOR_ID.AUTH
@@ -105,5 +120,47 @@ export const BalanceUtil = {
    */
   filterLowQualityTokens(balances: BlockchainApiBalanceResponse['balances']) {
     return balances.filter(balance => balance.quantity.decimals !== '0')
+  },
+  async fetchERC20Balance({ caipAddress, assetAddress, caipNetwork }: FetchER20BalanceParams) {
+    const publicClient = await ViemUtil.createViemPublicClient(caipNetwork)
+
+    const { address } = ParseUtil.parseCaipAddress(caipAddress)
+
+    const [{ result: name }, { result: symbol }, { result: balance }, { result: decimals }] =
+      await publicClient.multicall({
+        contracts: [
+          {
+            address: assetAddress as Address,
+            functionName: 'name',
+            args: [],
+            abi: erc20Abi
+          },
+          {
+            address: assetAddress as Address,
+            functionName: 'symbol',
+            args: [],
+            abi: erc20Abi
+          },
+          {
+            address: assetAddress as Address,
+            functionName: 'balanceOf',
+            args: [address as Address],
+            abi: erc20Abi
+          },
+          {
+            address: assetAddress as Address,
+            functionName: 'decimals',
+            args: [],
+            abi: erc20Abi
+          }
+        ]
+      })
+
+    return {
+      name,
+      symbol,
+      decimals,
+      balance: balance && decimals ? formatUnits(balance, decimals) : '0'
+    }
   }
 }

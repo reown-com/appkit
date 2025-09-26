@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-cli",
-  "version": "1.8.2",
+  "version": "1.8.6",
   "sideEffects": false,
   "description": "Reown AppKit CLI",
   "main": "index.js",
@@ -11,7 +11,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chalk": "5.4.1",
     "figlet": "1.8.0",
     "inquirer": "12.4.2",
     "tiged": "2.12.7"
@@ -35,5 +34,12 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reown-com/appkit.git"
+  },
+  "publishConfig": {
+    "provenance": true
+  }
 }

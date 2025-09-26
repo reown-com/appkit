@@ -15,7 +15,7 @@ export * from '../src/library/vue/index.js'
 export * from '../src/utils/index.js'
 export type * from '@reown/appkit-controllers'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@reown/appkit-common'
-export { CoreHelperUtil, AccountController } from '@reown/appkit-controllers'
+export { CoreHelperUtil } from '@reown/appkit-controllers'
 
 let modal: AppKit | undefined = undefined
 
@@ -43,8 +43,8 @@ export function useAppKitNetwork(): Ref<UseAppKitNetworkReturn> {
     caipNetwork: ChainController.state.activeCaipNetwork,
     chainId: ChainController.state.activeCaipNetwork?.id,
     caipNetworkId: ChainController.state.activeCaipNetwork?.caipNetworkId,
-    switchNetwork: (network: AppKitNetwork) => {
-      modal?.switchNetwork(network)
+    switchNetwork: async (network: AppKitNetwork) => {
+      await modal?.switchNetwork(network)
     }
   })
 

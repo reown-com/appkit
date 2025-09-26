@@ -67,6 +67,40 @@ describe('W3mSwapInput', () => {
     expect(onSetAmount).toHaveBeenCalledWith('sourceToken', '1.5')
   })
 
+  it('should handle dot as first character when user types it', async () => {
+    const onSetAmount = vi.fn()
+    const element = await fixture<W3mSwapInput>(
+      html`<w3m-swap-input .onSetAmount=${onSetAmount}></w3m-swap-input>`
+    )
+
+    const input = HelpersUtil.querySelect(element, 'input') as HTMLInputElement
+
+    input.value = '.'
+    input.dispatchEvent(new InputEvent('input'))
+    expect(onSetAmount).toHaveBeenLastCalledWith('sourceToken', '0.')
+  })
+
+  it('should filter out non-numeric characters as user types', async () => {
+    const onSetAmount = vi.fn()
+    const element = await fixture<W3mSwapInput>(
+      html`<w3m-swap-input .onSetAmount=${onSetAmount}></w3m-swap-input>`
+    )
+
+    const input = HelpersUtil.querySelect(element, 'input') as HTMLInputElement
+
+    input.value = '1a'
+    input.dispatchEvent(new InputEvent('input'))
+    expect(onSetAmount).toHaveBeenLastCalledWith('sourceToken', '1')
+
+    input.value = '1a2'
+    input.dispatchEvent(new InputEvent('input'))
+    expect(onSetAmount).toHaveBeenLastCalledWith('sourceToken', '12')
+
+    input.value = '1a2b3'
+    input.dispatchEvent(new InputEvent('input'))
+    expect(onSetAmount).toHaveBeenLastCalledWith('sourceToken', '123')
+  })
+
   it('should handle focus states', async () => {
     const element = await fixture<W3mSwapInput>(html`<w3m-swap-input></w3m-swap-input>`)
 

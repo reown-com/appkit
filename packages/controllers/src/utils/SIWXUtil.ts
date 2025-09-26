@@ -5,7 +5,6 @@ import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
-import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
@@ -74,7 +73,7 @@ export const SIWXUtil = {
       EventsController.sendEvent({
         type: 'track',
         event: 'SIWX_AUTH_ERROR',
-        properties: this.getSIWXEventProperties()
+        properties: this.getSIWXEventProperties(error)
       })
 
       // eslint-disable-next-line no-console
@@ -136,8 +135,6 @@ export const SIWXUtil = {
         properties: this.getSIWXEventProperties()
       })
     } catch (error) {
-      const properties = this.getSIWXEventProperties()
-
       if (!ModalController.state.open || RouterController.state.view === 'ApproveTransaction') {
         await ModalController.open({
           view: 'SIWXSignMessage'
@@ -148,7 +145,7 @@ export const SIWXUtil = {
       EventsController.sendEvent({
         type: 'track',
         event: 'SIWX_AUTH_ERROR',
-        properties
+        properties: this.getSIWXEventProperties(error)
       })
 
       // eslint-disable-next-line no-console
@@ -400,13 +397,16 @@ export const SIWXUtil = {
 
     SnackController.showLoading('Authenticating...', { autoClose: false })
 
-    AccountController.setConnectedWalletInfo(
-      {
-        ...result.session.peer.metadata,
-        name: result.session.peer.metadata.name,
-        icon: result.session.peer.metadata.icons?.[0],
-        type: 'WALLET_CONNECT'
-      },
+    const walletInfo = {
+      ...result.session.peer.metadata,
+      name: result.session.peer.metadata.name,
+      icon: result.session.peer.metadata.icons?.[0],
+      type: 'WALLET_CONNECT'
+    }
+
+    ChainController.setAccountProp(
+      'connectedWalletInfo',
+      walletInfo,
       Array.from(namespaces)[0] as ChainNamespace
     )
 
@@ -453,7 +453,7 @@ export const SIWXUtil = {
         EventsController.sendEvent({
           type: 'track',
           event: 'SIWX_AUTH_ERROR',
-          properties: SIWXUtil.getSIWXEventProperties()
+          properties: SIWXUtil.getSIWXEventProperties(error)
         })
 
         // eslint-disable-next-line no-console
@@ -466,7 +466,7 @@ export const SIWXUtil = {
 
     return true
   },
-  getSIWXEventProperties() {
+  getSIWXEventProperties(error?: unknown) {
     const namespace = ChainController.state.activeChain
 
     if (!namespace) {
@@ -476,7 +476,8 @@ export const SIWXUtil = {
     return {
       network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
       isSmartAccount:
-        getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+      message: error ? CoreHelperUtil.parseError(error) : undefined
     }
   },
   async clearSessions() {

@@ -3,7 +3,6 @@ import type { Meta } from '@storybook/web-components'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import '@reown/appkit-ui/wui-list-wallet'
 import type { WuiListWallet } from '@reown/appkit-ui/wui-list-wallet'
 
 import '../../components/gallery-container'
@@ -54,7 +53,7 @@ export default {
 export const Default: Component = {
   render: args =>
     html` <gallery-container width="336">
-      <wui-list-wallet
+      <w3m-list-wallet
         name=${args.name}
         imageSrc=${ifDefined(args.imageSrc)}
         tagLabel=${ifDefined(args.tagLabel)}
@@ -63,6 +62,6 @@ export const Default: Component = {
         ?disabled=${args.disabled}
         ?loading=${args.loading}
         ?showAllWallets=${args.showAllWallets}
-      ></wui-list-wallet>
+      ></w3m-list-wallet>
     </gallery-container>`
 }

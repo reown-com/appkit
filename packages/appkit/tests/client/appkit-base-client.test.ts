@@ -1,17 +1,20 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import type { MockInstance } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import {
   AlertController,
   ApiController,
   type ChainAdapter,
   ChainController,
   ConnectionController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  ModalController,
+  SendController
 } from '@reown/appkit-controllers'
 import { mockChainControllerState } from '@reown/appkit-controllers/testing'
-import { ErrorUtil } from '@reown/appkit-utils'
+import { ErrorUtil, TokenUtil } from '@reown/appkit-utils'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client'
 import { WcHelpersUtil } from '../../src/utils/index'
@@ -51,6 +54,10 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
 
       async injectModalUi() {}
       async syncIdentity() {}
+
+      override async syncAdapterConnections() {
+        return Promise.resolve()
+      }
     })()
     alertSpy = vi.spyOn(AlertController, 'open').mockImplementation(() => {})
   })
@@ -160,6 +167,10 @@ describe('AppKitBaseClient.connectWalletConnect', () => {
 
       async injectModalUi() {}
       async syncIdentity() {}
+
+      override async syncAdapterConnections() {
+        return Promise.resolve()
+      }
     })()
 
     baseClient.remoteFeatures = { multiWallet: true }
@@ -247,6 +258,10 @@ describe('AppKitBaseClient.getCaipNetwork', () => {
 
       async injectModalUi() {}
       async syncIdentity() {}
+
+      override async syncAdapterConnections() {
+        return Promise.resolve()
+      }
     })()
   })
 
@@ -257,5 +272,215 @@ describe('AppKitBaseClient.getCaipNetwork', () => {
     baseClient.getCaipNetwork(chainNamespace)
 
     expect(getCaipNetworksSpy).toHaveBeenCalledWith(chainNamespace)
+  })
+})
+
+describe('AppKitBaseClient.open', () => {
+  let baseClient: AppKitBaseClient
+  let fetchTokenImagesSpy: MockInstance
+  let subscribeKeySpy: MockInstance
+  let modalSubscribeSpy: MockInstance
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    baseClient = new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1'
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+      override async syncAdapterConnections() {
+        return Promise.resolve()
+      }
+    })()
+
+    vi.spyOn(ModalController, 'open').mockResolvedValue(undefined)
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              caipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
+              activeCaipAddress: 'eip155:1:0x1234567890123456789012345678901234567890'
+            }
+          }
+        ]
+      ]) as unknown as Map<ChainNamespace, ChainAdapter>,
+      activeCaipAddress: 'eip155:1:0x1234567890123456789012345678901234567890'
+    })
+
+    fetchTokenImagesSpy = vi.spyOn(ApiController, 'fetchTokenImages').mockResolvedValue(undefined)
+    subscribeKeySpy = vi.spyOn(SendController, 'subscribeKey').mockReturnValue(() => {})
+    modalSubscribeSpy = vi.spyOn(ModalController, 'subscribe').mockReturnValue(() => {})
+  })
+
+  it('should fetch token images when assetAddress is provided and symbol is found', async () => {
+    const mockArgs = {
+      assetAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+      amount: '1.0',
+      namespace: 'eip155' as ChainNamespace,
+      chainId: '1',
+      to: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
+    }
+    vi.spyOn(TokenUtil, 'getTokenSymbolByAddress').mockReturnValue('USDC')
+
+    subscribeKeySpy.mockImplementation((_key: any, callback: any) => {
+      setTimeout(() => callback('0x123hash'), 0)
+      return () => {}
+    })
+
+    const result = await baseClient.open({ view: 'WalletSend', arguments: mockArgs })
+
+    expect(TokenUtil.getTokenSymbolByAddress).toHaveBeenCalledWith(mockArgs.assetAddress)
+    expect(fetchTokenImagesSpy).toHaveBeenCalledWith(['USDC'])
+    expect(ModalController.open).toHaveBeenCalledWith({
+      view: 'WalletSend',
+      data: { send: mockArgs }
+    })
+    expect(result).toEqual({ hash: '0x123hash' })
+  })
+
+  it('should not fetch token images when symbol is not found', async () => {
+    const mockArgs = {
+      assetAddress: '0xunknown',
+      amount: '1.0',
+      namespace: 'eip155' as ChainNamespace,
+      chainId: '1',
+      to: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
+    }
+    vi.spyOn(TokenUtil, 'getTokenSymbolByAddress').mockReturnValue(undefined)
+
+    subscribeKeySpy.mockImplementation((_key: any, callback: any) => {
+      setTimeout(() => callback('0x123hash'), 0)
+      return () => {}
+    })
+
+    await baseClient.open({ view: 'WalletSend', arguments: mockArgs })
+
+    expect(TokenUtil.getTokenSymbolByAddress).toHaveBeenCalledWith(mockArgs.assetAddress)
+    expect(fetchTokenImagesSpy).not.toHaveBeenCalled()
+    expect(ModalController.open).toHaveBeenCalledWith({
+      view: 'WalletSend',
+      data: { send: mockArgs }
+    })
+  })
+
+  it('should ignore errors when fetching token images fails', async () => {
+    const mockArgs = {
+      assetAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+      amount: '1.0',
+      namespace: 'eip155' as ChainNamespace,
+      chainId: '1',
+      to: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
+    }
+    vi.spyOn(TokenUtil, 'getTokenSymbolByAddress').mockReturnValue('USDC')
+    fetchTokenImagesSpy.mockRejectedValue(new Error('Fetch failed'))
+
+    subscribeKeySpy.mockImplementation((_key: any, callback: any) => {
+      setTimeout(() => callback('0x123hash'), 0)
+      return () => {}
+    })
+
+    const result = await baseClient.open({ view: 'WalletSend', arguments: mockArgs })
+
+    expect(TokenUtil.getTokenSymbolByAddress).toHaveBeenCalledWith(mockArgs.assetAddress)
+    expect(fetchTokenImagesSpy).toHaveBeenCalledWith(['USDC'])
+    expect(ModalController.open).toHaveBeenCalledWith({
+      view: 'WalletSend',
+      data: { send: mockArgs }
+    })
+    expect(result).toEqual({ hash: '0x123hash' })
+  })
+
+  it('should reject when modal is closed before transaction hash is received', async () => {
+    const mockArgs = {
+      assetAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+      amount: '1.0',
+      namespace: 'eip155' as ChainNamespace,
+      chainId: '1',
+      to: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
+    }
+    vi.spyOn(TokenUtil, 'getTokenSymbolByAddress').mockReturnValue('USDC')
+
+    modalSubscribeSpy.mockImplementation((callback: any) => {
+      setTimeout(() => callback({ open: false }), 0)
+      return () => {}
+    })
+
+    subscribeKeySpy.mockReturnValue(() => {})
+
+    await expect(baseClient.open({ view: 'WalletSend', arguments: mockArgs })).rejects.toThrow(
+      'Modal closed'
+    )
+  })
+
+  it('should resolve with hash when SendController emits hash', async () => {
+    const mockArgs = {
+      assetAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+      amount: '1.0',
+      namespace: 'eip155' as ChainNamespace,
+      chainId: '1',
+      to: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
+    }
+    vi.spyOn(TokenUtil, 'getTokenSymbolByAddress').mockReturnValue('USDC')
+
+    subscribeKeySpy.mockImplementation((_key: any, callback: any) => {
+      setTimeout(() => callback('0xabc123def456'), 0)
+      return () => {}
+    })
+
+    modalSubscribeSpy.mockReturnValue(() => {})
+
+    const result = await baseClient.open({ view: 'WalletSend', arguments: mockArgs })
+
+    expect(result).toEqual({ hash: '0xabc123def456' })
+  })
+
+  it('it should throw an error if failed to switch network', async () => {
+    const mockArgs = {
+      assetAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+      amount: '1.0',
+      namespace: 'eip155' as ChainNamespace,
+      chainId: '1',
+      to: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
+    }
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155',
+      activeCaipAddress: 'eip155:137:0x1234567890123456789012345678901234567890',
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              caipAddress: 'eip155:137:0x1234567890123456789012345678901234567890'
+            }
+          }
+        ]
+      ]) as unknown as Map<ChainNamespace, ChainAdapter>
+    })
+
+    vi.spyOn(baseClient as any, 'getCaipNetwork').mockReturnValue({ id: 137 } as CaipNetwork)
+    vi.spyOn(ChainController, 'getCaipNetworkById').mockReturnValue({
+      id: 1,
+      chainNamespace: 'eip155'
+    } as CaipNetwork)
+
+    vi.spyOn(ChainController, 'switchActiveNetwork').mockRejectedValue(
+      new Error('Failed to switch')
+    )
+
+    await expect(baseClient.open({ view: 'WalletSend', arguments: mockArgs })).rejects.toThrow(
+      'Failed to switch'
+    )
   })
 })

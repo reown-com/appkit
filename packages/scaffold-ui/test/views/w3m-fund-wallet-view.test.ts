@@ -501,6 +501,8 @@ describe('W3mFundWalletView', () => {
     depositFromExchangeButton?.click()
     await elementUpdated(element)
 
-    expect(pushSpy).toHaveBeenCalledWith('PayWithExchange')
+    expect(pushSpy).toHaveBeenCalledWith('PayWithExchange', {
+      redirectView: undefined
+    })
   })
 })

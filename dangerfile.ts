@@ -12,6 +12,7 @@ const RELATIVE_IMPORT_SAME_DIR = `'./`
 const RELATIVE_IMPORT_PARENT_DIR = `'../`
 const RELATIVE_IMPORT_EXTENSION = `.js'`
 const PRIVATE_FUNCTION_REGEX = /private\s+(?:\w+)\s*\(\s*\)/gu
+const ALLOWED_DOMAINS = ['reown.com', 'walletconnect.com', 'walletconnect.org']
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
@@ -664,3 +665,60 @@ async function checkForKeys() {
 }
 
 checkForKeys()
+
+// -- Check for introduced http/https URLs ---------------------------------------
+function extractHostname(url: string): string | null {
+  const match = url.match(/^https?:\/\/([^\/'"`\s]+)/iu)
+
+  return match?.[1] ?? null
+}
+
+async function scanFileForHttpDomains(filepath: string) {
+  const diff = await diffForFile(filepath)
+
+  if (!diff?.added) {
+    return
+  }
+
+  const fileContent = await danger.github.utils.fileContents(filepath)
+
+  if (!fileContent) {
+    return
+  }
+
+  const lines = fileContent.split('\n')
+  const matches = diff.added.match(/https?:\/\/[^\s'"`]+/giu) ?? []
+
+  const seen = new Set<string>()
+
+  for (const match of matches) {
+    if (seen.has(match)) {
+      continue
+    }
+
+    seen.add(match)
+
+    const lineNumber = findLineNumber(lines, match) ?? 'unknown'
+    const preview = `${match.slice(0, 60)}${match.length > 60 ? '...' : ''}`
+    const hostname = extractHostname(match)
+
+    const isAllowedCompanyDomain = Boolean(
+      hostname && ALLOWED_DOMAINS.some(d => hostname === d || hostname.endsWith(`.${d}`))
+    )
+
+    if (!isAllowedCompanyDomain) {
+      warn(
+        `🌐 Non-company domain introduced${hostname ? ` (host: ${hostname})` : ''} in ${filepath} (line ${lineNumber}): \`${preview}\``
+      )
+    }
+  }
+}
+
+async function checkForHttpDomains() {
+  const candidateFiles = [...updated_files, ...created_files].filter(
+    f => !f.endsWith('pnpm-lock.yaml')
+  )
+  await Promise.all(candidateFiles.map(scanFileForHttpDomains))
+}
+
+checkForHttpDomains()

@@ -203,9 +203,19 @@ const baseETH: PaymentAsset = {
   }
 }
 
-const baseUSDC: PaymentAsset = {
+export const baseUSDC: PaymentAsset = {
   network: 'eip155:8453',
   asset: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+  metadata: {
+    name: 'USD Coin',
+    symbol: 'USDC',
+    decimals: 6
+  }
+}
+
+export const baseSepoliaUSDC: PaymentAsset = {
+  network: 'eip155:84532',
+  asset: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
   metadata: {
     name: 'USD Coin',
     symbol: 'USDC',

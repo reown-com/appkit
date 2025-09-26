@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-bitcoin",
-  "version": "1.8.2",
+  "version": "1.8.6",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -66,5 +66,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

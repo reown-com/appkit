@@ -21,10 +21,16 @@ export class W3mInputToken extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Object }) public token?: Balance
 
+  @property({ type: Boolean }) public readOnly = false
+
   @property({ type: Number }) public sendTokenAmount?: number
+
+  @property({ type: Boolean }) public isInsufficientBalance = false
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const isDisabled = this.readOnly || !this.token
+
     return html` <wui-flex
       flexDirection="column"
       gap="01"
@@ -33,17 +39,13 @@ export class W3mInputToken extends LitElement {
       <wui-flex alignItems="center">
         <wui-input-amount
           @inputChange=${this.onInputChange.bind(this)}
-          ?disabled=${!this.token && true}
+          ?disabled=${isDisabled}
           .value=${this.sendTokenAmount ? String(this.sendTokenAmount) : ''}
+          ?error=${Boolean(this.isInsufficientBalance)}
         ></wui-input-amount>
         ${this.buttonTemplate()}
       </wui-flex>
-      <wui-flex alignItems="center" justifyContent="space-between">
-        ${this.sendValueTemplate()}
-        <wui-flex alignItems="center" gap="01" justifyContent="flex-end">
-          ${this.maxAmountTemplate()} ${this.actionTemplate()}
-        </wui-flex>
-      </wui-flex>
+      ${this.bottomTemplate()}
     </wui-flex>`
   }
 
@@ -67,11 +69,13 @@ export class W3mInputToken extends LitElement {
   }
 
   private handleSelectButtonClick() {
-    RouterController.push('WalletSendSelectToken')
+    if (!this.readOnly) {
+      RouterController.push('WalletSendSelectToken')
+    }
   }
 
   private sendValueTemplate() {
-    if (this.token && this.sendTokenAmount) {
+    if (!this.readOnly && this.token && this.sendTokenAmount) {
       const price = this.token.price
       const totalValue = price * this.sendTokenAmount
 
@@ -87,12 +91,6 @@ export class W3mInputToken extends LitElement {
 
   private maxAmountTemplate() {
     if (this.token) {
-      if (this.sendTokenAmount && this.sendTokenAmount > Number(this.token.quantity.numeric)) {
-        return html` <wui-text variant="sm-regular" color="error">
-          ${UiHelperUtil.roundNumber(Number(this.token.quantity.numeric), 6, 5)}
-        </wui-text>`
-      }
-
       return html` <wui-text variant="sm-regular" color="secondary">
         ${UiHelperUtil.roundNumber(Number(this.token.quantity.numeric), 6, 5)}
       </wui-text>`
@@ -103,14 +101,23 @@ export class W3mInputToken extends LitElement {
 
   private actionTemplate() {
     if (this.token) {
-      if (this.sendTokenAmount && this.sendTokenAmount > Number(this.token.quantity.numeric)) {
-        return html`<wui-link @click=${this.onBuyClick.bind(this)}>Buy</wui-link>`
-      }
-
       return html`<wui-link @click=${this.onMaxClick.bind(this)}>Max</wui-link>`
     }
 
     return null
+  }
+
+  private bottomTemplate() {
+    if (this.readOnly) {
+      return null
+    }
+
+    return html`<wui-flex alignItems="center" justifyContent="space-between">
+      ${this.sendValueTemplate()}
+      <wui-flex alignItems="center" gap="01" justifyContent="flex-end">
+        ${this.maxAmountTemplate()} ${this.actionTemplate()}
+      </wui-flex>
+    </wui-flex>`
   }
 
   private onInputChange(event: InputEvent) {
@@ -123,10 +130,6 @@ export class W3mInputToken extends LitElement {
 
       SendController.setTokenAmount(Number(maxValue.toFixed(20)))
     }
-  }
-
-  private onBuyClick() {
-    RouterController.push('OnRampProviders')
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-wallet-button",
-  "version": "1.8.2",
+  "version": "1.8.6",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -76,5 +76,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

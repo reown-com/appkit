@@ -1,8 +1,10 @@
-import { expect, fixture, html } from '@open-wc/testing'
-import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
+import { fixture, html } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Balance } from '@reown/appkit-common'
 import {
+  type AccountState,
+  ChainController,
   ConnectionController,
   RouterController,
   SendController,
@@ -33,6 +35,10 @@ describe('W3mWalletSendView', () => {
       return {}
     })
 
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
+      address: '0x123456789abcdef123456789abcdef123456789a'
+    } as unknown as AccountState)
     vi.spyOn(SwapController, 'getNetworkTokenPrice').mockResolvedValue()
     vi.spyOn(SendController, 'fetchTokenBalance').mockResolvedValue([])
     vi.spyOn(ConnectionController, 'getEnsAddress').mockImplementation((ensName: string) => {
@@ -104,9 +110,11 @@ describe('W3mWalletSendView', () => {
     await element.updateComplete
     await element.render()
 
-    const button = element.shadowRoot?.querySelector('wui-button')
-    expect(button?.textContent?.trim()).to.equal('Insufficient Funds')
-    expect(button?.disabled).to.be.true
+    const [fundWalletButton, connectDifferentWalletButton] =
+      element.shadowRoot?.querySelectorAll('wui-button') ?? []
+
+    expect(fundWalletButton?.textContent?.trim()).to.equal('Fund Wallet')
+    expect(connectDifferentWalletButton?.textContent?.trim()).to.equal('Connect a different wallet')
   })
 
   it('should show invalid address message for incorrect address and persist when input cleared', async () => {
@@ -215,30 +223,32 @@ describe('W3mWalletSendView', () => {
     const button = element.shadowRoot?.querySelector('wui-button')
     button?.click()
 
-    viExpect(routerSpy).toHaveBeenCalledWith('WalletSendPreview')
+    expect(routerSpy).toHaveBeenCalledWith('WalletSendPreview', {
+      send: undefined
+    })
   })
 
   it('should fetch network price on initialization if token is set', async () => {
     SendController.setToken(mockToken)
     await fixture<W3mWalletSendView>(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
 
-    viExpect(SwapController.getNetworkTokenPrice).toHaveBeenCalled()
+    expect(SwapController.getNetworkTokenPrice).toHaveBeenCalled()
   })
 
   it('should not fetch network price on initialization if no token is set', async () => {
     await fixture<W3mWalletSendView>(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
-    viExpect(SwapController.getNetworkTokenPrice).toHaveBeenCalledTimes(0)
+    expect(SwapController.getNetworkTokenPrice).toHaveBeenCalledTimes(0)
   })
 
   it('should not fetch balances on initialization if no token is set', async () => {
     await fixture<W3mWalletSendView>(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
-    viExpect(SendController.fetchTokenBalance).toHaveBeenCalledTimes(0)
+    expect(SendController.fetchTokenBalance).toHaveBeenCalledTimes(0)
   })
 
   it('should fetch balances on initialization if token is set', async () => {
     SendController.setToken(mockToken)
     await fixture<W3mWalletSendView>(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
-    viExpect(SendController.fetchTokenBalance).toHaveBeenCalled()
+    expect(SendController.fetchTokenBalance).toHaveBeenCalled()
   })
 
   it('should cleanup subscriptions on disconnect', async () => {
@@ -250,6 +260,6 @@ describe('W3mWalletSendView', () => {
     element['unsubscribe'] = [unsubscribeSpy]
 
     element.disconnectedCallback()
-    viExpect(unsubscribeSpy).toHaveBeenCalled()
+    expect(unsubscribeSpy).toHaveBeenCalled()
   })
 })
