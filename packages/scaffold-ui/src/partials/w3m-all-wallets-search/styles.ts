@@ -14,6 +14,11 @@ export default css`
     grid-template-columns: repeat(auto-fill, 104px);
   }
 
+  :host([data-mobile-fullscreen='true']) wui-grid {
+    max-height: none;
+    height: auto;
+  }
+
   wui-grid[data-scroll='false'] {
     overflow: hidden;
   }

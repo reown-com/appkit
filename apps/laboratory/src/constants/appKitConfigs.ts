@@ -311,7 +311,8 @@ export const appKitConfigs = {
   'multichain-no-adapters': {
     ...commonAppKitConfig,
     adapters: [],
-    networks: ConstantsUtil.AllNetworks
+    networks: ConstantsUtil.AllNetworks,
+    enableMobileFullScreen: true
   },
   'multichain-wagmi-solana': {
     ...commonAppKitConfig,

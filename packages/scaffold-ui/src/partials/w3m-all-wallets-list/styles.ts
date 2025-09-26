@@ -9,6 +9,10 @@ export default css`
     grid-template-columns: repeat(auto-fill, 104px);
   }
 
+  :host([data-mobile-fullscreen='true']) wui-grid {
+    max-height: none;
+  }
+
   @media (max-width: 350px) {
     wui-grid {
       grid-template-columns: repeat(2, 1fr);

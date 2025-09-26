@@ -17,6 +17,10 @@ export default css`
     will-change: height, padding-bottom;
   }
 
+  .container[data-mobile-fullscreen='true'] {
+    overflow: scroll;
+  }
+
   .page {
     position: absolute;
     top: 0;
@@ -32,6 +36,16 @@ export default css`
     border-bottom-left-radius: var(--local-border-bottom-radius);
     border-bottom-right-radius: var(--local-border-bottom-radius);
     transition: border-bottom-left-radius var(--local-duration) var(--local-transition);
+  }
+
+  .page[data-mobile-fullscreen='true'] {
+    height: 100%;
+  }
+
+  .page-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
   }
 
   .footer {
