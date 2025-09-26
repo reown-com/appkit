@@ -74,6 +74,10 @@ export default css`
     will-change: box-shadow;
   }
 
+  :host([data-mobile-fullscreen='true']) wui-card::before {
+    border-radius: 0px;
+  }
+
   :host([data-border='true']) wui-card::before {
     box-shadow: inset 0px 0px 0px 4px ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
@@ -132,27 +136,23 @@ export default css`
   }
 
   @media (max-width: 430px) {
-    :host([data-mobile-fullheight='true']) {
+    :host([data-mobile-fullscreen='true']) {
       height: 100svh;
     }
-    :host([data-mobile-fullheight='true']) wui-flex {
+    :host([data-mobile-fullscreen='true']) wui-flex {
       align-items: stretch;
     }
-    :host([data-mobile-fullheight='true']) wui-card {
+    :host([data-mobile-fullscreen='true']) wui-card {
       max-width: 100%;
       height: 100%;
       border-radius: 0;
       border: none;
     }
-    :host(:not([data-mobile-fullheight='true'])) wui-flex {
+    :host(:not([data-mobile-fullscreen='true'])) wui-flex {
       align-items: flex-end;
     }
 
-    :host(:not([data-mobile-fullheight='true'])) wui-card::before {
-      border-radius: 0px;
-    }
-
-    :host(:not([data-mobile-fullheight='true'])) wui-card {
+    :host(:not([data-mobile-fullscreen='true'])) wui-card {
       max-width: 100%;
       border-bottom-left-radius: var(--local-border-bottom-mobile-radius);
       border-bottom-right-radius: var(--local-border-bottom-mobile-radius);

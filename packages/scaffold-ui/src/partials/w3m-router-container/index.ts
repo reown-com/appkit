@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { CoreHelperUtil, OptionsController } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
@@ -94,7 +95,6 @@ export class W3mRouterContainer extends LitElement {
 
     this.resizeObserver.observe(this.getWrapper())
 
-    // Compute height immediately and after a short delay to ensure header height is available
     this.updateContainerHeight()
     setTimeout(() => this.updateContainerHeight(), 50)
 
@@ -114,8 +114,19 @@ export class W3mRouterContainer extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <div class="container">
-        <div class="page" view-direction="${this.viewDirection}">
+      <div
+        class="container"
+        data-mobile-fullscreen="${ifDefined(
+          OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()
+        )}"
+      >
+        <div
+          class="page"
+          data-mobile-fullscreen="${ifDefined(
+            OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()
+          )}"
+          view-direction="${this.viewDirection}"
+        >
           <div class="page-content">
             <slot></slot>
           </div>
@@ -194,7 +205,6 @@ export class W3mRouterContainer extends LitElement {
   }
 
   private getHeaderHeight() {
-    // Header is always 60px
     return 60
   }
 }

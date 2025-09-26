@@ -196,8 +196,6 @@ export interface OptionsControllerStatePublic {
   enableNetworkSwitch?: boolean
   /**
    * Render the modal as full height on mobile web browsers.
-   * When enabled, the modal takes 100svh and internal content height is
-   * calculated as viewport height minus header and footer.
    * @default false
    */
   enableMobileFullScreen?: boolean
