@@ -1,8 +1,9 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
+  AssetUtil,
   ChainController,
   ConnectionController,
   type CurrentPayment,
@@ -80,7 +81,10 @@ export class W3mDepositFromExchangeView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
-    ExchangeController.reset()
+    const isInProgress = ExchangeController.state.isPaymentInProgress
+    if (!isInProgress) {
+      ExchangeController.reset()
+    }
   }
 
   public override async firstUpdated() {
@@ -163,6 +167,7 @@ export class W3mDepositFromExchangeView extends LitElement {
             imageSrc=${this.paymentAsset?.metadata.iconUrl || ''}
             @click=${() => RouterController.push('PayWithExchangeSelectAsset')}
             size="lg"
+            .chainImageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
           >
           </wui-token-button>
         </wui-flex>
@@ -225,6 +230,7 @@ export class W3mDepositFromExchangeView extends LitElement {
 
   private handlePaymentInProgress() {
     const namespace = ChainController.state.activeChain
+    const { redirectView = 'Account' } = RouterController.state.data ?? {}
 
     if (
       this.isPaymentInProgress &&
@@ -239,17 +245,19 @@ export class W3mDepositFromExchangeView extends LitElement {
       }).then(status => {
         if (status.status === 'SUCCESS') {
           SnackController.showSuccess('Deposit completed')
+          ExchangeController.reset()
 
           if (namespace) {
-            AccountController.fetchTokenBalance()
+            ChainController.fetchTokenBalance()
             ConnectionController.updateBalance(namespace)
           }
+          RouterController.replace('Transactions')
         } else if (status.status === 'FAILED') {
           SnackController.showError('Deposit failed')
         }
       })
       SnackController.showLoading('Deposit in progress...')
-      RouterController.replace('Account')
+      RouterController.replace(redirectView)
     }
   }
 

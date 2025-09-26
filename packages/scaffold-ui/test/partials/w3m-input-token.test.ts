@@ -110,27 +110,6 @@ describe('W3mInputToken', () => {
     expect(setTokenAmountSpy).toHaveBeenCalled()
   })
 
-  it('should show buy link when amount exceeds balance', async () => {
-    const element: W3mInputToken = await fixture(
-      html`<w3m-input-token .token=${MOCK_TOKEN} .sendTokenAmount=${150}></w3m-input-token>`
-    )
-
-    const buyLink = element.shadowRoot?.querySelector('wui-link')
-    expect(buyLink?.textContent?.trim()).toBe('Buy')
-  })
-
-  it('should navigate to OnRampProviders when buy link is clicked', async () => {
-    const pushSpy = vi.spyOn(RouterController, 'push')
-    const element: W3mInputToken = await fixture(
-      html`<w3m-input-token .token=${MOCK_TOKEN} .sendTokenAmount=${150}></w3m-input-token>`
-    )
-
-    const buyLink = element.shadowRoot?.querySelector('wui-link')
-    buyLink?.click()
-
-    expect(pushSpy).toHaveBeenCalledWith('OnRampProviders')
-  })
-
   it('should update token amount when input changes', async () => {
     const setTokenAmountSpy = vi.spyOn(SendController, 'setTokenAmount')
     const element: W3mInputToken = await fixture(

@@ -5,8 +5,7 @@ import type { CaipNetworkId } from '@reown/appkit-common'
 import type { SIWXSession } from '@reown/appkit-controllers'
 
 import {
-  AccountController,
-  type AccountControllerState,
+  type AccountState,
   type AdapterNetworkState,
   type ChainAdapter,
   ChainController,
@@ -37,7 +36,7 @@ export function mockChainControllerState(
       chains: Map<
         ChainNamespace,
         Partial<Omit<ChainAdapter, 'accountState' | 'networkState'>> & {
-          accountState?: Partial<AccountControllerState>
+          accountState?: Partial<AccountState>
           networkState?: Partial<AdapterNetworkState>
         }
       >
@@ -54,7 +53,7 @@ export function mockChainControllerState(
 export function updateChainsMap(
   namespace: ChainNamespace,
   state: Partial<Omit<ChainAdapter, 'accountState' | 'networkState'>> & {
-    accountState?: Partial<AccountControllerState>
+    accountState?: Partial<AccountState>
     networkState?: Partial<AdapterNetworkState>
   }
 ) {
@@ -63,9 +62,9 @@ export function updateChainsMap(
   ChainController.state.chains.set(namespace, { ...currentState, ...state })
 }
 
-export function mockAccountControllerState(state: AccountControllerState) {
-  vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-    ...AccountController.state,
+export function mockAccountState(state: AccountState) {
+  vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+    ...ChainController.getAccountData(),
     ...state
   })
 }

@@ -10,7 +10,7 @@ import {
   UserRejectedRequestError
 } from '@reown/appkit-common'
 import {
-  AccountController,
+  ChainController,
   type CombinedProvider,
   type Connector,
   type ConnectorType,
@@ -163,6 +163,12 @@ export class Ethers5Adapter extends AdapterBlueprint {
       throw new Error('Provider is undefined')
     }
 
+    const address = ChainController.getAccountData(CommonConstantsUtil.CHAIN.EVM)?.address
+
+    if (!address) {
+      throw new Error('Address is undefined')
+    }
+
     const tx = await Ethers5Methods.sendTransaction(
       {
         value: Number.isNaN(Number(params.value)) ? BigInt(0) : BigInt(params.value),
@@ -170,10 +176,10 @@ export class Ethers5Adapter extends AdapterBlueprint {
         data: params.data ? (params.data as Address) : '0x',
         gas: params.gas ? BigInt(params.gas) : undefined,
         gasPrice: params.gasPrice ? BigInt(params.gasPrice) : undefined,
-        address: AccountController.state.address as Address
+        address: address as Address
       },
       params.provider as Provider,
-      AccountController.state.address as Address,
+      address as Address,
       Number(params.caipNetwork?.id)
     )
 

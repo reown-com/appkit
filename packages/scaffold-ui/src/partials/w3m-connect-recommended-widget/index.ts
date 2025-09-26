@@ -129,14 +129,15 @@ export class W3mConnectRecommendedWidget extends LitElement {
     if (this.loading) {
       return
     }
+    const redirectView = RouterController.state.data?.redirectView
     const connector = ConnectorController.getConnector({
       id: wallet.id,
       rdns: wallet.rdns
     })
     if (connector) {
-      RouterController.push('ConnectingExternal', { connector })
+      RouterController.push('ConnectingExternal', { connector, redirectView })
     } else {
-      RouterController.push('ConnectingWalletConnect', { wallet })
+      RouterController.push('ConnectingWalletConnect', { wallet, redirectView })
     }
   }
 }

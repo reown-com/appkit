@@ -5,7 +5,7 @@ import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import {
-  AccountController,
+  type AccountState,
   BlockchainApiController,
   ChainController,
   ConnectionController,
@@ -71,7 +71,8 @@ beforeAll(async () => {
   })
 
   ChainController.setActiveCaipNetwork(caipNetwork)
-  AccountController.setCaipAddress(caipAddress, chain)
+  ChainController.setAccountProp('caipAddress', caipAddress, chain)
+  ChainController.setAccountProp('address', '0x123', chain)
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)
   vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue(balanceResponse)
   vi.spyOn(BlockchainApiController, 'fetchSwapQuote').mockResolvedValue(swapQuoteResponse)
@@ -188,10 +189,10 @@ describe('SwapController', () => {
   })
 
   describe('getParams()', () => {
-    it('should use AccountController.getCaipAddress before falling back to activeCaipAddress', () => {
+    it('should use ChainController.getAccountData before falling back to activeCaipAddress', () => {
       const mockNamespace = ConstantsUtil.CHAIN.EVM
-      const mockCaipAddressFromAccount = 'eip155:1:0xAccountController'
-      const mockActiveCaipAddress = 'eip155:1:0xChainController'
+      const mockCaipAddressFromAccount = 'eip155:1:1'
+      const mockActiveCaipAddress = 'eip155:1:2'
 
       vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         ...ChainController.state,
@@ -200,9 +201,9 @@ describe('SwapController', () => {
         activeCaipNetwork: caipNetwork
       })
 
-      const getCaipAddressSpy = vi
-        .spyOn(AccountController, 'getCaipAddress')
-        .mockReturnValue(mockCaipAddressFromAccount)
+      const getCaipAddressSpy = vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        caipAddress: mockCaipAddressFromAccount
+      } as unknown as AccountState)
 
       const params = SwapController.getParams()
 
@@ -210,7 +211,7 @@ describe('SwapController', () => {
       expect(params.fromCaipAddress).toBe(mockCaipAddressFromAccount)
     })
 
-    it('should fallback to activeCaipAddress when AccountController.getCaipAddress returns undefined', () => {
+    it('should fallback to activeCaipAddress when ChainController.getAccountData returns undefined', () => {
       const mockNamespace = ConstantsUtil.CHAIN.EVM
       const mockActiveCaipAddress = 'eip155:1:0xFallback'
 
@@ -222,7 +223,7 @@ describe('SwapController', () => {
       })
 
       const getCaipAddressSpy = vi
-        .spyOn(AccountController, 'getCaipAddress')
+        .spyOn(ChainController, 'getAccountData')
         .mockReturnValue(undefined)
 
       const params = SwapController.getParams()
@@ -241,7 +242,7 @@ describe('SwapController', () => {
         activeCaipNetwork: caipNetwork
       })
 
-      vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(undefined)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
 
       expect(() => SwapController.getParams()).toThrow('No address found to swap the tokens from.')
     })

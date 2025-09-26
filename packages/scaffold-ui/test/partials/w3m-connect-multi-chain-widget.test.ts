@@ -136,7 +136,9 @@ describe('W3mConnectMultiChainWidget', () => {
     walletSelector.click()
 
     expect(setActiveConnectorSpy).toHaveBeenCalledWith(MOCK_MULTI_CHAIN_CONNECTOR)
-    expect(pushSpy).toHaveBeenCalledWith('ConnectingMultiChain')
+    expect(pushSpy).toHaveBeenCalledWith('ConnectingMultiChain', {
+      redirectView: undefined
+    })
   })
 
   it('should handle tabIdx property', async () => {

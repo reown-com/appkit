@@ -1,10 +1,11 @@
 /* eslint-disable max-depth */
+import { ref } from 'valtio'
+
 import { type ChainNamespace, ParseUtil, type ParsedCaipAddress } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
-import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
@@ -115,9 +116,10 @@ export const ConnectorControllerUtil = {
     onOpenFarcaster,
     onConnect
   }: ConnectSocialParameters): Promise<ParsedCaipAddress> {
-    let socialWindow: Window | null | undefined = AccountController.state.socialWindow
-    let socialProvider = AccountController.state.socialProvider
-    let connectingSocial = false
+    const accountData = ChainController.getAccountData(namespace)
+    let socialWindow: Window | null | undefined = accountData?.socialWindow
+    let socialProvider = accountData?.socialProvider
+    let isConnectingSocial = false
     let popupWindow: Window | null = null
 
     const namespaceToUse = namespace || ChainController.state.activeChain
@@ -139,13 +141,14 @@ export const ConnectorControllerUtil = {
             try {
               const authConnector = ConnectorController.getAuthConnector(namespaceToUse)
 
-              if (authConnector && !connectingSocial) {
+              if (authConnector && !isConnectingSocial) {
+                const _accountData = ChainController.getAccountData(namespaceToUse)
                 if (socialWindow) {
                   socialWindow.close()
-                  AccountController.setSocialWindow(undefined, namespaceToUse)
-                  socialWindow = AccountController.state.socialWindow
+                  ChainController.setAccountProp('socialWindow', undefined, namespaceToUse)
+                  socialWindow = _accountData?.socialWindow
                 }
-                connectingSocial = true
+                isConnectingSocial = true
                 const uri = event.data.resultUri as string
 
                 if (socialProvider) {
@@ -206,8 +209,9 @@ export const ConnectorControllerUtil = {
 
       async function connectSocial() {
         if (social) {
-          AccountController.setSocialProvider(social, namespaceToUse)
-          socialProvider = AccountController.state.socialProvider
+          const _accountData = ChainController.getAccountData(namespaceToUse)
+          ChainController.setAccountProp('socialProvider', social, namespaceToUse)
+          socialProvider = _accountData?.socialProvider
           EventsController.sendEvent({
             type: 'track',
             event: 'SOCIAL_LOGIN_STARTED',
@@ -228,11 +232,12 @@ export const ConnectorControllerUtil = {
           const authConnector = ConnectorController.getAuthConnector()
 
           if (authConnector) {
-            if (!AccountController.state.farcasterUrl) {
+            const _accountData = ChainController.getAccountData(namespaceToUse)
+            if (!_accountData?.farcasterUrl) {
               try {
                 const { url } = await authConnector.provider.getFarcasterUri()
 
-                AccountController.setFarcasterUrl(url, namespaceToUse)
+                ChainController.setAccountProp('farcasterUrl', url, namespaceToUse)
               } catch {
                 reject(new Error('Failed to connect to farcaster'))
               }
@@ -254,12 +259,12 @@ export const ConnectorControllerUtil = {
               })
 
               if (popupWindow && uri) {
-                AccountController.setSocialWindow(popupWindow, namespaceToUse)
-                socialWindow = AccountController.state.socialWindow
+                ChainController.setAccountProp('socialWindow', ref(popupWindow), namespaceToUse)
+                socialWindow = accountData?.socialWindow
                 popupWindow.location.href = uri
 
                 const interval = setInterval(() => {
-                  if (socialWindow?.closed && !connectingSocial) {
+                  if (socialWindow?.closed && !isConnectingSocial) {
                     reject(new Error('Popup closed'))
                     clearInterval(interval)
                   }

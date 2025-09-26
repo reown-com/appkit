@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
-  AccountController,
   AssetUtil,
   ChainController,
   ConnectionController,
@@ -186,7 +185,7 @@ export class W3mPayLoadingView extends LitElement {
     }
 
     if (currentPayment.type === 'wallet') {
-      const walletIcon = AccountController.state.connectedWalletInfo?.icon
+      const walletIcon = ChainController.getAccountData()?.connectedWalletInfo?.icon
       if (walletIcon) {
         return walletIcon
       }

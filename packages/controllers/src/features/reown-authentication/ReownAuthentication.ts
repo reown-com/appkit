@@ -8,7 +8,6 @@ import {
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
 
-import { AccountController } from '../../controllers/AccountController.js'
 import { ApiController } from '../../controllers/ApiController.js'
 import { BlockchainApiController } from '../../controllers/BlockchainApiController.js'
 import { ChainController } from '../../controllers/ChainController.js'
@@ -298,24 +297,24 @@ export class ReownAuthentication implements SIWXConfig {
   }
 
   private getWalletInfo(): ReownAuthentication.WalletInfo | undefined {
-    const { connectedWalletInfo } = AccountController.state
+    const walletInfo = ChainController.getAccountData()?.connectedWalletInfo
 
-    if (!connectedWalletInfo) {
+    if (!walletInfo) {
       return undefined
     }
 
-    if ('social' in connectedWalletInfo) {
-      const social = connectedWalletInfo['social'] as string
-      const identifier = connectedWalletInfo['identifier'] as string
+    if ('social' in walletInfo && 'identifier' in walletInfo) {
+      const social = walletInfo['social'] as string
+      const identifier = walletInfo['identifier'] as string
 
       return { type: 'social', social, identifier }
     }
 
-    const { name, icon } = connectedWalletInfo
+    const { name, icon } = walletInfo
 
     let type: ReownAuthentication.WalletInfo['type'] = 'unknown'
 
-    switch (connectedWalletInfo['type']) {
+    switch (walletInfo.type) {
       case 'EXTERNAL':
       case 'INJECTED':
       case 'ANNOUNCED':
