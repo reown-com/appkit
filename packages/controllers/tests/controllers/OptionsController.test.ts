@@ -32,7 +32,8 @@ describe('OptionsController', () => {
         solana: 'eoa'
       },
       enableNetworkSwitch: true,
-      experimental_preferUniversalLinks: false
+      experimental_preferUniversalLinks: false,
+      enableMobileFullScreen: false
     })
   })
 
