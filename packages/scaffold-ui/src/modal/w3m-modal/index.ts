@@ -100,7 +100,7 @@ export class W3mModalBase extends LitElement {
   public override firstUpdated() {
     this.dataset['border'] = HelpersUtil.hasFooter() ? 'true' : 'false'
 
-    if (this.mobileFullScreen && CoreHelperUtil.isMobile()) {
+    if (this.mobileFullScreen) {
       this.setAttribute('data-mobile-fullScreen', 'true')
     }
 

@@ -30,6 +30,9 @@ export class W3mRouterContainer extends LitElement {
 
   @state() private previousHeight = '0px'
 
+  @state() private mobileFullScreen =
+    OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()
+
   // -- Handlers ----------------------------------------- //
   private onViewportResize = () => {
     this.updateContainerHeight()
@@ -68,9 +71,8 @@ export class W3mRouterContainer extends LitElement {
             getComputedStyle(document.documentElement).getPropertyValue('--apkt-footer-height') ||
               '0'
           )
-          const isMobileFullScreen =
-            OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()
-          if (isMobileFullScreen) {
+
+          if (this.mobileFullScreen) {
             const viewportHeight = window.visualViewport?.height || window.innerHeight
             const headerHeight = this.getHeaderHeight()
             newHeight = viewportHeight - headerHeight - footerHeight
@@ -114,17 +116,10 @@ export class W3mRouterContainer extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <div
-        class="container"
-        data-mobile-fullscreen="${ifDefined(
-          OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()
-        )}"
-      >
+      <div class="container" data-mobile-fullscreen="${ifDefined(this.mobileFullScreen)}">
         <div
           class="page"
-          data-mobile-fullscreen="${ifDefined(
-            OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()
-          )}"
+          data-mobile-fullscreen="${ifDefined(this.mobileFullScreen)}"
           view-direction="${this.viewDirection}"
         >
           <div class="page-content">
@@ -180,11 +175,9 @@ export class W3mRouterContainer extends LitElement {
     const footerHeight = parseFloat(
       getComputedStyle(document.documentElement).getPropertyValue('--apkt-footer-height') || '0'
     )
-    const isMobileFullScreen =
-      OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()
 
     let newHeight = 0
-    if (isMobileFullScreen) {
+    if (this.mobileFullScreen) {
       const viewportHeight = window.visualViewport?.height || window.innerHeight
       const headerHeight = this.getHeaderHeight()
       newHeight = viewportHeight - headerHeight - footerHeight

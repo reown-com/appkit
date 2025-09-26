@@ -31,7 +31,8 @@ export class W3mAllWalletsSearch extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private loading = true
 
-  @state() private mobileFullScreen = OptionsController.state.enableMobileFullScreen
+  @state() private mobileFullScreen =
+    OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()
 
   @property() private query = ''
 
@@ -39,7 +40,7 @@ export class W3mAllWalletsSearch extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (this.mobileFullScreen && CoreHelperUtil.isMobile()) {
+    if (this.mobileFullScreen) {
       this.setAttribute('data-mobile-fullScreen', 'true')
     }
 
