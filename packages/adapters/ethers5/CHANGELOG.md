@@ -1,5 +1,28 @@
 # @reown/appkit-adapter-ethers5
 
+## 1.8.7
+
+### Patch Changes
+
+- [#5043](https://github.com/reown-com/appkit/pull/5043) [`1fe278b`](https://github.com/reown-com/appkit/commit/1fe278b757e08660dffb1fc2fae64ad34be04db4) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the `useAppKitConnection` hook returned `null` when wallet is disconnected
+
+- [#5028](https://github.com/reown-com/appkit/pull/5028) [`090dbb5`](https://github.com/reown-com/appkit/commit/090dbb53dce58663f6a025d360156ab38c76f886) Thanks [@magiziz](https://github.com/magiziz)! - Removed NFTs tab from account modal view
+
+- [#5048](https://github.com/reown-com/appkit/pull/5048) [`9b2154c`](https://github.com/reown-com/appkit/commit/9b2154c069c554a45ed0f155bdda096f03d6649c) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the `publicKey` was returning `undefined` when connecting with the OKX Bitcoin wallet
+
+- [#5065](https://github.com/reown-com/appkit/pull/5065) [`fde8e5d`](https://github.com/reown-com/appkit/commit/fde8e5d6b0145b1729316ad03d9e9b18fdaf0b97) Thanks [@github-actions](https://github.com/apps/github-actions)! - Fix an issue where the wallets would show a small glitch when rendering the connectors
+
+- [#5021](https://github.com/reown-com/appkit/pull/5021) [`05ed5d2`](https://github.com/reown-com/appkit/commit/05ed5d231e53622dde33ecf66e694d85ad411e65) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where a `SEND_ERROR` event was logged when a user rejected a transaction. It now logs a `SEND_REJECTED` event instead
+
+- Updated dependencies [[`1fe278b`](https://github.com/reown-com/appkit/commit/1fe278b757e08660dffb1fc2fae64ad34be04db4), [`a36fa66`](https://github.com/reown-com/appkit/commit/a36fa66aa9a589d538f7f7990ffec0bde5fedec6), [`0bb4ee5`](https://github.com/reown-com/appkit/commit/0bb4ee5e94b8743b9102327e487d055197cb6040), [`0bb4ee5`](https://github.com/reown-com/appkit/commit/0bb4ee5e94b8743b9102327e487d055197cb6040), [`d7b0555`](https://github.com/reown-com/appkit/commit/d7b05552367a097ef28430ec67aab454fe7e914d), [`b241eb7`](https://github.com/reown-com/appkit/commit/b241eb734612a8286f45fc8e3f093761fbbffeb7), [`56fd94f`](https://github.com/reown-com/appkit/commit/56fd94f6e20d9986246716cdb6c90f33e44b8107), [`090dbb5`](https://github.com/reown-com/appkit/commit/090dbb53dce58663f6a025d360156ab38c76f886), [`d2644de`](https://github.com/reown-com/appkit/commit/d2644de2a58940ed392b826c72defb1f24551462), [`9b2154c`](https://github.com/reown-com/appkit/commit/9b2154c069c554a45ed0f155bdda096f03d6649c), [`fde8e5d`](https://github.com/reown-com/appkit/commit/fde8e5d6b0145b1729316ad03d9e9b18fdaf0b97), [`05ed5d2`](https://github.com/reown-com/appkit/commit/05ed5d231e53622dde33ecf66e694d85ad411e65)]:
+  - @reown/appkit@1.8.7
+  - @reown/appkit-utils@1.8.7
+  - @reown/appkit-common@1.8.7
+  - @reown/appkit-controllers@1.8.7
+  - @reown/appkit-polyfills@1.8.7
+  - @reown/appkit-scaffold-ui@1.8.7
+  - @reown/appkit-wallet@1.8.7
+
 ## 1.8.6
 
 ### Patch Changes
