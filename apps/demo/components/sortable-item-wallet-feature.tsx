@@ -92,7 +92,6 @@ export function SortableWalletFeatureItem({
   handle,
   id,
   index,
-  onRemove,
   style,
   renderItem,
   useDragOverlay,
@@ -141,7 +140,6 @@ export function SortableWalletFeatureItem({
         isSorting,
         overIndex
       })}
-      onRemove={onRemove ? () => onRemove(id) : undefined}
       transform={transform}
       transition={transition}
       wrapperStyle={wrapperStyle?.({ index, isDragging, active, id })}
