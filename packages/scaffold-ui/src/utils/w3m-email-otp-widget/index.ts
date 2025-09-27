@@ -96,7 +96,7 @@ export class W3mEmailOtpWidget extends LitElement {
           ? html`<wui-loading-spinner size="xl" color="accent-primary"></wui-loading-spinner>`
           : html` <wui-flex flexDirection="column" alignItems="center" gap="2">
               <wui-otp
-                dissabled
+                disabled
                 length="6"
                 @inputChange=${this.onOtpInputChange.bind(this)}
                 .otp=${this.otp}
