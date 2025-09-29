@@ -240,7 +240,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     },
     async getProvider({ chainId } = {}) {
       if (!provider_) {
-        provider_ = await appKit.getUniversalProvider()
+        provider_ = appKit.getUniversalProvider()
         provider_?.events.setMaxListeners(Number.POSITIVE_INFINITY)
       }
 
