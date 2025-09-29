@@ -1908,6 +1908,18 @@ export abstract class AppKitBaseClient {
     return this.universalProvider
   }
 
+  public getDisabledCaipNetworks() {
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+
+    const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
+      approvedCaipNetworkIds,
+      requestedCaipNetworks
+    )
+
+    return sortedNetworks.filter(network => ChainController.isCaipNetworkDisabled(network))
+  }
+
   // - Utils -------------------------------------------------------------------
   protected handleAlertError(error: Error) {
     const matchedUniversalProviderError = Object.entries(ErrorUtil.UniversalProviderErrors).find(
