@@ -69,6 +69,8 @@ export class W3mModalBase extends LitElement {
 
   @state() private padding = vars.spacing[1]
 
+  @state() private mobileFullScreen = OptionsController.state.enableMobileFullScreen
+
   public constructor() {
     super()
     this.initializeTheming()
@@ -96,6 +98,10 @@ export class W3mModalBase extends LitElement {
 
   public override firstUpdated() {
     this.dataset['border'] = HelpersUtil.hasFooter() ? 'true' : 'false'
+
+    if (this.mobileFullScreen) {
+      this.setAttribute('data-mobile-fullscreen', 'true')
+    }
 
     if (this.caipAddress) {
       if (this.enableEmbedded) {
@@ -125,10 +131,6 @@ export class W3mModalBase extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.setProperty('--local-modal-padding', this.padding)
-    this.style.setProperty(
-      '--local-border-bottom-mobile-radius',
-      this.enableEmbedded ? `clamp(0px, ${vars.borderRadius['8']}, 44px)` : '0px'
-    )
 
     if (this.enableEmbedded) {
       return html`${this.contentTemplate()}
@@ -165,6 +167,9 @@ export class W3mModalBase extends LitElement {
 
   private async onOverlayClick(event: PointerEvent) {
     if (event.target === event.currentTarget) {
+      if (this.mobileFullScreen) {
+        return
+      }
       await this.handleClose()
     }
   }
