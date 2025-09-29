@@ -195,7 +195,7 @@ jobs:
         run: bun install
 
       - name: build sample apps
-        run: bun run build:sample-apps
+        run: TURBO_UI=0 bun run build:sample-apps
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 

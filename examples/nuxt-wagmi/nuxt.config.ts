@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
+  telemetry: false,
   runtimeConfig: {
     public: {
       projectId: process.env.NUXT_PROJECT_ID
