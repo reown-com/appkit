@@ -131,14 +131,6 @@ export class W3mModalBase extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.setProperty('--local-modal-padding', this.padding)
-    if (this.mobileFullScreen) {
-      this.style.setProperty('--local-border-bottom-mobile-radius', '0px')
-    } else {
-      this.style.setProperty(
-        '--local-border-bottom-mobile-radius',
-        this.enableEmbedded ? `clamp(0px, ${vars.borderRadius['8']}, 44px)` : '0px'
-      )
-    }
 
     if (this.enableEmbedded) {
       return html`${this.contentTemplate()}
