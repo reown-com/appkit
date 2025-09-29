@@ -137,7 +137,7 @@ export default css`
 
   @media (max-width: 430px) {
     :host([data-mobile-fullscreen='true']) {
-      height: 100svh;
+      height: 100dvh;
     }
     :host([data-mobile-fullscreen='true']) wui-flex {
       align-items: stretch;
