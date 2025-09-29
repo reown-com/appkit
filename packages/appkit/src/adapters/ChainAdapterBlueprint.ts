@@ -371,6 +371,7 @@ export abstract class AdapterBlueprint<
       }
 
       const preferredAccountType = getPreferredAccountType(caipNetwork.chainNamespace)
+      console.log('>> Auth provider switchNetwork', caipNetwork.caipNetworkId)
       await authProvider.switchNetwork({ chainId: caipNetwork.caipNetworkId })
       const user = await authProvider.getUser({
         chainId: caipNetwork.caipNetworkId,

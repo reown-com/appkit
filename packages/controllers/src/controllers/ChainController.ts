@@ -31,6 +31,7 @@ import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
+import { ProviderController } from './ProviderController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { SendController } from './SendController.js'
 import { SnackController } from './SnackController.js'
@@ -472,11 +473,17 @@ const controller = {
       throw new Error('ChainController:switchActiveNetwork - namespace is required')
     }
 
+    const isAuthProvider = ProviderController.getProviderId(state.activeChain) === 'AUTH'
     const namespaceAddress = ChainController.getAccountData(namespace)?.address
-
+    const isAuthSupported = CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(
+      network.chainNamespace
+    )
     try {
       // If connected to the namespace and switching on same namespace, we should notify the wallet
-      if (namespaceAddress && network.chainNamespace === namespace) {
+      if (
+        (namespaceAddress && network.chainNamespace === namespace) ||
+        (isAuthProvider && isAuthSupported)
+      ) {
         const adapter = AdapterController.get(network.chainNamespace)
         await adapter.switchNetwork({ caipNetwork: network })
       }
