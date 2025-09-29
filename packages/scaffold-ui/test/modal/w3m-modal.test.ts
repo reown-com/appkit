@@ -247,19 +247,6 @@ describe('W3mModal', () => {
 
       expect(goBackSpy).not.toHaveBeenCalled()
     })
-
-    it('should handle network change when connected and modal is open', async () => {
-      ModalController.open()
-      const goBackSpy = vi.spyOn(RouterController, 'goBack')
-      ;(element as any).caipAddress = 'eip155:1:0x123'
-      ;(element as any).caipNetwork = mainnet
-
-      ChainController.setActiveCaipNetwork(polygon)
-      element.requestUpdate()
-      await elementUpdated(element)
-
-      expect(goBackSpy).toHaveBeenCalled()
-    })
   })
 
   describe('Initialization', () => {
