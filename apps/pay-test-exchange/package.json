@@ -1,12 +1,12 @@
 {
-  "name": "pay-test-exchange",
+  "name": "@apps/pay-test-exchange",
   "version": "0.1.12",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack --port 4001",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts"
@@ -36,7 +36,7 @@
     "eslint-config-next": "15.3.5",
     "postcss": "8.5.3",
     "tailwindcss": "3.4.1",
-    "typescript": "5",
+    "typescript": "5.8.3",
     "wrangler": "4.25.1"
   }
 }

@@ -6,14 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
     "@tanstack/react-query": "5.75.5",
     "@wagmi/core": "2.20.3",
-    "next": "14.2.32",
+    "next": "15.5.2",
     "next-themes": "0.4.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
