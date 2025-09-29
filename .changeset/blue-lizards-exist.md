@@ -4,4 +4,4 @@
 '@reown/appkit': patch
 ---
 
-Fixes an issue where switching tokens in swap view causes unexpected errors
+Add a param to AppKit to make it possible to render AppKit Core in fullscreen on mobile
