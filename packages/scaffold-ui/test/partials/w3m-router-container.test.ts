@@ -3,6 +3,8 @@ import { beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
+import { OptionsController } from '@reown/appkit-controllers'
+
 import '../../src/partials/w3m-router-container/index'
 import type { W3mRouterContainer } from '../../src/partials/w3m-router-container/index'
 
@@ -57,5 +59,41 @@ describe('W3mRouterContainer', () => {
     )) as W3mRouterContainer
     const child = el.querySelector('#child')
     expect(child).toBeTruthy()
+  })
+
+  it('should set the correct properties and values when mobileFullScreen is true', async () => {
+    OptionsController.state.enableMobileFullScreen = true
+    document.documentElement.style.setProperty('--apkt-footer-height', '16')
+
+    const el = (await fixture(
+      html`<w3m-router-container transitionDuration="0s" />`
+    )) as W3mRouterContainer
+    await elementUpdated(el)
+
+    const container = el.shadowRoot?.querySelector('div.container') as HTMLElement
+    const page = el.shadowRoot?.querySelector('div.page') as HTMLElement
+
+    expect(container.getAttribute('data-mobile-fullscreen')).toBe('true')
+    expect(page.getAttribute('data-mobile-fullscreen')).toBe('true')
+    expect(el.style.getPropertyValue('--local-border-bottom-radius').trim()).toBe('0px')
+  })
+
+  it('should set the correct properties and values mobileFullScreen is false', async () => {
+    OptionsController.state.enableMobileFullScreen = false
+    document.documentElement.style.setProperty('--apkt-footer-height', '16')
+
+    const el = (await fixture(
+      html`<w3m-router-container transitionDuration="0s" />`
+    )) as W3mRouterContainer
+    await elementUpdated(el)
+
+    const container = el.shadowRoot?.querySelector('div.container') as HTMLElement
+    const page = el.shadowRoot?.querySelector('div.page') as HTMLElement
+
+    expect(container.getAttribute('data-mobile-fullscreen')).toBe('false')
+    expect(page.getAttribute('data-mobile-fullscreen')).toBe('false')
+    expect(el.style.getPropertyValue('--local-border-bottom-radius').trim()).toBe(
+      'var(--apkt-borderRadius-5)'
+    )
   })
 })

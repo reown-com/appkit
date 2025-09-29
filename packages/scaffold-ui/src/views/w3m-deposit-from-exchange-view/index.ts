@@ -81,7 +81,10 @@ export class W3mDepositFromExchangeView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
-    ExchangeController.reset()
+    const isInProgress = ExchangeController.state.isPaymentInProgress
+    if (!isInProgress) {
+      ExchangeController.reset()
+    }
   }
 
   public override async firstUpdated() {
@@ -242,11 +245,13 @@ export class W3mDepositFromExchangeView extends LitElement {
       }).then(status => {
         if (status.status === 'SUCCESS') {
           SnackController.showSuccess('Deposit completed')
+          ExchangeController.reset()
 
           if (namespace) {
             ChainController.fetchTokenBalance()
             ConnectionController.updateBalance({ namespace })
           }
+          RouterController.replace('Transactions')
         } else if (status.status === 'FAILED') {
           SnackController.showError('Deposit failed')
         }
