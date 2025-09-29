@@ -326,11 +326,6 @@ export class W3mModalBase extends LitElement {
       SwapController.resetState()
     }
 
-    console.log('>> Debug', {
-      isModalOpen,
-      isConnectingExternal,
-      isInProfileWalletsView
-    })
     if (isModalOpen && !isConnectingExternal && !isInProfileWalletsView) {
       if (isNotConnected) {
         console.log(">> It's not connected")
