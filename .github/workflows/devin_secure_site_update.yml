@@ -27,19 +27,19 @@ jobs:
             ## Task — Update secure-site
             In **reown-com/secure-site**:
             1. Create a branch from `main`.
-            2. In **reown-com/appkit**, read the `name` and `version` fields from each `package.json` and build a map of `@reown/*` → `version`.
-            3. In **reown-com/secure-site**, go through all `package.json` files. For every dependency or devDependency that starts with `@reown/appkit/*`, update it to the exact version `<version>` from the map.
+            2. In **reown-com/appkit** repository, read the `name` and `version` fields from each `package.json` and build a map of `@reown/appkit/*` → `version`.
+            3. In **reown-com/secure-site** repository, scan all `package.json` files. For every dependency or devDependency that starts with `@reown/appkit/`, update it to the exact version `<version>` from the map.
             4. If everything is already up to date, respond **"No secure-site update needed."** and stop.
             5. Otherwise, commit the changes and open a PR to `main`.
 
             ## PR requirements
-            * **Title:** `chore: bump @reown/* dependencies to latest`
+            * **Title:** `chore: bump @reown/appkit/* dependencies to latest`
             * **Body:**
               - Bullet list of updated packages and versions
               - Link to the triggering commit: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
 
             ## Notes
-            • Only update packages under the `@reown/` scope.  
+            • Only update packages under the `@reown/appkit/` scope.  
             • Keep the PR concise.
 
         run: |
