@@ -45,6 +45,16 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       accounts: readonly Address[]
       chainId: number
     }>
+    getProvider(parameters?: { chainId?: number }): Promise<Provider>
+    getAccounts(): Promise<readonly Address[]>
+    getChainId(): Promise<number>
+    switchChain(parameters: {
+      addEthereumChainParameter?: AddEthereumChainParameter
+      chainId: number
+    }): Promise<unknown>
+    onAccountsChanged(accounts: string[]): void
+    onChainChanged(chain: string | number): void
+    onDisconnect(error?: unknown): Promise<void>
     getNamespaceChainsIds(): number[]
     getRequestedChainsIds(): Promise<number[]>
     isChainsStale(): Promise<boolean>
@@ -72,7 +82,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     name: 'WalletConnect',
     type: walletConnect.type,
 
-    async setup() {
+    async setup(this: Properties) {
       const provider = await this.getProvider().catch(() => null)
       if (!provider) {
         return
@@ -87,7 +97,17 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       }
     },
 
-    async connect({ ...rest } = {}) {
+    async connect<withCapabilities extends boolean = false>(
+      this: Properties,
+      {
+        ...rest
+      }: {
+        chainId?: number
+        isReconnecting?: boolean
+        withCapabilities?: withCapabilities | boolean
+        pairingTopic?: string
+      } = {}
+    ) {
       try {
         const caipNetworks = ChainController.getCaipNetworks()
         const provider = await this.getProvider()
@@ -166,7 +186,15 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         const defaultChain = universalProviderConfigOverride?.defaultChain
         provider.setDefaultChain(defaultChain ?? `eip155:${currentChainId}`)
 
-        return { accounts, chainId: currentChainId }
+        return {
+          accounts,
+          chainId: currentChainId
+        } as unknown as {
+          accounts: withCapabilities extends true
+            ? readonly { address: Address; capabilities: Record<string, unknown> }[]
+            : readonly Address[]
+          chainId: number
+        }
       } catch (error) {
         if (
           // eslint-disable-next-line prefer-named-capture-group, require-unicode-regexp
@@ -177,7 +205,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         throw error
       }
     },
-    async disconnect() {
+    async disconnect(this: Properties) {
       const provider = await this.getProvider()
       try {
         await provider?.disconnect()
@@ -274,7 +302,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       return network?.id as number
     },
-    async isAuthorized() {
+    async isAuthorized(this: Properties) {
       try {
         const [accounts, provider] = await Promise.all([this.getAccounts(), this.getProvider()])
 
@@ -298,7 +326,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         return false
       }
     },
-    async switchChain({ addEthereumChainParameter, chainId }) {
+    async switchChain(this: Properties, { addEthereumChainParameter, chainId }) {
       const provider = await this.getProvider()
       if (!provider) {
         throw new ProviderNotFoundError()
@@ -369,7 +397,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         }
       }
     },
-    onAccountsChanged(accounts) {
+    onAccountsChanged(this: Properties, accounts) {
       if (accounts.length === 0) {
         this.onDisconnect()
       } else {
@@ -378,15 +406,15 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         })
       }
     },
-    onChainChanged(chain) {
+    onChainChanged(this: Properties, chain) {
       const chainId = Number(chain)
 
       config.emitter.emit('change', { chainId })
     },
-    onConnect(_connectInfo) {
+    onConnect(this: Properties, _connectInfo) {
       this.setRequestedChainsIds(ChainController.getCaipNetworks().map(x => Number(x.id)))
     },
-    async onDisconnect(_error) {
+    async onDisconnect(this: Properties, _error) {
       this.setRequestedChainsIds([])
       config.emitter.emit('disconnect')
 
@@ -412,13 +440,13 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         provider.on('connect', connect)
       }
     },
-    onDisplayUri(uri) {
+    onDisplayUri(this: Properties, uri) {
       config.emitter.emit('message', { type: 'display_uri', data: uri })
     },
-    onSessionDelete() {
+    onSessionDelete(this: Properties) {
       this.onDisconnect()
     },
-    getNamespaceChainsIds() {
+    getNamespaceChainsIds(this: Properties) {
       if (!provider_?.session?.namespaces) {
         return []
       }
@@ -431,7 +459,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       return chainIds
     },
 
-    async getRequestedChainsIds() {
+    async getRequestedChainsIds(this: Properties) {
       const chainIds = (await config.storage?.getItem(this.requestedChainsStorageKey)) ?? []
 
       return [...new Set(chainIds)]
@@ -447,7 +475,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
      * connector later on, however, this chain will not have been approved or rejected
      * by the wallet. In this case, the chain is considered stale.
      */
-    async isChainsStale() {
+    async isChainsStale(this: Properties) {
       if (!isNewChainsStale) {
         return false
       }
@@ -464,9 +492,11 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       return !connectorChains.every(id => requestedChains.includes(Number(id)))
     },
-    async setRequestedChainsIds(chains) {
+
+    async setRequestedChainsIds(this: Properties, chains) {
       await config.storage?.setItem(this.requestedChainsStorageKey, chains)
     },
+
     get requestedChainsStorageKey() {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       return `${this.id}.requestedChains` as Properties['requestedChainsStorageKey']
