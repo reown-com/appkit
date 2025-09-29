@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@walletconnect/universal-provider": "2.21.7",
+    "@walletconnect/universal-provider": "2.21.9",
     "vue": "3.4.3"
   },
   "devDependencies": {
