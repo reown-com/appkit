@@ -9,6 +9,7 @@ import {
   type BadgeType,
   ConnectorController,
   type ConnectorWithProviders,
+  OptionsController,
   RouterController,
   type WcWallet
 } from '@reown/appkit-controllers'
@@ -181,5 +182,27 @@ describe('W3mAllWalletsSearch', () => {
       search: '',
       badge: 'recent'
     })
+  })
+
+  it('should set the correct properties and values mobileFullScreen is true', async () => {
+    OptionsController.state.enableMobileFullScreen = true
+
+    const el = (await fixture(
+      html`<w3m-all-wallets-search></w3m-all-wallets-search>`
+    )) as W3mAllWalletsSearch
+    await elementUpdated(el)
+
+    expect(el.getAttribute('data-mobile-fullscreen')).toBe('true')
+  })
+
+  it('should set the correct properties and values mobileFullScreen is false', async () => {
+    OptionsController.state.enableMobileFullScreen = false
+
+    const el = (await fixture(
+      html`<w3m-all-wallets-search></w3m-all-wallets-search>`
+    )) as W3mAllWalletsSearch
+    await elementUpdated(el)
+
+    expect(el.getAttribute('data-mobile-fullscreen')).toBeNull()
   })
 })
