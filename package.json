@@ -55,10 +55,11 @@
     "prepare": "husky",
     "cli": "node packages/cli/index.js",
     "codemod:upgrade": "node packages/codemod/src/index.js upgrade $*",
-    "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/* && pnpm install && pnpm prettier:format",
-    "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade viem wagmi @wagmi/* && pnpm install && pnpm prettier:format",
+    "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/* && pnpm install",
+    "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade viem wagmi @wagmi/* && pnpm install",
     "codemod:upgrade:solana": "node packages/codemod/src/index.js upgrade @solana/* && pnpm install",
-    "codemod:upgrade:radix": "node packages/codemod/src/index.js upgrade @radix-ui/* && pnpm install"
+    "codemod:upgrade:radix": "node packages/codemod/src/index.js upgrade @radix-ui/* && pnpm install",
+    "codemod:upgrade:axios": "node packages/codemod/src/index.js upgrade nuxt typescript tailwindcss html-webpack-plugin react @types/react react-dom @types/react-dom && pnpm install"
   },
   "devDependencies": {
     "@changesets/assemble-release-plan": "6.0.6",
@@ -81,7 +82,7 @@
     "prettier": "3.5.3",
     "process": "0.11.10",
     "stream-browserify": "3.0.0",
-    "turbo": "2.0.6-canary.0",
+    "turbo": "2.5.8",
     "typescript": "5.8.3",
     "vite": "5.4.20",
     "vite-plugin-node-polyfills": "0.23.0",
