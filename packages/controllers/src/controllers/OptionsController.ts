@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type { CaipNetworkId, CustomRpcUrl } from '@reown/appkit-common'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { OptionsUtil } from '../utils/OptionsUtil.js'
 import type { SIWXConfig } from '../utils/SIWXUtil.js'
 import type {
@@ -424,7 +425,7 @@ export const OptionsController = {
   setEnableMobileFullScreen(
     enableMobileFullScreen: OptionsControllerState['enableMobileFullScreen']
   ) {
-    state.enableMobileFullScreen = enableMobileFullScreen
+    state.enableMobileFullScreen = CoreHelperUtil.isMobile() && enableMobileFullScreen
   },
 
   setEnableReconnect(enableReconnect: OptionsControllerState['enableReconnect']) {

@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { CoreHelperUtil, OptionsController } from '@reown/appkit-controllers'
+import { OptionsController } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'
@@ -32,8 +32,7 @@ export class W3mRouterContainer extends LitElement {
 
   @state() private previousHeight = '0px'
 
-  @state() private mobileFullScreen =
-    OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()
+  @state() private mobileFullScreen = OptionsController.state.enableMobileFullScreen
 
   // -- Handlers ----------------------------------------- //
   private onViewportResize = () => {
@@ -100,7 +99,6 @@ export class W3mRouterContainer extends LitElement {
     this.resizeObserver.observe(this.getWrapper())
 
     this.updateContainerHeight()
-    setTimeout(() => this.updateContainerHeight(), 50)
 
     window.addEventListener('resize', this.onViewportResize)
     window.visualViewport?.addEventListener('resize', this.onViewportResize as EventListener)

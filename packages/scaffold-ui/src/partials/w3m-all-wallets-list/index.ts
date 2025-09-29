@@ -42,8 +42,7 @@ export class W3mAllWalletsList extends LitElement {
 
   @state() private badge?: 'certified' | undefined
 
-  @state() private mobileFullScreen =
-    OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()
+  @state() private mobileFullScreen = OptionsController.state.enableMobileFullScreen
 
   public constructor() {
     super()

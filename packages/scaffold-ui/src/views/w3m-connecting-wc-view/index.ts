@@ -64,7 +64,7 @@ export class W3mConnectingWcView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()) {
+    if (OptionsController.state.enableMobileFullScreen) {
       this.setAttribute('data-mobile-fullscreen', 'true')
     }
 

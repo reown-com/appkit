@@ -69,8 +69,7 @@ export class W3mModalBase extends LitElement {
 
   @state() private padding = vars.spacing[1]
 
-  @state() private mobileFullScreen =
-    OptionsController.state.enableMobileFullScreen && CoreHelperUtil.isMobile()
+  @state() private mobileFullScreen = OptionsController.state.enableMobileFullScreen
 
   public constructor() {
     super()
