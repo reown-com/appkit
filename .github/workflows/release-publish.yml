@@ -86,7 +86,18 @@ jobs:
             ## Output
             - Post the PR URL, or the message "No secure-appkit update needed."
         run: |
-          MESSAGE_TEXT="<@${DEVIN_SLACK_USER_ID}> ${PROMPT_TEXT}"
-          curl -s -X POST -H "Content-Type: application/json" \
-            --data "$(jq -n --arg text "$MESSAGE_TEXT" '{text: $text}')" \
-            "${DEVIN_SLACK_WEBHOOK_URL}" | grep -qx "ok"
+          set -e
+          JSON_PAYLOAD=$(jq -n \
+            --arg user_id "$DEVIN_SLACK_USER_ID" \
+            --arg prompt "$PROMPT_TEXT" \
+            '{text: ("<@" + $user_id + "> " + $prompt)}')
+
+          RESPONSE=$(curl -s -X POST \
+            -H "Content-Type: application/json" \
+            -d "$JSON_PAYLOAD" \
+            "${DEVIN_SLACK_WEBHOOK_URL}")
+
+          if [ "$RESPONSE" != "ok" ]; then
+            echo "Slack notification failed: $RESPONSE"
+            exit 1
+          fi
