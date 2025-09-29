@@ -477,7 +477,7 @@ jobs:
           aws-access-key-id: ${{ secrets.PLAYWRIGHT_REPORT_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.PLAYWRIGHT_REPORT_AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
-      
+
       # Required for Athena/Trino processing
       - name: Compress JSON to single line
         if: inputs.build_trigger_type != '' && always()
