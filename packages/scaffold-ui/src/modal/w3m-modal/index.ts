@@ -328,7 +328,6 @@ export class W3mModalBase extends LitElement {
 
     if (isModalOpen && !isConnectingExternal && !isInProfileWalletsView) {
       if (isNotConnected) {
-        console.log(">> It's not connected")
         /*
          * If not connected at all, changing network doesn't necessarily warrant going back from all views.
          * Let's keep the previous logic's intent: go back if not connected and network changed.
@@ -338,7 +337,6 @@ export class W3mModalBase extends LitElement {
           shouldGoBack = true
         }
       } else if (isUnsupportedNetworkScreen) {
-        console.log(">> It's on the unsupported network screen")
         // If on the unsupported screen, any network change should likely go back
         shouldGoBack = true
       }
