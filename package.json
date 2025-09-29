@@ -12,7 +12,7 @@
   "scripts": {
     "prebuild": "node scripts/inject-version.js",
     "build:clean": "turbo run build:clean --filter={./packages/*}",
-    "build:sample-apps": "turbo run build --filter={./examples/*}",
+    "build:sample-apps": "TURBO_UI=0 turbo run build --filter={./examples/*}",
     "build:example:wagmi-cdn": "pnpm build; pnpm --filter @examples/html-wagmi-cdn build",
     "build:example:vue-wagmi": "pnpm --filter @examples/vue-wagmi build",
     "build:example:parcel-react-wagmi": "pnpm --filter @examples/parcel-react-wagmi build",
