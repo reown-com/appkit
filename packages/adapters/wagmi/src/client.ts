@@ -830,14 +830,12 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
-    console.log('>> WagmiAdapter switchNetwork', params)
     const { caipNetwork } = params
 
     const wagmiChain = this.wagmiConfig.chains.find(
       chain => chain.id.toString() === caipNetwork.id.toString()
     )
 
-    console.log('>> WagmiAdapter switchNetwork wagmiChain', wagmiChain)
     await switchChain(this.wagmiConfig, {
       chainId: wagmiChain?.id as number,
       addEthereumChainParameter: {
@@ -853,7 +851,6 @@ export class WagmiAdapter extends AdapterBlueprint {
         ]
       }
     })
-    console.log('>> WagmiAdapter switchNetwork after', params)
 
     await super.switchNetwork(params)
   }
