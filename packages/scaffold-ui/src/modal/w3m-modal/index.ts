@@ -2,12 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import {
-  type CaipAddress,
-  type CaipNetwork,
-  ConstantsUtil as CommonConstantsUtil,
-  ParseUtil
-} from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork, ParseUtil } from '@reown/appkit-common'
 import {
   ApiController,
   ChainController,
@@ -298,17 +293,10 @@ export class W3mModalBase extends LitElement {
     // Previous network information
     const prevCaipNetwork = this.caipNetwork
     const prevCaipNetworkId = prevCaipNetwork?.caipNetworkId?.toString()
-    const prevChainNamespace = prevCaipNetwork?.chainNamespace
-    // Next network information
+
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
-    const nextChainNamespace = nextCaipNetwork?.chainNamespace
-    const networkIdChanged = prevCaipNetworkId !== nextNetworkId
-    const namespaceChanged = prevChainNamespace !== nextChainNamespace
-    // Determine if the network change happened within the same namespace
-    const isNetworkChangedInSameNamespace = networkIdChanged && !namespaceChanged
-    // Use previous network's unsupported status for comparison if namespace hasn't changed
-    const wasUnsupportedNetwork =
-      prevCaipNetwork?.name === CommonConstantsUtil.UNSUPPORTED_NETWORK_NAME
+    const didNetworkChange = prevCaipNetworkId !== nextNetworkId
+
     /**
      * If user is on connecting external, there is a case that they might select a connector which is in another adapter.
      * In this case, we are switching both network and namespace. And this logic will be triggered.
@@ -329,7 +317,7 @@ export class W3mModalBase extends LitElement {
       shouldGoBack = true
     }
 
-    if (networkIdChanged) {
+    if (didNetworkChange) {
       SwapController.resetState()
     }
 
@@ -340,17 +328,11 @@ export class W3mModalBase extends LitElement {
          * Let's keep the previous logic's intent: go back if not connected and network changed.
          * This handles cases like being on the network selection view.
          */
-        if (networkIdChanged) {
+        if (didNetworkChange) {
           shouldGoBack = true
         }
       } else if (isUnsupportedNetworkScreen) {
         // If on the unsupported screen, any network change should likely go back
-        shouldGoBack = true
-      } else if (isNetworkChangedInSameNamespace && !wasUnsupportedNetwork) {
-        /*
-         * If network changed within the *same* namespace, and it wasn't previously unsupported, go back.
-         * This handles the case where the user explicitly switches networks via the UI.
-         */
         shouldGoBack = true
       }
       /*

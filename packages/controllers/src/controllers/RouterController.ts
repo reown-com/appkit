@@ -180,9 +180,6 @@ const controller = {
 
   goBack() {
     const isConnected = ChainController.state.activeCaipAddress
-    const isFarcasterView = RouterController.state.view === 'ConnectingFarcaster'
-
-    const shouldReload = !isConnected && isFarcasterView
 
     if (state.history.length > 1) {
       state.history.pop()
@@ -207,6 +204,8 @@ const controller = {
       state.data.redirectView = undefined
     }
 
+    const isFarcasterView = RouterController.state.view === 'ConnectingFarcaster'
+    const shouldReload = !isConnected && isFarcasterView
     // Reloading the iframe contentwindow and doing the view animation in the modal causes a small freeze in the transition. Doing these separately fixes that.
     setTimeout(() => {
       if (shouldReload) {
