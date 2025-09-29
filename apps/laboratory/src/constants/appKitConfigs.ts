@@ -312,7 +312,7 @@ export const appKitConfigs = {
   'multichain-all': {
     ...commonAppKitConfig,
     wagmiConfig: commonWagmiConfig,
-    adapters: ['wagmi', 'solana', 'bitcoin'],
+    adapters: ['wagmi', 'solana', 'bitcoin', 'ton'],
     networks: ConstantsUtil.AllNetworks
   },
   'multichain-no-adapters': {

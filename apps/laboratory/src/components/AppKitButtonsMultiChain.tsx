@@ -77,6 +77,7 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
     adapters?.includes('wagmi') || adapters?.includes('ethers') || adapters?.includes('ethers5')
   const hasSolanaAdapter = adapters?.includes('solana')
   const hasBitcoinAdapter = adapters?.includes('bitcoin')
+  const hasTonAdapter = adapters?.includes('ton')
   const isMultipleAdapter = adapters?.length && adapters.length > 1
 
   function handleOpenSwapWithArguments() {
@@ -174,6 +175,16 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
                           Solana Button
                         </Text>
                         <AppKitButton namespace="solana" />
+                      </Stack>
+                    </>
+                  ) : null}
+                  {hasTonAdapter ? (
+                    <>
+                      <Stack pb="2">
+                        <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
+                          TON Button
+                        </Text>
+                        <AppKitButton namespace="ton" />
                       </Stack>
                     </>
                   ) : null}
