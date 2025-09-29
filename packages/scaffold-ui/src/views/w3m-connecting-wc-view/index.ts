@@ -24,9 +24,12 @@ import '../../partials/w3m-connecting-wc-mobile/index.js'
 import '../../partials/w3m-connecting-wc-qrcode/index.js'
 import '../../partials/w3m-connecting-wc-unsupported/index.js'
 import '../../partials/w3m-connecting-wc-web/index.js'
+import styles from './styles.js'
 
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
+  public static override styles = styles
+
   // -- Members ------------------------------------------- //
   private wallet = RouterController.state.data?.wallet
 
@@ -61,9 +64,13 @@ export class W3mConnectingWcView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    if (OptionsController.state.enableMobileFullScreen) {
+      this.setAttribute('data-mobile-fullscreen', 'true')
+    }
+
     return html`
       ${this.headerTemplate()}
-      <div>${this.platformTemplate()}</div>
+      <div class="platform-container">${this.platformTemplate()}</div>
       ${this.reownBrandingTemplate()}
     `
   }

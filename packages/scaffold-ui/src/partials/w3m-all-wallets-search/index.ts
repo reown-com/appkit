@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
 import type { BadgeType, WcWallet } from '@reown/appkit-controllers'
-import { ApiController, ConnectorController } from '@reown/appkit-controllers'
+import { ApiController, ConnectorController, OptionsController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-grid'
@@ -26,12 +26,18 @@ export class W3mAllWalletsSearch extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private loading = true
 
+  @state() private mobileFullScreen = OptionsController.state.enableMobileFullScreen
+
   @property() private query = ''
 
   @property() private badge?: BadgeType
 
   // -- Render -------------------------------------------- //
   public override render() {
+    if (this.mobileFullScreen) {
+      this.setAttribute('data-mobile-fullscreen', 'true')
+    }
+
     this.onSearch()
 
     return this.loading

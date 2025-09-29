@@ -74,6 +74,10 @@ export default css`
     will-change: box-shadow;
   }
 
+  :host([data-mobile-fullscreen='true']) wui-card::before {
+    border-radius: 0px;
+  }
+
   :host([data-border='true']) wui-card::before {
     box-shadow: inset 0px 0px 0px 4px ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
@@ -132,15 +136,35 @@ export default css`
   }
 
   @media (max-width: 430px) {
-    wui-flex {
+    :host([data-mobile-fullscreen='true']) {
+      height: 100dvh;
+    }
+    :host([data-mobile-fullscreen='true']) wui-flex {
+      align-items: stretch;
+    }
+    :host([data-mobile-fullscreen='true']) wui-card {
+      max-width: 100%;
+      height: 100%;
+      border-radius: 0;
+      border: none;
+    }
+    :host(:not([data-mobile-fullscreen='true'])) wui-flex {
       align-items: flex-end;
     }
 
-    wui-card {
+    :host(:not([data-mobile-fullscreen='true'])) wui-card {
       max-width: 100%;
-      border-bottom-left-radius: var(--local-border-bottom-mobile-radius);
-      border-bottom-right-radius: var(--local-border-bottom-mobile-radius);
       border-bottom: none;
+    }
+
+    :host(:not([data-mobile-fullscreen='true'])) wui-card[data-embedded='true'] {
+      border-bottom-left-radius: clamp(0px, var(--apkt-borderRadius-8), 44px);
+      border-bottom-right-radius: clamp(0px, var(--apkt-borderRadius-8), 44px);
+    }
+
+    :host(:not([data-mobile-fullscreen='true'])) wui-card:not([data-embedded='true']) {
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
     }
 
     wui-card[shake='true'] {

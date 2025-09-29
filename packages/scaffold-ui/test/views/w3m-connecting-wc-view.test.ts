@@ -150,6 +150,40 @@ describe('W3mConnectingWcView - Render', () => {
       { label: 'Webapp', icon: 'browser', platform: 'web' }
     ])
   })
+
+  test('should set the correct properties and values mobileFullScreen is true', async () => {
+    OptionsController.state.enableMobileFullScreen = true
+
+    vi.spyOn(ConnectionController, 'connectWalletConnect').mockResolvedValue()
+    vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([])
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155'
+    })
+
+    const element: W3mConnectingWcView = await fixture(
+      html`<w3m-connecting-wc-view></w3m-connecting-wc-view>`
+    )
+
+    expect(element.getAttribute('data-mobile-fullscreen')).toBe('true')
+  })
+
+  test('should set the correct properties and values mobileFullScreen is false', async () => {
+    OptionsController.state.enableMobileFullScreen = false
+
+    vi.spyOn(ConnectionController, 'connectWalletConnect').mockResolvedValue()
+    vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([])
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155'
+    })
+
+    const element: W3mConnectingWcView = await fixture(
+      html`<w3m-connecting-wc-view></w3m-connecting-wc-view>`
+    )
+
+    expect(element.getAttribute('data-mobile-fullscreen')).toBeNull()
+  })
 })
 
 describe('W3mConnectingWcView - Handle chain switch error when enableNetworkSwitch is disabled', () => {
