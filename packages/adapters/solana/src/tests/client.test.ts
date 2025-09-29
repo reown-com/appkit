@@ -4,7 +4,6 @@ import { WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
-  ConnectorController,
   type ConnectionControllerClient,
   ConnectorController,
   type Provider as CoreProvider,
