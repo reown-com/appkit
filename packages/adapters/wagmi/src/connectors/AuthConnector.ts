@@ -154,6 +154,7 @@ export function authConnector(parameters: AuthParameters) {
     ) {
       if (connectSocialPromise) {
         const result = await connectSocialPromise
+
         return {
           accounts: (options.withCapabilities
             ? (result.accounts.map(address => ({ address, capabilities: {} })) as unknown)
@@ -183,12 +184,12 @@ export function authConnector(parameters: AuthParameters) {
       }
     },
 
-    async disconnect(this: Properties) {
+    async disconnect() {
       const provider = await this.getProvider()
-      await (provider as W3mFrameProvider).disconnect()
+      await provider.disconnect()
     },
 
-    getAccounts(this: Properties) {
+    getAccounts() {
       if (!currentAccounts?.length) {
         return Promise.resolve([])
       }
@@ -223,14 +224,14 @@ export function authConnector(parameters: AuthParameters) {
       return Promise.resolve(this.provider)
     },
 
-    async getChainId(this: Properties) {
-      const provider = (await this.getProvider()) as W3mFrameProvider
+    async getChainId() {
+      const provider = await this.getProvider()
       const { chainId } = await provider.getChainId()
 
       return parseChainId(chainId)
     },
 
-    async isAuthorized(this: Properties) {
+    async isAuthorized() {
       const activeChain = ChainController.state.activeChain
       const isActiveChainEvm = activeChain === CommonConstantsUtil.CHAIN.EVM
       const isAnyAuthConnected = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.some(
@@ -241,18 +242,18 @@ export function authConnector(parameters: AuthParameters) {
         return false
       }
 
-      const provider = (await this.getProvider()) as W3mFrameProvider
+      const provider = await this.getProvider()
 
       return Promise.resolve(provider.getLoginEmailUsed())
     },
 
-    async switchChain(this: Properties, { chainId }) {
+    async switchChain({ chainId }) {
       try {
         const chain = config.chains.find(c => c.id === chainId)
         if (!chain) {
           throw new SwitchChainError(new Error('chain not found on connector.'))
         }
-        const provider = (await this.getProvider()) as W3mFrameProvider
+        const provider = await this.getProvider()
 
         const preferredAccountType = getPreferredAccountType('eip155')
 
@@ -280,7 +281,7 @@ export function authConnector(parameters: AuthParameters) {
       }
     },
 
-    onAccountsChanged(this: Properties, accounts) {
+    onAccountsChanged(accounts) {
       if (accounts.length === 0) {
         this.onDisconnect()
       } else {
@@ -288,14 +289,14 @@ export function authConnector(parameters: AuthParameters) {
       }
     },
 
-    onChainChanged(this: Properties, chain) {
+    onChainChanged(chain) {
       const chainId = Number(chain)
       config.emitter.emit('change', { chainId })
     },
 
-    async onDisconnect(this: Properties, _error) {
+    async onDisconnect(_error) {
       const provider = await this.getProvider()
-      await (provider as W3mFrameProvider).disconnect()
+      await provider.disconnect()
     }
   }))
 }
