@@ -108,7 +108,7 @@ export async function updatePackageVersion(packageJson, pkg, packageJsonPath) {
         packageJson.devDependencies[pkg] = newVersion
       }
 
-      fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
+      fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n')
       console.log(
         `Updated ${pkg} in ${JSON.parse(fs.readFileSync(packageJsonPath)).name} from ${currentVersion} to ${newVersion}`
       )

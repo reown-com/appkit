@@ -57,7 +57,8 @@
     "codemod:upgrade": "node packages/codemod/src/index.js upgrade $*",
     "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/* && pnpm install && pnpm prettier:format",
     "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade viem wagmi @wagmi/* && pnpm install && pnpm prettier:format",
-    "codemod:upgrade:solana": "node packages/codemod/src/index.js upgrade @solana/* && pnpm install && pnpm prettier:format"
+    "codemod:upgrade:solana": "node packages/codemod/src/index.js upgrade @solana/* && pnpm install",
+    "codemod:upgrade:radix": "node packages/codemod/src/index.js upgrade @radix-ui/* && pnpm install"
   },
   "devDependencies": {
     "@changesets/assemble-release-plan": "6.0.6",
