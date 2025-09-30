@@ -836,19 +836,24 @@ export class WagmiAdapter extends AdapterBlueprint {
       chain => chain.id.toString() === caipNetwork.id.toString()
     )
 
+    if (!wagmiChain) {
+      throw new Error('connectionControllerClient:switchNetwork - wagmiChain is undefined')
+    }
+
+    const { name, nativeCurrency, rpcUrls, blockExplorers, id } = wagmiChain
+    const rpcUrl = caipNetwork.rpcUrls?.['chainDefault']?.http?.[0] ?? rpcUrls.default.http[0] ?? ''
+    const blockExplorerUrl =
+      blockExplorers?.default.url ?? caipNetwork.blockExplorers?.default?.url ?? ''
+    const currency = nativeCurrency ?? caipNetwork.nativeCurrency
+    const chainName = name ?? caipNetwork.name
+
     await switchChain(this.wagmiConfig, {
-      chainId: wagmiChain?.id as number,
+      chainId: id,
       addEthereumChainParameter: {
-        chainName: wagmiChain?.name ?? caipNetwork.name,
-        nativeCurrency: wagmiChain?.nativeCurrency ?? caipNetwork.nativeCurrency,
-        rpcUrls: [
-          caipNetwork.rpcUrls?.['chainDefault']?.http?.[0] ??
-            wagmiChain?.rpcUrls?.default?.http?.[0] ??
-            ''
-        ],
-        blockExplorerUrls: [
-          wagmiChain?.blockExplorers?.default?.url ?? caipNetwork.blockExplorers?.default?.url ?? ''
-        ]
+        chainName,
+        nativeCurrency: currency,
+        rpcUrls: [rpcUrl],
+        blockExplorerUrls: [blockExplorerUrl]
       }
     })
 
