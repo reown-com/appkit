@@ -262,7 +262,6 @@ sampleWalletTest(
     await modalValidator.expectConnected()
 
     await modalValidator.expectNetworkButton('Ethereum')
-    await modalPage.closeModal()
     await modalPage.sign()
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
