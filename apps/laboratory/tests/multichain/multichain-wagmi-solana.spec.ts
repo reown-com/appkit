@@ -110,7 +110,7 @@ test('it should also connect wagmi and sign a message if connecting from a diffe
   await modalValidator.expectConnected()
 
   await modalPage.sign('eip155')
-  await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
+  await walletValidator.expectReceivedSign({ chainName: 'Polygon' })
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAcceptedSign()
 
