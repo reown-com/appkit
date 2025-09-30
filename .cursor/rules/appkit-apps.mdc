@@ -1,0 +1,35 @@
+---
+description: Focused rules for working in apps (dev, testing, wiring AppKit into apps)
+globs:
+  - 'apps/**'
+alwaysApply: false
+---
+
+## AppKit Apps Rules
+
+Use these when changing code under `apps/**`.
+
+### Development & Scripts
+
+- Use workspace scripts: `pnpm --filter @apps/<name> dev|build`.
+- Build dependencies first with `pnpm build` if packages changed.
+- Keep app configs minimal; rely on package exports and avoid deep imports.
+
+### Integrating AppKit
+
+- Import via facade or adapter packages, e.g.:
+  ```ts
+  import { createAppKit } from '@reown/appkit'
+  import { ControllersProvider } from '@reown/appkit-controllers/react'
+  ```
+- Prefer framework subpaths when available: `@reown/appkit/react`, `@reown/appkit-controllers/react`.
+
+### Testing
+
+- Vitest for unit/integration; Playwright in `apps/laboratory` for e2e.
+- Co-locate basic tests within app directories where meaningful; heavy e2e in laboratory app.
+
+### SSR & Client Boundaries
+
+- Guard browser-only APIs (e.g., `window`) for SSR routes.
+- Avoid importing `@reown/appkit-ui` directly in server components; use client components wrappers.

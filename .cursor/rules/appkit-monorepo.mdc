@@ -1,0 +1,228 @@
+---
+description: Monorepo-wide rules for Reown AppKit: structure, layering, packaging, and TS/SDK best practices
+globs:
+  - "packages/**"
+  - "apps/**"
+  - "examples/**"
+  - "services/**"
+  - "scripts/**"
+  - "turbo.json"
+  - "pnpm-workspace.yaml"
+  - "vitest.workspace.ts"
+alwaysApply: true
+---
+
+## Cursor Rules: Reown AppKit Monorepo
+
+This document orients Cursor to the structure, relationships, and common patterns across the Reown AppKit monorepo. It also encodes TypeScript and SDK development best practices to keep edits consistent, safe, and maintainable.
+
+### Monorepo Overview
+
+- **Package manager**: `pnpm` workspaces (`pnpm-workspace.yaml`)
+- **Build Orchestration**: `turbo` tasks (`turbo.json`) with cached `build`, `typecheck`, `lint`, `test`
+- **Testing**: `vitest` (workspace config in `vitest.workspace.ts`, default `jsdom` env)
+- **Repo roots**:
+  - `packages/` — publishable libraries and internal SDK modules
+  - `apps/` — product and demo applications (`gallery`, `laboratory`, `demo`, `browser-extension`)
+  - `examples/` — integration examples (Next, React, Vue, Svelte, plain HTML)
+  - `services/` — ancillary services (e.g., `id-allocation-service`)
+  - `scripts/`, `patches/`, root configs
+
+### High-Level Architecture and Package Roles
+
+- **SDK Facade**: `@reown/appkit`
+
+  - Public, framework-agnostic entrypoint. Re-exports subdomains and framework layers via subpath exports.
+  - Depends on: `@reown/appkit-common`, `@reown/appkit-controllers`, `@reown/appkit-pay`, `@reown/appkit-polyfills`, `@reown/appkit-scaffold-ui`, `@reown/appkit-ui`, `@reown/appkit-utils`, `@reown/appkit-wallet`, plus ecosystem deps (`valtio`, `viem`, `@walletconnect/universal-provider`).
+  - Provides subpaths like `./react`, `./vue`, `./utils`, `./adapters`, `./connectors`, etc.
+
+- **Domain Foundations**:
+
+  - `@reown/appkit-common`: shared types, math/date utils, light helpers. ESM only.
+  - `@reown/appkit-wallet`: wallet models, schema validation, core wallet utilities (depends on `common`, `polyfills`).
+  - `@reown/appkit-controllers`: stateful logic and business rules, with `valtio` for reactive state. Framework-agnostic; provides optional `react`/`vue` subpaths.
+  - `@reown/appkit-utils`: integration helpers per chain/family (Ethers, Solana, Bitcoin, Wallet Standard). Depends on `common`, `controllers`, `wallet`, `polyfills`.
+
+- **UI Layers**:
+
+  - `@reown/appkit-ui`: low-level UI as Web Components (Lit). Exports many `wui-*` components; no app logic.
+  - `@reown/appkit-scaffold-ui`: mid/high-level UI flows (modal, router containers, pay/onramp flows). Composes `@reown/appkit-ui` and `controllers`.
+  - `@reown/appkit-wallet-button`: focused UI package that composes `ui`, `controllers`, `utils`; optional `@lit/react` wrapper.
+
+- **Authentication and Pay**:
+
+  - `@reown/appkit-siwe`: Sign-In With Ethereum UX + controllers integration.
+  - `@reown/appkit-siwx`: Cross-chain SIWx utilities for EVM, Solana, Bitcoin, etc. No direct UI dependency.
+  - `@reown/appkit-pay`: UI + state for pay flows; composes `ui`, `controllers`, `utils`.
+
+- **Adapters (ecosystem integrations)**: `packages/adapters/*`
+
+  - `@reown/appkit-adapter-wagmi`, `-ethers`, `-ethers5`, `-solana`, `-bitcoin` (and private `-polkadot`).
+  - All depend on `@reown/appkit` + foundations; expose framework subpaths when relevant (`react`, `vue` in some packages).
+  - Use `peerDependencies` for host frameworks/SDKs (e.g., `wagmi`, `viem`, `ethers`) and `optionalDependencies` for optional wallets/providers.
+
+- **Bridging, Polyfills, Experimental, CDN**:
+
+  - `@reown/appkit-universal-connector`: thin bridge to `@walletconnect/universal-provider`.
+  - `@reown/appkit-polyfills`: browser `buffer` and similar shims.
+  - `@reown/appkit-experimental`: gated/unstable features (e.g., smart session). Depends on core packages.
+  - `@reown/appkit-cdn`: prebundled CDN builds (not tree-shaken by consumers). Depends on `appkit` and adapters.
+
+- **Tooling**:
+  - `@reown/appkit-testing`: test harnesses (includes Playwright for e2e; depends on `@reown/appkit`).
+  - `@reown/appkit-cli`: simple scaffolding/utility CLI.
+  - `@reown/appkit-codemod`: upgrade helper for dependency migrations.
+  - `@reown/appkit-core` (in `core-legacy/`): legacy compatibility wrapper around controllers.
+
+### Allowed Dependencies and Import Boundaries
+
+- Favor a layered graph from foundations → controllers → ui/scaffold → appkit (facade) → adapters/apps.
+- Avoid cyclical imports. Do not import upward across layers (e.g., `ui` must not import from `appkit` or app code).
+- Only import via package entrypoints or declared subpath exports; avoid deep, relative cross-package imports.
+  - Good: `import { X } from '@reown/appkit-controllers'`
+  - Good: `import { WuiButton } from '@reown/appkit-ui/wui-button'`
+  - Avoid: `import { X } from '@reown/appkit-controllers/dist/...` (internal paths are not stable)
+- Framework subpaths are explicitly exported (e.g., `./react`, `./vue`) when available; prefer those over bundling framework internals.
+- Keep optional or host-specific libraries as `peerDependencies` (e.g., `wagmi`, `viem`, `ethers`) and mark optional features as `optionalDependencies` to keep the core light.
+
+### Packaging and Build Conventions
+
+- All packages are ESM (`"type": "module"`).
+- Build outputs:
+  - JS: `dist/esm/...`
+  - Types: `dist/types/...`
+  - `package.json` uses `exports` map and (where relevant) `typesVersions` for editor compatibility.
+- Use `"sideEffects": false` when the package is tree-shakeable (most are). Ensure top-level side effects are avoided.
+- Scripts:
+  - `build:clean`: remove `dist`
+  - `build`: `tsc --build` (some use `tsconfig.build.json`)
+  - `watch`: `tsc --watch`
+  - `typecheck`: `tsc --noEmit`
+  - `lint`: ESLint across TS/JS files
+  - `test`: Vitest (most with coverage)
+- Orchestration:
+  - Use `turbo run build --filter={./packages/**/*}` for workspace builds.
+  - `typecheck` and `lint` are cached by turbo; `test` is typically not cached.
+
+### UI Patterns
+
+- Base UI uses Lit Web Components, exported as `wui-*` elements from `@reown/appkit-ui`.
+- Higher-level UI flows and composition live in `@reown/appkit-scaffold-ui` and focus on orchestration (modal, router container, lists, pay/onramp flows).
+- Do not embed business logic into `@reown/appkit-ui`. Use `controllers`/`utils` for non-visual logic and data.
+- If providing React wrappers for Web Components, expose them via explicit subpath exports (e.g., `./react`) and keep them optional to avoid forcing React in core packages.
+
+### State, Data, and External SDKs
+
+- State management is uniform with `valtio`. Controllers own reactive state; UI subscribes.
+- EVM stack uses `viem` and `wagmi` (in adapters). Solana uses `@solana/web3.js` and wallet-standard libs. Bitcoin uses `bitcoinjs-lib`, `sats-connect`.
+- WalletConnect v2 is integrated via `@walletconnect/universal-provider`. Keep provider interactions isolated in `controllers`/`utils`/adapters.
+
+### Testing Conventions
+
+- `vitest` with `jsdom` by default for DOM-related packages; Node for pure utility packages as needed.
+- Place tests under `tests/` per package.
+- `@reown/appkit-testing` includes shared testing utilities and e2e dependencies (e.g., Playwright) but is not a runtime dependency.
+
+### Versioning and Release
+
+- Managed with `changesets`. Some overrides/patches exist under `patches/`.
+- Internal packages use `workspace:*` ranges to synchronize versions.
+- Keep public API changes aggregated through `@reown/appkit` where possible to minimize breaking surface area.
+
+### Adding or Modifying Packages (Checklist)
+
+1. Create a new package under `packages/<name>` with:
+   - `package.json` using ESM, `exports` map, `files: ["dist", "README.md"]`, and `sideEffects: false` if safe.
+   - `tsconfig.json` and optionally `tsconfig.build.json` with incremental builds.
+   - `vitest.config.ts` if tests are present.
+2. Define clear dependencies:
+   - Internal deps via `workspace:*`.
+   - External host libs as `peerDependencies` (and mark optional when applicable).
+   - Optional providers/wallets as `optionalDependencies`.
+3. Expose subpaths deliberately (e.g., `./react`, `./vue`, `./utils`) only when stable and necessary.
+4. Keep layering intact: do not import up the stack; avoid cross-layer leakage.
+5. Add targeted unit tests for new behavior and update examples if developer UX changes.
+6. Run `pnpm build`, `pnpm run typecheck`, `pnpm run lint`, and `pnpm test` locally.
+
+### Adapter Authoring Guidelines
+
+- Mirror existing adapters for structure and scripts.
+- Depend on `@reown/appkit`, `@reown/appkit-controllers`, `@reown/appkit-utils`, `@reown/appkit-common`, and where needed `@reown/appkit-ui`.
+- Treat ecosystem SDKs as `peerDependencies` (e.g., `wagmi`, `viem`, `ethers`) to defer version control to the host app; use `optionalDependencies` for optional wallet SDKs (e.g., Coinbase, Safe).
+- Keep business logic inside controllers/utilities; adapters should translate between host SDK APIs and AppKit abstractions.
+
+### Import and API Design Best Practices (TypeScript)
+
+- Public APIs must be explicitly exported via the `exports` map and stable subpaths. Avoid deep internal imports.
+- Use `export type` for types-only exports to aid tree-shaking and ergonomics.
+- Prefer narrow, well-named interfaces and parameter objects over positional args.
+- Do not leak implementation-specific types from third-party SDKs across package boundaries; wrap or map to internal domain types.
+- Add `strict` TS configs and avoid `any`. Use discriminated unions for variant states.
+- Use early returns and guard clauses; avoid deep nesting.
+- Validate inputs near boundaries (e.g., adapter entrypoints). Use `zod` when schemas are involved.
+- Errors: throw typed errors or return structured `Result`-like objects where it improves developer ergonomics; never swallow exceptions.
+
+### Performance and Security Notes
+
+- Keep packages tree-shakeable; avoid top-level side effects and large transitive deps in core layers.
+- Use `peerDependencies` to avoid bundling multiple versions of large SDKs.
+- Be mindful of SSR: avoid direct `window` access in shared code; gate browser-only code.
+- Sanitize and validate user inputs in UI flows and adapters. Do not interpolate untrusted values into DOM without escaping.
+- Avoid logging secrets or PII. Use structured logs (debug-only in dev paths).
+
+### Practical Examples
+
+Imports (prefer subpaths when they exist):
+
+```ts
+import { createAppKit } from '@reown/appkit'
+import { createWagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { AccountController } from '@reown/appkit-controllers'
+import { W3mModal } from '@reown/appkit-scaffold-ui/w3m-modal'
+import { WuiButton } from '@reown/appkit-ui/wui-button'
+```
+
+React/Vue subpaths (when provided):
+
+```ts
+import { ControllersProvider } from '@reown/appkit-controllers/react'
+import { AppKitProvider } from '@reown/appkit/react'
+```
+
+### What Cursor Should Assume When Editing
+
+- Respect the layering and import boundaries above. If a change requires crossing a boundary, propose an abstraction in a lower layer instead.
+- When adding a new exported module:
+  - Update the package `exports` map and type paths.
+  - Add unit tests and minimal examples.
+  - Keep `sideEffects: false` valid by avoiding module-level effects.
+- For UI changes:
+  - Add new components under `@reown/appkit-ui` with `wui-` prefix, minimal logic.
+  - Compose flows under `@reown/appkit-scaffold-ui`.
+  - Keep controllers/data-fetching outside UI layers.
+- For adapters:
+  - Prefer compile-time type safety over runtime checks; encode invariants in types.
+  - Ensure version constraints are compatible with examples and CDN builds.
+
+### Quick Map of Key Packages
+
+- `@reown/appkit` — SDK facade and top-level exports
+- `@reown/appkit-common` — shared types/utils
+- `@reown/appkit-wallet` — wallet models/utilities
+- `@reown/appkit-controllers` — stateful domain logic (valtio state)
+- `@reown/appkit-utils` — chain/wallet helpers
+- `@reown/appkit-ui` — base UI (Lit Web Components, `wui-*`)
+- `@reown/appkit-scaffold-ui` — modal/router/pay/onramp flows
+- `@reown/appkit-pay` — pay feature surface (UI + controllers)
+- `@reown/appkit-siwe` / `@reown/appkit-siwx` — auth flows and utilities
+- `@reown/appkit-universal-connector` — WalletConnect bridge
+- `@reown/appkit-adapter-*` — ecosystem adapters (Wagmi/Ethers/Ethers5/Solana/Bitcoin)
+- `@reown/appkit-polyfills` — browser polyfills
+- `@reown/appkit-cdn` — CDN bundles
+- `@reown/appkit-testing` — test harnesses
+- `@reown/appkit-cli` / `@reown/appkit-codemod` — dev tooling
+- `@reown/appkit-core` — legacy wrapper around controllers
+
+---
+
+If a change seems to violate these rules, prefer refactoring toward these boundaries or proposing a clear abstraction that preserves the layering.
