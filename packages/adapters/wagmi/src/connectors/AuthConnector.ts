@@ -36,17 +36,8 @@ export type AuthParameters = {
 export function authConnector(parameters: AuthParameters) {
   let currentAccounts: Address[] = []
   let socialProvider: W3mFrameProvider | undefined = undefined
-  let connectSocialPromise:
-    | Promise<{
-        accounts: Address[]
-        account: Address
-        chainId: number
-        chain: {
-          id: number
-          unsuported: boolean
-        }
-      }>
-    | undefined = undefined
+  let connectSocialPromise: Promise<Awaited<ReturnType<typeof connectSocial>>> | undefined =
+    undefined
   type Properties = {
     provider?: W3mFrameProvider
     getProvider(): Promise<W3mFrameProvider>
@@ -132,7 +123,7 @@ export function authConnector(parameters: AuthParameters) {
       chainId: parsedChainId,
       chain: {
         id: parsedChainId,
-        unsuported: false
+        unsupported: false
       }
     }
   }
@@ -173,7 +164,6 @@ export function authConnector(parameters: AuthParameters) {
       const result = await connectSocialPromise
       connectSocialPromise = undefined
 
-      // Return shape per wagmi connector contract
       return {
         accounts: (options.withCapabilities
           ? (result.accounts.map(address => ({ address, capabilities: {} })) as unknown)

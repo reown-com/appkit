@@ -82,7 +82,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     name: 'WalletConnect',
     type: walletConnect.type,
 
-    async setup(this: Properties) {
+    async setup() {
       const provider = await this.getProvider().catch(() => null)
       if (!provider) {
         return
@@ -205,7 +205,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         throw error
       }
     },
-    async disconnect(this: Properties) {
+    async disconnect() {
       const provider = await this.getProvider()
       try {
         await provider?.disconnect()
@@ -302,7 +302,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       return network?.id as number
     },
-    async isAuthorized(this: Properties) {
+    async isAuthorized() {
       try {
         const [accounts, provider] = await Promise.all([this.getAccounts(), this.getProvider()])
 
@@ -326,7 +326,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         return false
       }
     },
-    async switchChain(this: Properties, { addEthereumChainParameter, chainId }) {
+    async switchChain({ addEthereumChainParameter, chainId }) {
       const provider = await this.getProvider()
       if (!provider) {
         throw new ProviderNotFoundError()
@@ -397,7 +397,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         }
       }
     },
-    onAccountsChanged(this: Properties, accounts) {
+    onAccountsChanged(accounts) {
       if (accounts.length === 0) {
         this.onDisconnect()
       } else {
@@ -406,15 +406,15 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         })
       }
     },
-    onChainChanged(this: Properties, chain) {
+    onChainChanged(chain) {
       const chainId = Number(chain)
 
       config.emitter.emit('change', { chainId })
     },
-    onConnect(this: Properties, _connectInfo) {
+    onConnect(_connectInfo) {
       this.setRequestedChainsIds(ChainController.getCaipNetworks().map(x => Number(x.id)))
     },
-    async onDisconnect(this: Properties, _error) {
+    async onDisconnect(_error) {
       this.setRequestedChainsIds([])
       config.emitter.emit('disconnect')
 
@@ -440,13 +440,13 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         provider.on('connect', connect)
       }
     },
-    onDisplayUri(this: Properties, uri) {
+    onDisplayUri(uri) {
       config.emitter.emit('message', { type: 'display_uri', data: uri })
     },
-    onSessionDelete(this: Properties) {
+    onSessionDelete() {
       this.onDisconnect()
     },
-    getNamespaceChainsIds(this: Properties) {
+    getNamespaceChainsIds() {
       if (!provider_?.session?.namespaces) {
         return []
       }
@@ -459,7 +459,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       return chainIds
     },
 
-    async getRequestedChainsIds(this: Properties) {
+    async getRequestedChainsIds() {
       const chainIds = (await config.storage?.getItem(this.requestedChainsStorageKey)) ?? []
 
       return [...new Set(chainIds)]
@@ -475,7 +475,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
      * connector later on, however, this chain will not have been approved or rejected
      * by the wallet. In this case, the chain is considered stale.
      */
-    async isChainsStale(this: Properties) {
+    async isChainsStale() {
       if (!isNewChainsStale) {
         return false
       }
@@ -493,7 +493,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       return !connectorChains.every(id => requestedChains.includes(Number(id)))
     },
 
-    async setRequestedChainsIds(this: Properties, chains) {
+    async setRequestedChainsIds(chains) {
       await config.storage?.setItem(this.requestedChainsStorageKey, chains)
     },
 
