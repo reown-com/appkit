@@ -58,8 +58,7 @@
     "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/* && pnpm install",
     "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade viem wagmi @wagmi/* && pnpm install",
     "codemod:upgrade:solana": "node packages/codemod/src/index.js upgrade @solana/* && pnpm install",
-    "codemod:upgrade:radix": "node packages/codemod/src/index.js upgrade @radix-ui/* && pnpm install",
-    "codemod:upgrade:axios": "node packages/codemod/src/index.js upgrade nuxt typescript tailwindcss html-webpack-plugin react @types/react react-dom @types/react-dom && pnpm install"
+    "codemod:upgrade:radix": "node packages/codemod/src/index.js upgrade @radix-ui/* && pnpm install"
   },
   "devDependencies": {
     "@changesets/assemble-release-plan": "6.0.6",
