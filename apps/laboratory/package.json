@@ -166,6 +166,6 @@
     "@types/node": "22.13.4",
     "@types/react": "19.1.15",
     "@types/react-dom": "19.1.9",
-    "dotenv": "16.4.7"
+    "dotenv": "16.6.1"
   }
 }
