@@ -12,7 +12,7 @@
   "scripts": {
     "prebuild": "node scripts/inject-version.js",
     "build:clean": "turbo run build:clean --filter={./packages/*}",
-    "build:sample-apps": "turbo run build --filter={./examples/*}",
+    "build:sample-apps": "TURBO_UI=0 turbo run build --filter={./examples/*}",
     "build:example:wagmi-cdn": "pnpm build; pnpm --filter @examples/html-wagmi-cdn build",
     "build:example:vue-wagmi": "pnpm --filter @examples/vue-wagmi build",
     "build:example:parcel-react-wagmi": "pnpm --filter @examples/parcel-react-wagmi build",
@@ -55,8 +55,10 @@
     "prepare": "husky",
     "cli": "node packages/cli/index.js",
     "codemod:upgrade": "node packages/codemod/src/index.js upgrade $*",
-    "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/* && pnpm install && pnpm prettier:format",
-    "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade viem wagmi @wagmi/* && pnpm install && pnpm prettier:format"
+    "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/* && pnpm install",
+    "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade viem wagmi @wagmi/* && pnpm install",
+    "codemod:upgrade:solana": "node packages/codemod/src/index.js upgrade @solana/* && pnpm install",
+    "codemod:upgrade:radix": "node packages/codemod/src/index.js upgrade @radix-ui/* && pnpm install"
   },
   "devDependencies": {
     "@changesets/assemble-release-plan": "6.0.6",
@@ -79,7 +81,7 @@
     "prettier": "3.5.3",
     "process": "0.11.10",
     "stream-browserify": "3.0.0",
-    "turbo": "2.0.6-canary.0",
+    "turbo": "2.5.8",
     "typescript": "5.8.3",
     "vite": "5.4.20",
     "vite-plugin-node-polyfills": "0.23.0",
@@ -88,7 +90,7 @@
   "packageManager": "pnpm@9.5.0",
   "pnpm": {
     "overrides": {
-      "@solana/web3.js": "1.98.2",
+      "@solana/web3.js": "1.98.4",
       "esbuild": ">=0.25.1",
       "@babel/runtime": ">=7.26.10",
       "cookie": ">=0.7.0",
