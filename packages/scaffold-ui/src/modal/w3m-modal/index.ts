@@ -245,9 +245,9 @@ export class W3mModalBase extends LitElement {
     // Capture current state
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
     const isInProfileView = RouterController.state.view === 'ProfileWallets'
-    const hasAddressChanged = !this.caipAddress && caipAddress
 
-    if (!isInProfileView && hasAddressChanged && !isSwitchingNamespace) {
+    const shouldClose = !caipAddress && !isSwitchingNamespace && !isInProfileView
+    if (shouldClose) {
       ModalController.close()
     }
 
