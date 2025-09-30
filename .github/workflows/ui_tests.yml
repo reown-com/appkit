@@ -78,6 +78,10 @@ on:
 env:
   BRANCH_NAME: ${{ inputs.branch }}
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build_lab_and_extension:
     name: 'Build Lab and Extension'
