@@ -232,6 +232,10 @@ export class SolanaWalletConnectProvider
     )
   }
 
+  public setDefaultChain(chainId: string) {
+    this.provider.setDefaultChain(chainId)
+  }
+
   // -- Private ------------------------------------------ //
   private internalRequest<Method extends SolanaWalletConnectProvider.RequestMethod>(
     method: Method,
