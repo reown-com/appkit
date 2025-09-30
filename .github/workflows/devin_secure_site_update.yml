@@ -1,0 +1,69 @@
+name: Trigger Devin for AppKit Update in Secure Site
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read # Required to read github.event.head_commit.message
+
+jobs:
+  trigger-devin-secure-site-update:
+    if: |
+      contains(github.event.head_commit.message, 'Release/') ||
+      contains(github.event.head_commit.message, 'release/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack Notification for Secure Site Update
+        env:
+          DEVIN_SLACK_WEBHOOK_URL: ${{ secrets.DEVIN_SLACK_WEBHOOK_URL }}
+          DEVIN_SLACK_USER_ID: U08M9DKD4MC
+          PROMPT_TEXT: |
+            ## Context
+            A release merge commit (SHA: ${{ github.sha }}) was just pushed to **${{ github.repository }}**'s `main` branch.
+            This merges a release branch back into `main` after publishing new AppKit packages.
+
+            ## Task — Update secure-site
+            In **reown-com/secure-site**:
+            1. Create a branch from `main`.
+            2. In **reown-com/appkit** repository, read the `name` and `version` fields from each `package.json` and build a map of `@reown/appkit/*` → `version`.
+            3. In **reown-com/secure-site** repository, scan all `package.json` files. For every dependency or devDependency that starts with `@reown/appkit/`, update it to the exact version `<version>` from the map.
+            4. If everything is already up to date, respond **"No secure-site update needed."** and stop.
+            5. Otherwise, commit the changes and open a PR to `main`.
+
+            ## PR requirements
+            * **Title:** `chore: bump @reown/appkit/* dependencies to latest`
+            * **Body:**
+              - Bullet list of updated packages and versions
+              - Link to the triggering commit: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+
+            ## Notes
+            • Only update packages under the `@reown/appkit/` scope.  
+            • Keep the PR concise.
+
+        run: |
+          set -e
+          if [ -z "${DEVIN_SLACK_WEBHOOK_URL}" ]; then
+            echo "Error: DEVIN_SLACK_WEBHOOK_URL is not set."
+            exit 1
+          fi
+
+          # Build Slack payload safely (handles newlines/quotes)
+          JSON_PAYLOAD=$(jq -n \
+            --arg uid "$DEVIN_SLACK_USER_ID" \
+            --arg txt "$PROMPT_TEXT" \
+            '{text: ("<@" + $uid + "> " + $txt)}')
+
+          echo "Sending Slack notification to Devin…"
+          RESPONSE=$(curl -s -X POST \
+            -H "Content-Type: application/json" \
+            -d "$JSON_PAYLOAD" \
+            "${DEVIN_SLACK_WEBHOOK_URL}")
+
+          if [ "$RESPONSE" = "ok" ]; then
+            echo "Slack notification sent successfully."
+          else
+            echo "Slack notification failed: $RESPONSE"
+            exit 1
+          fi
