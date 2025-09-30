@@ -65,7 +65,7 @@
     "valtio": "2.1.7"
   },
   "devDependencies": {
-    "@types/node": "22.13.4",
+    "@types/node": "22.18.7",
     "@types/react": "19.1.15",
     "@types/react-dom": "19.1.9",
     "@mailsac/api": "1.0.8",
