@@ -805,7 +805,7 @@ const controller = {
       )
 
       return connectData?.address
-    } else if (isAuthConnector && address) {
+    } else if (address) {
       await ConnectionController.handleAuthAccountSwitch({ address, namespace })
     }
 

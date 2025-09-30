@@ -2,12 +2,11 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork } from '@reown/appkit-common'
 import {
   AssetController,
   AssetUtil,
   ChainController,
-  ConnectorController,
   CoreHelperUtil,
   NetworkUtil
 } from '@reown/appkit-controllers'
@@ -113,30 +112,11 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${this.getNetworkDisabled(network)}
+          .disabled=${ChainController.isCaipNetworkDisabled(network)}
           data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
         ></wui-list-network>
       `
     )
-  }
-
-  private getNetworkDisabled(network: CaipNetwork) {
-    const networkNamespace = network.chainNamespace
-    const isNextNamespaceConnected = Boolean(
-      ChainController.getAccountData(networkNamespace)?.caipAddress
-    )
-    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
-    const shouldSupportAllNetworks =
-      ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
-    const connectorId = ConnectorController.getConnectorId(networkNamespace)
-    const authConnector = ConnectorController.getAuthConnector()
-    const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH && authConnector
-
-    if (!isNextNamespaceConnected || shouldSupportAllNetworks || isConnectedWithAuth) {
-      return false
-    }
-
-    return !approvedCaipNetworkIds?.includes(network.caipNetworkId)
   }
 
   private onSwitchNetwork(network: CaipNetwork) {

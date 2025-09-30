@@ -868,6 +868,26 @@ const controller = {
     }
 
     return []
+  },
+
+  isCaipNetworkDisabled(network: CaipNetwork) {
+    const networkNamespace = network.chainNamespace
+    const isNextNamespaceConnected = Boolean(
+      ChainController.getAccountData(networkNamespace)?.caipAddress
+    )
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
+    const shouldSupportAllNetworks =
+      ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
+    const connectorId = ConnectorController.getConnectorId(networkNamespace)
+    const authConnector = ConnectorController.getAuthConnector()
+    const isConnectedWithAuth =
+      connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH && authConnector
+
+    if (!isNextNamespaceConnected || shouldSupportAllNetworks || isConnectedWithAuth) {
+      return false
+    }
+
+    return !approvedCaipNetworkIds?.includes(network.caipNetworkId)
   }
 }
 

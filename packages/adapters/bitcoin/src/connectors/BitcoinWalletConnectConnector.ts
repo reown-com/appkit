@@ -115,6 +115,10 @@ export class BitcoinWalletConnectConnector
     return this.internalRequest(args) as T
   }
 
+  public setDefaultChain(chainId: string) {
+    this.provider.setDefaultChain(chainId)
+  }
+
   // -- Private ------------------------------------------ //
   private get sessionChains() {
     return WcHelpersUtil.getChainsFromNamespaces(this.provider.session?.namespaces)
