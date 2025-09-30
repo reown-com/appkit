@@ -74,9 +74,12 @@ on:
         required: false
       PLAYWRIGHT_REPORT_AWS_SECRET_ACCESS_KEY:
         required: false
+      AWS_APPKIT_DATA_LAKE_ROLE_TO_ASSUME:
+        required: false
 
 env:
   BRANCH_NAME: ${{ inputs.branch }}
+  AWS_APPKIT_DATA_LAKE_ROLE_TO_ASSUME: ${{ secrets.AWS_APPKIT_DATA_LAKE_ROLE_TO_ASSUME }}
 
 permissions:
   id-token: write
@@ -477,7 +480,7 @@ jobs:
         if: inputs.build_trigger_type != '' # Also skip if not uploading
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::898587786287:role/prod_github_actions_appkit_role
+          role-to-assume: ${{ env.AWS_APPKIT_DATA_LAKE_ROLE_TO_ASSUME }}
           aws-region: eu-central-1
 
       # Required for Athena/Trino processing
