@@ -94,7 +94,14 @@ export async function connectSocial(
     }
   } catch (error) {
     popupWindow?.close()
-    SnackController.showError((error as Error)?.message)
+    const errorMessage = (error as Error)?.message
+    SnackController.showError(errorMessage)
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SOCIAL_LOGIN_ERROR',
+      properties: { provider: socialProvider, message: errorMessage }
+    })
   }
 }
 
