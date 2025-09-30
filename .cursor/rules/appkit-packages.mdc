@@ -1,0 +1,94 @@
+---
+description: Focused rules for working in packages (controllers, scaffold-ui views, new packages)
+globs:
+  - 'packages/**'
+alwaysApply: false
+---
+
+## AppKit Packages Rules
+
+These rules are scoped to `packages/**` and capture concrete, actionable guidance for day-to-day changes.
+
+### Controllers: State Management
+
+- Use `valtio/vanilla` `proxy` for state and `subscribeKey` for fine-grained subscriptions.
+- Keep controller surface small: `state` object and pure methods that mutate state.
+- Wrap controllers with `withErrorBoundary` to guard external call-sites.
+- Do not import UI code into controllers. Controllers depend only on foundations/utilities.
+- Example references:
+  - Router state shape and navigation: `packages/controllers/src/controllers/RouterController.ts`
+  - Proxy usage per chain: `packages/controllers/src/controllers/ChainController.ts`
+  - Error boundary util: `packages/controllers/src/utils/withErrorBoundary.ts`
+
+When updating state:
+
+- Prefer `replace`/`reset`/`push` style APIs for navigation and history changes.
+- Avoid deep nested state updates; compute next values and assign once.
+- Do not catch and swallow errors; either rethrow typed or use the error boundary.
+
+### Scaffold UI: Adding a New View
+
+Use Lit Web Components and the router:
+
+1. Create a view component under `packages/scaffold-ui/src/views/` named `w3m-my-feature-view`.
+2. Export it from the scaffold package (via existing barrel/exports pattern).
+3. Add a new discriminant to `RouterControllerState['view']` in `packages/controllers/src/controllers/RouterController.ts`.
+4. Map the new view in `packages/scaffold-ui/src/modal/w3m-router/index.ts` `viewTemplate` switch:
+   - Case: `'MyFeature'` → `<w3m-my-feature-view></w3m-my-feature-view>`.
+5. Navigate with `RouterController.push('MyFeature')` from actions.
+6. If the view participates in history transitions, no extra work is needed; `w3m-router-container` animates based on `history`.
+
+References:
+
+- Router container transitions: `packages/scaffold-ui/src/partials/w3m-router-container/index.ts`
+- Router view switch: `packages/scaffold-ui/src/modal/w3m-router/index.ts`
+- View enum and history: `packages/controllers/src/controllers/RouterController.ts`
+
+View guidelines:
+
+- Keep logic minimal in views; delegate to controllers/helpers.
+- Use `@reown/appkit-ui` primitives (`wui-*`) for visuals.
+- Avoid accessing `window` without SSR guards.
+
+### Adding a New Package
+
+1. Create `packages/<name>/` with ESM config and `exports` map.
+2. Dependencies:
+   - Internal deps as `workspace:*`.
+   - Host libraries as `peerDependencies` and optional wallets/providers as `optionalDependencies`.
+3. Scripts: `build:clean`, `build` (tsc --build), `watch`, `typecheck`, `lint`, `test` (vitest).
+4. Add `sideEffects: false` if safe; avoid top-level side effects.
+5. Expose subpaths deliberately (e.g., `./react`, `./vue`, `./utils`) only when stable.
+6. Add `vitest.config.ts` and `tests/` if applicable.
+7. Update examples or CDN if developer UX changes.
+
+Checklist snippet:
+
+```json
+{
+  "type": "module",
+  "sideEffects": false,
+  "exports": { ".": { "types": "./dist/types/index.d.ts", "import": "./dist/esm/index.js" } }
+}
+```
+
+### TypeScript & API
+
+- Use `export type` for types-only exports.
+- Avoid `any`; prefer discriminated unions for variant states.
+- Do not leak third-party types across boundaries; map to internal domain types.
+- Validate adapter inputs with `zod` where schemas are involved.
+
+#### Public API and Breaking Changes
+
+- The `exports` entrypoints (e.g., `packages/appkit/exports/*.ts`) define the public SDK surface used by external developers.
+- Treat any change to exported functions, classes, or types as potentially breaking.
+- Follow semver: breaking changes require a major bump and a clear Changeset entry describing migration.
+- Prefer additive changes over mutations; deprecate first with JSDoc `@deprecated` and keep shims until the next major.
+- Keep exports stable and avoid re-exporting deep internals that may change frequently.
+
+### Security & Performance
+
+- Sanitize user inputs; avoid injecting untrusted values into DOM.
+- Keep packages tree-shakeable and SSR-safe.
+- Use `peerDependencies` for large host SDKs to avoid duplicate bundles.
