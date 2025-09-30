@@ -161,7 +161,7 @@
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.758.0",
     "@mailsac/api": "1.0.8",
-    "@playwright/test": "1.48.2",
+    "@playwright/test": "1.55.1",
     "@reown/appkit-testing": "workspace:*",
     "@types/node": "22.13.4",
     "@types/react": "19.1.15",
