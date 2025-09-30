@@ -469,13 +469,11 @@ jobs:
           echo "BUILD_CONTEXT=$CONTEXT" >> $GITHUB_ENV
           echo "Derived context: $CONTEXT"
 
-      # TODO: Migrate to OIDC
       - name: Configure AWS Credentials
         if: inputs.build_trigger_type != '' # Also skip if not uploading
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.PLAYWRIGHT_REPORT_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.PLAYWRIGHT_REPORT_AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::898587786287:role/staging_github_actions_appkit_role
           aws-region: eu-central-1
 
       # Required for Athena/Trino processing
@@ -487,8 +485,8 @@ jobs:
       - name: Upload Merged JSON Report to S3
         if: inputs.build_trigger_type != '' && always()
         run: |
-          S3_BUCKET="reown.appkit.e2e.reports"
-          S3_PREFIX="appkit/playwright-results"
+          S3_BUCKET="walletconnect.data-lake.prod"
+          S3_PREFIX="appkit-test-results"
           FILE_NAME="merged-test-results.jsonl"
           year=$(date +%Y)
           month=$(date +%m)
