@@ -395,23 +395,6 @@ export abstract class AppKitBaseClient {
     if (network) {
       ChainController.setActiveCaipNetwork(network)
     }
-
-    ChainController.subscribeKey('activeCaipNetwork', activeCaipNetwork => {
-      if (activeCaipNetwork) {
-        const address = ChainController.getAccountData(activeCaipNetwork.chainNamespace)?.address
-        const providerType = ProviderController.getProviderId(activeCaipNetwork.chainNamespace)
-
-        if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
-          this.syncWalletConnectAccount()
-        } else if (address) {
-          this.syncAccount({
-            address,
-            chainId: activeCaipNetwork.id,
-            chainNamespace: activeCaipNetwork.chainNamespace
-          })
-        }
-      }
-    })
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
