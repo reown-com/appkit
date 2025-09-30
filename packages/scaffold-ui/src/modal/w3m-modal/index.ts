@@ -2,12 +2,11 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type CaipAddress, type CaipNetwork, ParseUtil } from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
 import {
   ApiController,
   ChainController,
   ConnectorController,
-  CoreHelperUtil,
   ModalController,
   ModalUtil,
   OptionsController,
@@ -245,51 +244,16 @@ export class W3mModalBase extends LitElement {
   private async onNewAddress(caipAddress?: CaipAddress) {
     // Capture current state
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
-
     const isInProfileView = RouterController.state.view === 'ProfileWallets'
+    const hasAddressChanged = !this.caipAddress && caipAddress
 
-    if (caipAddress) {
-      await this.onConnected({
-        caipAddress,
-        isInProfileView
-      })
-    } else if (!isSwitchingNamespace && !this.enableEmbedded && !isInProfileView) {
+    if (!isInProfileView && hasAddressChanged && !isSwitchingNamespace) {
       ModalController.close()
     }
 
     await SIWXUtil.initializeIfEnabled(caipAddress)
     this.caipAddress = caipAddress
     ChainController.setIsSwitchingNamespace(false)
-  }
-
-  private async onConnected(args: {
-    caipAddress: CaipAddress
-
-    isInProfileView: boolean
-  }) {
-    if (args.isInProfileView) {
-      return
-    }
-    const {
-      chainNamespace,
-      chainId,
-      address: newAddress
-    } = ParseUtil.parseCaipAddress(args.caipAddress)
-    const caipNetworkId = `${chainNamespace}:${chainId}` as const
-    const wasPreviouslyDisconnected = !CoreHelperUtil.getPlainAddress(this.caipAddress)
-    const sessions = await SIWXUtil.getSessions({ address: newAddress, caipNetworkId })
-    const isSiwxAuthenticated = SIWXUtil.getSIWX()
-      ? sessions.some(s => s.data.accountAddress === newAddress)
-      : false
-
-    const shouldGoBack = isSiwxAuthenticated && !this.enableEmbedded
-    const shouldCloseEmbeddedModal = this.enableEmbedded && wasPreviouslyDisconnected
-
-    if (shouldGoBack) {
-      RouterController.goBack()
-    } else if (shouldCloseEmbeddedModal) {
-      ModalController.close()
-    }
   }
 
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
