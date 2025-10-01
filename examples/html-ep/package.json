@@ -7,7 +7,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.21.7"
+    "@walletconnect/ethereum-provider": "2.21.9"
   },
   "devDependencies": {
     "vite": "5.4.20"

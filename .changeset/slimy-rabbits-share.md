@@ -1,5 +1,6 @@
 ---
 '@reown/appkit-scaffold-ui': patch
+'@reown/appkit-ui': patch
 'pay-test-exchange': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
@@ -20,10 +21,9 @@
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-testing': patch
-'@reown/appkit-ui': patch
 '@reown/appkit-universal-connector': patch
 '@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-Removed NFTs tab from account modal view
+Added chain image to token button component for the deposit from exchange view

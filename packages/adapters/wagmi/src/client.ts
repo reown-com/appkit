@@ -321,9 +321,9 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     const isEmailEnabled = appKit?.remoteFeatures?.email ?? appKit?.features?.email ?? true
     const socials = appKit?.remoteFeatures?.socials ?? appKit?.features?.socials
-    const socialsEnabled = Array.isArray(socials) && socials?.length > 0
+    const isSocialsEnabled = Array.isArray(socials) && socials?.length > 0
 
-    if (isEmailEnabled || socialsEnabled) {
+    if (isEmailEnabled || isSocialsEnabled) {
       customConnectors.push(
         authConnector({
           chains: this.wagmiChains,

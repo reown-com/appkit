@@ -135,7 +135,6 @@ describe('W3mButton', () => {
     let element: W3mButton = await fixture(html`<appkit-button namespace="eip155"></appkit-button>`)
     let w3mAccountButton = HelpersUtil.querySelect(element, 'appkit-account-button')
     let wuiAccountButton = w3mAccountButton.shadowRoot?.querySelector('wui-account-button')
-    console.log(wuiAccountButton)
 
     await element.updateComplete
 

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { OptionsController } from '../../exports/index.js'
 import { ConstantsUtil } from '../../src/utils/ConstantsUtil.js'
+import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil.js'
 import { OptionsUtil } from '../../src/utils/OptionsUtil.js'
 import type { RemoteFeatures, SocialProvider } from '../../src/utils/TypeUtil.js'
 
@@ -32,7 +33,8 @@ describe('OptionsController', () => {
         solana: 'eoa'
       },
       enableNetworkSwitch: true,
-      experimental_preferUniversalLinks: false
+      experimental_preferUniversalLinks: false,
+      enableMobileFullScreen: false
     })
   })
 
@@ -106,5 +108,19 @@ describe('OptionsController', () => {
     // Test setting signOutOnDisconnect to false
     OptionsController.setSIWX({ signOutOnDisconnect: false } as any)
     expect(OptionsController.state.siwx!.signOutOnDisconnect).toEqual(false)
+  })
+
+  it('should set enableMobileFullScreen to false when not on mobile', () => {
+    const spy = vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+    OptionsController.setEnableMobileFullScreen(true)
+    expect(OptionsController.state.enableMobileFullScreen).toBe(false)
+    spy.mockRestore()
+  })
+
+  it('should set enableMobileFullScreen to true when on mobile', () => {
+    const spy = vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+    OptionsController.setEnableMobileFullScreen(true)
+    expect(OptionsController.state.enableMobileFullScreen).toBe(true)
+    spy.mockRestore()
   })
 })
