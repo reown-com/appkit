@@ -1183,8 +1183,12 @@ describe('BitcoinAdapter', () => {
         }))
       })
 
-      vi.spyOn(adapter as any, 'connectionManager', 'get').mockReturnValue({
-        getConnection: vi.fn().mockReturnValue(undefined)
+      vi.spyOn(adapter, 'getConnection').mockReturnValue({
+        accounts: [],
+        connectorId: connector.id,
+        connector: connector,
+        account: undefined,
+        caipNetwork: bitcoin
       })
 
       await adapter.onAccountsChanged(['mock_address_1'], connector.id)

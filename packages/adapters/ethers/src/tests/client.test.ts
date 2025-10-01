@@ -13,6 +13,7 @@ import {
   type ConnectionControllerClient,
   ConnectorController,
   CoreHelperUtil,
+  OptionsController,
   type Provider,
   ProviderController,
   SIWXUtil,
@@ -25,6 +26,7 @@ import { mainnet, polygon } from '@reown/appkit/networks'
 
 import { EthersAdapter } from '../client'
 import { EthersMethods } from '../utils/EthersMethods'
+import { mockEthersConfig } from './mocks/EthersConfig'
 
 class ErrorWithCode extends Error {
   code: number
@@ -1254,6 +1256,12 @@ describe('EthersAdapter', () => {
   })
 
   describe('EthersAdapter - createEthersConfig', () => {
+    beforeAll(() => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        metadata: mockEthersConfig.metadata
+      })
+    })
     it('should create Ethers config with coinbase provider if not disabled', async () => {
       const ethersAdapter = new EthersAdapter()
       const providers = await ethersAdapter['createEthersConfig']()
@@ -1262,6 +1270,10 @@ describe('EthersAdapter', () => {
     })
 
     it('should create Ethers config without coinbase provider if disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        enableCoinbase: false
+      })
       const providers = await adapter['createEthersConfig']()
 
       expect(providers?.coinbase).toBeUndefined()

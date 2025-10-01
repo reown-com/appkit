@@ -25,6 +25,7 @@ import {
   type ConnectionControllerClient,
   ConnectorController,
   CoreHelperUtil,
+  OptionsController,
   ProviderController,
   type SocialProvider
 } from '@reown/appkit-controllers'
@@ -151,7 +152,9 @@ describe('WagmiAdapter', () => {
     })
 
     vi.spyOn(helpers, 'getCoinbaseConnector').mockResolvedValue(mockCoinbaseWallet() as any)
-
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state
+    })
     adapter = new WagmiAdapter({
       networks: mockNetworks,
       projectId: mockProjectId
@@ -236,12 +239,13 @@ describe('WagmiAdapter', () => {
 
     it('should not add auth connector when email and socials are both false', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
-
-      // const options = {
-      //   enableInjected: false,
-      //   projectId: mockProjectId,
-      //   networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
-      // }
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          email: false,
+          socials: false
+        }
+      })
 
       mockAppKit.features = {
         email: false,
@@ -256,11 +260,13 @@ describe('WagmiAdapter', () => {
     it('should add auth connector when email is true and socials are false', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
-      // const options = {
-      //   enableInjected: false,
-      //   projectId: mockProjectId,
-      //   networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
-      // }
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          email: true,
+          socials: false
+        }
+      })
 
       mockAppKit.features = {
         email: true,
@@ -274,12 +280,13 @@ describe('WagmiAdapter', () => {
 
     it('should not add auth connector when email is false and socials is an empty array', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
-
-      // const options = {
-      //   enableInjected: false,
-      //   projectId: mockProjectId,
-      //   networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
-      // }
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          email: false,
+          socials: []
+        }
+      })
 
       mockAppKit.features = {
         email: false,
@@ -294,11 +301,13 @@ describe('WagmiAdapter', () => {
     it('should add auth connector when email is true and socials are not false', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
-      // const options = {
-      //   enableInjected: false,
-      //   projectId: mockProjectId,
-      //   networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
-      // }
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          email: true,
+          socials: ['facebook'] as SocialProvider[]
+        }
+      })
 
       mockAppKit.features = {
         email: true,
@@ -314,12 +323,13 @@ describe('WagmiAdapter', () => {
 
     it('should add auth connector when email is false and socials contain providers', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
-
-      // const options = {
-      //   enableInjected: false,
-      //   projectId: mockProjectId,
-      //   networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
-      // }
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          email: false,
+          socials: ['x'] as SocialProvider[]
+        }
+      })
 
       mockAppKit.features = {
         email: false,
@@ -336,16 +346,13 @@ describe('WagmiAdapter', () => {
     it('should add auth connector when both email and socials are true', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
-      // const options = {
-      //   enableInjected: false,
-      //   projectId: mockProjectId,
-      //   networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
-      // }
-
-      mockAppKit.features = {
-        email: true,
-        socials: ['google'] as SocialProvider[]
-      }
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        features: {
+          email: true,
+          socials: ['google'] as SocialProvider[]
+        }
+      })
 
       await adapter.syncConnectors()
 
@@ -1324,6 +1331,7 @@ describe('WagmiAdapter', () => {
 
     it('should return accounts successfully when using auth connector', async () => {
       vi.spyOn(wagmiCore, 'createConfig').mockReturnValue({
+        ...mockWagmiConfig,
         connectors: mockWagmiConfig.connectors
       } as any)
 
@@ -1504,6 +1512,10 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
   })
 
   it('should not add Coinbase connector if enableCoinbase is false', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...(OptionsController.state || {}),
+      enableCoinbase: false
+    })
     await adapter['addThirdPartyConnectors']()
     expect(mockCoinbaseWallet).not.toHaveBeenCalled()
     expect(adapter.wagmiConfig.connectors.length).toBe(0)
@@ -1560,7 +1572,9 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
     }
     vi.stubGlobal('window', mockSpecificWindow)
     vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
-
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state
+    })
     await adapter['addThirdPartyConnectors']()
     expect(mockSafe).not.toHaveBeenCalled()
     expect(adapter.wagmiConfig.connectors.some(c => c.id === 'safe')).toBe(false)

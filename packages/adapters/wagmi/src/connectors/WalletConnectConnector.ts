@@ -274,6 +274,7 @@ export function walletConnect(parameters: AppKitOptionsParams) {
     },
     async getProvider({ chainId } = {}) {
       if (!provider_) {
+        console.log('parameters.universalProvider', parameters.universalProvider)
         provider_ = parameters.universalProvider
         provider_?.events.setMaxListeners(Number.POSITIVE_INFINITY)
       }

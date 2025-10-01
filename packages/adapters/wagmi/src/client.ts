@@ -287,8 +287,8 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   private async addThirdPartyConnectors() {
     const thirdPartyConnectors: CreateConnectorFn[] = []
-
-    if (OptionsController.state.enableCoinbase !== false) {
+    const { enableCoinbase: isCoinbaseEnabled } = OptionsController.state || {}
+    if (isCoinbaseEnabled !== false) {
       const coinbaseConnector = await getCoinbaseConnector(this.wagmiConfig.connectors)
       if (coinbaseConnector) {
         thirdPartyConnectors.push(coinbaseConnector)
@@ -476,9 +476,10 @@ export class WagmiAdapter extends AdapterBlueprint {
      * from wagmi since we already set it in chain adapter blueprint
      */
 
+    const { enableEIP6963: isEIP6963Enabled } = OptionsController.state || {}
     if (
       connector.type === CommonConstantsUtil.CONNECTOR_ID.INJECTED &&
-      OptionsController.state.enableEIP6963 === false
+      isEIP6963Enabled === false
     ) {
       return
     }

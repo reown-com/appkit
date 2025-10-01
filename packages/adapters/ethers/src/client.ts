@@ -56,9 +56,14 @@ export class EthersAdapter extends AdapterBlueprint {
     const { metadata, coinbasePreference, enableCoinbase, enableInjected, enableEIP6963 } =
       OptionsController.state
 
+    console.log('>> Create Ethers Config')
+
     if (!metadata) {
       return undefined
     }
+
+    console.log('>> Metadata', metadata)
+
     let injectedProvider: Provider | undefined = undefined
 
     function getInjectedProvider() {
@@ -135,6 +140,7 @@ export class EthersAdapter extends AdapterBlueprint {
       }
     }
 
+    console.log('CoreHelperUtil.isSafeApp()', CoreHelperUtil.isSafeApp())
     if (CoreHelperUtil.isSafeApp()) {
       const safeProvider = await getSafeProvider()
       if (safeProvider) {
