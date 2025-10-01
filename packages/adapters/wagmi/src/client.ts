@@ -39,6 +39,7 @@ import type {
   AppKitNetwork,
   BaseNetwork,
   CaipNetwork,
+  ChainNamespace,
   Connection,
   CustomRpcUrlMap
 } from '@reown/appkit-common'
@@ -536,7 +537,21 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   // Wagmi already handles connections
   public async syncConnections() {
-    return Promise.resolve()
+    const wagmiConnectors = this.connectors
+      .filter(c => {
+        const { hasDisconnected, hasConnected } = HelpersUtil.getConnectorStorageInfo(
+          c.id,
+          this.namespace as ChainNamespace
+        )
+
+        return !hasDisconnected && hasConnected
+      })
+      .map(connector => this.getWagmiConnector(connector.id))
+      .filter(Boolean) as Connector[]
+
+    await reconnect(this.wagmiConfig, {
+      connectors: wagmiConnectors
+    })
   }
 
   public async syncConnection(
@@ -1014,11 +1029,11 @@ export class WagmiAdapter extends AdapterBlueprint {
       }
     })
 
-    this.configureInternalConnector(
-      walletConnect({
-        universalProvider
-      })
-    )
+    const walletConnectConnector = walletConnect({
+      universalProvider
+    })
+
+    this.configureInternalConnector(walletConnectConnector)
 
     this.addConnector(
       new WalletConnectConnector({
