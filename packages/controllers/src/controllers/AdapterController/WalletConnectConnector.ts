@@ -2,13 +2,11 @@ import type { SessionTypes } from '@walletconnect/types'
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
-import {
-  ChainController,
-  OptionsController,
-  SIWXUtil,
-  WcHelpersUtil
-} from '@reown/appkit-controllers'
 
+import { SIWXUtil } from '../../utils/SIWXUtil.js'
+import { WcHelpersUtil } from '../../utils/WalletConnectUtil.js'
+import { ChainController } from '../ChainController.js'
+import { OptionsController } from '../OptionsController.js'
 import type { ChainAdapterConnector } from './types.js'
 
 export class WalletConnectConnector<Namespace extends ChainNamespace = ChainNamespace>

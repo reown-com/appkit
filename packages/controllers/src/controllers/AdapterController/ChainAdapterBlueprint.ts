@@ -13,21 +13,19 @@ import {
 } from '@reown/appkit-common'
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
-import {
-  type AccountState,
-  type AccountType,
-  type Connector as AppKitConnector,
-  ChainController,
-  type CombinedProvider,
-  ConnectorController,
-  CoreHelperUtil,
-  type Provider,
-  ProviderController,
-  type Tokens,
-  type WriteContractArgs,
-  getPreferredAccountType
-} from '../../../exports/index.js'
+import { getPreferredAccountType } from '../../utils/ChainControllerUtil.js'
+import { CoreHelperUtil } from '../../utils/CoreHelperUtil.js'
+import { type Connector as AppKitConnector } from '../../utils/TypeUtil.js'
+import { type CombinedProvider } from '../../utils/TypeUtil.js'
+import { type Provider } from '../../utils/TypeUtil.js'
+import { type Tokens } from '../../utils/TypeUtil.js'
+import { type WriteContractArgs } from '../../utils/TypeUtil.js'
 import { WcHelpersUtil } from '../../utils/WalletConnectUtil.js'
+import { type AccountState } from '../ChainController.js'
+import { ChainController } from '../ChainController.js'
+import { type AccountType } from '../ConnectionController/entities/Account/Account.js'
+import { ConnectorController } from '../ConnectorController.js'
+import { ProviderController } from '../ProviderController.js'
 import type { WalletConnectConnector } from './WalletConnectConnector.js'
 import type { ChainAdapterConnector } from './types.js'
 

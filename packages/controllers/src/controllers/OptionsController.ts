@@ -213,7 +213,7 @@ export interface OptionsControllerStateInternal {
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
-type OptionsControllerState = OptionsControllerStatePublic & OptionsControllerStateInternal
+export type OptionsControllerState = OptionsControllerStatePublic & OptionsControllerStateInternal
 
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({

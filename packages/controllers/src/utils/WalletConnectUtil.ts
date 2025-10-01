@@ -10,7 +10,9 @@ import {
   ParseUtil,
   type ParsedCaipAddress
 } from '@reown/appkit-common'
-import { EnsController, type OptionsControllerState } from '@reown/appkit-controllers'
+
+import { EnsController } from '../controllers/EnsController.js'
+import type { OptionsControllerState } from '../controllers/OptionsController.js'
 
 interface ListenWcProviderParams {
   universalProvider: UniversalProvider
