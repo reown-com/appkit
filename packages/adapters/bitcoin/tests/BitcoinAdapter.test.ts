@@ -10,13 +10,13 @@ import {
   vi
 } from 'vitest'
 
-import { WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   type ConnectionControllerClient,
   ProviderController,
-  StorageUtil
+  StorageUtil,
+  WcHelpersUtil
 } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'

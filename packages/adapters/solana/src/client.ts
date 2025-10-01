@@ -4,7 +4,6 @@ import { PublicKey, SendTransactionError, Connection as SolanaConnection } from 
 import UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
-import { WcHelpersUtil } from '@reown/appkit'
 import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AdapterBlueprint,
@@ -13,7 +12,8 @@ import {
   CoreHelperUtil,
   type Provider as CoreProvider,
   OptionsController,
-  StorageUtil
+  StorageUtil,
+  WcHelpersUtil
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 import { HelpersUtil } from '@reown/appkit-utils'

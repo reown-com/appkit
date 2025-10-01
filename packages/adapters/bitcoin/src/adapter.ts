@@ -1,18 +1,13 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 
-import {
-  type AppKit,
-  type AppKitOptions,
-  CoreHelperUtil,
-  type Provider,
-  WcHelpersUtil
-} from '@reown/appkit'
+import { type AppKit, type AppKitOptions, CoreHelperUtil, type Provider } from '@reown/appkit'
 import { type ChainNamespace, ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AdapterBlueprint,
   ChainController,
   ProviderController,
+  WcHelpersUtil,
   StorageUtil
 } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'

@@ -69,6 +69,7 @@ import {
   SnackController,
   StorageUtil,
   ThemeController,
+  WcHelpersUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
@@ -85,7 +86,7 @@ import {
 
 import { UniversalAdapter } from '../universal-adapter/client.js'
 import { ConfigUtil } from '../utils/ConfigUtil.js'
-import { WcConstantsUtil, WcHelpersUtil } from '../utils/index.js'
+import { WcConstantsUtil } from '../utils/index.js'
 import type { AppKitOptions } from '../utils/index.js'
 
 export interface AppKitOptionsWithSdk extends AppKitOptions {

@@ -21,9 +21,13 @@ import {
   numberToHex
 } from 'viem'
 
-import { WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import { ChainController, OptionsController, StorageUtil } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  OptionsController,
+  StorageUtil,
+  WcHelpersUtil
+} from '@reown/appkit-controllers'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void

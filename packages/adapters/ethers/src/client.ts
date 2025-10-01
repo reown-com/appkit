@@ -1,7 +1,7 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 import { JsonRpcProvider, formatEther, getAddress } from 'ethers'
 
-import { WcConstantsUtil, WcHelpersUtil } from '@reown/appkit'
+import { WcConstantsUtil } from '@reown/appkit'
 import {
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
@@ -20,6 +20,7 @@ import {
   type Provider,
   SIWXUtil,
   StorageUtil,
+  WcHelpersUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import {

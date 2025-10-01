@@ -26,7 +26,7 @@ import {
 import { type CombinedProvider, type Provider } from '@reown/appkit-controllers'
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
-import { isUserRejectedRequestError } from './WCHelpersUtil.js'
+import { WcHelpersUtil } from '../../utils/WalletConnectUtil.js'
 import type { WalletConnectConnector } from './WalletConnectConnector.js'
 import type { ChainAdapterConnector } from './types.js'
 
@@ -303,7 +303,7 @@ export abstract class AdapterBlueprint<
 
       return { clientId: result.clientId }
     } catch (err) {
-      if (isUserRejectedRequestError(err)) {
+      if (WcHelpersUtil.isUserRejectedRequestError(err)) {
         throw new UserRejectedRequestError(err)
       }
 

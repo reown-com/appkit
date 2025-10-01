@@ -2,7 +2,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import * as ethers from 'ethers'
 import { formatEther } from 'ethers/lib/utils.js'
 
-import { WcConstantsUtil, WcHelpersUtil } from '@reown/appkit'
+import { WcConstantsUtil } from '@reown/appkit'
 import {
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
@@ -23,6 +23,7 @@ import {
   SIWXUtil,
   StorageUtil,
   WalletConnectConnector,
+  WcHelpersUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { ProviderController } from '@reown/appkit-controllers'
