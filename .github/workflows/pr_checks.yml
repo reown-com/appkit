@@ -255,6 +255,7 @@ jobs:
     uses: ./.github/workflows/ui_tests.yml
     secrets: inherit
     permissions:
+      id-token: write
       contents: write
       pull-requests: write
     with:
