@@ -7,8 +7,8 @@ import {
   AdapterBlueprint,
   ChainController,
   ProviderController,
-  WcHelpersUtil,
-  StorageUtil
+  StorageUtil,
+  WcHelpersUtil
 } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import { type BitcoinConnector, BitcoinConstantsUtil } from '@reown/appkit-utils/bitcoin'
