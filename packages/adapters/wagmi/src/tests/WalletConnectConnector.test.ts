@@ -7,7 +7,6 @@ import { mainnet } from '@reown/appkit/networks'
 import { walletConnect } from '../connectors/WalletConnectConnector'
 import {
   mockAddress,
-  mockAppKit,
   mockCaipAddress,
   mockCaipNetworks,
   mockExtendedCaipNetworks,
@@ -41,12 +40,10 @@ describe('WalletConnectConnector', () => {
   let connectorInstance: any
 
   beforeEach(() => {
-    const createConnector = walletConnect(
-      {
-        isNewChainsStale: false
-      } as any,
-      mockAppKit
-    )
+    const createConnector = walletConnect({
+      isNewChainsStale: false,
+      universalProvider: mockEmitter as any
+    })
 
     connectorInstance = createConnector({
       chains: mockCaipNetworks,

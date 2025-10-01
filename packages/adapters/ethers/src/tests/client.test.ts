@@ -1255,48 +1255,20 @@ describe('EthersAdapter', () => {
   describe('EthersAdapter - createEthersConfig', () => {
     it('should create Ethers config with coinbase provider if not disabled', async () => {
       const ethersAdapter = new EthersAdapter()
-      const providers = await ethersAdapter['createEthersConfig']({
-        networks: [mainnet],
-        projectId: 'test-project-id',
-        metadata: {
-          name: 'test',
-          icons: ['https://test.com/icon.png'],
-          description: 'test',
-          url: 'https://test.com'
-        }
-      })
+      const providers = await ethersAdapter['createEthersConfig']()
 
       expect(providers?.coinbase).toBeDefined()
     })
 
     it('should create Ethers config without coinbase provider if disabled', async () => {
-      const providers = await adapter['createEthersConfig']({
-        networks: [mainnet],
-        projectId: 'test-project-id',
-        enableCoinbase: false,
-        metadata: {
-          name: 'test',
-          icons: ['https://test.com/icon.png'],
-          description: 'test',
-          url: 'https://test.com'
-        }
-      })
+      const providers = await adapter['createEthersConfig']()
 
       expect(providers?.coinbase).toBeUndefined()
     })
 
     it('should create Ethers config with safe provider if in iframe and ancestor is app.safe.global', async () => {
       vi.spyOn(CoreHelperUtil, 'isSafeApp').mockReturnValue(true)
-      const providers = await adapter['createEthersConfig']({
-        networks: [mainnet],
-        projectId: 'test-project-id',
-        metadata: {
-          name: 'test',
-          icons: ['https://test.com/icon.png'],
-          description: 'test',
-          url: 'https://test.com'
-        }
-      })
+      const providers = await adapter['createEthersConfig']()
 
       expect(providers?.safe).toBeDefined()
     })

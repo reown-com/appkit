@@ -15,6 +15,9 @@ import type {
 import { ConstantsUtil, NetworkUtil, ParseUtil } from '@reown/appkit-common'
 import type {
   AccountState,
+  AdapterBlueprint,
+  Adapters,
+  ChainAdapterConnector,
   ConnectExternalOptions,
   ConnectMethod,
   ConnectedWalletInfo,
@@ -80,13 +83,11 @@ import {
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
 
-import type { AdapterBlueprint, ChainAdapterConnector } from '../adapters/index.js'
 import { UniversalAdapter } from '../universal-adapter/client.js'
 import { ConfigUtil } from '../utils/ConfigUtil.js'
 import { WcConstantsUtil, WcHelpersUtil } from '../utils/index.js'
 import type { AppKitOptions } from '../utils/index.js'
 
-export type Adapters = Record<ChainNamespace, AdapterBlueprint>
 export interface AppKitOptionsWithSdk extends AppKitOptions {
   sdkVersion: SdkVersion | AppKitSdkVersion
 }
@@ -421,7 +422,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setEnableNetworkSwitch(options.enableNetworkSwitch !== false)
     OptionsController.setEnableReconnect(options.enableReconnect !== false)
     OptionsController.setEnableMobileFullScreen(options.enableMobileFullScreen === true)
-
+    OptionsController.setCoinbasePreference(options.coinbasePreference)
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
     OptionsController.setCustomRpcUrls(options.customRpcUrls)
 
@@ -1115,7 +1116,11 @@ export abstract class AppKitBaseClient {
   protected async initChainAdapter(namespace: ChainNamespace) {
     this.onConnectors(namespace)
     this.listenAdapter(namespace)
-    await this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+    const adapter = this.getAdapter(namespace)
+    if (!adapter) {
+      throw new Error('adapter not found')
+    }
+    await adapter.syncConnectors()
     await this.createUniversalProviderForAdapter(namespace)
   }
 

@@ -200,6 +200,8 @@ export interface OptionsControllerStatePublic {
    * @default false
    */
   enableMobileFullScreen?: boolean
+
+  coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 }
 
 export interface OptionsControllerStateInternal {
@@ -223,7 +225,8 @@ const state = proxy<OptionsControllerState>({
   enableNetworkSwitch: true,
   experimental_preferUniversalLinks: false,
   remoteFeatures: {},
-  enableMobileFullScreen: false
+  enableMobileFullScreen: false,
+  coinbasePreference: 'all'
 })
 
 // -- Controller ---------------------------------------- //
@@ -430,6 +433,10 @@ export const OptionsController = {
 
   setEnableReconnect(enableReconnect: OptionsControllerState['enableReconnect']) {
     state.enableReconnect = enableReconnect
+  },
+
+  setCoinbasePreference(coinbasePreference: OptionsControllerState['coinbasePreference']) {
+    state.coinbasePreference = coinbasePreference
   },
 
   setDefaultAccountTypes(

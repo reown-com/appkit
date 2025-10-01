@@ -19,7 +19,7 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import { checksumAddress } from 'viem'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type AppKitNetwork, type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   type ConnectionControllerClient,
@@ -196,10 +196,7 @@ describe('WagmiAdapter', () => {
       vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(vi.fn())
       vi.spyOn(wagmiCore, 'watchConnectors')
 
-      await adapter.syncConnectors(
-        { networks: [mainnet], projectId: 'YOUR_PROJECT_ID' },
-        mockAppKit
-      )
+      await adapter.syncConnectors()
       expect(wagmiCore.watchConnectors).toHaveBeenCalledOnce()
       expect(adapter.connectors).toStrictEqual([
         {
@@ -240,18 +237,18 @@ describe('WagmiAdapter', () => {
     it('should not add auth connector when email and socials are both false', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
-      const options = {
-        enableInjected: false,
-        projectId: mockProjectId,
-        networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
-      }
+      // const options = {
+      //   enableInjected: false,
+      //   projectId: mockProjectId,
+      //   networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      // }
 
       mockAppKit.features = {
         email: false,
         socials: false
       }
 
-      await adapter.syncConnectors(options, mockAppKit)
+      await adapter.syncConnectors()
 
       expect(authConnectorSpy).not.toHaveBeenCalled()
     })
@@ -259,18 +256,18 @@ describe('WagmiAdapter', () => {
     it('should add auth connector when email is true and socials are false', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
-      const options = {
-        enableInjected: false,
-        projectId: mockProjectId,
-        networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
-      }
+      // const options = {
+      //   enableInjected: false,
+      //   projectId: mockProjectId,
+      //   networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      // }
 
       mockAppKit.features = {
         email: true,
         socials: false
       }
 
-      await adapter.syncConnectors(options, mockAppKit)
+      await adapter.syncConnectors()
 
       expect(authConnectorSpy).toHaveBeenCalled()
     })
@@ -278,18 +275,18 @@ describe('WagmiAdapter', () => {
     it('should not add auth connector when email is false and socials is an empty array', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
-      const options = {
-        enableInjected: false,
-        projectId: mockProjectId,
-        networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
-      }
+      // const options = {
+      //   enableInjected: false,
+      //   projectId: mockProjectId,
+      //   networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      // }
 
       mockAppKit.features = {
         email: false,
         socials: []
       }
 
-      await adapter.syncConnectors(options, mockAppKit)
+      await adapter.syncConnectors()
 
       expect(authConnectorSpy).not.toHaveBeenCalled()
     })
@@ -297,18 +294,18 @@ describe('WagmiAdapter', () => {
     it('should add auth connector when email is true and socials are not false', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
-      const options = {
-        enableInjected: false,
-        projectId: mockProjectId,
-        networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
-      }
+      // const options = {
+      //   enableInjected: false,
+      //   projectId: mockProjectId,
+      //   networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      // }
 
       mockAppKit.features = {
         email: true,
         socials: ['facebook'] as SocialProvider[]
       }
 
-      await adapter.syncConnectors(options, mockAppKit)
+      await adapter.syncConnectors()
 
       await vi.waitFor(() => {
         expect(authConnectorSpy).toHaveBeenCalled()
@@ -318,18 +315,18 @@ describe('WagmiAdapter', () => {
     it('should add auth connector when email is false and socials contain providers', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
-      const options = {
-        enableInjected: false,
-        projectId: mockProjectId,
-        networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
-      }
+      // const options = {
+      //   enableInjected: false,
+      //   projectId: mockProjectId,
+      //   networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      // }
 
       mockAppKit.features = {
         email: false,
         socials: ['x'] as SocialProvider[]
       }
 
-      await adapter.syncConnectors(options, mockAppKit)
+      await adapter.syncConnectors()
 
       await vi.waitFor(() => {
         expect(authConnectorSpy).toHaveBeenCalled()
@@ -339,18 +336,18 @@ describe('WagmiAdapter', () => {
     it('should add auth connector when both email and socials are true', async () => {
       const authConnectorSpy = vi.spyOn(auth, 'authConnector')
 
-      const options = {
-        enableInjected: false,
-        projectId: mockProjectId,
-        networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
-      }
+      // const options = {
+      //   enableInjected: false,
+      //   projectId: mockProjectId,
+      //   networks: [mockCaipNetworks[0]] as [AppKitNetwork, ...AppKitNetwork[]]
+      // }
 
       mockAppKit.features = {
         email: true,
         socials: ['google'] as SocialProvider[]
       }
 
-      await adapter.syncConnectors(options, mockAppKit)
+      await adapter.syncConnectors()
 
       await vi.waitFor(() => {
         expect(authConnectorSpy).toHaveBeenCalled()
@@ -1501,20 +1498,13 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
     const getCoinbaseConnectorSpy = vi
       .spyOn(helpers, 'getCoinbaseConnector')
       .mockResolvedValue(mockCoinbaseWallet() as any)
-    await adapter['addThirdPartyConnectors']({
-      projectId: mockProjectId,
-      networks: [mainnet]
-    })
+    await adapter['addThirdPartyConnectors']()
     expect(getCoinbaseConnectorSpy).toHaveBeenCalled()
     expect(adapter.wagmiConfig.connectors.length).toBe(1)
   })
 
   it('should not add Coinbase connector if enableCoinbase is false', async () => {
-    await adapter['addThirdPartyConnectors']({
-      projectId: mockProjectId,
-      networks: [mainnet],
-      enableCoinbase: false
-    })
+    await adapter['addThirdPartyConnectors']()
     expect(mockCoinbaseWallet).not.toHaveBeenCalled()
     expect(adapter.wagmiConfig.connectors.length).toBe(0)
   })
@@ -1533,10 +1523,7 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
     vi.stubGlobal('window', mockSpecificWindow)
     vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
 
-    await adapter['addThirdPartyConnectors']({
-      projectId: mockProjectId,
-      networks: [mainnet]
-    })
+    await adapter['addThirdPartyConnectors']()
     expect(mockSafe).toHaveBeenCalled()
     expect(adapter.wagmiConfig.connectors.some(c => c.id === 'safe')).toBe(true)
   })
@@ -1555,10 +1542,7 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
     vi.stubGlobal('window', mockSpecificWindow)
     vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
 
-    await adapter['addThirdPartyConnectors']({
-      projectId: mockProjectId,
-      networks: [mainnet]
-    })
+    await adapter['addThirdPartyConnectors']()
     expect(mockSafe).not.toHaveBeenCalled()
     expect(adapter.wagmiConfig.connectors.some(c => c.id === 'safe')).toBe(false)
   })
@@ -1577,10 +1561,7 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
     vi.stubGlobal('window', mockSpecificWindow)
     vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
 
-    await adapter['addThirdPartyConnectors']({
-      projectId: mockProjectId,
-      networks: [mainnet]
-    })
+    await adapter['addThirdPartyConnectors']()
     expect(mockSafe).not.toHaveBeenCalled()
     expect(adapter.wagmiConfig.connectors.some(c => c.id === 'safe')).toBe(false)
   })

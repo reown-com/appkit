@@ -7,12 +7,16 @@ import {
   type Provider,
   WcHelpersUtil
 } from '@reown/appkit'
-import { ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ChainController, ProviderController, StorageUtil } from '@reown/appkit-controllers'
+import {
+  AdapterBlueprint,
+  ChainController,
+  ProviderController,
+  StorageUtil
+} from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import { type BitcoinConnector, BitcoinConstantsUtil } from '@reown/appkit-utils/bitcoin'
-import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { bitcoin } from '@reown/appkit/networks'
 
 import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnectConnector.js'
@@ -57,7 +61,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('The connector does not support any of the requested chains')
     }
 
-    const connection = this.connectionManager?.getConnection({
+    const connection = this.getConnection({
       address: params.address,
       connectorId: connector.id,
       connections: this.connections,
@@ -228,7 +232,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
       const allAccounts = await this.getAccounts({ id: connectorId })
 
-      const connection = this.connectionManager?.getConnection({
+      const connection = this.getConnection({
         connectorId,
         connections: this.connections,
         connectors: this.connectors
@@ -267,14 +271,87 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     connectToFirstConnector,
     caipNetwork
   }: AdapterBlueprint.SyncConnectionsParams) {
-    await this.connectionManager?.syncConnections({
-      connectors: this.connectors,
-      caipNetwork,
-      caipNetworks: this.getCaipNetworks(),
-      universalProvider: this.universalProvider as UniversalProvider,
-      onConnection: this.addConnection.bind(this),
-      onListenProvider: this.listenProviderEvents.bind(this)
-    })
+    await Promise.all(
+      this.connectors
+        .filter(c => {
+          const { hasDisconnected, hasConnected } = HelpersUtil.getConnectorStorageInfo(
+            c.id,
+            this.namespace as ChainNamespace
+          )
+
+          return !hasDisconnected && hasConnected
+        })
+        .map(async connector => {
+          if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
+            const accounts = WcHelpersUtil.getWalletConnectAccounts(
+              this.universalProvider as UniversalProvider,
+              this.namespace as ChainNamespace
+            )
+
+            if (accounts.length > 0) {
+              this.addConnection({
+                connectorId: connector.id,
+                accounts: accounts.map(account => ({ address: account.address })),
+                caipNetwork
+              })
+            }
+
+            return
+          }
+
+          const address = await connector.connect()
+          const addresses = await connector.getAccountAddresses()
+
+          let accounts = addresses?.map(a =>
+            CoreHelperUtil.createAccount(
+              CommonConstantsUtil.CHAIN.BITCOIN,
+              a.address,
+              a.purpose || 'payment',
+              a.publicKey,
+              a.path
+            )
+          )
+
+          if (accounts && accounts.length > 1) {
+            accounts = [
+              {
+                namespace: CommonConstantsUtil.CHAIN.BITCOIN,
+                publicKey: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.PAYMENT]?.publicKey ?? '',
+                path: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.PAYMENT]?.path ?? '',
+                address: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.PAYMENT]?.address ?? '',
+                type: 'payment'
+              },
+              {
+                namespace: CommonConstantsUtil.CHAIN.BITCOIN,
+                publicKey: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.ORDINAL]?.publicKey ?? '',
+                path: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.ORDINAL]?.path ?? '',
+                address: accounts[BitcoinConstantsUtil.ACCOUNT_INDEXES.ORDINAL]?.address ?? '',
+                type: 'ordinal'
+              }
+            ]
+          }
+
+          const chain = connector.chains.find(c => c.id === caipNetwork?.id) || connector.chains[0]
+
+          if (!chain) {
+            throw new Error('The connector does not support any of the requested chains')
+          }
+
+          if (address) {
+            this.listenProviderEvents(connector.id, connector.provider as BitcoinConnector)
+            this.addConnection({
+              connectorId: connector.id,
+              accounts: accounts.map(a => ({
+                address: a.address,
+                type: a.type,
+                publicKey: a.publicKey,
+                path: a.path
+              })),
+              caipNetwork
+            })
+          }
+        })
+    )
 
     if (connectToFirstConnector) {
       this.emitFirstAvailableConnection()
@@ -340,7 +417,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         throw new Error('BitcoinAdapter:disconnect - connector.provider is undefined')
       }
 
-      const connection = this.connectionManager?.getConnection({
+      const connection = this.getConnection({
         connectorId: params.id,
         connections: this.connections,
         connectors: this.connectors

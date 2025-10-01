@@ -34,12 +34,12 @@ import {
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
+import type { AdapterBlueprint } from '@reown/appkit-controllers'
 import { ErrorUtil, HelpersUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 import { W3mFrameHelpers, W3mFrameProvider } from '@reown/appkit-wallet'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
-import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { W3mFrameProviderSingleton } from '../auth-provider/W3MFrameProviderSingleton.js'
 import { AppKitBaseClient, type AppKitOptionsWithSdk } from './appkit-base-client.js'
 
