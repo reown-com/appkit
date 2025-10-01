@@ -13,6 +13,8 @@ import {
   AlertController,
   ChainController,
   ConnectorController,
+  type Metadata,
+  OptionsController,
   SIWXUtil,
   getActiveCaipNetwork,
   getPreferredAccountType
@@ -73,6 +75,15 @@ export function authConnector(parameters: AuthParameters) {
         getActiveCaipNetwork: (namespace?: ChainNamespace) => getActiveCaipNetwork(namespace),
         getCaipNetworks: (namespace?: ChainNamespace) => ChainController.getCaipNetworks(namespace)
       })
+
+      const config = OptionsController.getSnapshot()
+
+      socialProvider.syncDappData({
+        projectId: parameters.options.projectId,
+        metadata: config.metadata as Metadata,
+        sdkVersion: config.sdkVersion,
+        sdkType: config.sdkType
+      })
     }
 
     return socialProvider
@@ -86,6 +97,7 @@ export function authConnector(parameters: AuthParameters) {
     } = {}
   ) {
     const provider = getProviderInstance()
+
     let chainId = options.chainId
 
     if (options.isReconnecting) {
@@ -100,7 +112,6 @@ export function authConnector(parameters: AuthParameters) {
     }
 
     const preferredAccountType = getPreferredAccountType('eip155')
-
     const {
       address,
       chainId: frameChainId,

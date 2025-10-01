@@ -96,6 +96,7 @@ export class AppKit extends AppKitBaseClient {
 
     const defaultAccountType = OptionsController.state.defaultAccountTypes[namespace]
     const currentAccountType = getPreferredAccountType(namespace)
+
     const preferredAccountType =
       (user.preferredAccountType as W3mFrameTypes.AccountType) ||
       currentAccountType ||
@@ -223,6 +224,8 @@ export class AppKit extends AppKitBaseClient {
     }
 
     this.setLoading(true, chainNamespace)
+
+    await this.syncAuthConnectorTheme(provider)
     const isLoginEmailUsed = provider.getLoginEmailUsed()
     this.setLoading(isLoginEmailUsed, chainNamespace)
 
@@ -238,8 +241,6 @@ export class AppKit extends AppKitBaseClient {
     this.setupAuthConnectorListeners(provider)
 
     const { isConnected } = await provider.isConnected()
-
-    await this.syncAuthConnectorTheme(provider)
 
     if (chainNamespace && isAuthSupported && shouldSync) {
       const enabledNetworks = await provider.getSmartAccountEnabledNetworks()
