@@ -86,7 +86,6 @@ import {
 
 import { UniversalAdapter } from '../universal-adapter/client.js'
 import { ConfigUtil } from '../utils/ConfigUtil.js'
-import { WcConstantsUtil } from '../utils/index.js'
 import type { AppKitOptions } from '../utils/index.js'
 
 export interface AppKitOptionsWithSdk extends AppKitOptions {
@@ -300,7 +299,7 @@ export abstract class AppKitBaseClient {
       const isOriginAllowed = WcHelpersUtil.isOriginAllowed(
         currentOrigin,
         allowedOrigins,
-        WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
+        ConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
       )
 
       if (!isOriginAllowed) {
