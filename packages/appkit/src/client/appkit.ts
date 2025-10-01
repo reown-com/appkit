@@ -225,7 +225,6 @@ export class AppKit extends AppKitBaseClient {
 
     this.setLoading(true, chainNamespace)
 
-    await this.syncAuthConnectorTheme(provider)
     const isLoginEmailUsed = provider.getLoginEmailUsed()
     this.setLoading(isLoginEmailUsed, chainNamespace)
 
@@ -248,6 +247,7 @@ export class AppKit extends AppKitBaseClient {
         enabledNetworks?.smartAccountEnabledNetworks || [],
         chainNamespace
       )
+      await this.syncAuthConnectorTheme(provider)
       if (isConnected && this.connectionControllerClient?.connectExternal) {
         await this.connectionControllerClient?.connectExternal({
           id: ConstantsUtil.CONNECTOR_ID.AUTH,
