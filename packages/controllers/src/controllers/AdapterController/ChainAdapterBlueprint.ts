@@ -11,21 +11,22 @@ import {
   type ParsedCaipAddress,
   UserRejectedRequestError
 } from '@reown/appkit-common'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
+
 import {
   type AccountState,
   type AccountType,
   type Connector as AppKitConnector,
   ChainController,
+  type CombinedProvider,
   ConnectorController,
   CoreHelperUtil,
+  type Provider,
   ProviderController,
   type Tokens,
   type WriteContractArgs,
   getPreferredAccountType
-} from '@reown/appkit-controllers'
-import { type CombinedProvider, type Provider } from '@reown/appkit-controllers'
-import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
-
+} from '../../../exports/index.js'
 import { WcHelpersUtil } from '../../utils/WalletConnectUtil.js'
 import type { WalletConnectConnector } from './WalletConnectConnector.js'
 import type { ChainAdapterConnector } from './types.js'
