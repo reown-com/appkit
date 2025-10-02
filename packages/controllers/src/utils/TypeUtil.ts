@@ -429,6 +429,7 @@ export type PendingEvent = {
   domain: string
   timestamp: number
   props: {
+    event: string
     address?: string
     properties: unknown
   }

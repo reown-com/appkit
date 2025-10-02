@@ -124,9 +124,8 @@ export const EventsController = {
 
   _transformPendingEventsForBatch(events: PendingEvent[]) {
     try {
-      // WALLET_IMPRESSION is now aggregated via state.walletImpressions; drop any legacy ones
       return events.filter(evt => {
-        const eventName = (evt.props as unknown as { event?: string }).event
+        const eventName = evt.props.event
 
         return eventName !== 'WALLET_IMPRESSION'
       })
