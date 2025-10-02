@@ -721,7 +721,7 @@ const controller = {
         userAddress: fromCaipAddress,
         from: sourceToken.address,
         to: toToken.address,
-        amount: amount as string,
+        amount,
         disableEstimate: true
       })
 

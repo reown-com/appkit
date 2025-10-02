@@ -12,7 +12,6 @@ import {
   AppKitError,
   type ChainAdapter,
   ChainController,
-  type ConnectionControllerClient,
   EventsController,
   RouterController,
   SendController
@@ -60,31 +59,8 @@ const mockSendControllerState = {
   tokenBalances: [mockToken]
 }
 
-const mockConnectionControllerClient: ConnectionControllerClient = {
-  connectWalletConnect: vi.fn(),
-  connectExternal: vi.fn(),
-  reconnectExternal: vi.fn(),
-  checkInstalled: vi.fn(),
-  disconnect: vi.fn(),
-  disconnectConnector: vi.fn(),
-  signMessage: vi.fn(),
-  sendTransaction: vi.fn(),
-  estimateGas: vi.fn(),
-  parseUnits: vi.fn(),
-  formatUnits: vi.fn(),
-  writeContract: vi.fn(),
-  getEnsAddress: vi.fn(),
-  getEnsAvatar: vi.fn(),
-  grantPermissions: vi.fn(),
-  revokePermissions: vi.fn(),
-  getCapabilities: vi.fn(),
-  walletGetAssets: vi.fn(),
-  updateBalance: vi.fn()
-}
-
 const mockChainAdapter: ChainAdapter = {
-  namespace: ConstantsUtil.CHAIN.EVM,
-  connectionControllerClient: mockConnectionControllerClient
+  namespace: ConstantsUtil.CHAIN.EVM
 }
 
 const mockChainControllerState = {
@@ -92,9 +68,6 @@ const mockChainControllerState = {
   activeCaipNetwork: mockNetwork,
   activeCaipAddress: 'eip155:1:0x123456789abcdef123456789abcdef123456789a' as CaipAddress,
   chains: new Map([[ConstantsUtil.CHAIN.EVM, mockChainAdapter]]),
-  universalAdapter: {
-    connectionControllerClient: mockConnectionControllerClient
-  },
   noAdapters: false,
   isSwitchingNamespace: false
 }

@@ -47,7 +47,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   ): Promise<AdapterBlueprint.ConnectResult> {
     const connector = this.connectors.find(c => c.id === params.id)
     if (!connector) {
-      throw new Error('connectionControllerClient:connectExternal - connector is undefined')
+      throw new Error('Bitcoin Adapter:connectExternal - connector is undefined')
     }
 
     const chain = connector.chains.find(c => c.id === params.chainId) || connector.chains[0]
@@ -82,6 +82,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     const address = await connector.connect().catch(err => {
       throw new UserRejectedRequestError(err)
     })
+
     const accounts = await this.getAccounts({ id: connector.id })
 
     this.emit('accountChanged', {
@@ -378,13 +379,13 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   override async signMessage(
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
-    const connector = params.provider as BitcoinConnector
+    const provider = ProviderController.getProvider<BitcoinConnector>(this.namespace)
 
-    if (!connector) {
-      throw new Error('BitcoinAdapter:signMessage - connector is undefined')
+    if (!provider) {
+      throw new Error('BitcoinAdapter:signMessage - provider is undefined')
     }
 
-    const signature = await connector.signMessage({
+    const signature = await provider.signMessage({
       message: params.message,
       address: params.address
     })
@@ -395,8 +396,15 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   public getWalletConnectProvider(
     params: AdapterBlueprint.GetWalletConnectProviderParams
   ): AdapterBlueprint.GetWalletConnectProviderResult {
+    // Review this
+    const provider = ProviderController.getProvider(this.namespace)
+
+    if (!provider) {
+      throw new Error('BitcoinAdapter:getWalletConnectProvider - provider is undefined')
+    }
+
     const walletConnectProvider = new BitcoinWalletConnectConnector({
-      provider: params.provider as UniversalProvider,
+      provider,
       chains: params.caipNetworks,
       getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
     })
@@ -498,19 +506,18 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
   override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
     const providerType = ProviderController.getProviderId(params.caipNetwork.chainNamespace)
-    const provider = ProviderController.getProvider<BitcoinConnector>(
-      params.caipNetwork.chainNamespace
-    )
-
     if (providerType === 'WALLET_CONNECT' || providerType === 'AUTH') {
       return await super.switchNetwork(params)
     }
 
-    if (!provider) {
-      throw new Error('BitcoinAdapter:switchNetwork - provider is undefined')
+    const connector = ProviderController.getProvider<BitcoinConnector>(
+      params.caipNetwork.chainNamespace
+    )
+    if (!connector) {
+      throw new Error('BitcoinAdapter:switchNetwork - connector is undefined')
     }
 
-    return await provider.switchNetwork(params.caipNetwork.caipNetworkId)
+    return await connector.switchNetwork(params.caipNetwork.caipNetworkId)
   }
 
   // -- Unused => Refactor ------------------------------------------- //
@@ -628,7 +635,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     this.addConnector(
       new BitcoinWalletConnectConnector({
         provider: universalProvider,
-        chains: this.getCaipNetworks(),
+        chains: this.networks,
         getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
       })
     )

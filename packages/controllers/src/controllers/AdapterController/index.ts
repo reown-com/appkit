@@ -14,8 +14,14 @@ const state: AdapterControllerState = {
 
 export const AdapterController = {
   state,
-  initialize(adapters: Adapters) {
-    state.adapters = { ...adapters }
+  initialize(adapters: AdapterBlueprint[]) {
+    adapters.forEach(adapter => {
+      if (!adapter.namespace) {
+        throw new Error('AdapterController:initialize - adapter must have a namespace')
+      }
+
+      state.adapters[adapter.namespace] = adapter
+    })
   },
   get(namespace: ChainNamespace) {
     return state.adapters[namespace]
