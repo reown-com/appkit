@@ -267,7 +267,7 @@ describe('PaymentUtil', () => {
       vi.mocked(ConnectionController.parseUnits).mockReturnValue(
         BigInt(MOCK_NATIVE_AMOUNT * 10 ** 18)
       )
-      vi.mocked(ConnectionController.sendTransaction).mockResolvedValue(undefined)
+      vi.mocked(ConnectionController.sendTransaction).mockResolvedValue('')
 
       const txHash = await processEvmNativePayment(
         paymentAsset,
@@ -275,7 +275,7 @@ describe('PaymentUtil', () => {
         nativePaymentParams
       )
 
-      expect(txHash).toBeUndefined()
+      expect(txHash).toBe('')
     })
   })
 
@@ -425,7 +425,7 @@ describe('PaymentUtil', () => {
     test('should throw if sendTransaction fails', async () => {
       const mockProvider = { type: 'solana' }
       vi.mocked(ProviderController.getProvider).mockReturnValue(mockProvider as any)
-      vi.mocked(ConnectionController.sendTransaction).mockResolvedValue(undefined)
+      vi.mocked(ConnectionController.sendTransaction).mockResolvedValue('')
 
       await expect(
         processSolanaPayment(ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
