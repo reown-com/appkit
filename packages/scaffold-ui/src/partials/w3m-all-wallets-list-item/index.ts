@@ -39,6 +39,8 @@ export class W3mAllWalletsListItem extends LitElement {
 
   @property() private certified = false
 
+  @property() private displayIndex = 0
+
   @property({ type: Object }) private wallet: (WcWallet & { installed: boolean }) | undefined =
     undefined
 
@@ -140,7 +142,8 @@ export class W3mAllWalletsListItem extends LitElement {
         explorerId: this.explorerId,
         view: RouterController.state.view,
         query: this.walletQuery,
-        certified: this.certified
+        certified: this.certified,
+        displayIndex: this.displayIndex
       }
     })
   }

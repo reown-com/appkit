@@ -2,22 +2,38 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ApiController, ConnectorController } from '@reown/appkit-controllers'
-import type { Connector, ConnectorWithProviders, WcWallet } from '@reown/appkit-controllers'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import {
+  ApiController,
+  AssetController,
+  AssetUtil,
+  ConnectionController,
+  ConnectorController,
+  type ConnectorWithProviders,
+  CoreHelperUtil,
+  RouterController,
+  type WcWallet
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
+import { HelpersUtil } from '@reown/appkit-utils'
 
-import '../../partials/w3m-connect-announced-widget/index.js'
-import '../../partials/w3m-connect-custom-widget/index.js'
-import '../../partials/w3m-connect-external-widget/index.js'
-import '../../partials/w3m-connect-featured-widget/index.js'
-import '../../partials/w3m-connect-injected-widget/index.js'
-import '../../partials/w3m-connect-multi-chain-widget/index.js'
-import '../../partials/w3m-connect-recent-widget/index.js'
-import '../../partials/w3m-connect-recommended-widget/index.js'
-import '../../partials/w3m-connect-walletconnect-widget/index.js'
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import styles from './styles.js'
+
+type ConnectorItem = {
+  kind: 'connector'
+  subtype: 'injected' | 'announced' | 'multiChain' | 'external' | 'walletConnect'
+  connector: ConnectorWithProviders
+}
+
+type WalletItem = {
+  kind: 'wallet'
+  subtype: 'featured' | 'recommended' | 'custom' | 'recent'
+  wallet: WcWallet
+}
+
+type ConnectorOrWalletItem = ConnectorItem | WalletItem
 
 @customElement('w3m-connector-list')
 export class W3mConnectorList extends LitElement {
@@ -37,10 +53,18 @@ export class W3mConnectorList extends LitElement {
 
   @state() private explorerWallets?: WcWallet[] = ApiController.state.explorerWallets
 
+  @state() private connections = ConnectionController.state.connections
+
+  @state() private connectorImages = AssetController.state.connectorImages
+
+  @state() private loadingTelegram = false
+
   public constructor() {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+      ConnectionController.subscribeKey('connections', val => (this.connections = val)),
+      AssetController.subscribeKey('connectorImages', val => (this.connectorImages = val)),
       ApiController.subscribeKey('recommended', val => (this.recommended = val)),
       ApiController.subscribeKey('featured', val => (this.featured = val)),
       // Consume explorer wallets for ranking only
@@ -53,6 +77,13 @@ export class W3mConnectorList extends LitElement {
         }
       })
     )
+
+    if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
+      this.loadingTelegram = !ConnectionController.state.wcUri
+      this.unsubscribe.push(
+        ConnectionController.subscribeKey('wcUri', val => (this.loadingTelegram = !val))
+      )
+    }
   }
 
   public override disconnectedCallback() {
@@ -128,12 +159,20 @@ export class W3mConnectorList extends LitElement {
       this.featured
     )
 
-    const announced = this.processConnectorsByType(byType.announced)
+    // Build per-type lists with existing filtering/sorting rules
+    const announced = this.processConnectorsByType(
+      byType.announced.filter(c => c.id !== 'walletConnect')
+    )
     const injected = this.processConnectorsByType(byType.injected)
-    const multiChain = this.processConnectorsByType(byType.multiChain, false)
+    const multiChain = this.processConnectorsByType(
+      byType.multiChain.filter(c => c.name !== 'WalletConnect'),
+      false
+    )
     const custom = byType.custom
     const recent = byType.recent
-    const external = byType.external
+    const external = this.processConnectorsByType(
+      byType.external.filter(c => c.id !== CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK)
+    )
     const recommended = byType.recommended
     const featured = byType.featured
 
@@ -148,73 +187,203 @@ export class W3mConnectorList extends LitElement {
       external
     })
 
-    return connectorTypeOrder.map(type => {
+    const wcConnector = this.connectors.find(c => c.id === 'walletConnect')
+    const isMobile = CoreHelperUtil.isMobile()
+    const items: Array<ConnectorOrWalletItem> = []
+
+    for (const type of connectorTypeOrder) {
       switch (type) {
-        /*
-         * We merged injected, announced, and multi-chain connectors
-         * into a single connector type (injected) to reduce confusion
-         */
-        case 'injected':
-          return html`
-            ${multiChain.length
-              ? html`<w3m-connect-multi-chain-widget
-                  tabIdx=${ifDefined(this.tabIdx)}
-                  .connectors=${multiChain}
-                ></w3m-connect-multi-chain-widget>`
-              : null}
-            ${announced.length
-              ? html`<w3m-connect-announced-widget
-                  tabIdx=${ifDefined(this.tabIdx)}
-                  .connectors=${announced as Connector[]}
-                ></w3m-connect-announced-widget>`
-              : null}
-            ${injected.length
-              ? html`<w3m-connect-injected-widget
-                  .connectors=${injected}
-                  tabIdx=${ifDefined(this.tabIdx)}
-                ></w3m-connect-injected-widget>`
-              : null}
-          `
-
-        case 'walletConnect':
-          return html`<w3m-connect-walletconnect-widget
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-walletconnect-widget>`
-
-        case 'recent':
-          return html`<w3m-connect-recent-widget
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-recent-widget>`
-
-        case 'featured':
-          return html`<w3m-connect-featured-widget
-            .wallets=${featured}
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-featured-widget>`
-
-        case 'custom':
-          return html`<w3m-connect-custom-widget
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-custom-widget>`
-
-        case 'external':
-          return html`<w3m-connect-external-widget
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-external-widget>`
-
-        case 'recommended':
-          return html`<w3m-connect-recommended-widget
-            .wallets=${recommended}
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></w3m-connect-recommended-widget>`
-
+        case 'walletConnect': {
+          if (!isMobile && wcConnector) {
+            items.push({ kind: 'connector', subtype: 'walletConnect', connector: wcConnector })
+          }
+          break
+        }
+        case 'recent': {
+          const filteredRecent = ConnectorUtil.getFilteredRecentWallets()
+          filteredRecent.forEach(w => items.push({ kind: 'wallet', subtype: 'recent', wallet: w }))
+          break
+        }
+        case 'injected': {
+          multiChain.forEach(c =>
+            items.push({ kind: 'connector', subtype: 'multiChain', connector: c })
+          )
+          announced.forEach(c =>
+            items.push({ kind: 'connector', subtype: 'announced', connector: c })
+          )
+          injected.forEach(c =>
+            items.push({ kind: 'connector', subtype: 'injected', connector: c })
+          )
+          break
+        }
+        case 'featured': {
+          featured.forEach(w => items.push({ kind: 'wallet', subtype: 'featured', wallet: w }))
+          break
+        }
+        case 'custom': {
+          const filteredCustom = ConnectorUtil.getFilteredCustomWallets(custom ?? [])
+          filteredCustom.forEach(w => items.push({ kind: 'wallet', subtype: 'custom', wallet: w }))
+          break
+        }
+        case 'external': {
+          external.forEach(c =>
+            items.push({ kind: 'connector', subtype: 'external', connector: c })
+          )
+          break
+        }
+        case 'recommended': {
+          const cappedRecommended = ConnectorUtil.getCappedRecommendedWallets(recommended)
+          cappedRecommended.forEach(w =>
+            items.push({ kind: 'wallet', subtype: 'recommended', wallet: w })
+          )
+          break
+        }
         default:
           // eslint-disable-next-line no-console
           console.warn(`Unknown connector type: ${type}`)
-
-          return null
       }
+    }
+
+    return items.map((item, displayIndex) => {
+      if (item.kind === 'connector') {
+        return this.renderConnector(item, displayIndex)
+      }
+
+      return this.renderWallet(item, displayIndex)
     })
+  }
+
+  private renderConnector(item: ConnectorItem, index: number) {
+    const connector = item.connector
+    const imageSrc =
+      AssetUtil.getConnectorImage(connector) || this.connectorImages[connector?.imageId ?? '']
+    const connectionsByNamespace = this.connections.get(connector.chain) ?? []
+    const isAlreadyConnected = connectionsByNamespace.some(c =>
+      HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
+    )
+
+    // Tags and labels
+    let tagLabel: string | undefined
+    let tagVariant: 'info' | 'success' | 'accent' | undefined
+    if (item.subtype === 'multiChain') {
+      tagLabel = 'multichain'
+      tagVariant = 'info'
+    } else if (item.subtype === 'walletConnect') {
+      tagLabel = 'qr code'
+      tagVariant = 'accent'
+    } else {
+      tagLabel = isAlreadyConnected ? 'connected' : 'installed'
+      tagVariant = isAlreadyConnected ? 'info' : 'success'
+    }
+
+    const hasWcConnection = ConnectionController.hasAnyConnection(
+      CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
+    const disabled = item.subtype === 'walletConnect' ? hasWcConnection : false
+
+    return html`
+      <w3m-list-wallet
+        displayIndex=${index}
+        imageSrc=${ifDefined(imageSrc)}
+        .installed=${true}
+        name=${connector.name ?? 'Unknown'}
+        .tagVariant=${tagVariant}
+        tagLabel=${ifDefined(tagLabel)}
+        data-testid=${`wallet-selector-${connector.id}`}
+        size="sm"
+        @click=${() => this.onClickConnector(item)}
+        tabIdx=${ifDefined(this.tabIdx)}
+        ?disabled=${disabled}
+        rdnsId=${ifDefined(connector.explorerWallet?.rdns || undefined)}
+        walletRank=${ifDefined(connector.explorerWallet?.order)}
+      >
+      </w3m-list-wallet>
+    `
+  }
+
+  private onClickConnector(item: ConnectorItem) {
+    if (item.subtype === 'walletConnect') {
+      RouterController.push('ConnectingWalletConnect', {
+        redirectView: RouterController.state.data?.redirectView
+      })
+      return
+    }
+    ConnectorController.setActiveConnector(item.connector)
+    if (item.subtype === 'multiChain') {
+      RouterController.push('ConnectingMultiChain', {
+        redirectView: RouterController.state.data?.redirectView
+      })
+    } else {
+      // Special-case: walletConnect announced (safety) -> treat as wc
+      if (item.connector.id === 'walletConnect') {
+        RouterController.push('ConnectingWalletConnect', {
+          redirectView: RouterController.state.data?.redirectView
+        })
+        return
+      }
+      RouterController.push('ConnectingExternal', {
+        connector: item.connector,
+        redirectView: RouterController.state.data?.redirectView,
+        wallet: item.connector.explorerWallet
+      })
+    }
+  }
+
+  private renderWallet(item: WalletItem, index: number) {
+    const wallet = item.wallet
+    const imageSrc = AssetUtil.getWalletImage(wallet)
+    const hasWcConnection = ConnectionController.hasAnyConnection(
+      CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
+    const disabled = hasWcConnection
+    const loading = this.loadingTelegram
+
+    const tagLabel = item.subtype === 'recent' ? 'recent' : undefined
+    const tagVariant = item.subtype === 'recent' ? 'info' : undefined
+
+    return html`
+      <w3m-list-wallet
+        displayIndex=${index}
+        imageSrc=${ifDefined(imageSrc)}
+        name=${wallet.name ?? 'Unknown'}
+        @click=${() => this.onClickWallet(item)}
+        size="sm"
+        data-testid=${`wallet-selector-${wallet.id}`}
+        tabIdx=${ifDefined(this.tabIdx)}
+        ?loading=${loading}
+        ?disabled=${disabled}
+        rdnsId=${ifDefined(wallet.rdns || undefined)}
+        walletRank=${ifDefined(wallet.order)}
+        tagLabel=${ifDefined(tagLabel)}
+        .tagVariant=${tagVariant}
+      >
+      </w3m-list-wallet>
+    `
+  }
+
+  private onClickWallet(item: WalletItem) {
+    const redirectView = RouterController.state.data?.redirectView
+    if (item.subtype === 'featured' || item.subtype === 'recent') {
+      ConnectorController.selectWalletConnector(item.wallet)
+      return
+    }
+    if (item.subtype === 'custom') {
+      if (this.loadingTelegram) {
+        return
+      }
+      RouterController.push('ConnectingWalletConnect', { wallet: item.wallet, redirectView })
+      return
+    }
+    // recommended
+    const connector = ConnectorController.getConnector({
+      id: item.wallet.id,
+      rdns: item.wallet.rdns
+    })
+    if (connector) {
+      RouterController.push('ConnectingExternal', { connector, redirectView })
+    } else {
+      RouterController.push('ConnectingWalletConnect', { wallet: item.wallet, redirectView })
+    }
   }
 }
 

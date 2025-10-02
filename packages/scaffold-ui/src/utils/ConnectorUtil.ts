@@ -10,6 +10,7 @@ import {
   CoreHelperUtil,
   type CustomWallet,
   OptionsController,
+  OptionsUtil,
   type SocialProvider,
   StorageUtil,
   type WcWallet
@@ -223,5 +224,98 @@ export const ConnectorUtil = {
 
       return { accounts: [], chainId: undefined }
     }
+  },
+
+  /**
+   * Filter out duplicate custom wallets by RDNS
+   * @param wallets
+   */
+  getFilteredCustomWallets(wallets: WcWallet[]) {
+    const recent = StorageUtil.getRecentWallets()
+
+    const connectorRDNSs = ConnectorController.state.connectors
+      .map(connector => connector.info?.rdns)
+      .filter(Boolean) as string[]
+    const recentRDNSs = recent.map(wallet => wallet.rdns).filter(Boolean) as string[]
+    const allRDNSs = connectorRDNSs.concat(recentRDNSs)
+
+    if (allRDNSs.includes('io.metamask.mobile') && CoreHelperUtil.isMobile()) {
+      const index = allRDNSs.indexOf('io.metamask.mobile')
+      allRDNSs[index] = 'io.metamask'
+    }
+    const filtered = wallets.filter(wallet => !allRDNSs.includes(String(wallet?.rdns)))
+
+    return filtered
+  },
+
+  hasWalletConnector(wallet: WcWallet) {
+    return ConnectorController.state.connectors.some(
+      connector => connector.id === wallet.id || connector.name === wallet.name
+    )
+  },
+
+  isWalletCompatibleWithCurrentChain(wallet: WcWallet) {
+    const currentNamespace = ChainController.state.activeChain
+
+    if (currentNamespace && wallet.chains) {
+      return wallet.chains.some(c => {
+        const chainNamespace = c.split(':')[0]
+
+        return currentNamespace === (chainNamespace as typeof currentNamespace)
+      })
+    }
+
+    return true
+  },
+
+  getFilteredRecentWallets() {
+    const recentWallets = StorageUtil.getRecentWallets()
+    const filteredRecentWallets = recentWallets
+      .filter(wallet => !WalletUtil.isExcluded(wallet))
+      .filter(wallet => !this.hasWalletConnector(wallet))
+      .filter(wallet => this.isWalletCompatibleWithCurrentChain(wallet))
+
+    return filteredRecentWallets
+  },
+
+  getCappedRecommendedWallets(wallets: WcWallet[]) {
+    const { connectors } = ConnectorController.state
+    const { customWallets, featuredWalletIds } = OptionsController.state
+
+    const wcConnector = connectors.find(c => c.id === 'walletConnect')
+    const injectedConnectors = connectors.filter(
+      c => c.type === 'INJECTED' || c.type === 'ANNOUNCED' || c.type === 'MULTI_CHAIN'
+    )
+
+    if (!wcConnector && !injectedConnectors.length && !customWallets?.length) {
+      return []
+    }
+
+    const isEmailEnabled = OptionsUtil.isEmailEnabled()
+    const isSocialsEnabled = OptionsUtil.isSocialsEnabled()
+
+    const injectedWallets = injectedConnectors.filter(i => i.name !== 'Browser Wallet')
+
+    const featuredWalletAmount = featuredWalletIds?.length || 0
+    const customWalletAmount = customWallets?.length || 0
+    const injectedWalletAmount = injectedWallets.length || 0
+    const emailWalletAmount = isEmailEnabled ? 1 : 0
+    const socialWalletAmount = isSocialsEnabled ? 1 : 0
+    const walletsDisplayed =
+      featuredWalletAmount +
+      customWalletAmount +
+      injectedWalletAmount +
+      emailWalletAmount +
+      socialWalletAmount
+
+    const DISPLAYED_WALLETS_AMOUNT = 4
+    const sliceAmount = Math.max(0, DISPLAYED_WALLETS_AMOUNT - walletsDisplayed)
+    if (sliceAmount <= 0) {
+      return []
+    }
+
+    const filtered = WalletUtil.filterOutDuplicateWallets(wallets)
+
+    return filtered.slice(0, sliceAmount)
   }
 }

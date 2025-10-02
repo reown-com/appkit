@@ -45,6 +45,8 @@ export class W3mListWallet extends LitElement {
 
   @property() public rdnsId?: string = ''
 
+  @property() public displayIndex?: number = undefined
+
   @property() public walletRank?: number = undefined
 
   // -- Lifecycle ------------------------------------------- //
@@ -114,7 +116,8 @@ export class W3mListWallet extends LitElement {
           name: this.name,
           walletRank: this.walletRank,
           rdnsId: this.rdnsId,
-          view: RouterController.state.view
+          view: RouterController.state.view,
+          displayIndex: this.displayIndex
         }
       })
     }
