@@ -939,6 +939,7 @@ export type Event =
             walletRank: number | undefined
             explorerId: string
             view: string
+            displayIndex?: number
             query?: string
             certified?: boolean
           }
@@ -947,6 +948,7 @@ export type Event =
             walletRank: number | undefined
             rdnsId?: string
             view: string
+            displayIndex?: number
           }
     }
 

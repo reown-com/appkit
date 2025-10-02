@@ -19,6 +19,7 @@ export interface EventsControllerState {
   data: Event
   pendingEvents: PendingEvent[]
   subscribedToVisibilityChange: boolean
+  walletImpressions: Record<string, unknown>[]
 }
 
 // -- State --------------------------------------------- //
@@ -30,7 +31,8 @@ const state = proxy<EventsControllerState>({
     event: 'MODAL_CREATED'
   },
   pendingEvents: [],
-  subscribedToVisibilityChange: false
+  subscribedToVisibilityChange: false,
+  walletImpressions: []
 })
 
 // -- Controller ---------------------------------------- //
@@ -105,18 +107,63 @@ export const EventsController = {
     this._subscribeToVisibilityChange()
   },
 
+  /**
+   * Adds a wallet impression item to the aggregated list. These are flushed as a single
+   * WALLET_IMPRESSION batch in _submitPendingEvents.
+   */
+  sendWalletImpressionEvent(item: Record<string, unknown>) {
+    state.timestamp = Date.now()
+    try {
+      state.walletImpressions.push(item)
+      // Ensure visibility subscription is active for flush-on-hide
+      this._subscribeToVisibilityChange()
+    } catch (err) {
+      // no-op, avoid breaking UX on analytics issues
+    }
+  },
+
+  _transformPendingEventsForBatch(events: PendingEvent[]) {
+    try {
+      // WALLET_IMPRESSION is now aggregated via state.walletImpressions; drop any legacy ones
+      return events.filter(evt => {
+        const eventName = (evt.props as unknown as { event?: string }).event
+
+        return eventName !== 'WALLET_IMPRESSION'
+      })
+    } catch {
+      return events
+    }
+  },
+
   _submitPendingEvents() {
-    if (state.pendingEvents.length === 0) {
+    if (state.pendingEvents.length === 0 && state.walletImpressions.length === 0) {
       return
     }
     try {
+      const batch = EventsController._transformPendingEventsForBatch(state.pendingEvents)
+
+      if (state.walletImpressions.length) {
+        batch.push({
+          eventId: CoreHelperUtil.getUUID(),
+          url: typeof window !== 'undefined' ? window.location.href : '',
+          domain: typeof window !== 'undefined' ? window.location.hostname : '',
+          timestamp: Date.now(),
+          props: {
+            type: 'track',
+            event: 'WALLET_IMPRESSION',
+            items: [...state.walletImpressions]
+          }
+        } as unknown as PendingEvent)
+      }
+
       api.sendBeacon({
         path: '/batch',
         params: EventsController.getSdkProperties(),
-        body: state.pendingEvents
+        body: batch
       })
       state.reportedErrors['FORBIDDEN'] = false
       state.pendingEvents = []
+      state.walletImpressions = []
     } catch (err) {
       state.reportedErrors['FORBIDDEN'] = true
     }

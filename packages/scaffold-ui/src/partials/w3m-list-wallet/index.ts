@@ -109,16 +109,12 @@ export class W3mListWallet extends LitElement {
 
     this.hasImpressionSent = true
     if (this.rdnsId || this.name) {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'WALLET_IMPRESSION',
-        properties: {
-          name: this.name,
-          walletRank: this.walletRank,
-          rdnsId: this.rdnsId,
-          view: RouterController.state.view,
-          displayIndex: this.displayIndex
-        }
+      EventsController.sendWalletImpressionEvent({
+        name: this.name,
+        walletRank: this.walletRank,
+        rdnsId: this.rdnsId,
+        view: RouterController.state.view,
+        displayIndex: this.displayIndex
       })
     }
   }

@@ -133,18 +133,14 @@ export class W3mAllWalletsListItem extends LitElement {
     }
 
     this.isImpressed = true
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'WALLET_IMPRESSION',
-      properties: {
-        name: this.wallet.name,
-        walletRank: this.wallet.order,
-        explorerId: this.explorerId,
-        view: RouterController.state.view,
-        query: this.walletQuery,
-        certified: this.certified,
-        displayIndex: this.displayIndex
-      }
+    EventsController.sendWalletImpressionEvent({
+      name: this.wallet.name,
+      walletRank: this.wallet.order,
+      explorerId: this.explorerId,
+      view: RouterController.state.view,
+      query: this.walletQuery,
+      certified: this.certified,
+      displayIndex: this.displayIndex
     })
   }
 }
