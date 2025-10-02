@@ -271,15 +271,19 @@ export class W3mConnectorList extends LitElement {
     } else if (item.subtype === 'walletConnect') {
       tagLabel = 'qr code'
       tagVariant = 'accent'
-    } else {
+    } else if (item.subtype === 'injected' || item.subtype === 'announced') {
       tagLabel = isAlreadyConnected ? 'connected' : 'installed'
       tagVariant = isAlreadyConnected ? 'info' : 'success'
+    } else {
+      tagLabel = undefined
+      tagVariant = undefined
     }
 
     const hasWcConnection = ConnectionController.hasAnyConnection(
       CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     )
-    const disabled = item.subtype === 'walletConnect' ? hasWcConnection : false
+    const disabled =
+      item.subtype === 'walletConnect' || item.subtype === 'external' ? hasWcConnection : false
 
     return html`
       <w3m-list-wallet
@@ -289,7 +293,7 @@ export class W3mConnectorList extends LitElement {
         name=${connector.name ?? 'Unknown'}
         .tagVariant=${tagVariant}
         tagLabel=${ifDefined(tagLabel)}
-        data-testid=${`wallet-selector-${connector.id}`}
+        data-testid=${`wallet-selector-${connector.id.toLowerCase()}`}
         size="sm"
         @click=${() => this.onClickConnector(item)}
         tabIdx=${ifDefined(this.tabIdx)}
@@ -302,35 +306,60 @@ export class W3mConnectorList extends LitElement {
   }
 
   private onClickConnector(item: ConnectorItem) {
+    const redirectView = RouterController.state.data?.redirectView
     if (item.subtype === 'walletConnect') {
-      RouterController.push('ConnectingWalletConnect', {
-        redirectView: RouterController.state.data?.redirectView
+      ConnectorController.setActiveConnector(item.connector)
+      if (CoreHelperUtil.isMobile()) {
+        RouterController.push('AllWallets')
+      } else {
+        RouterController.push('ConnectingWalletConnect', { redirectView })
+      }
+
+      return
+    }
+
+    if (item.subtype === 'multiChain') {
+      ConnectorController.setActiveConnector(item.connector)
+      RouterController.push('ConnectingMultiChain', { redirectView })
+
+      return
+    }
+
+    if (item.subtype === 'injected') {
+      ConnectorController.setActiveConnector(item.connector)
+      RouterController.push('ConnectingExternal', {
+        connector: item.connector,
+        redirectView,
+        wallet: item.connector.explorerWallet
       })
 
       return
     }
-    ConnectorController.setActiveConnector(item.connector)
 
-    if (item.subtype === 'multiChain') {
-      RouterController.push('ConnectingMultiChain', {
-        redirectView: RouterController.state.data?.redirectView
-      })
-    } else {
-      // Special-case: walletConnect announced (safety) -> treat as wc
+    if (item.subtype === 'announced') {
       if (item.connector.id === 'walletConnect') {
-        RouterController.push('ConnectingWalletConnect', {
-          redirectView: RouterController.state.data?.redirectView
-        })
+        if (CoreHelperUtil.isMobile()) {
+          RouterController.push('AllWallets')
+        } else {
+          RouterController.push('ConnectingWalletConnect', { redirectView })
+        }
 
         return
       }
 
       RouterController.push('ConnectingExternal', {
         connector: item.connector,
-        redirectView: RouterController.state.data?.redirectView,
+        redirectView,
         wallet: item.connector.explorerWallet
       })
+
+      return
     }
+
+    RouterController.push('ConnectingExternal', {
+      connector: item.connector,
+      redirectView
+    })
   }
 
   private renderWallet(item: WalletItem, index: number) {
@@ -367,18 +396,31 @@ export class W3mConnectorList extends LitElement {
 
   private onClickWallet(item: WalletItem) {
     const redirectView = RouterController.state.data?.redirectView
-    if (item.subtype === 'featured' || item.subtype === 'recent') {
+    if (item.subtype === 'featured') {
+      ConnectorController.selectWalletConnector(item.wallet)
+      return
+    }
+    if (item.subtype === 'recent') {
+      if (this.loadingTelegram) {
+        return
+      }
+
       ConnectorController.selectWalletConnector(item.wallet)
 
       return
     }
-
     if (item.subtype === 'custom') {
       if (this.loadingTelegram) {
         return
       }
+
       RouterController.push('ConnectingWalletConnect', { wallet: item.wallet, redirectView })
 
+      return
+    }
+
+    // Recommended wallet case
+    if (this.loadingTelegram) {
       return
     }
 
