@@ -1,20 +1,17 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
-import { ConstantsUtil } from '@reown/appkit-common'
 import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import {
   AlertController,
   ApiController,
   type ChainAdapter,
   ChainController,
-  ConnectionController,
   CoreHelperUtil,
   ModalController,
   SendController,
   WcHelpersUtil
 } from '@reown/appkit-controllers'
-import { mockChainControllerState } from '@reown/appkit-controllers/testing'
 import { ErrorUtil, TokenUtil } from '@reown/appkit-utils'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client'

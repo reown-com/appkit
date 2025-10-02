@@ -54,7 +54,7 @@ describe('Listeners', () => {
       chainNamespace: mainnet.chainNamespace
     }
 
-    const appKit = new AppKit(mockOptions)
+    new AppKit(mockOptions)
 
     await ConnectionController.syncAccount(mockAccount)
     // @ts-expect-error private event

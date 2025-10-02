@@ -438,8 +438,7 @@ describe('BitcoinAdapter', () => {
 
       const result = await adapter.signMessage({
         message: 'mock_message',
-        address: 'mock_address',
-        provider: connector.provider
+        address: 'mock_address'
       })
 
       expect(result).toEqual({ signature: 'mock_signature' })
@@ -449,8 +448,7 @@ describe('BitcoinAdapter', () => {
       await expect(
         adapter.signMessage({
           address: 'mock_address',
-          message: 'mock_message',
-          provider: undefined
+          message: 'mock_message'
         })
       ).rejects.toThrow()
     })
@@ -462,8 +460,7 @@ describe('BitcoinAdapter', () => {
 
       const provider = adapter.getWalletConnectProvider({
         activeCaipNetwork: bitcoin,
-        caipNetworks: [bitcoin],
-        provider: undefined
+        caipNetworks: [bitcoin]
       })
 
       expect(provider).toBeInstanceOf(BitcoinWalletConnectConnector)

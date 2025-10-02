@@ -33,7 +33,6 @@ import {
 
 describe('AppKit - disconnect', () => {
   let appKit: AppKit
-  let setLoadingSpy: MockInstance
 
   beforeEach(() => {
     vi.restoreAllMocks()
@@ -46,7 +45,7 @@ describe('AppKit - disconnect', () => {
     appKit = new AppKit(mockOptions)
 
     // Setup spies
-    setLoadingSpy = vi.spyOn(appKit, 'setLoading')
+    vi.spyOn(appKit, 'setLoading').mockImplementation(() => {})
 
     // Mock common dependencies
     vi.spyOn(SIWXUtil, 'clearSessions').mockResolvedValue(undefined)
@@ -58,8 +57,6 @@ describe('AppKit - disconnect', () => {
 
   describe('when chainNamespace is provided', () => {
     it('should disconnect from the specified namespace', async () => {
-      const mockProvider = { disconnect: vi.fn(), id: 'walletConnect' }
-
       mockChainControllerState({
         activeChain: CommonConstantsUtil.CHAIN.SOLANA,
         chains: new Map([
@@ -81,8 +78,6 @@ describe('AppKit - disconnect', () => {
     })
 
     it('should perform all disconnect operations in correct order', async () => {
-      const mockProvider = { disconnect: vi.fn() }
-
       vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
       vi.spyOn(ProviderController, 'getProviderId').mockReturnValue(
         UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
@@ -113,8 +108,6 @@ describe('AppKit - disconnect', () => {
 
   describe('when chainNamespace is not provided', () => {
     it('should use activeChain as default namespace', async () => {
-      const mockProvider = { disconnect: vi.fn() }
-
       mockChainControllerState({
         activeChain: CommonConstantsUtil.CHAIN.EVM,
         chains: new Map([
@@ -130,8 +123,6 @@ describe('AppKit - disconnect', () => {
     })
 
     it('should complete disconnect process with default namespace', async () => {
-      const mockProvider = { disconnect: vi.fn() }
-
       mockChainControllerState({
         activeChain: CommonConstantsUtil.CHAIN.EVM,
         chains: new Map([
@@ -149,8 +140,6 @@ describe('AppKit - disconnect', () => {
     })
 
     it('should disconnect from all chains when no namespace is provided', async () => {
-      const mockProvider = { disconnect: vi.fn() }
-
       vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
       vi.spyOn(ProviderController, 'getProviderId').mockReturnValue(
         UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
@@ -172,7 +161,6 @@ describe('AppKit - disconnect', () => {
   describe('loading state management', () => {
     it('should set loading to true at start and false at end', async () => {
       const chainNamespace = CommonConstantsUtil.CHAIN.EVM
-      const mockProvider = { disconnect: vi.fn() }
 
       vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
       vi.spyOn(ProviderController, 'getProviderId').mockReturnValue(
@@ -269,7 +257,6 @@ describe('AppKit - disconnect', () => {
 
     it('should handle disconnect when connected via WalletConnect', async () => {
       const chainNamespace = CommonConstantsUtil.CHAIN.EVM
-      const mockProvider = { disconnect: vi.fn(), id: 'walletConnect' }
 
       mockChainControllerState({
         activeChain: chainNamespace,
@@ -299,7 +286,6 @@ describe('AppKit - disconnect', () => {
 
     it('should handle disconnect when connected via announced connector', async () => {
       const chainNamespace = CommonConstantsUtil.CHAIN.EVM
-      const mockProvider = { disconnect: vi.fn(), id: 'mockConnector' }
 
       mockChainControllerState({
         chains: new Map([[chainNamespace, { accountState: { caipAddress: 'eip155:1:0xyz' } }]])
@@ -318,7 +304,6 @@ describe('AppKit - disconnect', () => {
     it('should properly cleanup state across multiple disconnect operations', async () => {
       const firstNamespace = CommonConstantsUtil.CHAIN.EVM
       const secondNamespace = CommonConstantsUtil.CHAIN.SOLANA
-      const mockProvider = { disconnect: vi.fn() }
 
       vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
       vi.spyOn(ProviderController, 'getProviderId').mockReturnValue(
@@ -348,7 +333,6 @@ describe('AppKit - disconnect', () => {
 
 describe('AppKit - disconnect - functional scenarios', () => {
   let appKit: AppKit
-  let setLoadingSpy: MockInstance
   let sendEventSpy: MockInstance
   let siwxClearSessionsSpy: MockInstance
   let ccSetFilterByNamespaceSpy: MockInstance
@@ -370,7 +354,7 @@ describe('AppKit - disconnect - functional scenarios', () => {
     }
     appKit = new AppKit(localMockOptions)
 
-    setLoadingSpy = vi.spyOn(appKit, 'setLoading')
+    vi.spyOn(appKit, 'setLoading').mockImplementation(() => {})
 
     sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
     siwxClearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions').mockResolvedValue(undefined)
@@ -455,7 +439,6 @@ describe('AppKit - disconnect - functional scenarios', () => {
 
 describe('AppKit - disconnect - error handling scenarios', () => {
   let appKit: AppKit
-  let setLoadingSpy: MockInstance
   let sendEventSpy: MockInstance
   let removeConnectorIdSpy: MockInstance
   let siwxClearSessionsSpy: MockInstance
@@ -485,7 +468,7 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     appKit = new AppKit(localMockOptions)
 
     // Setup spies on AppKit instance methods
-    setLoadingSpy = vi.spyOn(appKit, 'setLoading')
+    vi.spyOn(appKit, 'setLoading').mockImplementation(() => {})
 
     // Spies on controllers/utils
     sendEventSpy = vi.spyOn(EventsController, 'sendEvent')

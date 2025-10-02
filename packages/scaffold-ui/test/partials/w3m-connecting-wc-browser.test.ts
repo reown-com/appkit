@@ -5,6 +5,7 @@ import { html } from 'lit'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import {
+  type AdapterBlueprint,
   AdapterController,
   ChainController,
   ConnectionController,
@@ -83,14 +84,15 @@ describe('W3mConnectingWcBrowser', () => {
     })
 
     vi.spyOn(AdapterController, 'get').mockReturnValue({
+      namespace: 'eip155',
+      adapterType: 'EVM',
       connect: vi.fn().mockResolvedValue({
         address: '0x123',
         chainId: '1',
-        provider: {} as any,
         id: 'test-connector',
         type: 'INJECTED'
       })
-    })
+    } as unknown as AdapterBlueprint)
     const element = await fixture(html`<w3m-connecting-wc-browser></w3m-connecting-wc-browser>`)
     await elementUpdated(element)
     expect(ConnectionController.connectExternal).toHaveBeenCalledWith(CONNECTOR, CONNECTOR.chain)
