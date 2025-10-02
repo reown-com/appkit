@@ -262,9 +262,9 @@ export class W3mConnectorList extends LitElement {
       HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
     )
 
-    // Tags and labels
-    let tagLabel: string | undefined
-    let tagVariant: 'info' | 'success' | 'accent' | undefined
+    let tagLabel: string | undefined = undefined
+    let tagVariant: 'info' | 'success' | 'accent' | undefined = undefined
+
     if (item.subtype === 'multiChain') {
       tagLabel = 'multichain'
       tagVariant = 'info'
@@ -306,9 +306,11 @@ export class W3mConnectorList extends LitElement {
       RouterController.push('ConnectingWalletConnect', {
         redirectView: RouterController.state.data?.redirectView
       })
+
       return
     }
     ConnectorController.setActiveConnector(item.connector)
+
     if (item.subtype === 'multiChain') {
       RouterController.push('ConnectingMultiChain', {
         redirectView: RouterController.state.data?.redirectView
@@ -319,8 +321,10 @@ export class W3mConnectorList extends LitElement {
         RouterController.push('ConnectingWalletConnect', {
           redirectView: RouterController.state.data?.redirectView
         })
+
         return
       }
+
       RouterController.push('ConnectingExternal', {
         connector: item.connector,
         redirectView: RouterController.state.data?.redirectView,
@@ -365,20 +369,24 @@ export class W3mConnectorList extends LitElement {
     const redirectView = RouterController.state.data?.redirectView
     if (item.subtype === 'featured' || item.subtype === 'recent') {
       ConnectorController.selectWalletConnector(item.wallet)
+
       return
     }
+
     if (item.subtype === 'custom') {
       if (this.loadingTelegram) {
         return
       }
       RouterController.push('ConnectingWalletConnect', { wallet: item.wallet, redirectView })
+
       return
     }
-    // recommended
+
     const connector = ConnectorController.getConnector({
       id: item.wallet.id,
       rdns: item.wallet.rdns
     })
+
     if (connector) {
       RouterController.push('ConnectingExternal', { connector, redirectView })
     } else {
