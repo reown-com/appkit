@@ -398,8 +398,10 @@ export class W3mConnectorList extends LitElement {
     const redirectView = RouterController.state.data?.redirectView
     if (item.subtype === 'featured') {
       ConnectorController.selectWalletConnector(item.wallet)
+
       return
     }
+
     if (item.subtype === 'recent') {
       if (this.loadingTelegram) {
         return
