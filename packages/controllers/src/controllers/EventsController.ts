@@ -112,14 +112,7 @@ export const EventsController = {
    * WALLET_IMPRESSION batch in _submitPendingEvents.
    */
   sendWalletImpressionEvent(item: Record<string, unknown>) {
-    state.timestamp = Date.now()
-    try {
-      state.walletImpressions.push(item)
-      // Ensure visibility subscription is active for flush-on-hide
-      this._subscribeToVisibilityChange()
-    } catch (err) {
-      // no-op, avoid breaking UX on analytics issues
-    }
+    state.walletImpressions.push(item)
   },
 
   _transformPendingEventsForBatch(events: PendingEvent[]) {
