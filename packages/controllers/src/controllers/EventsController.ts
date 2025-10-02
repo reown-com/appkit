@@ -137,8 +137,8 @@ export const EventsController = {
       if (state.walletImpressions.length) {
         batch.push({
           eventId: CoreHelperUtil.getUUID(),
-          url: typeof window !== 'undefined' ? window.location.href : '',
-          domain: typeof window !== 'undefined' ? window.location.hostname : '',
+          url: window.location.href,
+          domain: window.location.hostname,
           timestamp: Date.now(),
           props: {
             type: 'track',
