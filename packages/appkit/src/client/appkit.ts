@@ -17,7 +17,6 @@ import {
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
   type Features,
-  type Metadata,
   PublicStateController,
   type RemoteFeatures,
   RouterController,
@@ -202,21 +201,12 @@ export class AppKit extends AppKitBaseClient {
     }
 
     const theme = ThemeController.getSnapshot()
-    const options = OptionsController.getSnapshot()
 
-    await Promise.all([
-      provider.syncDappData({
-        metadata: options.metadata as Metadata,
-        sdkVersion: options.sdkVersion,
-        projectId: options.projectId,
-        sdkType: options.sdkType
-      }),
-      provider.syncTheme({
-        themeMode: theme.themeMode,
-        themeVariables: theme.themeVariables,
-        w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
-      })
-    ])
+    await provider.syncTheme({
+      themeMode: theme.themeMode,
+      themeVariables: theme.themeVariables,
+      w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
+    })
   }
 
   private async syncAuthConnector(provider: W3mFrameProvider, chainNamespace: ChainNamespace) {
