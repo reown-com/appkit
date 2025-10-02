@@ -1,11 +1,6 @@
 import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
-  :host {
-    display: inline-flex !important;
-    align-items: center;
-  }
-
   slot {
     width: 100%;
     display: inline-block;

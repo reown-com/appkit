@@ -230,7 +230,12 @@ export class W3mHeader extends LitElement {
         alignItems="center"
         gap="2"
       >
-        <wui-text variant="lg-regular" color="primary" data-testid="w3m-header-text">
+        <wui-text
+          display="inline"
+          variant="lg-regular"
+          color="primary"
+          data-testid="w3m-header-text"
+        >
           ${this.heading}
         </wui-text>
         ${isBeta ? html`<wui-tag variant="accent" size="md">Beta</wui-tag>` : null}
