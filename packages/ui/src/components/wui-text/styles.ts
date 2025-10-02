@@ -2,7 +2,7 @@ import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
-    display: inline-flex !important;
+    display: inline !important;
   }
 
   slot {
