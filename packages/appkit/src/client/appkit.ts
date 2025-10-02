@@ -93,6 +93,7 @@ export class AppKit extends AppKitBaseClient {
 
     const defaultAccountType = OptionsController.state.defaultAccountTypes[namespace]
     const currentAccountType = getPreferredAccountType(namespace)
+
     const preferredAccountType =
       (user.preferredAccountType as W3mFrameTypes.AccountType) ||
       currentAccountType ||
@@ -106,7 +107,11 @@ export class AppKit extends AppKitBaseClient {
     this.setUser({ ...(accountData?.user || {}), ...userWithOutSiwxData }, namespace)
     this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
     this.setPreferredAccountType(preferredAccountType, namespace)
-
+    await ConnectionController.syncAccount({
+      address: user.address,
+      chainId: user.chainId,
+      chainNamespace: namespace
+    })
     this.setLoading(false, namespace)
   }
   private setupAuthConnectorListeners(provider: W3mFrameProvider) {
@@ -220,6 +225,7 @@ export class AppKit extends AppKitBaseClient {
     }
 
     this.setLoading(true, chainNamespace)
+
     const isLoginEmailUsed = provider.getLoginEmailUsed()
     this.setLoading(isLoginEmailUsed, chainNamespace)
 
@@ -236,8 +242,6 @@ export class AppKit extends AppKitBaseClient {
 
     const { isConnected } = await provider.isConnected()
 
-    await this.syncAuthConnectorTheme(provider)
-
     if (chainNamespace && isAuthSupported && shouldSync) {
       const enabledNetworks = await provider.getSmartAccountEnabledNetworks()
       ChainController.setSmartAccountEnabledNetworks(
@@ -245,6 +249,8 @@ export class AppKit extends AppKitBaseClient {
         chainNamespace
       )
       if (isConnected) {
+        await provider.init()
+        await this.syncAuthConnectorTheme(provider)
         await ConnectionController.connectExternal(
           {
             id: ConstantsUtil.CONNECTOR_ID.AUTH,

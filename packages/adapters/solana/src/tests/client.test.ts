@@ -1,8 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import { ChainController, ConnectorController, ProviderController } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  ConnectorController,
+  type Provider as CoreProvider,
+  ProviderController,
+  WcHelpersUtil
+} from '@reown/appkit-controllers'
 import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
 
@@ -12,7 +17,6 @@ import { SolanaWalletConnectProvider } from '../providers/SolanaWalletConnectPro
 import type { WalletStandardProvider } from '../providers/WalletStandardProvider'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil'
 import { watchStandard } from '../utils/watchStandard'
-import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
 import { mockCoinbaseWallet } from './mocks/CoinbaseWallet'
 import { mockUniversalProvider } from './mocks/UniversalProvider'
@@ -75,14 +79,14 @@ describe('SolanaAdapter', () => {
   describe('SolanaAdapter - syncConnectors', () => {
     it('should not add coinbase connector if window.coinbaseSolana does not exist', async () => {
       const addConnectorSpy = vi.spyOn(adapter, 'addConnector' as any)
-      adapter.syncConnectors({ networks: [solana], projectId: '123' }, mockAppKit)
+      adapter.syncConnectors()
       expect(addConnectorSpy).not.toHaveBeenCalled()
     })
 
     it('should add coinbase connector if window.coinbaseSolana exist', async () => {
       ;(window as any).coinbaseSolana = mockCoinbaseWallet()
       const addConnectorSpy = vi.spyOn(adapter, 'addConnector' as any)
-      adapter.syncConnectors({ networks: [solana], projectId: '123' }, mockAppKit)
+      adapter.syncConnectors()
       expect(addConnectorSpy).toHaveBeenCalledOnce()
       expect(addConnectorSpy).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -674,7 +678,7 @@ describe('SolanaAdapter', () => {
       walletName => {
         const watchStandardSpy = vi.mocked(watchStandard)
         const addProviderSpy = vi.spyOn(adapter as any, 'addConnector')
-        adapter.syncConnectors({ features: {}, projectId: '1234' } as any, {} as any)
+        adapter.syncConnectors()
 
         const callback = watchStandardSpy.mock.calls[0]![2]
         callback({ name: walletName } as any)

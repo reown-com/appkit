@@ -7,8 +7,8 @@ import {
   CoreHelperUtil,
   OptionsController
 } from '@reown/appkit-controllers'
+import type { AdapterBlueprint } from '@reown/appkit-controllers'
 
-import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import {
   AppKitBaseClient,
   type OpenOptions as BaseOpenOptions,

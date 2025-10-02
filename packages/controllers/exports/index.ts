@@ -17,8 +17,14 @@ export type { ProviderControllerState } from '../src/controllers/ProviderControl
 export { OnRampController } from '../src/controllers/OnRampController.js'
 export type { OnRampControllerState, OnRampProvider } from '../src/controllers/OnRampController.js'
 
-export { AdapterController } from '../src/controllers/AdapterController.js'
-export type { AdapterControllerState } from '../src/controllers/AdapterController.js'
+export { AdapterController } from '../src/controllers/AdapterController/index.js'
+export type {
+  AdapterControllerState,
+  Adapters
+} from '../src/controllers/AdapterController/index.js'
+export { AdapterBlueprint } from '../src/controllers/AdapterController/ChainAdapterBlueprint.js'
+export { WalletConnectConnector } from '../src/controllers/AdapterController/WalletConnectConnector.js'
+export type * from '../src/controllers/AdapterController/types.js'
 
 export { ConnectionController } from '../src/controllers/ConnectionController.js'
 export { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
@@ -121,3 +127,4 @@ export { FetchUtil } from '../src/utils/FetchUtil.js'
 export type * from '../src/utils/TypeUtil.js'
 export type * from '../src/utils/SIWXUtil.js'
 export * from '../src/utils/ChainControllerUtil.js'
+export * from '../src/utils/WalletConnectUtil.js'

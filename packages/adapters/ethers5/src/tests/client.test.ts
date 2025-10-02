@@ -2,7 +2,6 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { providers, utils } from 'ethers'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { WcHelpersUtil } from '@reown/appkit'
 import {
   type CaipAddress,
   ConstantsUtil as CommonConstantsUtil,
@@ -13,7 +12,8 @@ import {
   ConnectorController,
   type Provider,
   ProviderController,
-  SIWXUtil
+  SIWXUtil,
+  WcHelpersUtil
 } from '@reown/appkit-controllers'
 import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
 import { CaipNetworksUtil, HelpersUtil } from '@reown/appkit-utils'

@@ -8,9 +8,8 @@ import {
   type ParsedCaipAddress
 } from '@reown/appkit-common'
 
-import type { AccountState } from '../../exports/index.js'
+import type { AccountState, AdapterBlueprint } from '../../exports/index.js'
 import type {
-  ChainAdapter,
   Connector,
   ConnectorType,
   ModalControllerState,
@@ -47,28 +46,26 @@ const caipNetworks = [
 
 const baseAdapter = {
   connectWalletConnect: vi.fn(),
-  connectExternal: vi.fn(),
-  checkInstalled: vi.fn(),
   disconnect: vi.fn(),
   connect: vi.fn()
-}
+} as unknown as AdapterBlueprint
 
 const evmAdapter = {
   ...baseAdapter,
   namespace: CommonConstantsUtil.CHAIN.EVM
-}
+} as unknown as AdapterBlueprint
 
 const solanaAdapter = {
   ...baseAdapter,
   namespace: CommonConstantsUtil.CHAIN.SOLANA
-}
+} as unknown as AdapterBlueprint
 
 const bip122Adapter = {
   ...baseAdapter,
   namespace: CommonConstantsUtil.CHAIN.BITCOIN
-}
+} as unknown as AdapterBlueprint
 
-const adapters = [evmAdapter, solanaAdapter, bip122Adapter] as ChainAdapter[]
+const adapters = [evmAdapter, solanaAdapter, bip122Adapter] as AdapterBlueprint[]
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {

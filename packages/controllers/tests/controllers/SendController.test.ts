@@ -220,7 +220,7 @@ describe('SendController', () => {
     beforeEach(() => {
       vi.spyOn(RouterController, 'pushTransactionStack').mockImplementation(() => {})
       vi.spyOn(RouterController, 'replace').mockImplementation(() => {})
-      vi.spyOn(ConnectionController, 'sendTransaction').mockResolvedValue(undefined)
+      vi.spyOn(ConnectionController, 'sendTransaction').mockResolvedValue('')
       vi.spyOn(ConnectionController, 'updateBalance').mockResolvedValue(undefined)
       vi.spyOn(CoreHelperUtil, 'isCaipAddress').mockReturnValue(false)
       vi.spyOn(SendController, 'resetSend').mockImplementation(() => {})

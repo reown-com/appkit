@@ -26,7 +26,7 @@ import type {
   User
 } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AdapterController } from './AdapterController.js'
+import { AdapterController } from './AdapterController/index.js'
 import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
@@ -466,6 +466,10 @@ const controller = {
         (isAuthProvider && isAuthSupported)
       ) {
         const adapter = AdapterController.get(network.chainNamespace)
+        if (!adapter) {
+          throw new Error('Adapter not found')
+        }
+
         await adapter.switchNetwork({ caipNetwork: network })
       }
       ChainController.setActiveCaipNetwork(network)

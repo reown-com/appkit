@@ -3,7 +3,9 @@ import { proxy, ref, subscribe } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import type { ChainControllerState, ConnectorType } from '@reown/appkit-controllers'
+
+import type { ConnectorType } from '../utils/TypeUtil.js'
+import type { ChainControllerState } from './ChainController.js'
 
 export interface ProviderControllerState {
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents

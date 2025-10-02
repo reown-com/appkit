@@ -13,6 +13,8 @@ import type {
 } from '@reown/appkit-common'
 import { ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import type {
+  AdapterBlueprint,
+  ChainAdapterConnector,
   ConnectMethod,
   ConnectedWalletInfo,
   ConnectionControllerState,
@@ -56,6 +58,7 @@ import {
   SnackController,
   StorageUtil,
   ThemeController,
+  WcHelpersUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
@@ -69,10 +72,8 @@ import {
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
 
-import type { AdapterBlueprint, ChainAdapterConnector } from '../adapters/index.js'
 import { UniversalAdapter } from '../universal-adapter/client.js'
 import { ConfigUtil } from '../utils/ConfigUtil.js'
-import { WcConstantsUtil, WcHelpersUtil } from '../utils/index.js'
 import type { AppKitOptions } from '../utils/index.js'
 
 export interface AppKitOptionsWithSdk extends AppKitOptions {
@@ -266,7 +267,7 @@ export abstract class AppKitBaseClient {
       const isOriginAllowed = WcHelpersUtil.isOriginAllowed(
         currentOrigin,
         allowedOrigins,
-        WcConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
+        ConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
       )
 
       if (!isOriginAllowed) {
@@ -362,23 +363,6 @@ export abstract class AppKitBaseClient {
     if (network) {
       ChainController.setActiveCaipNetwork(network)
     }
-
-    ChainController.subscribeKey('activeCaipNetwork', activeCaipNetwork => {
-      if (activeCaipNetwork) {
-        const address = ChainController.getAccountData(activeCaipNetwork.chainNamespace)?.address
-        const providerType = ProviderController.getProviderId(activeCaipNetwork.chainNamespace)
-
-        if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
-          ConnectionController.syncWalletConnectAccount()
-        } else if (address) {
-          ConnectionController.syncAccount({
-            address,
-            chainId: activeCaipNetwork.id,
-            chainNamespace: activeCaipNetwork.chainNamespace
-          })
-        }
-      }
-    })
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
@@ -405,7 +389,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setEnableNetworkSwitch(options.enableNetworkSwitch !== false)
     OptionsController.setEnableReconnect(options.enableReconnect !== false)
     OptionsController.setEnableMobileFullScreen(options.enableMobileFullScreen === true)
-
+    OptionsController.setCoinbasePreference(options.coinbasePreference)
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
     OptionsController.setCustomRpcUrls(options.customRpcUrls)
 
@@ -580,7 +564,7 @@ export abstract class AppKitBaseClient {
   protected async initChainAdapter(adapter: AdapterBlueprint) {
     this.onConnectors(adapter)
     this.listenAdapter(adapter)
-    await adapter.syncConnectors(this.options, this)
+    await adapter.syncConnectors()
     await this.createUniversalProviderForAdapter(adapter)
   }
 

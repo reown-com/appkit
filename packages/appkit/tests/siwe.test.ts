@@ -18,6 +18,10 @@ import { mockUniversalAdapter } from './mocks/Adapter'
 import mockProvider from './mocks/UniversalProvider'
 import { mockWindowAndDocument } from './test-utils'
 
+const extendedMainnet = CaipNetworksUtil.extendCaipNetwork(networks.mainnet, {
+  projectId: 'mock-project-id',
+  customNetworkImageUrls: {}
+})
 describe('SIWE mapped to SIWX', () => {
   let siweConfig: AppKitSIWEClient
   let appkit: AppKit
@@ -71,15 +75,11 @@ describe('SIWE mapped to SIWX', () => {
     })
 
     // Wait for the appkit to be ready
-    await new Promise(resolve => setTimeout(resolve, 100))
+    await appkit.ready()
 
     // Set CAIP address to represent connected state
     appkit.setCaipAddress('eip155:1:mock-address', 'eip155')
-    appkit.setCaipNetwork({
-      ...networks.mainnet,
-      caipNetworkId: 'eip155:1',
-      chainNamespace: 'eip155'
-    })
+    appkit.setCaipNetwork(extendedMainnet)
   })
 
   it('should fulfill siwx', () => {
@@ -212,10 +212,7 @@ describe('SIWE mapped to SIWX', () => {
         signature: 'mock-signature'
       })
       expect(setLastConnectedSIWECaipNetworkSpy).toHaveBeenCalledWith({
-        ...CaipNetworksUtil.extendCaipNetwork(networks.mainnet, {
-          projectId: 'mock-project-id',
-          customNetworkImageUrls: {}
-        })
+        ...extendedMainnet
       })
       expect(authenticateSpy).toHaveBeenCalledWith({
         chainId: 'eip155:1',

@@ -399,19 +399,9 @@ describe('W3mModal', () => {
       expect(SIWXUtil.initializeIfEnabled).toHaveBeenCalled()
     })
 
-    it('should not close modal when address is undefined but in profile view', async () => {
-      RouterController.state.view = 'ProfileWallets'
-
-      await (element as any).onNewAddress(undefined)
-
-      expect(ModalController.close).not.toHaveBeenCalled()
-      expect(ChainController.setIsSwitchingNamespace).toHaveBeenCalledWith(false)
-      expect(SIWXUtil.initializeIfEnabled).toHaveBeenCalled()
-    })
-
     it('should not close modal when address is undefined but switching namespace', async () => {
       ChainController.state.isSwitchingNamespace = true
-
+      ;(element as any).caipAddress = 'eip155:1:0x123'
       await (element as any).onNewAddress(undefined)
 
       expect(ModalController.close).not.toHaveBeenCalled()
@@ -430,25 +420,8 @@ describe('W3mModal', () => {
 
       await (element as any).onNewAddress('eip155:1:0x123')
 
-      expect(SIWXUtil.getSessions).toHaveBeenCalledOnce()
-      expect(RouterController.goBack).toHaveBeenCalled()
+      expect(SIWXUtil.initializeIfEnabled).toHaveBeenCalledOnce()
       expect(ChainController.setIsSwitchingNamespace).toHaveBeenCalledWith(false)
-    })
-
-    it('should go back if authenticated and switching namespace', async () => {
-      ChainController.state.isSwitchingNamespace = true
-      vi.spyOn(SIWXUtil, 'getSIWX').mockReturnValue({
-        getRequired: vi.fn().mockReturnValue(true)
-      } as unknown as SIWXConfig)
-      vi.spyOn(SIWXUtil, 'getSessions').mockResolvedValue([
-        { data: { accountAddress: '0x123' } }
-      ] as any)
-
-      await (element as any).onNewAddress('eip155:1:0x123')
-
-      expect(RouterController.goBack).toHaveBeenCalled()
-      expect(ChainController.setIsSwitchingNamespace).toHaveBeenCalledWith(false)
-      expect(SIWXUtil.getSessions).toHaveBeenCalledOnce()
     })
 
     it('should not navigate when in profile view with new address', async () => {

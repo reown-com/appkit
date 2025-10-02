@@ -32,7 +32,7 @@ import type {
   WriteContractArgs
 } from '../utils/TypeUtil.js'
 import { AppKitError, withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AdapterController } from './AdapterController.js'
+import { AdapterController } from './AdapterController/index.js'
 import { AlertController } from './AlertController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController, type ChainControllerState } from './ChainController.js'
@@ -511,14 +511,13 @@ const controller = {
         throw new Error('estimateGas: adapter is required but got undefined')
       }
 
-      const provider = ProviderController.getProvider(namespace)
       const caipNetwork = ChainController.getCaipNetwork(namespace)
 
       if (!caipNetwork) {
         throw new Error('estimateGas: caipNetwork is required but got undefined')
       }
 
-      const result = await adapter?.estimateGas({ ...args, provider, caipNetwork })
+      const result = await adapter?.estimateGas({ ...args, caipNetwork })
 
       return result?.gas || 0n
     }
@@ -539,13 +538,12 @@ const controller = {
 
     const caipNetwork = ChainController.getCaipNetwork(namespace)
     const caipAddress = ChainController.getAccountData(namespace)?.caipAddress
-    const provider = ProviderController.getProvider(namespace)
 
     if (!caipNetwork || !caipAddress) {
       throw new Error('writeContract: caipNetwork or caipAddress is required but got undefined')
     }
 
-    const result = await adapter?.writeContract({ ...args, caipNetwork, provider, caipAddress })
+    const result = await adapter?.writeContract({ ...args, caipNetwork, caipAddress })
 
     return result?.hash as `0x${string}` | null
   },
@@ -674,9 +672,7 @@ const controller = {
 
       const disconnectPromises = namespacesToDisconnect.map(async ns => {
         const adapter = AdapterController.get(ns)
-        const disconnectData = await adapter?.disconnect({
-          namespace: ns
-        })
+        const disconnectData = await adapter?.disconnect()
         if (disconnectData) {
           if (isAuth) {
             StorageUtil.deleteConnectedSocialProvider()
@@ -740,9 +736,7 @@ const controller = {
     try {
       ModalController.setLoading(true, namespace)
 
-      let disconnectResult = {
-        connections: []
-      }
+      const disconnectedConnections: Connection[] = []
 
       const adapter = AdapterController.get(namespace)
       const caipAddress = ChainController.getAccountData(namespace)?.caipAddress
@@ -752,12 +746,13 @@ const controller = {
        * To disconnect, we are checking enableReconnect flag to disconnect the namespace.
        */
       if (caipAddress || !OptionsController.state.enableReconnect) {
-        disconnectResult = await adapter?.disconnect({ id })
+        const result = await adapter?.disconnect({ id })
+        disconnectedConnections.push(...(result?.connections || []))
       }
 
       ModalController.setLoading(false, namespace)
 
-      return disconnectResult
+      return { connections: disconnectedConnections }
     } catch (error) {
       ModalController.setLoading(false, namespace)
       throw new AppKitError('Failed to disconnect connector', 'INTERNAL_SDK_ERROR', error)
@@ -1137,9 +1132,9 @@ const controller = {
         if (
           caipNetworks &&
           ChainController.state.activeCaipNetwork &&
-          adapter.namespace !== CommonConstantsUtil.CHAIN.EVM
+          adapter?.namespace !== CommonConstantsUtil.CHAIN.EVM
         ) {
-          const provider = adapter.getWalletConnectProvider({
+          const provider = adapter?.getWalletConnectProvider({
             caipNetworks,
             activeCaipNetwork: ChainController.state.activeCaipNetwork
           })
@@ -1301,7 +1296,6 @@ const controller = {
     }
 
     const activeAdapter = AdapterController.get(activeNamespace)
-    const activeProvider = ProviderController.getProvider(activeNamespace)
 
     if (isConnectingToAuth) {
       await Promise.all(
@@ -1342,9 +1336,7 @@ const controller = {
       // Make the secure site back to current network after reconnecting the other namespaces
       if (activeCaipNetwork) {
         await activeAdapter?.switchNetwork({
-          caipNetwork: activeCaipNetwork,
-          provider: activeProvider,
-          providerType: params.type
+          caipNetwork: activeCaipNetwork
         })
       }
     }

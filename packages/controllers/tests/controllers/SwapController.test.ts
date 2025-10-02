@@ -141,7 +141,7 @@ describe('SwapController', () => {
       Promise.resolve()
     )
     vi.spyOn(ConnectionController, 'sendTransaction').mockImplementationOnce(() =>
-      Promise.resolve(null)
+      Promise.resolve('')
     )
     const onEmbeddedWalletApprovalSuccessSpy = vi.spyOn(
       SwapController,
