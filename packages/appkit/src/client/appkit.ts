@@ -110,7 +110,11 @@ export class AppKit extends AppKitBaseClient {
     this.setUser({ ...(accountData?.user || {}), ...userWithOutSiwxData }, namespace)
     this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
     this.setPreferredAccountType(preferredAccountType, namespace)
-
+    await this.syncAccount({
+      address: user.address,
+      chainId: user.chainId,
+      chainNamespace: namespace
+    })
     this.setLoading(false, namespace)
   }
   private setupAuthConnectorListeners(provider: W3mFrameProvider) {
@@ -242,13 +246,14 @@ export class AppKit extends AppKitBaseClient {
     const { isConnected } = await provider.isConnected()
 
     if (chainNamespace && isAuthSupported && shouldSync) {
-      const enabledNetworks = await provider.getSmartAccountEnabledNetworks()
-      ChainController.setSmartAccountEnabledNetworks(
-        enabledNetworks?.smartAccountEnabledNetworks || [],
-        chainNamespace
-      )
-      await this.syncAuthConnectorTheme(provider)
       if (isConnected && this.connectionControllerClient?.connectExternal) {
+        await provider.init()
+        await this.syncAuthConnectorTheme(provider)
+        const enabledNetworks = await provider.getSmartAccountEnabledNetworks()
+        ChainController.setSmartAccountEnabledNetworks(
+          enabledNetworks?.smartAccountEnabledNetworks || [],
+          chainNamespace
+        )
         await this.connectionControllerClient?.connectExternal({
           id: ConstantsUtil.CONNECTOR_ID.AUTH,
           info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },
