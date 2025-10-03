@@ -135,7 +135,7 @@ export const EventsController = {
       return events.filter(evt => {
         const eventName = evt.props.event
 
-        return eventName !== 'WALLET_IMPRESSION'
+        return eventName !== 'WALLET_IMPRESSION_V2'
       })
     } catch {
       return events
