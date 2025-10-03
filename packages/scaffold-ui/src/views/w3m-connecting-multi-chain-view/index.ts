@@ -82,10 +82,11 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    return this.activeConnector?.connectors?.map(connector =>
+    return this.activeConnector?.connectors?.map((connector, index) =>
       connector.name
         ? html`
             <w3m-list-wallet
+              displayIndex=${index}
               imageSrc=${ifDefined(AssetUtil.getChainImage(connector.chain))}
               name=${ConstantsUtil.CHAIN_NAME_MAP[connector.chain]}
               @click=${() => this.onConnector(connector)}
