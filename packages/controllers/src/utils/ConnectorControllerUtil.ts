@@ -209,8 +209,8 @@ export const ConnectorControllerUtil = {
 
       async function connectSocial() {
         if (social) {
-          const _accountData = ChainController.getAccountData(namespaceToUse)
           ChainController.setAccountProp('socialProvider', social, namespaceToUse)
+          const _accountData = ChainController.getAccountData(namespaceToUse)
           socialProvider = _accountData?.socialProvider
           EventsController.sendEvent({
             type: 'track',
@@ -260,7 +260,8 @@ export const ConnectorControllerUtil = {
 
               if (popupWindow && uri) {
                 ChainController.setAccountProp('socialWindow', ref(popupWindow), namespaceToUse)
-                socialWindow = accountData?.socialWindow
+                const _accountData = ChainController.getAccountData(namespaceToUse)
+                socialWindow = _accountData?.socialWindow
                 popupWindow.location.href = uri
 
                 const interval = setInterval(() => {
