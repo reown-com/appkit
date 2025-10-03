@@ -11,7 +11,7 @@ on:
 jobs:
   create-release-branch:
     name: Create release branch
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions:
       contents: write # needed to push the new branch
       pull-requests: write # needed to create version PR
