@@ -94,7 +94,7 @@ export async function connectSocial(
     }
   } catch (error) {
     popupWindow?.close()
-    const errorMessage = (error as Error)?.message
+    const errorMessage = CoreHelperUtil.parseError(error)
     SnackController.showError(errorMessage)
 
     EventsController.sendEvent({
