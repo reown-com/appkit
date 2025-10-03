@@ -239,11 +239,6 @@ export class AppKit extends AppKitBaseClient {
       if (isConnected && this.connectionControllerClient?.connectExternal) {
         await provider.init()
         await this.syncAuthConnectorTheme(provider)
-        const enabledNetworks = await provider.getSmartAccountEnabledNetworks()
-        ChainController.setSmartAccountEnabledNetworks(
-          enabledNetworks?.smartAccountEnabledNetworks || [],
-          chainNamespace
-        )
         await this.connectionControllerClient?.connectExternal({
           id: ConstantsUtil.CONNECTOR_ID.AUTH,
           info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },

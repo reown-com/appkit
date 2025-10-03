@@ -12,6 +12,7 @@ import {
   ParseUtil,
   type SocialProvider
 } from '@reown/appkit-common'
+import { W3mFrameConstants, W3mFrameStorage } from '@reown/appkit-wallet'
 
 import { BalanceUtil } from '../utils/BalanceUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
@@ -635,11 +636,6 @@ const controller = {
     return requestedCaipNetworks?.some(network => network.id === chainId)
   },
 
-  // Smart Account Network Handlers
-  setSmartAccountEnabledNetworks(smartAccountEnabledNetworks: number[], chain: ChainNamespace) {
-    ChainController.setAdapterNetworkState(chain, { smartAccountEnabledNetworks })
-  },
-
   checkIfSmartAccountEnabled() {
     const networkId = NetworkUtil.caipNetworkIdToNumber(state.activeCaipNetwork?.caipNetworkId)
     const activeChain = state.activeChain
@@ -648,12 +644,10 @@ const controller = {
       return false
     }
 
-    const smartAccountEnabledNetworks = ChainController.getNetworkProp(
-      'smartAccountEnabledNetworks',
-      activeChain
-    )
+    const smartAccountEnabledNetworks =
+      W3mFrameStorage.get(W3mFrameConstants.SMART_ACCOUNT_ENABLED_NETWORKS)?.split(',') || []
 
-    return Boolean(smartAccountEnabledNetworks?.includes(Number(networkId)))
+    return Boolean(smartAccountEnabledNetworks?.includes(networkId.toString()))
   },
 
   showUnsupportedChainUI() {

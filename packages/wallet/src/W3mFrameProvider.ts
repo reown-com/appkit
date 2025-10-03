@@ -114,6 +114,7 @@ export class W3mFrameProvider {
       sdkVersion: this.sdkVersion,
       sdkType: this.sdkType
     })
+    await this.getSmartAccountEnabledNetworks()
     this.isInitialized = true
     this.initPromise = undefined
   }
