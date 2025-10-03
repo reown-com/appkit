@@ -108,6 +108,12 @@ export class W3mFrameProvider {
       })
     })
     await this.initPromise
+    await this.syncDappData({
+      metadata: this.metadata,
+      projectId: this.projectId,
+      sdkVersion: this.sdkVersion,
+      sdkType: this.sdkType
+    })
     this.isInitialized = true
     this.initPromise = undefined
   }
@@ -124,12 +130,6 @@ export class W3mFrameProvider {
     }
 
     await this.createFrame()
-    await this.syncDappData({
-      metadata: this.metadata,
-      projectId: this.projectId,
-      sdkVersion: this.sdkVersion,
-      sdkType: this.sdkType
-    })
   }
 
   // -- Extended Methods ------------------------------------------------
