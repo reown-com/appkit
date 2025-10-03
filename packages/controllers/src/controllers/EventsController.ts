@@ -17,9 +17,12 @@ const api = new FetchUtil({ baseUrl, clientId: null })
 const excluded = ['MODAL_CREATED']
 // SendBeacon payload limit is 64KB, using 45KB for a safe margin, also 45KB is approx ~200 events which is plenty
 const MAX_PENDING_EVENTS_KB = 45
+// Flush events every 10 seconds
+const FLUSH_EVENTS_INTERVAL_MS = 1000 * 10
 // -- Types --------------------------------------------- //
 export interface EventsControllerState {
   timestamp: number
+  lastFlush: number
   reportedErrors: Record<string, boolean>
   data: Event
   pendingEvents: PendingEvent[]
@@ -30,6 +33,7 @@ export interface EventsControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<EventsControllerState>({
   timestamp: Date.now(),
+  lastFlush: Date.now(),
   reportedErrors: {},
   data: {
     type: 'track',
@@ -56,6 +60,12 @@ export const EventsController = {
       st: sdkType,
       sv: sdkVersion || 'html-wagmi-4.2.2'
     }
+  },
+  shouldFlushEvents() {
+    const isOverMaxSize = JSON.stringify(state.pendingEvents).length / 1024 > MAX_PENDING_EVENTS_KB
+    const isExpired = state.lastFlush + FLUSH_EVENTS_INTERVAL_MS < Date.now()
+
+    return isOverMaxSize || isExpired
   },
 
   _setPendingEvent(payload: EventsControllerState) {
@@ -87,9 +97,9 @@ export const EventsController = {
       })
 
       state.reportedErrors['FORBIDDEN'] = false
-
+      const shouldFlush = EventsController.shouldFlushEvents()
       // If the pending events are too large, submit them as sendBeacon has a limit of 64KB
-      if (JSON.stringify(state.pendingEvents).length / 1024 > MAX_PENDING_EVENTS_KB) {
+      if (shouldFlush) {
         EventsController._submitPendingEvents()
       }
     } catch (err) {
@@ -109,7 +119,7 @@ export const EventsController = {
       EventsController._setPendingEvent(state)
     }
     // Calling this function here to make sure document is ready and defined before subscribing to visibility change
-    this._subscribeToVisibilityChange()
+    this.subscribeToFlushTriggers()
   },
 
   /**
@@ -133,6 +143,7 @@ export const EventsController = {
   },
 
   _submitPendingEvents() {
+    state.lastFlush = Date.now()
     if (state.pendingEvents.length === 0 && state.walletImpressions.length === 0) {
       return
     }
@@ -165,7 +176,8 @@ export const EventsController = {
       state.reportedErrors['FORBIDDEN'] = true
     }
   },
-  _subscribeToVisibilityChange() {
+
+  subscribeToFlushTriggers() {
     if (state.subscribedToVisibilityChange) {
       return
     }
@@ -174,10 +186,26 @@ export const EventsController = {
     }
 
     state.subscribedToVisibilityChange = true
+    // Submit pending events when the document is hidden
     document?.addEventListener?.('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
         EventsController._submitPendingEvents()
       }
     })
+
+    // Submit pending events when the document is frozen (triggered on mobile)
+    document?.addEventListener?.('freeze', () => {
+      EventsController._submitPendingEvents()
+    })
+
+    // Submit pending events when the window is hidden
+    window?.addEventListener?.('pagehide', () => {
+      EventsController._submitPendingEvents()
+    })
+
+    // Submit pending events every 10 seconds
+    setInterval(() => {
+      EventsController._submitPendingEvents()
+    }, FLUSH_EVENTS_INTERVAL_MS)
   }
 }
