@@ -86,6 +86,7 @@ export function authConnector(parameters: AuthParameters) {
     } = {}
   ) {
     const provider = getProviderInstance()
+
     let chainId = options.chainId
 
     if (options.isReconnecting) {
@@ -100,7 +101,6 @@ export function authConnector(parameters: AuthParameters) {
     }
 
     const preferredAccountType = getPreferredAccountType('eip155')
-
     const {
       address,
       chainId: frameChainId,

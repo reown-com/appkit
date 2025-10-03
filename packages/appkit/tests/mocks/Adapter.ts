@@ -1,8 +1,8 @@
 import { vi } from 'vitest'
 
 import { type Connection, Emitter } from '@reown/appkit-common'
+import type { AdapterBlueprint } from '@reown/appkit-controllers'
 
-import type { AdapterBlueprint } from '../../src/adapters/ChainAdapterBlueprint.js'
 import { bitcoin, mainnet, solana } from './Networks.js'
 import { mockProvider } from './Providers.js'
 

@@ -10,9 +10,9 @@ import {
   ParseUtil,
   type ParsedCaipAddress
 } from '@reown/appkit-common'
-import { EnsController, type OptionsControllerState } from '@reown/appkit-controllers'
 
-import { solana, solanaDevnet } from '../networks/index.js'
+import { EnsController } from '../controllers/EnsController.js'
+import type { OptionsControllerState } from '../controllers/OptionsController.js'
 
 interface ListenWcProviderParams {
   universalProvider: UniversalProvider
@@ -191,11 +191,11 @@ export const WcHelpersUtil = {
 
       // Workaround for wallets that only support deprecated Solana network ID
       switch (caipNetworkId) {
-        case solana.caipNetworkId:
-          namespace.chains.push(solana.deprecatedCaipNetworkId)
+        case 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp':
+          namespace.chains.push('solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ')
           break
-        case solanaDevnet.caipNetworkId:
-          namespace.chains.push(solanaDevnet.deprecatedCaipNetworkId)
+        case 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1':
+          namespace.chains.push('solana:8E9rvCKLFQia2Y35HXjjpWzj8weVo44K')
           break
         default:
       }

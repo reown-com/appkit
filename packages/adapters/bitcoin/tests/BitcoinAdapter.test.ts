@@ -10,13 +10,13 @@ import {
   vi
 } from 'vitest'
 
-import { WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   type ConnectionControllerClient,
-  type NetworkControllerClient,
-  StorageUtil
+  ProviderController,
+  StorageUtil,
+  WcHelpersUtil
 } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
@@ -55,8 +55,7 @@ describe('BitcoinAdapter', () => {
     api = mockBitcoinApi()
     adapter = new BitcoinAdapter({ api, networks: [bitcoin] })
     ChainController.initialize([adapter], [bitcoin], {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
     })
     ChainController.setRequestedCaipNetworks([bitcoin], 'bip122')
   })
@@ -680,12 +679,14 @@ describe('BitcoinAdapter', () => {
         getActiveNetwork: mockGetActiveNetworks
       })
 
+      // Set up provider in ProviderController
+      ProviderController.setProvider(bitcoinTestnet.chainNamespace, provider)
+      ProviderController.setProviderId(bitcoinTestnet.chainNamespace, provider.type)
+
       const switchNetworkSpy = vi.spyOn(provider, 'switchNetwork').mockResolvedValue(undefined)
 
       await adapter.switchNetwork({
-        caipNetwork: bitcoinTestnet,
-        provider,
-        providerType: provider.type
+        caipNetwork: bitcoinTestnet
       })
 
       expect(switchNetworkSpy).toHaveBeenCalledWith(bitcoinTestnet.caipNetworkId)
@@ -704,14 +705,16 @@ describe('BitcoinAdapter', () => {
         getActiveNetwork: mockGetActiveNetworks
       })
 
+      // Set up provider in ProviderController
+      ProviderController.setProvider(bitcoinTestnet.chainNamespace, xverseConnector)
+      ProviderController.setProviderId(bitcoinTestnet.chainNamespace, xverseConnector.type)
+
       const switchNetworkSpy = vi
         .spyOn(xverseConnector, 'switchNetwork')
         .mockResolvedValue(undefined)
 
       await adapter.switchNetwork({
-        caipNetwork: bitcoinTestnet,
-        provider: xverseConnector,
-        providerType: xverseConnector.type
+        caipNetwork: bitcoinTestnet
       })
 
       expect(switchNetworkSpy).toHaveBeenCalledWith(bitcoinTestnet.caipNetworkId)
@@ -723,10 +726,12 @@ describe('BitcoinAdapter', () => {
         typeof provider.setDefaultChain
       >
 
+      // Set up provider in ProviderController
+      ProviderController.setProvider(bitcoinTestnet.chainNamespace, provider)
+      ProviderController.setProviderId(bitcoinTestnet.chainNamespace, 'WALLET_CONNECT')
+
       await adapter.switchNetwork({
-        caipNetwork: bitcoinTestnet,
-        provider,
-        providerType: 'WALLET_CONNECT'
+        caipNetwork: bitcoinTestnet
       })
 
       expect(setDefaultChainSpy).toHaveBeenCalledWith(bitcoinTestnet.caipNetworkId)
@@ -739,14 +744,16 @@ describe('BitcoinAdapter', () => {
         getActiveNetwork: mockGetActiveNetworks
       })
 
+      // Set up provider in ProviderController
+      ProviderController.setProvider(bitcoinTestnet.chainNamespace, provider)
+      ProviderController.setProviderId(bitcoinTestnet.chainNamespace, provider.type)
+
       const error = new Error('Network switching failed')
       vi.spyOn(provider, 'switchNetwork').mockRejectedValue(error)
 
       await expect(
         adapter.switchNetwork({
-          caipNetwork: bitcoinTestnet,
-          provider,
-          providerType: provider.type
+          caipNetwork: bitcoinTestnet
         })
       ).rejects.toThrow('Network switching failed')
     })
@@ -1176,8 +1183,12 @@ describe('BitcoinAdapter', () => {
         }))
       })
 
-      vi.spyOn(adapter as any, 'connectionManager', 'get').mockReturnValue({
-        getConnection: vi.fn().mockReturnValue(undefined)
+      vi.spyOn(adapter, 'getConnection').mockReturnValue({
+        accounts: [],
+        connectorId: connector.id,
+        connector: connector,
+        account: undefined,
+        caipNetwork: bitcoin
       })
 
       await adapter.onAccountsChanged(['mock_address_1'], connector.id)

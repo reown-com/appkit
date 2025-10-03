@@ -148,7 +148,7 @@ describe('W3mAccountSettingsView', () => {
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: { getEmail: vi.fn().mockReturnValue('user@example.com') }
     } as unknown as AuthConnector)
-    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('AUTH')
     const setPrefSpy = vi
       .spyOn(ConnectionController, 'setPreferredAccountType')
       .mockResolvedValue(undefined)

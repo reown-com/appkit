@@ -9,7 +9,6 @@ import {
   type ConnectionControllerClient,
   ConnectorController,
   CoreHelperUtil,
-  type NetworkControllerClient,
   OptionsController,
   type WcWallet
 } from '../../exports/index.js'
@@ -90,8 +89,7 @@ beforeAll(() => {
     ],
     [],
     {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
     }
   )
 })
@@ -272,8 +270,7 @@ describe('ApiController', () => {
       ],
       reuqestedCaipNetworks,
       {
-        connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-        networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+        connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
       }
     )
 

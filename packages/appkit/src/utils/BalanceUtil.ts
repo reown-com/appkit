@@ -1,4 +1,5 @@
-import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
+import type { AdapterBlueprint } from '@reown/appkit-controllers'
+
 import type { AppKit } from '../client/appkit.js'
 
 // Unified method for fetching balance for vue/react

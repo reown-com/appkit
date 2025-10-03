@@ -18,7 +18,7 @@ export const ConstantsUtil = {
     LEDGER: 'ledger',
     OKX: 'okx',
     EIP6963: 'eip6963',
-    AUTH: 'ID_AUTH'
+    AUTH: 'AUTH'
   },
   CONNECTOR_NAMES: {
     AUTH: 'Auth'
@@ -98,5 +98,16 @@ export const ConstantsUtil = {
       }
     }
   },
-  IS_DEVELOPMENT: typeof process !== 'undefined' && process.env['NODE_ENV'] === 'development'
+  IS_DEVELOPMENT: typeof process !== 'undefined' && process.env['NODE_ENV'] === 'development',
+  DEFAULT_ALLOWED_ANCESTORS: [
+    'http://localhost:*',
+    'https://localhost:*',
+    'http://127.0.0.1:*',
+    'https://127.0.0.1:*',
+    'https://*.pages.dev',
+    'https://*.vercel.app',
+    'https://*.ngrok-free.app',
+    'https://secure-mobile.walletconnect.com',
+    'https://secure-mobile.walletconnect.org'
+  ] as string[]
 } as const

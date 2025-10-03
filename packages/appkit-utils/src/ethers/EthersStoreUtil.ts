@@ -16,7 +16,7 @@ export interface EthersStoreUtilState {
     | 'injected'
     | 'coinbaseWallet'
     | 'eip6963'
-    | 'ID_AUTH'
+    | 'AUTH'
     | 'coinbaseWalletSDK'
   address?: Address
   chainId?: number

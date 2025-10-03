@@ -1,7 +1,7 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
@@ -42,7 +42,6 @@ export const SIWXUtil = {
     try {
       if (OptionsController.state.remoteFeatures?.emailCapture) {
         const user = ChainController.getAccountData(namespace)?.user
-
         await ModalController.open({
           view: 'DataCapture',
           data: {
@@ -52,17 +51,14 @@ export const SIWXUtil = {
 
         return
       }
-
       if (addEmbeddedWalletSessionPromise) {
         await addEmbeddedWalletSessionPromise
       }
 
       const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
-
       if (sessions.length) {
         return
       }
-
       await ModalController.open({
         view: 'SIWXSignMessage'
       })
@@ -81,6 +77,26 @@ export const SIWXUtil = {
       RouterController.reset('Connect')
       SnackController.showError('A problem occurred while trying initialize authentication')
     }
+  },
+  async isAuthenticated(caipAddress = ChainController.getActiveCaipAddress()) {
+    const siwx = OptionsController.state.siwx
+    if (!siwx) {
+      return true
+    }
+
+    // If there is no active caip address, there is nothing to authenticate
+    if (!caipAddress) {
+      return true
+    }
+
+    const { chainNamespace, chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
+    const caipNetworkId = `${chainNamespace}:${chainId}` as const
+    const sessions = await SIWXUtil.getSessions({
+      address,
+      caipNetworkId
+    })
+
+    return sessions.length > 0
   },
   async requestSignMessage() {
     const siwx = OptionsController.state.siwx

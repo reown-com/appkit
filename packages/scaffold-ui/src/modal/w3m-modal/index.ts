@@ -2,17 +2,11 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import {
-  type CaipAddress,
-  type CaipNetwork,
-  ConstantsUtil as CommonConstantsUtil,
-  ParseUtil
-} from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
 import {
   ApiController,
   ChainController,
   ConnectorController,
-  CoreHelperUtil,
   ModalController,
   ModalUtil,
   OptionsController,
@@ -250,16 +244,10 @@ export class W3mModalBase extends LitElement {
   private async onNewAddress(caipAddress?: CaipAddress) {
     // Capture current state
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
-
     const isInProfileView = RouterController.state.view === 'ProfileWallets'
 
-    if (caipAddress) {
-      await this.onConnected({
-        caipAddress,
-        isSwitchingNamespace,
-        isInProfileView
-      })
-    } else if (!isSwitchingNamespace && !this.enableEmbedded && !isInProfileView) {
+    const shouldClose = !caipAddress && !isSwitchingNamespace && !isInProfileView
+    if (shouldClose) {
       ModalController.close()
     }
 
@@ -268,62 +256,13 @@ export class W3mModalBase extends LitElement {
     ChainController.setIsSwitchingNamespace(false)
   }
 
-  private async onConnected(args: {
-    caipAddress: CaipAddress
-
-    isSwitchingNamespace: boolean
-    isInProfileView: boolean
-  }) {
-    if (args.isInProfileView) {
-      return
-    }
-    const {
-      chainNamespace,
-      chainId,
-      address: newAddress
-    } = ParseUtil.parseCaipAddress(args.caipAddress)
-    const caipNetworkId = `${chainNamespace}:${chainId}` as const
-    const wasPreviouslyDisconnected = !CoreHelperUtil.getPlainAddress(this.caipAddress)
-    const sessions = await SIWXUtil.getSessions({ address: newAddress, caipNetworkId })
-    const isAuthenticated = SIWXUtil.getSIWX()
-      ? sessions.some(s => s.data.accountAddress === newAddress)
-      : true
-
-    const shouldGoBack = args.isSwitchingNamespace && isAuthenticated && !this.enableEmbedded
-    const shouldCloseEmbeddedModal = this.enableEmbedded && wasPreviouslyDisconnected
-
-    if (shouldGoBack) {
-      RouterController.goBack()
-    } else if (shouldCloseEmbeddedModal) {
-      ModalController.close()
-    }
-  }
-
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
     // Previous network information
     const prevCaipNetwork = this.caipNetwork
     const prevCaipNetworkId = prevCaipNetwork?.caipNetworkId?.toString()
-    const prevChainNamespace = prevCaipNetwork?.chainNamespace
-    // Next network information
+
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
-    const nextChainNamespace = nextCaipNetwork?.chainNamespace
-    const networkIdChanged = prevCaipNetworkId !== nextNetworkId
-    const namespaceChanged = prevChainNamespace !== nextChainNamespace
-    // Determine if the network change happened within the same namespace
-    const isNetworkChangedInSameNamespace = networkIdChanged && !namespaceChanged
-    // Use previous network's unsupported status for comparison if namespace hasn't changed
-    const wasUnsupportedNetwork =
-      prevCaipNetwork?.name === CommonConstantsUtil.UNSUPPORTED_NETWORK_NAME
-    /**
-     * If user is on connecting external, there is a case that they might select a connector which is in another adapter.
-     * In this case, we are switching both network and namespace. And this logic will be triggered.
-     * But we don't want to go back because we are already on the connecting external view.
-     */
-    const isConnectingExternal = RouterController.state.view === 'ConnectingExternal'
-    const isInProfileWalletsView = RouterController.state.view === 'ProfileWallets'
-    // Check connection status based on the address state *before* this update cycle potentially finishes
-    const isNotConnected = !ChainController.getAccountData(nextCaipNetwork?.chainNamespace)
-      ?.caipAddress
+    const didNetworkChange = prevCaipNetworkId !== nextNetworkId
     // If user is *currently* on the unsupported network screen
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
     const isModalOpen = ModalController.state.open
@@ -334,36 +273,13 @@ export class W3mModalBase extends LitElement {
       shouldGoBack = true
     }
 
-    if (networkIdChanged) {
+    if (didNetworkChange) {
       SwapController.resetState()
     }
 
-    if (isModalOpen && !isConnectingExternal && !isInProfileWalletsView) {
-      if (isNotConnected) {
-        /*
-         * If not connected at all, changing network doesn't necessarily warrant going back from all views.
-         * Let's keep the previous logic's intent: go back if not connected and network changed.
-         * This handles cases like being on the network selection view.
-         */
-        if (networkIdChanged) {
-          shouldGoBack = true
-        }
-      } else if (isUnsupportedNetworkScreen) {
-        // If on the unsupported screen, any network change should likely go back
-        shouldGoBack = true
-      } else if (isNetworkChangedInSameNamespace && !wasUnsupportedNetwork) {
-        /*
-         * If network changed within the *same* namespace, and it wasn't previously unsupported, go back.
-         * This handles the case where the user explicitly switches networks via the UI.
-         */
-        shouldGoBack = true
-      }
-      /*
-       * Note: We are not explicitly checking `ChainController.state.isSwitchingNamespace` here.
-       * The `onNewAddress` handler specifically covers the `goBack` logic for successful
-       * connections during a namespace switch. This handler focuses on same-namespace
-       * switches, leaving the unsupported screen, or initial connection state.
-       */
+    if (isModalOpen && isUnsupportedNetworkScreen) {
+      // If on the unsupported screen, any network change should likely go back
+      shouldGoBack = true
     }
     // Don't go back if the user is on the SIWXSignMessage view
     if (shouldGoBack && RouterController.state.view !== 'SIWXSignMessage') {

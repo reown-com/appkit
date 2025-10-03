@@ -1,11 +1,11 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import { type RequestArguments, WcHelpersUtil } from '@reown/appkit'
+import { type RequestArguments } from '@reown/appkit'
 import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { ChainController } from '@reown/appkit-controllers'
+import { WalletConnectConnector, WcHelpersUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
-import { WalletConnectConnector } from '@reown/appkit/connectors'
 
 import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
@@ -113,6 +113,10 @@ export class BitcoinWalletConnectConnector
   public request<T>(args: RequestArguments) {
     // @ts-expect-error - args type should match internalRequest arguments but it's not correctly typed in Provider
     return this.internalRequest(args) as T
+  }
+
+  public setDefaultChain(chainId: string) {
+    this.provider.setDefaultChain(chainId)
   }
 
   // -- Private ------------------------------------------ //

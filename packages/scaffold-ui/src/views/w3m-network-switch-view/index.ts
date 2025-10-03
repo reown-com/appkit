@@ -7,7 +7,8 @@ import {
   AssetUtil,
   ChainController,
   ConnectorController,
-  RouterController
+  RouterController,
+  SIWXUtil
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
@@ -136,6 +137,12 @@ export class W3mNetworkSwitchView extends LitElement {
       }
       if (this.network) {
         await ChainController.switchActiveNetwork(this.network)
+        const isAuthenticated = await SIWXUtil.isAuthenticated()
+
+        // If not authenticated, wait for siwx prompt, else go back to previous view
+        if (isAuthenticated) {
+          RouterController.goBack()
+        }
       }
     } catch (error) {
       this.error = true

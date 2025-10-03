@@ -194,7 +194,7 @@ export class AppKitWalletButton extends LitElement {
     return html`<wui-wallet-button
       data-testid="apkt-wallet-button-social"
       name=${this.modalLoading ? 'Loading...' : this.wallet}
-      @click=${async () => {
+      @click=${() => {
         this.loading = true
         this.error = false
 

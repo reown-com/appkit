@@ -2,8 +2,8 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
+import { WalletConnectConnector } from '@reown/appkit-controllers'
 
-import { WalletConnectConnector } from '../src/connectors'
 import { UniversalAdapter } from '../src/universal-adapter/client'
 
 // Mock provider

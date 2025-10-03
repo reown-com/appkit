@@ -26,7 +26,6 @@ export const mockAppKit = {
   addConnector: vi.fn(),
   setCaipNetwork: vi.fn(),
   setLoading: vi.fn(),
-  setSmartAccountEnabledNetworks: vi.fn(),
   setAllAccounts: vi.fn(),
   setStatus: vi.fn(),
   setSmartAccountDeployed: vi.fn(),
@@ -50,9 +49,6 @@ export const mockAppKit = {
     connectionControllerClient: {
       connectWalletConnect: vi.fn(),
       disconnect: vi.fn()
-    },
-    networkControllerClient: {
-      switchCaipNetwork: vi.fn()
     }
   },
   getConnectorImage: vi.fn(),

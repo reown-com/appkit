@@ -46,14 +46,14 @@ const externalConnector = {
   name: 'External'
 } as const
 const evmAuthConnector = {
-  id: 'ID_AUTH',
+  id: 'AUTH',
   type: 'AUTH',
   provider: authProvider,
   chain: ConstantsUtil.CHAIN.EVM,
   name: 'Auth'
 } as const
 const solanaAuthConnector = {
-  id: 'ID_AUTH',
+  id: 'AUTH',
   type: 'AUTH',
   provider: authProvider,
   chain: ConstantsUtil.CHAIN.SOLANA,
@@ -260,7 +260,7 @@ describe('ConnectorController', () => {
       zerionConnector,
       // Need to define inline to reference the spies
       {
-        id: 'ID_AUTH',
+        id: 'AUTH',
         imageId: undefined,
         imageUrl: undefined,
         name: 'Auth',
@@ -269,7 +269,7 @@ describe('ConnectorController', () => {
         connectors: [
           {
             chain: 'eip155',
-            id: 'ID_AUTH',
+            id: 'AUTH',
             name: 'Auth',
             provider: {
               syncDappData: syncDappDataSpy,
@@ -279,7 +279,7 @@ describe('ConnectorController', () => {
           },
           {
             chain: 'solana',
-            id: 'ID_AUTH',
+            id: 'AUTH',
             name: 'Auth',
             provider: {
               syncDappData: syncDappDataSpy,
@@ -305,7 +305,7 @@ describe('ConnectorController', () => {
     }
 
     const mergedAuthConnector = {
-      id: 'ID_AUTH',
+      id: 'AUTH',
       imageId: undefined,
       imageUrl: undefined,
       name: 'Auth',
@@ -314,7 +314,7 @@ describe('ConnectorController', () => {
       connectors: [
         {
           chain: 'eip155',
-          id: 'ID_AUTH',
+          id: 'AUTH',
           name: 'Auth',
           provider: {
             syncDappData: syncDappDataSpy,
@@ -324,7 +324,7 @@ describe('ConnectorController', () => {
         },
         {
           chain: 'solana',
-          id: 'ID_AUTH',
+          id: 'AUTH',
           name: 'Auth',
           provider: {
             syncDappData: syncDappDataSpy,
