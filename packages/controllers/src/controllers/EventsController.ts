@@ -124,7 +124,7 @@ export const EventsController = {
 
   /**
    * Adds a wallet impression item to the aggregated list. These are flushed as a single
-   * WALLET_IMPRESSION batch in _submitPendingEvents.
+   * WALLET_IMPRESSION_V2 batch in _submitPendingEvents.
    */
   sendWalletImpressionEvent(item: WalletImpressionItem | ConnectorImpressionItem) {
     state.walletImpressions.push(item)
@@ -158,7 +158,7 @@ export const EventsController = {
           timestamp: Date.now(),
           props: {
             type: 'track',
-            event: 'WALLET_IMPRESSION',
+            event: 'WALLET_IMPRESSION_V2',
             items: [...state.walletImpressions]
           }
         })
