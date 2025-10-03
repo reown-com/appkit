@@ -2,7 +2,12 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
-import type { Event, PendingEvent } from '../utils/TypeUtil.js'
+import type {
+  ConnectorImpressionItem,
+  Event,
+  PendingEvent,
+  WalletImpressionItem
+} from '../utils/TypeUtil.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -19,6 +24,7 @@ export interface EventsControllerState {
   data: Event
   pendingEvents: PendingEvent[]
   subscribedToVisibilityChange: boolean
+  walletImpressions: (WalletImpressionItem | ConnectorImpressionItem)[]
 }
 
 // -- State --------------------------------------------- //
@@ -30,7 +36,8 @@ const state = proxy<EventsControllerState>({
     event: 'MODAL_CREATED'
   },
   pendingEvents: [],
-  subscribedToVisibilityChange: false
+  subscribedToVisibilityChange: false,
+  walletImpressions: []
 })
 
 // -- Controller ---------------------------------------- //
@@ -90,7 +97,7 @@ export const EventsController = {
     }
   },
 
-  sendEvent(data: EventsControllerState['data']) {
+  sendEvent(data: Event) {
     state.timestamp = Date.now()
     state.data = data
     const MANDATORY_EVENTS: Event['event'][] = [
@@ -105,18 +112,55 @@ export const EventsController = {
     this._subscribeToVisibilityChange()
   },
 
+  /**
+   * Adds a wallet impression item to the aggregated list. These are flushed as a single
+   * WALLET_IMPRESSION batch in _submitPendingEvents.
+   */
+  sendWalletImpressionEvent(item: WalletImpressionItem | ConnectorImpressionItem) {
+    state.walletImpressions.push(item)
+  },
+
+  _transformPendingEventsForBatch(events: PendingEvent[]) {
+    try {
+      return events.filter(evt => {
+        const eventName = evt.props.event
+
+        return eventName !== 'WALLET_IMPRESSION'
+      })
+    } catch {
+      return events
+    }
+  },
+
   _submitPendingEvents() {
-    if (state.pendingEvents.length === 0) {
+    if (state.pendingEvents.length === 0 && state.walletImpressions.length === 0) {
       return
     }
     try {
+      const batch = EventsController._transformPendingEventsForBatch(state.pendingEvents)
+
+      if (state.walletImpressions.length) {
+        batch.push({
+          eventId: CoreHelperUtil.getUUID(),
+          url: window.location.href,
+          domain: window.location.hostname,
+          timestamp: Date.now(),
+          props: {
+            type: 'track',
+            event: 'WALLET_IMPRESSION',
+            items: [...state.walletImpressions]
+          }
+        })
+      }
+
       api.sendBeacon({
         path: '/batch',
         params: EventsController.getSdkProperties(),
-        body: state.pendingEvents
+        body: batch
       })
       state.reportedErrors['FORBIDDEN'] = false
       state.pendingEvents = []
+      state.walletImpressions = []
     } catch (err) {
       state.reportedErrors['FORBIDDEN'] = true
     }
