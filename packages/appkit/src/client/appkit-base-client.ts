@@ -1546,6 +1546,7 @@ export abstract class AppKitBaseClient {
     const { address, chainId, chainNamespace } = params
 
     const { chainId: activeChainId } = StorageUtil.getActiveNetworkProps()
+
     const chainIdToUse = networkOfChain?.id || activeChainId
     const isUnsupportedNetwork =
       ChainController.state.activeCaipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
@@ -1639,7 +1640,6 @@ export abstract class AppKitBaseClient {
     }
 
     const newCaipAddress = `${chainNamespace}:${newChainId}:${address}`
-    console.trace('>> syncAccountInfo', newCaipAddress)
     this.setCaipAddress(newCaipAddress as CaipAddress, chainNamespace, true)
     await this.syncIdentity({
       address,
@@ -2056,7 +2056,6 @@ export abstract class AppKitBaseClient {
     chain: ChainNamespace,
     shouldRefresh = false
   ) => {
-    console.log('>> setCaipAddress', caipAddress, chain, shouldRefresh)
     ChainController.setAccountProp('caipAddress', caipAddress, chain, shouldRefresh)
     ChainController.setAccountProp(
       'address',

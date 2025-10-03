@@ -761,7 +761,9 @@ const controller = {
     }
 
     const chain = ChainController.state.chains.get(chainNamespace)
-    const byChainId = chain?.caipNetworks?.find(network => network.id === chainId)
+    const byChainId = chain?.caipNetworks?.find(
+      network => network.id.toString() === chainId?.toString()
+    )
 
     if (byChainId) {
       return byChainId
