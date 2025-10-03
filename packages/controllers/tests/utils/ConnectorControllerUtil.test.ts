@@ -94,7 +94,8 @@ describe('connectSocial', () => {
       type: 'AUTH',
       chain: mockNamespace,
       provider: {
-        getSocialRedirectUri: vi.fn().mockResolvedValue({ uri: 'https://reown.com' })
+        getSocialRedirectUri: vi.fn().mockResolvedValue({ uri: 'https://reown.com' }),
+        getFarcasterUri: vi.fn().mockResolvedValue({ url: 'https://reown.com' })
       }
     } as unknown as AuthConnector)
     vi.spyOn(EventsController, 'sendEvent').mockImplementation(vi.fn())
@@ -102,31 +103,19 @@ describe('connectSocial', () => {
     vi.spyOn(window, 'open').mockReturnValue(mockPopupWindow)
   })
 
-  it('should retrieve socialProvider from ChainController.getAccountData when calling connectSocial', async () => {
-    const getAccountDataSpy = vi.spyOn(ChainController, 'getAccountData')
+  it('should call getSocialRedirectUri from auth provider when calling connectSocial', async () => {
+    const mockAuthConnector = ConnectorController.getAuthConnector()
+    const getSocialRedirectUriSpy = vi.spyOn(mockAuthConnector!.provider, 'getSocialRedirectUri')
 
     ConnectorControllerUtil.connectSocial({
       social: mockSocialProvider,
       namespace: mockNamespace
     })
 
-    expect(getAccountDataSpy).toHaveBeenCalledWith(mockNamespace)
-
-    const accountData = getAccountDataSpy.mock.results[0]?.value
-    expect(accountData?.socialProvider).toBe(mockSocialProvider)
-  })
-
-  it('should retrieve socialWindow from ChainController.getAccountData when calling connectSocial', async () => {
-    const getAccountDataSpy = vi.spyOn(ChainController, 'getAccountData')
-
-    ConnectorControllerUtil.connectSocial({
-      social: mockSocialProvider,
-      namespace: mockNamespace
+    await vi.waitFor(() => {
+      expect(getSocialRedirectUriSpy).toHaveBeenCalledWith({
+        provider: mockSocialProvider
+      })
     })
-
-    expect(getAccountDataSpy).toHaveBeenCalledWith(mockNamespace)
-
-    const accountData = getAccountDataSpy.mock.results[0]?.value
-    expect(accountData?.socialWindow).toBe(mockPopupWindow)
   })
 })
