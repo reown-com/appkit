@@ -99,6 +99,9 @@ beforeAll(() => {
 describe('ApiController', () => {
   beforeEach(() => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+    // Reset ConnectorController state to prevent test interference
+    ConnectorController.state.allConnectors = []
+    ConnectorController.state.connectors = []
   })
 
   it('should have valid default state', () => {
@@ -115,6 +118,8 @@ describe('ApiController', () => {
       isAnalyticsEnabled: false,
       excludedWallets: [],
       isFetchingRecommendedWallets: false,
+      explorerWallets: [],
+      explorerFilteredWallets: [],
       promises: {}
     })
   })
@@ -808,9 +813,10 @@ describe('ApiController', () => {
       fetchNetworkImages: false
     })
 
-    expect(result).toHaveLength(2)
+    expect(result).toHaveLength(3)
     expect(result[0]?.status).toBe('fulfilled')
     expect(result[1]?.status).toBe('rejected')
+    expect(result[2]?.status).toBe('fulfilled') // walletRanks
   })
 
   it('should store fetched resources in state.promises', async () => {
@@ -1190,5 +1196,206 @@ describe('ApiController', () => {
 
     // But state should not be updated since this wasn't called from fetchWalletsByPage
     expect(ApiController.state.mobileFilteredOutWalletsLength).toBeUndefined()
+  })
+
+  describe('prefetchWalletRanks', () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+      ApiController.state.explorerWallets = []
+      ApiController.state.explorerFilteredWallets = []
+    })
+
+    it('should fetch wallets using rdns and names for eip155 chains', async () => {
+      const fetchWalletsSpy = vi.spyOn(ApiController, 'fetchWallets')
+
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: 'eip155'
+      })
+
+      const connectorsWithRdns = [
+        {
+          id: 'announced1',
+          name: 'Announced Wallet',
+          info: { rdns: 'com.announced.wallet' },
+          type: 'ANNOUNCED',
+          chain: 'eip155'
+        },
+        {
+          id: 'announced2',
+          name: 'Another Wallet',
+          info: { rdns: 'com.another.wallet' },
+          type: 'ANNOUNCED',
+          chain: 'eip155'
+        }
+      ]
+
+      ConnectorController.state.allConnectors = []
+      ConnectorController.state.connectors = []
+      ConnectorController.setConnectors(connectorsWithRdns as any)
+
+      fetchWalletsSpy.mockResolvedValue({ data: [], count: 0, mobileFilteredOutWalletsLength: 0 })
+
+      await ApiController.prefetchWalletRanks()
+
+      expect(fetchWalletsSpy).toHaveBeenCalledWith({
+        page: 1,
+        entries: 20,
+        badge: 'certified',
+        names: 'Announced Wallet,Another Wallet',
+        rdns: 'com.announced.wallet,com.another.wallet'
+      })
+    })
+
+    it('should fetch wallets using names for non-eip155 chains', async () => {
+      const fetchWalletsSpy = vi.spyOn(ApiController, 'fetchWallets')
+
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: 'solana'
+      })
+
+      const connectorsWithNames = [
+        {
+          id: 'wallet1',
+          name: 'Solana Wallet',
+          type: 'INJECTED',
+          chain: 'solana'
+        },
+        {
+          id: 'wallet2',
+          name: 'Another Solana Wallet',
+          type: 'INJECTED',
+          chain: 'solana'
+        }
+      ]
+
+      ConnectorController.state.allConnectors = []
+      ConnectorController.state.connectors = connectorsWithNames as any
+
+      fetchWalletsSpy.mockResolvedValue({ data: [], count: 0, mobileFilteredOutWalletsLength: 0 })
+
+      await ApiController.prefetchWalletRanks()
+
+      expect(fetchWalletsSpy).toHaveBeenCalledWith({
+        page: 1,
+        entries: 20,
+        badge: 'certified',
+        names: 'Solana Wallet,Another Solana Wallet'
+      })
+    })
+
+    it('should handle empty rdns gracefully by filtering them out', async () => {
+      const fetchWalletsSpy = vi.spyOn(ApiController, 'fetchWallets')
+
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: 'eip155'
+      })
+
+      const connectorsWithEmptyRdns = [
+        {
+          id: 'wallet1',
+          name: 'Wallet Without RDNS',
+          type: 'INJECTED',
+          chain: 'eip155'
+        },
+        {
+          id: 'wallet2',
+          name: 'Another Wallet',
+          info: { rdns: 'com.valid.wallet' },
+          type: 'INJECTED',
+          chain: 'eip155'
+        }
+      ]
+
+      ConnectorController.state.allConnectors = []
+      ConnectorController.state.connectors = []
+      ConnectorController.setConnectors(connectorsWithEmptyRdns as any)
+
+      fetchWalletsSpy.mockResolvedValue({ data: [], count: 0, mobileFilteredOutWalletsLength: 0 })
+
+      await ApiController.prefetchWalletRanks()
+
+      expect(fetchWalletsSpy).toHaveBeenCalledWith({
+        page: 1,
+        entries: 20,
+        badge: 'certified',
+        names: 'Wallet Without RDNS,Another Wallet',
+        rdns: 'com.valid.wallet'
+      })
+    })
+
+    it('should handle multi-chain connectors by extracting rdns from sub-connectors', async () => {
+      const fetchWalletsSpy = vi.spyOn(ApiController, 'fetchWallets')
+
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeChain: 'eip155'
+      })
+
+      const multiChainConnector = {
+        id: 'multichain1',
+        name: 'Multi Chain Wallet',
+        type: 'MULTI_CHAIN',
+        chain: 'eip155',
+        connectors: [
+          { id: 'sub1', name: 'Sub Wallet 1', info: { rdns: 'com.sub1.wallet' } },
+          { id: 'sub2', name: 'Sub Wallet 2', info: { rdns: 'com.sub2.wallet' } }
+        ]
+      }
+
+      ConnectorController.state.allConnectors = []
+      ConnectorController.state.connectors = [multiChainConnector as any]
+
+      fetchWalletsSpy.mockResolvedValue({ data: [], count: 0, mobileFilteredOutWalletsLength: 0 })
+
+      await ApiController.prefetchWalletRanks()
+
+      expect(fetchWalletsSpy).toHaveBeenCalledWith({
+        page: 1,
+        entries: 20,
+        badge: 'certified',
+        names: 'Multi Chain Wallet',
+        rdns: 'com.sub1.wallet,com.sub2.wallet'
+      })
+    })
+
+    it('should not fetch wallets when no connectors are available', async () => {
+      const fetchWalletsSpy = vi.spyOn(ApiController, 'fetchWallets')
+
+      ConnectorController.setConnectors([])
+
+      await ApiController.prefetchWalletRanks()
+
+      expect(fetchWalletsSpy).not.toHaveBeenCalled()
+    })
+
+    it('should update explorerWallets and explorerFilteredWallets state', async () => {
+      const mockWallets = [
+        { id: 'wallet1', name: 'Wallet 1', chains: ['eip155:1'] },
+        { id: 'wallet2', name: 'Wallet 2', chains: ['solana:1'] }
+      ] as WcWallet[]
+
+      const fetchWalletsSpy = vi.spyOn(ApiController, 'fetchWallets')
+      fetchWalletsSpy.mockResolvedValue({
+        data: mockWallets,
+        count: 2,
+        mobileFilteredOutWalletsLength: 0
+      })
+
+      vi.spyOn(ChainController, 'getRequestedCaipNetworkIds').mockReturnValue(['eip155:1'])
+
+      ConnectorController.state.allConnectors = []
+      ConnectorController.state.connectors = []
+      ConnectorController.setConnectors([
+        { id: 'test', name: 'Test Wallet', type: 'INJECTED', chain: 'eip155' }
+      ] as any)
+
+      await ApiController.prefetchWalletRanks()
+
+      expect(ApiController.state.explorerWallets).toEqual(mockWallets)
+      expect(ApiController.state.explorerFilteredWallets).toEqual([mockWallets[0]])
+    })
   })
 })

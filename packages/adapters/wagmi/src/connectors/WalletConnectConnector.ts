@@ -45,6 +45,16 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       accounts: readonly Address[]
       chainId: number
     }>
+    getProvider(parameters?: { chainId?: number }): Promise<Provider>
+    getAccounts(): Promise<readonly Address[]>
+    getChainId(): Promise<number>
+    switchChain(parameters: {
+      addEthereumChainParameter?: AddEthereumChainParameter
+      chainId: number
+    }): Promise<unknown>
+    onAccountsChanged(accounts: string[]): void
+    onChainChanged(chain: string | number): void
+    onDisconnect(error?: unknown): Promise<void>
     getNamespaceChainsIds(): number[]
     getRequestedChainsIds(): Promise<number[]>
     isChainsStale(): Promise<boolean>
@@ -87,7 +97,17 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       }
     },
 
-    async connect({ ...rest } = {}) {
+    async connect<withCapabilities extends boolean = false>(
+      this: Properties,
+      {
+        ...rest
+      }: {
+        chainId?: number
+        isReconnecting?: boolean
+        withCapabilities?: withCapabilities | boolean
+        pairingTopic?: string
+      } = {}
+    ) {
       try {
         const caipNetworks = ChainController.getCaipNetworks()
         const provider = await this.getProvider()
@@ -166,7 +186,15 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         const defaultChain = universalProviderConfigOverride?.defaultChain
         provider.setDefaultChain(defaultChain ?? `eip155:${currentChainId}`)
 
-        return { accounts, chainId: currentChainId }
+        return {
+          accounts,
+          chainId: currentChainId
+        } as unknown as {
+          accounts: withCapabilities extends true
+            ? readonly { address: Address; capabilities: Record<string, unknown> }[]
+            : readonly Address[]
+          chainId: number
+        }
       } catch (error) {
         if (
           // eslint-disable-next-line prefer-named-capture-group, require-unicode-regexp
@@ -464,9 +492,11 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       return !connectorChains.every(id => requestedChains.includes(Number(id)))
     },
+
     async setRequestedChainsIds(chains) {
       await config.storage?.setItem(this.requestedChainsStorageKey, chains)
     },
+
     get requestedChainsStorageKey() {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       return `${this.id}.requestedChains` as Properties['requestedChainsStorageKey']

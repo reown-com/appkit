@@ -91,7 +91,9 @@ const mockApiState: ApiControllerState = {
   isAnalyticsEnabled: false,
   excludedWallets: [],
   isFetchingRecommendedWallets: false,
-  filteredWallets: []
+  filteredWallets: [],
+  explorerWallets: [],
+  explorerFilteredWallets: []
 }
 
 describe('W3mAllWalletsWidget', () => {
