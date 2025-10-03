@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit",
-  "version": "1.8.7",
+  "version": "1.8.8",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -64,21 +64,6 @@
       "types": "./dist/types/exports/auth-provider.d.ts",
       "import": "./dist/esm/exports/auth-provider.js",
       "default": "./dist/esm/exports/auth-provider.js"
-    },
-    "./adapters": {
-      "types": "./dist/types/exports/adapters.d.ts",
-      "import": "./dist/esm/exports/adapters.js",
-      "default": "./dist/esm/exports/adapters.js"
-    },
-    "./connectors": {
-      "types": "./dist/types/exports/connectors.d.ts",
-      "import": "./dist/esm/exports/connectors.js",
-      "default": "./dist/esm/exports/connectors.js"
-    },
-    "./connections": {
-      "types": "./dist/types/exports/connections.d.ts",
-      "import": "./dist/esm/exports/connections.js",
-      "default": "./dist/esm/exports/connections.js"
     },
     "./core": {
       "types": "./dist/types/exports/core.d.ts",

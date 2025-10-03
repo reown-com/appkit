@@ -769,7 +769,9 @@ export class ModalPage {
     let walletSelector: Locator
 
     const walletSelectorRDNS = this.page.getByTestId(`wallet-selector-${EXTENSION_RDNS}`)
-    const walletSelectorName = this.page.getByTestId(`wallet-selector-${EXTENSION_NAME}`)
+    const walletSelectorName = this.page.getByTestId(
+      `wallet-selector-${EXTENSION_NAME.toLowerCase()}`
+    )
 
     try {
       await walletSelectorRDNS.waitFor({ state: 'visible', timeout: 2_000 })

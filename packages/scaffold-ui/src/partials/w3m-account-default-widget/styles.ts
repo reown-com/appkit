@@ -17,11 +17,19 @@ export default css`
     max-height: 200px;
   }
 
+  .balance-container {
+    display: inline;
+  }
+
   .tab-content-container {
     height: 300px;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
+  }
+
+  .symbol {
+    transform: translateY(-2px);
   }
 
   .tab-content-container::-webkit-scrollbar {

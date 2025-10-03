@@ -7,6 +7,7 @@ import {
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
 import { SafeLocalStorage } from '@reown/appkit-common'
+import { W3mFrameConstants, W3mFrameStorage } from '@reown/appkit-wallet'
 
 import { CoreHelperUtil, OptionsController } from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'
@@ -183,11 +184,11 @@ describe('ChainController', () => {
 
   it('should check correctly if smart accounts are enabled on the network', () => {
     ChainController.setActiveCaipNetwork(mainnetCaipNetwork)
-    ChainController.setSmartAccountEnabledNetworks([1], chainNamespace)
+    W3mFrameStorage.set(W3mFrameConstants.SMART_ACCOUNT_ENABLED_NETWORKS, [1].join(','))
     expect(ChainController.checkIfSmartAccountEnabled()).toEqual(true)
-    ChainController.setSmartAccountEnabledNetworks([], chainNamespace)
+    W3mFrameStorage.set(W3mFrameConstants.SMART_ACCOUNT_ENABLED_NETWORKS, [].join(','))
     expect(ChainController.checkIfSmartAccountEnabled()).toEqual(false)
-    ChainController.setSmartAccountEnabledNetworks([2], chainNamespace)
+    W3mFrameStorage.set(W3mFrameConstants.SMART_ACCOUNT_ENABLED_NETWORKS, [2].join(','))
     expect(ChainController.checkIfSmartAccountEnabled()).toEqual(false)
     ChainController.setActiveCaipNetwork({
       id: 2,

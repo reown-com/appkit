@@ -196,6 +196,7 @@ export class W3mHeader extends LitElement {
       <wui-icon-button
         icon="clock"
         size="lg"
+        iconSize="lg"
         type="neutral"
         variant="primary"
         @click=${() => RouterController.push('SmartSessionList')}
@@ -212,6 +213,7 @@ export class W3mHeader extends LitElement {
         size="lg"
         type="neutral"
         variant="primary"
+        iconSize="lg"
         @click=${this.onClose.bind(this)}
         data-testid="w3m-header-close"
       ></wui-icon-button>
@@ -228,7 +230,12 @@ export class W3mHeader extends LitElement {
         alignItems="center"
         gap="2"
       >
-        <wui-text variant="lg-regular" color="primary" data-testid="w3m-header-text">
+        <wui-text
+          display="inline"
+          variant="lg-regular"
+          color="primary"
+          data-testid="w3m-header-text"
+        >
           ${this.heading}
         </wui-text>
         ${isBeta ? html`<wui-tag variant="accent" size="md">Beta</wui-tag>` : null}
@@ -264,6 +271,7 @@ export class W3mHeader extends LitElement {
         id="dynamic"
         icon="chevronLeft"
         size="lg"
+        iconSize="lg"
         type="neutral"
         variant="primary"
         @click=${this.onGoBack.bind(this)}
@@ -275,6 +283,7 @@ export class W3mHeader extends LitElement {
       id="dynamic"
       icon="helpCircle"
       size="lg"
+      iconSize="lg"
       type="neutral"
       variant="primary"
       @click=${this.onWalletHelp.bind(this)}

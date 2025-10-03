@@ -26,7 +26,6 @@ export const mockAppKit = {
   addConnector: vi.fn(),
   setCaipNetwork: vi.fn(),
   setLoading: vi.fn(),
-  setSmartAccountEnabledNetworks: vi.fn(),
   setAllAccounts: vi.fn(),
   setStatus: vi.fn(),
   setSmartAccountDeployed: vi.fn(),

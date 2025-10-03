@@ -11,28 +11,25 @@ import {
   type ParsedCaipAddress,
   UserRejectedRequestError
 } from '@reown/appkit-common'
-import {
-  type AccountState,
-  type AccountType,
-  type Connector as AppKitConnector,
-  ChainController,
-  ConnectorController,
-  CoreHelperUtil,
-  ProviderController,
-  type Tokens,
-  type WriteContractArgs,
-  getPreferredAccountType
-} from '@reown/appkit-controllers'
-import { type CombinedProvider, type Provider } from '@reown/appkit-controllers'
-import { HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
-import { EthersHelpersUtil } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
-import type { AppKitBaseClient } from '../client/appkit-base-client.js'
-import { ConnectionManager } from '../connections/ConnectionManager.js'
-import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
-import { type AppKitOptions, WcHelpersUtil } from '../utils/index.js'
-import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
+import { getPreferredAccountType } from '../../utils/ChainControllerUtil.js'
+import { CoreHelperUtil } from '../../utils/CoreHelperUtil.js'
+import type {
+  AccountType,
+  Connector as AppKitConnector,
+  CombinedProvider,
+  Provider,
+  Tokens,
+  WriteContractArgs
+} from '../../utils/TypeUtil.js'
+import { WcHelpersUtil } from '../../utils/WalletConnectUtil.js'
+import { type AccountState } from '../ChainController.js'
+import { ChainController } from '../ChainController.js'
+import { ConnectorController } from '../ConnectorController.js'
+import { ProviderController } from '../ProviderController.js'
+import type { WalletConnectConnector } from './WalletConnectConnector.js'
+import type { ChainAdapterConnector } from './types.js'
 
 type EventName =
   | 'disconnect'
@@ -81,7 +78,6 @@ export abstract class AdapterBlueprint<
       provider: Provider | CombinedProvider
     } | null
   > = {}
-  protected connectionManager?: ConnectionManager
   private eventListeners = new Map<EventName, Set<EventCallback<EventName>>>()
 
   /**
@@ -96,12 +92,6 @@ export abstract class AdapterBlueprint<
 
     if (params) {
       this.construct(params)
-    }
-
-    if (params?.namespace) {
-      this.connectionManager = new ConnectionManager({
-        namespace: params.namespace
-      })
     }
   }
 
@@ -176,7 +166,7 @@ export abstract class AdapterBlueprint<
       type: 'AUTH',
       name: CommonConstantsUtil.CONNECTOR_NAMES.AUTH,
       provider: authProvider,
-      imageId: PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.AUTH],
+      imageId: undefined,
       chain: this.namespace,
       chains: []
     } as unknown as Connector)
@@ -229,7 +219,7 @@ export abstract class AdapterBlueprint<
    */
   protected deleteConnection(connectorId: string) {
     this.availableConnections = this.availableConnections.filter(
-      c => !HelpersUtil.isLowerCaseMatch(c.connectorId, connectorId)
+      c => c.connectorId.toLowerCase() !== connectorId.toLowerCase()
     )
 
     this.emit('connections', this.availableConnections)
@@ -404,10 +394,7 @@ export abstract class AdapterBlueprint<
    * @param {AppKitOptions} [options] - Optional AppKit options
    * @param {AppKit} [appKit] - Optional AppKit instance
    */
-  public abstract syncConnectors(
-    options?: AppKitOptions,
-    appKit?: AppKitBaseClient
-  ): void | Promise<void>
+  public abstract syncConnectors(): void | Promise<void>
 
   /**
    * Synchronizes the connections with the given options and AppKit instance.
@@ -509,15 +496,13 @@ export abstract class AdapterBlueprint<
   ): Promise<AdapterBlueprint.WalletGetAssetsResponse>
 
   protected getWalletConnectConnector(): WalletConnectConnector {
-    const connector = this.connectors.find(c => c instanceof WalletConnectConnector) as
-      | WalletConnectConnector
-      | undefined
-
+    const connector = this.connectors.find(c => c.id === 'walletConnect')
     if (!connector) {
       throw new Error('WalletConnectConnector not found')
     }
 
-    return connector
+    // Review why this type assertion is necessary
+    return connector as unknown as WalletConnectConnector
   }
 
   /**
@@ -568,7 +553,7 @@ export abstract class AdapterBlueprint<
     if (accounts.length > 0) {
       const { address } = CoreHelperUtil.getAccount(accounts[0])
 
-      const connection = this.connectionManager?.getConnection({
+      const connection = this.getConnection({
         connectorId,
         connections: this.connections,
         connectors: this.connectors
@@ -576,10 +561,8 @@ export abstract class AdapterBlueprint<
 
       if (
         address &&
-        HelpersUtil.isLowerCaseMatch(
-          this.getConnectorId(CommonConstantsUtil.CHAIN.EVM),
-          connectorId
-        )
+        this.getConnectorId(CommonConstantsUtil.CHAIN.EVM)?.toLowerCase() ===
+          connectorId.toLowerCase()
       ) {
         this.emit('accountChanged', {
           address,
@@ -611,7 +594,8 @@ export abstract class AdapterBlueprint<
     this.deleteConnection(connectorId)
 
     if (
-      HelpersUtil.isLowerCaseMatch(this.getConnectorId(CommonConstantsUtil.CHAIN.EVM), connectorId)
+      this.getConnectorId(CommonConstantsUtil.CHAIN.EVM)?.toLowerCase() ===
+      connectorId.toLowerCase()
     ) {
       this.emitFirstAvailableConnection()
     }
@@ -629,10 +613,10 @@ export abstract class AdapterBlueprint<
   protected onChainChanged(chainId: string | number, connectorId: string) {
     const formattedChainId =
       typeof chainId === 'string' && chainId.startsWith('0x')
-        ? EthersHelpersUtil.hexStringToNumber(chainId).toString()
+        ? parseInt(chainId, 16).toString()
         : chainId.toString()
 
-    const connection = this.connectionManager?.getConnection({
+    const connection = this.getConnection({
       connectorId,
       connections: this.connections,
       connectors: this.connectors
@@ -651,7 +635,8 @@ export abstract class AdapterBlueprint<
     }
 
     if (
-      HelpersUtil.isLowerCaseMatch(this.getConnectorId(CommonConstantsUtil.CHAIN.EVM), connectorId)
+      this.getConnectorId(CommonConstantsUtil.CHAIN.EVM)?.toLowerCase() ===
+      connectorId.toLowerCase()
     ) {
       this.emit('switchNetwork', { chainId: formattedChainId })
     }
@@ -707,7 +692,7 @@ export abstract class AdapterBlueprint<
    * Emits the first available connection.
    */
   protected emitFirstAvailableConnection() {
-    const connection = this.connectionManager?.getConnection({
+    const connection = this.getConnection({
       connections: this.connections,
       connectors: this.connectors
     })
@@ -721,6 +706,66 @@ export abstract class AdapterBlueprint<
         connector: connection.connector
       })
     }
+  }
+
+  /**
+   * Gets a connection based on provided parameters.
+   * If connectorId is provided, returns connection for that specific connector.
+   * Otherwise, returns the first available valid connection.
+   *
+   * @param params - Connection parameters
+   * @param params.address - Optional address to filter by
+   * @param params.connectorId - Optional connector ID to filter by
+   * @param params.connections - List of available connections
+   * @param params.connectors - List of available connectors
+   * @returns Connection or null if none found
+   */
+  getConnection({
+    address,
+    connectorId,
+    connections,
+    connectors
+  }: AdapterBlueprint.GetConnectionParams) {
+    if (connectorId) {
+      const connection = connections.find(
+        c => c.connectorId.toLowerCase() === connectorId.toLowerCase()
+      )
+
+      if (!connection) {
+        return null
+      }
+
+      const connector = connectors.find(
+        c => c.id.toLowerCase() === connection.connectorId.toLowerCase()
+      )
+
+      const account = address
+        ? connection.accounts.find(a => a.address.toLowerCase() === address.toLowerCase())
+        : connection.accounts[0]
+
+      return { ...connection, account, connector }
+    }
+
+    const validConnection = connections.find(
+      c =>
+        c.accounts.length > 0 &&
+        connectors.some(conn => conn.id.toLowerCase() === c.connectorId.toLowerCase())
+    )
+
+    if (validConnection) {
+      const [account] = validConnection.accounts
+      const connector = connectors.find(
+        c => c.id.toLowerCase() === validConnection.connectorId.toLowerCase()
+      )
+
+      return {
+        ...validConnection,
+        account,
+        connector
+      }
+    }
+
+    return null
   }
 }
 
@@ -894,5 +939,12 @@ export namespace AdapterBlueprint {
   export type GetAccountsParams = {
     id: AppKitConnector['id']
     namespace?: ChainNamespace
+  }
+
+  export interface GetConnectionParams<C extends ChainAdapterConnector = ChainAdapterConnector> {
+    connectorId?: string
+    address?: string
+    connectors: C[]
+    connections: Connection[]
   }
 }

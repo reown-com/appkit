@@ -8,9 +8,8 @@ import {
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil
 } from '@reown/appkit-controllers'
+import { AdapterBlueprint, WalletConnectConnector } from '@reown/appkit-controllers'
 
-import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
-import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
 import { WcConstantsUtil } from '../utils/ConstantsUtil.js'
 
 export class UniversalAdapter extends AdapterBlueprint {

@@ -10,13 +10,13 @@ import {
   vi
 } from 'vitest'
 
-import { WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   type ConnectionControllerClient,
   ProviderController,
-  StorageUtil
+  StorageUtil,
+  WcHelpersUtil
 } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
@@ -1183,8 +1183,12 @@ describe('BitcoinAdapter', () => {
         }))
       })
 
-      vi.spyOn(adapter as any, 'connectionManager', 'get').mockReturnValue({
-        getConnection: vi.fn().mockReturnValue(undefined)
+      vi.spyOn(adapter, 'getConnection').mockReturnValue({
+        accounts: [],
+        connectorId: connector.id,
+        connector: connector,
+        account: undefined,
+        caipNetwork: bitcoin
       })
 
       await adapter.onAccountsChanged(['mock_address_1'], connector.id)
