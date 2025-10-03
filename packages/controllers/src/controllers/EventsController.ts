@@ -2,7 +2,12 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
-import type { Event, PendingEvent } from '../utils/TypeUtil.js'
+import type {
+  ConnectorImpressionItem,
+  Event,
+  PendingEvent,
+  WalletImpressionItem
+} from '../utils/TypeUtil.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -19,7 +24,7 @@ export interface EventsControllerState {
   data: Event
   pendingEvents: PendingEvent[]
   subscribedToVisibilityChange: boolean
-  walletImpressions: Record<string, unknown>[]
+  walletImpressions: (WalletImpressionItem | ConnectorImpressionItem)[]
 }
 
 // -- State --------------------------------------------- //
@@ -28,7 +33,8 @@ const state = proxy<EventsControllerState>({
   reportedErrors: {},
   data: {
     type: 'track',
-    event: 'MODAL_CREATED'
+    event: 'MODAL_OPEN',
+    properties: { connected: false }
   },
   pendingEvents: [],
   subscribedToVisibilityChange: false,
@@ -92,7 +98,7 @@ export const EventsController = {
     }
   },
 
-  sendEvent(data: EventsControllerState['data']) {
+  sendEvent(data: Event) {
     state.timestamp = Date.now()
     state.data = data
     const MANDATORY_EVENTS: Event['event'][] = [
@@ -111,7 +117,7 @@ export const EventsController = {
    * Adds a wallet impression item to the aggregated list. These are flushed as a single
    * WALLET_IMPRESSION batch in _submitPendingEvents.
    */
-  sendWalletImpressionEvent(item: Record<string, unknown>) {
+  sendWalletImpressionEvent(item: WalletImpressionItem | ConnectorImpressionItem) {
     state.walletImpressions.push(item)
   },
 
@@ -145,7 +151,7 @@ export const EventsController = {
             event: 'WALLET_IMPRESSION',
             items: [...state.walletImpressions]
           }
-        } as unknown as PendingEvent)
+        })
       }
 
       api.sendBeacon({
