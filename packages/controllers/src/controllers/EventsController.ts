@@ -33,8 +33,7 @@ const state = proxy<EventsControllerState>({
   reportedErrors: {},
   data: {
     type: 'track',
-    event: 'MODAL_OPEN',
-    properties: { connected: false }
+    event: 'MODAL_CREATED'
   },
   pendingEvents: [],
   subscribedToVisibilityChange: false,

@@ -458,6 +458,11 @@ export type PendingEvent = {
 export type Event =
   | {
       type: 'track'
+      address?: string
+      event: 'MODAL_CREATED'
+    }
+  | {
+      type: 'track'
       event: 'MODAL_OPEN'
       properties: {
         connected: boolean
