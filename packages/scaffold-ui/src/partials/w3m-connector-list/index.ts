@@ -138,10 +138,6 @@ export class W3mConnectorList extends LitElement {
     connectors: ConnectorWithProviders[],
     shouldFilter = true
   ): ConnectorWithProviders[] {
-    if (!this.explorerWallets?.length) {
-      return connectors
-    }
-
     const sorted = ConnectorUtil.sortConnectorsByExplorerWallet([...connectors])
 
     return shouldFilter ? sorted.filter(ConnectorUtil.showConnector) : sorted
