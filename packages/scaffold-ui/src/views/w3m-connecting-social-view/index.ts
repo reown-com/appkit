@@ -104,6 +104,17 @@ export class W3mConnectingSocialView extends LitElement {
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     window.removeEventListener('message', this.handleSocialConnection, false)
+
+    // Track cancellation if user navigates away or closes modal without completing connection
+    const isConnected = ChainController.state.activeCaipAddress
+    if (!isConnected && this.socialProvider && !this.connecting) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SOCIAL_LOGIN_CANCELED',
+        properties: { provider: this.socialProvider }
+      })
+    }
+
     this.socialWindow?.close()
     ChainController.setAccountProp('socialWindow', undefined, ChainController.state.activeChain)
   }
@@ -223,13 +234,6 @@ export class W3mConnectingSocialView extends LitElement {
     const interval = setInterval(() => {
       if (this.socialWindow?.closed) {
         if (!this.connecting && RouterController.state.view === 'ConnectingSocial') {
-          if (this.socialProvider) {
-            EventsController.sendEvent({
-              type: 'track',
-              event: 'SOCIAL_LOGIN_CANCELED',
-              properties: { provider: this.socialProvider }
-            })
-          }
           RouterController.goBack()
         }
         clearInterval(interval)
