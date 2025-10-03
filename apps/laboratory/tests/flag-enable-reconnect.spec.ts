@@ -49,11 +49,31 @@ test.describe('Email', () => {
     // Connect with email
     modalValidator.expectSecureSiteFrameNotInjected()
     await modalPage.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
-    await modalValidator.expectConnected()
+    await modalValidator.expectConnected('eip155')
+    await modalValidator.expectConnected('solana')
 
     // Reload and check connection
     await modalPage.page.reload()
-    await modalValidator.expectDisconnected()
+    await modalValidator.expectDisconnected('eip155')
+    await modalValidator.expectDisconnected('solana')
+    await modalValidator.expectStatus('disconnected')
+  })
+
+  test('it should be able to connect after initial disconnect', async () => {
+    const mailsacApiKey = process.env['MAILSAC_API_KEY']
+    if (!mailsacApiKey) {
+      throw new Error('MAILSAC_API_KEY is not set')
+    }
+    const email = new Email(mailsacApiKey)
+    const tempEmail = await email.getEmailAddressToUse()
+
+    await modalPage.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
+    await modalValidator.expectConnected('eip155')
+    await modalValidator.expectConnected('solana')
+
+    await modalPage.page.reload()
+    await modalValidator.expectDisconnected('eip155')
+    await modalValidator.expectDisconnected('solana')
     await modalValidator.expectStatus('disconnected')
   })
 })
