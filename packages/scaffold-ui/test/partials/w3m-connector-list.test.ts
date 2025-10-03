@@ -110,8 +110,6 @@ describe('W3mConnectorList', () => {
     expect(indices).toEqual(indices.map((_, idx) => idx))
   })
 
-  it('should render recent wallets in correct order', async () => {})
-
   it('should render recent wallets in correct order', async () => {
     // Mock StorageUtil to provide a recent wallet
     vi.spyOn(StorageUtil, 'getRecentWallets').mockReturnValue([
