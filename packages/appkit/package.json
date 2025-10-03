@@ -142,7 +142,7 @@
     "viem": ">=2.37.9"
   },
   "devDependencies": {
-    "@walletconnect/types": "2.21.7",
+    "@walletconnect/types": "2.21.9",
     "@reown/appkit-siwe": "workspace:*",
     "@testing-library/react": "16.3.0",
     "@types/react": "19.1.15",

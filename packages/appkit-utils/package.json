@@ -67,7 +67,7 @@
     "viem": ">=2.37.9"
   },
   "devDependencies": {
-    "@walletconnect/types": "2.21.7",
+    "@walletconnect/types": "2.21.9",
     "bs58": "6.0.0",
     "@solana/web3.js": "1.98.4",
     "@wallet-standard/features": "1.1.0",
