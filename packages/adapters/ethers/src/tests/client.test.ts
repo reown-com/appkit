@@ -1236,7 +1236,9 @@ describe('EthersAdapter', () => {
         }
       })
 
-      expect(providers?.coinbase).toBeDefined()
+      // Coinbase is lazy-loaded, so it's undefined initially but the key exists
+      expect(providers).toHaveProperty('coinbase')
+      expect(providers?.coinbase).toBeUndefined()
     })
 
     it('should create Ethers config without coinbase provider if disabled', async () => {
@@ -1252,7 +1254,7 @@ describe('EthersAdapter', () => {
         }
       })
 
-      expect(providers?.coinbase).toBeUndefined()
+      expect(providers).not.toHaveProperty('coinbase')
     })
 
     it('should create Ethers config with safe provider if in iframe and ancestor is app.safe.global', async () => {
