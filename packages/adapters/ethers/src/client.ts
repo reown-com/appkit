@@ -37,12 +37,41 @@ export class EthersAdapter extends AdapterBlueprint {
   private ethersConfig?: ProviderType
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
   private universalProvider?: UniversalProvider
+  private options?: AppKitOptions
 
   constructor() {
     super({
       adapterType: CommonConstantsUtil.ADAPTER_TYPES.ETHERS,
       namespace: CommonConstantsUtil.CHAIN.EVM
     })
+  }
+
+  private async getCoinbaseProviderLazy(): Promise<Provider | undefined> {
+    try {
+      const { createCoinbaseWalletSDK } = await import('@coinbase/wallet-sdk')
+      if (typeof window === 'undefined') {
+        return undefined
+      }
+
+      const networks = this.getCaipNetworks()?.filter(
+        n => n.chainNamespace === CommonConstantsUtil.CHAIN.EVM
+      )
+      const coinbaseSdk = createCoinbaseWalletSDK({
+        appName: this.options?.metadata?.name,
+        appLogoUrl: this.options?.metadata?.icons?.[0],
+        appChainIds: networks?.map(n => n.id as number) || [1, 84532],
+        preference: {
+          options: this.options?.coinbasePreference ?? 'all'
+        }
+      })
+
+      return coinbaseSdk.getProvider() as unknown as Provider
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to import Coinbase Wallet SDK:', error)
+
+      return undefined
+    }
   }
 
   private async createEthersConfig(options: AppKitOptions) {
@@ -85,31 +114,6 @@ export class EthersAdapter extends AdapterBlueprint {
       return provider
     }
 
-    async function getCoinbaseProvider() {
-      try {
-        const { createCoinbaseWalletSDK } = await import('@coinbase/wallet-sdk')
-        if (typeof window === 'undefined') {
-          return undefined
-        }
-
-        const coinbaseSdk = createCoinbaseWalletSDK({
-          appName: options?.metadata?.name,
-          appLogoUrl: options?.metadata?.icons[0],
-          appChainIds: options.networks?.map(caipNetwork => caipNetwork.id as number) || [1, 84532],
-          preference: {
-            options: options.coinbasePreference ?? 'all'
-          }
-        })
-
-        return coinbaseSdk.getProvider()
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to import Coinbase Wallet SDK:', error)
-
-        return undefined
-      }
-    }
-
     const providers: ProviderType = { metadata: options.metadata }
 
     if (options.enableInjected !== false) {
@@ -117,11 +121,8 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     if (options.enableCoinbase !== false) {
-      const coinbaseProvider = await getCoinbaseProvider()
-
-      if (coinbaseProvider) {
-        providers.coinbase = coinbaseProvider
-      }
+      // Register Coinbase connector without instantiating SDK yet (lazy-load on connect)
+      providers.coinbase = undefined
     }
 
     if (CoreHelperUtil.isSafeApp()) {
@@ -277,6 +278,7 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   override async syncConnectors(options: AppKitOptions): Promise<void> {
+    this.options = options
     this.ethersConfig = await this.createEthersConfig(options)
 
     if (this.ethersConfig?.EIP6963) {
@@ -450,7 +452,21 @@ export class EthersAdapter extends AdapterBlueprint {
         }
       }
 
-      const selectedProvider = connector?.provider as Provider
+      let selectedProvider = connector?.provider as Provider | undefined
+
+      // Lazy-load Coinbase SDK only when user selects it
+      if (
+        !selectedProvider &&
+        (connector?.id === CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK ||
+          connector?.id === 'coinbase')
+      ) {
+        selectedProvider = await this.getCoinbaseProviderLazy()
+        if (selectedProvider) {
+          // Persist on the connector so listeners work normally
+          // eslint-disable-next-line no-param-reassign
+          connector.provider = selectedProvider
+        }
+      }
 
       if (!selectedProvider) {
         throw new Error('Provider not found')

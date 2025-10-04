@@ -481,7 +481,11 @@ export class WagmiAdapter extends AdapterBlueprint {
       return
     }
 
-    const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
+    // Lazy-load Coinbase SDK: avoid calling getProvider() during setup
+    let provider: Provider | undefined = undefined
+    if (connector.id !== CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK) {
+      provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
+    }
 
     this.addConnector({
       id: connector.id,
@@ -663,10 +667,15 @@ export class WagmiAdapter extends AdapterBlueprint {
         socialUri
       })
 
+      // Lazy-load Coinbase provider only when needed for the return result
+      const resolvedProvider =
+        (provider as Provider) ??
+        ((await connector.getProvider().catch(() => undefined)) as Provider | undefined)
+
       return {
         address: this.toChecksummedAddress(res.accounts[0]),
         chainId: res.chainId,
-        provider: provider as Provider,
+        provider: resolvedProvider as Provider,
         type: type as ConnectorType,
         id
       }
