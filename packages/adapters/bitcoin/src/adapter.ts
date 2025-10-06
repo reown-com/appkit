@@ -308,14 +308,9 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   ): Promise<AdapterBlueprint.SignMessageResult> {
     const connector = params.provider as BitcoinConnector
 
-    console.log('>> Bitcoin Adapter: Connector', connector)
-
     if (!connector) {
       throw new Error('BitcoinAdapter:signMessage - connector is undefined')
     }
-
-    console.log('>> Bitcoin Adapter: Signing Message')
-    console.log('>> Bitcoin Adapter: Connector.signMessage', connector.signMessage)
 
     const signature = await connector.signMessage({
       message: params.message,
