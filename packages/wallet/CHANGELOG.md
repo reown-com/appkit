@@ -1,5 +1,15 @@
 # @reown/appkit-wallet
 
+## 1.8.9
+
+### Patch Changes
+
+- [#5098](https://github.com/reown-com/appkit/pull/5098) [`10cfb56`](https://github.com/reown-com/appkit/commit/10cfb56fc940e6d0371918ba8fb8f29692523fc0) Thanks [@magiziz](https://github.com/magiziz)! - Added `getDisabledCaipNetworks` to AppKit to get disabled caip networks
+
+- Updated dependencies [[`6ba0dac`](https://github.com/reown-com/appkit/commit/6ba0dac506cbd4457034a13067207c5c6231e853), [`10cfb56`](https://github.com/reown-com/appkit/commit/10cfb56fc940e6d0371918ba8fb8f29692523fc0)]:
+  - @reown/appkit-common@1.8.9
+  - @reown/appkit-polyfills@1.8.9
+
 ## 1.8.8
 
 ### Patch Changes

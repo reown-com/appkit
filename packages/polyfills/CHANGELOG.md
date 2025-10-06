@@ -1,5 +1,11 @@
 # @reown/appkit-polyfills
 
+## 1.8.9
+
+### Patch Changes
+
+- [#5098](https://github.com/reown-com/appkit/pull/5098) [`10cfb56`](https://github.com/reown-com/appkit/commit/10cfb56fc940e6d0371918ba8fb8f29692523fc0) Thanks [@magiziz](https://github.com/magiziz)! - Added `getDisabledCaipNetworks` to AppKit to get disabled caip networks
+
 ## 1.8.8
 
 ### Patch Changes
