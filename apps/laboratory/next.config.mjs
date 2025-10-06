@@ -41,6 +41,21 @@ const nextConfig = {
         headers: [{ key: 'content-type', value: 'application/json' }]
       }
     ]
+  },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'appkit-lab.reown.com'
+          }
+        ],
+        destination: 'https://lab.reown.com/:path*',
+        permanent: true
+      }
+    ]
   }
 }
 
