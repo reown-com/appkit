@@ -706,6 +706,7 @@ export abstract class AppKitBaseClient {
         return ids.some(id => Boolean(window.ethereum?.[String(id)]))
       },
       signMessage: async (message: string) => {
+        console.log('>> Signing Message')
         const namespace = ChainController.state.activeChain
         const adapter = this.getAdapter(ChainController.state.activeChain)
 
@@ -717,11 +718,17 @@ export abstract class AppKitBaseClient {
           throw new Error('signMessage: adapter not found')
         }
 
+        console.log('>> Adapter', adapter)
+        console.log('>> Namespace', namespace)
+
         const address = this.getAddress(namespace)
+        console.log('>> Address', address)
 
         if (!address) {
           throw new Error('signMessage: address not found')
         }
+
+        console.log('>> Provider', ProviderController.getProvider(namespace))
 
         const result = await adapter?.signMessage({
           message,
