@@ -295,13 +295,13 @@ jobs:
         run: |
           echo "## 📦 Bundle Size Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           # Run size-limit and capture output
           set +e
           pnpm size > size-output.txt 2>&1
           SIZE_EXIT_CODE=$?
           set -e
-          
+
           if [ $SIZE_EXIT_CODE -eq 0 ]; then
             echo "✅ All bundles are within size limits" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
@@ -325,12 +325,40 @@ jobs:
         with:
           script: |
             const fs = require('fs');
+
+            // Strip ANSI color codes
+            function stripAnsi(str) {
+              return str.replace(/\x1B\[[0-9;]*[a-zA-Z]/g, '');
+            }
+
+            // Parse size-limit output into structured data
+            function parseOutput(output) {
+              const clean = stripAnsi(output);
+              const lines = clean.split('\n');
+              const packages = [];
+              let currentPackage = null;
+              
+              for (const line of lines) {
+                // Check if this is a package name line (starts with emoji or has "limit:")
+                if (line.trim() && !line.includes('Adding to') && !line.includes('Running JS')) {
+                  if (!line.startsWith('  ') && !line.includes('Size limit:')) {
+                    // New package
+                    if (currentPackage) packages.push(currentPackage);
+                    currentPackage = { name: line.trim(), details: [] };
+                  } else if (currentPackage) {
+                    // Package detail line
+                    currentPackage.details.push(line.trim());
+                  }
+                }
+              }
+              if (currentPackage) packages.push(currentPackage);
+              return packages;
+            }
+
             let comment = '## 📦 Bundle Size Check\n\n';
-            
+
             try {
               const output = fs.readFileSync('size-output.txt', 'utf8');
-              
-              // Check if size limits were exceeded
               const hasErrors = output.includes('exceeded') || output.includes('FAILED');
               
               if (hasErrors) {
@@ -339,24 +367,41 @@ jobs:
                 comment += '✅ **All bundles are within size limits**\n\n';
               }
               
-              comment += '<details>\n<summary>View bundle sizes</summary>\n\n```\n';
-              comment += output;
-              comment += '\n```\n</details>';
+              const packages = parseOutput(output);
+              
+              if (packages.length > 0) {
+                comment += '<details>\n<summary>📊 View detailed bundle sizes</summary>\n\n';
+                
+                for (const pkg of packages) {
+                  comment += `\n**${pkg.name}**\n`;
+                  comment += '```\n';
+                  comment += pkg.details.join('\n');
+                  comment += '\n```\n';
+                }
+                
+                comment += '\n</details>';
+              } else {
+                // Fallback to raw output if parsing fails
+                comment += '<details>\n<summary>📊 View bundle sizes</summary>\n\n```\n';
+                comment += stripAnsi(output);
+                comment += '\n```\n</details>';
+              }
             } catch (error) {
               comment += '⚠️ Could not read bundle size output. Check the workflow logs.\n';
+              comment += `\nError: ${error.message}`;
             }
-            
+
             // Find existing comment
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
             });
-            
+
             const botComment = comments.find(comment => 
               comment.user.type === 'Bot' && comment.body.includes('Bundle Size Check')
             );
-            
+
             if (botComment) {
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,

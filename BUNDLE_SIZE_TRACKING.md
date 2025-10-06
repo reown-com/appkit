@@ -30,6 +30,7 @@ pnpm size:why
 ### In CI (Pull Requests)
 
 The `bundle_size` job in `.github/workflows/pr_checks.yml` automatically:
+
 1. Builds all packages
 2. Runs `size-limit` to measure sizes
 3. **Fails the PR** if any package exceeds its size limit
@@ -65,6 +66,7 @@ Edit `.size-limit.js` to update limits:
 ```
 
 **Guidelines:**
+
 - Set limits ~5-10% above current size (small buffer for organic growth)
 - If a PR exceeds the limit, investigate what changed
 - Only increase limits if the size increase is justified
@@ -98,6 +100,7 @@ If `pnpm size` fails:
 ## Why File Size Only?
 
 We measure file sizes rather than full webpack bundles because:
+
 - **Monorepo workspace dependencies** - Webpack can't resolve `@reown/appkit-*` workspace deps
 - **Simpler** - No webpack config needed
 - **Still useful** - Catches bloat in individual packages
@@ -110,11 +113,10 @@ For tree-shaking analysis, check published packages on [bundlephobia.com](https:
 ✅ Accidentally adding large dependencies  
 ✅ Code duplication across packages  
 ✅ Unused code creeping in  
-✅ Bundle bloat over time  
+✅ Bundle bloat over time
 
 ## Resources
 
 - [size-limit docs](https://github.com/ai/size-limit)
 - [Why bundle size matters](https://web.dev/your-first-performance-budget/)
 - [Check published package sizes](https://bundlephobia.com/package/@reown/appkit)
-
