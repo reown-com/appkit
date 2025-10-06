@@ -9,21 +9,21 @@ performance implications, and provide actionable suggestions for improvement.
 ## Steps
 
 1. **Understand the change**
-    - Read the PR description and related issues for context
-    - Identify the scope of files and features impacted
-    - Note any assumptions or questions to clarify with the author
+   - Read the PR description and related issues for context
+   - Identify the scope of files and features impacted
+   - Note any assumptions or questions to clarify with the author
 2. **Validate functionality**
-    - Confirm the code delivers the intended behavior
-    - Exercise edge cases or guard conditions mentally or by running locally
-    - Check error handling paths and logging for clarity
+   - Confirm the code delivers the intended behavior
+   - Exercise edge cases or guard conditions mentally or by running locally
+   - Check error handling paths and logging for clarity
 3. **Assess quality**
-    - Ensure functions are focused, names are descriptive, and code is readable
-    - Watch for duplication, dead code, or missing tests
-    - Verify documentation and comments reflect the latest changes
+   - Ensure functions are focused, names are descriptive, and code is readable
+   - Watch for duplication, dead code, or missing tests
+   - Verify documentation and comments reflect the latest changes
 4. **Review security and risk**
-    - Look for injection points, insecure defaults, or missing validation
-    - Confirm secrets or credentials are not exposed
-    - Evaluate performance or scalability impacts of the change
+   - Look for injection points, insecure defaults, or missing validation
+   - Confirm secrets or credentials are not exposed
+   - Evaluate performance or scalability impacts of the change
 
 ## Review Checklist
 
