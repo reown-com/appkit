@@ -31,7 +31,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
 
   public constructor() {
     super()
-    window.addEventListener('resize', this.forceUpdate)
   }
 
   public override firstUpdated() {
@@ -53,7 +52,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public override disconnectedCallback() {
     super.disconnectedCallback()
     this.unsubscribe?.forEach(unsub => unsub())
-    window.removeEventListener('resize', this.forceUpdate)
   }
 
   // -- Render -------------------------------------------- //
@@ -87,7 +85,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
       return null
     }
 
-    const size = this.getBoundingClientRect().width - 40
     const alt = this.wallet ? this.wallet.name : undefined
     ConnectionController.setWcLinking(undefined)
     ConnectionController.setRecentWallet(this.wallet)
@@ -103,7 +100,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     }
 
     return html` <wui-qr-code
-      size=${size}
       theme=${ThemeController.state.themeMode}
       uri=${uriWithLink}
       imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet))}
@@ -126,10 +122,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
       Copy link
       <wui-icon size="sm" color="inherit" name="copy" slot="iconRight"></wui-icon>
     </wui-button>`
-  }
-
-  private forceUpdate = () => {
-    this.requestUpdate()
   }
 }
 
