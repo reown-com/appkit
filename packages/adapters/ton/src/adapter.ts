@@ -1,13 +1,15 @@
+import { WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
+import { ChainController } from '@reown/appkit-controllers'
 import type { TonConnector } from '@reown/appkit-utils/ton'
 import { getWallets as getTonWallets } from '@reown/appkit-utils/ton'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { ton } from '@reown/appkit/networks'
 
 import { TonConnectConnector } from './connectors/TonConnectConnector'
+import { TonWalletConnectConnector } from './connectors/TonWalletConnectConnector'
 import { isWalletInfoInjectable } from './utils/TonWalletUtils'
 
-// @ts-expect-error will fix
 export class TonAdapter extends AdapterBlueprint<TonConnector> {
   constructor(params?: AdapterBlueprint.Params) {
     super({ namespace: ConstantsUtil.CHAIN.TON, ...params })
@@ -46,7 +48,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
       // Set connection, emit events, etc.
       // Mirror logic from BitcoinAdapter
       const chainId = params.chainId || ton.caipNetworkId
-      // @ts-expect-error will fix
+
       this.emit('accountChanged', { address, chainId, connector })
       this.connector = connector // Set active connector
 
@@ -158,6 +160,28 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     }
   }
 
+  public override async setUniversalProvider(universalProvider: any) {
+    const wcConnectorId = ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+
+    WcHelpersUtil.listenWcProvider({
+      universalProvider,
+      namespace: ConstantsUtil.CHAIN.TON,
+      onConnect: accounts => this.onConnect(accounts, wcConnectorId),
+      onDisconnect: () => this.onDisconnect(wcConnectorId),
+      onAccountsChanged: accounts => super.onAccountsChanged(accounts, wcConnectorId, false)
+    })
+
+    const tonConnector = new TonWalletConnectConnector({
+      provider: universalProvider as unknown as any,
+      chains: this.getCaipNetworks(),
+      getActiveChain: () => this.getCaipNetworks()?.find(n => n.chainNamespace === this.namespace)
+    })
+
+    this.addConnector(tonConnector)
+
+    return Promise.resolve()
+  }
+
   override async getBalance(): Promise<AdapterBlueprint.GetBalanceResult> {
     // Implement using TON RPC
     return { balance: '0', symbol: 'TON' } // Placeholder
@@ -247,9 +271,16 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     return {} as AdapterBlueprint.WalletGetAssetsResponse // Cast to satisfy type
   }
 
-  override getWalletConnectProvider(): AdapterBlueprint.GetWalletConnectProviderResult {
-    // TODO: Implement if needed
-    return undefined // Placeholder
+  override getWalletConnectProvider(
+    params: AdapterBlueprint.GetWalletConnectProviderParams
+  ): AdapterBlueprint.GetWalletConnectProviderResult {
+    const walletConnectProvider = new TonWalletConnectConnector({
+      provider: params.provider as unknown as any,
+      chains: params.caipNetworks,
+      getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
+    })
+
+    return walletConnectProvider as unknown as AdapterBlueprint.GetWalletConnectProviderResult
   }
 
   // For QR and universal link handling, TBD

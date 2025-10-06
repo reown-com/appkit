@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import { Button, Card, CardBody, Heading, Stack, Text } from '@chakra-ui/react'
 
+import type { TonConnector } from '@reown/appkit-utils/ton'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
@@ -11,18 +12,23 @@ import { useChakraToast } from '@/src/components/Toast'
 export function TonSignDataTest() {
   const toast = useChakraToast()
   const { address, isConnected } = useAppKitAccount({ namespace: 'ton' })
-  const { walletProvider } = useAppKitProvider<any>('ton')
+  const { walletProvider } = useAppKitProvider<TonConnector>('ton')
   const [signature, setSignature] = useState<string | undefined>()
 
   async function signText() {
     try {
+      console.log('>> walletProvider', walletProvider)
       if (!walletProvider || !isConnected || !address) throw new Error('Disconnected')
       const payload = { type: 'text', text: 'Confirm action in AppKit', from: address }
-      const sig = await walletProvider.signData({ data: payload })
+      const sig = await walletProvider.signData(payload)
       setSignature(sig)
       toast({ title: 'Signed (text)', description: sig, type: 'success' })
     } catch (err) {
-      toast({ title: 'Sign error', description: 'Failed to sign text', type: 'error' })
+      toast({
+        title: 'Sign error',
+        description: (err as Error)?.message || 'Failed to sign text',
+        type: 'error'
+      })
     }
   }
 

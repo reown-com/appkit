@@ -6,7 +6,6 @@ import { toUserFriendlyAddress, userFriendlyToRawAddress } from '../utils/TonWal
 export class TonConnectConnector implements TonConnector {
   public readonly chain = 'ton'
   public readonly type = 'EXTERNAL'
-  public readonly provider = this
 
   private readonly requestedChains: CaipNetwork[]
   private readonly wallet: TonWalletInfo
@@ -63,13 +62,16 @@ export class TonConnectConnector implements TonConnector {
     return this.currentAddress
   }
 
-  async signMessage(): Promise<string> {
-    throw new Error('TON signMessage not implemented')
+  async signMessage(params: { message: string }): Promise<string> {
+    // Map to signData with type text
+    return this.signData({
+      data: { type: 'text', text: params.message, from: this.currentAddress }
+    })
   }
 
-  async sendTransaction(params: { transaction: any }): Promise<string> {
+  async sendMessage(params: { message: any }): Promise<string> {
     if (!('jsBridgeKey' in this.wallet) || !this.wallet.jsBridgeKey) {
-      throw new Error('TON sendTransaction over bridge not implemented')
+      throw new Error('TON sendMessage over bridge not implemented')
     }
 
     const w = typeof window !== 'undefined' ? (window as any) : undefined
@@ -77,7 +79,7 @@ export class TonConnectConnector implements TonConnector {
     const api = w[this.wallet.jsBridgeKey]?.tonconnect
     if (!api || typeof api.send !== 'function') throw new Error('Injected wallet not available')
 
-    const tx = params.transaction || {}
+    const tx = params.message || {}
     const prepared = {
       valid_until: tx.validUntil ?? Math.floor(Date.now() / 1000) + 60,
       from: tx.from,
@@ -93,6 +95,11 @@ export class TonConnectConnector implements TonConnector {
 
     const res = await api.send({ method: 'sendTransaction', params: [prepared] })
     return res?.boc as string
+  }
+
+  async sendTransaction(params: { transaction: any }): Promise<string> {
+    // Backward compatibility alias for cross-chain callers
+    return this.sendMessage({ message: params.transaction })
   }
 
   async signData(params: { data: any }): Promise<string> {
