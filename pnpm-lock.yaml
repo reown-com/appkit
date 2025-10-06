@@ -12,7 +12,7 @@ overrides:
   elliptic: '>=6.6.1'
   ws: '>=7.5.10'
   chalk: <=5.3.0
-  strip-ansi: <=7.1.0
+  strip-ansi: 6.0.1
   color-convert: <=2.0.1
   color-name: <=1.1.4
   is-core-module: <=2.13.1
@@ -9953,10 +9953,6 @@ packages:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
     engines: {node: '>=8'}
 
-  ansi-regex@6.2.2:
-    resolution: {integrity: sha512-Bq3SmSpyFHaWjPk8If9yc6svM8c56dB5BAtW4Qbw5jHTwwXXcTLoRMkpDJp6VL0XzlWaCHTXrkFURMYmD0sLqg==}
-    engines: {node: '>=12'}
-
   ansi-styles@4.3.0:
     resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
     engines: {node: '>=8'}
@@ -15810,10 +15806,6 @@ packages:
     resolution: {integrity: sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==}
     engines: {node: '>=8'}
 
-  strip-ansi@7.1.0:
-    resolution: {integrity: sha512-iq6eVVI64nQQTRYq2KtEg2d2uU7LElhTJwsH4YzIHZshxlgZms/wIc4VoDQTlG/IvVIrBKG06CrZnp0qv7hkcQ==}
-    engines: {node: '>=12'}
-
   strip-bom@3.0.0:
     resolution: {integrity: sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA==}
     engines: {node: '>=4'}
@@ -21139,7 +21131,7 @@ snapshots:
     dependencies:
       string-width: 5.1.2
       string-width-cjs: string-width@4.2.3
-      strip-ansi: 7.1.0
+      strip-ansi: 6.0.1
       strip-ansi-cjs: strip-ansi@6.0.1
       wrap-ansi: 8.1.0
       wrap-ansi-cjs: wrap-ansi@7.0.0
@@ -31527,8 +31519,6 @@ snapshots:
 
   ansi-regex@5.0.1: {}
 
-  ansi-regex@6.2.2: {}
-
   ansi-styles@4.3.0:
     dependencies:
       color-convert: 2.0.1
@@ -32342,13 +32332,13 @@ snapshots:
   cliui@6.0.0:
     dependencies:
       string-width: 4.2.3
-      strip-ansi: 7.1.0
+      strip-ansi: 6.0.1
       wrap-ansi: 6.2.0
 
   cliui@8.0.1:
     dependencies:
       string-width: 4.2.3
-      strip-ansi: 7.1.0
+      strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
 
   clone-deep@4.0.1:
@@ -33171,7 +33161,7 @@ snapshots:
   enquirer@2.4.1:
     dependencies:
       ansi-colors: 4.1.3
-      strip-ansi: 7.1.0
+      strip-ansi: 6.0.1
 
   entities@2.2.0: {}
 
@@ -33675,7 +33665,7 @@ snapshots:
       minimatch: 3.1.2
       natural-compare: 1.4.0
       optionator: 0.9.4
-      strip-ansi: 7.1.0
+      strip-ansi: 6.0.1
       text-table: 0.2.0
     transitivePeerDependencies:
       - supports-color
@@ -38132,7 +38122,7 @@ snapshots:
       dom-converter: 0.2.0
       htmlparser2: 6.1.0
       lodash: 4.17.21
-      strip-ansi: 7.1.0
+      strip-ansi: 6.0.1
 
   require-directory@2.1.1: {}
 
@@ -38866,13 +38856,13 @@ snapshots:
     dependencies:
       emoji-regex: 8.0.0
       is-fullwidth-code-point: 3.0.0
-      strip-ansi: 7.1.0
+      strip-ansi: 6.0.1
 
   string-width@5.1.2:
     dependencies:
       eastasianwidth: 0.2.0
       emoji-regex: 9.2.2
-      strip-ansi: 7.1.0
+      strip-ansi: 6.0.1
 
   string.prototype.includes@2.0.1:
     dependencies:
@@ -38935,10 +38925,6 @@ snapshots:
   strip-ansi@6.0.1:
     dependencies:
       ansi-regex: 5.0.1
-
-  strip-ansi@7.1.0:
-    dependencies:
-      ansi-regex: 6.2.2
 
   strip-bom@3.0.0: {}
 
@@ -40202,7 +40188,7 @@ snapshots:
       npm-run-path: 6.0.0
       picocolors: 1.1.1
       picomatch: 4.0.3
-      strip-ansi: 7.1.0
+      strip-ansi: 6.0.1
       tiny-invariant: 1.3.3
       tinyglobby: 0.2.15
       vite: 7.1.9(@types/node@22.13.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1)
@@ -40219,7 +40205,7 @@ snapshots:
       npm-run-path: 6.0.0
       picocolors: 1.1.1
       picomatch: 4.0.3
-      strip-ansi: 7.1.0
+      strip-ansi: 6.0.1
       tiny-invariant: 1.3.3
       tinyglobby: 0.2.15
       vite: 7.1.9(@types/node@22.13.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1)
@@ -40237,7 +40223,7 @@ snapshots:
       npm-run-path: 6.0.0
       picocolors: 1.1.1
       picomatch: 4.0.3
-      strip-ansi: 7.1.0
+      strip-ansi: 6.0.1
       tiny-invariant: 1.3.3
       tinyglobby: 0.2.15
       vite: 7.1.9(@types/node@22.13.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1)
@@ -41106,19 +41092,19 @@ snapshots:
     dependencies:
       ansi-styles: 4.3.0
       string-width: 4.2.3
-      strip-ansi: 7.1.0
+      strip-ansi: 6.0.1
 
   wrap-ansi@7.0.0:
     dependencies:
       ansi-styles: 4.3.0
       string-width: 4.2.3
-      strip-ansi: 7.1.0
+      strip-ansi: 6.0.1
 
   wrap-ansi@8.1.0:
     dependencies:
       ansi-styles: 6.2.3
       string-width: 5.1.2
-      strip-ansi: 7.1.0
+      strip-ansi: 6.0.1
 
   wrappy@1.0.2: {}
 
