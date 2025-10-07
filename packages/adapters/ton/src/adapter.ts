@@ -11,7 +11,11 @@ import { TonWalletConnectConnector } from './connectors/TonWalletConnectConnecto
 
 export class TonAdapter extends AdapterBlueprint<TonConnector> {
   constructor(params?: AdapterBlueprint.Params) {
-    super({ namespace: ConstantsUtil.CHAIN.TON, ...params })
+    super({
+      namespace: ConstantsUtil.CHAIN.TON,
+      adapterType: ConstantsUtil.ADAPTER_TYPES.TON,
+      ...params
+    })
   }
 
   override async syncConnectors() {

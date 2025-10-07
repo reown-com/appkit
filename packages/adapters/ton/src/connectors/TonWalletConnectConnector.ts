@@ -1,6 +1,8 @@
+import { WcHelpersUtil } from '@reown/appkit'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { ChainController } from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
 import type { TonConnector } from '@reown/appkit-utils/ton'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
 
@@ -38,10 +40,16 @@ export class TonWalletConnectConnector
     return this.chains
   }
 
-  async connect(): Promise<string> {
-    const address = this.getSessionAddress()
-    if (!address) throw new Error('WalletConnect: TON account not found in session')
-    return address
+  public override get chains() {
+    return this.sessionChains
+      .map(chainId => this.caipNetworks.find(chain => chain.caipNetworkId === chainId))
+      .filter(Boolean) as CaipNetwork[]
+  }
+
+  public async connect() {
+    return Promise.reject(
+      new Error('Connection of WalletConnectProvider should be done via UniversalAdapter')
+    )
   }
 
   override async disconnect(): Promise<void> {
@@ -49,80 +57,80 @@ export class TonWalletConnectConnector
     return Promise.resolve()
   }
 
-  async getAccount(): Promise<string | undefined> {
-    return this.getSessionAddress()
-  }
+  // @ts-ignore
+  private getAccount<Required extends boolean>(
+    required?: Required
+  ): Required extends true ? string : string | undefined {
+    const caipAddress = ChainController.getAccountData(CommonConstantsUtil.CHAIN.TON)?.caipAddress
+    const account = this.provider.session?.namespaces[CommonConstantsUtil.CHAIN.TON]?.accounts.find(
+      _account => HelpersUtil.isLowerCaseMatch(_account, caipAddress)
+    )
 
-  async signMessage(params: { message: string }): Promise<string> {
-    // TON uses signData. For convenience, map text message to signData:text
-    const signature = await this.signData({ data: { type: 'text', text: params.message } })
-    return signature
+    if (!account) {
+      if (required) {
+        throw new Error('Account not found')
+      }
+
+      return undefined as Required extends true ? string : string | undefined
+    }
+
+    const address = account.split(':')[2]
+    if (!address) {
+      if (required) {
+        throw new Error('Address not found')
+      }
+
+      return undefined as Required extends true ? string : string | undefined
+    }
+
+    return address
   }
 
   public async signData(params: { data: any }): Promise<string> {
-    const chainId = this.getActiveCaipNetworkId()
-    const topic = (this.provider as any)?.session?.topic
-    if (!topic) throw new Error('WalletConnect: missing session topic')
+    const chain = this.getActiveChain()
+
+    if (!chain) {
+      throw new Error('Chain not found')
+    }
 
     const request = {
       method: 'ton_signData',
       params: [params],
-      chainId,
-      topic
+      chainId: chain.caipNetworkId
     }
-    console.log('>> params', request)
-
     const result: any = await (this.provider as any).request(request)
 
     return (result?.signature || result?.result?.signature || '') as string
   }
 
   public async sendMessage(params: { message: any }): Promise<string> {
-    const chainId = this.getActiveCaipNetworkId()
-    const topic = (this.provider as any)?.session?.topic
-    if (!topic) throw new Error('WalletConnect: missing session topic')
+    const chain = this.getActiveChain()
+
+    if (!chain) {
+      throw new Error('Chain not found')
+    }
 
     const request = {
       method: 'ton_sendMessage',
       params: [params.message],
-      chainId,
-      topic
+      chainId: chain.caipNetworkId
     }
-    console.log('>>> sendMessage', request)
-
     const result: any = await (this.provider as any).request(request)
 
     return (result?.boc || result?.result || '') as string
   }
 
   async sendTransaction(params: { transaction: any }): Promise<string> {
-    console.log('>>> sendTransaction', params)
     return this.sendMessage({ message: params.transaction })
   }
 
   async switchNetwork(): Promise<void> {
+    // ChainAdapterBlueprint.switchNetwork will be called instead
     return Promise.resolve()
   }
 
   // -- Internals ----------------------------------------------------- //
-  private getSessionAddress(): string | undefined {
-    const namespaces = (this.provider as any)?.session?.namespaces
-    const accounts = namespaces?.[CommonConstantsUtil.CHAIN.TON]?.accounts || []
-
-    if (!accounts.length) {
-      return undefined
-    }
-    // account format: ton:-239:<user-friendly>
-    const activeId = this.getActiveChain()?.id?.toString()
-    const account = accounts.find((a: string) => a.split(':')[1] === activeId) || accounts[0]
-    return account?.split(':')[2]
-  }
-
-  private getActiveCaipNetworkId(): string {
-    // Prefer ChainController’s active network for TON
-    const active =
-      this.getActiveChain() ||
-      ChainController.getCaipNetworkByNamespace(CommonConstantsUtil.CHAIN.TON)
-    return (active?.caipNetworkId || active?.id || 'ton:-239') as string
+  private get sessionChains() {
+    return WcHelpersUtil.getChainsFromNamespaces(this.provider.session?.namespaces)
   }
 }
