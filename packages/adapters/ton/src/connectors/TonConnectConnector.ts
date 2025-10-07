@@ -1,4 +1,7 @@
 import type { CaipNetwork } from '@reown/appkit-common'
+import { OptionsController } from '@reown/appkit-controllers'
+import { CoreHelperUtil } from '@reown/appkit-controllers'
+import { BlockchainApiController } from '@reown/appkit-controllers'
 import type { TonConnector, TonWalletInfo } from '@reown/appkit-utils/ton'
 
 import { toUserFriendlyAddress, userFriendlyToRawAddress } from '../utils/TonWalletUtils'
@@ -183,7 +186,23 @@ export class TonConnectConnector implements TonConnector {
   }
 
   private getDefaultManifestUrl(): string {
-    return 'https://appkit-laboratory-irtfq5uy0-reown-com.vercel.app/ton-manifest.json'
+    const base = `https://api-web3modal-staging.walletconnect-v1-bridge.workers.dev/ton/v1/manifest`
+    const { metadata, projectId } = OptionsController.state
+    const { st, sv } = BlockchainApiController.getSdkProperties()
+
+    const appUrl = metadata?.url || (typeof window !== 'undefined' ? window.location.origin : '')
+    const name = metadata?.name || ''
+    const iconUrl = metadata?.icons?.[0] || ''
+
+    const u = new URL(base)
+    if (projectId) u.searchParams.set('projectId', projectId)
+    if (st) u.searchParams.set('st', st)
+    if (sv) u.searchParams.set('sv', sv)
+    if (appUrl) u.searchParams.set('url', appUrl)
+    if (name) u.searchParams.set('name', name)
+    if (iconUrl) u.searchParams.set('iconUrl', iconUrl)
+
+    return u.toString()
   }
 
   private createConnectRequest(manifestUrl: string, tonProof?: string) {

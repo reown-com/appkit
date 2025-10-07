@@ -1,4 +1,5 @@
 // -- TON Wallets Utils --------------------------------------------------------- //
+import { hasProperty } from '../TypeUtil'
 
 /**
  * Minimal types describing TON wallets. These are intentionally lightweight
@@ -62,13 +63,69 @@ export async function getWallets(params?: {
   /** Optional in-memory cache TTL in milliseconds */
   cacheTTLMs?: number
 }): Promise<TonWalletInfo[]> {
-  const [dtoList, injected] = await Promise.all([
-    fetchWalletsListDTO(params),
-    getCurrentlyInjectedWallets()
-  ])
+  const dtoList = await fetchWalletsListDTO(params)
 
-  const remote = walletDTOListToWalletInfoList(dtoList)
-  return mergeWalletLists(remote, injected)
+  // Build map: jsBridgeKey -> remote DTO
+  const remoteByKey = new Map<string, TonWalletInfoDTO>()
+  for (const dto of dtoList) {
+    for (const br of dto.bridge ?? []) {
+      if (br.type === 'js') {
+        remoteByKey.set(br.key, dto)
+      }
+    }
+  }
+
+  // Scan window for ANY tonconnect object (walletInfo may be missing)
+  const w = getWindow()
+  const injected: TonWalletInfoInjectable[] = []
+  if (w) {
+    let entries: [string, unknown][] = []
+    try {
+      entries = Object.entries(w as any)
+    } catch {
+      entries = []
+    }
+
+    for (const [key, value] of entries) {
+      const hasTonconnect = !!(value && typeof value === 'object' && (value as any).tonconnect)
+      if (!hasTonconnect) continue
+
+      const tc = (value as any).tonconnect
+      const wi = tc?.walletInfo
+      const dto = remoteByKey.get(key)
+
+      const name = wi?.name || dto?.name || key
+      const appName = wi?.app_name || dto?.app_name || name
+      const imageUrl = wi?.image || dto?.image || ''
+      const aboutUrl = wi?.about_url || dto?.about_url || ''
+      const tondns = wi?.tondns || dto?.tondns
+      const platforms = wi?.platforms || dto?.platforms || []
+      const features = wi?.features || dto?.features
+
+      injected.push({
+        name,
+        appName,
+        imageUrl,
+        aboutUrl,
+        tondns,
+        platforms,
+        features,
+        jsBridgeKey: key,
+        injected: true,
+        embedded: !!tc?.isWalletBrowser
+      })
+    }
+  }
+
+  try {
+    // eslint-disable-next-line no-console
+    console.log(
+      '[TonWalletsUtil] Injected (final) from window+remote map:',
+      injected.map(w => ({ name: w.name, key: w.jsBridgeKey, embedded: w.embedded }))
+    )
+  } catch {}
+
+  return injected
 }
 
 /**
@@ -76,7 +133,8 @@ export async function getWallets(params?: {
  */
 export function isWalletInjected(jsBridgeKey: string): boolean {
   const w = getWindow()
-  return !!w && jsBridgeKey in w && isJSBridgeWithMetadata((w as any)[jsBridgeKey])
+  const obj = (w as any)[jsBridgeKey]
+  return !!w && obj in w && isJSBridgeWithMetadata(obj)
 }
 
 /**
@@ -86,6 +144,7 @@ export function isInsideWalletBrowser(jsBridgeKey: string): boolean {
   const w = getWindow()
   if (!w) return false
   const obj = (w as any)[jsBridgeKey]
+  console.log('[TonWalletsUtil] isInsideWalletBrowser: obj', obj)
   return isJSBridgeWithMetadata(obj) ? !!obj.tonconnect.isWalletBrowser : false
 }
 
@@ -105,6 +164,18 @@ export function getCurrentlyInjectedWallets(): TonWalletInfoInjectable[] {
 
   const wallets: TonWalletInfoInjectable[] = []
   for (const [key, value] of entries) {
+    try {
+      if (
+        value &&
+        typeof value === 'object' &&
+        (value as any).tonconnect &&
+        !isJSBridgeWithMetadata(value)
+      ) {
+        // eslint-disable-next-line no-console
+        console.log('[TonWalletsUtil] Found tonconnect without walletInfo for key:', key)
+      }
+    } catch {}
+
     if (!isJSBridgeWithMetadata(value)) continue
 
     const info = value.tonconnect.walletInfo
@@ -121,10 +192,18 @@ export function getCurrentlyInjectedWallets(): TonWalletInfoInjectable[] {
       features: info.features
     })
   }
+  try {
+    // eslint-disable-next-line no-console
+    console.log(
+      '[TonWalletsUtil] Injected wallets detected:',
+      wallets.map(w => ({ name: w.name, key: w.jsBridgeKey, embedded: w.embedded }))
+    )
+  } catch {}
   return wallets
 }
 
 // -- Implementation ------------------------------------------------------------ //
+
 async function fetchWalletsListDTO(params?: {
   sourceUrl?: string
   cacheTTLMs?: number
@@ -216,17 +295,6 @@ function mergeWalletLists(a: TonWalletInfo[], b: TonWalletInfo[]): TonWalletInfo
   a.forEach(put)
   b.forEach(put)
   return Array.from(map.values())
-}
-
-function getInjectedFlags(jsBridgeKey: string): { injected: boolean; embedded: boolean } {
-  const w = getWindow()
-  if (!w) return { injected: false, embedded: false }
-  const obj = (w as any)[jsBridgeKey]
-  if (!isJSBridgeWithMetadata(obj)) return { injected: false, embedded: false }
-  return {
-    injected: true,
-    embedded: !!obj.tonconnect.isWalletBrowser
-  }
 }
 
 function isCorrectWalletInfoDTO(value: unknown): value is TonWalletInfoDTO {

@@ -2,13 +2,12 @@ import { WcHelpersUtil } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
 import { ChainController } from '@reown/appkit-controllers'
 import type { TonConnector } from '@reown/appkit-utils/ton'
-import { getWallets as getTonWallets } from '@reown/appkit-utils/ton'
+import { getWallets as getInjectedWallets } from '@reown/appkit-utils/ton'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { ton } from '@reown/appkit/networks'
 
 import { TonConnectConnector } from './connectors/TonConnectConnector'
 import { TonWalletConnectConnector } from './connectors/TonWalletConnectConnector'
-import { isWalletInfoInjectable } from './utils/TonWalletUtils'
 
 export class TonAdapter extends AdapterBlueprint<TonConnector> {
   constructor(params?: AdapterBlueprint.Params) {
@@ -18,16 +17,15 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   override async syncConnectors() {
     try {
       console.log('[TonAdapter] syncConnectors: start')
-      const wallets = await getTonWallets({ cacheTTLMs: 60_000 })
-      const currentlyInjected = wallets.filter(isWalletInfoInjectable)
-
-      console.log('[TonAdapter] syncConnectors: wallets', currentlyInjected)
+      // Use simplified utils.getWallets(): returns injected wallets with name resolved via remote list
+      const injectedNow = await getInjectedWallets({ cacheTTLMs: 60_000 })
+      console.log('[TonAdapter] syncConnectors: injected (final)', injectedNow)
 
       const chains = this.getCaipNetworks()
-      currentlyInjected.forEach(wallet =>
-        this.addConnector(new TonConnectConnector({ wallet, chains }))
+      injectedNow.forEach(wallet =>
+        this.addConnector(new TonConnectConnector({ wallet: wallet as any, chains }))
       )
-      console.log('[TonAdapter] syncConnectors: completed', wallets.length)
+      console.log('[TonAdapter] syncConnectors: completed', injectedNow.length)
     } catch (err) {
       console.error('[TonAdapter] syncConnectors error', err)
     }
