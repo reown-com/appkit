@@ -64,14 +64,15 @@ export class TonWalletConnectConnector
     const topic = (this.provider as any)?.session?.topic
     if (!topic) throw new Error('WalletConnect: missing session topic')
 
-    const result: any = await (this.provider as any).request(
-      {
-        method: 'ton_signData',
-        params
-      },
+    const request = {
+      method: 'ton_signData',
+      params: [params],
       chainId,
       topic
-    )
+    }
+    console.log('>> params', request)
+
+    const result: any = await (this.provider as any).request(request)
 
     return (result?.signature || result?.result?.signature || '') as string
   }
@@ -81,20 +82,21 @@ export class TonWalletConnectConnector
     const topic = (this.provider as any)?.session?.topic
     if (!topic) throw new Error('WalletConnect: missing session topic')
 
-    const result: any = await (this.provider as any).request({
-      topic,
+    const request = {
+      method: 'ton_sendMessage',
+      params: [params.message],
       chainId,
-      request: {
-        method: 'ton_sendMessage',
-        params: [params.message]
-      }
-    })
+      topic
+    }
+    console.log('>>> sendMessage', request)
+
+    const result: any = await (this.provider as any).request(request)
 
     return (result?.boc || result?.result || '') as string
   }
 
   async sendTransaction(params: { transaction: any }): Promise<string> {
-    // Backward compatibility alias to sendMessage
+    console.log('>>> sendTransaction', params)
     return this.sendMessage({ message: params.transaction })
   }
 
@@ -106,6 +108,7 @@ export class TonWalletConnectConnector
   private getSessionAddress(): string | undefined {
     const namespaces = (this.provider as any)?.session?.namespaces
     const accounts = namespaces?.[CommonConstantsUtil.CHAIN.TON]?.accounts || []
+
     if (!accounts.length) {
       return undefined
     }

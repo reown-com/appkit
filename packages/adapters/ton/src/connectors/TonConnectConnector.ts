@@ -186,7 +186,7 @@ export class TonConnectConnector implements TonConnector {
   }
 
   private getDefaultManifestUrl(): string {
-    const base = `https://api-web3modal-staging.walletconnect-v1-bridge.workers.dev/ton/v1/manifest`
+    const base = `${CoreHelperUtil.getApiUrl()}/ton/v1/manifest`
     const { metadata, projectId } = OptionsController.state
     const { st, sv } = BlockchainApiController.getSdkProperties()
 

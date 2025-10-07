@@ -34,11 +34,18 @@ const customRpcUrls = {
   'eip155:8453': [{ url: 'https://base-rpc.publicnode.com' }]
 }
 const connectors = [externalTestConnector()]
+const metadata = {
+  name: 'AppKit',
+  description: 'AppKit Laboratory',
+  url: 'https://lab.reown.com/',
+  icons: ['https://lab.reown.com/logo.png']
+}
 const commonAppKitConfig = {
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
   customWallets: ConstantsUtil.CustomWallets,
-  projectId: ConstantsUtil.ProjectId
+  projectId: ConstantsUtil.ProjectId,
+  metadata
 }
 const commonWagmiConfig = {
   ssr: true,
@@ -95,13 +102,7 @@ export const appKitConfigs = {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
     wagmiConfig: commonWagmiConfig,
-    networks: ConstantsUtil.EvmNetworks,
-    metadata: {
-      name: 'AppKit',
-      description: 'AppKit Laboratory',
-      url: 'https://example.com',
-      icons: []
-    }
+    networks: ConstantsUtil.EvmNetworks
   },
   'wagmi-verify-evil': {
     ...commonAppKitConfig,
@@ -228,13 +229,7 @@ export const appKitConfigs = {
   'ethers-verify-domain-mismatch': {
     ...commonAppKitConfig,
     adapters: ['ethers'],
-    networks: ConstantsUtil.EvmNetworks,
-    metadata: {
-      name: 'AppKit',
-      description: 'AppKit Laboratory',
-      url: 'https://example.com',
-      icons: []
-    }
+    networks: ConstantsUtil.EvmNetworks
   },
   'ethers-verify-evil': {
     ...commonAppKitConfig,

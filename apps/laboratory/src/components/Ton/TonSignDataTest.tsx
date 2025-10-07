@@ -24,6 +24,7 @@ export function TonSignDataTest() {
       setSignature(sig)
       toast({ title: 'Signed (text)', description: sig, type: 'success' })
     } catch (err) {
+      console.log('>> err', err)
       toast({
         title: 'Sign error',
         description: (err as Error)?.message || 'Failed to sign text',

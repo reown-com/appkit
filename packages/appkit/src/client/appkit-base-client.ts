@@ -588,6 +588,7 @@ export abstract class AppKitBaseClient {
         if (shouldClose) {
           this.close()
         }
+        console.log('>> result', result)
 
         this.setClientId(result?.clientId || null)
         StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])

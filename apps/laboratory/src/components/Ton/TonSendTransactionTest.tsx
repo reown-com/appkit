@@ -33,6 +33,7 @@ export function TonSendTransactionTest() {
       setBoc(res)
       toast({ title: 'Transaction prepared', description: res, type: 'success' })
     } catch (e) {
+      console.log('>> e', e)
       toast({ title: 'Send error', description: 'Failed to send transaction', type: 'error' })
     }
   }

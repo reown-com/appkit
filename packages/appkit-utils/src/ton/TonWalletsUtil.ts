@@ -1,5 +1,4 @@
 // -- TON Wallets Utils --------------------------------------------------------- //
-import { hasProperty } from '../TypeUtil'
 
 /**
  * Minimal types describing TON wallets. These are intentionally lightweight
@@ -245,56 +244,6 @@ async function fetchWalletsListDTO(params?: {
   }
 
   return cachePromise
-}
-
-function walletDTOListToWalletInfoList(dtoList: TonWalletInfoDTO[]): TonWalletInfo[] {
-  return dtoList.map(dto => {
-    const base: TonWalletInfoBase = {
-      name: dto.name,
-      appName: dto.app_name,
-      imageUrl: dto.image,
-      aboutUrl: dto.about_url,
-      tondns: dto.tondns,
-      platforms: dto.platforms,
-      features: dto.features
-    }
-
-    let remote: Partial<TonWalletInfoRemote> = {}
-    let injectable: Partial<TonWalletInfoInjectable> = {}
-
-    for (const br of dto.bridge ?? []) {
-      if (br.type === 'sse') {
-        remote.bridgeUrl = br.url
-        remote.universalLink = dto.universal_url
-        remote.deepLink = dto.deepLink
-      } else if (br.type === 'js') {
-        const jsBridgeKey = br.key
-        const injectedFlags = getInjectedFlags(jsBridgeKey)
-        injectable = {
-          jsBridgeKey,
-          injected: injectedFlags.injected,
-          embedded: injectedFlags.embedded
-        }
-      }
-    }
-
-    return {
-      ...base,
-      ...remote,
-      ...(injectable.jsBridgeKey ? injectable : {})
-    } as TonWalletInfo
-  })
-}
-
-function mergeWalletLists(a: TonWalletInfo[], b: TonWalletInfo[]): TonWalletInfo[] {
-  const map = new Map<string, TonWalletInfo>()
-  const put = (w: TonWalletInfo) => {
-    const existing = map.get(w.name)
-    map.set(w.name, { ...(existing || {}), ...w } as TonWalletInfo)
-  }
-  a.forEach(put)
-  b.forEach(put)
-  return Array.from(map.values())
 }
 
 function isCorrectWalletInfoDTO(value: unknown): value is TonWalletInfoDTO {
