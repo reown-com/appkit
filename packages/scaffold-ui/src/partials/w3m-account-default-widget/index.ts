@@ -131,11 +131,11 @@ export class W3mAccountDefaultWidget extends LitElement {
           @click=${this.onGoToProfileWalletsView.bind(this)}
           data-testid="wui-wallet-switch"
         ></wui-wallet-switch>
-        <wui-flex flexDirection="row" alignItems="flex-end" justifyContent="center" gap="1">
+        <div class="balance-container">
           <wui-text variant="h3-regular" color="primary">${value}</wui-text>
           <wui-text variant="h3-regular" color="secondary">.${decimals}</wui-text>
-          <wui-text variant="h6-medium" color="primary">${symbol}</wui-text>
-        </wui-flex>
+          <wui-text variant="h6-medium" color="primary" class="symbol">${symbol}</wui-text>
+        </div>
         ${this.explorerBtnTemplate()}
       </wui-flex>
 

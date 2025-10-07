@@ -86,7 +86,7 @@ export class W3mAllWalletsSearch extends LitElement {
         justifyContent="space-between"
       >
         ${wallets.map(
-          wallet => html`
+          (wallet, index) => html`
             <w3m-all-wallets-list-item
               @click=${() => this.onConnectWallet(wallet)}
               .wallet=${wallet}
@@ -94,6 +94,7 @@ export class W3mAllWalletsSearch extends LitElement {
               explorerId=${wallet.id}
               certified=${this.badge === 'certified'}
               walletQuery=${this.query}
+              displayIndex=${index}
             ></w3m-all-wallets-list-item>
           `
         )}
