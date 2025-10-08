@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@walletconnect/sign-client": "2.22.0-canary-4",
+    "@walletconnect/sign-client": "2.22.0-canary-5",
     "bs58": "6.0.0"
   },
   "devDependencies": {
