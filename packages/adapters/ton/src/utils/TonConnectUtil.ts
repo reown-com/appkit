@@ -10,16 +10,15 @@ import type {
 } from '@reown/appkit-utils/ton'
 
 export function getTonConnectManifestUrl(): string {
-  const base = `${CoreHelperUtil.getApiUrl()}/ton/v1/manifest`
-  const { metadata, projectId } = OptionsController.state
+  const base = `https://api-web3modal-staging.walletconnect-v1-bridge.workers.dev/ton/v1/manifest`
   const { st, sv } = BlockchainApiController.getSdkProperties()
 
-  const appUrl = metadata?.url || (typeof window === 'undefined' ? '' : window.location.origin)
-  const name = metadata?.name || ''
-  const iconUrl = metadata?.icons?.[0] || ''
+  const appUrl = 'https://appkit-lab-ton.vercel.app/'
+  const name = 'AppKit Lab'
+  const iconUrl = 'https://appkit-lab-ton.vercel.app/logo.png'
 
   const u = new URL(base)
-  u.searchParams.set('projectId', projectId)
+  u.searchParams.set('projectId', '643930683abb02c28b8bdad440337272')
   u.searchParams.set('st', st)
   u.searchParams.set('sv', sv)
   u.searchParams.set('url', appUrl)
@@ -27,7 +26,7 @@ export function getTonConnectManifestUrl(): string {
   u.searchParams.set('iconUrl', iconUrl)
 
   console.log('>>> u', u.toString())
-  return 'https://recorder-wages-attraction-assisted.trycloudflare.com/ton/v1/manifest?projectId=702e2d45d9debca66795614cddb5c1ca&st=appkit&sv=react-wagmi%2Csolana%2Cbitcoin%2Cton-1.8.9&url=https%3A%2F%2Fappkit-lab-ton.vercel.app%2F&name=AppKit&iconUrl=https%3A%2F%2Fappkit-lab-ton.vercel.app%2Flogo.png'
+  return u.toString()
 }
 
 // -- Internal cache ------------------------------------------------------------ //
