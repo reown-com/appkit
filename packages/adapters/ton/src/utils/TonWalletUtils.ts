@@ -1,4 +1,4 @@
-// type guards
+// Type guards
 import type {
   TonWalletInfo,
   TonWalletInfoInjectable,
@@ -19,13 +19,13 @@ export type TonWalletInfoCurrentlyEmbedded = TonWalletInfoCurrentlyInjected & { 
 export function isWalletInfoCurrentlyInjected(
   value: TonWalletInfo
 ): value is TonWalletInfoCurrentlyInjected {
-  return isWalletInfoInjectable(value) && value.injected === true
+  return isWalletInfoInjectable(value) && value.injected
 }
 
 export function isWalletInfoCurrentlyEmbedded(
   value: TonWalletInfo
 ): value is TonWalletInfoCurrentlyEmbedded {
-  return isWalletInfoCurrentlyInjected(value) && value.embedded === true
+  return isWalletInfoCurrentlyInjected(value) && value.embedded
 }
 
 export type ToUserFriendlyOpts = {
@@ -37,7 +37,9 @@ export function toUserFriendlyAddress(hexAddress: string, opts: ToUserFriendlyOp
   const { wc, hex } = parseHexAddress(hexAddress)
 
   let tag = opts.bounceable ? 0x11 : 0x51
-  if (opts.testOnly) tag |= 0x80
+  if (opts.testOnly) {
+    tag |= 0x80
+  }
 
   const addr = new Uint8Array(34)
   addr[0] = tag
@@ -49,18 +51,25 @@ export function toUserFriendlyAddress(hexAddress: string, opts: ToUserFriendlyOp
   out.set(crc16(addr), 34)
 
   const b64 = base64FromBytes(out)
+
   return b64.replace(/\+/g, '-').replace(/\//g, '_')
 }
 
 function parseHexAddress(raw: string): { wc: 0 | -1; hex: Uint8Array } {
   const parts = raw.split(':')
-  if (parts.length !== 2) throw new Error(`Invalid address (expected "wc:hex"): ${raw}`)
+  if (parts.length !== 2) {
+    throw new Error(`Invalid address (expected "wc:hex"): ${raw}`)
+  }
 
   const wcNum = parseInt(parts[0]!, 10)
-  if (wcNum !== 0 && wcNum !== -1) throw new Error(`Invalid workchain: ${wcNum}`)
+  if (wcNum !== 0 && wcNum !== -1) {
+    throw new Error(`Invalid workchain: ${wcNum}`)
+  }
 
   const hex = parts[1]!.toLowerCase()
-  if (!/^[0-9a-f]{64}$/.test(hex)) throw new Error(`Hex must be 64 chars (32 bytes): ${hex}`)
+  if (!/^[0-9a-f]{64}$/.test(hex)) {
+    throw new Error(`Hex must be 64 chars (32 bytes): ${hex}`)
+  }
 
   return { wc: wcNum as 0 | -1, hex: hexToBytes(hex) }
 }
@@ -70,6 +79,7 @@ function hexToBytes(hex: string): Uint8Array {
   for (let i = 0; i < out.length; i++) {
     out[i] = parseInt(hex.substr(i * 2, 2), 16)
   }
+
   return out
 }
 
@@ -83,7 +93,9 @@ function crc16(data: Uint8Array): Uint8Array {
     let mask = 0x80
     while (mask) {
       reg <<= 1
-      if (byte & mask) reg += 1
+      if (byte & mask) {
+        reg += 1
+      }
       mask >>= 1
       if (reg > 0xffff) {
         reg &= 0xffff
@@ -91,6 +103,7 @@ function crc16(data: Uint8Array): Uint8Array {
       }
     }
   }
+
   return new Uint8Array([Math.floor(reg / 256), reg % 256])
 }
 
@@ -99,7 +112,10 @@ function base64FromBytes(bytes: Uint8Array): string {
     return Buffer.from(bytes).toString('base64')
   }
   let bin = ''
-  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]!)
+  for (let i = 0; i < bytes.length; i++) {
+    bin += String.fromCharCode(bytes[i]!)
+  }
+
   return btoa(bin)
 }
 
@@ -107,7 +123,9 @@ function base64FromBytes(bytes: Uint8Array): string {
 
 export function userFriendlyToRawAddress(address: string): string {
   const bytes = base64UrlToBytes(address)
-  if (bytes.length !== 36) throw new Error('Invalid address length')
+  if (bytes.length !== 36) {
+    throw new Error('Invalid address length')
+  }
 
   const addr = bytes.slice(0, 34)
   const checksum = bytes.slice(34, 36)
@@ -130,9 +148,14 @@ export function userFriendlyToRawAddress(address: string): string {
 function base64UrlToBytes(s: string): Uint8Array {
   const b64 = s.replace(/-/g, '+').replace(/_/g, '/')
   const padded = b64.padEnd(b64.length + ((4 - (b64.length % 4)) % 4), '=')
-  if (typeof Buffer !== 'undefined') return Uint8Array.from(Buffer.from(padded, 'base64'))
+  if (typeof Buffer !== 'undefined') {
+    return Uint8Array.from(Buffer.from(padded, 'base64'))
+  }
   const bin = atob(padded)
   const out = new Uint8Array(bin.length)
-  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i)
+  for (let i = 0; i < bin.length; i++) {
+    out[i] = bin.charCodeAt(i)
+  }
+
   return out
 }

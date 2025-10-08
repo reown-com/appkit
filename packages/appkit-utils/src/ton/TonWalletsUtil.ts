@@ -86,9 +86,12 @@ export async function getWallets(params?: {
     }
 
     for (const [key, value] of entries) {
-      const obj = value as { tonconnect?: { walletInfo?: any; isWalletBrowser?: boolean } } | null
+      const obj = value as {
+        tonconnect?: { walletInfo?: unknown; isWalletBrowser?: boolean }
+      } | null
       const hasTonconnect = Boolean(obj && typeof obj === 'object' && obj.tonconnect)
       if (!hasTonconnect) {
+        // eslint-disable-next-line no-continue
         continue
       }
 
@@ -143,6 +146,7 @@ export function isWalletInjected(jsBridgeKey: string): boolean {
     return false
   }
   const obj = (w as Record<string, unknown>)[jsBridgeKey]
+
   return Boolean(isJSBridgeWithMetadata(obj))
 }
 
@@ -154,7 +158,8 @@ export function isInsideWalletBrowser(jsBridgeKey: string): boolean {
   if (!w) {
     return false
   }
-  const obj = (w as Record<string, any>)[jsBridgeKey]
+  const obj = (w as Record<string, unknown>)[jsBridgeKey]
+
   return isJSBridgeWithMetadata(obj) ? Boolean(obj.tonconnect.isWalletBrowser) : false
 }
 
@@ -163,11 +168,13 @@ export function isInsideWalletBrowser(jsBridgeKey: string): boolean {
  */
 export function getCurrentlyInjectedWallets(): TonWalletInfoInjectable[] {
   const w = getWindow()
-  if (!w) return []
+  if (!w) {
+    return []
+  }
 
   let entries: [string, unknown][] = []
   try {
-    entries = Object.entries(w as any)
+    entries = Object.entries(w as Record<string, unknown>)
   } catch {
     return []
   }
@@ -178,15 +185,20 @@ export function getCurrentlyInjectedWallets(): TonWalletInfoInjectable[] {
       if (
         value &&
         typeof value === 'object' &&
-        (value as any).tonconnect &&
+        (value as Record<string, unknown>).tonconnect &&
         !isJSBridgeWithMetadata(value)
       ) {
         // eslint-disable-next-line no-console
         console.log('[TonWalletsUtil] Found tonconnect without walletInfo for key:', key)
       }
-    } catch {}
+    } catch {
+      // Ignore errors when checking wallet info
+    }
 
-    if (!isJSBridgeWithMetadata(value)) continue
+    if (!isJSBridgeWithMetadata(value)) {
+      // eslint-disable-next-line no-continue
+      continue
+    }
 
     const info = value.tonconnect.walletInfo
     wallets.push({
@@ -197,7 +209,7 @@ export function getCurrentlyInjectedWallets(): TonWalletInfoInjectable[] {
       tondns: info.tondns,
       jsBridgeKey: key,
       injected: true,
-      embedded: !!value.tonconnect.isWalletBrowser,
+      embedded: Boolean(value.tonconnect.isWalletBrowser),
       platforms: info.platforms,
       features: info.features
     })
@@ -206,9 +218,16 @@ export function getCurrentlyInjectedWallets(): TonWalletInfoInjectable[] {
     // eslint-disable-next-line no-console
     console.log(
       '[TonWalletsUtil] Injected wallets detected:',
-      wallets.map(w => ({ name: w.name, key: w.jsBridgeKey, embedded: w.embedded }))
+      wallets.map(wallet => ({
+        name: wallet.name,
+        key: wallet.jsBridgeKey,
+        embedded: wallet.embedded
+      }))
     )
-  } catch {}
+  } catch {
+    // Ignore errors when logging
+  }
+
   return wallets
 }
 
@@ -233,15 +252,21 @@ async function fetchWalletsListDTO(params?: {
     cachePromise = (async () => {
       try {
         const res = await fetch(source, { credentials: 'omit' })
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`)
+        }
         const data = await res.json()
-        if (!Array.isArray(data)) throw new Error('wallets list is not an array')
+        if (!Array.isArray(data)) {
+          throw new Error('wallets list is not an array')
+        }
 
-        const valid = data.filter(isCorrectWalletInfoDTO) as TonWalletInfoDTO[]
+        const valid = data.filter(isCorrectWalletInfoDTO)
+
         return valid
       } catch (err) {
         // eslint-disable-next-line no-console
         console.warn('[TonWalletsUtil] failed to fetch wallets list:', err)
+
         return [] as TonWalletInfoDTO[]
       }
     })()
@@ -258,8 +283,10 @@ async function fetchWalletsListDTO(params?: {
 }
 
 function isCorrectWalletInfoDTO(value: unknown): value is TonWalletInfoDTO {
-  if (!value || typeof value !== 'object') return false
-  const v = value as any
+  if (!value || typeof value !== 'object') {
+    return false
+  }
+  const v = value as Record<string, unknown>
   if (
     !v.name ||
     !v.app_name ||
@@ -273,19 +300,25 @@ function isCorrectWalletInfoDTO(value: unknown): value is TonWalletInfoDTO {
   }
 
   for (const br of v.bridge) {
-    if (!br || typeof br !== 'object' || !('type' in br)) return false
+    if (!br || typeof br !== 'object' || !('type' in br)) {
+      return false
+    }
     if (br.type === 'sse') {
-      if (!('url' in br) || !v.universal_url) return false
+      if (!('url' in br) || !v.universal_url) {
+        return false
+      }
     }
     if (br.type === 'js') {
-      if (!('key' in br) || !br.key) return false
+      if (!('key' in br) || !br.key) {
+        return false
+      }
     }
   }
 
   return true
 }
 
-function isJSBridgeWithMetadata(value: any): value is {
+function isJSBridgeWithMetadata(value: unknown): value is {
   tonconnect: {
     walletInfo: {
       name: string
@@ -300,16 +333,25 @@ function isJSBridgeWithMetadata(value: any): value is {
   }
 } {
   try {
-    return !!(
+    return Boolean(
       value &&
-      typeof value === 'object' &&
-      value.tonconnect &&
-      value.tonconnect.walletInfo &&
-      typeof value.tonconnect.walletInfo.name === 'string' &&
-      typeof value.tonconnect.walletInfo.app_name === 'string' &&
-      typeof value.tonconnect.walletInfo.image === 'string' &&
-      typeof value.tonconnect.walletInfo.about_url === 'string' &&
-      Array.isArray(value.tonconnect.walletInfo.platforms)
+        typeof value === 'object' &&
+        'tonconnect' in value &&
+        value.tonconnect &&
+        typeof value.tonconnect === 'object' &&
+        'walletInfo' in value.tonconnect &&
+        value.tonconnect.walletInfo &&
+        typeof value.tonconnect.walletInfo === 'object' &&
+        'name' in value.tonconnect.walletInfo &&
+        typeof value.tonconnect.walletInfo.name === 'string' &&
+        'app_name' in value.tonconnect.walletInfo &&
+        typeof value.tonconnect.walletInfo.app_name === 'string' &&
+        'image' in value.tonconnect.walletInfo &&
+        typeof value.tonconnect.walletInfo.image === 'string' &&
+        'about_url' in value.tonconnect.walletInfo &&
+        typeof value.tonconnect.walletInfo.about_url === 'string' &&
+        'platforms' in value.tonconnect.walletInfo &&
+        Array.isArray(value.tonconnect.walletInfo.platforms)
     )
   } catch {
     return false
@@ -317,6 +359,9 @@ function isJSBridgeWithMetadata(value: any): value is {
 }
 
 function getWindow(): Window | undefined {
-  if (typeof window === 'undefined') return undefined
+  if (typeof window === 'undefined') {
+    return undefined
+  }
+
   return window
 }

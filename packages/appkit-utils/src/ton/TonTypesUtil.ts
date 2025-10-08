@@ -3,7 +3,7 @@ import type { Connector } from '@reown/appkit-controllers'
 
 export interface TonConnector extends Connector {
   chains: CaipNetwork[]
-  connect(params?: { chainId: string }): Promise<string> // returns address
+  connect(params?: { chainId: string }): Promise<string>
   disconnect(): Promise<void>
   getAccount(): Promise<string | undefined>
   signMessage(params: { message: string }): Promise<string>

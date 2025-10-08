@@ -4,7 +4,7 @@ import { CoreHelperUtil } from '@reown/appkit-controllers'
 import { BlockchainApiController } from '@reown/appkit-controllers'
 import type { TonConnector, TonWalletInfo } from '@reown/appkit-utils/ton'
 
-import { toUserFriendlyAddress, userFriendlyToRawAddress } from '../utils/TonWalletUtils'
+import { toUserFriendlyAddress, userFriendlyToRawAddress } from '../utils/TonWalletUtils.js'
 
 export class TonConnectConnector implements TonConnector {
   public readonly chain = 'ton'
@@ -54,6 +54,7 @@ export class TonConnectConnector implements TonConnector {
     // Injected flow cleanup
     if ('jsBridgeKey' in this.wallet && this.wallet.jsBridgeKey) {
       await this.disconnectInjected(this.wallet.jsBridgeKey)
+
       return
     }
 
@@ -78,9 +79,13 @@ export class TonConnectConnector implements TonConnector {
     }
 
     const w = typeof window !== 'undefined' ? (window as any) : undefined
-    if (!w) throw new Error('Window is not available')
+    if (!w) {
+      throw new Error('Window is not available')
+    }
     const api = w[this.wallet.jsBridgeKey]?.tonconnect
-    if (!api || typeof api.send !== 'function') throw new Error('Injected wallet not available')
+    if (!api || typeof api.send !== 'function') {
+      throw new Error('Injected wallet not available')
+    }
 
     const tx = params.message || {}
     const prepared = {
@@ -97,6 +102,7 @@ export class TonConnectConnector implements TonConnector {
     }
 
     const res = await api.send({ method: 'sendTransaction', params: [prepared] })
+
     return res?.boc as string
   }
 
@@ -111,9 +117,13 @@ export class TonConnectConnector implements TonConnector {
     }
 
     const w = typeof window !== 'undefined' ? (window as any) : undefined
-    if (!w) throw new Error('Window is not available')
+    if (!w) {
+      throw new Error('Window is not available')
+    }
     const api = w[this.wallet.jsBridgeKey]?.tonconnect
-    if (!api || typeof api.send !== 'function') throw new Error('Injected wallet not available')
+    if (!api || typeof api.send !== 'function') {
+      throw new Error('Injected wallet not available')
+    }
 
     const payload = params.data || {}
     const from = userFriendlyToRawAddress(payload.from || this.currentAddress)
@@ -133,10 +143,8 @@ export class TonConnectConnector implements TonConnector {
         id: 'test'
       })
 
-      console.log('[TonConnectConnector] signData: res', res)
       return (res?.signature || res?.result?.signature) as string
     } catch (error) {
-      console.error('[TonConnectConnector] signData: error', error)
       throw error
     }
   }
@@ -159,12 +167,14 @@ export class TonConnectConnector implements TonConnector {
     const w = typeof window !== 'undefined' ? (window as any) : undefined
     if (!w) {
       await this.clearSession()
+
       return
     }
 
     const api = w[jsBridgeKey]?.tonconnect
     if (!api) {
       await this.clearSession()
+
       return
     }
 
@@ -179,7 +189,7 @@ export class TonConnectConnector implements TonConnector {
         await api.send({ method: 'disconnect', params: [] })
       }
     } catch {
-      // ignore – still clear local/session state
+      // Ignore – still clear local/session state
     } finally {
       await onFinally()
     }
@@ -195,12 +205,24 @@ export class TonConnectConnector implements TonConnector {
     const iconUrl = metadata?.icons?.[0] || ''
 
     const u = new URL(base)
-    if (projectId) u.searchParams.set('projectId', projectId)
-    if (st) u.searchParams.set('st', st)
-    if (sv) u.searchParams.set('sv', sv)
-    if (appUrl) u.searchParams.set('url', appUrl)
-    if (name) u.searchParams.set('name', name)
-    if (iconUrl) u.searchParams.set('iconUrl', iconUrl)
+    if (projectId) {
+      u.searchParams.set('projectId', projectId)
+    }
+    if (st) {
+      u.searchParams.set('st', st)
+    }
+    if (sv) {
+      u.searchParams.set('sv', sv)
+    }
+    if (appUrl) {
+      u.searchParams.set('url', appUrl)
+    }
+    if (name) {
+      u.searchParams.set('name', name)
+    }
+    if (iconUrl) {
+      u.searchParams.set('iconUrl', iconUrl)
+    }
 
     return u.toString()
   }
@@ -209,16 +231,23 @@ export class TonConnectConnector implements TonConnector {
     const items: Array<{ name: 'ton_addr' } | { name: 'ton_proof'; payload: string }> = [
       { name: 'ton_addr' }
     ]
-    if (tonProof) items.push({ name: 'ton_proof', payload: tonProof })
+    if (tonProof) {
+      items.push({ name: 'ton_proof', payload: tonProof })
+    }
+
     return { manifestUrl, items }
   }
 
   private async connectInjected(jsBridgeKey: string, tonProof?: string): Promise<string> {
     const w = typeof window !== 'undefined' ? (window as any) : undefined
-    if (!w) throw new Error('Window is not available')
+    if (!w) {
+      throw new Error('Window is not available')
+    }
 
     const api = w[jsBridgeKey]?.tonconnect
-    if (!api) throw new Error(`Injected wallet "${jsBridgeKey}" not available`)
+    if (!api) {
+      throw new Error(`Injected wallet "${jsBridgeKey}" not available`)
+    }
 
     const manifestUrl = this.getDefaultManifestUrl()
     const request = this.createConnectRequest(manifestUrl, tonProof)
@@ -240,6 +269,7 @@ export class TonConnectConnector implements TonConnector {
         const addrItem = res?.payload?.items?.find?.((i: any) => i?.name === 'ton_addr')
         if (res?.event === 'connect' && addrItem?.address) {
           this.persistInjectedSession(jsBridgeKey)
+
           return addrItem.address as string
         }
       } catch {}
@@ -281,26 +311,35 @@ export class TonConnectConnector implements TonConnector {
   }
 
   private normalizeBase64(s?: string): string | undefined {
-    if (typeof s !== 'string') return undefined
+    if (typeof s !== 'string') {
+      return undefined
+    }
     const pad = s.length + ((4 - (s.length % 4)) % 4)
+
     return s.replace(/-/g, '+').replace(/_/g, '/').padEnd(pad, '=')
   }
 
   // -- Reconnect (Injected) ----------------------------------------- //
   public async restoreConnection(): Promise<string | undefined> {
     console.log('[TonConnectConnector] restoreConnection: start')
-    if (!('jsBridgeKey' in this.wallet) || !this.wallet.jsBridgeKey) return undefined
+    if (!('jsBridgeKey' in this.wallet) || !this.wallet.jsBridgeKey) {
+      return undefined
+    }
     // Prefer key from persisted session (wallets may rotate keys on reload)
     const persistedKey = this.readPersistedJsBridgeKey()
     const jsBridgeKey = persistedKey || this.wallet.jsBridgeKey
     console.log('[TonConnectConnector] restoreConnection: jsBridgeKey', jsBridgeKey)
     const w = typeof window !== 'undefined' ? (window as any) : undefined
-    if (!w) return undefined
+    if (!w) {
+      return undefined
+    }
 
     // Wait briefly for the wallet content script to inject
     const api = await this.waitForInjectedApi(jsBridgeKey, 2000)
     console.log('[TonConnectConnector] restoreConnection: api', api)
-    if (!api || typeof api.restoreConnection !== 'function') return undefined
+    if (!api || typeof api.restoreConnection !== 'function') {
+      return undefined
+    }
     console.log('[TonConnectConnector] restoreConnection: api', api.restoreConnection)
 
     try {
@@ -310,6 +349,7 @@ export class TonConnectConnector implements TonConnector {
       if (ev?.event === 'connect' && addrItem?.address) {
         this.persistInjectedSession(jsBridgeKey)
         this.currentAddress = toUserFriendlyAddress(addrItem.address as string)
+
         return this.currentAddress
       }
       // Clear stale
@@ -343,12 +383,15 @@ export class TonConnectConnector implements TonConnector {
   private readPersistedJsBridgeKey(): string | undefined {
     try {
       const raw = localStorage.getItem(this.sessionStorageKey())
-      if (!raw) return undefined
+      if (!raw) {
+        return undefined
+      }
       const parsed = JSON.parse(raw)
       if (parsed?.type === 'injected' && typeof parsed?.jsBridgeKey === 'string') {
         return parsed.jsBridgeKey as string
       }
     } catch {}
+
     return undefined
   }
 
@@ -357,14 +400,19 @@ export class TonConnectConnector implements TonConnector {
     timeoutMs = 2000
   ): Promise<any | undefined> {
     const w = typeof window !== 'undefined' ? (window as any) : undefined
-    if (!w) return undefined
+    if (!w) {
+      return undefined
+    }
     const start = Date.now()
     const interval = 100
     while (Date.now() - start < timeoutMs) {
       const api = w[jsBridgeKey]?.tonconnect
-      if (api) return api
+      if (api) {
+        return api
+      }
       await new Promise(r => setTimeout(r, interval))
     }
+
     return w[jsBridgeKey]?.tonconnect
   }
 

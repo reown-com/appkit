@@ -57,7 +57,7 @@ export class TonWalletConnectConnector
     return Promise.resolve()
   }
 
-  // @ts-ignore
+  // @ts-expect-error
   private getAccount<Required extends boolean>(
     required?: Required
   ): Required extends true ? string : string | undefined {

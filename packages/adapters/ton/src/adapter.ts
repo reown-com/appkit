@@ -6,8 +6,8 @@ import { getWallets as getInjectedWallets } from '@reown/appkit-utils/ton'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { ton } from '@reown/appkit/networks'
 
-import { TonConnectConnector } from './connectors/TonConnectConnector'
-import { TonWalletConnectConnector } from './connectors/TonWalletConnectConnector'
+import { TonConnectConnector } from './connectors/TonConnectConnector.js'
+import { TonWalletConnectConnector } from './connectors/TonWalletConnectConnector.js'
 
 export class TonAdapter extends AdapterBlueprint<TonConnector> {
   constructor(params?: AdapterBlueprint.Params) {
@@ -47,8 +47,10 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     try {
       const address = await connector.connect({ chainId: params.chainId as string })
       console.log('[TonAdapter] connect: address2', address, params)
-      // Set connection, emit events, etc.
-      // Mirror logic from BitcoinAdapter
+      /*
+       * Set connection, emit events, etc.
+       * Mirror logic from BitcoinAdapter
+       */
       const chainId = params.chainId || ton.caipNetworkId
 
       this.emit('accountChanged', { address, chainId, connector })
@@ -68,7 +70,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
         id: connector.id,
         address,
         chainId,
-        // @ts-ignore
+        // @ts-expect-error
         provider: connector,
         type: connector.type
       }
@@ -91,6 +93,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
 
   override async getAccounts(): Promise<AdapterBlueprint.GetAccountsResult> {
     const address = await this.connector?.getAccount().catch(() => undefined)
+
     return {
       accounts: address
         ? [{ namespace: this.namespace as any, address, type: 'payment' as any }]
@@ -100,17 +103,21 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
 
   override async signMessage(): Promise<AdapterBlueprint.SignMessageResult> {
     const connector = this.getActiveConnector()
-    if (!connector) throw new Error('No active connector')
+    if (!connector) {
+      throw new Error('No active connector')
+    }
 
-    // @ts-ignore
+    // @ts-expect-error
     return connector.signMessage({} as any)
   }
 
   override async sendTransaction(): Promise<AdapterBlueprint.SendTransactionResult> {
     const connector = this.getActiveConnector()
-    if (!connector) throw new Error('No active connector')
+    if (!connector) {
+      throw new Error('No active connector')
+    }
 
-    // @ts-ignore
+    // @ts-expect-error
     return connector.sendTransaction({ transaction: {} as any })
   }
 
@@ -146,11 +153,13 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
         try {
           await conn?.disconnect()
         } catch {}
+
         return c
       })
     )
     this.clearConnections(true)
     this.emit('disconnect')
+
     return { connections: removed }
   }
 
@@ -250,7 +259,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
           id: connector.id,
           address,
           chainId,
-          // @ts-ignore
+          // @ts-expect-error
           provider: connector,
           type: connector.type
         }
