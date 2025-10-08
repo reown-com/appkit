@@ -12,7 +12,7 @@ import {
   ChainController,
   WcHelpersUtil
 } from '@reown/appkit-controllers'
-import { HelpersUtil, type Provider } from '@reown/appkit-utils'
+import { HelpersUtil } from '@reown/appkit-utils'
 import type { TonConnector } from '@reown/appkit-utils/ton'
 
 import { TonConnectConnector } from './connectors/TonConnectConnector.js'
@@ -345,11 +345,11 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     params: AdapterBlueprint.GetWalletConnectProviderParams
   ): AdapterBlueprint.GetWalletConnectProviderResult {
     const walletConnectProvider = new TonWalletConnectConnector({
-      provider: params.provider,
+      provider: params.provider as UniversalProvider,
       chains: params.caipNetworks,
       getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
     })
 
-    return walletConnectProvider as unknown as Provider
+    return walletConnectProvider as unknown as UniversalProvider
   }
 }
