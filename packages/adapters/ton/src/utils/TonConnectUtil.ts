@@ -10,22 +10,22 @@ import type {
 } from '@reown/appkit-utils/ton'
 
 export function getTonConnectManifestUrl(): string {
-  const base = `https://api.reown.com/ton/v1/manifest`
+  const base = 'https://api.reown.com/ton/v1/manifest'
+  const { metadata, projectId } = OptionsController.state
   const { st, sv } = BlockchainApiController.getSdkProperties()
 
-  const appUrl = 'https://appkit-lab-ton.vercel.app/'
-  const name = 'AppKit Lab'
-  const iconUrl = 'https://appkit-lab-ton.vercel.app/logo.png'
+  const appUrl = metadata?.url || (typeof window === 'undefined' ? '' : window.location.origin)
+  const name = metadata?.name || ''
+  const iconUrl = metadata?.icons?.[0] || ''
 
   const u = new URL(base)
-  u.searchParams.set('projectId', '6f03d9841405db5f31e2c08d6c053749')
+  u.searchParams.set('projectId', projectId)
   u.searchParams.set('st', st)
   u.searchParams.set('sv', sv)
   u.searchParams.set('url', appUrl)
   u.searchParams.set('name', name)
   u.searchParams.set('iconUrl', iconUrl)
 
-  console.log('>>> u', u.toString())
   return u.toString()
 }
 
