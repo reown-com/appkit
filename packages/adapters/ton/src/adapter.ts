@@ -10,6 +10,8 @@ import { TonConnectConnector } from './connectors/TonConnectConnector.js'
 import { TonWalletConnectConnector } from './connectors/TonWalletConnectConnector.js'
 
 export class TonAdapter extends AdapterBlueprint<TonConnector> {
+  private universalProvider: any | undefined = undefined
+
   constructor(params?: AdapterBlueprint.Params) {
     super({
       namespace: ConstantsUtil.CHAIN.TON,
@@ -172,6 +174,8 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   }
 
   public override async setUniversalProvider(universalProvider: any) {
+    this.universalProvider = universalProvider
+
     const wcConnectorId = ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
 
     WcHelpersUtil.listenWcProvider({
@@ -182,13 +186,13 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
       onAccountsChanged: accounts => super.onAccountsChanged(accounts, wcConnectorId, false)
     })
 
-    const tonConnector = new TonWalletConnectConnector({
-      provider: universalProvider as unknown as any,
-      chains: this.getCaipNetworks(),
-      getActiveChain: () => this.getCaipNetworks()?.find(n => n.chainNamespace === this.namespace)
-    })
-
-    this.addConnector(tonConnector)
+    this.addConnector(
+      new TonWalletConnectConnector({
+        provider: universalProvider,
+        chains: this.getCaipNetworks(),
+        getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
+      })
+    )
 
     return Promise.resolve()
   }
@@ -215,7 +219,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     })
 
     const formattedBalance = NumberUtil.bigNumber(balance)
-      .div(10 ** 8)
+      .div(10 ** 9)
       .toString()
 
     return { balance: formattedBalance, symbol: 'TON' }
@@ -231,42 +235,38 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     return ''
   }
 
-  override async syncConnections(_params: AdapterBlueprint.SyncConnectionsParams): Promise<void> {
-    return Promise.resolve()
+  override async syncConnections({
+    connectToFirstConnector,
+    caipNetwork
+  }: AdapterBlueprint.SyncConnectionsParams): Promise<void> {
+    await this.connectionManager?.syncConnections({
+      connectors: this.connectors,
+      caipNetwork,
+      caipNetworks: this.getCaipNetworks(),
+      universalProvider: this.universalProvider as any,
+      onConnection: this.addConnection.bind(this),
+      onListenProvider: this.listenProviderEvents.bind(this)
+    })
+
+    if (connectToFirstConnector) {
+      this.emitFirstAvailableConnection()
+    }
   }
 
   override async syncConnection(
     params: AdapterBlueprint.SyncConnectionParams
   ): Promise<AdapterBlueprint.ConnectResult> {
-    try {
-      const connector = this.connectors.find(c => c.id === params.id) || this.connectors[0]
-      if (!connector) {
-        throw new Error('Connector not found')
-      }
+    const connector = this.connectors.find(c => c.id === params.id)
 
-      const address = await (connector as any).restoreConnection?.()
-      const chainId = params.chainId || ton.caipNetworkId
+    if (!connector) {
+      return { id: '', address: '', chainId: '', provider: undefined, type: 'EXTERNAL' }
+    }
 
-      if (address) {
-        this.emit('accountChanged', { address, chainId, connector })
-        this.connector = connector
-        const caipNetwork = this.getCaipNetworks()[0]
-        if (caipNetwork) {
-          this.addConnection({ connectorId: connector.id, accounts: [{ address }], caipNetwork })
-        }
-
-        return {
-          id: connector.id,
-          address,
-          chainId,
-          // @ts-expect-error
-          provider: connector,
-          type: connector.type
-        }
-      }
-    } catch {}
-
-    return { id: '', address: '', chainId: '', provider: undefined, type: 'EXTERNAL' }
+    return this.connect({
+      id: connector.id,
+      chainId: params.chainId,
+      type: connector.type
+    })
   }
 
   override async estimateGas(

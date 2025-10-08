@@ -87,6 +87,7 @@ export const CoreHelperUtil = {
       return false
     }
   },
+
   isSafeApp() {
     if (CoreHelperUtil.isClient() && window.self !== window.top) {
       try {

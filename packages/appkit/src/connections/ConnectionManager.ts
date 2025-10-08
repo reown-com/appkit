@@ -11,6 +11,7 @@ import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
 import { HelpersUtil } from '@reown/appkit-utils'
 import { type BitcoinConnector, BitcoinConstantsUtil } from '@reown/appkit-utils/bitcoin'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
+import type { TonConnector } from '@reown/appkit-utils/ton'
 
 import type { ChainAdapterConnector } from '../adapters/ChainAdapterConnector.js'
 import { WcHelpersUtil } from '../utils/HelpersUtil.js'
@@ -31,6 +32,7 @@ type SyncEvmConnections = BaseSyncConnectionsParams<
 >
 type SyncBitcoinConnections = BaseSyncConnectionsParams<BitcoinConnector, BitcoinConnector>
 type SyncSolanaConnections = BaseSyncConnectionsParams<SolanaProvider, SolanaProvider>
+type SyncTonConnections = BaseSyncConnectionsParams<TonConnector, TonConnector>
 
 interface GetConnectionParams<C extends ChainAdapterConnector = ChainAdapterConnector> {
   connectorId?: string
@@ -48,7 +50,7 @@ export class ConnectionManager {
   }
 
   public async syncConnections(
-    params: SyncEvmConnections | SyncSolanaConnections | SyncBitcoinConnections
+    params: SyncEvmConnections | SyncSolanaConnections | SyncBitcoinConnections | SyncTonConnections
   ) {
     switch (this.namespace) {
       case CommonConstantsUtil.CHAIN.EVM:
@@ -61,6 +63,10 @@ export class ConnectionManager {
 
       case CommonConstantsUtil.CHAIN.BITCOIN:
         await this.syncBitcoinConnections(params as SyncBitcoinConnections)
+        break
+
+      case CommonConstantsUtil.CHAIN.TON:
+        await this.syncTonConnections(params as SyncTonConnections)
         break
 
       default:
@@ -266,6 +272,56 @@ export class ConnectionManager {
               })),
               caipNetwork
             })
+          }
+        })
+    )
+  }
+
+  private async syncTonConnections({
+    connectors,
+    caipNetwork,
+    universalProvider,
+    onConnection,
+    onListenProvider
+  }: SyncTonConnections) {
+    await Promise.all(
+      connectors
+        .filter(c => {
+          const { hasDisconnected, hasConnected } = HelpersUtil.getConnectorStorageInfo(
+            c.id,
+            this.namespace
+          )
+
+          return !hasDisconnected && hasConnected
+        })
+        .map(async connector => {
+          if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
+            const accounts = WcHelpersUtil.getWalletConnectAccounts(
+              universalProvider,
+              this.namespace
+            )
+
+            if (accounts.length > 0) {
+              onConnection({
+                connectorId: connector.id,
+                accounts: accounts.map(account => ({ address: account.address })),
+                caipNetwork
+              })
+            }
+
+            return
+          }
+
+          const address = await connector.connect({ chainId: caipNetwork?.id as string })
+
+          if (address) {
+            onConnection({
+              connectorId: connector.id,
+              accounts: [{ address }],
+              caipNetwork
+            })
+
+            onListenProvider(connector.id, connector)
           }
         })
     )

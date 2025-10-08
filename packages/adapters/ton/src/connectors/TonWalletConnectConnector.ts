@@ -57,33 +57,36 @@ export class TonWalletConnectConnector
     return Promise.resolve()
   }
 
-  // @ts-expect-error
-  private getAccount<Required extends boolean>(
-    required?: Required
-  ): Required extends true ? string : string | undefined {
+  public async getAccount(): Promise<string | undefined> {
     const caipAddress = ChainController.getAccountData(CommonConstantsUtil.CHAIN.TON)?.caipAddress
     const account = this.provider.session?.namespaces[CommonConstantsUtil.CHAIN.TON]?.accounts.find(
       _account => HelpersUtil.isLowerCaseMatch(_account, caipAddress)
     )
 
     if (!account) {
-      if (required) {
-        throw new Error('Account not found')
-      }
-
-      return undefined as Required extends true ? string : string | undefined
+      return undefined
     }
 
     const address = account.split(':')[2]
-    if (!address) {
-      if (required) {
-        throw new Error('Address not found')
-      }
-
-      return undefined as Required extends true ? string : string | undefined
-    }
 
     return address
+  }
+
+  public async signMessage(params: { message: string }): Promise<string> {
+    const chain = this.getActiveChain()
+
+    if (!chain) {
+      throw new Error('Chain not found')
+    }
+
+    const request = {
+      method: 'ton_signMessage',
+      params: [{ message: params.message }],
+      chainId: chain.caipNetworkId
+    }
+    const result: any = await (this.provider as any).request(request)
+
+    return (result?.signature || result?.result?.signature || '') as string
   }
 
   public async signData(params: { data: any }): Promise<string> {
