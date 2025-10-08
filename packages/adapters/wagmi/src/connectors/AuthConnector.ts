@@ -51,6 +51,16 @@ export function authConnector(parameters: AuthParameters) {
   }
 
   function parseChainId(chainId: string | number) {
+    const networks = ChainController.getCaipNetworks('eip155')
+    if (!networks.some(network => network.id === chainId)) {
+      const currentChainId = ChainController.getActiveCaipNetwork('eip155')?.id
+      if (currentChainId) {
+        return currentChainId as number
+      }
+
+      return (networks[0]?.id as number) || 1
+    }
+
     return NetworkUtil.parseEvmChainId(chainId) || 1
   }
 
@@ -217,16 +227,6 @@ export function authConnector(parameters: AuthParameters) {
     async getChainId() {
       const provider = await this.getProvider()
       const { chainId } = await provider.getChainId()
-
-      const networks = ChainController.getCaipNetworks('eip155')
-      if (!networks.some(network => network.id === chainId)) {
-        const currentChainId = ChainController.getActiveCaipNetwork('eip155')?.id
-        if (currentChainId) {
-          return currentChainId as number
-        }
-
-        return (networks[0]?.id as number) || 1
-      }
 
       return parseChainId(chainId)
     },
