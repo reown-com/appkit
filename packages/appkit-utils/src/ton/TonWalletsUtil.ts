@@ -80,17 +80,30 @@ export async function getWallets(params?: {
   if (w) {
     let entries: [string, unknown][] = []
     try {
-      entries = Object.entries(w as any)
+      entries = Object.entries(w as Record<string, unknown>)
     } catch {
       entries = []
     }
 
     for (const [key, value] of entries) {
-      const hasTonconnect = !!(value && typeof value === 'object' && (value as any).tonconnect)
-      if (!hasTonconnect) continue
+      const obj = value as { tonconnect?: { walletInfo?: any; isWalletBrowser?: boolean } } | null
+      const hasTonconnect = Boolean(obj && typeof obj === 'object' && obj.tonconnect)
+      if (!hasTonconnect) {
+        continue
+      }
 
-      const tc = (value as any).tonconnect
-      const wi = tc?.walletInfo
+      const tc = obj?.tonconnect
+      const wi = tc?.walletInfo as
+        | {
+            name?: string
+            app_name?: string
+            image?: string
+            about_url?: string
+            tondns?: string
+            platforms?: string[]
+            features?: string[]
+          }
+        | undefined
       const dto = remoteByKey.get(key)
 
       const name = wi?.name || dto?.name || key
@@ -111,18 +124,12 @@ export async function getWallets(params?: {
         features,
         jsBridgeKey: key,
         injected: true,
-        embedded: !!tc?.isWalletBrowser
+        embedded: Boolean(tc?.isWalletBrowser)
       })
     }
   }
 
-  try {
-    // eslint-disable-next-line no-console
-    console.log(
-      '[TonWalletsUtil] Injected (final) from window+remote map:',
-      injected.map(w => ({ name: w.name, key: w.jsBridgeKey, embedded: w.embedded }))
-    )
-  } catch {}
+  // No console logs in production utils per lint rules
 
   return injected
 }
@@ -132,8 +139,11 @@ export async function getWallets(params?: {
  */
 export function isWalletInjected(jsBridgeKey: string): boolean {
   const w = getWindow()
-  const obj = (w as any)[jsBridgeKey]
-  return !!w && obj in w && isJSBridgeWithMetadata(obj)
+  if (!w) {
+    return false
+  }
+  const obj = (w as Record<string, unknown>)[jsBridgeKey]
+  return Boolean(isJSBridgeWithMetadata(obj))
 }
 
 /**
@@ -141,10 +151,11 @@ export function isWalletInjected(jsBridgeKey: string): boolean {
  */
 export function isInsideWalletBrowser(jsBridgeKey: string): boolean {
   const w = getWindow()
-  if (!w) return false
-  const obj = (w as any)[jsBridgeKey]
-  console.log('[TonWalletsUtil] isInsideWalletBrowser: obj', obj)
-  return isJSBridgeWithMetadata(obj) ? !!obj.tonconnect.isWalletBrowser : false
+  if (!w) {
+    return false
+  }
+  const obj = (w as Record<string, any>)[jsBridgeKey]
+  return isJSBridgeWithMetadata(obj) ? Boolean(obj.tonconnect.isWalletBrowser) : false
 }
 
 /**

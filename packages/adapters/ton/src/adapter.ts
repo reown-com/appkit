@@ -1,6 +1,6 @@
 import { WcHelpersUtil } from '@reown/appkit'
-import { ConstantsUtil } from '@reown/appkit-common'
-import { ChainController } from '@reown/appkit-controllers'
+import { ConstantsUtil, NumberUtil } from '@reown/appkit-common'
+import { BlockchainApiController, ChainController } from '@reown/appkit-controllers'
 import type { TonConnector } from '@reown/appkit-utils/ton'
 import { getWallets as getInjectedWallets } from '@reown/appkit-utils/ton'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -184,9 +184,32 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     return Promise.resolve()
   }
 
-  override async getBalance(): Promise<AdapterBlueprint.GetBalanceResult> {
-    // Implement using TON RPC
-    return { balance: '0', symbol: 'TON' } // Placeholder
+  override async getBalance(
+    params: AdapterBlueprint.GetBalanceParams
+  ): Promise<AdapterBlueprint.GetBalanceResult> {
+    const chain = params.chainId
+    const address = params.address
+
+    if (!address || !chain) {
+      return { balance: '0', symbol: 'TON' }
+    }
+
+    const chainToCaipNetworkIdMap = {
+      '-239': 'ton:mainnet',
+      '-3': 'ton:testnet'
+    }
+
+    const balance = await BlockchainApiController.fetchTonBalance({
+      caipNetworkId:
+        chainToCaipNetworkIdMap[params.chainId as keyof typeof chainToCaipNetworkIdMap],
+      address
+    })
+
+    const formattedBalance = NumberUtil.bigNumber(balance)
+      .div(10 ** 8)
+      .toString()
+
+    return { balance: formattedBalance, symbol: 'TON' }
   }
 
   // Other methods as empty or throw 'Not supported for TON'

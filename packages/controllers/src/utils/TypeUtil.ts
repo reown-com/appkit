@@ -258,6 +258,18 @@ export interface BlockchainApiSwapTokensRequest {
   chainId?: string
 }
 
+export interface BlockchainApiTonBalanceRequest {
+  caipNetworkId: string
+  address: string
+}
+
+export interface BlockchainApiTonBalanceResponse {
+  ok: boolean
+  result: string
+  jsonrpc: string
+  id: string
+}
+
 export interface BlockchainApiSwapTokensResponse {
   tokens: SwapToken[]
 }
