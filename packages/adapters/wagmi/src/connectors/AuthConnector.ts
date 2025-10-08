@@ -52,7 +52,7 @@ export function authConnector(parameters: AuthParameters) {
 
   function parseChainId(chainId: string | number) {
     const networks = ChainController.getCaipNetworks('eip155')
-    if (!networks.some(network => network.id === chainId)) {
+    if (!networks.some(network => String(network.id) === String(chainId))) {
       const currentChainId = ChainController.getActiveCaipNetwork('eip155')?.id
       if (currentChainId) {
         return currentChainId as number
