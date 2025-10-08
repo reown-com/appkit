@@ -62,7 +62,7 @@
     "@reown/appkit-wallet": "workspace:*",
     "@wallet-standard/wallet": "1.1.0",
     "@walletconnect/logger": "2.1.2",
-    "@walletconnect/universal-provider": "2.21.9",
+    "@walletconnect/universal-provider": "2.22.0-canary-3",
     "valtio": "2.1.7",
     "viem": ">=2.37.9"
   },
