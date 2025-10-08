@@ -26,7 +26,8 @@ export function getTonConnectManifestUrl(): string {
   u.searchParams.set('name', name)
   u.searchParams.set('iconUrl', iconUrl)
 
-  return 'https://recorder-wages-attraction-assisted.trycloudflare.com/ton/v1/manifest?projectId=702e2d45d9debca66795614cddb5c1ca&st=appkit&sv=react-wagmi%2Csolana%2Cbitcoin%2Cton-1.8.9&url=https%3A%2F%2Flab.reown.com%2F&name=AppKit&iconUrl=https%3A%2F%2Flab.reown.com%2Flogo.png'
+  console.log('>>> u', u.toString())
+  return 'https://recorder-wages-attraction-assisted.trycloudflare.com/ton/v1/manifest?projectId=702e2d45d9debca66795614cddb5c1ca&st=appkit&sv=react-wagmi%2Csolana%2Cbitcoin%2Cton-1.8.9&url=https%3A%2F%2Fappkit-lab-ton.vercel.app%2F&name=AppKit&iconUrl=https%3A%2F%2Fappkit-lab-ton.vercel.app%2Flogo.png'
 }
 
 // -- Internal cache ------------------------------------------------------------ //
