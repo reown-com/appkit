@@ -58,12 +58,18 @@
     "codemod:upgrade:wc": "node packages/codemod/src/index.js upgrade @walletconnect/* && pnpm install",
     "codemod:upgrade:wagmi": "node packages/codemod/src/index.js upgrade viem wagmi @wagmi/* && pnpm install",
     "codemod:upgrade:solana": "node packages/codemod/src/index.js upgrade @solana/* && pnpm install",
-    "codemod:upgrade:radix": "node packages/codemod/src/index.js upgrade @radix-ui/* && pnpm install"
+    "codemod:upgrade:radix": "node packages/codemod/src/index.js upgrade @radix-ui/* && pnpm install",
+    "size": "size-limit",
+    "size:why": "size-limit --why",
+    "size:json": "size-limit --json"
   },
   "devDependencies": {
     "@changesets/assemble-release-plan": "6.0.6",
     "@changesets/changelog-github": "0.5.1",
     "@changesets/cli": "2.28.1",
+    "@size-limit/file": "11.1.6",
+    "@size-limit/preset-big-lib": "11.1.6",
+    "@size-limit/webpack": "11.1.6",
     "@trivago/prettier-plugin-sort-imports": "5.2.1",
     "@typescript-eslint/eslint-plugin": "6.18.1",
     "@typescript-eslint/parser": "6.18.1",
@@ -82,6 +88,7 @@
     "pino": "7.11.0",
     "prettier": "3.5.3",
     "process": "0.11.10",
+    "size-limit": "11.1.6",
     "stream-browserify": "3.0.0",
     "turbo": "2.5.8",
     "typescript": "5.8.3",

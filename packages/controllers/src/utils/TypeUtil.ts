@@ -952,7 +952,7 @@ export type Event =
   | {
       type: 'track'
       address?: string
-      event: 'WALLET_IMPRESSION'
+      event: 'WALLET_IMPRESSION_V2'
       items: Array<WalletImpressionItem | ConnectorImpressionItem>
     }
 
