@@ -1,17 +1,83 @@
 import type { CaipNetwork } from '@reown/appkit-common'
-import type { Connector } from '@reown/appkit-controllers'
+import type { Connector, Provider } from '@reown/appkit-controllers'
 
-export interface TonConnector extends Connector {
+interface ChainAdapterConnector extends Connector {
   chains: CaipNetwork[]
-  connect(params?: { chainId: string }): Promise<string>
-  disconnect(): Promise<void>
-  getAccount(): Promise<string | undefined>
-  signMessage(params: { message: string }): Promise<string>
-  sendMessage(params: { message: unknown }): Promise<string>
-  sendTransaction(params: { transaction: unknown }): Promise<string>
-  signData(params: { data: unknown }): Promise<string>
+}
+
+export interface TonConnector extends ChainAdapterConnector, Provider {
+  chains: CaipNetwork[]
+  sendMessage(params: TonConnector.SendMessageParams): Promise<string>
+  signData(params: TonConnector.SignDataParams): Promise<string>
   switchNetwork(chainId: string): Promise<void>
 }
 
-// For parity with Solana's Provider export, TON's provider is the connector surface
-export type Provider = TonConnector
+export type SignDataParamsText = {
+  type: 'text'
+  from: string
+  text: string
+}
+export type SignDataParamsBinary = {
+  type: 'binary'
+  bytes: string
+  from: string
+}
+export type SignDataParamsCell = {
+  type: 'cell'
+  schema: string
+  cell: string
+  from: string
+}
+export declare namespace TonConnector {
+  type AccountAddress = {
+    address: string
+  }
+  type SignDataParams = SignDataParamsText | SignDataParamsBinary | SignDataParamsCell
+  type SendMessageParams = {
+    message: {
+      from: string
+      message: string
+    }
+  }
+}
+
+// -- TonConnect Types -------------------------------- //
+type WalletPlatform = string
+type WalletFeature = string
+
+export type TonWalletInfoBase = {
+  name: string
+  appName: string
+  imageUrl: string
+  aboutUrl: string
+  tondns?: string
+  platforms: WalletPlatform[]
+  features?: WalletFeature[]
+}
+
+export type TonWalletInfoRemote = TonWalletInfoBase & {
+  universalLink?: string
+  deepLink?: string
+  bridgeUrl?: string
+}
+
+export type TonWalletInfoInjectable = TonWalletInfoBase & {
+  jsBridgeKey: string
+  injected: boolean
+  embedded: boolean
+}
+
+export type TonWalletInfo = TonWalletInfoRemote | TonWalletInfoInjectable
+
+export type TonWalletInfoDTO = {
+  name: string
+  app_name: string
+  image: string
+  about_url: string
+  tondns?: string
+  universal_url?: string
+  deepLink?: string
+  platforms: WalletPlatform[]
+  features?: WalletFeature[]
+  bridge: Array<{ type: 'sse'; url: string } | { type: 'js'; key: string }>
+}

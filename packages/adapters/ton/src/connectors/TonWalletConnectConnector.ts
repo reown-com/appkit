@@ -1,12 +1,18 @@
 import { WcHelpersUtil } from '@reown/appkit'
 import type { CaipNetwork } from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ChainController } from '@reown/appkit-controllers'
-import { HelpersUtil } from '@reown/appkit-utils'
+import { ConstantsUtil as CommonConstantsUtil, ConstantsUtil } from '@reown/appkit-common'
+import { type RequestArguments } from '@reown/appkit-controllers'
 import type { TonConnector } from '@reown/appkit-utils/ton'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
 
+import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
+
 type GetActiveChain = () => CaipNetwork | undefined
+export type WalletConnectProviderConfig = {
+  provider: WalletConnectConnector['provider']
+  chains: CaipNetwork[]
+  getActiveChain: () => CaipNetwork | undefined
+}
 
 export class TonWalletConnectConnector
   extends WalletConnectConnector<'ton'>
@@ -15,16 +21,13 @@ export class TonWalletConnectConnector
   public override readonly chain = CommonConstantsUtil.CHAIN.TON
   private readonly getActiveChain: GetActiveChain
 
-  constructor({
-    provider,
-    chains,
-    getActiveChain
-  }: {
-    provider: any
-    chains: CaipNetwork[]
-    getActiveChain: GetActiveChain
-  }) {
-    super({ caipNetworks: chains, namespace: 'ton', provider })
+  private eventEmitter = new ProviderEventEmitter()
+  public readonly emit = this.eventEmitter.emit.bind(this.eventEmitter)
+  public readonly on = this.eventEmitter.on.bind(this.eventEmitter)
+  public readonly removeListener = this.eventEmitter.removeListener.bind(this.eventEmitter)
+
+  constructor({ provider, chains, getActiveChain }: WalletConnectProviderConfig) {
+    super({ provider, caipNetworks: chains, namespace: ConstantsUtil.CHAIN.TON })
     this.getActiveChain = getActiveChain
   }
 
@@ -53,26 +56,10 @@ export class TonWalletConnectConnector
   }
 
   override async disconnect(): Promise<void> {
-    // Disconnection of WC session is orchestrated by AppKit universal provider flows
     return Promise.resolve()
   }
 
-  public async getAccount(): Promise<string | undefined> {
-    const caipAddress = ChainController.getAccountData(CommonConstantsUtil.CHAIN.TON)?.caipAddress
-    const account = this.provider.session?.namespaces[CommonConstantsUtil.CHAIN.TON]?.accounts.find(
-      _account => HelpersUtil.isLowerCaseMatch(_account, caipAddress)
-    )
-
-    if (!account) {
-      return undefined
-    }
-
-    const address = account.split(':')[2]
-
-    return address
-  }
-
-  public async signMessage(params: { message: string }): Promise<string> {
+  public async signMessage(params: TonConnector.SendMessageParams): Promise<string> {
     const chain = this.getActiveChain()
 
     if (!chain) {
@@ -84,12 +71,14 @@ export class TonWalletConnectConnector
       params: [{ message: params.message }],
       chainId: chain.caipNetworkId
     }
-    const result: any = await (this.provider as any).request(request)
+    const result = (await (
+      this.provider as { request: (req: unknown) => Promise<unknown> }
+    ).request(request)) as { signature?: string; result?: { signature?: string } } | undefined
 
-    return (result?.signature || result?.result?.signature || '') as string
+    return result?.signature || result?.result?.signature || ''
   }
 
-  public async signData(params: { data: any }): Promise<string> {
+  public async signData(params: TonConnector.SignDataParams): Promise<string> {
     const chain = this.getActiveChain()
 
     if (!chain) {
@@ -101,12 +90,13 @@ export class TonWalletConnectConnector
       params: [params],
       chainId: chain.caipNetworkId
     }
-    const result: any = await (this.provider as any).request(request)
+    const result: { signature?: string; result?: { signature?: string } } | undefined =
+      await this.provider.request(request)
 
-    return (result?.signature || result?.result?.signature || '') as string
+    return result?.signature || result?.result?.signature || ''
   }
 
-  public async sendMessage(params: { message: any }): Promise<string> {
+  public async sendMessage(params: TonConnector.SendMessageParams): Promise<string> {
     const chain = this.getActiveChain()
 
     if (!chain) {
@@ -118,18 +108,19 @@ export class TonWalletConnectConnector
       params: [params.message],
       chainId: chain.caipNetworkId
     }
-    const result: any = await (this.provider as any).request(request)
+    const result: { boc?: string; result?: string } | undefined =
+      await this.provider.request(request)
 
-    return (result?.boc || result?.result || '') as string
-  }
-
-  async sendTransaction(params: { transaction: any }): Promise<string> {
-    return this.sendMessage({ message: params.transaction })
+    return result?.boc || result?.result || ''
   }
 
   async switchNetwork(): Promise<void> {
-    // ChainAdapterBlueprint.switchNetwork will be called instead
     return Promise.resolve()
+  }
+
+  public request<T>(args: RequestArguments) {
+    // @ts-expect-error - args type should match internalRequest arguments but it's not correctly typed in Provider
+    return this.internalRequest(args) as T
   }
 
   // -- Internals ----------------------------------------------------- //

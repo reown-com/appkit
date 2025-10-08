@@ -1,16 +1,18 @@
+import UniversalProvider from '@walletconnect/universal-provider'
+
 import { WcHelpersUtil } from '@reown/appkit'
-import { ConstantsUtil, NumberUtil } from '@reown/appkit-common'
+import { ConstantsUtil, NumberUtil, UserRejectedRequestError } from '@reown/appkit-common'
 import { BlockchainApiController, ChainController } from '@reown/appkit-controllers'
+import type { Provider } from '@reown/appkit-utils'
 import type { TonConnector } from '@reown/appkit-utils/ton'
-import { getWallets as getInjectedWallets } from '@reown/appkit-utils/ton'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
-import { ton } from '@reown/appkit/networks'
 
 import { TonConnectConnector } from './connectors/TonConnectConnector.js'
 import { TonWalletConnectConnector } from './connectors/TonWalletConnectConnector.js'
+import { getWallets as getInjectedWallets } from './utils/TonConnectUtil.js'
 
 export class TonAdapter extends AdapterBlueprint<TonConnector> {
-  private universalProvider: any | undefined = undefined
+  private universalProvider: UniversalProvider | undefined = undefined
 
   constructor(params?: AdapterBlueprint.Params) {
     super({
@@ -21,71 +23,75 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   }
 
   override async syncConnectors() {
-    try {
-      console.log('[TonAdapter] syncConnectors: start')
-      // Use simplified utils.getWallets(): returns injected wallets with name resolved via remote list
-      const injectedNow = await getInjectedWallets({ cacheTTLMs: 60_000 })
-      console.log('[TonAdapter] syncConnectors: injected (final)', injectedNow)
+    const injectedNow = await getInjectedWallets({ cacheTTLMs: 60_000 })
 
-      const chains = this.getCaipNetworks()
-      injectedNow.forEach(wallet =>
-        this.addConnector(new TonConnectConnector({ wallet: wallet as any, chains }))
-      )
-      console.log('[TonAdapter] syncConnectors: completed', injectedNow.length)
-    } catch (err) {
-      console.error('[TonAdapter] syncConnectors error', err)
-    }
+    const chains = this.getCaipNetworks()
+    injectedNow.forEach(wallet => this.addConnector(new TonConnectConnector({ wallet, chains })))
   }
 
   override async connect(
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {
-    console.log('[TonAdapter] connect: start', params)
-
     const connector = this.connectors.find(c => c.id === params.id)
     if (!connector) {
       throw new Error('Connector not found')
     }
-    try {
-      const address = await connector.connect({ chainId: params.chainId as string })
-      console.log('[TonAdapter] connect: address2', address, params)
-      /*
-       * Set connection, emit events, etc.
-       * Mirror logic from BitcoinAdapter
-       */
-      const chainId = params.chainId || ton.caipNetworkId
 
-      this.emit('accountChanged', { address, chainId, connector })
-      this.connector = connector // Set active connector
+    const chain = connector.chains.find(c => c.id === params.chainId) || connector.chains[0]
 
-      const caipNetwork =
-        this.getCaipNetworks()?.find(n => n.id === chainId) || this.getCaipNetworks()[0]
-      if (caipNetwork) {
-        this.addConnection({
-          connectorId: connector.id,
-          accounts: [{ address }],
-          caipNetwork
-        })
-      }
+    if (!chain) {
+      throw new Error('The connector does not support any of the requested chains')
+    }
 
-      return {
-        id: connector.id,
-        address,
-        chainId,
-        // @ts-expect-error
-        provider: connector,
-        type: connector.type
-      }
-    } catch (error) {
-      console.error('[TonAdapter] connect: error', error)
+    const connection = this.connectionManager?.getConnection({
+      address: params.address,
+      connectorId: connector.id,
+      connections: this.connections,
+      connectors: this.connectors
+    })
+
+    if (connection?.account) {
+      this.emit('accountChanged', {
+        address: connection.account.address,
+        chainId: connection.caipNetwork?.id,
+        connector
+      })
 
       return {
         id: connector.id,
-        address: '',
-        chainId: '',
-        provider: undefined,
-        type: connector.type
+        type: connector.type,
+        address: connection.account.address,
+        chainId: chain.id,
+        provider: connector.provider
       }
+    }
+
+    const address = await connector.connect().catch(err => {
+      throw new UserRejectedRequestError(err)
+    })
+
+    this.emit('accountChanged', {
+      address,
+      chainId: chain.id,
+      connector
+    })
+
+    this.addConnection({
+      connectorId: connector.id,
+      accounts: [],
+      caipNetwork: chain
+    })
+
+    if (connector.id !== ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
+      this.listenProviderEvents(connector.id, connector)
+    }
+
+    return {
+      id: connector.id,
+      type: connector.type,
+      address,
+      chainId: chain.id,
+      provider: connector.provider
     }
   }
 
@@ -94,23 +100,13 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   }
 
   override async getAccounts(): Promise<AdapterBlueprint.GetAccountsResult> {
-    const address = await this.connector?.getAccount().catch(() => undefined)
-
-    return {
-      accounts: address
-        ? [{ namespace: this.namespace as any, address, type: 'payment' as any }]
-        : []
-    }
+    return Promise.resolve({
+      accounts: []
+    })
   }
 
   override async signMessage(): Promise<AdapterBlueprint.SignMessageResult> {
-    const connector = this.getActiveConnector()
-    if (!connector) {
-      throw new Error('No active connector')
-    }
-
-    // @ts-expect-error
-    return connector.signMessage({} as any)
+    return Promise.resolve({ signature: '' })
   }
 
   override async sendTransaction(): Promise<AdapterBlueprint.SendTransactionResult> {
@@ -119,8 +115,8 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
       throw new Error('No active connector')
     }
 
-    // @ts-expect-error
-    return connector.sendTransaction({ transaction: {} as any })
+    // @ts-expect-error - Placeholder implementation, needs proper params
+    return connector.sendMessage({ message: {} })
   }
 
   override async disconnect(
@@ -140,7 +136,9 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
 
       try {
         await connector.disconnect()
-      } catch {}
+      } catch {
+        // Ignore disconnect errors
+      }
 
       // Update AppKit state and emit events
       this.onDisconnect(connector.id)
@@ -154,7 +152,9 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
         const conn = this.connectors.find(cc => cc.id === c.connectorId)
         try {
           await conn?.disconnect()
-        } catch {}
+        } catch {
+          // Ignore disconnect errors
+        }
 
         return c
       })
@@ -173,12 +173,14 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     }
   }
 
-  public override async setUniversalProvider(universalProvider: any) {
+  // @ts-expect-error will if up issues
+  public override async setUniversalProvider(universalProvider: UniversalProvider) {
     this.universalProvider = universalProvider
 
     const wcConnectorId = ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
 
     WcHelpersUtil.listenWcProvider({
+      // @ts-expect-error will if up issues
       universalProvider,
       namespace: ConstantsUtil.CHAIN.TON,
       onConnect: accounts => this.onConnect(accounts, wcConnectorId),
@@ -188,6 +190,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
 
     this.addConnector(
       new TonWalletConnectConnector({
+        // @ts-expect-error will if up issues
         provider: universalProvider,
         chains: this.getCaipNetworks(),
         getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
@@ -225,9 +228,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     return { balance: formattedBalance, symbol: 'TON' }
   }
 
-  // Other methods as empty or throw 'Not supported for TON'
   override parseUnits(): bigint {
-    // Implement if needed
     return BigInt(0)
   }
 
@@ -243,7 +244,8 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
       connectors: this.connectors,
       caipNetwork,
       caipNetworks: this.getCaipNetworks(),
-      universalProvider: this.universalProvider as any,
+      // @ts-expect-error will if up issues
+      universalProvider: this.universalProvider,
       onConnection: this.addConnection.bind(this),
       onListenProvider: this.listenProviderEvents.bind(this)
     })
@@ -272,25 +274,29 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   override async estimateGas(
     _params: AdapterBlueprint.EstimateGasTransactionArgs
   ): Promise<AdapterBlueprint.EstimateGasTransactionResult> {
-    return { gas: BigInt(0) } // Placeholder
+    // Placeholder implementation
+    return Promise.resolve({ gas: BigInt(0) })
   }
 
   override async writeContract(
     _params: AdapterBlueprint.WriteContractParams
   ): Promise<AdapterBlueprint.WriteContractResult> {
-    return { hash: '' } // Placeholder
+    // Placeholder implementation
+    return Promise.resolve({ hash: '' })
   }
 
   override async grantPermissions(
     _params: AdapterBlueprint.GrantPermissionsParams
   ): Promise<unknown> {
-    return {} // Placeholder
+    // Placeholder implementation
+    return Promise.resolve({})
   }
 
   override async getCapabilities(
     _params: AdapterBlueprint.GetCapabilitiesParams
   ): Promise<unknown> {
-    return {} // Placeholder
+    // Placeholder implementation
+    return Promise.resolve({})
   }
 
   override async revokePermissions(
@@ -302,20 +308,21 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   override async walletGetAssets(
     _params: AdapterBlueprint.WalletGetAssetsParams
   ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
-    return {} as AdapterBlueprint.WalletGetAssetsResponse // Cast to satisfy type
+    // Placeholder implementation - cast to satisfy type
+    return Promise.resolve({} as AdapterBlueprint.WalletGetAssetsResponse)
   }
 
-  override getWalletConnectProvider(
+  public getWalletConnectProvider(
     params: AdapterBlueprint.GetWalletConnectProviderParams
   ): AdapterBlueprint.GetWalletConnectProviderResult {
     const walletConnectProvider = new TonWalletConnectConnector({
-      provider: params.provider as unknown as any,
+      // @ts-expect-error will if up issues
+      provider: params.provider,
       chains: params.caipNetworks,
       getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
     })
 
-    return walletConnectProvider as unknown as AdapterBlueprint.GetWalletConnectProviderResult
+    // @ts-expect-error will if up issues
+    return walletConnectProvider as unknown as Provider
   }
-
-  // For QR and universal link handling, TBD
 }

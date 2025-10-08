@@ -1,7 +1,10 @@
+import type { RequestArguments } from '@walletconnect/universal-provider'
+
 import type { CaipNetwork } from '@reown/appkit-common'
 import { CoreHelperUtil } from '@reown/appkit-controllers'
 import type { TonConnector, TonWalletInfo, TonWalletInfoInjectable } from '@reown/appkit-utils/ton'
 
+import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import { getTonConnectManifestUrl } from '../utils/TonConnectUtil.js'
 import { toUserFriendlyAddress, userFriendlyToRawAddress } from '../utils/TonWalletUtils.js'
 
@@ -13,9 +16,19 @@ export class TonConnectConnector implements TonConnector {
   private readonly wallet: TonWalletInfo
   private currentAddress: string | undefined
 
+  private eventEmitter = new ProviderEventEmitter()
+  public readonly emit = this.eventEmitter.emit.bind(this.eventEmitter)
+  public readonly on = this.eventEmitter.on.bind(this.eventEmitter)
+  public readonly removeListener = this.eventEmitter.removeListener.bind(this.eventEmitter)
+
   constructor({ wallet, chains }: { wallet: TonWalletInfo; chains: CaipNetwork[] }) {
     this.wallet = wallet
     this.requestedChains = chains
+  }
+
+  public request<T>(args: RequestArguments) {
+    // @ts-expect-error - args type should match internalRequest arguments but it's not correctly typed in Provider
+    return this.internalRequest(args) as T
   }
 
   public get id(): string {
@@ -52,20 +65,10 @@ export class TonConnectConnector implements TonConnector {
       return
     }
 
-    await this.clearSession()
+    this.clearSession()
   }
 
-  async getAccount(): Promise<string | undefined> {
-    return this.currentAddress
-  }
-
-  async signMessage(params: { message: string }): Promise<string> {
-    return this.signData({
-      data: { type: 'text', text: params.message, from: this.currentAddress }
-    })
-  }
-
-  async sendMessage(params: { message: any }): Promise<string> {
+  async sendMessage(params: { message: unknown }): Promise<string> {
     if (!('jsBridgeKey' in this.wallet) || !this.wallet.jsBridgeKey) {
       throw new Error('TON sendMessage over bridge not implemented')
     }
@@ -80,12 +83,23 @@ export class TonConnectConnector implements TonConnector {
       throw new Error('Injected wallet not available')
     }
 
-    const tx = params.message || {}
+    const tx = (params.message || {}) as {
+      validUntil?: number
+      from?: string
+      network?: string
+      messages?: Array<{
+        address?: string
+        amount?: string | number
+        payload?: string
+        stateInit?: string
+        extraCurrency?: unknown
+      }>
+    }
     const prepared = {
       valid_until: tx.validUntil ?? Math.floor(Date.now() / 1000) + 60,
       from: tx.from,
       network: tx.network,
-      messages: (tx.messages || []).map((m: any) => ({
+      messages: (tx.messages || []).map(m => ({
         address: m.address,
         amount: String(m.amount ?? '0'),
         payload: this.normalizeBase64(m.payload),
@@ -99,11 +113,11 @@ export class TonConnectConnector implements TonConnector {
     return res?.boc as string
   }
 
-  async sendTransaction(params: { transaction: any }): Promise<string> {
+  async sendTransaction(params: { transaction: unknown }): Promise<string> {
     return this.sendMessage({ message: params.transaction })
   }
 
-  async signData(params: { data: any }): Promise<string> {
+  async signData(params: TonConnector.SignDataParams): Promise<string> {
     if (!CoreHelperUtil.isClient()) {
       throw new Error('Window is not available')
     }
@@ -120,15 +134,24 @@ export class TonConnectConnector implements TonConnector {
       throw new Error('Injected wallet not available')
     }
 
-    const payload = params.data || {}
-    const from = userFriendlyToRawAddress(payload.from || this.currentAddress)
+    const payload = (params || {}) as {
+      from?: string
+      type?: string
+      cell?: string
+      bytes?: string
+      network?: string
+    }
+    const from = userFriendlyToRawAddress(payload.from || this.currentAddress || '')
     const base = { ...payload, from }
-    const normalized =
-      base?.type === 'cell'
-        ? { ...base, cell: this.normalizeBase64(base.cell) }
-        : base?.type === 'binary'
-          ? { ...base, bytes: this.normalizeBase64(base.bytes) }
-          : { ...base, network: base.network || '-239' }
+
+    let normalized: Record<string, unknown> = {}
+    if (base?.type === 'cell') {
+      normalized = { ...base, cell: this.normalizeBase64(base.cell) }
+    } else if (base?.type === 'binary') {
+      normalized = { ...base, bytes: this.normalizeBase64(base.bytes) }
+    } else {
+      normalized = { ...base, network: base.network || '-239' }
+    }
 
     try {
       const res = await wallet.send({
@@ -138,7 +161,9 @@ export class TonConnectConnector implements TonConnector {
       })
 
       return (res?.signature || res?.result?.signature) as string
-    } catch {}
+    } catch {
+      // Wallet rejected or error occurred
+    }
 
     return ''
   }
@@ -148,7 +173,7 @@ export class TonConnectConnector implements TonConnector {
   }
 
   // -- Private ------------------------------------------------------ //
-  private async clearSession() {
+  private clearSession() {
     this.currentAddress = undefined
   }
 
@@ -200,7 +225,9 @@ export class TonConnectConnector implements TonConnector {
       if (typeof wallet.restoreConnection === 'function') {
         await wallet.restoreConnection()
       }
-    } catch {}
+    } catch {
+      // Restore connection failed, continue with fresh connection
+    }
 
     const PROTOCOL_VERSION = 2
 
@@ -208,29 +235,41 @@ export class TonConnectConnector implements TonConnector {
     if (typeof wallet.connect === 'function') {
       try {
         const res = await wallet.connect(PROTOCOL_VERSION, request)
-        const addrItem = res?.payload?.items?.find?.((i: any) => i?.name === 'ton_addr')
+        const addrItem = res?.payload?.items?.find?.(
+          (i: { name?: string }) => i?.name === 'ton_addr'
+        ) as { address?: string } | undefined
         if (res?.event === 'connect' && addrItem?.address) {
-          return addrItem.address as string
+          return addrItem.address
         }
-      } catch {}
+      } catch {
+        // Direct connect failed, will try event-based approach
+      }
     }
 
     // Fallback: subscribe then call connect and resolve on first 'connect'
     return await new Promise<string>((resolve, reject) => {
-      let unsub: (() => void) | undefined
-      const onEvent = (evt: any) => {
+      let unsub: (() => void) | undefined = undefined
+
+      function onEvent(evt: {
+        event?: string
+        payload?: { items?: Array<{ name?: string; address?: string }>; message?: string }
+      }) {
         if (evt?.event === 'connect') {
-          const addrItem = evt?.payload?.items?.find?.((i: any) => i?.name === 'ton_addr')
+          const addrItem = evt?.payload?.items?.find?.(i => i?.name === 'ton_addr')
           if (addrItem?.address) {
             try {
               unsub?.()
-            } catch {}
-            resolve(addrItem.address as string)
+            } catch {
+              // Cleanup failed, continue
+            }
+            resolve(addrItem.address)
           }
         } else if (evt?.event === 'connect_error') {
           try {
             unsub?.()
-          } catch {}
+          } catch {
+            // Cleanup failed, continue
+          }
           reject(new Error(evt?.payload?.message || 'TON connect error'))
         }
       }
@@ -244,7 +283,9 @@ export class TonConnectConnector implements TonConnector {
       } catch (err) {
         try {
           unsub?.()
-        } catch {}
+        } catch {
+          // Cleanup failed, continue
+        }
         reject(err)
       }
     })
@@ -256,6 +297,6 @@ export class TonConnectConnector implements TonConnector {
     }
     const pad = s.length + ((4 - (s.length % 4)) % 4)
 
-    return s.replace(/-/g, '+').replace(/_/g, '/').padEnd(pad, '=')
+    return s.replace(/-/gu, '+').replace(/_/gu, '/').padEnd(pad, '=')
   }
 }

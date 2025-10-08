@@ -17,7 +17,7 @@ import { Ethers5Tests } from './Ethers/Ethers5Tests'
 import { EthersTests } from './Ethers/EthersTests'
 import { ReownAuthenticationTests } from './ReownAuthentication'
 import { SiweData } from './Siwe/SiweData'
-import { TonSendTransactionTest } from './Ton/TonSendTransactionTest'
+import { TonSendMessageTest } from './Ton/TonSendMessageTest'
 import { TonSignDataTest } from './Ton/TonSignDataTest'
 import { UpaTests } from './UPA/UpaTests'
 
@@ -61,7 +61,7 @@ export default function DemoContent({
       {tonAdapter ? (
         <>
           <TonSignDataTest />
-          <TonSendTransactionTest />
+          <TonSendMessageTest />
         </>
       ) : null}
       {hasNoAdapters ? <UpaTests /> : null}

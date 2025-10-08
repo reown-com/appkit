@@ -1,4 +1,3 @@
-// Type guards
 import type {
   TonWalletInfo,
   TonWalletInfoInjectable,
@@ -52,7 +51,7 @@ export function toUserFriendlyAddress(hexAddress: string, opts: ToUserFriendlyOp
 
   const b64 = base64FromBytes(out)
 
-  return b64.replace(/\+/g, '-').replace(/\//g, '_')
+  return b64.replace(/\+/gu, '-').replace(/\//gu, '_')
 }
 
 function parseHexAddress(raw: string): { wc: 0 | -1; hex: Uint8Array } {
@@ -61,13 +60,23 @@ function parseHexAddress(raw: string): { wc: 0 | -1; hex: Uint8Array } {
     throw new Error(`Invalid address (expected "wc:hex"): ${raw}`)
   }
 
-  const wcNum = parseInt(parts[0]!, 10)
+  const wcPart = parts[0]
+  if (!wcPart) {
+    throw new Error('Missing workchain')
+  }
+
+  const wcNum = parseInt(wcPart, 10)
   if (wcNum !== 0 && wcNum !== -1) {
     throw new Error(`Invalid workchain: ${wcNum}`)
   }
 
-  const hex = parts[1]!.toLowerCase()
-  if (!/^[0-9a-f]{64}$/.test(hex)) {
+  const hexPart = parts[1]
+  if (!hexPart) {
+    throw new Error('Missing hex part')
+  }
+
+  const hex = hexPart.toLowerCase()
+  if (!/^[0-9a-f]{64}$/u.test(hex)) {
     throw new Error(`Hex must be 64 chars (32 bytes): ${hex}`)
   }
 
@@ -76,14 +85,13 @@ function parseHexAddress(raw: string): { wc: 0 | -1; hex: Uint8Array } {
 
 function hexToBytes(hex: string): Uint8Array {
   const out = new Uint8Array(hex.length / 2)
-  for (let i = 0; i < out.length; i++) {
+  for (let i = 0; i < out.length; i += 1) {
     out[i] = parseInt(hex.substr(i * 2, 2), 16)
   }
 
   return out
 }
 
-// CRC16-CCITT (poly 0x1021), initial 0x0000
 function crc16(data: Uint8Array): Uint8Array {
   const poly = 0x1021
   let reg = 0
@@ -112,15 +120,14 @@ function base64FromBytes(bytes: Uint8Array): string {
     return Buffer.from(bytes).toString('base64')
   }
   let bin = ''
-  for (let i = 0; i < bytes.length; i++) {
-    bin += String.fromCharCode(bytes[i]!)
+  for (const byte of bytes) {
+    bin += String.fromCharCode(byte)
   }
 
   return btoa(bin)
 }
 
 // -- Reverse: user-friendly (base64url) -> raw hex address ------------------- //
-
 export function userFriendlyToRawAddress(address: string): string {
   const bytes = base64UrlToBytes(address)
   if (bytes.length !== 36) {
@@ -146,14 +153,14 @@ export function userFriendlyToRawAddress(address: string): string {
 }
 
 function base64UrlToBytes(s: string): Uint8Array {
-  const b64 = s.replace(/-/g, '+').replace(/_/g, '/')
+  const b64 = s.replace(/-/gu, '+').replace(/_/gu, '/')
   const padded = b64.padEnd(b64.length + ((4 - (b64.length % 4)) % 4), '=')
   if (typeof Buffer !== 'undefined') {
     return Uint8Array.from(Buffer.from(padded, 'base64'))
   }
   const bin = atob(padded)
   const out = new Uint8Array(bin.length)
-  for (let i = 0; i < bin.length; i++) {
+  for (let i = 0; i < bin.length; i += 1) {
     out[i] = bin.charCodeAt(i)
   }
 

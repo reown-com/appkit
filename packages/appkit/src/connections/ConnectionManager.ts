@@ -312,7 +312,7 @@ export class ConnectionManager {
             return
           }
 
-          const address = await connector.connect({ chainId: caipNetwork?.id as string })
+          const address = await connector.connect()
 
           if (address) {
             onConnection({

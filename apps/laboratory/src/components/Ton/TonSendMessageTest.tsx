@@ -8,7 +8,7 @@ import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 
-export function TonSendTransactionTest() {
+export function TonSendMessageTest() {
   const toast = useChakraToast()
   const { address, isConnected } = useAppKitAccount({ namespace: 'ton' })
   const { walletProvider } = useAppKitProvider<any>('ton')
@@ -29,7 +29,7 @@ export function TonSendTransactionTest() {
           }
         ]
       }
-      const res = await walletProvider.sendTransaction({ transaction: tx })
+      const res = await walletProvider.sendMessage({ transaction: tx })
       setBoc(res)
       toast({ title: 'Transaction prepared', description: res, type: 'success' })
     } catch (e) {

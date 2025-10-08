@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import { Button, Card, CardBody, Heading, Stack, Text } from '@chakra-ui/react'
 
-import type { TonConnector } from '@reown/appkit-utils/ton'
+import { type TonConnector } from '@reown/appkit-adapter-ton'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
@@ -19,10 +19,13 @@ export function TonSignDataTest() {
     try {
       console.log('>> walletProvider', walletProvider)
       if (!walletProvider || !isConnected || !address) throw new Error('Disconnected')
-      const payload = { type: 'text', text: 'Confirm action in AppKit', from: address }
-      const sig = await walletProvider.signData(payload)
-      setSignature(sig)
-      toast({ title: 'Signed (text)', description: sig, type: 'success' })
+      const signature = await walletProvider.signData({
+        type: 'text',
+        text: 'Confirm action in AppKit',
+        from: address
+      })
+      setSignature(signature)
+      toast({ title: 'Signed (text)', description: signature, type: 'success' })
     } catch (err) {
       console.log('>> err', err)
       toast({
@@ -36,10 +39,13 @@ export function TonSignDataTest() {
   async function signBinary() {
     try {
       if (!walletProvider || !isConnected || !address) throw new Error('Disconnected')
-      const payload = { type: 'binary', bytes: btoa('hello-ton'), from: address }
-      const sig = await walletProvider.signData({ data: payload })
-      setSignature(sig)
-      toast({ title: 'Signed (binary)', description: sig, type: 'success' })
+      const signature = await walletProvider.signData({
+        type: 'binary',
+        bytes: btoa('hello-ton'),
+        from: address
+      })
+      setSignature(signature)
+      toast({ title: 'Signed (binary)', description: signature, type: 'success' })
     } catch {
       toast({ title: 'Sign error', description: 'Failed to sign binary', type: 'error' })
     }
@@ -48,16 +54,14 @@ export function TonSignDataTest() {
   async function signCell() {
     try {
       if (!walletProvider || !isConnected || !address) throw new Error('Disconnected')
-      // Minimal example cell payload (dummy BoC)
-      const payload = {
+      const signature = await walletProvider.signData({
         type: 'cell',
         schema: 'opaque',
         cell: 'te6ccgEBAQEAAgAAAA==' /* empty cell example */,
         from: address
-      }
-      const sig = await walletProvider.signData({ data: payload })
-      setSignature(sig)
-      toast({ title: 'Signed (cell)', description: sig, type: 'success' })
+      })
+      setSignature(signature)
+      toast({ title: 'Signed (cell)', description: signature, type: 'success' })
     } catch {
       toast({ title: 'Sign error', description: 'Failed to sign cell', type: 'error' })
     }
