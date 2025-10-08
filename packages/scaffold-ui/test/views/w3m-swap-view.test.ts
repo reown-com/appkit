@@ -49,10 +49,6 @@ const mockChainState: ChainControllerState = {
   activeCaipAddress: 'eip155:1:0x123456789abcdef123456789abcdef123456789a',
   chains: new Map(),
   universalAdapter: {
-    networkControllerClient: {
-      switchCaipNetwork: vi.fn(),
-      getApprovedCaipNetworksData: vi.fn()
-    },
     connectionControllerClient: {
       connectWalletConnect: vi.fn(),
       connectExternal: vi.fn(),
