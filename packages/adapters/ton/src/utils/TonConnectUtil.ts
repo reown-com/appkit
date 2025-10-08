@@ -10,7 +10,7 @@ import type {
 } from '@reown/appkit-utils/ton'
 
 export function getTonConnectManifestUrl(): string {
-  const base = `https://api-web3modal-staging.walletconnect-v1-bridge.workers.dev/ton/v1/manifest`
+  const base = `https://api.web3modal.org/ton/v1/manifest`
   const { st, sv } = BlockchainApiController.getSdkProperties()
 
   const appUrl = 'https://appkit-lab-ton.vercel.app/'
@@ -18,7 +18,7 @@ export function getTonConnectManifestUrl(): string {
   const iconUrl = 'https://appkit-lab-ton.vercel.app/logo.png'
 
   const u = new URL(base)
-  u.searchParams.set('projectId', '643930683abb02c28b8bdad440337272')
+  u.searchParams.set('projectId', '6f03d9841405db5f31e2c08d6c053749')
   u.searchParams.set('st', st)
   u.searchParams.set('sv', sv)
   u.searchParams.set('url', appUrl)
