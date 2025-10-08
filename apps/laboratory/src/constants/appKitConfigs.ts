@@ -37,6 +37,7 @@ const connectors = [externalTestConnector()]
 const metadata = {
   name: 'AppKit',
   description: 'AppKit Laboratory',
+  // eslint-disable-next-line no-negated-condition
   url: typeof window !== 'undefined' ? window.location.origin : '',
   icons: ['https://lab.reown.com/logo.png']
 }
