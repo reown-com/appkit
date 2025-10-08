@@ -37,7 +37,6 @@ const connectors = [externalTestConnector()]
 const metadata = {
   name: 'AppKit',
   description: 'AppKit Laboratory',
-  url: 'https://lab.reown.com/',
   icons: ['https://lab.reown.com/logo.png']
 }
 const commonAppKitConfig = {
