@@ -18,7 +18,7 @@ jobs:
       - name: Send Slack Notification for Secure Site Update
         env:
           DEVIN_SLACK_WEBHOOK_URL: ${{ secrets.DEVIN_SLACK_WEBHOOK_URL }}
-          DEVIN_SLACK_USER_ID: U08M9DKD4MC
+          DEVIN_SLACK_USER_ID: ${{ vars.DEVIN_SLACK_USER_ID }}
           PROMPT_TEXT: |
             ## Context
             A release merge commit (SHA: ${{ github.sha }}) was just pushed to **${{ github.repository }}**'s `main` branch.
