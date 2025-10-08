@@ -1,3 +1,5 @@
+import type { CaipNetworkId } from '@reown/appkit-common'
+
 import { SIWXConfig } from '../core/SIWXConfig.js'
 import { InformalMessenger } from '../messengers/index.js'
 import { LocalStorage } from '../storages/index.js'
@@ -35,7 +37,8 @@ export class DefaultSIWX extends SIWXConfig {
       messenger: params.messenger || DEFAULTS.getDefaultMessenger(),
       verifiers: params.verifiers || DEFAULTS.getDefaultVerifiers(),
       storage: params.storage || DEFAULTS.getDefaultStorage(),
-      required: params.required
+      required: params.required,
+      networks: params.networks as [CaipNetworkId, ...CaipNetworkId[]]
     })
   }
 }

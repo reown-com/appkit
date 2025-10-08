@@ -39,6 +39,13 @@ export const SIWXUtil = {
       return
     }
 
+    if (
+      siwx.networks?.length &&
+      !siwx.networks.some(network => network === `${namespace}:${chainId}`)
+    ) {
+      return
+    }
+
     try {
       if (OptionsController.state.remoteFeatures?.emailCapture) {
         const user = ChainController.getAccountData(namespace)?.user
@@ -566,6 +573,13 @@ export interface SIWXConfig {
    * @returns {boolean}
    */
   signOutOnDisconnect?: boolean
+
+  /**
+   * This determines which networks to use siwx for. Defaults to the networks in appkit config.
+   * @type [CaipNetworkId, ...CaipNetworkId[]]
+   * @default [appkit.networks]
+   */
+  networks?: [CaipNetworkId, ...CaipNetworkId[]]
 }
 
 /**

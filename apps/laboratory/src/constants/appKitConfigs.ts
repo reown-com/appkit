@@ -392,6 +392,12 @@ export const appKitConfigs = {
   },
 
   // ----- Flags -------------------------
+  'flag-siwx-custom-networks': {
+    ...commonAppKitConfig,
+    adapters: ['ethers', 'solana', 'bitcoin'],
+    networks: ConstantsUtil.AllNetworks,
+    siwx: new DefaultSIWX({ networks: ['eip155:1', 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'] })
+  },
   'flag-custom-rpc-url': {
     ...commonAppKitConfig,
     adapters: ['wagmi'],

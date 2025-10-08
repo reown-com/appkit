@@ -17,7 +17,7 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
   private messenger: SIWXMessenger
   private verifiers: SIWXVerifier[]
   private storage: SIWXStorage
-
+  public networks: [CaipNetworkId, ...CaipNetworkId[]]
   public required: boolean
 
   constructor(params: SIWXConfig.ConstructorParams) {
@@ -25,6 +25,7 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
     this.verifiers = params.verifiers
     this.storage = params.storage
     this.required = params.required ?? true
+    this.networks = params.networks
   }
 
   /**
@@ -157,5 +158,11 @@ export namespace SIWXConfig {
      * @default true
      */
     required?: boolean
+
+    /**
+     * This determines which networks to use siwx for.
+     * @type [CaipNetworkId, ...CaipNetworkId[]]
+     */
+    networks: [CaipNetworkId, ...CaipNetworkId[]]
   }
 }
