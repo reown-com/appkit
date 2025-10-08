@@ -70,11 +70,10 @@ export class TonWalletConnectConnector
 
     const request = {
       method: 'ton_signData',
-      params: [params],
-      chainId: chain.caipNetworkId
+      params: [params]
     }
     const result: { signature?: string; result?: { signature?: string } } | undefined =
-      await this.provider.request(request)
+      await this.provider.request(request, chain.caipNetworkId)
 
     return result?.signature || result?.result?.signature || ''
   }

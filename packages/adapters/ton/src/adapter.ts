@@ -70,7 +70,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
         type: connector.type,
         address: connection.account.address,
         chainId: chain.id,
-        provider: connector.provider
+        provider: connector
       }
     }
 
@@ -99,7 +99,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
       type: connector.type,
       address,
       chainId: chain.id,
-      provider: connector.provider
+      provider: connector
     }
   }
 
