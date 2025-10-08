@@ -26,7 +26,7 @@
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.22.0-canary-1",
+    "@walletconnect/universal-provider": "2.22.0-canary-2",
     "valtio": "2.1.7"
   },
   "optionalDependencies": {
