@@ -38,7 +38,6 @@ export function SolanaSignAndSendTransaction() {
         throw Error('no connection set')
       }
 
-      console.log('>> walletProvider', walletProvider)
       const balance = await connection.getBalance(walletProvider.publicKey)
       if (balance < amountInLamports) {
         throw Error('Not enough SOL in wallet')
@@ -63,15 +62,12 @@ export function SolanaSignAndSendTransaction() {
 
         // Make a versioned transaction
         const versionedTranasction = new VersionedTransaction(messageV0)
-
-        console.log('>> versionedTranasction', versionedTranasction)
         signature = await walletProvider.signAndSendTransaction(versionedTranasction)
       } else {
         // Create a new transaction
         const transaction = new Transaction().add(instruction)
         transaction.feePayer = walletProvider.publicKey
         transaction.recentBlockhash = blockhash
-        console.log('>> walletProvider', walletProvider)
         signature = await walletProvider.signAndSendTransaction(transaction)
       }
 

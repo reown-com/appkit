@@ -17,17 +17,17 @@ export function TonSignDataTest() {
 
   async function signText() {
     try {
-      console.log('>> walletProvider', walletProvider)
-      if (!walletProvider || !isConnected || !address) throw new Error('Disconnected')
-      const signature = await walletProvider.signData({
+      if (!walletProvider || !isConnected || !address) {
+        throw new Error('Disconnected')
+      }
+      const sig = await walletProvider.signData({
         type: 'text',
         text: 'Confirm action in AppKit',
         from: address
       })
-      setSignature(signature)
-      toast({ title: 'Signed (text)', description: signature, type: 'success' })
+      setSignature(sig)
+      toast({ title: 'Signed (text)', description: sig, type: 'success' })
     } catch (err) {
-      console.log('>> err', err)
       toast({
         title: 'Sign error',
         description: (err as Error)?.message || 'Failed to sign text',
@@ -38,14 +38,16 @@ export function TonSignDataTest() {
 
   async function signBinary() {
     try {
-      if (!walletProvider || !isConnected || !address) throw new Error('Disconnected')
-      const signature = await walletProvider.signData({
+      if (!walletProvider || !isConnected || !address) {
+        throw new Error('Disconnected')
+      }
+      const sig = await walletProvider.signData({
         type: 'binary',
         bytes: btoa('hello-ton'),
         from: address
       })
-      setSignature(signature)
-      toast({ title: 'Signed (binary)', description: signature, type: 'success' })
+      setSignature(sig)
+      toast({ title: 'Signed (binary)', description: sig, type: 'success' })
     } catch {
       toast({ title: 'Sign error', description: 'Failed to sign binary', type: 'error' })
     }
@@ -53,15 +55,18 @@ export function TonSignDataTest() {
 
   async function signCell() {
     try {
-      if (!walletProvider || !isConnected || !address) throw new Error('Disconnected')
-      const signature = await walletProvider.signData({
+      if (!walletProvider || !isConnected || !address) {
+        throw new Error('Disconnected')
+      }
+      const sig = await walletProvider.signData({
         type: 'cell',
         schema: 'opaque',
-        cell: 'te6ccgEBAQEAAgAAAA==' /* empty cell example */,
+        // Empty cell example
+        cell: 'te6ccgEBAQEAAgAAAA==',
         from: address
       })
-      setSignature(signature)
-      toast({ title: 'Signed (cell)', description: signature, type: 'success' })
+      setSignature(sig)
+      toast({ title: 'Signed (cell)', description: sig, type: 'success' })
     } catch {
       toast({ title: 'Sign error', description: 'Failed to sign cell', type: 'error' })
     }

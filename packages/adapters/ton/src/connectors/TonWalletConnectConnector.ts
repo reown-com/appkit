@@ -1,9 +1,11 @@
-import { WcHelpersUtil } from '@reown/appkit'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, ConstantsUtil } from '@reown/appkit-common'
-import { type RequestArguments } from '@reown/appkit-controllers'
+import {
+  type RequestArguments,
+  WalletConnectConnector,
+  WcHelpersUtil
+} from '@reown/appkit-controllers'
 import type { TonConnector } from '@reown/appkit-utils/ton'
-import { WalletConnectConnector } from '@reown/appkit/connectors'
 
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 
@@ -59,25 +61,6 @@ export class TonWalletConnectConnector
     return Promise.resolve()
   }
 
-  public async signMessage(params: TonConnector.SendMessageParams): Promise<string> {
-    const chain = this.getActiveChain()
-
-    if (!chain) {
-      throw new Error('Chain not found')
-    }
-
-    const request = {
-      method: 'ton_signMessage',
-      params: [{ message: params.message }],
-      chainId: chain.caipNetworkId
-    }
-    const result = (await (
-      this.provider as { request: (req: unknown) => Promise<unknown> }
-    ).request(request)) as { signature?: string; result?: { signature?: string } } | undefined
-
-    return result?.signature || result?.result?.signature || ''
-  }
-
   public async signData(params: TonConnector.SignDataParams): Promise<string> {
     const chain = this.getActiveChain()
 
@@ -105,7 +88,7 @@ export class TonWalletConnectConnector
 
     const request = {
       method: 'ton_sendMessage',
-      params: [params.message],
+      params: [params],
       chainId: chain.caipNetworkId
     }
     const result: { boc?: string; result?: string } | undefined =

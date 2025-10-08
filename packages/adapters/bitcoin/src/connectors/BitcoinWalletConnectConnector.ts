@@ -1,12 +1,12 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import { type RequestArguments, WcHelpersUtil } from '@reown/appkit'
+import { type RequestArguments } from '@reown/appkit'
 import {
   type CaipNetwork,
   ConstantsUtil as CommonConstantsUtil,
   ConstantsUtil
 } from '@reown/appkit-common'
-import { ChainController, WalletConnectConnector } from '@reown/appkit-controllers'
+import { ChainController, WalletConnectConnector, WcHelpersUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 

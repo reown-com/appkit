@@ -68,7 +68,7 @@ export class TonConnectConnector implements TonConnector {
     this.clearSession()
   }
 
-  async sendMessage(params: { message: unknown }): Promise<string> {
+  async sendMessage(params: TonConnector.SendMessageParams): Promise<string> {
     if (!('jsBridgeKey' in this.wallet) || !this.wallet.jsBridgeKey) {
       throw new Error('TON sendMessage over bridge not implemented')
     }
@@ -83,7 +83,7 @@ export class TonConnectConnector implements TonConnector {
       throw new Error('Injected wallet not available')
     }
 
-    const tx = (params.message || {}) as {
+    const tx = (params || {}) as {
       validUntil?: number
       from?: string
       network?: string
@@ -111,10 +111,6 @@ export class TonConnectConnector implements TonConnector {
     const res = await wallet.send({ method: 'sendTransaction', params: [prepared] })
 
     return res?.boc as string
-  }
-
-  async sendTransaction(params: { transaction: unknown }): Promise<string> {
-    return this.sendMessage({ message: params.transaction })
   }
 
   async signData(params: TonConnector.SignDataParams): Promise<string> {

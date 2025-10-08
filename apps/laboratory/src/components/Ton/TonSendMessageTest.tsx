@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import { Button, Card, CardBody, Heading, Input, Stack, Text } from '@chakra-ui/react'
 
+import type { TonConnector } from '@reown/appkit-adapter-ton'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
@@ -11,15 +12,19 @@ import { useChakraToast } from '@/src/components/Toast'
 export function TonSendMessageTest() {
   const toast = useChakraToast()
   const { address, isConnected } = useAppKitAccount({ namespace: 'ton' })
-  const { walletProvider } = useAppKitProvider<any>('ton')
+  const { walletProvider } = useAppKitProvider<TonConnector>('ton')
   const [to, setTo] = useState('EQBBJBB3HagsujBqVfqeDUPJ0kXjgTPLWPFFffuNXNiJL0aA')
-  const [amount, setAmount] = useState('20000000') // 0.02 TON in nanotons
+  // 0.02 TON in nanotons
+  const [amount, setAmount] = useState('20000000')
   const [boc, setBoc] = useState<string | undefined>()
 
   async function onSend() {
     try {
-      if (!walletProvider || !isConnected || !address) throw new Error('Disconnected')
-      const tx = {
+      if (!walletProvider || !isConnected || !address) {
+        throw new Error('Disconnected')
+      }
+
+      const res = await walletProvider.sendMessage({
         validUntil: Math.floor(Date.now() / 1000) + 60,
         from: address,
         messages: [
@@ -28,12 +33,10 @@ export function TonSendMessageTest() {
             amount
           }
         ]
-      }
-      const res = await walletProvider.sendMessage({ transaction: tx })
+      })
       setBoc(res)
       toast({ title: 'Transaction prepared', description: res, type: 'success' })
     } catch (e) {
-      console.log('>> e', e)
       toast({ title: 'Send error', description: 'Failed to send transaction', type: 'error' })
     }
   }
