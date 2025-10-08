@@ -136,11 +136,7 @@ export const ExchangeController = {
   },
 
   isPayWithExchangeEnabled() {
-    return (
-      OptionsController.state.remoteFeatures?.payWithExchange ||
-      OptionsController.state.remoteFeatures?.payments ||
-      OptionsController.state.features?.pay
-    )
+    return OptionsController.state.remoteFeatures?.payWithExchange
   },
 
   isPayWithExchangeSupported() {
