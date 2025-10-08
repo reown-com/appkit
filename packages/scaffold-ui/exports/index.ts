@@ -19,6 +19,7 @@ export * from '../src/modal/w3m-footer/index.js'
 export * from '../src/views/w3m-account-settings-view/index.js'
 export * from '../src/views/w3m-account-view/index.js'
 export * from '../src/views/w3m-profile-wallets-view/index.js'
+export * from '../src/views/w3m-fund-wallet-view/index.js'
 
 // Connection
 export * from '../src/views/w3m-all-wallets-view/index.js'
