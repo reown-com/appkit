@@ -44,6 +44,24 @@ vi.mock('@reown/appkit-utils', () => ({
   }
 }))
 
+// Helper function to create mock CaipNetwork
+const createMockCaipNetwork = (id: number, name: string) => ({
+  id,
+  name,
+  chainNamespace: 'eip155' as const,
+  caipNetworkId: `eip155:${id}` as const,
+  nativeCurrency: {
+    name: name,
+    symbol: name === 'Polygon' ? 'MATIC' : 'ETH',
+    decimals: 18
+  },
+  rpcUrls: {
+    default: {
+      http: [`https://rpc.example.com/${id}`]
+    }
+  }
+})
+
 describe('AuthConnector - parseChainId behavior fix', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -56,30 +74,14 @@ describe('AuthConnector - parseChainId behavior fix', () => {
   it('should return current chain ID when request comes while active namespace is different than eip155', async () => {
     // Mock ChainController to simulate different active namespace
     vi.spyOn(ChainController, 'getCaipNetworks').mockReturnValue([
-      {
-        id: 137, // Polygon
-        chainId: 137,
-        name: 'Polygon',
-        chainNamespace: 'eip155',
-        caipNetworkId: 'eip155:137'
-      },
-      {
-        id: 1, // Ethereum mainnet
-        chainId: 1,
-        name: 'Ethereum',
-        chainNamespace: 'eip155',
-        caipNetworkId: 'eip155:1'
-      }
+      createMockCaipNetwork(137, 'Polygon'),
+      createMockCaipNetwork(1, 'Ethereum')
     ])
 
     // Mock active network to be Polygon (chainId 137)
-    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue({
-      id: 137,
-      chainId: 137,
-      name: 'Polygon',
-      chainNamespace: 'eip155',
-      caipNetworkId: 'eip155:137'
-    })
+    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(
+      createMockCaipNetwork(137, 'Polygon')
+    )
 
     // Test the parseChainId function behavior by testing the logic directly
     // This simulates the fix where parseChainId should return the current active chain
@@ -107,24 +109,12 @@ describe('AuthConnector - parseChainId behavior fix', () => {
   it('should fallback to first available network when no active network is set', async () => {
     // Mock ChainController with no active network
     vi.spyOn(ChainController, 'getCaipNetworks').mockReturnValue([
-      {
-        id: 137, // Polygon
-        chainId: 137,
-        name: 'Polygon',
-        chainNamespace: 'eip155',
-        caipNetworkId: 'eip155:137'
-      },
-      {
-        id: 1, // Ethereum mainnet
-        chainId: 1,
-        name: 'Ethereum',
-        chainNamespace: 'eip155',
-        caipNetworkId: 'eip155:1'
-      }
+      createMockCaipNetwork(137, 'Polygon'),
+      createMockCaipNetwork(1, 'Ethereum')
     ])
 
     // Mock no active network
-    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(null)
+    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(undefined)
 
     // Test the parseChainId function behavior
     const networks = ChainController.getCaipNetworks('eip155')
@@ -150,20 +140,8 @@ describe('AuthConnector - parseChainId behavior fix', () => {
   it('should return the provided chainId when it exists in available networks', async () => {
     // Mock ChainController with multiple networks
     vi.spyOn(ChainController, 'getCaipNetworks').mockReturnValue([
-      {
-        id: 137, // Polygon
-        chainId: 137,
-        name: 'Polygon',
-        chainNamespace: 'eip155',
-        caipNetworkId: 'eip155:137'
-      },
-      {
-        id: 1, // Ethereum mainnet
-        chainId: 1,
-        name: 'Ethereum',
-        chainNamespace: 'eip155',
-        caipNetworkId: 'eip155:1'
-      }
+      createMockCaipNetwork(137, 'Polygon'),
+      createMockCaipNetwork(1, 'Ethereum')
     ])
 
     // Test the parseChainId function behavior
@@ -189,22 +167,12 @@ describe('AuthConnector - parseChainId behavior fix', () => {
 
   it('should handle string chainId correctly', async () => {
     vi.spyOn(ChainController, 'getCaipNetworks').mockReturnValue([
-      {
-        id: 137,
-        chainId: 137,
-        name: 'Polygon',
-        chainNamespace: 'eip155',
-        caipNetworkId: 'eip155:137'
-      }
+      createMockCaipNetwork(137, 'Polygon')
     ])
 
-    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue({
-      id: 137,
-      chainId: 137,
-      name: 'Polygon',
-      chainNamespace: 'eip155',
-      caipNetworkId: 'eip155:137'
-    })
+    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(
+      createMockCaipNetwork(137, 'Polygon')
+    )
 
     // Test the parseChainId function behavior
     const networks = ChainController.getCaipNetworks('eip155')
@@ -227,37 +195,16 @@ describe('AuthConnector - parseChainId behavior fix', () => {
   })
 
   it('should use current network when request comes from different namespace', async () => {
-    // Simulate scenario where user is on Solana namespace but makes EVM request
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      activeChain: 'solana' // Different namespace
-    })
-
     // Mock EVM networks
     vi.spyOn(ChainController, 'getCaipNetworks').mockReturnValue([
-      {
-        id: 137,
-        chainId: 137,
-        name: 'Polygon',
-        chainNamespace: 'eip155',
-        caipNetworkId: 'eip155:137'
-      },
-      {
-        id: 1,
-        chainId: 1,
-        name: 'Ethereum',
-        chainNamespace: 'eip155',
-        caipNetworkId: 'eip155:1'
-      }
+      createMockCaipNetwork(137, 'Polygon'),
+      createMockCaipNetwork(1, 'Ethereum')
     ])
 
     // Mock active EVM network
-    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue({
-      id: 137,
-      chainId: 137,
-      name: 'Polygon',
-      chainNamespace: 'eip155',
-      caipNetworkId: 'eip155:137'
-    })
+    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(
+      createMockCaipNetwork(137, 'Polygon')
+    )
 
     // Test the parseChainId function behavior
     const networks = ChainController.getCaipNetworks('eip155')
@@ -282,7 +229,7 @@ describe('AuthConnector - parseChainId behavior fix', () => {
 
   it('should handle empty networks array gracefully', async () => {
     vi.spyOn(ChainController, 'getCaipNetworks').mockReturnValue([])
-    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(null)
+    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(undefined)
 
     // Test the parseChainId function behavior
     const networks = ChainController.getCaipNetworks('eip155')
