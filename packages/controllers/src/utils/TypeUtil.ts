@@ -88,7 +88,6 @@ export type ConnectorType =
   | 'ANNOUNCED'
   | 'AUTH'
   | 'MULTI_CHAIN'
-  | 'ID_AUTH'
 
 export type SocialProvider =
   | 'google'
@@ -1184,18 +1183,9 @@ export interface WriteContractArgs {
   chainNamespace: ChainNamespace
 }
 
-export interface NetworkControllerClient {
-  switchCaipNetwork: (network: CaipNetwork) => Promise<void>
-  getApprovedCaipNetworksData: () => Promise<{
-    approvedCaipNetworkIds: CaipNetworkId[]
-    supportsAllNetworks: boolean
-  }>
-}
-
 export type AdapterNetworkState = {
   supportsAllNetworks: boolean
   isUnsupportedChain?: boolean
-  _client?: NetworkControllerClient
   caipNetwork?: CaipNetwork
   requestedCaipNetworks?: CaipNetwork[]
   approvedCaipNetworkIds?: CaipNetworkId[]
@@ -1205,7 +1195,6 @@ export type AdapterNetworkState = {
 
 export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
-  networkControllerClient?: NetworkControllerClient
   accountState?: AccountState
   networkState?: AdapterNetworkState
   namespace?: ChainNamespace

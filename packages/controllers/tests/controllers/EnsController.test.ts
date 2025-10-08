@@ -9,8 +9,7 @@ import {
   ConnectionController,
   type ConnectionControllerClient,
   ConnectorController,
-  EnsController,
-  type NetworkControllerClient
+  EnsController
 } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
@@ -90,8 +89,7 @@ beforeAll(() => {
     ],
     [{ ...mainnet, caipNetworkId: 'eip155:1', chainNamespace: ConstantsUtil.CHAIN.EVM }],
     {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
     }
   )
   ChainController.setAccountProp('address', '0x123', chain)
@@ -195,7 +193,7 @@ describe('EnsController', () => {
 
     const getAuthConnectorSpy = vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: { getEmail: () => 'test@walletconnect.com' } as unknown as W3mFrameProvider,
-      id: 'ID_AUTH',
+      id: 'AUTH',
       type: 'AUTH',
       name: 'AuthPovider',
       chain: ConstantsUtil.CHAIN.EVM
