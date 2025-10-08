@@ -10,7 +10,7 @@ import type {
 } from '@reown/appkit-utils/ton'
 
 export function getTonConnectManifestUrl(): string {
-  const base = `https://api.web3modal.org/ton/v1/manifest`
+  const base = `https://api.reown.com/ton/v1/manifest`
   const { st, sv } = BlockchainApiController.getSdkProperties()
 
   const appUrl = 'https://appkit-lab-ton.vercel.app/'
