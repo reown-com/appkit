@@ -67,6 +67,41 @@ describe('SIWXUtil', () => {
     })
   })
 
+  describe('initializeIfEnabled', () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+
+      mockChainControllerState({
+        activeCaipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
+        activeCaipNetwork: ref(extendedMainnet)
+      })
+    })
+
+    it('should return early when SIWX networks are configured and current network is not in the allowed list', async () => {
+      const mockSIWX = {
+        networks: ['eip155:137', 'eip155:56'], // Only allow Polygon and BSC
+        createMessage: vi.fn()
+      }
+
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        siwx: mockSIWX as unknown as SIWXConfig
+      })
+
+      // Mock ChainController.checkIfSupportedNetwork to return true
+      vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(true)
+
+      const result = await SIWXUtil.initializeIfEnabled(
+        'eip155:1:0x1234567890123456789012345678901234567890'
+      )
+
+      // Should return undefined (early return)
+      expect(result).toBeUndefined()
+      // createMessage should not be called since we return early
+      expect(mockSIWX.createMessage).not.toHaveBeenCalled()
+    })
+  })
+
   describe('authConnectorAuthenticate', () => {
     beforeEach(() => {
       vi.clearAllMocks()
