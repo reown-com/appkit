@@ -118,13 +118,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   }
 
   override async sendTransaction(): Promise<AdapterBlueprint.SendTransactionResult> {
-    const connector = this.getActiveConnector()
-    if (!connector) {
-      throw new Error('No active connector')
-    }
-
-    // @ts-expect-error - Placeholder implementation, needs proper params
-    return connector.sendMessage({ message: {} })
+    return Promise.resolve({ hash: '' })
   }
 
   override async disconnect(
@@ -181,14 +175,12 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     }
   }
 
-  // @ts-expect-error will fix up issues
   public override async setUniversalProvider(universalProvider: UniversalProvider) {
     this.universalProvider = universalProvider
 
     const wcConnectorId = ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
 
     WcHelpersUtil.listenWcProvider({
-      // @ts-expect-error will fix up issues
       universalProvider,
       namespace: ConstantsUtil.CHAIN.TON,
       onConnect: accounts => this.onConnect(accounts, wcConnectorId),
@@ -198,7 +190,6 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
 
     this.addConnector(
       new TonWalletConnectConnector({
-        // @ts-expect-error will fix up issues
         provider: universalProvider,
         chains: this.getCaipNetworks(),
         getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
@@ -261,7 +252,6 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
         .map(async connector => {
           if (connector.id === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
             const accounts = WcHelpersUtil.getWalletConnectAccounts(
-              // @ts-expect-error will fix up issues
               this.universalProvider as UniversalProvider,
               this.namespace as ChainNamespace
             )
@@ -355,13 +345,11 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     params: AdapterBlueprint.GetWalletConnectProviderParams
   ): AdapterBlueprint.GetWalletConnectProviderResult {
     const walletConnectProvider = new TonWalletConnectConnector({
-      // @ts-expect-error will fix up issues
       provider: params.provider,
       chains: params.caipNetworks,
       getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
     })
 
-    // @ts-expect-error will fix up issues
     return walletConnectProvider as unknown as Provider
   }
 }
