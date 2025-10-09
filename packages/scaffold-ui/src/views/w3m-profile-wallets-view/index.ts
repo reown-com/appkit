@@ -551,7 +551,7 @@ export class W3mProfileWalletsView extends LitElement {
 
   private async handleDisconnect(namespace: ChainNamespace, id: string) {
     try {
-      await ConnectionController.disconnectConnector({ id, namespace })
+      await ConnectionController.disconnect({ id, namespace })
       SnackController.showSuccess('Wallet disconnected')
     } catch {
       SnackController.showError('Failed to disconnect wallet')
