@@ -32,7 +32,7 @@ function initKeypair(): KeyPair {
 
     const hex = raw.startsWith('0x') ? raw.slice(2) : raw
 
-    if (!/^[0-9a-fA-F]+$/.test(hex)) {
+    if (!/^[0-9a-fA-F]+$/u.test(hex)) {
       throw new Error('TON_PRIVATE_KEY_1 must be a hex string or CSV decimals')
     }
 
@@ -74,25 +74,21 @@ export class TonProvider {
     return userFriendlyToRawAddress(this.wallet.address.toString())
   }
 
-  public async connect(): Promise<string> {
+  public connect(): string {
     this.isConnected = true
 
     return this.getAddress()
   }
 
-  public async disconnect(): Promise<void> {
+  public disconnect(): void {
     this.isConnected = false
-
-    return Promise.resolve()
   }
 
   public getSecretKey() {
     return this.keypair.secretKey.toString('hex')
   }
 
-  public async signMessage(
-    params: TonProvider.SignMessage['params']
-  ): Promise<TonProvider.SignMessage['result']> {
+  public signMessage(params: TonProvider.SignMessage['params']): TonProvider.SignMessage['result'] {
     const signature = sign(Buffer.from(params.message), this.keypair.secretKey)
 
     return {
@@ -134,9 +130,7 @@ export class TonProvider {
     return transfer.toBoc().toString('base64')
   }
 
-  public async signData(
-    params: TonProvider.SignData['params']
-  ): Promise<TonProvider.SignData['result']> {
+  public signData(params: TonProvider.SignData['params']): TonProvider.SignData['result'] {
     const payload: TonProvider.SignData['params'] = params
 
     const dataToSign = this.getToSign(params)
@@ -148,21 +142,19 @@ export class TonProvider {
       address: addressStr,
       publicKey: this.keypair.publicKey.toString('base64'),
       timestamp: Math.floor(Date.now() / 1000),
-      domain:
-        typeof window !== 'undefined' && window.location && window.location.hostname
-          ? window.location.hostname
-          : 'unknown',
+      // eslint-disable-next-line no-negated-condition
+      domain: typeof window !== 'undefined' ? (window.location?.hostname ?? 'unknown') : 'unknown',
       payload
     }
 
     try {
-      const verified = signVerify(
+      const isVerified = signVerify(
         dataToSign,
         Buffer.from(result.signature, 'base64'),
         this.keypair.publicKey
       )
       // eslint-disable-next-line no-console
-      console.log('TON signData verified:', verified)
+      console.log('TON signData verified:', isVerified)
     } catch (e) {
       // eslint-disable-next-line no-console
       console.warn('TON signData verification failed to run', e)

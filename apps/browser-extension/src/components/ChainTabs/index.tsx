@@ -21,6 +21,7 @@ function Tab({ onTabClick }: { onTabClick: (tab: ChainNamespace) => void }) {
 
   function getTabLabel(tab: ChainNamespace) {
     const label = ConstantsUtil.CHAIN_NAME_MAP[tab] || tab
+
     return label.replaceAll('EVM Networks', 'EVM')
   }
 
