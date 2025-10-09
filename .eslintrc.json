@@ -26,8 +26,7 @@
     "playwright-report",
     "*.mock.ts",
     "*.test.ts",
-    "scripts/*.js",
-    "next-env.d.ts"
+    "scripts/*.js"
   ],
   "rules": {
     // Core
