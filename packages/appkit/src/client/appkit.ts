@@ -110,8 +110,8 @@ export class AppKit extends AppKitBaseClient {
     this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
     this.setPreferredAccountType(preferredAccountType, namespace)
     await Promise.all([
-      await this.syncAuthConnectorTheme(this.authProvider),
-      await this.syncAccount({
+      this.syncAuthConnectorTheme(this.authProvider),
+      this.syncAccount({
         address: user.address,
         chainId: user.chainId,
         chainNamespace: namespace
