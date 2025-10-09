@@ -1,4 +1,3 @@
-import type { Logger } from '@walletconnect/logger'
 import type { SessionTypes } from '@walletconnect/types'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
@@ -1776,7 +1775,8 @@ export abstract class AppKitBaseClient {
       }
       // eslint-disable-next-line no-console
       console.error(...args)
-    }) as unknown as Logger
+      // Temporary fix for logger type issue, we need to update UP when this is released with upgraded Pino package
+    }) as unknown as string
 
     const universalProviderOptions: UniversalProviderOpts = {
       projectId: this.options?.projectId,
