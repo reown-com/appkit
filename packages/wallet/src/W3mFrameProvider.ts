@@ -527,7 +527,10 @@ export class W3mFrameProvider {
       }
 
       /*
-       * If chainNamespace is provided in the request, use that namespace to get the chainId, otherwise fallback to 'eip155' namespace since Ethers and Wagmi RPC requests are limited to be modified to include the chainNamespace, so requests from Ethers and Wagmi will never include a chainNamespace
+       * If chainNamespace is provided in the request, use that namespace to get the chainId
+       * otherwise fallback to 'eip155' namespace since Ethers and Wagmi RPC requests are limited
+       * to be modified to include the chainNamespace, so requests from Ethers and Wagmi will never
+       * include a chainNamespace
        */
       const namespace = req.chainNamespace || 'eip155'
       const chainId = this.getActiveCaipNetwork(namespace)?.id
