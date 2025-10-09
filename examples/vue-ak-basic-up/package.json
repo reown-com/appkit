@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@walletconnect/universal-provider": "2.22.0-canary-l-1",
+    "@walletconnect/universal-provider": "2.22.0-canary-l-2",
     "vue": "3.4.3"
   },
   "devDependencies": {
