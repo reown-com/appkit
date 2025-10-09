@@ -54,7 +54,26 @@ describe('LeatherConnector', () => {
     const res = await connector.sendTransfer({ amount: '100', recipient: 'address' })
 
     expect(res).toBe(txid)
-    expect(requestSpy).toHaveBeenCalledWith('sendTransfer', { address: 'address', amount: '100' })
+    expect(requestSpy).toHaveBeenCalledWith('sendTransfer', {
+      recipients: [{ address: 'address', amount: '100' }],
+      network: 'mainnet'
+    })
+  })
+
+  it('should send a transfer for testnet', async () => {
+    getActiveNetwork.mockReturnValueOnce(bitcoinTestnet)
+
+    const txid = 'txid'
+    const requestSpy = vi.spyOn(mocks.wallet, 'request')
+    requestSpy.mockResolvedValue(mockSatsConnectProvider.mockRequestResolve({ txid }))
+
+    const res = await connector.sendTransfer({ amount: '100', recipient: 'address' })
+
+    expect(res).toBe(txid)
+    expect(requestSpy).toHaveBeenCalledWith('sendTransfer', {
+      recipients: [{ address: 'address', amount: '100' }],
+      network: 'testnet'
+    })
   })
 
   it('should sign a PSBT', async () => {
