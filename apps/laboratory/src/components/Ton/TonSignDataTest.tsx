@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { Button, Card, CardBody, Flex, Heading, Stack, Text } from '@chakra-ui/react'
+import { Button, Flex, Stack, Text } from '@chakra-ui/react'
 
 import { type TonConnector } from '@reown/appkit-adapter-ton'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
