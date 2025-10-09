@@ -1776,7 +1776,7 @@ export abstract class AppKitBaseClient {
       }
       // eslint-disable-next-line no-console
       console.error(...args)
-    }) as unknown as string | Logger
+    }) as unknown as Logger
 
     const universalProviderOptions: UniversalProviderOpts = {
       projectId: this.options?.projectId,
