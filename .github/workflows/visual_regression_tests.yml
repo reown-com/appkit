@@ -34,7 +34,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build packages
-        run: pnpm --filter "@reown/appkit-common" --filter "@reown/appkit-polyfills" --filter "@reown/appkit-wallet" --filter "@reown/appkit-controllers" --filter "@reown/appkit-ui" build
+        run: pnpm --filter "@reown/appkit-common" --filter "@reown/appkit-polyfills" --filter "@reown/appkit-wallet" --filter "@reown/appkit-controllers" --filter "@reown/appkit-ui" --filter "@reown/appkit-utils" --filter "@reown/appkit-scaffold-ui" build
 
       - name: Run Chromatic
         uses: chromaui/action@latest
