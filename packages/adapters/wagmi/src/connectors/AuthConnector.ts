@@ -51,10 +51,11 @@ export function authConnector(parameters: AuthParameters) {
   }
 
   function parseChainId(chainId: string | number) {
-    const networks = ChainController.getCaipNetworks('eip155')
+    const networks = ChainController.getCaipNetworks(ConstantsUtil.CHAIN.EVM)
     let network = Number(NetworkUtil.parseEvmChainId(chainId))
-    if (!networks.some(network => String(network.id) === String(chainId))) {
-      const currentChainId = ChainController.getActiveCaipNetwork('eip155')?.id || networks[0]?.id
+    if (!networks.some(n => String(n.id) === String(chainId))) {
+      const currentChainId =
+        ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.EVM)?.id || networks[0]?.id
       if (currentChainId && Number.isInteger(Number(currentChainId))) {
         network = Number(currentChainId)
       }
