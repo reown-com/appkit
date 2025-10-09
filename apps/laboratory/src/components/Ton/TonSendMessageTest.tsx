@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { Button, Card, CardBody, Heading, Input, Stack, Text } from '@chakra-ui/react'
+import { Button, Flex, Input, Stack, Text } from '@chakra-ui/react'
 
 import type { TonConnector } from '@reown/appkit-adapter-ton'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
@@ -37,7 +37,11 @@ export function TonSendMessageTest() {
       setBoc(res)
       toast({ title: 'Transaction prepared', description: res, type: 'success' })
     } catch (e) {
-      toast({ title: 'Send error', description: 'Failed to send transaction', type: 'error' })
+      toast({
+        title: 'Send error',
+        description: e instanceof Error ? e.message : 'Failed to send transaction',
+        type: 'error'
+      })
     }
   }
 
@@ -46,28 +50,29 @@ export function TonSendMessageTest() {
   }
 
   return (
-    <Card>
-      <CardBody>
-        <Heading size="sm">TON Send Transaction</Heading>
-        <Stack direction="row" mt={3} gap={2}>
-          <Input
-            value={to}
-            onChange={e => setTo(e.target.value)}
-            placeholder="to (user-friendly)"
-          />
-          <Input
-            value={amount}
-            onChange={e => setAmount(e.target.value)}
-            placeholder="amount (nanotons)"
-          />
-          <Button onClick={onSend}>Send</Button>
-        </Stack>
-        {boc ? (
-          <Text mt={3} data-testid="ton-boc" wordBreak="break-all">
-            {boc}
-          </Text>
-        ) : null}
-      </CardBody>
-    </Card>
+    <Flex flexDirection="column" gap="2" mb="2">
+      <Stack display={'flex'} direction="row" mt={3} gap={2}>
+        <Input
+          value={to}
+          onChange={e => setTo(e.target.value)}
+          placeholder="to (user-friendly)"
+          flex={1}
+        />
+        <Input
+          value={amount}
+          onChange={e => setAmount(e.target.value)}
+          placeholder="amount (nanotons)"
+          flex={1}
+        />
+        <Button width="auto" onClick={onSend}>
+          Send {Number(amount) / 1e9} TON
+        </Button>
+      </Stack>
+      {boc ? (
+        <Text mt={3} data-testid="ton-boc" wordBreak="break-all">
+          {boc}
+        </Text>
+      ) : null}
+    </Flex>
   )
 }

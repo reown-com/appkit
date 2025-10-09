@@ -87,11 +87,12 @@ export class TonWalletConnectConnector
 
     const request = {
       method: 'ton_sendMessage',
-      params: [params],
-      chainId: chain.caipNetworkId
+      params: [params]
     }
-    const result: { boc?: string; result?: string } | undefined =
-      await this.provider.request(request)
+    const result: { boc?: string; result?: string } | undefined = await this.provider.request(
+      request,
+      chain.caipNetworkId
+    )
 
     return result?.boc || result?.result || ''
   }

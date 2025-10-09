@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { Button, Card, CardBody, Heading, Stack, Text } from '@chakra-ui/react'
+import { Button, Card, CardBody, Flex, Heading, Stack, Text } from '@chakra-ui/react'
 
 import { type TonConnector } from '@reown/appkit-adapter-ton'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
@@ -77,24 +77,21 @@ export function TonSignDataTest() {
   }
 
   return (
-    <Card>
-      <CardBody>
-        <Heading size="sm">TON Sign Data</Heading>
-        <Stack direction="row" mt={3} gap={2}>
-          <Button onClick={signText}>Sign Text</Button>
-          <Button onClick={signBinary} variant="outline">
-            Sign Binary
-          </Button>
-          <Button onClick={signCell} variant="outline">
-            Sign Cell
-          </Button>
-        </Stack>
-        {signature ? (
-          <Text mt={3} data-testid="ton-signature" wordBreak="break-all">
-            {signature}
-          </Text>
-        ) : null}
-      </CardBody>
-    </Card>
+    <Flex flexDirection="column" gap="2" mb="2">
+      <Stack direction="row" mt={3} gap={2}>
+        <Button onClick={signText}>Sign Text</Button>
+        <Button onClick={signBinary} variant="outline">
+          Sign Binary
+        </Button>
+        <Button onClick={signCell} variant="outline">
+          Sign Cell
+        </Button>
+      </Stack>
+      {signature ? (
+        <Text mt={3} data-testid="ton-signature" wordBreak="break-all">
+          {signature}
+        </Text>
+      ) : null}
+    </Flex>
   )
 }
