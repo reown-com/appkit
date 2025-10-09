@@ -1,3 +1,4 @@
+import type { Logger } from '@walletconnect/logger'
 import type { SessionTypes } from '@walletconnect/types'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
@@ -1775,7 +1776,7 @@ export abstract class AppKitBaseClient {
       }
       // eslint-disable-next-line no-console
       console.error(...args)
-    })
+    }) as unknown as string | Logger
 
     const universalProviderOptions: UniversalProviderOpts = {
       projectId: this.options?.projectId,
