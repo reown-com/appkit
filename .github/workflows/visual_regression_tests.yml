@@ -8,6 +8,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   chromatic:
     name: Run Chromatic
@@ -31,7 +34,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build packages
-        run: pnpm --filter "@reown/appkit-ui" --filter "@reown/appkit-common" --filter "@reown/appkit-scaffold-ui" build
+        run: pnpm --filter "...@reown/appkit-ui" --filter "...@reown/appkit-scaffold-ui" build
 
       - name: Run Chromatic
         uses: chromaui/action@latest
