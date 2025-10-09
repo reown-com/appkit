@@ -2,9 +2,10 @@ import type {
   CaipNetwork,
   CaipNetworkId,
   ChainNamespace,
-  EmbeddedWalletTimeoutReason
+  EmbeddedWalletTimeoutReason,
+  SdkVersion
 } from '@reown/appkit-common'
-import { OptionsController } from '@reown/appkit-controllers'
+import { type Metadata, OptionsController } from '@reown/appkit-controllers'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 interface W3mFrameProviderConfig {
@@ -32,6 +33,7 @@ export class W3mFrameProviderSingleton {
     getActiveCaipNetwork,
     getCaipNetworks
   }: W3mFrameProviderConfig): W3mFrameProvider {
+    const { metadata, sdkVersion, sdkType } = OptionsController.getSnapshot()
     if (!W3mFrameProviderSingleton.instance) {
       W3mFrameProviderSingleton.instance = new W3mFrameProvider({
         projectId,
@@ -41,7 +43,10 @@ export class W3mFrameProviderSingleton {
         abortController,
         getActiveCaipNetwork,
         getCaipNetworks,
-        enableCloudAuthAccount: Boolean(OptionsController.state.remoteFeatures?.emailCapture)
+        enableCloudAuthAccount: Boolean(OptionsController.state.remoteFeatures?.emailCapture),
+        metadata: metadata as Metadata,
+        sdkVersion: sdkVersion as SdkVersion,
+        sdkType
       })
     }
 

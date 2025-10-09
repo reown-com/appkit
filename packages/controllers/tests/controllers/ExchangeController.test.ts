@@ -53,8 +53,7 @@ describe('ExchangeController', () => {
     beforeEach(() => {
       vi.restoreAllMocks()
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        remoteFeatures: { payWithExchange: true },
-        features: { pay: true }
+        remoteFeatures: { payWithExchange: true }
       } as any)
       ChainController.state.activeCaipNetwork = {
         caipNetworkId: 'eip155:1',
@@ -129,8 +128,7 @@ describe('ExchangeController', () => {
 
     it('does not fetch exchanges when pay with exchange is not enabled', async () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        remoteFeatures: { payWithExchange: false },
-        features: { pay: false }
+        remoteFeatures: { payWithExchange: false }
       } as any)
       vi.spyOn(ExchangeUtil, 'getExchanges')
       await ExchangeController.fetchExchanges()
@@ -139,8 +137,7 @@ describe('ExchangeController', () => {
 
     it('does not fetch exchanges when pay with exchange is not supported', async () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        remoteFeatures: { payWithExchange: true },
-        features: { pay: true }
+        remoteFeatures: { payWithExchange: true }
       } as any)
       vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         activeCaipNetwork: { chainNamespace: 'bip122' }
@@ -148,39 +145,6 @@ describe('ExchangeController', () => {
       vi.spyOn(ExchangeUtil, 'getExchanges')
       await ExchangeController.fetchExchanges()
       expect(ExchangeUtil.getExchanges).not.toHaveBeenCalled()
-    })
-    it('fetches exchanges when pay is enabled but pay with exchange is not', async () => {
-      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        remoteFeatures: { payWithExchange: false },
-        features: { pay: true }
-      } as any)
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-        activeCaipNetwork: { chainNamespace: 'eip155' }
-      } as any)
-      vi.spyOn(ExchangeUtil, 'getExchanges')
-      await ExchangeController.fetchExchanges()
-      expect(ExchangeUtil.getExchanges).toHaveBeenCalled()
-    })
-    it('fetches exchanges when pay with exchange is enabled but pay is not', async () => {
-      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        remoteFeatures: { payWithExchange: true },
-        features: { pay: false }
-      } as any)
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-        activeCaipNetwork: { chainNamespace: 'eip155' }
-      } as any)
-      vi.spyOn(ExchangeUtil, 'getExchanges')
-      await ExchangeController.fetchExchanges()
-      expect(ExchangeUtil.getExchanges).toHaveBeenCalled()
-    })
-    it('fetches exchanges when payments is enabled and pay with exchange is not', async () => {
-      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        remoteFeatures: { payWithExchange: false, payments: true },
-        features: { pay: false }
-      } as any)
-      vi.spyOn(ExchangeUtil, 'getExchanges')
-      await ExchangeController.fetchExchanges()
-      expect(ExchangeUtil.getExchanges).toHaveBeenCalled()
     })
   })
 
