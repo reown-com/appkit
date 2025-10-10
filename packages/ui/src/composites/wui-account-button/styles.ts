@@ -32,6 +32,10 @@ export default css`
       height: 12px;
     }
 
+    wui-flex.network-image-container wui-icon {
+      background: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    }
+
     wui-avatar {
       width: 24px;
       min-width: 24px;
