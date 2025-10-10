@@ -13,7 +13,7 @@ config({ path: './.env.local' })
 const shardSuffix = process.env['PLAYWRIGHT_SHARD_SUFFIX']
 const blobOutputDir = 'playwright-blob-reports'
 const blobFileName = shardSuffix ? `report-${shardSuffix}.zip` : 'report.zip'
-const skipWS = process.env['SKIP_PLAYWRIGHT_WEBSERVER']
+const skipWS = process.env['SKIP_PLAYWRIGHT_WEBSERVER'] === 'true'
 
 export default defineConfig<ModalFixture>({
   testDir: './tests',
