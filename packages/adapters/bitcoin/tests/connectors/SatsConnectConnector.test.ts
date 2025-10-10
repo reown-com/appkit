@@ -4,7 +4,7 @@ import {
   BitcoinNetworkType,
   MessageSigningProtocols
 } from 'sats-connect'
-import { type Mock, type MockInstance, beforeEach, describe, expect, it, vi } from 'vitest'
+import { type MockInstance, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import { CoreHelperUtil } from '@reown/appkit-controllers'
@@ -18,7 +18,6 @@ describe('SatsConnectConnector', () => {
   let connector: SatsConnectConnector
   let mocks: ReturnType<typeof mockSatsConnectProvider>
   let requestedChains: CaipNetwork[]
-  let getActiveNetwork: Mock<() => CaipNetwork | undefined>
 
   beforeEach(() => {
     // requested chains may contain not bip122 chains
@@ -28,11 +27,9 @@ describe('SatsConnectConnector', () => {
       bitcoinTestnet
     ]
     mocks = mockSatsConnectProvider()
-    getActiveNetwork = vi.fn(() => bitcoin)
     connector = new SatsConnectConnector({
       provider: mocks.provider,
-      requestedChains,
-      getActiveNetwork
+      requestedChains
     })
   })
 
@@ -43,7 +40,7 @@ describe('SatsConnectConnector', () => {
   })
 
   it('should get wallets correctly', async () => {
-    const wallets = await SatsConnectConnector.getWallets({ requestedChains, getActiveNetwork })
+    const wallets = await SatsConnectConnector.getWallets({ requestedChains })
 
     expect(wallets instanceof Array).toBeTruthy()
     wallets.forEach(wallet => expect(wallet instanceof SatsConnectConnector).toBeTruthy())
@@ -53,7 +50,7 @@ describe('SatsConnectConnector', () => {
     const withRetrySpy = vi.spyOn(HelpersUtil, 'withRetry')
     withRetrySpy.mockResolvedValue(true)
 
-    await SatsConnectConnector.getWallets({ requestedChains, getActiveNetwork })
+    await SatsConnectConnector.getWallets({ requestedChains })
 
     expect(withRetrySpy).toHaveBeenCalledWith({
       conditionFn: expect.any(Function),
@@ -66,8 +63,7 @@ describe('SatsConnectConnector', () => {
     vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(false)
 
     const wallets = await SatsConnectConnector.getWallets({
-      requestedChains: [],
-      getActiveNetwork: () => undefined
+      requestedChains: []
     })
 
     expect(wallets).toEqual([])
