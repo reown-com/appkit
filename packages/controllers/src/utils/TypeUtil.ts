@@ -1243,6 +1243,10 @@ export type RemoteFeatures = {
   onramp?: OnRampProvider[] | false
 }
 
+export type Usage = {
+  appName: string
+}
+
 export type Features = {
   /**
    * @description Enable or disable the swaps feature. Enabled by default.
@@ -1415,6 +1419,10 @@ export type TypedFeatureConfig =
 
 export type ApiGetProjectConfigResponse = {
   features: TypedFeatureConfig[]
+}
+
+export type ApiGetUsageResponse = {
+  usage: Usage
 }
 
 export type FeatureConfigMap = {

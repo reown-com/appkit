@@ -18,6 +18,7 @@ import type {
   SdkVersion,
   SocialProvider,
   Tokens,
+  Usage,
   WalletFeature
 } from '../utils/TypeUtil.js'
 
@@ -210,6 +211,7 @@ export interface OptionsControllerStateInternal {
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
   remoteFeatures?: RemoteFeatures
+  usage?: Usage
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal

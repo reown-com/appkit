@@ -13,6 +13,7 @@ import type {
   ApiGetAllowedOriginsResponse,
   ApiGetAnalyticsConfigResponse,
   ApiGetProjectConfigResponse,
+  ApiGetUsageResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
   WcWallet
@@ -166,6 +167,15 @@ export const ApiController = {
     })
 
     return response.features
+  },
+
+  async fetchUsage() {
+    const response = await api.get<ApiGetUsageResponse>({
+      path: '/appkit/v1/usage',
+      params: ApiController._getSdkProperties()
+    })
+
+    return response.usage
   },
 
   async fetchAllowedOrigins() {
