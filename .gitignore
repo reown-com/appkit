@@ -19,4 +19,4 @@ tsconfig.tsbuildinfo
 .parcel-cache
 .coverage
 .envrc*
-test-results.json
+**/test-results.json
