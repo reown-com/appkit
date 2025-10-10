@@ -14,4 +14,11 @@ destination="s3://$TEST_RESULTS_BUCKET/web3modal-canary/$(date --iso-8601=second
 echo "Uploading test results to $destination"
 aws s3 cp ./test-results/ $destination --recursive
 
+echo ""
+echo "✅ Exit code"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Test exit code: $TEST_EXIT_CODE"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+
 exit $TEST_EXIT_CODE
