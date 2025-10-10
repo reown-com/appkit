@@ -28,5 +28,7 @@ echo "S3 upload exit code: $S3_EXIT_CODE"
 echo "Test exit code: $TEST_EXIT_CODE"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
+# Kill the playwright:start process
+pkill -f "playwright:start" || true
 
 exit $TEST_EXIT_CODE

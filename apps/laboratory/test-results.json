@@ -15,10 +15,7 @@
     },
     "preserveOutput": "always",
     "reporter": [
-      [
-        "list",
-        null
-      ],
+      ["list", null],
       [
         "html",
         {
@@ -46,9 +43,7 @@
         "id": "Desktop Firefox/ethers",
         "name": "Desktop Firefox/ethers",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
-        "testIgnore": [
-          "/reown-authentication.*\\.spec\\.ts/u"
-        ],
+        "testIgnore": ["/reown-authentication.*\\.spec\\.ts/u"],
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:extension.spec.ts|multichain-extension.spec.ts|multichain-siwe-extension.spec.ts|basic-tests.spec.ts|canary.spec.ts|config.spec.ts|email.spec.ts|no-email.spec.ts|no-socials.spec.ts|siwe-extension.spec.ts|siwe-email.spec.ts|siwe-sa.spec.ts|siwe.spec.ts|smart-account.spec.ts|wallet-features.spec.ts|wallet.spec.ts|wallet-button.spec|verify.spec.ts|email-after-farcaster.spec.ts|multi-wallet.spec.ts|multi-wallet-siwx.spec.ts|flag-enable-reconnect.spec.ts)/u"
         ],
@@ -62,9 +57,7 @@
         "id": "Desktop Firefox/ethers5",
         "name": "Desktop Firefox/ethers5",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
-        "testIgnore": [
-          "/reown-authentication.*\\.spec\\.ts/u"
-        ],
+        "testIgnore": ["/reown-authentication.*\\.spec\\.ts/u"],
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:extension.spec.ts|multichain-extension.spec.ts|multichain-siwe-extension.spec.ts|basic-tests.spec.ts|canary.spec.ts|config.spec.ts|email.spec.ts|no-email.spec.ts|no-socials.spec.ts|siwe-extension.spec.ts|siwe-email.spec.ts|siwe-sa.spec.ts|siwe.spec.ts|smart-account.spec.ts|wallet-features.spec.ts|wallet.spec.ts|wallet-button.spec|verify.spec.ts|email-after-farcaster.spec.ts|multi-wallet.spec.ts|multi-wallet-siwx.spec.ts|flag-enable-reconnect.spec.ts)/u"
         ],
@@ -78,9 +71,7 @@
         "id": "Desktop Firefox/wagmi",
         "name": "Desktop Firefox/wagmi",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
-        "testIgnore": [
-          "/reown-authentication.*\\.spec\\.ts/u"
-        ],
+        "testIgnore": ["/reown-authentication.*\\.spec\\.ts/u"],
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:extension.spec.ts|multichain-extension.spec.ts|multichain-siwe-extension.spec.ts|basic-tests.spec.ts|canary.spec.ts|config.spec.ts|email.spec.ts|no-email.spec.ts|no-socials.spec.ts|siwe-extension.spec.ts|siwe-email.spec.ts|siwe-sa.spec.ts|siwe.spec.ts|smart-account.spec.ts|wallet-features.spec.ts|wallet.spec.ts|wallet-button.spec|verify.spec.ts|email-after-farcaster.spec.ts|multi-wallet.spec.ts|multi-wallet-siwx.spec.ts|flag-enable-reconnect.spec.ts)/u"
         ],
@@ -110,9 +101,7 @@
         "id": "Desktop Firefox/bitcoin",
         "name": "Desktop Firefox/bitcoin",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
-        "testIgnore": [
-          "/reown-authentication.*\\.spec\\.ts/u"
-        ],
+        "testIgnore": ["/reown-authentication.*\\.spec\\.ts/u"],
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:wallet.spec.ts|wallet-button.spec|basic-tests.spec.ts|siwx-extension.spec.ts)/u"
         ],
@@ -126,9 +115,7 @@
         "id": "Desktop Chrome/ethers",
         "name": "Desktop Chrome/ethers",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
-        "testIgnore": [
-          "/reown-authentication.*\\.spec\\.ts/u"
-        ],
+        "testIgnore": ["/reown-authentication.*\\.spec\\.ts/u"],
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:extension.spec.ts|multichain-extension.spec.ts|multichain-siwe-extension.spec.ts|basic-tests.spec.ts|canary.spec.ts|config.spec.ts|email.spec.ts|no-email.spec.ts|no-socials.spec.ts|siwe-extension.spec.ts|siwe-email.spec.ts|siwe-sa.spec.ts|siwe.spec.ts|smart-account.spec.ts|wallet-features.spec.ts|wallet.spec.ts|wallet-button.spec|verify.spec.ts|email-after-farcaster.spec.ts|multi-wallet.spec.ts|multi-wallet-siwx.spec.ts|flag-enable-reconnect.spec.ts)/u"
         ],
@@ -142,9 +129,7 @@
         "id": "Desktop Chrome/ethers5",
         "name": "Desktop Chrome/ethers5",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
-        "testIgnore": [
-          "/reown-authentication.*\\.spec\\.ts/u"
-        ],
+        "testIgnore": ["/reown-authentication.*\\.spec\\.ts/u"],
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:extension.spec.ts|multichain-extension.spec.ts|multichain-siwe-extension.spec.ts|basic-tests.spec.ts|canary.spec.ts|config.spec.ts|email.spec.ts|no-email.spec.ts|no-socials.spec.ts|siwe-extension.spec.ts|siwe-email.spec.ts|siwe-sa.spec.ts|siwe.spec.ts|smart-account.spec.ts|wallet-features.spec.ts|wallet.spec.ts|wallet-button.spec|verify.spec.ts|email-after-farcaster.spec.ts|multi-wallet.spec.ts|multi-wallet-siwx.spec.ts|flag-enable-reconnect.spec.ts)/u"
         ],
@@ -158,9 +143,7 @@
         "id": "Desktop Chrome/wagmi",
         "name": "Desktop Chrome/wagmi",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
-        "testIgnore": [
-          "/reown-authentication.*\\.spec\\.ts/u"
-        ],
+        "testIgnore": ["/reown-authentication.*\\.spec\\.ts/u"],
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:extension.spec.ts|multichain-extension.spec.ts|multichain-siwe-extension.spec.ts|basic-tests.spec.ts|canary.spec.ts|config.spec.ts|email.spec.ts|no-email.spec.ts|no-socials.spec.ts|siwe-extension.spec.ts|siwe-email.spec.ts|siwe-sa.spec.ts|siwe.spec.ts|smart-account.spec.ts|wallet-features.spec.ts|wallet.spec.ts|wallet-button.spec|verify.spec.ts|email-after-farcaster.spec.ts|multi-wallet.spec.ts|multi-wallet-siwx.spec.ts|flag-enable-reconnect.spec.ts)/u"
         ],
@@ -190,9 +173,7 @@
         "id": "Desktop Chrome/bitcoin",
         "name": "Desktop Chrome/bitcoin",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
-        "testIgnore": [
-          "/reown-authentication.*\\.spec\\.ts/u"
-        ],
+        "testIgnore": ["/reown-authentication.*\\.spec\\.ts/u"],
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:wallet.spec.ts|wallet-button.spec|basic-tests.spec.ts|siwx-extension.spec.ts)/u"
         ],
@@ -207,9 +188,7 @@
         "name": "iPhone 12/ethers",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
-        ],
+        "testMatch": ["/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"],
         "timeout": 90000
       },
       {
@@ -221,9 +200,7 @@
         "name": "iPhone 12/ethers5",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
-        ],
+        "testMatch": ["/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"],
         "timeout": 90000
       },
       {
@@ -235,9 +212,7 @@
         "name": "iPhone 12/wagmi",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
-        ],
+        "testMatch": ["/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"],
         "timeout": 90000
       },
       {
@@ -249,9 +224,7 @@
         "name": "iPhone 12/solana",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
-        ],
+        "testMatch": ["/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"],
         "timeout": 90000
       },
       {
@@ -263,9 +236,7 @@
         "name": "iPhone 12/bitcoin",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
-        ],
+        "testMatch": ["/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"],
         "timeout": 90000
       },
       {
@@ -277,9 +248,7 @@
         "name": "Galaxy S5/ethers",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
-        ],
+        "testMatch": ["/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"],
         "timeout": 90000
       },
       {
@@ -291,9 +260,7 @@
         "name": "Galaxy S5/ethers5",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
-        ],
+        "testMatch": ["/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"],
         "timeout": 90000
       },
       {
@@ -305,9 +272,7 @@
         "name": "Galaxy S5/wagmi",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
-        ],
+        "testMatch": ["/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"],
         "timeout": 90000
       },
       {
@@ -319,9 +284,7 @@
         "name": "Galaxy S5/solana",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
-        ],
+        "testMatch": ["/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"],
         "timeout": 90000
       },
       {
@@ -333,9 +296,7 @@
         "name": "Galaxy S5/bitcoin",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
-        ],
+        "testMatch": ["/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"],
         "timeout": 90000
       },
       {
@@ -347,9 +308,7 @@
         "name": "Desktop Firefox/multichain-no-adapters",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-no-adapters\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-no-adapters\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -361,9 +320,7 @@
         "name": "Desktop Firefox/multichain-all",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-all\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-all\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -375,9 +332,7 @@
         "name": "Desktop Firefox/multichain-all-email",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-all-email\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-all-email\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -389,9 +344,7 @@
         "name": "Desktop Firefox/multi-wallet-multichain",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multi-wallet-multichain\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multi-wallet-multichain\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -403,9 +356,7 @@
         "name": "Desktop Firefox/multichain-ethers-solana",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-ethers-.*\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-ethers-.*\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -417,9 +368,7 @@
         "name": "Desktop Firefox/multichain-ethers5-solana",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-ethers5-.*\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-ethers5-.*\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -431,9 +380,7 @@
         "name": "Desktop Firefox/multichain-wagmi-solana",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-wagmi-.*\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-wagmi-.*\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -445,9 +392,7 @@
         "name": "Desktop Chrome/multichain-no-adapters",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-no-adapters\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-no-adapters\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -459,9 +404,7 @@
         "name": "Desktop Chrome/multichain-all",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-all\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-all\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -473,9 +416,7 @@
         "name": "Desktop Chrome/multichain-all-email",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-all-email\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-all-email\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -487,9 +428,7 @@
         "name": "Desktop Chrome/multi-wallet-multichain",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multi-wallet-multichain\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multi-wallet-multichain\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -501,9 +440,7 @@
         "name": "Desktop Chrome/multichain-ethers-solana",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-ethers-.*\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-ethers-.*\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -515,9 +452,7 @@
         "name": "Desktop Chrome/multichain-ethers5-solana",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-ethers5-.*\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-ethers5-.*\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -529,9 +464,7 @@
         "name": "Desktop Chrome/multichain-wagmi-solana",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/multichain-wagmi-.*\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/multichain-wagmi-.*\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -599,9 +532,7 @@
         "name": "Desktop Firefox/default-account-types",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/email-default-account-types\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/email-default-account-types\\.spec\\.ts$/u"],
         "timeout": 90000
       },
       {
@@ -613,9 +544,7 @@
         "name": "Desktop Chrome/default-account-types",
         "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
         "testIgnore": [],
-        "testMatch": [
-          "/^.*\\/email-default-account-types\\.spec\\.ts$/u"
-        ],
+        "testMatch": ["/^.*\\/email-default-account-types\\.spec\\.ts$/u"],
         "timeout": 90000
       }
     ],
@@ -639,9 +568,7 @@
         {
           "title": "wagmi: can sign even if Verify API is blocked",
           "ok": true,
-          "tags": [
-            "canary"
-          ],
+          "tags": ["canary"],
           "tests": [
             {
               "timeout": 90000,
