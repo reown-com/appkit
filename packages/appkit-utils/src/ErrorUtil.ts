@@ -3,6 +3,8 @@ import { OptionsController } from '@reown/appkit-controllers'
 
 const abortController = new AbortController()
 
+const projectId = OptionsController.state.projectId
+
 export const ErrorUtil = {
   EmbeddedWalletAbortController: abortController,
   /**
@@ -34,7 +36,7 @@ export const ErrorUtil = {
       code: 'APKT002',
       displayMessage: 'Invalid App Configuration',
       debugMessage: () =>
-        `The origin ${isSafe() ? window.origin : 'unknown'} is not in your allow list. Please update your allowed domains at https://dashboard.reown.com. [PID: ${OptionsController.state.projectId}]`
+        `The origin ${isSafe() ? window.origin : 'unknown'} is not in your allow list. Please update your allowed domains at https://dashboard.reown.com. [PID: ${`${projectId?.slice(0, 6)}…${projectId?.slice(-4)}`}]`
     },
     IFRAME_LOAD_FAILED: {
       code: 'APKT003',
