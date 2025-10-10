@@ -78,6 +78,7 @@ import {
   CaipNetworksUtil,
   ErrorUtil,
   HelpersUtil,
+  LoggerUtil,
   SemVerUtils,
   TokenUtil,
   ConstantsUtil as UtilConstantsUtil
@@ -1768,16 +1769,13 @@ export abstract class AppKitBaseClient {
 
   // -- Universal Provider ---------------------------------------------------
   protected async initializeUniversalAdapter() {
-    /*
-     * Temporay comment out LoggerUtil.createLogger because of logger issue, we need to update UP when this is released with upgraded AppKit & Pino package
-     * Const logger = LoggerUtil.createLogger((error, ...args) => {
-     *   if (error) {
-     *     this.handleAlertError(error)
-     *   }
-     *   // eslint-disable-next-line no-console
-     *   console.error(...args)
-     * })
-     */
+    const logger = LoggerUtil.createLogger((error, ...args) => {
+      if (error) {
+        this.handleAlertError(error)
+      }
+      // eslint-disable-next-line no-console
+      console.error(...args)
+    })
 
     const universalProviderOptions: UniversalProviderOpts = {
       projectId: this.options?.projectId,
@@ -1787,7 +1785,7 @@ export abstract class AppKitBaseClient {
         url: this.options?.metadata ? this.options?.metadata.url : '',
         icons: this.options?.metadata ? this.options?.metadata.icons : ['']
       },
-      logger: 'error'
+      logger
     }
 
     OptionsController.setManualWCControl(Boolean(this.options?.manualWCControl))
