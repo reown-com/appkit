@@ -14,7 +14,6 @@ import {
   ChainController,
   type ConnectionControllerClient,
   EventsController,
-  type NetworkControllerClient,
   RouterController,
   SendController
 } from '@reown/appkit-controllers'
@@ -61,14 +60,6 @@ const mockSendControllerState = {
   tokenBalances: [mockToken]
 }
 
-const mockNetworkControllerClient: NetworkControllerClient = {
-  switchCaipNetwork: vi.fn(),
-  getApprovedCaipNetworksData: vi.fn().mockResolvedValue({
-    approvedCaipNetworkIds: ['eip155:1'],
-    supportsAllNetworks: true
-  })
-}
-
 const mockConnectionControllerClient: ConnectionControllerClient = {
   connectWalletConnect: vi.fn(),
   connectExternal: vi.fn(),
@@ -93,7 +84,6 @@ const mockConnectionControllerClient: ConnectionControllerClient = {
 
 const mockChainAdapter: ChainAdapter = {
   namespace: ConstantsUtil.CHAIN.EVM,
-  networkControllerClient: mockNetworkControllerClient,
   connectionControllerClient: mockConnectionControllerClient
 }
 
@@ -103,7 +93,6 @@ const mockChainControllerState = {
   activeCaipAddress: 'eip155:1:0x123456789abcdef123456789abcdef123456789a' as CaipAddress,
   chains: new Map([[ConstantsUtil.CHAIN.EVM, mockChainAdapter]]),
   universalAdapter: {
-    networkControllerClient: mockNetworkControllerClient,
     connectionControllerClient: mockConnectionControllerClient
   },
   noAdapters: false,
