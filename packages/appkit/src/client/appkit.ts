@@ -109,11 +109,15 @@ export class AppKit extends AppKitBaseClient {
     this.setUser({ ...(accountData?.user || {}), ...userWithOutSiwxData }, namespace)
     this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
     this.setPreferredAccountType(preferredAccountType, namespace)
-    await this.syncAccount({
-      address: user.address,
-      chainId: user.chainId,
-      chainNamespace: namespace
-    })
+    await Promise.all([
+      this.syncAuthConnectorTheme(this.authProvider),
+      this.syncAccount({
+        address: user.address,
+        chainId: user.chainId,
+        chainNamespace: namespace
+      })
+    ])
+
     this.setLoading(false, namespace)
   }
   private setupAuthConnectorListeners(provider: W3mFrameProvider) {

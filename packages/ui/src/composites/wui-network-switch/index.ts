@@ -63,7 +63,7 @@ export class WuiNetworkSwitch extends LitElement {
       return html`<wui-image src=${this.imageSrc} size=${iconSize} alt="select visual"></wui-image>`
     }
 
-    return html`<wui-icon size=${iconSize} icon=${this.icon}></wui-icon>`
+    return html`<wui-icon size=${iconSize} name=${this.icon}></wui-icon>`
   }
 }
 
