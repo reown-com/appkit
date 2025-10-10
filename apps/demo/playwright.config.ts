@@ -5,6 +5,8 @@ import { BASE_URL } from '@reown/appkit-testing'
 
 config({ path: './.env.local' })
 
+const skipWS = Boolean(process.env['SKIP_PLAYWRIGHT_WEBSERVER'])
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
@@ -32,9 +34,13 @@ export default defineConfig({
       use: { browserName: 'firefox' }
     }
   ],
-  webServer: {
-    command: 'pnpm playwright:start',
-    url: BASE_URL,
-    reuseExistingServer: !process.env['CI'] || Boolean(process.env['SKIP_PLAYWRIGHT_WEBSERVER'])
-  }
+  ...(skipWS
+    ? {}
+    : {
+        webServer: {
+          command: 'pnpm playwright:start',
+          url: 'http://localhost:3000/',
+          reuseExistingServer: !process.env['CI']
+        }
+      })
 })
