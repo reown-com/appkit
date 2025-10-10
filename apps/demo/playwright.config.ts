@@ -39,7 +39,7 @@ export default defineConfig({
     : {
         webServer: {
           command: 'pnpm playwright:start',
-          url: 'http://localhost:3000/',
+          url: BASE_URL,
           reuseExistingServer: !process.env['CI']
         }
       })
