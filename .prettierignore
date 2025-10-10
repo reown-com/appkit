@@ -6,7 +6,6 @@ pnpm-lock.yaml
 bundle-analysis.html
 .open-next
 /apps/pay-test-exchange/**.d.ts
-**/_nuxt
 .output/
 node_modules/
 .coverage/
@@ -17,3 +16,4 @@ blob-report/
 .cache-synpress/
 .parcel-cache/
 .turbo/
+next-env.d.ts

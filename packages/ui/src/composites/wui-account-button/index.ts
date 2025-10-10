@@ -55,7 +55,7 @@ export class WuiAccountButton extends LitElement {
   private imageTemplate() {
     const networkElement = this.networkSrc
       ? html`<wui-image src=${this.networkSrc}></wui-image>`
-      : html` <wui-icon size="inherit" color="inherit" icon="networkPlaceholder"></wui-icon> `
+      : html` <wui-icon size="inherit" color="inherit" name="networkPlaceholder"></wui-icon> `
 
     return html`<wui-flex class="avatar-container">
       <wui-avatar
