@@ -1,7 +1,7 @@
 import { parseUnits } from 'viem'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
-import type { CaipAddress, CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
+import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import {
@@ -58,12 +58,6 @@ const arbitrumNetwork = {
     }
   }
 } as CaipNetwork
-const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
-const client: NetworkControllerClient = {
-  switchCaipNetwork: async _caipNetwork => Promise.resolve(),
-  getApprovedCaipNetworksData: async () =>
-    Promise.resolve({ approvedCaipNetworkIds, supportsAllNetworks: false })
-}
 const chain = ConstantsUtil.CHAIN.EVM
 const caipAddress = 'eip155:1:0x123'
 // MATIC
@@ -259,6 +253,36 @@ describe('SwapController', () => {
 
       expect(() => SwapController.getParams()).toThrow('No address found to swap the tokens from.')
     })
+  })
+
+  it('should show chain-specific suggested token first when active network is Arbitrum', async () => {
+    SwapController.state.tokens = undefined
+    ChainController.state.activeCaipNetwork = arbitrumNetwork
+
+    const mockTokens = [
+      {
+        address: 'eip155:42161:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' as CaipAddress,
+        symbol: 'ETH',
+        name: 'Ether',
+        decimals: 18,
+        logoUri: ''
+      },
+      {
+        address: 'eip155:42161:0x0000000000000000000000000000000000000000' as CaipAddress,
+        symbol: 'USD₮0',
+        name: 'Tether USD0',
+        decimals: 6,
+        logoUri: ''
+      }
+    ]
+
+    vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValueOnce({
+      tokens: mockTokens
+    })
+
+    await SwapController.getTokenList()
+
+    expect(SwapController.state.suggestedTokens?.[0]?.symbol).toBe('USD₮0')
   })
 
   it('should show chain-specific suggested token first when active network is Arbitrum', async () => {
