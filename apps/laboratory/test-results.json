@@ -1,7 +1,7 @@
 {
   "config": {
-    "configFile": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/playwright.config.ts",
-    "rootDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+    "configFile": "/Users/rocky/Work/appkit/apps/laboratory/playwright.config.ts",
+    "rootDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
     "forbidOnly": false,
     "fullyParallel": true,
     "globalSetup": null,
@@ -11,7 +11,7 @@
     "grepInvert": null,
     "maxFailures": 0,
     "metadata": {
-      "actualWorkers": 1
+      "actualWorkers": 4
     },
     "preserveOutput": "always",
     "reporter": [
@@ -39,13 +39,13 @@
     "quiet": false,
     "projects": [
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/ethers",
         "name": "Desktop Firefox/ethers",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [
           "/reown-authentication.*\\.spec\\.ts/u"
         ],
@@ -55,13 +55,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/ethers5",
         "name": "Desktop Firefox/ethers5",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [
           "/reown-authentication.*\\.spec\\.ts/u"
         ],
@@ -71,13 +71,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/wagmi",
         "name": "Desktop Firefox/wagmi",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [
           "/reown-authentication.*\\.spec\\.ts/u"
         ],
@@ -87,13 +87,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/solana",
         "name": "Desktop Firefox/solana",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [
           "/siwe-email\\.spec\\.ts|siwe-extension\\.spec\\.ts|multichain-.*\\.spec\\.ts|reown-authentication.*\\.spec\\.ts/u"
         ],
@@ -103,13 +103,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/bitcoin",
         "name": "Desktop Firefox/bitcoin",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [
           "/reown-authentication.*\\.spec\\.ts/u"
         ],
@@ -119,13 +119,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/ethers",
         "name": "Desktop Chrome/ethers",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [
           "/reown-authentication.*\\.spec\\.ts/u"
         ],
@@ -135,13 +135,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/ethers5",
         "name": "Desktop Chrome/ethers5",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [
           "/reown-authentication.*\\.spec\\.ts/u"
         ],
@@ -151,13 +151,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/wagmi",
         "name": "Desktop Chrome/wagmi",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [
           "/reown-authentication.*\\.spec\\.ts/u"
         ],
@@ -167,13 +167,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/solana",
         "name": "Desktop Chrome/solana",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [
           "/siwe-email\\.spec\\.ts|siwe-extension\\.spec\\.ts|multichain-.*\\.spec\\.ts|reown-authentication.*\\.spec\\.ts/u"
         ],
@@ -183,13 +183,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/bitcoin",
         "name": "Desktop Chrome/bitcoin",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [
           "/reown-authentication.*\\.spec\\.ts/u"
         ],
@@ -199,13 +199,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "iPhone 12/ethers",
         "name": "iPhone 12/ethers",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
@@ -213,13 +213,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "iPhone 12/ethers5",
         "name": "iPhone 12/ethers5",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
@@ -227,13 +227,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "iPhone 12/wagmi",
         "name": "iPhone 12/wagmi",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
@@ -241,13 +241,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "iPhone 12/solana",
         "name": "iPhone 12/solana",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
@@ -255,13 +255,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "iPhone 12/bitcoin",
         "name": "iPhone 12/bitcoin",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
@@ -269,13 +269,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Galaxy S5/ethers",
         "name": "Galaxy S5/ethers",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
@@ -283,13 +283,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Galaxy S5/ethers5",
         "name": "Galaxy S5/ethers5",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
@@ -297,13 +297,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Galaxy S5/wagmi",
         "name": "Galaxy S5/wagmi",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
@@ -311,13 +311,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Galaxy S5/solana",
         "name": "Galaxy S5/solana",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
@@ -325,13 +325,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Galaxy S5/bitcoin",
         "name": "Galaxy S5/bitcoin",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^(?!.*\\/multichain\\/).*(?:mobile-wallet-features.spec.ts)/u"
@@ -339,13 +339,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/multichain-no-adapters",
         "name": "Desktop Firefox/multichain-no-adapters",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/multichain-no-adapters\\.spec\\.ts$/u"
@@ -353,13 +353,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/multichain-all",
         "name": "Desktop Firefox/multichain-all",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/multichain-all\\.spec\\.ts$/u"
@@ -367,13 +367,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/multichain-all-email",
         "name": "Desktop Firefox/multichain-all-email",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/multichain-all-email\\.spec\\.ts$/u"
@@ -381,13 +381,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/multi-wallet-multichain",
         "name": "Desktop Firefox/multi-wallet-multichain",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/multi-wallet-multichain\\.spec\\.ts$/u"
@@ -395,13 +395,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/multichain-ethers-solana",
         "name": "Desktop Firefox/multichain-ethers-solana",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/multichain-ethers-.*\\.spec\\.ts$/u"
@@ -409,13 +409,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/multichain-ethers5-solana",
         "name": "Desktop Firefox/multichain-ethers5-solana",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/multichain-ethers5-.*\\.spec\\.ts$/u"
@@ -423,13 +423,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/multichain-wagmi-solana",
         "name": "Desktop Firefox/multichain-wagmi-solana",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/multichain-wagmi-.*\\.spec\\.ts$/u"
@@ -437,13 +437,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/multichain-no-adapters",
         "name": "Desktop Chrome/multichain-no-adapters",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/multichain-no-adapters\\.spec\\.ts$/u"
@@ -451,13 +451,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/multichain-all",
         "name": "Desktop Chrome/multichain-all",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/multichain-all\\.spec\\.ts$/u"
@@ -465,13 +465,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/multichain-all-email",
         "name": "Desktop Chrome/multichain-all-email",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/multichain-all-email\\.spec\\.ts$/u"
@@ -479,13 +479,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/multi-wallet-multichain",
         "name": "Desktop Chrome/multi-wallet-multichain",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/multi-wallet-multichain\\.spec\\.ts$/u"
@@ -493,13 +493,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/multichain-ethers-solana",
         "name": "Desktop Chrome/multichain-ethers-solana",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/multichain-ethers-.*\\.spec\\.ts$/u"
@@ -507,13 +507,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/multichain-ethers5-solana",
         "name": "Desktop Chrome/multichain-ethers5-solana",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/multichain-ethers5-.*\\.spec\\.ts$/u"
@@ -521,13 +521,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/multichain-wagmi-solana",
         "name": "Desktop Chrome/multichain-wagmi-solana",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/multichain-wagmi-.*\\.spec\\.ts$/u"
@@ -535,13 +535,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/core",
         "name": "Desktop Firefox/core",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:sign-client.spec.ts|universal-provider.spec.ts|core.spec.ts)/u"
@@ -549,13 +549,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/core",
         "name": "Desktop Chrome/core",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:sign-client.spec.ts|universal-provider.spec.ts|core.spec.ts)/u"
@@ -563,13 +563,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/reown-authentication",
         "name": "Desktop Firefox/reown-authentication",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:reown-authentication.spec.ts|reown-authentication-email.spec.ts)/u"
@@ -577,13 +577,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/reown-authentication",
         "name": "Desktop Chrome/reown-authentication",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^(?!.*\\/multichain\\/)(?!.*\\/mobile-).*(?:reown-authentication.spec.ts|reown-authentication-email.spec.ts)/u"
@@ -591,13 +591,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Firefox/default-account-types",
         "name": "Desktop Firefox/default-account-types",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/email-default-account-types\\.spec\\.ts$/u"
@@ -605,13 +605,13 @@
         "timeout": 90000
       },
       {
-        "outputDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results",
+        "outputDir": "/Users/rocky/Work/appkit/apps/laboratory/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Desktop Chrome/default-account-types",
         "name": "Desktop Chrome/default-account-types",
-        "testDir": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/tests",
+        "testDir": "/Users/rocky/Work/appkit/apps/laboratory/tests",
         "testIgnore": [],
         "testMatch": [
           "/^.*\\/email-default-account-types\\.spec\\.ts$/u"
@@ -631,13 +631,13 @@
   },
   "suites": [
     {
-      "title": "verify.spec.ts",
-      "file": "verify.spec.ts",
+      "title": "canary.spec.ts",
+      "file": "canary.spec.ts",
       "column": 0,
       "line": 0,
       "specs": [
         {
-          "title": "wagmi: can sign even if Verify API is blocked",
+          "title": "it should sign",
           "ok": true,
           "tags": [
             "canary"
@@ -648,7 +648,130 @@
               "annotations": [
                 {
                   "type": "canary-metric-name",
-                  "description": "HappyPath.verify-blocked"
+                  "description": "HappyPath.sign"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "Desktop Chrome/wagmi",
+              "projectName": "Desktop Chrome/wagmi",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "status": "passed",
+                  "duration": 23016,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "[console.warning] Lit is in dev mode. Not recommended for production! See https://lit.dev/msg/dev-mode for more information.\n"
+                    },
+                    {
+                      "text": "[console.warning] Element w3m-footer scheduled an update (generally because a property was set) after an update completed, causing a new update to be scheduled. This is inefficient and should be avoided unless the next update can only be scheduled as a side effect of the previous update. See https://lit.dev/msg/change-in-update for more information.\n"
+                    },
+                    {
+                      "text": "[console.warning] Element w3m-router-container scheduled an update (generally because a property was set) after an update completed, causing a new update to be scheduled. This is inefficient and should be avoided unless the next update can only be scheduled as a side effect of the previous update. See https://lit.dev/msg/change-in-update for more information.\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-10-10T07:58:58.692Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4e3dd37d8025f8a40c63-e81e7d9206e19b03edeb",
+          "file": "canary.spec.ts",
+          "line": 25,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "siwe-email.spec.ts",
+      "file": "siwe-email.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "it should sign",
+          "ok": true,
+          "tags": [
+            "canary"
+          ],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [
+                {
+                  "type": "canary-metric-name",
+                  "description": "HappyPath.email-sign"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "Desktop Chrome/wagmi",
+              "projectName": "Desktop Chrome/wagmi",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "status": "passed",
+                  "duration": 1205,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "[console.warning] Lit is in dev mode. Not recommended for production! See https://lit.dev/msg/dev-mode for more information.\n"
+                    },
+                    {
+                      "text": "[console.warning] Element w3m-footer scheduled an update (generally because a property was set) after an update completed, causing a new update to be scheduled. This is inefficient and should be avoided unless the next update can only be scheduled as a side effect of the previous update. See https://lit.dev/msg/change-in-update for more information.\n"
+                    },
+                    {
+                      "text": "[console.warning] Element w3m-router-container scheduled an update (generally because a property was set) after an update completed, causing a new update to be scheduled. This is inefficient and should be avoided unless the next update can only be scheduled as a side effect of the previous update. See https://lit.dev/msg/change-in-update for more information.\n"
+                    },
+                    {
+                      "text": "Failed network request: POST https://api.toaster.magic.link/v1/auth/email_otp/start - Status: 401\n"
+                    },
+                    {
+                      "text": "Failed network request: GET https://api.web3modal.com/public/getAssetImage/692ed6ba-e569-459a-556a-776476829e00 - Status: 403\n"
+                    },
+                    {
+                      "text": "Failed network request: GET https://api.web3modal.com/public/getAssetImage/692ed6ba-e569-459a-556a-776476829e00 - Status: 403\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-10-10T07:58:58.680Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "18f703df72741a98aae7-643928481641af1bdcf2",
+          "file": "siwe-email.spec.ts",
+          "line": 106,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "verify.spec.ts",
+      "file": "verify.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "wagmi: connection and signature requests from non-scam verified domain should show as domain match",
+          "ok": true,
+          "tags": [
+            "canary"
+          ],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [
+                {
+                  "type": "canary-metric-name",
+                  "description": "HappyPath.verify"
                 }
               ],
               "expectedStatus": "passed",
@@ -658,27 +781,77 @@
                 {
                   "workerIndex": 2,
                   "status": "passed",
-                  "duration": 21607,
+                  "duration": 22744,
                   "errors": [],
-                  "stdout": [],
+                  "stdout": [
+                    {
+                      "text": "[console.warning] Lit is in dev mode. Not recommended for production! See https://lit.dev/msg/dev-mode for more information.\n"
+                    },
+                    {
+                      "text": "[console.warning] Element w3m-footer scheduled an update (generally because a property was set) after an update completed, causing a new update to be scheduled. This is inefficient and should be avoided unless the next update can only be scheduled as a side effect of the previous update. See https://lit.dev/msg/change-in-update for more information.\n"
+                    },
+                    {
+                      "text": "[console.warning] Element w3m-router-container scheduled an update (generally because a property was set) after an update completed, causing a new update to be scheduled. This is inefficient and should be avoided unless the next update can only be scheduled as a side effect of the previous update. See https://lit.dev/msg/change-in-update for more information.\n"
+                    }
+                  ],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2025-09-15T14:54:56.423Z",
-                  "attachments": [
-                    {
-                      "name": "trace",
-                      "contentType": "application/zip",
-                      "path": "/Users/chris13524/git/github.com/reown-com/appkit/apps/laboratory/test-results/verify-wagmi-can-sign-even-if-Verify-API-is-blocked-Desktop-Chrome-wagmi/trace.zip"
-                    }
-                  ]
+                  "startTime": "2025-10-10T07:58:58.680Z",
+                  "attachments": []
                 }
               ],
               "status": "expected"
             }
           ],
-          "id": "f7b216369e2b571fd06c-561b994522b7fb5b94f0",
+          "id": "f7b216369e2b571fd06c-f1b6d40842ff0e4b4af4",
           "file": "verify.spec.ts",
-          "line": 203,
+          "line": 17,
+          "column": 1
+        },
+        {
+          "title": "wagmi: connection and signature requests from scam verified domain should show as scam domain",
+          "ok": true,
+          "tags": [
+            "canary"
+          ],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [
+                {
+                  "type": "canary-metric-name",
+                  "description": "UnhappyPath.verify-scam"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "Desktop Chrome/wagmi",
+              "projectName": "Desktop Chrome/wagmi",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "status": "passed",
+                  "duration": 17327,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "[console.warning] {\n  time: \u001b[33m1760083150814\u001b[39m,\n  level: \u001b[33m40\u001b[39m,\n  context: \u001b[32m'core/relayer'\u001b[39m,\n  msg: \u001b[32m'Relayer connected 🛜'\u001b[39m\n}\n"
+                    },
+                    {
+                      "text": "[console.warning] {\n  time: \u001b[33m1760083156614\u001b[39m,\n  level: \u001b[33m40\u001b[39m,\n  context: \u001b[32m'core/relayer'\u001b[39m,\n  msg: \u001b[32m'Relayer connected 🛜'\u001b[39m\n}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2025-10-10T07:58:58.703Z",
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7b216369e2b571fd06c-e623803109c5f269adb3",
+          "file": "verify.spec.ts",
+          "line": 76,
           "column": 1
         }
       ]
@@ -686,9 +859,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-09-15T14:54:54.747Z",
-    "duration": 24435.70199999999,
-    "expected": 1,
+    "startTime": "2025-10-10T07:58:54.273Z",
+    "duration": 42111.148,
+    "expected": 4,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

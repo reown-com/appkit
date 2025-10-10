@@ -13,6 +13,7 @@ config({ path: './.env.local' })
 const shardSuffix = process.env['PLAYWRIGHT_SHARD_SUFFIX']
 const blobOutputDir = 'playwright-blob-reports'
 const blobFileName = shardSuffix ? `report-${shardSuffix}.zip` : 'report.zip'
+const skipWS = process.env['SKIP_PLAYWRIGHT_WEBSERVER']
 
 export default defineConfig<ModalFixture>({
   testDir: './tests',
@@ -48,9 +49,13 @@ export default defineConfig<ModalFixture>({
   projects: getProjects(),
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'pnpm playwright:start',
-    url: BASE_URL,
-    reuseExistingServer: !process.env['CI'] || Boolean(process.env['SKIP_PLAYWRIGHT_WEBSERVER'])
-  }
+  ...(skipWS
+    ? {}
+    : {
+        webServer: {
+          command: 'pnpm playwright:start',
+          url: BASE_URL,
+          reuseExistingServer: !process.env['CI']
+        }
+      })
 })
