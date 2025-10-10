@@ -65,21 +65,6 @@
       "import": "./dist/esm/exports/auth-provider.js",
       "default": "./dist/esm/exports/auth-provider.js"
     },
-    "./adapters": {
-      "types": "./dist/types/exports/adapters.d.ts",
-      "import": "./dist/esm/exports/adapters.js",
-      "default": "./dist/esm/exports/adapters.js"
-    },
-    "./connectors": {
-      "types": "./dist/types/exports/connectors.d.ts",
-      "import": "./dist/esm/exports/connectors.js",
-      "default": "./dist/esm/exports/connectors.js"
-    },
-    "./connections": {
-      "types": "./dist/types/exports/connections.d.ts",
-      "import": "./dist/esm/exports/connections.js",
-      "default": "./dist/esm/exports/connections.js"
-    },
     "./core": {
       "types": "./dist/types/exports/core.d.ts",
       "import": "./dist/esm/exports/core.js",
@@ -135,14 +120,14 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.21.9",
+    "@walletconnect/universal-provider": "2.22.2",
     "bs58": "6.0.0",
     "semver": "7.7.2",
     "valtio": "2.1.7",
     "viem": ">=2.37.9"
   },
   "devDependencies": {
-    "@walletconnect/types": "2.21.7",
+    "@walletconnect/types": "2.22.2",
     "@reown/appkit-siwe": "workspace:*",
     "@testing-library/react": "16.3.0",
     "@types/react": "19.1.15",

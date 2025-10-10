@@ -319,6 +319,8 @@ describe('wallet features visibility', () => {
 
   afterEach(() => {
     vi.clearAllMocks()
+    // Mock fetchTokenBalance to prevent network calls and "is not a function" errors
+    vi.spyOn(ChainController, 'fetchTokenBalance').mockResolvedValue([])
   })
   describe('evm wallet features', () => {
     beforeEach(() => {

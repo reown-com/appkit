@@ -75,7 +75,7 @@ describe('W3mAccountView', () => {
     expect(widget).toBeTruthy()
   })
 
-  it('should render default account widget when AUTH connector exists but connectorId is not ID_AUTH', async () => {
+  it('should render default account widget when AUTH connector exists but connectorId is not AUTH', async () => {
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(
       CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     )
@@ -86,7 +86,7 @@ describe('W3mAccountView', () => {
     expect(widget).toBeTruthy()
   })
 
-  it('should render default account widget when connectorId is ID_AUTH but no auth connector exists', async () => {
+  it('should render default account widget when connectorId is AUTH but no auth connector exists', async () => {
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(
       CommonConstantsUtil.CONNECTOR_ID.AUTH
     )
