@@ -15,10 +15,10 @@ import {
   StorageUtil
 } from '@reown/appkit-controllers'
 import { ModalController, ProviderController, RouterController } from '@reown/appkit-controllers'
+import type { AdapterBlueprint } from '@reown/appkit-controllers'
 import { mockChainControllerState } from '@reown/appkit-controllers/testing'
 import { ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 
-import type { AdapterBlueprint } from '../../exports/adapters.js'
 import { mainnetCaipNetwork, solanaCaipNetwork } from '../../exports/testing.js'
 import { AppKit } from '../../src/client/appkit.js'
 import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter.js'

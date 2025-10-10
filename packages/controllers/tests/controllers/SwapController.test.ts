@@ -11,7 +11,6 @@ import {
   ConnectionController,
   type ConnectionControllerClient,
   ConnectorController,
-  type NetworkControllerClient,
   RouterController,
   SwapController
 } from '../../exports/index.js'
@@ -78,12 +77,10 @@ const sourceTokenAmount = '1'
 beforeAll(async () => {
   const mockAdapter = {
     namespace: ConstantsUtil.CHAIN.EVM,
-    networkControllerClient: client,
     caipNetworks: [caipNetwork]
   }
   ChainController.initialize([mockAdapter], [caipNetwork], {
-    connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-    networkControllerClient: client
+    connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
   })
 
   ChainController.setActiveCaipNetwork(caipNetwork)
@@ -166,7 +163,7 @@ describe('SwapController', () => {
     const connectionControllerClientSpy = vi
       .spyOn(ConnectionController, 'sendTransaction')
       .mockImplementationOnce(() => Promise.resolve(null))
-    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('AUTH')
     vi.spyOn(RouterController, 'pushTransactionStack').mockImplementationOnce(() =>
       Promise.resolve()
     )
