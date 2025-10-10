@@ -13,3 +13,5 @@ destination="s3://$TEST_RESULTS_BUCKET/web3modal-canary/$(date --iso-8601=second
 echo "Uploading test results to $destination"
 aws s3 cp ./test-results/ $destination --recursive
 
+# Kill the playwright:start process
+pkill -f "playwright:start" || true
