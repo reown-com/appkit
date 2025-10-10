@@ -7,7 +7,7 @@ import {
 import { type MockInstance, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
-import { CoreHelperUtil } from '@reown/appkit-controllers'
+import { ChainController, CoreHelperUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 
@@ -26,6 +26,7 @@ describe('SatsConnectConnector', () => {
       bitcoin,
       bitcoinTestnet
     ]
+    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(bitcoin)
     mocks = mockSatsConnectProvider()
     connector = new SatsConnectConnector({
       provider: mocks.provider,

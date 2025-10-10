@@ -72,6 +72,8 @@ describe('OKXConnector', () => {
     })
 
     it('should connect with testnet', async () => {
+      vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(bitcoinTestnet)
+      
       const testnetWallet = mockOKXWallet()
       const testnetConnector = new OKXConnector({
         wallet: testnetWallet,
