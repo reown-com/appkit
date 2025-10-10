@@ -100,7 +100,7 @@ export type AppKitOptions = {
   universalProvider?: UniversalProvider
   /**
    * The default account type used for each chain namespace.
-   * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
+   * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa', ton: 'eoa' }"
    */
   defaultAccountTypes?: Partial<OptionsControllerState['defaultAccountTypes']>
 } & Omit<OptionsControllerState, 'defaultAccountTypes'>
