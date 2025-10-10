@@ -1,4 +1,5 @@
 import { isSafe } from '@reown/appkit-common'
+import { OptionsController } from '@reown/appkit-controllers'
 
 const abortController = new AbortController()
 
@@ -33,7 +34,7 @@ export const ErrorUtil = {
       code: 'APKT002',
       displayMessage: 'Invalid App Configuration',
       debugMessage: () =>
-        `The origin ${isSafe() ? window.origin : 'unknown'} is not in your allow list. Please update your allowed domains at https://dashboard.reown.com.`
+        `The origin ${isSafe() ? window.origin : 'unknown'} is not in your allow list. Please update your allowed domains at https://dashboard.reown.com. [PID: ${OptionsController.state.projectId}]`
     },
     IFRAME_LOAD_FAILED: {
       code: 'APKT003',
