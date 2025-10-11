@@ -57,7 +57,7 @@ export class Email {
     console.log(`[getEmailBody] Fetching email body for ${email}, messageId: ${messageId}`)
 
     let checks = 0
-    let lastError: unknown
+    let lastError: unknown = null
 
     /* eslint-disable no-await-in-loop */
     while (checks < MAX_EMAIL_BODY_CHECK) {
@@ -105,12 +105,10 @@ export class Email {
     // All retries exhausted
     const errorMessage = lastError instanceof Error ? lastError.message : String(lastError)
     const statusCode = (lastError as { response?: { status?: number } })?.response?.status
+    const statusPart = statusCode ? `, HTTP Status: ${statusCode}` : ''
 
     throw new Error(
-      `Failed to fetch email body after ${MAX_EMAIL_BODY_CHECK} attempts. ` +
-        `Email: ${email}, MessageId: ${messageId}, ` +
-        `Last error: ${errorMessage}` +
-        (statusCode ? `, HTTP Status: ${statusCode}` : '')
+      `Failed to fetch email body after ${MAX_EMAIL_BODY_CHECK} attempts. Email: ${email}, MessageId: ${messageId}, Last error: ${errorMessage}${statusPart}`
     )
   }
 
