@@ -1,4 +1,4 @@
-import { Mailsac } from '@mailsac/api'
+import { type EmailMessageList, Mailsac } from '@mailsac/api'
 
 const EMAIL_CHECK_INTERVAL = 2500
 const MAX_EMAIL_CHECK = 96
@@ -6,6 +6,19 @@ const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
 const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
 const EMAIL_DOMAIN = 'web3modal.msdc.co'
+
+function timeout(ms: number) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms)
+  })
+}
+
+function logError(error: unknown, method: string) {
+  console.error(
+    `Mailsac Error while calling ${method}: ${error instanceof Error ? error.message : String(error)}`,
+    error
+  )
+}
 
 export class Email {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
@@ -20,19 +33,23 @@ export class Email {
     return await this.mailsac.messages.deleteAllMessages(email)
   }
 
-  timeout(ms: number) {
-    return new Promise(resolve => {
-      setTimeout(resolve, ms)
-    })
+  async listMessages(email: string): Promise<EmailMessageList> {
+    try {
+      const response = await this.mailsac.messages.listMessages(email)
+      return response.data
+    } catch (error) {
+      logError(error, 'listMessages')
+      throw error
+    }
   }
 
   async getLatestMessageId(email: string): Promise<string> {
     let checks = 0
     /* eslint-disable no-await-in-loop */
     while (checks < MAX_EMAIL_CHECK) {
-      const messages = await this.mailsac.messages.listMessages(email)
-      if (messages.data.length > 0) {
-        const message = messages.data[0]
+      const messages = await this.listMessages(email)
+      if (messages.length > 0) {
+        const message = messages[0]
         if (!message) {
           throw new Error(`No message found for address ${email}`)
         }
@@ -43,16 +60,20 @@ export class Email {
 
         return id
       }
-      await this.timeout(EMAIL_CHECK_INTERVAL)
+      await timeout(EMAIL_CHECK_INTERVAL)
       checks += 1
     }
     throw new Error(`No email found for address ${email}`)
   }
 
   async getEmailBody(email: string, messageId: string): Promise<string> {
-    const result = await this.mailsac.messages.getBodyPlainText(email, messageId)
-
-    return String(result.data)
+    try {
+      const result = await this.mailsac.messages.getBodyPlainText(email, messageId)
+      return String(result.data)
+    } catch (error) {
+      logError(error, 'getEmailBody')
+      throw error
+    }
   }
 
   isApproveEmail(body: string): boolean {
