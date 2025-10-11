@@ -61,13 +61,13 @@
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@wallet-standard/wallet": "1.1.0",
-    "@walletconnect/logger": "2.1.2",
-    "@walletconnect/universal-provider": "2.22.2",
+    "@walletconnect/logger": "3.0.0",
+    "@walletconnect/universal-provider": "2.22.3",
     "valtio": "2.1.7",
     "viem": ">=2.37.9"
   },
   "devDependencies": {
-    "@walletconnect/types": "2.22.2",
+    "@walletconnect/types": "2.22.3",
     "bs58": "6.0.0",
     "@solana/web3.js": "1.98.4",
     "@wallet-standard/features": "1.1.0",
