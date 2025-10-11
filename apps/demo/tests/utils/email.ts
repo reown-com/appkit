@@ -15,7 +15,7 @@ function delay(ms: number): Promise<void> {
 
 function logError(error: unknown, method: string) {
   console.error(
-    `Mailsac Error while calling ${method}: ${error instanceof Error ? error.message : String(error)}`,
+    `Mailsac Error while calling ${method}:`,
     error
   )
 }
