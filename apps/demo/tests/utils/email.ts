@@ -7,7 +7,7 @@ const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
 const EMAIL_DOMAIN = 'web3modal.msdc.co'
 
-function timeout(ms: number) {
+function delay(ms: number): Promise<void> {
   return new Promise(resolve => {
     setTimeout(resolve, ms)
   })
@@ -60,7 +60,7 @@ export class Email {
 
         return id
       }
-      await timeout(EMAIL_CHECK_INTERVAL)
+      await delay(EMAIL_CHECK_INTERVAL)
       checks += 1
     }
     throw new Error(`No email found for address ${email}`)
