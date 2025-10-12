@@ -44,7 +44,7 @@ Refer to the "Features" section of the [AppKit docs](https://docs.reown.com/appk
 
 ## License and Use
 
-This SDK is provided under the **[Reown AppKit] Community License** (“Community License”), that governs, among other things:
+This SDK is provided under the **Reown AppKit Community License** (“Community License”), that governs, among other things:
 
 - Permitted non-commercial use
 - RPC and MAU thresholds for commercial licensing
