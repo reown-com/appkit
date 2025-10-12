@@ -54,3 +54,5 @@ This SDK is provided under the **[Reown AppKit] Community License** (“Communit
 - Mandatory binding arbitration for disputes
 
 **Downloading, installation, integration and use of this SDK constitutes acceptance of the [Reown AppKit Community License](./LICENSE.md).**
+### Community Contribution
+Edit made by [@Agungmarley12](https://github.com/Agungmarley12) as part of the WalletConnect Builder Program.
