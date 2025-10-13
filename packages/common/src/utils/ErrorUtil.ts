@@ -11,6 +11,8 @@ export type ProviderRpcErrorCode =
   | 4901 // Chain Disconnected
   | 4902 // Chain Not Recognized
   | 5710 // Unsupported chain id
+  | 5002 // User Rejected Methods
+  | 5000 // User Rejected
 
 type RpcProviderError = {
   message: string
@@ -20,7 +22,9 @@ type RpcProviderError = {
 // -- Utils ---------------------------------------------------------------- //
 export const ErrorUtil = {
   RPC_ERROR_CODE: {
-    USER_REJECTED_REQUEST: 4001
+    USER_REJECTED_REQUEST: 4001,
+    USER_REJECTED_METHODS: 5002,
+    USER_REJECTED: 5000
   } as const,
   PROVIDER_RPC_ERROR_NAME: {
     PROVIDER_RPC: 'ProviderRpcError',
@@ -42,12 +46,28 @@ export const ErrorUtil = {
       return false
     }
   },
+  isUserRejectedMessage(message: string) {
+    return (
+      message.toLowerCase().includes('user rejected') ||
+      message.toLowerCase().includes('user cancelled') ||
+      message.toLowerCase().includes('user canceled')
+    )
+  },
   isUserRejectedRequestError(error: unknown) {
     if (ErrorUtil.isRpcProviderError(error)) {
       const isUserRejectedCode = error.code === ErrorUtil.RPC_ERROR_CODE.USER_REJECTED_REQUEST
-      const isUserRejectedMessage = error.message.toLowerCase().includes('user rejected')
+      const isUserRejectedMethodsCode =
+        error.code === ErrorUtil.RPC_ERROR_CODE.USER_REJECTED_METHODS
 
-      return isUserRejectedCode || isUserRejectedMessage
+      return (
+        isUserRejectedCode ||
+        isUserRejectedMethodsCode ||
+        ErrorUtil.isUserRejectedMessage(error.message)
+      )
+    }
+
+    if (error instanceof Error) {
+      return ErrorUtil.isUserRejectedMessage(error.message)
     }
 
     return false

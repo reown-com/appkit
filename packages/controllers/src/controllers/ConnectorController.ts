@@ -298,7 +298,7 @@ const controller = {
   },
 
   syncIfAuthConnector(connector: Connector | AuthConnector) {
-    if (connector.id !== 'ID_AUTH') {
+    if (connector.id !== 'AUTH') {
       return
     }
 
@@ -344,6 +344,7 @@ const controller = {
   },
 
   selectWalletConnector(wallet: WcWallet) {
+    const redirectView = RouterController.state.data?.redirectView
     const connector = ConnectorController.getConnector({
       id: wallet.id,
       rdns: wallet.rdns
@@ -355,9 +356,9 @@ const controller = {
     )
 
     if (connector) {
-      RouterController.push('ConnectingExternal', { connector, wallet })
+      RouterController.push('ConnectingExternal', { connector, wallet, redirectView })
     } else {
-      RouterController.push('ConnectingWalletConnect', { wallet })
+      RouterController.push('ConnectingWalletConnect', { wallet, redirectView })
     }
   },
 

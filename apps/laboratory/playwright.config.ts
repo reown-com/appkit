@@ -13,6 +13,7 @@ config({ path: './.env.local' })
 const shardSuffix = process.env['PLAYWRIGHT_SHARD_SUFFIX']
 const blobOutputDir = 'playwright-blob-reports'
 const blobFileName = shardSuffix ? `report-${shardSuffix}.zip` : 'report.zip'
+const skipWS = process.env['SKIP_PLAYWRIGHT_WEBSERVER'] === 'true'
 
 export default defineConfig<ModalFixture>({
   testDir: './tests',
@@ -34,20 +35,27 @@ export default defineConfig<ModalFixture>({
 
     /* Take a screenshot when the test fails */
     screenshot: 'only-on-failure',
-
-    /* Collect trace regardless so we can debug latency regressions. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on',
-
-    video: 'retain-on-failure'
+    trace: 'retain-on-failure',
+    video: {
+      mode: 'retain-on-failure',
+      size: {
+        width: 640,
+        height: 480
+      }
+    }
   },
 
   /* Configure projects for major browsers */
   projects: getProjects(),
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'pnpm playwright:start',
-    url: BASE_URL,
-    reuseExistingServer: !process.env['CI'] || Boolean(process.env['SKIP_PLAYWRIGHT_WEBSERVER'])
-  }
+  ...(skipWS
+    ? {}
+    : {
+        webServer: {
+          command: 'pnpm playwright:start',
+          url: BASE_URL,
+          reuseExistingServer: !process.env['CI']
+        }
+      })
 })

@@ -270,12 +270,12 @@ describe('StorageUtil', () => {
 
     it('should replace auth connections instead of merging', () => {
       const existingAuthConnection = {
-        connectorId: 'ID_AUTH',
+        connectorId: 'AUTH',
         accounts: [{ address: '0xold...', type: 'eoa' }]
       } as unknown as Connection
 
       const newAuthConnection = {
-        connectorId: 'ID_AUTH',
+        connectorId: 'AUTH',
         accounts: [{ address: '0xnew...', type: 'eoa' }]
       } as unknown as Connection
 
@@ -283,7 +283,7 @@ describe('StorageUtil', () => {
       StorageUtil.setConnections([newAuthConnection], 'eip155')
 
       const connections = StorageUtil.getConnections()
-      const authConnector = connections.eip155.find(c => c.connectorId === 'ID_AUTH')
+      const authConnector = connections.eip155.find(c => c.connectorId === 'AUTH')
       expect(authConnector?.accounts).toEqual([{ address: '0xnew...', type: 'eoa' }])
     })
 

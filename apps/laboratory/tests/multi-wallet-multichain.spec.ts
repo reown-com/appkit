@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { type Page } from '@playwright/test'
+import { type Page, expect } from '@playwright/test'
 
 import { WalletPage } from '@reown/appkit-testing'
 
@@ -25,14 +25,14 @@ const test = extensionFixture.extend<{ library: string }>({
 
 test.describe.configure({ mode: 'serial' })
 
-test.beforeAll(async ({ context }) => {
+test.beforeAll(async ({ page: _page, context }) => {
   apiKey = process.env['MAILSAC_API_KEY'] as string
 
   if (!apiKey) {
     throw new Error('MAILSAC_API_KEY required')
   }
 
-  page = await context.newPage()
+  page = _page
   wallet = new WalletPage(await context.newPage())
   modal = new ModalPage(page, 'multichain-ethers-solana', 'default')
   validator = new ModalValidator(page)
@@ -47,11 +47,7 @@ test.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-test('should enable multi-wallet feature with a whitelisted project id', async ({ library }) => {
-  if (library === 'bitcoin') {
-    return
-  }
-
+test('should enable multi-wallet feature with a whitelisted project id', async () => {
   await page.getByTestId('project-id-button').click()
   await page.getByTestId('project-id-input').fill('1b0841d0acfe3e32dcb0d53dbf505bdd')
   await page.getByTestId('project-id-save-button').click()
@@ -195,4 +191,48 @@ test('it should disconnect each wallet as expected', async () => {
   // Disconnect from Solana extension wallet
   await modal.disconnect()
   await validator.expectDisconnected()
+})
+
+test('should disconnect only the selected wallet', async () => {
+  await modal.openConnectModal('solana')
+  const solanaExtensionWallet = await modal.getExtensionWallet()
+  await solanaExtensionWallet.click()
+  await validator.expectConnected('solana')
+  solanaExtensionWalletAddress = await modal.getAddress('solana')
+
+  await modal.openConnectModal('eip155')
+  await modal.qrCodeFlow(modal, wallet, undefined, true)
+  await validator.expectConnected('eip155')
+  await validator.expectConnected('solana')
+
+  walletConnectSolanaAddress = await modal.getAddress('solana')
+  walletConnectEvmAddress = await modal.getAddress('eip155')
+
+  expect(await modal.getAddress('solana')).not.toBe(solanaExtensionWalletAddress)
+
+  await modal.openAccount()
+  await modal.clickWalletSwitchButton()
+  await modal.clickTab('solana')
+
+  await modal.disconnectConnection('Reown')
+  await modal.closeModal()
+
+  await modal.page.reload()
+
+  await validator.expectConnected('eip155')
+  await validator.expectConnected('solana')
+
+  expect(await modal.getAddress('solana')).toBe(walletConnectSolanaAddress)
+  expect(await modal.getAddress('eip155')).toBe(walletConnectEvmAddress)
+})
+
+test('should disconnect WC as expected for all namespaces', async () => {
+  await modal.openAccount()
+  await modal.clickWalletSwitchButton()
+  await modal.clickTab('solana')
+
+  await modal.clickProfileWalletsDisconnectButton()
+
+  await validator.expectDisconnected('solana')
+  await validator.expectDisconnected('eip155')
 })

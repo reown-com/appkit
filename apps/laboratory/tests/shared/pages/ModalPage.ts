@@ -4,7 +4,7 @@ import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 
 import type { WalletFeature } from '@reown/appkit'
-import type { Address, Hex } from '@reown/appkit-common'
+import type { Address, ChainNamespace, Hex } from '@reown/appkit-common'
 import { WalletPage, WalletValidator } from '@reown/appkit-testing'
 import {
   BASE_URL,
@@ -113,7 +113,7 @@ export class ModalPage {
     await this.page.goto(this.url)
 
     // Wait for w3m-modal to be injected
-    await this.page.waitForSelector('w3m-modal', { state: 'visible', timeout: 5_000 })
+    await this.page.waitForSelector('w3m-modal', { state: 'visible', timeout: 10_000 })
   }
 
   assertDefined<T>(value: T | undefined | null): T {
@@ -159,8 +159,11 @@ export class ModalPage {
     return uri
   }
 
-  async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
-    await this.connectButton.click()
+  async getConnectUri(timingRecords?: TimingRecords, modalOpen?: boolean): Promise<string> {
+    if (!modalOpen) {
+      await this.connectButton.click()
+    }
+
     await this.clickWalletConnect()
     const qrLoadInitiatedTime = new Date()
 
@@ -223,10 +226,12 @@ export class ModalPage {
     return uri
   }
 
+  // eslint-disable-next-line max-params
   async qrCodeFlow(
     page: ModalPage,
     walletPage: WalletPage,
-    qrCodeFlowType?: 'immediate-connect' | 'immediate'
+    qrCodeFlowType?: 'immediate-connect' | 'immediate',
+    modalOpen?: boolean
   ): Promise<void> {
     // eslint-disable-next-line init-declarations
     let uri: string
@@ -236,7 +241,7 @@ export class ModalPage {
     if (qrCodeFlowType === 'immediate-connect' || qrCodeFlowType === 'immediate') {
       uri = await page.getImmidiateConnectUri(undefined, qrCodeFlowType === 'immediate-connect')
     } else {
-      uri = await page.getConnectUri()
+      uri = await page.getConnectUri(undefined, modalOpen)
     }
     await walletPage.connectWithUri(uri)
 
@@ -638,7 +643,7 @@ export class ModalPage {
   }
 
   async openProfileWalletsView(
-    namespace?: string,
+    namespace?: ChainNamespace,
     clickButtonType: 'account' | 'connect' = 'account'
   ) {
     if (clickButtonType === 'account') {
@@ -651,7 +656,7 @@ export class ModalPage {
     await this.page.waitForTimeout(500)
   }
 
-  async openConnectModal(namespace?: string) {
+  async openConnectModal(namespace?: ChainNamespace) {
     await this.page.getByTestId(`connect-button${namespace ? `-${namespace}` : ''}`).click()
   }
 
@@ -764,7 +769,9 @@ export class ModalPage {
     let walletSelector: Locator
 
     const walletSelectorRDNS = this.page.getByTestId(`wallet-selector-${EXTENSION_RDNS}`)
-    const walletSelectorName = this.page.getByTestId(`wallet-selector-${EXTENSION_NAME}`)
+    const walletSelectorName = this.page.getByTestId(
+      `wallet-selector-${EXTENSION_NAME.toLowerCase()}`
+    )
 
     try {
       await walletSelectorRDNS.waitFor({ state: 'visible', timeout: 2_000 })
@@ -917,6 +924,20 @@ export class ModalPage {
       .getByTestId('wui-inactive-profile-wallet-item-button')
     await expect(firstActiveConnectionButton).toBeVisible()
     await firstActiveConnectionButton.click()
+
+    // Wait until the active connection is updated
+    await this.page.waitForTimeout(100)
+  }
+
+  async disconnectConnection(alt?: string) {
+    const connection = this.page
+      .getByTestId('active-connection')
+      .filter({ has: this.page.locator(`[alt="${alt}"]`) })
+
+    const disconnectButton = connection.locator('wui-icon-link[icon="power"]')
+
+    await expect(disconnectButton).toBeVisible()
+    await disconnectButton.click()
   }
 
   async switchAccountByAddress(address: string) {

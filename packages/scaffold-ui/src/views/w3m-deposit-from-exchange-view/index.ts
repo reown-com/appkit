@@ -1,8 +1,9 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
+  AssetUtil,
   ChainController,
   ConnectionController,
   type CurrentPayment,
@@ -12,7 +13,7 @@ import {
   SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-chip-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-image'
@@ -80,7 +81,10 @@ export class W3mDepositFromExchangeView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
-    ExchangeController.reset()
+    const isInProgress = ExchangeController.state.isPaymentInProgress
+    if (!isInProgress) {
+      ExchangeController.reset()
+    }
   }
 
   public override async firstUpdated() {
@@ -119,7 +123,7 @@ export class W3mDepositFromExchangeView extends LitElement {
               imageSrc=${exchange.imageUrl}
               ?loading=${this.isLoading}
             >
-              <wui-text variant="md-regular" color="secondary">
+              <wui-text variant="md-regular" color="primary">
                 Deposit from ${exchange.name}
               </wui-text>
             </wui-list-item>`
@@ -162,6 +166,8 @@ export class W3mDepositFromExchangeView extends LitElement {
             text=${this.paymentAsset?.metadata.symbol || ''}
             imageSrc=${this.paymentAsset?.metadata.iconUrl || ''}
             @click=${() => RouterController.push('PayWithExchangeSelectAsset')}
+            size="lg"
+            .chainImageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
           >
           </wui-token-button>
         </wui-flex>
@@ -180,16 +186,15 @@ export class W3mDepositFromExchangeView extends LitElement {
           </w3m-fund-input>
           ${this.tokenAmountTemplate()}
         </wui-flex>
-        <wui-flex justifyContent="space-between" gap="2">
+        <wui-flex justifyContent="center" gap="2">
           ${PRESET_AMOUNTS.map(
             amount =>
-              html`<wui-button
+              html`<wui-chip-button
                 @click=${() => ExchangeController.setAmount(amount)}
-                variant=${this.amount === amount ? 'neutral-primary' : 'neutral-secondary'}
-                size="sm"
-                fullWidth
-                >$${amount}</wui-button
-              >`
+                type="neutral"
+                size="lg"
+                text=${`$${amount}`}
+              ></wui-chip-button>`
           )}
         </wui-flex>
       </wui-flex>
@@ -225,6 +230,7 @@ export class W3mDepositFromExchangeView extends LitElement {
 
   private handlePaymentInProgress() {
     const namespace = ChainController.state.activeChain
+    const { redirectView = 'Account' } = RouterController.state.data ?? {}
 
     if (
       this.isPaymentInProgress &&
@@ -239,17 +245,19 @@ export class W3mDepositFromExchangeView extends LitElement {
       }).then(status => {
         if (status.status === 'SUCCESS') {
           SnackController.showSuccess('Deposit completed')
+          ExchangeController.reset()
 
           if (namespace) {
-            AccountController.fetchTokenBalance()
+            ChainController.fetchTokenBalance()
             ConnectionController.updateBalance(namespace)
           }
+          RouterController.replace('Transactions')
         } else if (status.status === 'FAILED') {
           SnackController.showError('Deposit failed')
         }
       })
       SnackController.showLoading('Deposit in progress...')
-      RouterController.replace('Account')
+      RouterController.replace(redirectView)
     }
   }
 

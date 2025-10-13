@@ -6,21 +6,24 @@
   "scripts": {
     "dev": "storybook dev -p 6006",
     "build": "storybook build -o out",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "chromatic": "chromatic"
   },
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-scaffold-ui": "workspace:*",
     "lit": "3.3.0",
-    "react": "19.1.0",
+    "react": "19.1.1",
     "storybook": "9.0.15"
   },
   "devDependencies": {
-    "@storybook/addon-links": "9.0.15",
+    "@chromatic-com/storybook": "4.1.1",
     "@storybook/addon-docs": "9.0.15",
+    "@storybook/addon-links": "9.0.15",
     "@storybook/web-components": "9.0.15",
     "@storybook/web-components-vite": "9.0.15",
+    "chromatic": "13.3.0",
     "file-system-cache": "2.4.7"
   }
 }

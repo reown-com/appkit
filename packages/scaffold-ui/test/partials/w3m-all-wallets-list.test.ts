@@ -7,6 +7,7 @@ import {
   ApiController,
   ChainController,
   ConnectorController,
+  OptionsController,
   RouterController
 } from '@reown/appkit-controllers'
 import type {
@@ -128,6 +129,30 @@ describe('W3mAllWalletsList', () => {
 
     const walletItems = element.shadowRoot?.querySelectorAll('w3m-all-wallets-list-item')
     expect(walletItems?.length).toBe(mockWallets.length)
+  })
+
+  it('should set the correct properties and values mobileFullScreen is true', async () => {
+    OptionsController.state.enableMobileFullScreen = true
+
+    const element: W3mAllWalletsList = await fixture(
+      html`<w3m-all-wallets-list></w3m-all-wallets-list>`
+    )
+
+    await elementUpdated(element)
+
+    expect(element.getAttribute('data-mobile-fullscreen')).toBe('true')
+  })
+
+  it('should set the correct properties and values mobileFullScreen is false', async () => {
+    OptionsController.state.enableMobileFullScreen = false
+
+    const element: W3mAllWalletsList = await fixture(
+      html`<w3m-all-wallets-list></w3m-all-wallets-list>`
+    )
+
+    await elementUpdated(element)
+
+    expect(element.getAttribute('data-mobile-fullscreen')).toBeNull()
   })
 
   it('handles wallet connection for external connector', async () => {

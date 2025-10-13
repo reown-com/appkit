@@ -1,21 +1,14 @@
 import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
 
+import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import {
-  type CaipAddress,
-  type CaipNetwork,
-  type ChainNamespace,
-  ConstantsUtil
-} from '@reown/appkit-common'
-import {
-  AccountController,
-  type AccountControllerState,
+  type AccountState,
   AssetUtil,
   ChainController,
   type ChainControllerState,
   type ConnectionControllerClient,
   CoreHelperUtil,
-  type NetworkControllerClient,
   RouterController,
   SnackController
 } from '@reown/appkit-controllers'
@@ -47,20 +40,13 @@ const mockNetwork: CaipNetwork = {
 const mockAddress = '0x123456789abcdef123456789abcdef123456789a'
 const mockProfileName = 'Test User'
 
-const mockNetworkControllerClient: NetworkControllerClient = {
-  switchCaipNetwork: vi.fn(),
-  getApprovedCaipNetworksData: vi.fn().mockResolvedValue({
-    approvedCaipNetworkIds: ['eip155:1'],
-    supportsAllNetworks: true
-  })
-}
-
 const mockConnectionControllerClient: ConnectionControllerClient = {
   connectWalletConnect: vi.fn(),
   connectExternal: vi.fn(),
   reconnectExternal: vi.fn(),
   checkInstalled: vi.fn(),
   disconnect: vi.fn(),
+  disconnectConnector: vi.fn(),
   signMessage: vi.fn(),
   sendTransaction: vi.fn(),
   estimateGas: vi.fn(),
@@ -77,7 +63,7 @@ const mockConnectionControllerClient: ConnectionControllerClient = {
 }
 
 // Create partial mock states to satisfy TypeScript
-const mockAccountControllerState: Partial<AccountControllerState> = {
+const mockAccountState: Partial<AccountState> = {
   address: mockAddress,
   profileName: mockProfileName,
   preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.EOA,
@@ -94,13 +80,11 @@ const mockChainControllerState: Partial<ChainControllerState> = {
       'eip155',
       {
         namespace: ConstantsUtil.CHAIN.EVM,
-        networkControllerClient: mockNetworkControllerClient,
         connectionControllerClient: mockConnectionControllerClient
       }
     ]
   ]),
   universalAdapter: {
-    networkControllerClient: mockNetworkControllerClient,
     connectionControllerClient: mockConnectionControllerClient
   },
   noAdapters: false,
@@ -123,10 +107,7 @@ const mockRequestedNetworks: CaipNetwork[] = [
 
 describe('W3mWalletReceiveView', () => {
   beforeEach(() => {
-    // Mock AccountController state
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue(
-      mockAccountControllerState as AccountControllerState
-    )
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue(mockAccountState as AccountState)
 
     // Mock ChainController state
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue(
@@ -173,10 +154,10 @@ describe('W3mWalletReceiveView', () => {
   })
 
   it('should display address when no profile name', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...mockAccountControllerState,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...mockAccountState,
       profileName: undefined
-    } as AccountControllerState)
+    } as AccountState)
 
     const element = await fixture<W3mWalletReceiveView>(
       html`<w3m-wallet-receive-view></w3m-wallet-receive-view>`
@@ -242,19 +223,10 @@ describe('W3mWalletReceiveView', () => {
   })
 
   it('should display single network for smart accounts', async () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...mockChainControllerState,
-      // @ts-expect-error - mockChainControllerState.chains is not typed correctly
-      chains: new Map([
-        [
-          'eip155',
-          {
-            ...mockChainControllerState.chains?.get('eip155'),
-            accountState: { preferredAccountType: 'smartAccount' }
-          }
-        ]
-      ])
-    })
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...mockAccountState,
+      preferredAccountType: W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+    } as AccountState)
     vi.spyOn(ChainController, 'checkIfSmartAccountEnabled').mockReturnValue(true)
 
     const element = await fixture<W3mWalletReceiveView>(

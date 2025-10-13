@@ -6,6 +6,7 @@ import {
   ApiController,
   ConnectorController,
   CoreHelperUtil,
+  OptionsController,
   type WcWallet
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -41,6 +42,8 @@ export class W3mAllWalletsList extends LitElement {
 
   @state() private badge?: 'certified' | undefined
 
+  @state() private mobileFullScreen = OptionsController.state.enableMobileFullScreen
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -65,6 +68,10 @@ export class W3mAllWalletsList extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    if (this.mobileFullScreen) {
+      this.setAttribute('data-mobile-fullscreen', 'true')
+    }
+
     return html`
       <wui-grid
         data-scroll=${!this.loading}
@@ -124,13 +131,14 @@ export class W3mAllWalletsList extends LitElement {
     const wallets = this.getWallets()
 
     return wallets.map(
-      wallet => html`
+      (wallet, index) => html`
         <w3m-all-wallets-list-item
           data-testid="wallet-search-item-${wallet.id}"
           @click=${() => this.onConnectWallet(wallet)}
           .wallet=${wallet}
           explorerId=${wallet.id}
           certified=${this.badge === 'certified'}
+          displayIndex=${index}
         ></w3m-all-wallets-list-item>
       `
     )

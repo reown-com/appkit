@@ -15,7 +15,6 @@ import {
   getPaymentAssetsForNetwork
 } from '../utils/ExchangeUtil.js'
 import type { CurrentPayment, Exchange, PayUrlParams, PaymentAsset } from '../utils/ExchangeUtil.js'
-import { AccountController } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { EventsController } from './EventsController.js'
@@ -137,11 +136,7 @@ export const ExchangeController = {
   },
 
   isPayWithExchangeEnabled() {
-    return (
-      OptionsController.state.remoteFeatures?.payWithExchange ||
-      OptionsController.state.remoteFeatures?.payments ||
-      OptionsController.state.features?.pay
-    )
+    return OptionsController.state.remoteFeatures?.payWithExchange
   },
 
   isPayWithExchangeSupported() {
@@ -226,7 +221,8 @@ export const ExchangeController = {
 
   async handlePayWithExchange(exchangeId: string) {
     try {
-      if (!AccountController.state.address) {
+      const address = ChainController.getAccountData()?.address
+      if (!address) {
         throw new Error('No account connected')
       }
 
@@ -257,7 +253,7 @@ export const ExchangeController = {
         network,
         asset,
         amount: state.tokenAmount,
-        recipient: AccountController.state.address
+        recipient: address
       }
       const payUrl = await ExchangeController.getPayUrl(exchangeId, payUrlParams)
       if (!payUrl) {
@@ -324,6 +320,7 @@ export const ExchangeController = {
       const status = await getBuyStatus({ sessionId, exchangeId })
       state.currentPayment.status = status.status
       if (status.status === 'SUCCESS' || status.status === 'FAILED') {
+        const address = ChainController.getAccountData()?.address
         state.currentPayment.result = status.txHash
         state.isPaymentInProgress = false
         EventsController.sendEvent({
@@ -337,7 +334,7 @@ export const ExchangeController = {
             configuration: {
               network: state.paymentAsset?.network || '',
               asset: state.paymentAsset?.asset || '',
-              recipient: AccountController.state.address || '',
+              recipient: address || '',
               amount: state.amount ?? 0
             },
             currentPayment: {

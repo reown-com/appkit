@@ -7,7 +7,7 @@ export function bootstrapSentry() {
     Sentry.init({
       dsn,
       integrations: [browserTracingIntegration()],
-      tracesSampleRate: 1.0
+      tracesSampleRate: 0.01
     })
   }
 }

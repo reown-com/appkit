@@ -4,14 +4,12 @@ import { toHex } from 'viem'
 
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil
 } from '@reown/appkit-controllers'
+import { AdapterBlueprint, WalletConnectConnector } from '@reown/appkit-controllers'
 
-import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
-import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
 import { WcConstantsUtil } from '../utils/ConstantsUtil.js'
 
 export class UniversalAdapter extends AdapterBlueprint {
@@ -98,17 +96,19 @@ export class UniversalAdapter extends AdapterBlueprint {
       }
     }
 
+    const accountData = ChainController.getAccountData()
+
     if (
-      AccountController.state.balanceLoading &&
+      accountData?.balanceLoading &&
       params.chainId === ChainController.state.activeCaipNetwork?.id
     ) {
       return {
-        balance: AccountController.state.balance || '0.00',
-        symbol: AccountController.state.balanceSymbol || ''
+        balance: accountData?.balance || '0.00',
+        symbol: accountData?.balanceSymbol || ''
       }
     }
 
-    const balances = await AccountController.fetchTokenBalance()
+    const balances = await ChainController.fetchTokenBalance()
     const balance = balances.find(
       b =>
         b.chainId === `${params.caipNetwork?.chainNamespace}:${params.chainId}` &&

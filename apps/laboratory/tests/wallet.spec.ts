@@ -194,6 +194,7 @@ sampleWalletTest('it should switch between multiple accounts', async ({ library 
   const originalAddress = await modalPage.getAddress()
   await modalPage.openProfileWalletsView()
   await modalPage.switchAccount()
+  await modalPage.page.waitForTimeout(1000)
   await modalPage.closeModal()
   await modalValidator.expectAccountSwitched(originalAddress)
 })
@@ -259,10 +260,8 @@ sampleWalletTest(
 
     await modalPage.qrCodeFlow(modalPage, walletPage)
     await modalValidator.expectConnected()
-    await modalPage.openModal()
-    await modalPage.openNetworks()
-    await modalValidator.expectSwitchedNetwork('Ethereum')
-    await modalPage.closeModal()
+
+    await modalValidator.expectNetworkButton('Ethereum')
     await modalPage.sign()
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
