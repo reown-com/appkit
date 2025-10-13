@@ -21,7 +21,7 @@
     "@babel/runtime": "7.27.6",
     "cross-env": "10.0.0",
     "esm": "3.2.25",
-    "ts-node": "10.9.1"
+    "ts-node": "10.9.2"
   },
   "keywords": [
     "appkit",
