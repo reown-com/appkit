@@ -90,7 +90,6 @@ export class LeatherConnector extends SatsConnectConnector {
   public override async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
     const networkName = this.getNetwork()
     const protocol = params.protocol?.toUpperCase() as MessageSigningProtocols
-    console.log('>> LeatherConnector signMessage networkName', networkName)
 
     const res = await this.internalRequest('signMessage', {
       ...params,
@@ -100,6 +99,11 @@ export class LeatherConnector extends SatsConnectConnector {
     })
 
     return res.signature
+  }
+
+  public override async switchNetwork(_caipNetworkId: string): Promise<void> {
+    // Leather wallet doesn't support network switching, we rely on AK's network switching
+    return Promise.resolve()
   }
 
   private getNetwork(): LeatherConnector.Network {

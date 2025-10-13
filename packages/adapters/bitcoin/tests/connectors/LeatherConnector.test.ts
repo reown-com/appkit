@@ -1,4 +1,4 @@
-import { BitcoinNetworkType } from 'sats-connect'
+import { BitcoinNetworkType, MessageSigningProtocols } from 'sats-connect'
 import type { AddressPurpose, AddressType } from 'sats-connect'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -264,5 +264,103 @@ describe('LeatherConnector', () => {
     })
 
     expect(connector.imageUrl).toBe('data:image/svg+xml;')
+  })
+
+  it('should sign a message', async () => {
+    const message = 'test message'
+    const signature = 'mock_signature'
+    const requestSpy = vi.spyOn(mocks.wallet, 'request')
+    requestSpy.mockResolvedValue(
+      mockSatsConnectProvider.mockRequestResolve({
+        address: 'mock_address',
+        protocol: MessageSigningProtocols.ECDSA,
+        signature,
+        messageHash: 'mock_message_hash'
+      })
+    )
+
+    const res = await connector.signMessage({ message, address: 'mock_address' })
+
+    expect(res).toBe(signature)
+    expect(requestSpy).toHaveBeenCalledWith('signMessage', {
+      message,
+      address: 'mock_address',
+      protocol: undefined,
+      network: 'mainnet'
+    })
+  })
+
+  it('should sign a message with protocol', async () => {
+    const message = 'test message'
+    const signature = 'mock_signature'
+    const requestSpy = vi.spyOn(mocks.wallet, 'request')
+    requestSpy.mockResolvedValue(
+      mockSatsConnectProvider.mockRequestResolve({
+        address: 'mock_address',
+        protocol: MessageSigningProtocols.BIP322,
+        signature,
+        messageHash: 'mock_message_hash'
+      })
+    )
+
+    const res = await connector.signMessage({
+      message,
+      address: 'mock_address',
+      protocol: 'bip322'
+    })
+
+    expect(res).toBe(signature)
+    expect(requestSpy).toHaveBeenCalledWith('signMessage', {
+      message,
+      address: 'mock_address',
+      protocol: 'BIP322',
+      network: 'mainnet'
+    })
+  })
+
+  it('should sign a message for testnet', async () => {
+    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(bitcoinTestnet)
+
+    const message = 'test message'
+    const signature = 'mock_signature'
+    const requestSpy = vi.spyOn(mocks.wallet, 'request')
+    requestSpy.mockResolvedValue(
+      mockSatsConnectProvider.mockRequestResolve({
+        address: 'mock_address',
+        protocol: MessageSigningProtocols.ECDSA,
+        signature,
+        messageHash: 'mock_message_hash'
+      })
+    )
+
+    const res = await connector.signMessage({ message, address: 'mock_address' })
+
+    expect(res).toBe(signature)
+    expect(requestSpy).toHaveBeenCalledWith('signMessage', {
+      message,
+      address: 'mock_address',
+      protocol: undefined,
+      network: 'testnet'
+    })
+  })
+
+  it('should throw an error when signing a message with unsupported network', async () => {
+    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(undefined)
+
+    const message = 'test message'
+    const signature = 'mock_signature'
+    const requestSpy = vi.spyOn(mocks.wallet, 'request')
+    requestSpy.mockResolvedValue(
+      mockSatsConnectProvider.mockRequestResolve({
+        address: 'mock_address',
+        protocol: MessageSigningProtocols.ECDSA,
+        signature,
+        messageHash: 'mock_message_hash'
+      })
+    )
+
+    await expect(connector.signMessage({ message, address: 'mock_address' })).rejects.toThrowError(
+      'LeatherConnector: unsupported network'
+    )
   })
 })
