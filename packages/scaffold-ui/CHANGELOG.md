@@ -1,5 +1,23 @@
 # @reown/appkit-scaffold-ui
 
+## 1.8.10
+
+### Patch Changes
+
+- [#5148](https://github.com/reown-com/appkit/pull/5148) [`bdce2c8`](https://github.com/reown-com/appkit/commit/bdce2c8dfa58bed7bd5f8114574c2db751e9bdd3) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where social login did not work with wallet button
+
+- [#5160](https://github.com/reown-com/appkit/pull/5160) [`561a215`](https://github.com/reown-com/appkit/commit/561a215f4455a87a5993aa4850e553bc596d75e7) Thanks [@devin-ai-integration](https://github.com/apps/devin-ai-integration)! - Improve QR code rendering performance and responsiveness:
+  - Remove 200ms timeout delay from QR code display for faster connection handshake
+  - Remove fixed sizing calculations and resize listener for better performance
+  - Use percentage-based SVG sizing (width="100%" height="100%") with viewBox for responsive scaling
+  - Set QR code generation to use fixed 500px matrix size for consistent quality
+- Updated dependencies [[`bdce2c8`](https://github.com/reown-com/appkit/commit/bdce2c8dfa58bed7bd5f8114574c2db751e9bdd3), [`561a215`](https://github.com/reown-com/appkit/commit/561a215f4455a87a5993aa4850e553bc596d75e7), [`069ccbf`](https://github.com/reown-com/appkit/commit/069ccbfe215838a523beb362ec18c8a45ab92709), [`17ea7b3`](https://github.com/reown-com/appkit/commit/17ea7b32d4cbfca07cc74eac7ee98bf640fadec2)]:
+  - @reown/appkit-controllers@1.8.10
+  - @reown/appkit-utils@1.8.10
+  - @reown/appkit-common@1.8.10
+  - @reown/appkit-ui@1.8.10
+  - @reown/appkit-wallet@1.8.10
+
 ## 1.8.9
 
 ### Patch Changes

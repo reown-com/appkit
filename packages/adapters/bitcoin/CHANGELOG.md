@@ -1,5 +1,24 @@
 # @reown/appkit-adapter-bitcoin
 
+## 1.8.10
+
+### Patch Changes
+
+- [#5148](https://github.com/reown-com/appkit/pull/5148) [`bdce2c8`](https://github.com/reown-com/appkit/commit/bdce2c8dfa58bed7bd5f8114574c2db751e9bdd3) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where social login did not work with wallet button
+
+- [#5215](https://github.com/reown-com/appkit/pull/5215) [`cf0fa98`](https://github.com/reown-com/appkit/commit/cf0fa9873949d3d31e5905a61d2943f760a38039) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where Leather wallet would not target the appropriate network on signMessage
+
+- [#5164](https://github.com/reown-com/appkit/pull/5164) [`a492e24`](https://github.com/reown-com/appkit/commit/a492e24bf9e721b289d7a259303a72c65a0d7d7d) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue in Leather wallet where requests would target mainnet instead of testnet
+
+- [#5215](https://github.com/reown-com/appkit/pull/5215) [`cf0fa98`](https://github.com/reown-com/appkit/commit/cf0fa9873949d3d31e5905a61d2943f760a38039) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where network would not switch when using Leather wallet as it doesn't support programatic network switching and relies on request parameters to select target network'
+
+- Updated dependencies [[`bdce2c8`](https://github.com/reown-com/appkit/commit/bdce2c8dfa58bed7bd5f8114574c2db751e9bdd3), [`561a215`](https://github.com/reown-com/appkit/commit/561a215f4455a87a5993aa4850e553bc596d75e7), [`a492e24`](https://github.com/reown-com/appkit/commit/a492e24bf9e721b289d7a259303a72c65a0d7d7d), [`17ea7b3`](https://github.com/reown-com/appkit/commit/17ea7b32d4cbfca07cc74eac7ee98bf640fadec2)]:
+  - @reown/appkit-controllers@1.8.10
+  - @reown/appkit@1.8.10
+  - @reown/appkit-utils@1.8.10
+  - @reown/appkit-common@1.8.10
+  - @reown/appkit-polyfills@1.8.10
+
 ## 1.8.9
 
 ### Patch Changes
