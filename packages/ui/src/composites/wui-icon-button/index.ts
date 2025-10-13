@@ -1,9 +1,10 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 import '../../components/wui-icon/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconButtonSize, IconType } from '../../utils/TypeUtil.js'
+import type { IconButtonSize, IconSizeType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -20,6 +21,8 @@ export class WuiIconButton extends LitElement {
 
   @property() public size: IconButtonSize = 'md'
 
+  @property() public iconSize?: IconSizeType = undefined
+
   @property({ type: Boolean }) public fullWidth = false
 
   @property({ type: Boolean }) public disabled = false
@@ -33,7 +36,7 @@ export class WuiIconButton extends LitElement {
       data-full-width=${this.fullWidth}
       ?disabled=${this.disabled}
     >
-      <wui-icon color="inherit" name=${this.icon}></wui-icon>
+      <wui-icon color="inherit" name=${this.icon} size=${ifDefined(this.iconSize)}></wui-icon>
     </button>`
   }
 }

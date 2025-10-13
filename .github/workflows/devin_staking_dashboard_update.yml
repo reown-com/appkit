@@ -10,9 +10,9 @@ permissions:
 
 jobs:
   trigger-devin-appkit-staking-dashboard:
-    # This job runs only if the head commit message on the push to main contains 'Merge release/' and 'back to main'
+    # This job runs only if the head commit message on the push to main contains 'Release/' or 'release/'
     if: |
-      contains(github.event.head_commit.message, 'Merge release/') && contains(github.event.head_commit.message, 'back to main')
+      contains(github.event.head_commit.message, 'Release/') || contains(github.event.head_commit.message, 'release/')
     runs-on: ubuntu-latest
     steps:
       - name: Send Slack Notification for Staking Dashboard Update

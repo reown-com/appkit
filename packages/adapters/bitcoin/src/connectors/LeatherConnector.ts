@@ -1,10 +1,7 @@
-import type {
-  SendTransferRequestParams,
-  SendTransferResponseBody,
-  SignPsbtRequestParams,
-  SignPsbtResponseBody
-} from '@leather.io/rpc'
+import type { RpcEndpointMap, RpcSendTransferParams } from '@leather.io/rpc'
 
+import { ConstantsUtil } from '@reown/appkit-common'
+import { ChainController } from '@reown/appkit-controllers'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
@@ -22,8 +19,7 @@ export class LeatherConnector extends SatsConnectConnector {
 
     super({
       provider: connector.wallet,
-      requestedChains: connector.requestedChains,
-      getActiveNetwork: connector.getActiveNetwork
+      requestedChains: connector.requestedChains
     })
   }
 
@@ -54,8 +50,8 @@ export class LeatherConnector extends SatsConnectConnector {
     recipient
   }: BitcoinConnector.SendTransferParams): Promise<string> {
     const params: LeatherConnector.SendTransferParams = {
-      address: recipient,
-      amount
+      recipients: [{ address: recipient, amount }],
+      network: this.getNetwork()
     }
 
     const res: LeatherConnector.SendTransferResponse = await this.internalRequest(
@@ -91,7 +87,7 @@ export class LeatherConnector extends SatsConnectConnector {
   }
 
   private getNetwork(): LeatherConnector.Network {
-    const activeCaipNetwork = this.getActiveNetwork()
+    const activeCaipNetwork = ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)
 
     switch (activeCaipNetwork?.caipNetworkId) {
       case bitcoin.caipNetworkId:
@@ -109,11 +105,11 @@ export namespace LeatherConnector {
 
   export type Network = 'mainnet' | 'testnet' | 'signet' | 'sbtcDevenv' | 'devnet'
 
-  export type SendTransferParams = SendTransferRequestParams
+  export type SendTransferParams = RpcSendTransferParams
 
-  export type SendTransferResponse = SendTransferResponseBody
+  export type SendTransferResponse = { txid: string }
 
-  export type SignPSBTParams = SignPsbtRequestParams
+  export type SignPSBTParams = RpcEndpointMap['signPsbt']['request']['params']
 
-  export type SignPSBTResponse = SignPsbtResponseBody
+  export type SignPSBTResponse = { hex: string; txid?: string }
 }

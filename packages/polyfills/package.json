@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-polyfills",
-  "version": "1.8.7",
+  "version": "1.8.9",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/index.js",

@@ -1,0 +1,25 @@
+---
+description: Focused rules for examples (usage patterns, adapters, CDN builds)
+globs:
+  - 'examples/**'
+alwaysApply: false
+---
+
+## AppKit Examples Rules
+
+These rules apply to `examples/**`.
+
+### Usage Patterns
+
+- Import from public entrypoints of packages (`@reown/appkit`, `@reown/appkit-adapter-*`).
+- Do not deep import internal paths.
+- Keep example code minimal, readable, and framework-idiomatic.
+
+### Adapters & Peers
+
+- Respect `peerDependencies`: install `wagmi`/`viem`/`ethers` in examples that need them.
+- Prefer the adapter suited to the framework: wagmi for React, ethers for generic EVM, solana adapter for Solana.
+
+### CDN
+
+- For CDN-based examples, use `@reown/appkit-cdn` outputs and ensure polyfills are present when required.

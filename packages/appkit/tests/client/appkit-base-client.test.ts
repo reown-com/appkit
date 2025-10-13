@@ -2,7 +2,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import {
   AlertController,
   ApiController,
@@ -11,13 +11,13 @@ import {
   ConnectionController,
   CoreHelperUtil,
   ModalController,
-  SendController
+  SendController,
+  WcHelpersUtil
 } from '@reown/appkit-controllers'
 import { mockChainControllerState } from '@reown/appkit-controllers/testing'
 import { ErrorUtil, TokenUtil } from '@reown/appkit-utils'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client'
-import { WcHelpersUtil } from '../../src/utils/index'
 import { mainnet } from '../mocks/Networks'
 
 describe('AppKitBaseClient.checkAllowedOrigins', () => {
@@ -482,5 +482,50 @@ describe('AppKitBaseClient.open', () => {
     await expect(baseClient.open({ view: 'WalletSend', arguments: mockArgs })).rejects.toThrow(
       'Failed to switch'
     )
+  })
+})
+
+describe('AppKitBaseClient.getDisabledCaipNetworks', () => {
+  let baseClient: AppKitBaseClient
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    baseClient = new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1'
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+    })()
+  })
+
+  it('should return only disabled requested caipNetworks', () => {
+    const approvedIds = ['eip155:1', 'solana:101'] as CaipNetworkId[]
+    const requestedNetworks = [
+      { id: 1, chainNamespace: 'eip155', caipNetworkId: 'eip155:1' },
+      { id: 101, chainNamespace: 'solana', caipNetworkId: 'solana:101' },
+      { id: 56, chainNamespace: 'eip155', caipNetworkId: 'eip155:56' }
+    ] as unknown as CaipNetwork[]
+
+    vi.spyOn(ChainController, 'getAllApprovedCaipNetworkIds').mockReturnValue(approvedIds)
+    vi.spyOn(ChainController, 'getAllRequestedCaipNetworks').mockReturnValue(requestedNetworks)
+    vi.spyOn(CoreHelperUtil, 'sortRequestedNetworks').mockReturnValue(requestedNetworks)
+
+    const isDisabledMock = vi
+      .spyOn(ChainController, 'isCaipNetworkDisabled')
+      .mockImplementation(network => network.caipNetworkId === 'eip155:56')
+
+    const result = baseClient.getDisabledCaipNetworks()
+
+    expect(isDisabledMock).toHaveBeenCalled()
+    expect(result).toHaveLength(1)
+    expect(result[0]?.caipNetworkId).toBe('eip155:56')
   })
 })

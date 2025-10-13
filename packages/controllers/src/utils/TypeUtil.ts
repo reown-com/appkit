@@ -88,7 +88,6 @@ export type ConnectorType =
   | 'ANNOUNCED'
   | 'AUTH'
   | 'MULTI_CHAIN'
-  | 'ID_AUTH'
 
 export type SocialProvider =
   | 'google'
@@ -423,14 +422,35 @@ export type CustomWallet = Pick<
 
 // -- EventsController Types ----------------------------------------------------
 
+export type WalletImpressionItem = {
+  name: string
+  walletRank: number | undefined
+  explorerId: string
+  view: string
+  displayIndex?: number
+  query?: string
+  certified?: boolean
+}
+
+export type ConnectorImpressionItem = {
+  name: string
+  walletRank: number | undefined
+  rdnsId?: string
+  view: string
+  displayIndex?: number
+}
+
 export type PendingEvent = {
   eventId: string
   url: string
   domain: string
   timestamp: number
   props: {
+    type: 'track' | 'error'
+    event: string
     address?: string
-    properties: unknown
+    properties?: unknown
+    items?: Array<WalletImpressionItem | ConnectorImpressionItem>
   }
 }
 
@@ -932,22 +952,8 @@ export type Event =
   | {
       type: 'track'
       address?: string
-      event: 'WALLET_IMPRESSION'
-      properties:
-        | {
-            name: string
-            walletRank: number | undefined
-            explorerId: string
-            view: string
-            query?: string
-            certified?: boolean
-          }
-        | {
-            name: string
-            walletRank: number | undefined
-            rdnsId?: string
-            view: string
-          }
+      event: 'WALLET_IMPRESSION_V2'
+      items: Array<WalletImpressionItem | ConnectorImpressionItem>
     }
 
 type PayConfiguration = {
@@ -1164,18 +1170,9 @@ export interface WriteContractArgs {
   chainNamespace: ChainNamespace
 }
 
-export interface NetworkControllerClient {
-  switchCaipNetwork: (network: CaipNetwork) => Promise<void>
-  getApprovedCaipNetworksData: () => Promise<{
-    approvedCaipNetworkIds: CaipNetworkId[]
-    supportsAllNetworks: boolean
-  }>
-}
-
 export type AdapterNetworkState = {
   supportsAllNetworks: boolean
   isUnsupportedChain?: boolean
-  _client?: NetworkControllerClient
   caipNetwork?: CaipNetwork
   requestedCaipNetworks?: CaipNetwork[]
   approvedCaipNetworkIds?: CaipNetworkId[]
@@ -1185,7 +1182,6 @@ export type AdapterNetworkState = {
 
 export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
-  networkControllerClient?: NetworkControllerClient
   accountState?: AccountState
   networkState?: AdapterNetworkState
   namespace?: ChainNamespace

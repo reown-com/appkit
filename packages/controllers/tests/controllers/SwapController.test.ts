@@ -1,7 +1,7 @@
 import { parseUnits } from 'viem'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
-import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
+import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import {
@@ -11,7 +11,6 @@ import {
   ConnectionController,
   type ConnectionControllerClient,
   ConnectorController,
-  type NetworkControllerClient,
   RouterController,
   SwapController
 } from '../../exports/index.js'
@@ -43,12 +42,22 @@ const caipNetwork = {
     }
   }
 } as CaipNetwork
-const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
-const client: NetworkControllerClient = {
-  switchCaipNetwork: async _caipNetwork => Promise.resolve(),
-  getApprovedCaipNetworksData: async () =>
-    Promise.resolve({ approvedCaipNetworkIds, supportsAllNetworks: false })
-}
+const arbitrumNetwork = {
+  id: 42161,
+  caipNetworkId: 'eip155:42161',
+  name: 'Arbitrum One',
+  chainNamespace: ConstantsUtil.CHAIN.EVM,
+  nativeCurrency: {
+    name: 'Ether',
+    decimals: 18,
+    symbol: 'ETH'
+  },
+  rpcUrls: {
+    default: {
+      http: ['']
+    }
+  }
+} as CaipNetwork
 const chain = ConstantsUtil.CHAIN.EVM
 const caipAddress = 'eip155:1:0x123'
 // MATIC
@@ -62,12 +71,10 @@ const sourceTokenAmount = '1'
 beforeAll(async () => {
   const mockAdapter = {
     namespace: ConstantsUtil.CHAIN.EVM,
-    networkControllerClient: client,
     caipNetworks: [caipNetwork]
   }
   ChainController.initialize([mockAdapter], [caipNetwork], {
-    connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-    networkControllerClient: client
+    connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
   })
 
   ChainController.setActiveCaipNetwork(caipNetwork)
@@ -150,7 +157,7 @@ describe('SwapController', () => {
     const connectionControllerClientSpy = vi
       .spyOn(ConnectionController, 'sendTransaction')
       .mockImplementationOnce(() => Promise.resolve(null))
-    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('AUTH')
     vi.spyOn(RouterController, 'pushTransactionStack').mockImplementationOnce(() =>
       Promise.resolve()
     )
@@ -246,5 +253,65 @@ describe('SwapController', () => {
 
       expect(() => SwapController.getParams()).toThrow('No address found to swap the tokens from.')
     })
+  })
+
+  it('should show chain-specific suggested token first when active network is Arbitrum', async () => {
+    SwapController.state.tokens = undefined
+    ChainController.state.activeCaipNetwork = arbitrumNetwork
+
+    const mockTokens = [
+      {
+        address: 'eip155:42161:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' as CaipAddress,
+        symbol: 'ETH',
+        name: 'Ether',
+        decimals: 18,
+        logoUri: ''
+      },
+      {
+        address: 'eip155:42161:0x0000000000000000000000000000000000000000' as CaipAddress,
+        symbol: 'USD₮0',
+        name: 'Tether USD0',
+        decimals: 6,
+        logoUri: ''
+      }
+    ]
+
+    vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValueOnce({
+      tokens: mockTokens
+    })
+
+    await SwapController.getTokenList()
+
+    expect(SwapController.state.suggestedTokens?.[0]?.symbol).toBe('USD₮0')
+  })
+
+  it('should show chain-specific suggested token first when active network is Arbitrum', async () => {
+    SwapController.state.tokens = undefined
+    ChainController.state.activeCaipNetwork = arbitrumNetwork
+
+    const mockTokens = [
+      {
+        address: 'eip155:42161:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' as CaipAddress,
+        symbol: 'ETH',
+        name: 'Ether',
+        decimals: 18,
+        logoUri: ''
+      },
+      {
+        address: 'eip155:42161:0x0000000000000000000000000000000000000000' as CaipAddress,
+        symbol: 'USD₮0',
+        name: 'Tether USD0',
+        decimals: 6,
+        logoUri: ''
+      }
+    ]
+
+    vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValueOnce({
+      tokens: mockTokens
+    })
+
+    await SwapController.getTokenList()
+
+    expect(SwapController.state.suggestedTokens?.[0]?.symbol).toBe('USD₮0')
   })
 })

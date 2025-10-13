@@ -71,7 +71,6 @@ export namespace UnisatConnector {
     name: string
     wallet: Wallet
     requestedChains: CaipNetwork[]
-    getActiveNetwork: () => CaipNetwork | undefined
     imageUrl: string
   }
 

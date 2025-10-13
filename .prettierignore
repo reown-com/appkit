@@ -7,3 +7,4 @@ bun.lock
 bundle-analysis.html
 .open-next
 /apps/pay-test-exchange/**.d.ts
+next-env.d.ts
