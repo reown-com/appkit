@@ -21,7 +21,7 @@ export async function initializeSignClient() {
   return signClient
 }
 
-export function initializeModal(client?: InstanceType<typeof SignClient>) {
+export function initializeModal() {
   if (!modal) {
     modal = createAppKit({
       projectId,
