@@ -1040,6 +1040,12 @@ type PayEvent =
         message?: string
       }
     }
+  | {
+      type: 'track'
+      address?: string
+      event: 'USAGE_EXCEEDED'
+      properties: Plan
+    }
 
 // Onramp Types
 export type DestinationWallet = {
@@ -1422,7 +1428,7 @@ export type ApiGetProjectConfigResponse = {
 }
 
 export type ApiGetUsageResponse = {
-  usage: Usage
+  planLimits: Plan
 }
 
 export type FeatureConfigMap = {
@@ -1495,3 +1501,11 @@ export type FeatureConfigMap = {
 }
 
 export type FeatureKey = keyof FeatureConfigMap
+
+type Tier = 'starter' | 'pro' | 'enteprise' | 'none'
+
+export type Plan = {
+  tier: Tier
+  isAboveRpcLimit: false | true
+  isAboveMauLimit: true | false
+}

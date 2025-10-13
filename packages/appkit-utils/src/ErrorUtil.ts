@@ -99,5 +99,12 @@ export const ErrorUtil = {
       displayMessage: 'Invalid Email Address',
       debugMessage: 'Please enter a valid email address'
     }
+  },
+  PLAN_USAGE_ERRORS: {
+    USAGE_LIMIT_EXCEEDED: {
+      displayMessage: 'The app is unable to respond. Try again or reach out to the team for help.',
+      debugMessage:
+        'You have gone over the limits of your Reown plan. Upgrade now in order to resume normal service.'
+    }
   }
 }
