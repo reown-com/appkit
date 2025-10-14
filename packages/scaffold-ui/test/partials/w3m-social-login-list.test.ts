@@ -2,6 +2,7 @@ import { fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
+  ApiController,
   type AuthConnector,
   ChainController,
   ConnectorController,
@@ -34,6 +35,15 @@ describe('W3mSocialLoginList', () => {
   })
 
   it('should call executeSocialLogin when a social button is clicked', async () => {
+    vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+      ...ApiController.state,
+      plan: {
+        tier: 'enteprise',
+        isAboveRpcLimit: false,
+        isAboveMauLimit: false
+      }
+    })
+
     const executeSocialLoginSpy = vi.spyOn(SocialLoginUtils, 'executeSocialLogin')
     vi.spyOn(CoreHelperUtil, 'isPWA').mockReturnValue(false)
 
@@ -88,5 +98,140 @@ describe('W3mSocialLoginList', () => {
     await element.updateComplete
 
     expect(googleButton.hasAttribute('disabled')).toBe(false)
+  })
+
+  it('should redirect to UsageExceeded view when starter tier user exceeds limits on social login click', async () => {
+    vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+      ...ApiController.state,
+      plan: {
+        tier: 'starter',
+        isAboveRpcLimit: true,
+        isAboveMauLimit: false
+      }
+    })
+
+    const pushSpy = vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+
+    vi.spyOn(CoreHelperUtil, 'isPWA').mockReturnValue(false)
+
+    const element: W3mSocialLoginList = await fixture(
+      html`<w3m-social-login-list></w3m-social-login-list>`
+    )
+    await element.updateComplete
+
+    const googleButton = HelpersUtil.querySelect(element, 'wui-list-social[name="google"]')
+    expect(googleButton).toBeTruthy()
+
+    await googleButton.click()
+
+    expect(pushSpy).toHaveBeenCalledWith('UsageExceeded')
+  })
+
+  it('should redirect to UsageExceeded view when starter tier user exceeds MAU limit on social login click', async () => {
+    vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+      ...ApiController.state,
+      plan: {
+        tier: 'starter',
+        isAboveRpcLimit: false,
+        isAboveMauLimit: true
+      }
+    })
+
+    const pushSpy = vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+
+    vi.spyOn(CoreHelperUtil, 'isPWA').mockReturnValue(false)
+
+    const element: W3mSocialLoginList = await fixture(
+      html`<w3m-social-login-list></w3m-social-login-list>`
+    )
+    await element.updateComplete
+
+    const githubButton = HelpersUtil.querySelect(element, 'wui-list-social[name="github"]')
+    expect(githubButton).toBeTruthy()
+
+    await githubButton.click()
+
+    expect(pushSpy).toHaveBeenCalledWith('UsageExceeded')
+  })
+
+  it('should NOT redirect to UsageExceeded view when enterprise tier user clicks social login', async () => {
+    vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+      ...ApiController.state,
+      plan: {
+        tier: 'enteprise',
+        isAboveRpcLimit: false,
+        isAboveMauLimit: false
+      }
+    })
+
+    const pushSpy = vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+
+    vi.spyOn(CoreHelperUtil, 'isPWA').mockReturnValue(false)
+
+    const element: W3mSocialLoginList = await fixture(
+      html`<w3m-social-login-list></w3m-social-login-list>`
+    )
+    await element.updateComplete
+
+    const googleButton = HelpersUtil.querySelect(element, 'wui-list-social[name="google"]')
+    expect(googleButton).toBeTruthy()
+
+    await googleButton.click()
+
+    expect(pushSpy).not.toHaveBeenCalledWith('UsageExceeded')
+  })
+
+  it('should NOT redirect to UsageExceeded view when starter tier user has NOT exceeded limits', async () => {
+    vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+      ...ApiController.state,
+      plan: {
+        tier: 'starter',
+        isAboveRpcLimit: false,
+        isAboveMauLimit: false
+      }
+    })
+
+    const pushSpy = vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+
+    vi.spyOn(CoreHelperUtil, 'isPWA').mockReturnValue(false)
+
+    const element: W3mSocialLoginList = await fixture(
+      html`<w3m-social-login-list></w3m-social-login-list>`
+    )
+    await element.updateComplete
+
+    const githubButton = HelpersUtil.querySelect(element, 'wui-list-social[name="github"]')
+    expect(githubButton).toBeTruthy()
+
+    await githubButton.click()
+
+    expect(pushSpy).not.toHaveBeenCalledWith('UsageExceeded')
+  })
+
+  it('should redirect to UsageExceeded view when starter tier user exceeds both RPC and MAU limits', async () => {
+    vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+      ...ApiController.state,
+      plan: {
+        tier: 'starter',
+        isAboveRpcLimit: true,
+        isAboveMauLimit: true
+      }
+    })
+
+    const pushSpy = vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+
+    vi.spyOn(CoreHelperUtil, 'isPWA').mockReturnValue(false)
+
+    const element: W3mSocialLoginList = await fixture(
+      html`<w3m-social-login-list></w3m-social-login-list>`
+    )
+    await element.updateComplete
+
+    const googleButton = HelpersUtil.querySelect(element, 'wui-list-social[name="google"]')
+    expect(googleButton).toBeTruthy()
+
+    await googleButton.click()
+
+    expect(pushSpy).toHaveBeenCalledWith('UsageExceeded')
   })
 })

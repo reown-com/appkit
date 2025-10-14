@@ -8,7 +8,9 @@ import {
   ChainController,
   ConnectorController,
   type ConnectorTypeOrder,
+  type ConnectorWithProviders,
   CoreHelperUtil,
+  RouterController,
   StorageUtil
 } from '@reown/appkit-controllers'
 
@@ -204,5 +206,250 @@ describe('W3mConnectorList', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(element.shadowRoot?.querySelectorAll('w3m-list-wallet').length).toBe(0)
+  })
+
+  describe('Usage exceeded redirect logic', () => {
+    it('should redirect to UsageExceeded view when free tier user exceeds limits on multiChain connector click', async () => {
+      vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+        ...ApiController.state,
+        excludedWallets: [],
+        plan: {
+          tier: 'starter',
+          isAboveRpcLimit: true,
+          isAboveMauLimit: false
+        } as any
+      })
+
+      const pushSpy = vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+
+      const multiChainConnector = {
+        id: 'multiChain1',
+        name: 'MultiChain Wallet',
+        type: 'MULTI_CHAIN',
+        chain: 'eip155'
+      }
+
+      vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+        ...ConnectorController.state,
+        connectors: [multiChainConnector] as ConnectorWithProviders[]
+      })
+
+      vi.spyOn(ConnectorUtil, 'getConnectorsByType').mockReturnValue({
+        ...MOCK_CONNECTORS,
+        multiChain: [multiChainConnector] as ConnectorWithProviders[]
+      })
+
+      vi.spyOn(ConnectorUtil, 'getConnectorTypeOrder').mockReturnValue(['injected'])
+
+      const element: W3mConnectorList = await fixture(
+        html`<w3m-connector-list .connectors=${[multiChainConnector]}></w3m-connector-list>`
+      )
+
+      await element.updateComplete
+
+      const connectorElement = element.shadowRoot?.querySelector(
+        '[data-testid="wallet-selector-multichain1"]'
+      ) as HTMLElement
+
+      expect(connectorElement).toBeTruthy()
+      connectorElement?.click()
+
+      expect(pushSpy).toHaveBeenCalledWith('UsageExceeded')
+    })
+
+    it('should redirect to UsageExceeded view when free tier user exceeds limits on injected connector click', async () => {
+      vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+        ...ApiController.state,
+        excludedWallets: [],
+        plan: {
+          tier: 'none',
+          isAboveRpcLimit: false,
+          isAboveMauLimit: true
+        }
+      })
+
+      const pushSpy = vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+
+      const injectedConnector = {
+        id: 'injected1',
+        name: 'Injected Wallet',
+        type: 'INJECTED',
+        chain: 'eip155'
+      }
+
+      vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+        ...ConnectorController.state,
+        connectors: [injectedConnector] as ConnectorWithProviders[]
+      })
+
+      vi.spyOn(ConnectorUtil, 'getConnectorsByType').mockReturnValue({
+        ...MOCK_CONNECTORS,
+        injected: [injectedConnector] as ConnectorWithProviders[]
+      })
+
+      vi.spyOn(ConnectorUtil, 'getConnectorTypeOrder').mockReturnValue(['injected'])
+
+      const element: W3mConnectorList = await fixture(
+        html`<w3m-connector-list .connectors=${[injectedConnector]}></w3m-connector-list>`
+      )
+
+      await element.updateComplete
+
+      const connectorElement = element.shadowRoot?.querySelector(
+        '[data-testid="wallet-selector-injected1"]'
+      ) as HTMLElement
+
+      expect(connectorElement).toBeTruthy()
+      connectorElement?.click()
+
+      expect(pushSpy).toHaveBeenCalledWith('UsageExceeded')
+    })
+
+    it('should redirect to UsageExceeded view when free tier user exceeds limits on announced connector click', async () => {
+      vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+        ...ApiController.state,
+        excludedWallets: [],
+        plan: {
+          tier: 'starter',
+          isAboveRpcLimit: true,
+          isAboveMauLimit: true
+        }
+      })
+
+      const pushSpy = vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+
+      const announcedConnector = {
+        id: 'announced1',
+        name: 'Announced Wallet',
+        type: 'ANNOUNCED',
+        chain: 'eip155',
+        info: { rdns: 'com.announced.wallet' }
+      }
+
+      vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+        ...ConnectorController.state,
+        connectors: [announcedConnector] as ConnectorWithProviders[]
+      })
+
+      vi.spyOn(ConnectorUtil, 'getConnectorsByType').mockReturnValue({
+        ...MOCK_CONNECTORS,
+        announced: [announcedConnector] as ConnectorWithProviders[]
+      })
+
+      vi.spyOn(ConnectorUtil, 'getConnectorTypeOrder').mockReturnValue(['injected'])
+
+      const element: W3mConnectorList = await fixture(
+        html`<w3m-connector-list .connectors=${[announcedConnector]}></w3m-connector-list>`
+      )
+
+      await element.updateComplete
+
+      const connectorElement = element.shadowRoot?.querySelector(
+        '[data-testid="wallet-selector-announced1"]'
+      ) as HTMLElement
+
+      expect(connectorElement).toBeTruthy()
+      connectorElement?.click()
+
+      expect(pushSpy).toHaveBeenCalledWith('UsageExceeded')
+    })
+
+    it('should NOT redirect to UsageExceeded view when paid tier user clicks connector', async () => {
+      vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+        ...ApiController.state,
+        excludedWallets: [],
+        plan: {
+          tier: 'enteprise',
+          isAboveRpcLimit: false,
+          isAboveMauLimit: false
+        }
+      })
+
+      const pushSpy = vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+
+      const multiChainConnector = {
+        id: 'multiChain1',
+        name: 'MultiChain Wallet',
+        type: 'MULTI_CHAIN',
+        chain: 'eip155'
+      }
+
+      vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+        ...ConnectorController.state,
+        connectors: [multiChainConnector] as ConnectorWithProviders[]
+      })
+
+      vi.spyOn(ConnectorUtil, 'getConnectorsByType').mockReturnValue({
+        ...MOCK_CONNECTORS,
+        multiChain: [multiChainConnector] as ConnectorWithProviders[]
+      })
+
+      vi.spyOn(ConnectorUtil, 'getConnectorTypeOrder').mockReturnValue(['injected'])
+
+      const element: W3mConnectorList = await fixture(
+        html`<w3m-connector-list .connectors=${[multiChainConnector]}></w3m-connector-list>`
+      )
+
+      await element.updateComplete
+
+      const connectorElement = element.shadowRoot?.querySelector(
+        '[data-testid="wallet-selector-multichain1"]'
+      ) as HTMLElement
+
+      expect(connectorElement).toBeTruthy()
+      connectorElement?.click()
+
+      expect(pushSpy).toHaveBeenCalledWith('ConnectingMultiChain', expect.any(Object))
+      expect(pushSpy).not.toHaveBeenCalledWith('UsageExceeded')
+    })
+
+    it('should NOT redirect to UsageExceeded view when free tier user has NOT exceeded limits', async () => {
+      vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+        ...ApiController.state,
+        excludedWallets: [],
+        plan: {
+          tier: 'starter',
+          isAboveRpcLimit: false,
+          isAboveMauLimit: false
+        }
+      })
+
+      const pushSpy = vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+
+      const injectedConnector = {
+        id: 'injected1',
+        name: 'Injected Wallet',
+        type: 'INJECTED',
+        chain: 'eip155'
+      }
+
+      vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+        ...ConnectorController.state,
+        connectors: [injectedConnector] as ConnectorWithProviders[]
+      })
+
+      vi.spyOn(ConnectorUtil, 'getConnectorsByType').mockReturnValue({
+        ...MOCK_CONNECTORS,
+        injected: [injectedConnector] as ConnectorWithProviders[]
+      })
+
+      vi.spyOn(ConnectorUtil, 'getConnectorTypeOrder').mockReturnValue(['injected'])
+
+      const element: W3mConnectorList = await fixture(
+        html`<w3m-connector-list .connectors=${[injectedConnector]}></w3m-connector-list>`
+      )
+
+      await element.updateComplete
+
+      const connectorElement = element.shadowRoot?.querySelector(
+        '[data-testid="wallet-selector-injected1"]'
+      ) as HTMLElement
+
+      expect(connectorElement).toBeTruthy()
+      connectorElement?.click()
+
+      expect(pushSpy).toHaveBeenCalledWith('ConnectingExternal', expect.any(Object))
+      expect(pushSpy).not.toHaveBeenCalledWith('UsageExceeded')
+    })
   })
 })
