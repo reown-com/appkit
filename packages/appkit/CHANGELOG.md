@@ -1,5 +1,32 @@
 # @reown/appkit
 
+## 1.8.10
+
+### Patch Changes
+
+- [#5148](https://github.com/reown-com/appkit/pull/5148) [`bdce2c8`](https://github.com/reown-com/appkit/commit/bdce2c8dfa58bed7bd5f8114574c2db751e9bdd3) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where social login did not work with wallet button
+
+- [#5160](https://github.com/reown-com/appkit/pull/5160) [`561a215`](https://github.com/reown-com/appkit/commit/561a215f4455a87a5993aa4850e553bc596d75e7) Thanks [@devin-ai-integration](https://github.com/apps/devin-ai-integration)! - Improve QR code rendering performance and responsiveness:
+
+  - Remove 200ms timeout delay from QR code display for faster connection handshake
+  - Remove fixed sizing calculations and resize listener for better performance
+  - Use percentage-based SVG sizing (width="100%" height="100%") with viewBox for responsive scaling
+  - Set QR code generation to use fixed 500px matrix size for consistent quality
+
+- [#5164](https://github.com/reown-com/appkit/pull/5164) [`a492e24`](https://github.com/reown-com/appkit/commit/a492e24bf9e721b289d7a259303a72c65a0d7d7d) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue in Leather wallet where requests would target mainnet instead of testnet
+
+- [#5161](https://github.com/reown-com/appkit/pull/5161) [`17ea7b3`](https://github.com/reown-com/appkit/commit/17ea7b32d4cbfca07cc74eac7ee98bf640fadec2) Thanks [@enesozturk](https://github.com/enesozturk)! - Adds chain specific token suggestion on swap screen
+
+- Updated dependencies [[`bdce2c8`](https://github.com/reown-com/appkit/commit/bdce2c8dfa58bed7bd5f8114574c2db751e9bdd3), [`561a215`](https://github.com/reown-com/appkit/commit/561a215f4455a87a5993aa4850e553bc596d75e7), [`069ccbf`](https://github.com/reown-com/appkit/commit/069ccbfe215838a523beb362ec18c8a45ab92709), [`17ea7b3`](https://github.com/reown-com/appkit/commit/17ea7b32d4cbfca07cc74eac7ee98bf640fadec2)]:
+  - @reown/appkit-controllers@1.8.10
+  - @reown/appkit-utils@1.8.10
+  - @reown/appkit-common@1.8.10
+  - @reown/appkit-pay@1.8.10
+  - @reown/appkit-polyfills@1.8.10
+  - @reown/appkit-scaffold-ui@1.8.10
+  - @reown/appkit-ui@1.8.10
+  - @reown/appkit-wallet@1.8.10
+
 ## 1.8.9
 
 ### Patch Changes

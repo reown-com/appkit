@@ -1,6 +1,6 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 
-import { type AppKit, type AppKitOptions, CoreHelperUtil, type Provider } from '@reown/appkit'
+import { type AppKitOptions, CoreHelperUtil, type Provider } from '@reown/appkit'
 import { type ChainNamespace, ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
@@ -156,19 +156,14 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
   }
 
-  override async syncConnectors(_options?: AppKitOptions, appKit?: AppKit) {
-    function getActiveNetwork() {
-      return appKit?.getCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)
-    }
-
+  override async syncConnectors(_options?: AppKitOptions) {
     WalletStandardConnector.watchWallets({
       callback: this.addConnector.bind(this),
       requestedChains: this.networks
     })
 
     const satsConnectConnectors = await SatsConnectConnector.getWallets({
-      requestedChains: this.networks,
-      getActiveNetwork
+      requestedChains: this.networks
     })
 
     this.addConnector(
@@ -187,8 +182,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
     const okxConnector = OKXConnector.getWallet({
       requestedChains: this.networks,
-      getActiveNetwork,
-      requestedCaipNetworkId: getActiveNetwork()?.caipNetworkId
+      requestedCaipNetworkId: ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)
+        ?.caipNetworkId
     })
 
     if (okxConnector) {
@@ -198,8 +193,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     UNISAT_CONNECTORS.forEach(connectorParams => {
       const connector = UnisatConnector.getWallet({
         ...connectorParams,
-        requestedChains: this.networks,
-        getActiveNetwork
+        requestedChains: this.networks
       })
       if (connector) {
         this.addConnector(connector)
