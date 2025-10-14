@@ -74,6 +74,8 @@ export async function connectSocial(
         provider: socialProvider
       })
 
+      console.log('>> uri', uri)
+
       if (!uri) {
         popupWindow?.close()
         throw new Error('Could not fetch the social redirect uri')

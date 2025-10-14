@@ -62,10 +62,7 @@ export class W3mConnectingSocialView extends LitElement {
     const abortController = ErrorUtil.EmbeddedWalletAbortController
 
     abortController.signal.addEventListener('abort', () => {
-      if (this.socialWindow) {
-        this.socialWindow.close()
-        ChainController.setAccountProp('socialWindow', undefined, ChainController.state.activeChain)
-      }
+      this.closeSocialWindow()
     })
     this.unsubscribe.push(
       ...[
@@ -73,6 +70,7 @@ export class W3mConnectingSocialView extends LitElement {
           if (val) {
             this.socialProvider = val.socialProvider
             if (val.socialWindow) {
+              console.log('>> Social window', val.socialWindow)
               this.socialWindow = val.socialWindow
             }
 
@@ -115,8 +113,7 @@ export class W3mConnectingSocialView extends LitElement {
       })
     }
 
-    this.socialWindow?.close()
-    ChainController.setAccountProp('socialWindow', undefined, ChainController.state.activeChain)
+    this.closeSocialWindow()
   }
 
   // -- Render -------------------------------------------- //
@@ -155,21 +152,30 @@ export class W3mConnectingSocialView extends LitElement {
     return html`<wui-loading-thumbnail radius=${radius * 9}></wui-loading-thumbnail>`
   }
 
+  private parseURLError(uri: string) {
+    try {
+      const url = new URL(uri)
+      const error = url.searchParams.get('error')
+      return error
+    } catch {
+      return null
+    }
+  }
+
   private handleSocialConnection = async (event: MessageEvent) => {
     if (event.data?.resultUri) {
       if (event.origin === ConstantsUtil.SECURE_SITE_ORIGIN) {
         window.removeEventListener('message', this.handleSocialConnection, false)
         try {
           if (this.authConnector && !this.connecting) {
-            if (this.socialWindow) {
-              this.socialWindow.close()
-              ChainController.setAccountProp(
-                'socialWindow',
-                undefined,
-                ChainController.state.activeChain
-              )
-            }
             this.connecting = true
+            const error = this.parseURLError(event.data.resultUri)
+            if (error) {
+              this.handleSocialError(error)
+
+              return
+            }
+            this.closeSocialWindow()
             this.updateMessage()
             const uri = event.data.resultUri as string
 
@@ -180,6 +186,8 @@ export class W3mConnectingSocialView extends LitElement {
                 properties: { provider: this.socialProvider }
               })
             }
+
+            console.log('>> Connecting external', uri)
             await ConnectionController.connectExternal(
               {
                 id: this.authConnector.id,
@@ -190,6 +198,7 @@ export class W3mConnectingSocialView extends LitElement {
             )
 
             if (this.socialProvider) {
+              console.log('>> Setting connected social provider', this.socialProvider)
               StorageUtil.setConnectedSocialProvider(this.socialProvider)
 
               EventsController.sendEvent({
@@ -200,6 +209,7 @@ export class W3mConnectingSocialView extends LitElement {
             }
           }
         } catch (error) {
+          console.log('>> Error connecting external', error)
           this.error = true
           this.updateMessage()
           if (this.socialProvider) {
@@ -249,6 +259,26 @@ export class W3mConnectingSocialView extends LitElement {
       this.message = 'Retrieving user data'
     } else {
       this.message = 'Connect in the provider window'
+    }
+  }
+
+  private handleSocialError(error: string) {
+    this.error = true
+    this.updateMessage()
+    if (this.socialProvider) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SOCIAL_LOGIN_ERROR',
+        properties: { provider: this.socialProvider, message: error }
+      })
+    }
+    this.closeSocialWindow()
+  }
+
+  private closeSocialWindow() {
+    if (this.socialWindow) {
+      this.socialWindow.close()
+      ChainController.setAccountProp('socialWindow', undefined, ChainController.state.activeChain)
     }
   }
 }
