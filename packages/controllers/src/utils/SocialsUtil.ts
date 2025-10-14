@@ -74,7 +74,6 @@ export async function connectSocial(
         provider: socialProvider
       })
 
-      console.log('>> uri', uri)
 
       if (!uri) {
         popupWindow?.close()
