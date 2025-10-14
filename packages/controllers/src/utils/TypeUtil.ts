@@ -1040,14 +1040,6 @@ type PayEvent =
         message?: string
       }
     }
-  | {
-      type: 'track'
-      address?: string
-      event: 'USAGE_EXCEEDED'
-      properties: {
-        tier: Tier
-      }
-    }
 
 // Onramp Types
 export type DestinationWallet = {
@@ -1249,10 +1241,6 @@ export type RemoteFeatures = {
   payWithExchange?: boolean
   payments?: boolean
   onramp?: OnRampProvider[] | false
-}
-
-export type Usage = {
-  appName: string
 }
 
 export type Features = {
