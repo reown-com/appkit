@@ -70,7 +70,6 @@ export class W3mConnectingSocialView extends LitElement {
           if (val) {
             this.socialProvider = val.socialProvider
             if (val.socialWindow) {
-              console.log('>> Social window', val.socialWindow)
               this.socialWindow = val.socialWindow
             }
 
@@ -187,7 +186,6 @@ export class W3mConnectingSocialView extends LitElement {
               })
             }
 
-            console.log('>> Connecting external', uri)
             await ConnectionController.connectExternal(
               {
                 id: this.authConnector.id,
@@ -198,7 +196,6 @@ export class W3mConnectingSocialView extends LitElement {
             )
 
             if (this.socialProvider) {
-              console.log('>> Setting connected social provider', this.socialProvider)
               StorageUtil.setConnectedSocialProvider(this.socialProvider)
 
               EventsController.sendEvent({
@@ -209,7 +206,6 @@ export class W3mConnectingSocialView extends LitElement {
             }
           }
         } catch (error) {
-          console.log('>> Error connecting external', error)
           this.error = true
           this.updateMessage()
           if (this.socialProvider) {
