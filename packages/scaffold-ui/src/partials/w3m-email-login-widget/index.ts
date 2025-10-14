@@ -74,7 +74,7 @@ export class W3mEmailLoginWidget extends LitElement {
     const hasConnection = ConnectionController.hasAnyConnection(ConstantsUtil.CONNECTOR_ID.AUTH)
 
     const isFreeTier = this.plan.tier === 'starter' || this.plan.tier === 'none'
-    const hasExceededLimit = this.plan.isAboveRpcLimit || this.plan.isAboveMauLimit
+    const hasExceededLimit = this.plan.limits.isAboveRpcLimit || this.plan.limits.isAboveMauLimit
 
     const shouldRedirectToUsageExceededView = isFreeTier && hasExceededLimit
 

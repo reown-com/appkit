@@ -1044,7 +1044,9 @@ type PayEvent =
       type: 'track'
       address?: string
       event: 'USAGE_EXCEEDED'
-      properties: Plan
+      properties: {
+        tier: Tier
+      }
     }
 
 // Onramp Types
@@ -1428,7 +1430,9 @@ export type ApiGetProjectConfigResponse = {
 }
 
 export type ApiGetUsageResponse = {
-  planLimits: Plan
+  planLimits: {
+    tier: Tier
+  } & ProjectLimits
 }
 
 export type FeatureConfigMap = {
@@ -1502,10 +1506,9 @@ export type FeatureConfigMap = {
 
 export type FeatureKey = keyof FeatureConfigMap
 
-type Tier = 'starter' | 'pro' | 'enteprise' | 'none'
+export type Tier = 'none' | 'starter' | 'pro' | 'enteprise'
 
-export type Plan = {
-  tier: Tier
-  isAboveRpcLimit: false | true
-  isAboveMauLimit: true | false
+export type ProjectLimits = {
+  isAboveRpcLimit: boolean
+  isAboveMauLimit: boolean
 }

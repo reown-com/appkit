@@ -309,11 +309,11 @@ export class W3mModalBase extends LitElement {
 
   private checkPlanUsage() {
     const isFreeTier = this.plan.tier === 'starter' || this.plan.tier === 'none'
-    const hasExceededLimit = this.plan.isAboveRpcLimit || this.plan.isAboveMauLimit
+    const hasExceededLimit = this.plan.limits.isAboveRpcLimit || this.plan.limits.isAboveMauLimit
 
     if (isFreeTier && hasExceededLimit) {
-      AlertController.open(ErrorUtil.PLAN_USAGE_ERRORS.USAGE_LIMIT_EXCEEDED, 'error')
-      console.log(ErrorUtil.PLAN_USAGE_ERRORS.USAGE_LIMIT_EXCEEDED.debugMessage)
+      AlertController.open(ErrorUtil.ALERT_ERRORS.USAGE_LIMIT_EXCEEDED, 'error')
+      console.log(ErrorUtil.ALERT_ERRORS.USAGE_LIMIT_EXCEEDED.debugMessage)
     }
   }
 }

@@ -71,8 +71,10 @@ describe('W3mAllWalletsSearch', () => {
       explorerFilteredWallets: [],
       plan: {
         tier: 'starter',
-        isAboveRpcLimit: false,
-        isAboveMauLimit: false
+        limits: {
+          isAboveRpcLimit: false,
+          isAboveMauLimit: false
+        }
       }
     }
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue(mockState)
@@ -108,8 +110,10 @@ describe('W3mAllWalletsSearch', () => {
       explorerFilteredWallets: [],
       plan: {
         tier: 'starter',
-        isAboveRpcLimit: false,
-        isAboveMauLimit: false
+        limits: {
+          isAboveRpcLimit: false,
+          isAboveMauLimit: false
+        }
       }
     }
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue(mockState)

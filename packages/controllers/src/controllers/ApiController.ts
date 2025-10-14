@@ -16,7 +16,8 @@ import type {
   ApiGetUsageResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
-  Plan,
+  ProjectLimits,
+  Tier,
   WcWallet
 } from '../utils/TypeUtil.js'
 import { AssetController } from './AssetController.js'
@@ -53,7 +54,10 @@ export interface ApiControllerState {
   excludedWallets: { rdns?: string | null; name: string }[]
   isFetchingRecommendedWallets: boolean
   mobileFilteredOutWalletsLength?: number
-  plan: Plan
+  plan: {
+    tier: Tier
+    limits: ProjectLimits
+  }
 }
 
 interface PrefetchParameters {
@@ -85,8 +89,10 @@ const state = proxy<ApiControllerState>({
   explorerFilteredWallets: [],
   plan: {
     tier: 'none',
-    isAboveRpcLimit: true,
-    isAboveMauLimit: false
+    limits: {
+      isAboveRpcLimit: false,
+      isAboveMauLimit: false
+    }
   }
 })
 
@@ -179,11 +185,19 @@ export const ApiController = {
   async fetchUsage() {
     try {
       const response = await api.get<ApiGetUsageResponse>({
-        path: '/appkit/v1/usage',
+        path: '/internal/v1/project-limits',
         params: ApiController._getSdkProperties()
       })
 
-      ApiController.state.plan = response.planLimits
+      const { tier, isAboveMauLimit, isAboveRpcLimit } = response.planLimits
+
+      ApiController.state.plan = {
+        tier,
+        limits: {
+          isAboveRpcLimit,
+          isAboveMauLimit
+        }
+      }
     } catch (e) {
       console.warn('Failed to fetch usage', e)
     }

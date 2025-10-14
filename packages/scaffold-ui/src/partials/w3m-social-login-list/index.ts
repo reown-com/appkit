@@ -94,7 +94,7 @@ export class W3mSocialLoginList extends LitElement {
   // -- Private ------------------------------------------- //
   async onSocialClick(socialProvider?: SocialProvider) {
     const isFreeTier = this.plan.tier === 'starter' || this.plan.tier === 'none'
-    const hasExceededLimit = this.plan.isAboveRpcLimit || this.plan.isAboveMauLimit
+    const hasExceededLimit = this.plan.limits.isAboveRpcLimit || this.plan.limits.isAboveMauLimit
 
     const shouldRedirectToUsageExceededView = isFreeTier && hasExceededLimit
 

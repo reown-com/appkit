@@ -263,8 +263,10 @@ describe('W3mConnectorList', () => {
         excludedWallets: [],
         plan: {
           tier: 'none',
-          isAboveRpcLimit: false,
-          isAboveMauLimit: true
+          limits: {
+            isAboveRpcLimit: false,
+            isAboveMauLimit: true
+          }
         }
       })
 
@@ -311,8 +313,10 @@ describe('W3mConnectorList', () => {
         excludedWallets: [],
         plan: {
           tier: 'starter',
-          isAboveRpcLimit: true,
-          isAboveMauLimit: true
+          limits: {
+            isAboveRpcLimit: true,
+            isAboveMauLimit: true
+          }
         }
       })
 
@@ -360,8 +364,10 @@ describe('W3mConnectorList', () => {
         excludedWallets: [],
         plan: {
           tier: 'enteprise',
-          isAboveRpcLimit: false,
-          isAboveMauLimit: false
+          limits: {
+            isAboveRpcLimit: false,
+            isAboveMauLimit: false
+          }
         }
       })
 
@@ -409,8 +415,10 @@ describe('W3mConnectorList', () => {
         excludedWallets: [],
         plan: {
           tier: 'starter',
-          isAboveRpcLimit: false,
-          isAboveMauLimit: false
+          limits: {
+            isAboveRpcLimit: false,
+            isAboveMauLimit: false
+          }
         }
       })
 

@@ -39,8 +39,10 @@ describe('W3mSocialLoginList', () => {
       ...ApiController.state,
       plan: {
         tier: 'enteprise',
-        isAboveRpcLimit: false,
-        isAboveMauLimit: false
+        limits: {
+          isAboveRpcLimit: false,
+          isAboveMauLimit: false
+        }
       }
     })
 
@@ -105,8 +107,10 @@ describe('W3mSocialLoginList', () => {
       ...ApiController.state,
       plan: {
         tier: 'starter',
-        isAboveRpcLimit: true,
-        isAboveMauLimit: false
+        limits: {
+          isAboveRpcLimit: true,
+          isAboveMauLimit: false
+        }
       }
     })
 
@@ -132,8 +136,10 @@ describe('W3mSocialLoginList', () => {
       ...ApiController.state,
       plan: {
         tier: 'starter',
-        isAboveRpcLimit: false,
-        isAboveMauLimit: true
+        limits: {
+          isAboveRpcLimit: false,
+          isAboveMauLimit: true
+        }
       }
     })
 
@@ -159,8 +165,10 @@ describe('W3mSocialLoginList', () => {
       ...ApiController.state,
       plan: {
         tier: 'enteprise',
-        isAboveRpcLimit: false,
-        isAboveMauLimit: false
+        limits: {
+          isAboveRpcLimit: false,
+          isAboveMauLimit: false
+        }
       }
     })
 
@@ -186,8 +194,10 @@ describe('W3mSocialLoginList', () => {
       ...ApiController.state,
       plan: {
         tier: 'starter',
-        isAboveRpcLimit: false,
-        isAboveMauLimit: false
+        limits: {
+          isAboveRpcLimit: false,
+          isAboveMauLimit: false
+        }
       }
     })
 
@@ -213,8 +223,10 @@ describe('W3mSocialLoginList', () => {
       ...ApiController.state,
       plan: {
         tier: 'starter',
-        isAboveRpcLimit: true,
-        isAboveMauLimit: true
+        limits: {
+          isAboveRpcLimit: true,
+          isAboveMauLimit: true
+        }
       }
     })
 

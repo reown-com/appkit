@@ -94,8 +94,10 @@ const mockApiState: ApiControllerState = {
   explorerFilteredWallets: [],
   plan: {
     tier: 'starter',
-    isAboveRpcLimit: false,
-    isAboveMauLimit: false
+    limits: {
+      isAboveRpcLimit: false,
+      isAboveMauLimit: false
+    }
   }
 }
 
