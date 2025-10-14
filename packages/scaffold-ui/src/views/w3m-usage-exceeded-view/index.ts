@@ -13,12 +13,8 @@ import styles from './styles.js'
 export class W3mUsageExceededView extends LitElement {
   public static override styles = styles
 
-  // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
-
   public constructor() {
     super()
-    this.unsubscribe.push(...[])
   }
 
   // -- Render -------------------------------------------- //

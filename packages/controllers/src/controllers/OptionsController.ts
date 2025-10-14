@@ -18,7 +18,7 @@ import type {
   SdkVersion,
   SocialProvider,
   Tokens,
-   WalletFeature
+  WalletFeature
 } from '../utils/TypeUtil.js'
 
 // -- Types --------------------------------------------- //
