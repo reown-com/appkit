@@ -185,7 +185,7 @@ export const ApiController = {
   async fetchUsage() {
     try {
       const response = await api.get<ApiGetUsageResponse>({
-        path: '/internal/v1/project-limits',
+        path: '/appkit/v1/project-limits',
         params: ApiController._getSdkProperties()
       })
 
