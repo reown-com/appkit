@@ -117,7 +117,6 @@ export const ConstantsUtil = {
     'ENS',
     'MATIC',
     'OP',
-
     'METAL',
     'DAI',
     'CHAMP',
@@ -149,6 +148,10 @@ export const ConstantsUtil = {
     'DE',
     'WNT'
   ],
+  SUGGESTED_TOKENS_BY_CHAIN: {
+    // Arbitrum One
+    'eip155:42161': ['USD₮0']
+  },
   BALANCE_SUPPORTED_CHAINS: [
     CommonConstantsUtil.CHAIN.EVM,
     CommonConstantsUtil.CHAIN.SOLANA

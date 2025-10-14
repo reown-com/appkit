@@ -18,19 +18,25 @@ export const OptionsUtil = {
       return socials as T
     }
 
+    let filteredSocials = socials
+
     if (CoreHelperUtil.isTelegram()) {
       if (CoreHelperUtil.isIos()) {
-        return socials.filter(s => s !== 'google')
+        filteredSocials = filteredSocials.filter(s => s !== 'google')
       }
       if (CoreHelperUtil.isMac()) {
-        return socials.filter(s => s !== 'x')
+        filteredSocials = filteredSocials.filter(s => s !== 'x')
       }
       if (CoreHelperUtil.isAndroid()) {
-        return socials.filter(s => !['facebook', 'x'].includes(s))
+        filteredSocials = filteredSocials.filter(s => !['facebook', 'x'].includes(s))
       }
     }
 
-    return socials
+    if (CoreHelperUtil.isMobile()) {
+      filteredSocials = filteredSocials.filter(s => s !== 'facebook')
+    }
+
+    return filteredSocials
   },
   isSocialsEnabled() {
     return (

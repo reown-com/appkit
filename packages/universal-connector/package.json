@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-universal-connector",
-  "version": "1.8.9",
+  "version": "1.8.10",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/index.js",
@@ -40,8 +40,8 @@
   "dependencies": {
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
-    "@walletconnect/universal-provider": "2.22.2",
-    "@walletconnect/types": "2.22.2",
+    "@walletconnect/universal-provider": "2.22.3",
+    "@walletconnect/types": "2.22.3",
     "bs58": "6.0.0"
   },
   "devDependencies": {
