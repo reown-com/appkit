@@ -153,8 +153,8 @@ export class W3mConnectingSocialView extends LitElement {
 
   private parseURLError(uri: string) {
     try {
-      const url = new URL(uri)
-      const error = url.searchParams.get('error')
+      const errorIndex = uri.indexOf('error=')
+      const error = uri.substring(errorIndex)
       return error
     } catch {
       return null
@@ -268,6 +268,7 @@ export class W3mConnectingSocialView extends LitElement {
         properties: { provider: this.socialProvider, message: error }
       })
     }
+
     this.closeSocialWindow()
   }
 
