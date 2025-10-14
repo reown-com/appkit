@@ -138,33 +138,46 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
 
       try {
         await connector.disconnect()
-      } catch {
-        // Ignore disconnect errors
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('TonAdapter:disconnect - error', error)
       }
 
-      // Update AppKit state and emit events
-      this.onDisconnect(connector.id)
+      this.removeProviderListeners(connector.id)
+      this.deleteConnection(connector.id)
+
+      if (this.connections.length === 0) {
+        this.emit('disconnect')
+      } else {
+        this.emitFirstAvailableConnection()
+      }
 
       return { connections: connection ? [connection] : [] }
     }
 
-    // No id: disconnect all
-    const removed = await Promise.all(
-      this.connections.map(async c => {
-        const conn = this.connectors.find(cc => cc.id === c.connectorId)
-        try {
-          await conn?.disconnect()
-        } catch {
-          // Ignore disconnect errors
+    return this.disconnectAll()
+  }
+
+  private async disconnectAll() {
+    const connections = await Promise.all(
+      this.connections.map(async connection => {
+        const connector = this.connectors.find(c =>
+          HelpersUtil.isLowerCaseMatch(c.id, connection.connectorId)
+        )
+
+        if (!connector) {
+          throw new Error('Connector not found')
         }
 
-        return c
+        await this.disconnect({
+          id: connector.id
+        })
+
+        return connection
       })
     )
-    this.clearConnections(true)
-    this.emit('disconnect')
 
-    return { connections: removed }
+    return { connections }
   }
 
   override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
@@ -212,6 +225,12 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     const chainToCaipNetworkIdMap = {
       '-239': 'ton:mainnet',
       '-3': 'ton:testnet'
+    }
+
+    const isTestnet = params.chainId === '-3'
+
+    if (isTestnet) {
+      return { balance: '0', symbol: 'TON' }
     }
 
     const balance = await BlockchainApiController.fetchTonBalance({

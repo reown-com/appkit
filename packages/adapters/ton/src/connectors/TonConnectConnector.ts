@@ -5,12 +5,19 @@ import { CoreHelperUtil } from '@reown/appkit-controllers'
 import type { TonConnector, TonWalletInfo, TonWalletInfoInjectable } from '@reown/appkit-utils/ton'
 
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
-import { getTonConnectManifestUrl } from '../utils/TonConnectUtil.js'
+import {
+  assertSendTransactionSupported,
+  assertSignDataSupported,
+  connectInjected,
+  getJSBridgeKey,
+  getTonConnect,
+  normalizeBase64
+} from '../utils/TonConnectUtil.js'
 import { toUserFriendlyAddress, userFriendlyToRawAddress } from '../utils/TonWalletUtils.js'
 
 export class TonConnectConnector implements TonConnector {
   public readonly chain = 'ton'
-  public readonly type = 'EXTERNAL'
+  public readonly type = 'INJECTED'
 
   private readonly requestedChains: CaipNetwork[]
   private readonly wallet: TonWalletInfo
@@ -49,7 +56,7 @@ export class TonConnectConnector implements TonConnector {
 
   async connect(): Promise<string> {
     if ('jsBridgeKey' in this.wallet && this.wallet.jsBridgeKey) {
-      const address = await this.connectInjected(this.wallet.jsBridgeKey)
+      const address = await connectInjected(this.wallet.jsBridgeKey)
       this.currentAddress = toUserFriendlyAddress(address)
 
       if (!address) {
@@ -65,72 +72,45 @@ export class TonConnectConnector implements TonConnector {
   }
 
   async disconnect(): Promise<void> {
-    if ((this.wallet as TonWalletInfoInjectable)?.jsBridgeKey) {
-      await this.disconnectInjected((this.wallet as TonWalletInfoInjectable).jsBridgeKey)
+    try {
+      if (!CoreHelperUtil.isClient()) {
+        return
+      }
 
-      return
+      const jsBridgeKey = getJSBridgeKey(this.wallet as TonWalletInfoInjectable)
+      const wallet = getTonConnect(jsBridgeKey)
+
+      if (!wallet) {
+        return
+      }
+
+      if (typeof wallet.disconnect === 'function') {
+        await wallet.disconnect()
+      }
+
+      if (typeof wallet.send === 'function') {
+        const id = String(CoreHelperUtil.getUUID())
+        wallet.send({ method: 'disconnect', params: [], id })
+      }
+
+      this.clearSession()
+    } catch {
+      // Silently fail disconnect - wallet may already be disconnected
     }
-
-    this.clearSession()
-  }
-
-  async sendMessage(params: TonConnector.SendMessageParams): Promise<string> {
-    if (!('jsBridgeKey' in this.wallet) || !this.wallet.jsBridgeKey) {
-      throw new Error('TON sendMessage over bridge not implemented')
-    }
-
-    if (!CoreHelperUtil.isClient()) {
-      throw new Error('Window is not available')
-    }
-
-    const wallet = window[this.wallet.jsBridgeKey as keyof Window]?.tonconnect
-
-    if (!wallet || typeof wallet.send !== 'function') {
-      throw new Error('Injected wallet not available')
-    }
-
-    const tx = (params || {}) as {
-      validUntil?: number
-      from?: string
-      network?: string
-      messages?: Array<{
-        address?: string
-        amount?: string | number
-        payload?: string
-        stateInit?: string
-        extraCurrency?: unknown
-      }>
-    }
-    const prepared = {
-      valid_until: tx.validUntil ?? Math.floor(Date.now() / 1000) + 60,
-      from: tx.from,
-      network: tx.network,
-      messages: (tx.messages || []).map(m => ({
-        address: m.address,
-        amount: String(m.amount ?? '0'),
-        payload: this.normalizeBase64(m.payload),
-        stateInit: this.normalizeBase64(m.stateInit),
-        extra_currency: m.extraCurrency
-      }))
-    }
-
-    const res = await wallet.send({ method: 'sendTransaction', params: [prepared] })
-
-    return res?.boc as string
   }
 
   async signData(params: TonConnector.SignDataParams): Promise<string> {
     if (!CoreHelperUtil.isClient()) {
-      throw new Error('Window is not available')
+      return Promise.resolve('')
     }
 
-    const jsBridgeKey = (this.wallet as TonWalletInfoInjectable)?.jsBridgeKey || undefined
+    const jsBridgeKey = getJSBridgeKey(this.wallet as TonWalletInfoInjectable)
 
     if (!jsBridgeKey) {
       throw new Error('TON signData over bridge not implemented')
     }
 
-    const wallet = window[jsBridgeKey as keyof Window]?.tonconnect
+    const wallet = getTonConnect(jsBridgeKey)
 
     if (!wallet || typeof wallet.send !== 'function') {
       throw new Error('Injected wallet not available')
@@ -148,26 +128,130 @@ export class TonConnectConnector implements TonConnector {
 
     let normalized: Record<string, unknown> = {}
     if (base?.type === 'cell') {
-      normalized = { ...base, cell: this.normalizeBase64(base.cell) }
+      normalized = { ...base, cell: normalizeBase64(base.cell) }
     } else if (base?.type === 'binary') {
-      normalized = { ...base, bytes: this.normalizeBase64(base.bytes) }
+      normalized = { ...base, bytes: normalizeBase64(base.bytes) }
     } else {
       normalized = { ...base, network: base.network || '-239' }
     }
 
-    try {
-      const res = await wallet.send({
-        method: 'signData',
-        params: [JSON.stringify(normalized)],
-        id: CoreHelperUtil.getUUID()
-      })
+    const requestedType = String(normalized['type'] || '') as 'text' | 'binary' | 'cell'
 
-      return (res?.signature || res?.result?.signature) as string
-    } catch {
-      // Wallet rejected or error occurred
+    if (requestedType === 'text' || requestedType === 'binary' || requestedType === 'cell') {
+      try {
+        assertSignDataSupported(this.wallet as TonWalletInfoInjectable, [requestedType])
+      } catch (e: unknown) {
+        const errorMessage =
+          e instanceof Error ? e.message : `Wallet does not support SignData type: ${requestedType}`
+        throw new Error(errorMessage)
+      }
     }
 
-    return ''
+    const res = await wallet.send({
+      method: 'signData',
+      params: [JSON.stringify(normalized)],
+      id: CoreHelperUtil.getUUID()
+    })
+
+    return res?.signature || (res?.result as { signature?: string } | undefined)?.signature || ''
+  }
+
+  async sendMessage(params: TonConnector.SendMessageParams): Promise<string> {
+    if (!CoreHelperUtil.isClient()) {
+      return Promise.resolve('')
+    }
+
+    if (!('jsBridgeKey' in this.wallet) || !this.wallet.jsBridgeKey) {
+      throw new Error('TON sendMessage over bridge not implemented')
+    }
+
+    const wallet = getTonConnect(this.wallet.jsBridgeKey)
+
+    if (!wallet || typeof wallet.send !== 'function') {
+      throw new Error(
+        `TonConnectConnector.sendMessage: Injected wallet "${this.wallet.jsBridgeKey}" not available`
+      )
+    }
+
+    const tx = (params || {}) as {
+      validUntil?: number
+      from?: string
+      network?: string
+      messages?: Array<{
+        address?: string
+        amount?: string | number
+        payload?: string
+        stateInit?: string
+        extraCurrency?: Record<number, string> | undefined
+      }>
+    }
+
+    const messages = (tx.messages || []).map((m, i) => {
+      const amountStr = String(m?.amount ?? '')
+      if (!/^[0-9]+$/u.test(amountStr)) {
+        throw new Error(`messages[${i}].amount must be a string of digits`)
+      }
+      if (!m?.address) {
+        throw new Error(`messages[${i}].address is required (user-friendly)`)
+      }
+
+      return {
+        address: m.address,
+        amount: amountStr,
+        payload: normalizeBase64(m.payload),
+        stateInit: normalizeBase64(m.stateInit),
+        extra_currency: m.extraCurrency
+      }
+    })
+
+    if (messages.length === 0) {
+      throw new Error('messages must contain at least 1 item')
+    }
+
+    const hasExtraCurrencies = (tx.messages || []).some(
+      m => m?.extraCurrency && Object.keys(m.extraCurrency).length > 0
+    )
+    try {
+      assertSendTransactionSupported(this.wallet, messages.length, hasExtraCurrencies)
+    } catch (e: unknown) {
+      const errorMessage =
+        e instanceof Error ? e.message : 'Wallet does not support SendTransaction'
+      throw new Error(errorMessage)
+    }
+
+    const connectorInstance = this as unknown as { account?: { address?: string; chain?: string } }
+    const from = tx.from ?? connectorInstance.account?.address ?? undefined
+    const network = tx.network ?? connectorInstance.account?.chain ?? undefined
+
+    // User-friendly addresses for prepared transaction
+    const prepared = {
+      valid_until: tx.validUntil ?? Math.floor(Date.now() / 1000) + 60,
+      network,
+      from,
+      messages: (tx.messages || []).map(m => ({
+        address: m.address,
+        amount: String(m.amount ?? '0')
+      }))
+    }
+
+    const req = {
+      method: 'sendTransaction',
+      params: [JSON.stringify(prepared)],
+      id: CoreHelperUtil.getUUID()
+    }
+    const res = await wallet.send(req)
+
+    if (res?.error) {
+      throw new Error(res.error.message || `sendTransaction failed (code ${res.error.code})`)
+    }
+
+    const boc = res?.result ?? res?.boc
+
+    if (!boc) {
+      throw new Error('No boc in response')
+    }
+
+    return boc as string
   }
 
   async switchNetwork(): Promise<void> {
@@ -177,128 +261,5 @@ export class TonConnectConnector implements TonConnector {
   // -- Private ------------------------------------------------------ //
   private clearSession() {
     this.currentAddress = undefined
-  }
-
-  private async disconnectInjected(jsBridgeKey: string) {
-    if (!CoreHelperUtil.isClient()) {
-      return
-    }
-
-    const wallet = window[jsBridgeKey as keyof Window]?.tonconnect
-
-    if (!wallet) {
-      return
-    }
-
-    if (typeof wallet.disconnect === 'function') {
-      await wallet.disconnect()
-    } else if (typeof wallet.send === 'function') {
-      await wallet.send({ method: 'disconnect', params: [] })
-    }
-  }
-
-  private createConnectRequest(manifestUrl: string, tonProof?: string) {
-    const items: Array<{ name: 'ton_addr' } | { name: 'ton_proof'; payload: string }> = [
-      { name: 'ton_addr' }
-    ]
-
-    if (tonProof) {
-      items.push({ name: 'ton_proof', payload: tonProof })
-    }
-
-    return { manifestUrl, items }
-  }
-
-  private async connectInjected(jsBridgeKey: string, tonProof?: string): Promise<string> {
-    if (!CoreHelperUtil.isClient()) {
-      throw new Error('Window is not available')
-    }
-
-    const wallet = window[jsBridgeKey as keyof Window]?.tonconnect
-
-    if (!wallet) {
-      throw new Error(`Injected wallet "${jsBridgeKey}" not available`)
-    }
-
-    const manifestUrl = getTonConnectManifestUrl()
-    const request = this.createConnectRequest(manifestUrl, tonProof)
-
-    try {
-      if (typeof wallet.restoreConnection === 'function') {
-        await wallet.restoreConnection()
-      }
-    } catch {
-      // Restore connection failed, continue with fresh connection
-    }
-
-    const PROTOCOL_VERSION = 2
-
-    // Prefer awaiting connect result; if wallet only emits via listen, fallback to listener
-    if (typeof wallet.connect === 'function') {
-      try {
-        const res = await wallet.connect(PROTOCOL_VERSION, request)
-        const addrItem = res?.payload?.items?.find?.(
-          (i: { name?: string }) => i?.name === 'ton_addr'
-        ) as { address?: string } | undefined
-        if (res?.event === 'connect' && addrItem?.address) {
-          return addrItem.address
-        }
-      } catch {
-        // Direct connect failed, will try event-based approach
-      }
-    }
-
-    // Fallback: subscribe then call connect and resolve on first 'connect'
-    return await new Promise<string>((resolve, reject) => {
-      let unsub: (() => void) | undefined = undefined
-
-      function onEvent(evt: {
-        event?: string
-        payload?: { items?: Array<{ name?: string; address?: string }>; message?: string }
-      }) {
-        if (evt?.event === 'connect') {
-          const addrItem = evt?.payload?.items?.find?.(i => i?.name === 'ton_addr')
-          if (addrItem?.address) {
-            try {
-              unsub?.()
-            } catch {
-              // Cleanup failed, continue
-            }
-            resolve(addrItem.address)
-          }
-        } else if (evt?.event === 'connect_error') {
-          try {
-            unsub?.()
-          } catch {
-            // Cleanup failed, continue
-          }
-          reject(new Error(evt?.payload?.message || 'TON connect error'))
-        }
-      }
-
-      if (typeof wallet.listen === 'function') {
-        unsub = wallet.listen(onEvent)
-      }
-
-      try {
-        wallet.connect(PROTOCOL_VERSION, request)
-      } catch (err) {
-        try {
-          unsub?.()
-        } catch {
-          // Cleanup failed, continue
-        }
-        reject(err)
-      }
-    })
-  }
-
-  private normalizeBase64(s?: string): string | undefined {
-    if (typeof s !== 'string') {
-      return undefined
-    }
-    const pad = s.length + ((4 - (s.length % 4)) % 4)
-
-    return s.replace(/-/gu, '+').replace(/_/gu, '/').padEnd(pad, '=')
   }
 }

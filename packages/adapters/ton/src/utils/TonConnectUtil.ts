@@ -9,6 +9,15 @@ import type {
   TonWalletInfoInjectable
 } from '@reown/appkit-utils/ton'
 
+import type {
+  InjectedWalletApi,
+  TonConnectEvent,
+  TonConnectResponse,
+  TonWalletFeature
+} from './TonConnectTypeUtils.js'
+
+const TONCONNECT_WALLETS_LIST_URL = 'https://config.ton.org/wallets-v2.json'
+
 export function getTonConnectManifestUrl(): string {
   const base = 'https://api.reown.com/ton/v1/manifest'
   const { metadata, projectId } = OptionsController.state
@@ -30,18 +39,162 @@ export function getTonConnectManifestUrl(): string {
 }
 
 // -- Internal cache ------------------------------------------------------------ //
-
 let cachePromise: Promise<TonWalletInfoDTO[]> | null = null
 let cacheCreatedAt: number | null = null
 
 // -- TonConnect SDK Utils -------------------------------- //
+/**
+ * Connect method implementation for injected wallets derived from TonConnect SDK.
+ * @param jsBridgeKey
+ * @param tonProof
+ * @returns
+ */
+export async function connectInjected(jsBridgeKey: string, tonProof?: string): Promise<string> {
+  if (!CoreHelperUtil.isClient()) {
+    return Promise.resolve('')
+  }
+
+  const wallet = getTonConnect(jsBridgeKey)
+
+  if (!wallet) {
+    throw new Error(
+      `TonConnectConnector.connectInjected: Injected wallet "${jsBridgeKey}" not available`
+    )
+  }
+
+  const manifestUrl = getTonConnectManifestUrl()
+  const request = createConnectRequest(manifestUrl, tonProof)
+  const PROTOCOL_VERSION = 2
+
+  try {
+    if (typeof wallet.restoreConnection === 'function') {
+      const restored = await wallet.restoreConnection()
+
+      if (restored?.event === 'connect') {
+        const addr = restored?.payload?.items?.find?.(
+          (i: { name?: string; address?: string }) => i?.name === 'ton_addr'
+        )?.address
+
+        if (addr) {
+          return addr
+        }
+      }
+    }
+  } catch {
+    // Silently fail restoration and continue with normal connection flow
+  }
+
+  return await new Promise<string>((resolve, reject) => {
+    let isSettled = false
+    let unsubscribe: (() => void) | undefined = undefined
+    const timeoutMs = 12000
+    const t = setTimeout(() => {
+      if (isSettled) {
+        return
+      }
+      isSettled = true
+      try {
+        unsubscribe?.()
+      } catch {
+        // Ignore unsubscribe errors
+      }
+      reject(new Error('TON connect timeout'))
+    }, timeoutMs)
+
+    function finish(fn: () => void): void {
+      if (isSettled) {
+        return
+      }
+      isSettled = true
+      clearTimeout(t)
+      try {
+        unsubscribe?.()
+      } catch {
+        // Ignore unsubscribe errors
+      }
+      fn()
+    }
+
+    function onEvent(evt: TonConnectEvent): void {
+      if (evt?.event === 'connect') {
+        const addr = evt?.payload?.items?.find?.(i => i?.name === 'ton_addr')?.address
+        if (addr) {
+          finish(() => resolve(addr))
+        }
+      } else if (evt?.event === 'connect_error') {
+        const msg = evt?.payload?.message || 'TON connect error'
+        finish(() => reject(new Error(msg)))
+      }
+    }
+
+    if (typeof wallet.listen === 'function') {
+      unsubscribe = wallet.listen(onEvent)
+    }
+
+    try {
+      /*
+       * Call connect once; rely on either promise resolve or event
+       */
+      const promise =
+        typeof wallet.connect === 'function' ? wallet.connect(PROTOCOL_VERSION, request) : undefined
+
+      if (promise && typeof promise.then === 'function') {
+        promise
+          .then((res: TonConnectResponse) => {
+            if (isSettled) {
+              return
+            }
+            if (res?.event === 'connect') {
+              const addr = res?.payload?.items?.find?.(
+                (i: { name?: string; address?: string }) => i?.name === 'ton_addr'
+              )?.address
+              if (addr) {
+                finish(() => resolve(addr))
+              }
+            } else if (res?.event === 'connect_error') {
+              const msg = res?.payload?.message || 'TON connect error'
+              finish(() => reject(new Error(msg)))
+            }
+          })
+          .catch(() => {
+            /*
+             * Some wallets throw but still emit an event; let the listener handle it unless timeout
+             * Do not finish here to allow event-based completion
+             */
+          })
+      }
+    } catch (err) {
+      finish(() => reject(err))
+    }
+  })
+}
+
+export function createConnectRequest(manifestUrl: string, tonProof?: string) {
+  const items: Array<{ name: 'ton_addr' } | { name: 'ton_proof'; payload: string }> = [
+    { name: 'ton_addr' }
+  ]
+
+  if (tonProof) {
+    items.push({ name: 'ton_proof', payload: tonProof })
+  }
+
+  return { manifestUrl, items }
+}
+
+export function normalizeBase64(s?: string): string | undefined {
+  if (typeof s !== 'string') {
+    return undefined
+  }
+  const pad = s.length + ((4 - (s.length % 4)) % 4)
+
+  return s.replace(/-/gu, '+').replace(/_/gu, '/').padEnd(pad, '=')
+}
 
 /**
  * Fetch list of TON wallets (remote + injected) and merge them.
  * This function does not depend on any external SDKs.
  */
 export async function getWallets(params?: {
-  /** Custom source for wallets list JSON. Default: https://config.ton.org/wallets-v2.json */
   sourceUrl?: string
   /** Optional in-memory cache TTL in milliseconds */
   cacheTTLMs?: number
@@ -206,13 +359,7 @@ export function getCurrentlyInjectedWallets(): TonWalletInfoInjectable[] {
 }
 
 // -- Implementation ------------------------------------------------------------ //
-
-async function fetchWalletsListDTO(params?: {
-  sourceUrl?: string
-  cacheTTLMs?: number
-}): Promise<TonWalletInfoDTO[]> {
-  const source = params?.sourceUrl ?? 'https://config.ton.org/wallets-v2.json'
-
+async function fetchWalletsListDTO(params?: { cacheTTLMs?: number }): Promise<TonWalletInfoDTO[]> {
   if (
     params?.cacheTTLMs &&
     cachePromise &&
@@ -225,7 +372,7 @@ async function fetchWalletsListDTO(params?: {
   if (!cachePromise) {
     cachePromise = (async () => {
       try {
-        const res = await fetch(source, { credentials: 'omit' })
+        const res = await fetch(TONCONNECT_WALLETS_LIST_URL, { credentials: 'omit' })
         if (!res.ok) {
           throw new Error(`HTTP ${res.status}`)
         }
@@ -238,8 +385,7 @@ async function fetchWalletsListDTO(params?: {
 
         return valid
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.warn('[TonWalletsUtil] failed to fetch wallets list:', err)
+        console.warn('TonConnectConnector: failed to fetch wallets list', err)
 
         return [] as TonWalletInfoDTO[]
       }
@@ -322,4 +468,94 @@ function isJSBridgeWithMetadata(value: unknown): value is {
   } catch {
     return false
   }
+}
+
+function getWalletFeatures(wallet: TonWalletInfoInjectable): TonWalletFeature[] | undefined {
+  const features = wallet?.features
+
+  return Array.isArray(features) ? features : undefined
+}
+
+export function assertSendTransactionSupported(
+  wallet: TonWalletInfoInjectable,
+  requiredMessagesNumber: number,
+  requireExtraCurrencies: boolean
+): void {
+  const features = getWalletFeatures(wallet)
+
+  if (!features) {
+    return
+  }
+
+  const hasDeprecatedSupport = features.includes?.('SendTransaction')
+  const st = features.find?.(
+    (f: TonWalletFeature) => f && typeof f === 'object' && f.name === 'SendTransaction'
+  )
+
+  if (!hasDeprecatedSupport && !st) {
+    throw new Error("Wallet doesn't support SendTransaction feature.")
+  }
+
+  if (requireExtraCurrencies) {
+    if (
+      !st ||
+      typeof st === 'string' ||
+      st.name !== 'SendTransaction' ||
+      !st.extraCurrencySupported
+    ) {
+      throw new Error(
+        'Wallet is not able to handle such SendTransaction request. Extra currencies support is required.'
+      )
+    }
+  }
+
+  if (
+    st &&
+    typeof st !== 'string' &&
+    st.name === 'SendTransaction' &&
+    typeof st.maxMessages === 'number'
+  ) {
+    if (st.maxMessages < requiredMessagesNumber) {
+      throw new Error(
+        `Wallet is not able to handle such SendTransaction request. Max support messages number is ${st.maxMessages}, but ${requiredMessagesNumber} is required.`
+      )
+    }
+  }
+}
+
+export function assertSignDataSupported(
+  wallet: TonWalletInfoInjectable,
+  requiredTypes: Array<'text' | 'binary' | 'cell'>
+): void {
+  const features = getWalletFeatures(wallet)
+
+  if (!features) {
+    return
+  }
+
+  const sd = features.find?.(
+    (f: TonWalletFeature) => f && typeof f === 'object' && f.name === 'SignData'
+  )
+  if (!sd || typeof sd === 'string' || sd.name !== 'SignData') {
+    throw new Error("Wallet doesn't support SignData feature.")
+  }
+
+  const walletTypes: string[] = Array.isArray(sd.types) ? sd.types : []
+  const unsupported = requiredTypes.filter(t => !walletTypes.includes(t))
+
+  if (unsupported.length) {
+    throw new Error(`Wallet doesn't support required SignData types: ${unsupported.join(', ')}.`)
+  }
+}
+
+export function getJSBridgeKey(wallet: TonWalletInfoInjectable): string | undefined {
+  return wallet?.jsBridgeKey
+}
+
+export function getTonConnect(jsBridgeKey: string | undefined): InjectedWalletApi | undefined {
+  if (!jsBridgeKey) {
+    return undefined
+  }
+
+  return window[jsBridgeKey as keyof Window]?.tonconnect as InjectedWalletApi | undefined
 }

@@ -171,11 +171,6 @@ export const multichainSdkOptions: SdkOption[] = [
     title: 'Basic',
     link: '/appkit?name=multichain-no-adapters',
     description: 'Configuration with no adapters enabled for AppKit'
-  },
-  {
-    title: 'TON (experimental)',
-    link: '/appkit?name=ton',
-    description: 'Configuration using TON adapter'
   }
 ]
 
@@ -229,6 +224,14 @@ export const bitcoinSdkOptions: SdkOption[] = [
     title: 'Wallet Button',
     link: '/appkit?name=bitcoin-wallet-button',
     description: 'Configuration using bitcoin with wallet buttons'
+  }
+]
+
+export const tonSdkOptions: SdkOption[] = [
+  {
+    title: 'Default',
+    link: '/appkit?name=ton',
+    description: 'Basic configuration using bitcoin as a driving library'
   }
 ]
 

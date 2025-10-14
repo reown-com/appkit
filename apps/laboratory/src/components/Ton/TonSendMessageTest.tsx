@@ -13,7 +13,7 @@ export function TonSendMessageTest() {
   const toast = useChakraToast()
   const { address, isConnected } = useAppKitAccount({ namespace: 'ton' })
   const { walletProvider } = useAppKitProvider<TonConnector>('ton')
-  const [to, setTo] = useState('EQBBJBB3HagsujBqVfqeDUPJ0kXjgTPLWPFFffuNXNiJL0aA')
+  const [to, setTo] = useState('UQA2A5SpYmHjygKewBWilkSc7twv1eTBuHOkWlUOLoXGV9Jg')
   // 0.02 TON in nanotons
   const [amount, setAmount] = useState('20000000')
   const [boc, setBoc] = useState<string | undefined>()
