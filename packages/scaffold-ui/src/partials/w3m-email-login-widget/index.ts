@@ -7,6 +7,7 @@ import type { Ref } from 'lit/directives/ref.js'
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
   AlertController,
+  ApiController,
   ChainController,
   ConnectionController,
   ConnectorController,
@@ -44,12 +45,15 @@ export class W3mEmailLoginWidget extends LitElement {
 
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
+  @state() private plan = ApiController.state.plan
+
   public constructor() {
     super()
     this.unsubscribe.push(
       OptionsController.subscribeKey('remoteFeatures', val => {
         this.remoteFeatures = val
-      })
+      }),
+      ApiController.subscribeKey('plan', val => (this.plan = val))
     )
   }
 
@@ -69,6 +73,11 @@ export class W3mEmailLoginWidget extends LitElement {
   public override render() {
     const hasConnection = ConnectionController.hasAnyConnection(ConstantsUtil.CONNECTOR_ID.AUTH)
 
+    const isFreeTier = this.plan.tier === 'starter' || this.plan.tier === 'none'
+    const hasExceededLimit = this.plan.isAboveRpcLimit || this.plan.isAboveMauLimit
+
+    const shouldRedirectToUsageExceededView = isFreeTier && hasExceededLimit
+
     return html`
       <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
         <wui-email-input
@@ -76,7 +85,7 @@ export class W3mEmailLoginWidget extends LitElement {
           .disabled=${this.loading}
           @inputChange=${this.onEmailInputChange.bind(this)}
           tabIdx=${ifDefined(this.tabIdx)}
-          ?disabled=${hasConnection}
+          ?disabled=${hasConnection || shouldRedirectToUsageExceededView}
         >
         </wui-email-input>
 
