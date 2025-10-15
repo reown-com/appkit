@@ -1,7 +1,10 @@
 import type { RpcEndpointMap, RpcSendTransferParams } from '@leather.io/rpc'
+import type { MessageSigningProtocols } from 'sats-connect'
 
+import { ConstantsUtil } from '@reown/appkit-common'
+import { ChainController } from '@reown/appkit-controllers'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { SatsConnectConnector } from './SatsConnectConnector.js'
 
@@ -17,8 +20,7 @@ export class LeatherConnector extends SatsConnectConnector {
 
     super({
       provider: connector.wallet,
-      requestedChains: connector.requestedChains,
-      getActiveNetwork: connector.getActiveNetwork
+      requestedChains: connector.requestedChains
     })
   }
 
@@ -85,14 +87,35 @@ export class LeatherConnector extends SatsConnectConnector {
     }
   }
 
-  private getNetwork(): LeatherConnector.Network {
-    const activeCaipNetwork = this.getActiveNetwork()
+  public override async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
+    const networkName = this.getNetwork()
+    const protocol = params.protocol?.toUpperCase() as MessageSigningProtocols
 
+    const res = await this.internalRequest('signMessage', {
+      ...params,
+      protocol,
+      // @ts-expect-error - expected LeatherWallet params don't match sats-connect
+      network: networkName.toLowerCase()
+    })
+
+    return res.signature
+  }
+
+  public override async switchNetwork(_caipNetworkId: string): Promise<void> {
+    // Leather wallet doesn't support network switching, we rely on AK's network switching
+    return Promise.resolve()
+  }
+
+  private getNetwork(): LeatherConnector.Network {
+    const activeCaipNetwork = ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)
     switch (activeCaipNetwork?.caipNetworkId) {
       case bitcoin.caipNetworkId:
         return 'mainnet'
       case bitcoinTestnet.caipNetworkId:
         return 'testnet'
+
+      case bitcoinSignet.caipNetworkId:
+        return 'signet'
       default:
         throw new Error('LeatherConnector: unsupported network')
     }

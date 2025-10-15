@@ -8,7 +8,7 @@ Sentry.init({
 
   sampleRate: 0.5,
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: 0.2,
+  tracesSampleRate: 0.01,
 
   ignoreErrors: [
     "Failed to execute 'transaction' on 'IDBDatabase': The database connection is closing.",
