@@ -223,39 +223,43 @@ export async function getWallets(params?: {
     }
 
     for (const [key, value] of entries) {
-      const obj = value as {
-        tonconnect?: { walletInfo?: unknown; isWalletBrowser?: boolean }
-      } | null
-      const hasTonconnect = Boolean(obj && typeof obj === 'object' && obj.tonconnect)
-      if (!hasTonconnect) {
-        // eslint-disable-next-line no-continue
-        continue
+      try {
+        const obj = value as {
+          tonconnect?: { walletInfo?: unknown; isWalletBrowser?: boolean }
+        } | null
+        const hasTonconnect = Boolean(obj && typeof obj === 'object' && obj.tonconnect)
+        if (!hasTonconnect) {
+          // eslint-disable-next-line no-continue
+          continue
+        }
+
+        const tc = obj?.tonconnect
+        const wi = tc?.walletInfo as TonWalletInfoDTO | undefined
+        const dto = remoteByKey.get(key)
+
+        const name = wi?.name || dto?.name || key
+        const appName = wi?.app_name || dto?.app_name || name
+        const imageUrl = wi?.image || dto?.image || ''
+        const aboutUrl = wi?.about_url || dto?.about_url || ''
+        const tondns = wi?.tondns || dto?.tondns
+        const platforms = wi?.platforms || dto?.platforms || []
+        const features = wi?.features || dto?.features
+
+        injected.push({
+          name,
+          appName,
+          imageUrl,
+          aboutUrl,
+          tondns,
+          platforms,
+          features,
+          jsBridgeKey: key,
+          injected: true,
+          embedded: Boolean(tc?.isWalletBrowser)
+        })
+      } catch {
+        // Skip cross-origin or inaccessible properties
       }
-
-      const tc = obj?.tonconnect
-      const wi = tc?.walletInfo as TonWalletInfoDTO | undefined
-      const dto = remoteByKey.get(key)
-
-      const name = wi?.name || dto?.name || key
-      const appName = wi?.app_name || dto?.app_name || name
-      const imageUrl = wi?.image || dto?.image || ''
-      const aboutUrl = wi?.about_url || dto?.about_url || ''
-      const tondns = wi?.tondns || dto?.tondns
-      const platforms = wi?.platforms || dto?.platforms || []
-      const features = wi?.features || dto?.features
-
-      injected.push({
-        name,
-        appName,
-        imageUrl,
-        aboutUrl,
-        tondns,
-        platforms,
-        features,
-        jsBridgeKey: key,
-        injected: true,
-        embedded: Boolean(tc?.isWalletBrowser)
-      })
     }
   }
 
@@ -272,9 +276,13 @@ export function isWalletInjected(jsBridgeKey: string): boolean {
   if (!w) {
     return false
   }
-  const obj = w[jsBridgeKey as keyof Window]
+  try {
+    const obj = w[jsBridgeKey as keyof Window]
 
-  return Boolean(isJSBridgeWithMetadata(obj))
+    return Boolean(isJSBridgeWithMetadata(obj))
+  } catch {
+    return false
+  }
 }
 
 /**
@@ -285,9 +293,13 @@ export function isInsideWalletBrowser(jsBridgeKey: string): boolean {
   if (!w) {
     return false
   }
-  const obj = w[jsBridgeKey as keyof Window]
+  try {
+    const obj = w[jsBridgeKey as keyof Window]
 
-  return isJSBridgeWithMetadata(obj) ? Boolean(obj.tonconnect.isWalletBrowser) : false
+    return isJSBridgeWithMetadata(obj) ? Boolean(obj.tonconnect.isWalletBrowser) : false
+  } catch {
+    return false
+  }
 }
 
 /**
@@ -318,28 +330,28 @@ export function getCurrentlyInjectedWallets(): TonWalletInfoInjectable[] {
         // eslint-disable-next-line no-console
         console.log('[TonWalletsUtil] Found tonconnect without walletInfo for key:', key)
       }
+
+      if (!isJSBridgeWithMetadata(value)) {
+        // eslint-disable-next-line no-continue
+        continue
+      }
+
+      const info = value.tonconnect.walletInfo
+      wallets.push({
+        name: info.name,
+        appName: info.app_name,
+        imageUrl: info.image,
+        aboutUrl: info.about_url,
+        tondns: info.tondns,
+        jsBridgeKey: key,
+        injected: true,
+        embedded: Boolean(value.tonconnect.isWalletBrowser),
+        platforms: info.platforms,
+        features: info.features
+      })
     } catch {
-      // Ignore errors when checking wallet info
+      // Skip cross-origin or inaccessible properties
     }
-
-    if (!isJSBridgeWithMetadata(value)) {
-      // eslint-disable-next-line no-continue
-      continue
-    }
-
-    const info = value.tonconnect.walletInfo
-    wallets.push({
-      name: info.name,
-      appName: info.app_name,
-      imageUrl: info.image,
-      aboutUrl: info.about_url,
-      tondns: info.tondns,
-      jsBridgeKey: key,
-      injected: true,
-      embedded: Boolean(value.tonconnect.isWalletBrowser),
-      platforms: info.platforms,
-      features: info.features
-    })
   }
   try {
     // eslint-disable-next-line no-console
