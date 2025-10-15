@@ -74,6 +74,9 @@ beforeAll(() => {
 })
 
 describe('ConnectionController', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks()
+  })
   it('should have valid default state', () => {
     ChainController.initialize(
       [
@@ -169,10 +172,27 @@ describe('ConnectionController', () => {
       noAdapters: false,
       isSwitchingNamespace: false
     })
-    const disconnectSpy = vi.spyOn(evmAdapter, 'disconnect')
+    vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+      new Map([
+        [chain, [{ connectorId: 'eip155-connector', accounts: [{ address: '0x123' }] }]],
+        [
+          CommonConstantsUtil.CHAIN.SOLANA,
+          [{ connectorId: 'solana-connector', accounts: [{ address: '0x123' }] }]
+        ],
+        [
+          CommonConstantsUtil.CHAIN.BITCOIN,
+          [{ connectorId: 'bip122-connector', accounts: [{ address: '0x123' }] }]
+        ]
+      ])
+    )
+    const disconnectEvmSpy = vi.spyOn(evmAdapter, 'disconnect')
+    const disconnectSolanaSpy = vi.spyOn(solanaAdapter, 'disconnect')
+    const disconnectBitcoinSpy = vi.spyOn(bip122Adapter, 'disconnect')
     await ConnectionController.disconnect()
 
-    expect(disconnectSpy).toHaveBeenCalled()
+    expect(disconnectEvmSpy).toHaveBeenCalled()
+    expect(disconnectSolanaSpy).toHaveBeenCalled()
+    expect(disconnectBitcoinSpy).toHaveBeenCalled()
   })
 
   it('should handle connectWalletConnect correctly on telegram or safari on ios', async () => {
