@@ -361,7 +361,6 @@ export abstract class AppKitBaseClient {
     ChainController.initialize(options.adapters ?? [], extendedNetworks)
     const network = this.getDefaultNetwork()
     if (network) {
-      console.log('<< setActiveCaipNetwork', network.caipNetworkId)
       ChainController.setActiveCaipNetwork(network)
     }
   }
@@ -1175,7 +1174,6 @@ export abstract class AppKitBaseClient {
     chain: ChainNamespace,
     shouldRefresh = false
   ) => {
-    console.trace('<< setCaipAddress', caipAddress)
     ChainController.setAccountProp('caipAddress', caipAddress, chain, shouldRefresh)
     ChainController.setAccountProp(
       'address',

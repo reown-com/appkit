@@ -92,7 +92,6 @@ export const HelpersUtil = {
    * @returns The chain namespace.
    */
   userChainIdToChainNamespace(chainId: number | string) {
-    console.log('<< userChainIdToChainNamespace', chainId)
     if (typeof chainId === 'number' || Number.isInteger(Number(chainId))) {
       return CommonConstantsUtil.CHAIN.EVM
     }

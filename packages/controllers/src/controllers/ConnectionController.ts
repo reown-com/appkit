@@ -1025,16 +1025,12 @@ const controller = {
       const currentAddress = ChainController.getAccountData(chainNamespace)?.address
       if (params.address.toLowerCase() !== currentAddress?.toLowerCase()) {
         const caipAddress = ChainController.getAccountData(chainNamespace)?.caipAddress
-        console.log('>> syncAcount caipAddress', caipAddress)
-        console.log('>> syncAcount chainIdToUse', chainIdToUse)
         const newChainId = chainIdToUse || caipAddress?.split(':')[1]
-        console.log('>> syncAcount newChainId', newChainId)
         if (!newChainId) {
           return
         }
 
         const newCaipAddress = `${chainNamespace}:${newChainId}:${params.address}`
-        console.log('>> syncAcount newCaipAddress', newCaipAddress)
         ConnectionController.setCaipAddress(newCaipAddress as CaipAddress, chainNamespace, true)
       }
 
