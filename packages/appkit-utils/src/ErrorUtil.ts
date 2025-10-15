@@ -82,12 +82,6 @@ export const ErrorUtil = {
       displayMessage: 'Rate Limited',
       debugMessage:
         'You have been rate limited while retrieving App Configuration. Please wait a few minutes and try again. Contact support if the issue persists.'
-    },
-    USAGE_LIMIT_EXCEEDED: {
-      code: 'APKT011',
-      displayMessage: 'The app is unable to respond. Try again or reach out to the team for help.',
-      debugMessage:
-        'You have gone over the limits of your Reown plan. Upgrade now in order to resume normal service.'
     }
   },
   ALERT_WARNINGS: {
