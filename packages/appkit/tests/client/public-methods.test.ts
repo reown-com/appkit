@@ -53,6 +53,7 @@ import {
 
 describe('Base Public methods', () => {
   beforeEach(() => {
+    vi.clearAllMocks()
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
