@@ -67,6 +67,7 @@ const controller = {
     if (shouldRedirectToUsageExceededView) {
       RouterController.reset('UsageExceeded')
       state.open = true
+
       return
     }
 
