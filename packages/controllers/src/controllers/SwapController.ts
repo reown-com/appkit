@@ -407,13 +407,24 @@ const controller = {
 
         return 0
       })
-      state.suggestedTokens = tokens.filter(token => {
-        if (ConstantsUtil.SWAP_SUGGESTED_TOKENS.includes(token.symbol)) {
-          return true
-        }
 
-        return false
-      })
+      const suggestedTokensByChain =
+        (activeCaipNetworkId &&
+          (ConstantsUtil.SUGGESTED_TOKENS_BY_CHAIN as Record<string, string[]>)?.[
+            activeCaipNetworkId
+          ]) ||
+        []
+      const suggestedTokenObjects = suggestedTokensByChain
+        .map(symbol => tokens.find(t => t.symbol === symbol))
+        .filter((t): t is SwapTokenWithBalance => Boolean(t))
+
+      const allSuggestedTokens = ConstantsUtil.SWAP_SUGGESTED_TOKENS || []
+      const allSuggestedTokenObjects = allSuggestedTokens
+        .map(symbol => tokens.find(t => t.symbol === symbol))
+        .filter((t): t is SwapTokenWithBalance => Boolean(t))
+        .filter(t => !suggestedTokenObjects.some(ct => ct.address === t.address))
+
+      state.suggestedTokens = [...suggestedTokenObjects, ...allSuggestedTokenObjects]
     } catch (error) {
       state.tokens = []
       state.popularTokens = []

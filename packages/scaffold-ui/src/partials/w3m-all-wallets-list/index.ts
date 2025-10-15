@@ -131,13 +131,14 @@ export class W3mAllWalletsList extends LitElement {
     const wallets = this.getWallets()
 
     return wallets.map(
-      wallet => html`
+      (wallet, index) => html`
         <w3m-all-wallets-list-item
           data-testid="wallet-search-item-${wallet.id}"
           @click=${() => this.onConnectWallet(wallet)}
           .wallet=${wallet}
           explorerId=${wallet.id}
           certified=${this.badge === 'certified'}
+          displayIndex=${index}
         ></w3m-all-wallets-list-item>
       `
     )

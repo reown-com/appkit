@@ -53,7 +53,20 @@ export function authConnector(parameters: AuthParameters) {
   }
 
   function parseChainId(chainId: string | number) {
-    return NetworkUtil.parseEvmChainId(chainId) || 1
+    const networks = ChainController.getCaipNetworks(ConstantsUtil.CHAIN.EVM)
+    let network = Number(NetworkUtil.parseEvmChainId(chainId))
+    if (!networks.some(n => String(n.id) === String(chainId))) {
+      const currentChainId =
+        ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.EVM)?.id || networks[0]?.id
+      if (currentChainId && Number.isInteger(Number(currentChainId))) {
+        network = Number(currentChainId)
+      }
+    }
+    if (!network) {
+      throw new Error('ChainId not found in networks')
+    }
+
+    return network
   }
 
   function getProviderInstance() {

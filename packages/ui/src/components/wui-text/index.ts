@@ -36,6 +36,8 @@ export class WuiText extends LitElement {
 
   @property() public lineClamp?: LineClamp = undefined
 
+  @property() public display: 'inline-flex' | 'inline' = 'inline-flex'
+
   // -- Render -------------------------------------------- //
   public override render() {
     const classes = {
@@ -45,6 +47,7 @@ export class WuiText extends LitElement {
     }
 
     this.style.cssText = `
+      display: ${this.display};
       --local-align: ${this.align};
       --local-color: ${
         this.color === 'inherit' ? 'inherit' : TEXT_VARS_BY_COLOR[this.color ?? 'primary']

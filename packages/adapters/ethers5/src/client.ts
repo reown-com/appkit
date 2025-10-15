@@ -350,7 +350,6 @@ export class Ethers5Adapter extends AdapterBlueprint {
   public async syncConnections({
     connectToFirstConnector
   }: AdapterBlueprint.SyncConnectionsParams) {
-    const caipNetworks = this.networks
     await Promise.all(
       this.connectors
         .filter(c => {
@@ -367,7 +366,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
               this.universalProvider as UniversalProvider,
               this.namespace as ChainNamespace
             )
-            const caipNetwork = caipNetworks.find(
+            const caipNetwork = this.networks.find(
               n =>
                 n.chainNamespace === this.namespace &&
                 n.id.toString() === accounts[0]?.chainId?.toString()
@@ -384,7 +383,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
             const { accounts, chainId } = await ConnectorUtil.fetchProviderData(connector)
 
             if (accounts.length > 0 && chainId) {
-              const caipNetwork = caipNetworks.find(
+              const caipNetwork = this.networks.find(
                 n => n.chainNamespace === this.namespace && n.id.toString() === chainId.toString()
               )
 

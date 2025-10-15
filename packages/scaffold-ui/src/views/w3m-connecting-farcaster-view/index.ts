@@ -72,6 +72,16 @@ export class W3mConnectingFarcasterView extends LitElement {
     super.disconnectedCallback()
     clearTimeout(this.timeout)
     window.removeEventListener('resize', this.forceUpdate)
+
+    // Track cancellation if user navigates away or closes modal without completing connection
+    const isConnected = ChainController.state.activeCaipAddress
+    if (!isConnected && this.socialProvider && (this.uri || this.loading)) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SOCIAL_LOGIN_CANCELED',
+        properties: { provider: this.socialProvider }
+      })
+    }
   }
 
   // -- Render -------------------------------------------- //

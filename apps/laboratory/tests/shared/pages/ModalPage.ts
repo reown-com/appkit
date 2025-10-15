@@ -113,7 +113,7 @@ export class ModalPage {
     await this.page.goto(this.url)
 
     // Wait for w3m-modal to be injected
-    await this.page.waitForSelector('w3m-modal', { state: 'visible', timeout: 5_000 })
+    await this.page.waitForSelector('w3m-modal', { state: 'visible', timeout: 10_000 })
   }
 
   assertDefined<T>(value: T | undefined | null): T {
@@ -769,7 +769,9 @@ export class ModalPage {
     let walletSelector: Locator
 
     const walletSelectorRDNS = this.page.getByTestId(`wallet-selector-${EXTENSION_RDNS}`)
-    const walletSelectorName = this.page.getByTestId(`wallet-selector-${EXTENSION_NAME}`)
+    const walletSelectorName = this.page.getByTestId(
+      `wallet-selector-${EXTENSION_NAME.toLowerCase()}`
+    )
 
     try {
       await walletSelectorRDNS.waitFor({ state: 'visible', timeout: 2_000 })

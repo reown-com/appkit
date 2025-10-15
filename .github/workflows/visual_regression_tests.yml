@@ -1,0 +1,52 @@
+name: Visual Regression Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  chromatic:
+    name: Run Chromatic
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm --filter "@reown/appkit-common" --filter "@reown/appkit-polyfills" --filter "@reown/appkit-wallet" --filter "@reown/appkit-controllers" --filter "@reown/appkit-ui" --filter "@reown/appkit-utils" --filter "@reown/appkit-scaffold-ui" build
+
+      - name: Run Chromatic
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          workingDir: apps/gallery
+          buildScriptName: build
+          onlyChanged: true
+          exitZeroOnChanges: false
+          exitOnceUploaded: true
+          zip: true
+
+      - name: Publish Chromatic URL
+        if: always()
+        run: echo "Chromatic build URL will appear in the checks above ☝️"

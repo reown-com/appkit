@@ -27,7 +27,6 @@ export const mockAppKit = {
   addConnector: vi.fn(),
   setCaipNetwork: vi.fn(),
   setLoading: vi.fn(),
-  setSmartAccountEnabledNetworks: vi.fn(),
   setAllAccounts: vi.fn(),
   setStatus: vi.fn(),
   setSmartAccountDeployed: vi.fn(),
@@ -46,7 +45,6 @@ export const mockAppKit = {
   getReownName: vi.fn().mockResolvedValue([]),
   fetchIdentity: vi.fn().mockResolvedValue(null),
   setClientId: vi.fn(),
-
   getConnectorImage: vi.fn(),
   handleUnsafeRPCRequest: vi.fn().mockImplementation(() => {
     if (mockAppKit.isOpen()) {

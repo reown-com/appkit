@@ -16,7 +16,6 @@ import {
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
   type Features,
-  type Metadata,
   PublicStateController,
   type RemoteFeatures,
   RouterController,
@@ -107,11 +106,15 @@ export class AppKit extends AppKitBaseClient {
     this.setUser({ ...(accountData?.user || {}), ...userWithOutSiwxData }, namespace)
     this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
     this.setPreferredAccountType(preferredAccountType, namespace)
-    await ConnectionController.syncAccount({
-      address: user.address,
-      chainId: user.chainId,
-      chainNamespace: namespace
-    })
+    await Promise.all([
+      this.syncAuthConnectorTheme(this.authProvider),
+      ConnectionController.syncAccount({
+        address: user.address,
+        chainId: user.chainId,
+        chainNamespace: namespace
+      })
+    ])
+
     this.setLoading(false, namespace)
   }
   private setupAuthConnectorListeners(provider: W3mFrameProvider) {
@@ -199,21 +202,12 @@ export class AppKit extends AppKitBaseClient {
     }
 
     const theme = ThemeController.getSnapshot()
-    const options = OptionsController.getSnapshot()
 
-    await Promise.all([
-      provider.syncDappData({
-        metadata: options.metadata as Metadata,
-        sdkVersion: options.sdkVersion,
-        projectId: options.projectId,
-        sdkType: options.sdkType
-      }),
-      provider.syncTheme({
-        themeMode: theme.themeMode,
-        themeVariables: theme.themeVariables,
-        w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
-      })
-    ])
+    await provider.syncTheme({
+      themeMode: theme.themeMode,
+      themeVariables: theme.themeVariables,
+      w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
+    })
   }
 
   private async syncAuthConnector(provider: W3mFrameProvider, chainNamespace: ChainNamespace) {
@@ -243,11 +237,6 @@ export class AppKit extends AppKitBaseClient {
     const { isConnected } = await provider.isConnected()
 
     if (chainNamespace && isAuthSupported && shouldSync) {
-      const enabledNetworks = await provider.getSmartAccountEnabledNetworks()
-      ChainController.setSmartAccountEnabledNetworks(
-        enabledNetworks?.smartAccountEnabledNetworks || [],
-        chainNamespace
-      )
       if (isConnected) {
         await provider.init()
         await this.syncAuthConnectorTheme(provider)
