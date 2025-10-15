@@ -123,7 +123,17 @@ export const SIWXUtil = {
 
       const message = siwxMessage.toString()
 
-      const signature = await siwx.signMessage(message)
+      let signature = ''
+      if (!siwx.signMessage) {
+        // Missing EW Modal Handling
+        signature = (await ConnectionController.signMessage(message)) || ''
+      } else {
+        signature = await siwx.signMessage({
+          message,
+          chainId: network.caipNetworkId,
+          accountAddress: address
+        })
+      }
 
       await siwx.addSession({
         data: siwxMessage,
@@ -521,9 +531,19 @@ export interface SIWXConfig {
    * - If the signature process fails or is cancelled it MUST throw an error.
    *
    * @param message string
+   * @param chainId CaipNetworkId
+   * @param accountAddress string
    * @returns string
    */
-  signMessage: (message: string) => Promise<string>
+  signMessage?: ({
+    message,
+    chainId,
+    accountAddress
+  }: {
+    message?: string
+    chainId?: string
+    accountAddress?: string
+  }) => Promise<string>
 
   /**
    * This method will be called to store a new single session.
