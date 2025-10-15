@@ -1025,7 +1025,7 @@ export class ModalPage {
   }
 
   async connectToExtensionMultichain(
-    chainNamespace: 'eip155' | 'solana' | 'bip122',
+    chainNamespace: ChainNamespace,
     modalOpen?: boolean,
     isAnotherNamespaceConnected?: boolean
   ) {

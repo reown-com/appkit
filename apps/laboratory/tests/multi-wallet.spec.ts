@@ -92,7 +92,6 @@ test('should sign with each wallet', async ({ library }) => {
   await modal.closeModal()
 
   const allAddresses = [...activeConnectionsAddresses, currentAddress]
-  console.log('>>> allAddresses', activeConnectionsAddresses, allAddresses)
 
   if (allAddresses.length !== 3) {
     throw new Error(`Expected 3 addresses but got ${allAddresses.length}`)
