@@ -651,6 +651,44 @@ const controller = {
     state.isSwitchingConnection = isSwitchingConnection
   },
 
+  async disconnectNamespace(namespace: ChainNamespace, initialDisconnect: boolean) {
+    const connections = state.connections.get(namespace) || []
+    const disconnectedConnectors = await Promise.all(
+      connections.map((connection: Connection) => {
+        return ConnectionController.disconnectConnector({
+          id: connection.connectorId,
+          namespace
+        })
+      })
+    )
+
+    if (disconnectedConnectors) {
+      disconnectedConnectors?.forEach(({ connections }: { connections: Connection[] }) => {
+        connections.forEach((connection: Connection) => {
+          StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
+        })
+      })
+    }
+
+    if (initialDisconnect) {
+      ChainController.resetAccount(namespace)
+      ChainController.resetNetwork(namespace)
+      StorageUtil.removeConnectedNamespace(namespace)
+      StorageUtil.addDisconnectedConnectorId(
+        ConnectorController.getConnectorId(namespace) || '',
+        namespace
+      )
+      ConnectorController.removeConnectorId(namespace)
+      ProviderController.resetChain(namespace)
+
+      ChainController.setAccountProp('user', null, namespace)
+      ConnectionController.setStatus('disconnected', namespace)
+      ConnectionController.setConnectedWalletInfo(null, namespace)
+    }
+
+    ModalController.setLoading(false, namespace)
+  },
+
   async disconnect(params: DisconnectParams = {}) {
     const { namespace: chainNamespace, initialDisconnect } = params || {}
 
@@ -670,32 +708,9 @@ const controller = {
        */
       const namespacesToDisconnect = shouldDisconnectAll ? namespaces : [chainNamespace]
 
-      const disconnectPromises = namespacesToDisconnect.map(async ns => {
-        const adapter = AdapterController.get(ns)
-        const disconnectData = await adapter?.disconnect()
-        if (disconnectData) {
-          if (isAuth) {
-            StorageUtil.deleteConnectedSocialProvider()
-          }
-
-          disconnectData?.connections.forEach((connection: Connection) => {
-            StorageUtil.addDisconnectedConnectorId(connection.connectorId, ns)
-          })
-        }
-
-        if (initialDisconnect) {
-          ChainController.resetAccount(ns)
-          ChainController.resetNetwork(ns)
-          StorageUtil.removeConnectedNamespace(ns)
-          StorageUtil.addDisconnectedConnectorId(ConnectorController.getConnectorId(ns) || '', ns)
-          ConnectorController.removeConnectorId(ns)
-          ProviderController.resetChain(ns)
-
-          ChainController.setAccountProp('user', null, ns)
-          ConnectionController.setStatus('disconnected', ns)
-          ConnectionController.setConnectedWalletInfo(null, ns)
-        }
-      })
+      const disconnectPromises = namespacesToDisconnect.map(ns =>
+        ConnectionController.disconnectNamespace(ns, Boolean(initialDisconnect))
+      )
 
       const disconnectResults = await Promise.allSettled(disconnectPromises)
 
@@ -749,8 +764,10 @@ const controller = {
         const result = await adapter?.disconnect({ id })
         disconnectedConnections.push(...(result?.connections || []))
       }
-
-      ModalController.setLoading(false, namespace)
+      const isAuth = id === CommonConstantsUtil.CONNECTOR_ID.AUTH
+      if (isAuth) {
+        StorageUtil.deleteConnectedSocialProvider()
+      }
 
       return { connections: disconnectedConnections }
     } catch (error) {

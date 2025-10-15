@@ -356,8 +356,9 @@ export class W3mAccountDefaultWidget extends LitElement {
       const hasConnections = connectionsByNamespace.length > 0
       const connectorId =
         this.namespace && ConnectorController.state.activeConnectorIds[this.namespace]
-      const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
-      if (isMultiWalletEnabled && connectorId && this.namespace) {
+      console.log('>> onDisconnect connectorId', connectorId)
+      console.log('>> onDisconnect namespace', this.namespace)
+      if (connectorId && this.namespace) {
         await ConnectionController.disconnectConnector({
           id: connectorId,
           namespace: this.namespace
@@ -365,11 +366,13 @@ export class W3mAccountDefaultWidget extends LitElement {
       } else {
         await ConnectionController.disconnect()
       }
+      const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
       if (hasConnections && isMultiWalletEnabled) {
         RouterController.push('ProfileWallets')
         SnackController.showSuccess('Wallet deleted')
       }
-    } catch {
+    } catch (e) {
+      console.log('<< onDisconnect error', e)
       EventsController.sendEvent({
         type: 'track',
         event: 'DISCONNECT_ERROR',
