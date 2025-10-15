@@ -1224,7 +1224,6 @@ export abstract class AppKitBaseClient {
     connections,
     chainNamespace
   ) => {
-    StorageUtil.setConnections(connections, chainNamespace)
     ConnectionController.setConnections(connections, chainNamespace)
   }
 

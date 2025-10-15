@@ -15,6 +15,7 @@ import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { getPreferredAccountType } from '../../utils/ChainControllerUtil.js'
 import { CoreHelperUtil } from '../../utils/CoreHelperUtil.js'
+import { StorageUtil } from '../../utils/StorageUtil.js'
 import type {
   AccountType,
   Connector as AppKitConnector,
@@ -200,6 +201,7 @@ export abstract class AdapterBlueprint<
       }
     )
 
+    StorageUtil.setConnections(this.availableConnections, this.namespace as ChainNamespace)
     this.emit('connections', this.availableConnections)
   }
 
@@ -212,6 +214,7 @@ export abstract class AdapterBlueprint<
       c => c.connectorId.toLowerCase() !== connectorId.toLowerCase()
     )
 
+    StorageUtil.deleteConnection(connectorId, this.namespace as ChainNamespace)
     this.emit('connections', this.availableConnections)
   }
 
@@ -221,7 +224,7 @@ export abstract class AdapterBlueprint<
    */
   protected clearConnections(emit = false) {
     this.availableConnections = []
-
+    StorageUtil.clearConnections(this.namespace as ChainNamespace)
     if (emit) {
       this.emit('connections', this.availableConnections)
     }
