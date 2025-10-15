@@ -12,8 +12,7 @@ if [ -f "test-results.json" ]; then
   jq -r '.suites[].specs[] | select(.ok == false) | . as $spec | .tests[] | "[\(.projectName)] › \($spec.file):\($spec.line):\($spec.column) › \($spec.title)\nError: \(.results[] | select(.status == "failed") | .error.message)\n"' test-results.json || echo "No failures found"
   cat test-results.json
 
-  echo "Moving test-results.json to ./test-results/"
-  mv test-results.json ./test-results/
+  cp test-results.json ./test-results/
 else
 
   echo "test-results.json not found"
