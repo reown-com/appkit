@@ -31,6 +31,15 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
       writable: true
     })
 
+    Object.defineProperty(globalThis, 'navigator', {
+      value: {
+        clipboard: {
+          readText: vi.fn(() => Promise.resolve(''))
+        }
+      },
+      writable: true
+    })
+
     Object.defineProperty(globalThis, 'window', {
       value: { location: { origin: 'https://appkit-lab.reown.com' } },
       writable: true

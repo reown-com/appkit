@@ -154,6 +154,7 @@ export abstract class AppKitBaseClient {
       await this.unSyncExistingConnection()
     }
     this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+    await ApiController.fetchUsage()
     OptionsController.setRemoteFeatures(this.remoteFeatures)
     if (this.remoteFeatures.onramp) {
       OnRampController.setOnrampProviders(this.remoteFeatures.onramp)

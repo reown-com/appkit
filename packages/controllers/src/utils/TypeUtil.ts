@@ -1415,6 +1415,12 @@ export type ApiGetProjectConfigResponse = {
   features: TypedFeatureConfig[]
 }
 
+export type ApiGetUsageResponse = {
+  planLimits: {
+    tier: Tier
+  } & ProjectLimits
+}
+
 export type FeatureConfigMap = {
   email: {
     apiFeatureName: 'social_login'
@@ -1485,3 +1491,10 @@ export type FeatureConfigMap = {
 }
 
 export type FeatureKey = keyof FeatureConfigMap
+
+export type Tier = 'none' | 'starter' | 'pro' | 'enteprise'
+
+export type ProjectLimits = {
+  isAboveRpcLimit: boolean
+  isAboveMauLimit: boolean
+}
