@@ -361,6 +361,7 @@ export abstract class AppKitBaseClient {
     ChainController.initialize(options.adapters ?? [], extendedNetworks)
     const network = this.getDefaultNetwork()
     if (network) {
+      console.log('<< setActiveCaipNetwork', network.caipNetworkId)
       ChainController.setActiveCaipNetwork(network)
     }
   }
@@ -606,8 +607,7 @@ export abstract class AppKitBaseClient {
         if (account) {
           ConnectionController.syncAccount({
             address: account,
-            chainId: caipNetwork.id,
-            chainNamespace
+            caipNetworkId: caipNetwork.caipNetworkId
           })
         }
       } else {
@@ -658,22 +658,21 @@ export abstract class AppKitBaseClient {
 
       const namespaceNetworkId = ChainController.getNetworkData(chainNamespace)?.caipNetwork?.id
       const syncAccountChainId = chainId || namespaceNetworkId
-
+      const caipNetworkId = `${chainNamespace}:${syncAccountChainId}` as const
       if (isActiveChain && syncAccountChainId) {
         ConnectionController.syncAccount({
           address,
-          chainId: syncAccountChainId,
-          chainNamespace
+          caipNetworkId
         })
       } else if (!isActiveChain && syncAccountChainId) {
-        ConnectionController.syncAccount({ address, chainId: syncAccountChainId, chainNamespace })
+        ConnectionController.syncAccount({ address, caipNetworkId })
         ConnectionController.updateBalance({
           address,
           chainId: syncAccountChainId,
           namespace: chainNamespace
         })
       } else {
-        ConnectionController.syncAccount({ address, chainId, chainNamespace })
+        ConnectionController.syncAccount({ address, caipNetworkId })
       }
 
       StorageUtil.addConnectedNamespace(chainNamespace)
@@ -882,7 +881,10 @@ export abstract class AppKitBaseClient {
 
       if (connection) {
         this.syncProvider({ ...connection, chainNamespace: namespace })
-        await ConnectionController.syncAccount({ ...connection, chainNamespace: namespace })
+        await ConnectionController.syncAccount({
+          address: connection.address,
+          caipNetworkId: caipNetwork.caipNetworkId
+        })
         ConnectionController.setStatus('connected', namespace)
         EventsController.sendEvent({
           type: 'track',
@@ -1034,17 +1036,16 @@ export abstract class AppKitBaseClient {
               activeNamespace &&
               ConnectorController.state.activeConnectorIds[activeNamespace] ===
                 ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
-
             if (
               activeNamespace === namespace &&
               (ChainController.state.noAdapters || isCurrentConnectorWalletConnect)
             ) {
               const account = accounts?.[0]
               if (account) {
+                const caipNetworkId = `${namespace}:${account.chainId}` as const
                 ConnectionController.syncAccount({
                   address: account.address,
-                  chainId: account.chainId,
-                  chainNamespace: account.chainNamespace
+                  caipNetworkId
                 })
               }
             }
@@ -1174,6 +1175,7 @@ export abstract class AppKitBaseClient {
     chain: ChainNamespace,
     shouldRefresh = false
   ) => {
+    console.trace('<< setCaipAddress', caipAddress)
     ChainController.setAccountProp('caipAddress', caipAddress, chain, shouldRefresh)
     ChainController.setAccountProp(
       'address',

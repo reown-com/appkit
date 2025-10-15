@@ -957,21 +957,13 @@ const controller = {
         throw new Error(`Invalid connection status: ${status}`)
     }
   },
-  async syncAccount(params: {
-    chainNamespace: ChainNamespace
-    chainId?: string | number
-    address: string
-  }) {
-    const isActiveNamespace = params.chainNamespace === ChainController.state.activeChain
-    const networkOfChain = ChainController.getCaipNetworkByNamespace(
-      params.chainNamespace,
-      params.chainId
-    )
-
-    const { address, chainId, chainNamespace } = params
+  async syncAccount(params: { caipNetworkId: CaipNetworkId; address: string }) {
+    const { chainNamespace, chainId } = ParseUtil.parseCaipNetworkId(params.caipNetworkId)
+    const isActiveNamespace = chainNamespace === ChainController.state.activeChain
+    const networkOfChain = ChainController.getCaipNetworkByNamespace(chainNamespace, chainId)
 
     const { chainId: activeChainId } = StorageUtil.getActiveNetworkProps()
-    const chainIdToUse = chainId || activeChainId
+    const chainIdToUse = networkOfChain?.id || activeChainId
     const isUnsupportedNetwork =
       ChainController.state.activeCaipNetwork?.name === CommonConstantsUtil.UNSUPPORTED_NETWORK_NAME
     const shouldSupportAllNetworks = ChainController.getNetworkProp(
@@ -1031,35 +1023,37 @@ const controller = {
       ConnectionController.syncConnectedWalletInfo(chainNamespace)
 
       const currentAddress = ChainController.getAccountData(chainNamespace)?.address
-      if (address.toLowerCase() !== currentAddress?.toLowerCase()) {
+      if (params.address.toLowerCase() !== currentAddress?.toLowerCase()) {
         const caipAddress = ChainController.getAccountData(chainNamespace)?.caipAddress
-        const newChainId = chainId || caipAddress?.split(':')[1]
-
+        console.log('>> syncAcount caipAddress', caipAddress)
+        console.log('>> syncAcount chainIdToUse', chainIdToUse)
+        const newChainId = chainIdToUse || caipAddress?.split(':')[1]
+        console.log('>> syncAcount newChainId', newChainId)
         if (!newChainId) {
           return
         }
 
-        const newCaipAddress = `${chainNamespace}:${newChainId}:${address}`
-
+        const newCaipAddress = `${chainNamespace}:${newChainId}:${params.address}`
+        console.log('>> syncAcount newCaipAddress', newCaipAddress)
         ConnectionController.setCaipAddress(newCaipAddress as CaipAddress, chainNamespace, true)
       }
 
       if (isActiveNamespace) {
         await ConnectionController.updateBalance({
-          address,
+          address: params.address,
           chainId: network?.id,
           namespace: chainNamespace
         })
       } else {
         await ConnectionController.updateBalance({
-          address,
+          address: params.address,
           chainId: networkOfChain?.id,
           namespace: chainNamespace
         })
       }
 
       ConnectionController.syncIdentity({
-        address,
+        address: params.address,
         chainId: chainIdToUse,
         chainNamespace
       })
@@ -1149,8 +1143,7 @@ const controller = {
         const { address } = ParseUtil.parseCaipAddress(sessionAddress as CaipAddress)
         await ConnectionController.syncAccount({
           address,
-          chainId: activeChainId as string | number,
-          chainNamespace
+          caipNetworkId: `${chainNamespace}:${activeChainId}` as CaipNetworkId
         })
       } else if (sessionNamespaces.includes(chainNamespace)) {
         ConnectionController.setStatus('disconnected', chainNamespace)

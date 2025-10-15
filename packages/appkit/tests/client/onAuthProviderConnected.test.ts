@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type AccountState, ChainController, SIWXUtil } from '@reown/appkit-controllers'
+import {
+  type AccountState,
+  ChainController,
+  ConnectionController,
+  SIWXUtil
+} from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockOptions } from '../mocks/Options.js'
@@ -25,10 +30,10 @@ describe('onAuthProviderConnected', () => {
   let appKit: AppKit
 
   beforeEach(() => {
+    vi.restoreAllMocks()
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
-    vi.clearAllMocks()
 
     appKit = new AppKit(mockOptions)
   })
@@ -37,7 +42,7 @@ describe('onAuthProviderConnected', () => {
     it('should handle basic user connection without SIWX', async () => {
       const mockUser = {
         address: '0x1234567890123456789012345678901234567890',
-        chainId: 'eip155:1',
+        chainId: '1',
         preferredAccountType: 'eoa',
         smartAccountDeployed: false,
         email: 'test@example.com',
@@ -49,7 +54,7 @@ describe('onAuthProviderConnected', () => {
       const setSmartAccountDeployedSpy = vi.spyOn(appKit, 'setSmartAccountDeployed')
       const setPreferredAccountTypeSpy = vi.spyOn(appKit, 'setPreferredAccountType')
       const syncAuthConnectorThemeSpy = vi.spyOn(appKit as any, 'syncAuthConnectorTheme')
-      const syncAccountSpy = vi.spyOn(appKit as any, 'syncAccount')
+      const syncAccountSpy = vi.spyOn(ConnectionController, 'syncAccount')
       const setLoadingSpy = vi.spyOn(appKit, 'setLoading')
 
       vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
@@ -63,7 +68,7 @@ describe('onAuthProviderConnected', () => {
         {
           accounts: [{ type: 'eoa', address: '0x1234567890123456789012345678901234567890' }],
           address: '0x1234567890123456789012345678901234567890',
-          chainId: 'eip155:1',
+          chainId: '1',
           preferredAccountType: 'eoa',
           smartAccountDeployed: false,
           email: 'test@example.com',
@@ -76,8 +81,7 @@ describe('onAuthProviderConnected', () => {
       expect(syncAuthConnectorThemeSpy).toHaveBeenCalledWith(undefined)
       expect(syncAccountSpy).toHaveBeenCalledWith({
         address: '0x1234567890123456789012345678901234567890',
-        chainId: 'eip155:1',
-        chainNamespace: 'eip155'
+        caipNetworkId: 'eip155:1'
       })
       expect(setLoadingSpy).toHaveBeenCalledWith(false, 'eip155')
     })
@@ -85,7 +89,7 @@ describe('onAuthProviderConnected', () => {
     it('should handle user connection with SIWX data', async () => {
       const mockUser = {
         address: '0x1234567890123456789012345678901234567890',
-        chainId: 'eip155:1',
+        chainId: '1',
         preferredAccountType: 'eoa',
         smartAccountDeployed: true,
         email: 'test@example.com',
@@ -113,7 +117,7 @@ describe('onAuthProviderConnected', () => {
       const setSmartAccountDeployedSpy = vi.spyOn(appKit, 'setSmartAccountDeployed')
       const setPreferredAccountTypeSpy = vi.spyOn(appKit, 'setPreferredAccountType')
       const syncAuthConnectorThemeSpy = vi.spyOn(appKit as any, 'syncAuthConnectorTheme')
-      const syncAccountSpy = vi.spyOn(appKit as any, 'syncAccount')
+      const syncAccountSpy = vi.spyOn(ConnectionController, 'syncAccount')
       const setLoadingSpy = vi.spyOn(appKit, 'setLoading')
 
       vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
@@ -144,7 +148,7 @@ describe('onAuthProviderConnected', () => {
         {
           accounts: [{ type: 'eoa', address: '0x1234567890123456789012345678901234567890' }],
           address: '0x1234567890123456789012345678901234567890',
-          chainId: 'eip155:1',
+          chainId: '1',
           preferredAccountType: 'eoa',
           smartAccountDeployed: true,
           email: 'test@example.com',
@@ -157,8 +161,7 @@ describe('onAuthProviderConnected', () => {
       expect(syncAuthConnectorThemeSpy).toHaveBeenCalledWith(undefined)
       expect(syncAccountSpy).toHaveBeenCalledWith({
         address: '0x1234567890123456789012345678901234567890',
-        chainId: 'eip155:1',
-        chainNamespace: 'eip155'
+        caipNetworkId: 'eip155:1'
       })
       expect(setLoadingSpy).toHaveBeenCalledWith(false, 'eip155')
     })

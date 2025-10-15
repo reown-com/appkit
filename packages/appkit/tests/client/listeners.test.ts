@@ -50,8 +50,7 @@ describe('Listeners', () => {
 
     const mockAccount = {
       address: '0x123',
-      chainId: mainnet.id,
-      chainNamespace: mainnet.chainNamespace
+      caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const
     }
 
     new AppKit(mockOptions)
@@ -62,7 +61,7 @@ describe('Listeners', () => {
 
     expect(setCaipAddressSpy).toHaveBeenCalledWith(
       'caipAddress',
-      `${mockAccount.chainNamespace}:${mockAccount.chainId}:${mockAccount.address}`,
+      `${mockAccount.caipNetworkId}:${mockAccount.address}`,
       'eip155',
       true
     )
@@ -84,14 +83,13 @@ describe('Listeners', () => {
 
     const mockAccount = {
       address: '0x123',
-      chainId: mainnet.id,
-      chainNamespace: mainnet.chainNamespace
+      caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const
     }
     emitter.emit('accountChanged', mockAccount)
 
     expect(setCaipAddressSpy).toHaveBeenCalledWith(
       'caipAddress',
-      `${mockAccount.chainNamespace}:${mockAccount.chainId}:${mockAccount.address}`,
+      `${mockAccount.caipNetworkId}:${mockAccount.address}`,
       'eip155',
       true
     )
@@ -152,7 +150,7 @@ it('should handle accountChanged event with connector that has provider', async 
 
   const mockAccount = {
     address: '0x123',
-    chainId: mainnet.id,
+    caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const,
     connector: mockConnector
   }
 
@@ -182,7 +180,7 @@ it('should handle accountChanged event with connector that has no provider', asy
 
   const mockAccount = {
     address: '0x123',
-    chainId: mainnet.id,
+    caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const,
     connector: mockConnector
   }
 

@@ -358,8 +358,7 @@ describe('Base Public methods', () => {
   it('should get address and CAIP address', async () => {
     const mockAccountData = {
       address: '0x123',
-      chainId: mainnet.id,
-      chainNamespace: mainnet.chainNamespace
+      caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const
     }
 
     const appKit = new AppKit(mockOptions)
@@ -769,8 +768,7 @@ describe('Base Public methods', () => {
 
     const mockAccountData = {
       address: '0x123',
-      chainId: polygon.id,
-      chainNamespace: polygon.chainNamespace
+      caipNetworkId: `${polygon.chainNamespace}:${polygon.id}` as const
     }
 
     await ConnectionController.syncAccount(mockAccountData)
@@ -795,8 +793,7 @@ describe('Base Public methods', () => {
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValueOnce(mockConnector.id)
     const mockAccountData = {
       address: '0x123',
-      chainId: mainnet.id,
-      chainNamespace: mainnet.chainNamespace
+      caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const
     }
     fetchTokenBalance.mockResolvedValueOnce([
       {
@@ -827,8 +824,7 @@ describe('Base Public methods', () => {
     const fetchIdentity = vi.spyOn(BlockchainApiController, 'fetchIdentity')
     const mockAccountData = {
       address: '0x123',
-      chainId: mainnet.id,
-      chainNamespace: mainnet.chainNamespace
+      caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const
     }
 
     await ConnectionController.syncAccount(mockAccountData)
@@ -849,8 +845,7 @@ describe('Base Public methods', () => {
     }
     const mockAccountData = {
       address: '0x123',
-      chainId: sepolia.id,
-      chainNamespace: sepolia.chainNamespace
+      caipNetworkId: `${sepolia.chainNamespace}:${sepolia.id}` as const
     }
 
     const appKit = new AppKit({

@@ -84,12 +84,16 @@ export class AppKit extends AppKitBaseClient {
       throw new Error('AppKit:onAuthProviderConnected - namespace is required')
     }
 
-    // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
-    const caipAddress =
+    console.log('<< onAuthProviderConnected', namespace, user)
+    const caipNetworkId =
       namespace === ConstantsUtil.CHAIN.EVM
-        ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
-        : (`${user.chainId}:${user.address}` as CaipAddress)
+        ? (`eip155:${user.chainId}` as CaipNetworkId)
+        : (`${user.chainId}` as CaipNetworkId)
+    console.log('>> caipNetworkId', caipNetworkId)
+    // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
+    const caipAddress = `${caipNetworkId}:${user.address}` as CaipAddress
 
+    console.log('>> caipAddress', caipAddress)
     const defaultAccountType = OptionsController.state.defaultAccountTypes[namespace]
     const currentAccountType = getPreferredAccountType(namespace)
 
@@ -103,6 +107,7 @@ export class AppKit extends AppKitBaseClient {
     const { signature, siwxMessage, message, ...userWithOutSiwxData } = user
     const accountData = ChainController.getAccountData(namespace)
 
+    console.log('<< setUser', namespace)
     this.setUser({ ...(accountData?.user || {}), ...userWithOutSiwxData }, namespace)
     this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
     this.setPreferredAccountType(preferredAccountType, namespace)
@@ -110,8 +115,7 @@ export class AppKit extends AppKitBaseClient {
       this.syncAuthConnectorTheme(this.authProvider),
       ConnectionController.syncAccount({
         address: user.address,
-        chainId: user.chainId,
-        chainNamespace: namespace
+        caipNetworkId: caipNetworkId
       })
     ])
 

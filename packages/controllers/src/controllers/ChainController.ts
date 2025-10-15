@@ -319,6 +319,7 @@ const controller = {
       state.chains.set(chain, { ...chainAdapter, accountState: newAccountState })
       if (state.chains.size === 1 || state.activeChain === chain) {
         if (accountProps.caipAddress) {
+          console.trace('>> setChainAccountData', accountProps.caipAddress)
           state.activeCaipAddress = accountProps.caipAddress
         }
       }
@@ -356,6 +357,7 @@ const controller = {
     const caipNetwork = newAdapter?.networkState?.caipNetwork
 
     if (caipNetwork?.id && chain) {
+      console.trace('>> setActiveNamespace', newAdapter?.accountState?.caipAddress)
       state.activeCaipAddress = newAdapter?.accountState?.caipAddress
       state.activeCaipNetwork = caipNetwork
       ChainController.setChainNetworkData(chain, { caipNetwork })
@@ -371,23 +373,26 @@ const controller = {
     if (!caipNetwork) {
       return
     }
+
     const isSameNamespace = state.activeChain === caipNetwork.chainNamespace
     if (!isSameNamespace) {
       ChainController.setIsSwitchingNamespace(true)
     }
 
-    const newAdapter = state.chains.get(caipNetwork.chainNamespace)
+    const accountState = ChainController.getAccountData(caipNetwork.chainNamespace)
     state.activeChain = caipNetwork.chainNamespace
     state.activeCaipNetwork = caipNetwork
     ChainController.setChainNetworkData(caipNetwork.chainNamespace, { caipNetwork })
 
-    let address = newAdapter?.accountState?.address
+    let address = accountState?.address
     if (address) {
+      console.log('>> address', address)
       state.activeCaipAddress = `${caipNetwork.chainNamespace}:${caipNetwork.id}:${address}`
     } else if (isSameNamespace && state.activeCaipAddress) {
+      console.log('>> state.activeCaipAddress', state.activeCaipAddress)
       const { address: parsedAddress } = ParseUtil.parseCaipAddress(state.activeCaipAddress)
       address = parsedAddress
-      state.activeCaipAddress = `${caipNetwork.caipNetworkId}:${address}`
+      state.activeCaipAddress = `${caipNetwork.chainNamespace}:${caipNetwork.id}:${address}`
     } else {
       state.activeCaipAddress = undefined
     }
