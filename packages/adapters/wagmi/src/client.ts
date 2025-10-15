@@ -795,7 +795,6 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async disconnect(params?: AdapterBlueprint.DisconnectParams) {
-    console.log('>> disconnect params', params)
     if (params?.id) {
       const connector = this.getWagmiConnector(params.id)
 
@@ -804,13 +803,11 @@ export class WagmiAdapter extends AdapterBlueprint {
         HelpersUtil.isLowerCaseMatch(c.connector.id, params.id)
       )
 
-      console.log('>> disconnect connector', connector)
       await wagmiDisconnect(this.wagmiConfig, { connector })
       if (OptionsController.state.enableReconnect === false) {
         this.deleteConnection(params.id)
       }
 
-      console.log('>> discconected')
       if (connection) {
         return {
           connections: [
@@ -831,16 +828,13 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private async disconnectAll() {
-    console.log('>> disconnectAll')
     const wagmiConnections = getConnections(this.wagmiConfig)
 
-    console.log('>> disconnectAll wagmiConnections', wagmiConnections)
     const connections = await Promise.allSettled(
       wagmiConnections.map(async connection => {
         const connector = this.getWagmiConnector(connection.connector.id)
 
         if (connector) {
-          console.log('>> disconnectAll connector', connector)
           await wagmiDisconnect(this.wagmiConfig, { connector })
         }
 
@@ -851,7 +845,6 @@ export class WagmiAdapter extends AdapterBlueprint {
     // Ensure the connections are cleared
     this.wagmiConfig.state.connections.clear()
 
-    console.log('>> disconnectAll connections', connections)
     return {
       connections: connections
         .filter(connection => connection.status === 'fulfilled')

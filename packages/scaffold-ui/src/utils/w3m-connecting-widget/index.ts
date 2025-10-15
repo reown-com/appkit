@@ -125,7 +125,6 @@ export class W3mConnectingWidget extends LitElement {
       label = `Continue in ${this.name}`
 
       if (this.error) {
-        console.log('<< Connection error', this.error)
         label = 'Connection declined'
       }
     }

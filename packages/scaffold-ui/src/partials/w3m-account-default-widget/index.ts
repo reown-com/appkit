@@ -356,8 +356,6 @@ export class W3mAccountDefaultWidget extends LitElement {
       const hasConnections = connectionsByNamespace.length > 0
       const connectorId =
         this.namespace && ConnectorController.state.activeConnectorIds[this.namespace]
-      console.log('>> onDisconnect connectorId', connectorId)
-      console.log('>> onDisconnect namespace', this.namespace)
       if (connectorId && this.namespace) {
         await ConnectionController.disconnectConnector({
           id: connectorId,
@@ -372,7 +370,6 @@ export class W3mAccountDefaultWidget extends LitElement {
         SnackController.showSuccess('Wallet deleted')
       }
     } catch (e) {
-      console.log('<< onDisconnect error', e)
       EventsController.sendEvent({
         type: 'track',
         event: 'DISCONNECT_ERROR',
