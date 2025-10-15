@@ -556,12 +556,6 @@ const controller = {
   },
 
   async getEnsAvatar(address: string) {
-    const namespace = ChainController.state.activeChain
-
-    if (!namespace) {
-      throw new Error('getEnsAvatar: namespace is required but got undefined')
-    }
-
     const avatar = await BlockchainApiController.fetchIdentity({
       address
     })
