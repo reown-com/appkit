@@ -57,6 +57,14 @@ describe('AppKit - disconnect', () => {
 
   describe('when chainNamespace is provided', () => {
     it('should disconnect from the specified namespace', async () => {
+      vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+        new Map([
+          [
+            CommonConstantsUtil.CHAIN.SOLANA,
+            [{ connectorId: 'connector', accounts: [{ address: '0x123' }] }]
+          ]
+        ])
+      )
       mockChainControllerState({
         activeChain: CommonConstantsUtil.CHAIN.SOLANA,
         chains: new Map([
@@ -123,6 +131,14 @@ describe('AppKit - disconnect', () => {
     })
 
     it('should complete disconnect process with default namespace', async () => {
+      vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+        new Map([
+          [
+            CommonConstantsUtil.CHAIN.EVM,
+            [{ connectorId: 'connector', accounts: [{ address: '0x123' }] }]
+          ]
+        ])
+      )
       mockChainControllerState({
         activeChain: CommonConstantsUtil.CHAIN.EVM,
         chains: new Map([
@@ -143,6 +159,18 @@ describe('AppKit - disconnect', () => {
       vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
       vi.spyOn(ProviderController, 'getProviderId').mockReturnValue(
         UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
+      )
+      vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+        new Map([
+          [
+            CommonConstantsUtil.CHAIN.EVM,
+            [{ connectorId: 'connector', accounts: [{ address: '0x123' }] }]
+          ],
+          [
+            CommonConstantsUtil.CHAIN.SOLANA,
+            [{ connectorId: 'connector', accounts: [{ address: '0x123' }] }]
+          ]
+        ])
       )
       mockChainControllerState({
         chains: new Map([
@@ -201,7 +229,11 @@ describe('AppKit - disconnect', () => {
   describe('state cleanup', () => {
     it('should pass correct id to adapter disconnect', async () => {
       const chainNamespace = CommonConstantsUtil.CHAIN.EVM
-
+      vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+        new Map([
+          [chainNamespace, [{ connectorId: 'connector', accounts: [{ address: '0x123' }] }]]
+        ])
+      )
       mockChainControllerState({
         chains: new Map([[chainNamespace, { accountState: { caipAddress: 'eip155:1:0x123' } }]])
       })
@@ -221,6 +253,9 @@ describe('AppKit - disconnect', () => {
     ])(
       'should handle disconnect for %s namespace',
       async (namespace: ChainNamespace, adapter: AdapterBlueprint) => {
+        vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+          new Map([[namespace, [{ connectorId: 'connector', accounts: [{ address: '0x123' }] }]]])
+        )
         mockChainControllerState({
           chains: new Map([
             [namespace, { accountState: { caipAddress: `${namespace}:chainId:address` as const } }]
@@ -237,7 +272,18 @@ describe('AppKit - disconnect', () => {
   describe('complex disconnect scenarios', () => {
     it('should disconnect only for specific namespace when multiple are connected', async () => {
       const targetNamespace = CommonConstantsUtil.CHAIN.SOLANA
-
+      vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+        new Map([
+          [
+            CommonConstantsUtil.CHAIN.EVM,
+            [{ connectorId: 'eip155-connector', accounts: [{ address: '0x123' }] }]
+          ],
+          [
+            CommonConstantsUtil.CHAIN.SOLANA,
+            [{ connectorId: 'solana-connector', accounts: [{ address: '0x123' }] }]
+          ]
+        ])
+      )
       // Setup multiple connected namespaces
       mockChainControllerState({
         activeChain: CommonConstantsUtil.CHAIN.EVM,
@@ -382,7 +428,12 @@ describe('AppKit - disconnect - functional scenarios', () => {
   it('should properly handle disconnect of all connected chains', async () => {
     const eip155Namespace = CommonConstantsUtil.CHAIN.EVM
     const solanaNamespace = CommonConstantsUtil.CHAIN.SOLANA
-
+    vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+      new Map([
+        [eip155Namespace, [{ connectorId: 'eip155-connector', accounts: [{ address: '0x123' }] }]],
+        [solanaNamespace, [{ connectorId: 'solana-connector', accounts: [{ address: '0x123' }] }]]
+      ])
+    )
     mockChainControllerState({
       activeChain: CommonConstantsUtil.CHAIN.EVM,
       chains: new Map([
@@ -525,6 +576,12 @@ describe('AppKit - disconnect - error handling scenarios', () => {
       if (ns === solanaNamespace) return mockSolanaProvider
       return { disconnect: vi.fn() }
     })
+    vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+      new Map([
+        [eip155Namespace, [{ connectorId: 'eip155-connector', accounts: [{ address: '0x123' }] }]],
+        [solanaNamespace, [{ connectorId: 'solana-connector', accounts: [{ address: '0x123' }] }]]
+      ])
+    )
     // getProviderId is already mocked in beforeEach to return INJECTED
 
     const eip155AdapterDisconnectSpy = vi.spyOn(mockEvmAdapter, 'disconnect').mockResolvedValue({

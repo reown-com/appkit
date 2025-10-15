@@ -227,8 +227,7 @@ it('should call syncAccount when accountChanged event is emitted', async () => {
 
   expect(syncAccountSpy).toHaveBeenCalledWith({
     address: mockAccount.address,
-    chainId: mockAccount.chainId,
-    chainNamespace: mainnet.chainNamespace
+    caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const
   })
 })
 
@@ -250,8 +249,7 @@ it('should call syncAccount with activeCaipNetwork id when isActiveChain is true
 
   expect(syncAccountSpy).toHaveBeenCalledWith({
     address: mockAccount.address,
-    chainId: mainnet.id,
-    chainNamespace: mainnet.chainNamespace
+    caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const
   })
 })
 
@@ -272,7 +270,6 @@ it('should call syncAccountInfo when isActiveChain is false and neither activeCa
 
   expect(syncAccountInfoSpy).toHaveBeenCalledWith({
     address: mockAccount.address,
-    chainId: mockAccount.chainId,
-    chainNamespace: mainnet.chainNamespace
+    caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const
   })
 })
