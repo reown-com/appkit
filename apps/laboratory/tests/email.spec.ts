@@ -141,7 +141,7 @@ emailTest(
     await validator.expectRejectedSign()
 
     await page.sendCalls()
-    await validator.expectFrameTextToContain('AppKit Lab requests multiple transactions')
+    await validator.expectFrameTextToContain('AppKit requests multiple transactions')
     await page.closeModal()
   }
 )
