@@ -171,11 +171,13 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Chrome/ton': {
     testMatch: SINGLE_ADAPTER_TON_TESTS_REGEX,
-    testIgnore: /reown-authentication.*\.spec\.ts|multi-wallet\.spec\.ts/u
+    testIgnore:
+      /siwe-.*\.spec\.ts|siwx-.*\.spec\.ts|multichain-.*\.spec\.ts|reown-authentication.*\.spec\.ts/u
   },
   'Desktop Firefox/ton': {
     testMatch: SINGLE_ADAPTER_TON_TESTS_REGEX,
-    testIgnore: /reown-authentication.*\.spec\.ts|multi-wallet\.spec\.ts/u
+    testIgnore:
+      /siwe-.*\.spec\.ts|siwx-.*\.spec\.ts|multichain-.*\.spec\.ts|reown-authentication.*\.spec\.ts/u
   },
   'Desktop Chrome/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
