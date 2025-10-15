@@ -37,6 +37,7 @@ const mockEthereumNetwork = {
   id: 1,
   name: 'Ethereum',
   namespace: ConstantsUtil.CHAIN.EVM,
+  chainNamespace: ConstantsUtil.CHAIN.EVM,
   blockExplorers: {
     default: { url: 'https://etherscan.io' }
   }
@@ -45,13 +46,15 @@ const mockEthereumNetwork = {
 const mockSolanaNetwork = {
   id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   name: 'Solana',
-  namespace: ConstantsUtil.CHAIN.SOLANA
+  namespace: ConstantsUtil.CHAIN.SOLANA,
+  chainNamespace: ConstantsUtil.CHAIN.SOLANA
 } as unknown as CaipNetwork
 
 const mockBitcoinNetwork = {
   id: 'bitcoin:000000000019d6689c085ae165831e93',
   name: 'Bitcoin',
-  namespace: ConstantsUtil.CHAIN.BITCOIN
+  namespace: ConstantsUtil.CHAIN.BITCOIN,
+  chainNamespace: ConstantsUtil.CHAIN.BITCOIN
 } as unknown as CaipNetwork
 
 const mockMetaMaskConnector = {
@@ -925,6 +928,125 @@ describe('W3mProfileWalletsView - Loading States', () => {
     )
 
     expect(addConnectionButton).toBeNull()
+  })
+})
+
+describe('W3mProfileWalletsView - Cross-Namespace Wallet Switching', () => {
+  beforeEach(() => {
+    vi.resetAllMocks()
+
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      remoteFeatures: { multiWallet: true }
+    })
+
+    vi.spyOn(ConnectionController, 'subscribeKey').mockReturnValue(() => {})
+    vi.spyOn(ConnectorController, 'subscribeKey').mockReturnValue(() => {})
+    vi.spyOn(ChainController, 'subscribeKey').mockReturnValue(() => {})
+    vi.spyOn(ChainController, 'subscribeChainProp').mockReturnValue(() => {})
+  })
+
+  it('should disable wallet items when viewing a tab with different namespace than active caipNetwork', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      activeChain: ConstantsUtil.CHAIN.EVM,
+      activeCaipNetwork: mockEthereumNetwork,
+      chains: new Map([
+        [
+          ConstantsUtil.CHAIN.EVM,
+          { namespace: ConstantsUtil.CHAIN.EVM, caipNetworks: [mockEthereumNetwork] }
+        ],
+        [
+          ConstantsUtil.CHAIN.SOLANA,
+          { namespace: ConstantsUtil.CHAIN.SOLANA, caipNetworks: [mockSolanaNetwork] }
+        ]
+      ])
+    } as unknown as ChainControllerState)
+
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: {
+        [ConstantsUtil.CHAIN.EVM]: 'metamask',
+        [ConstantsUtil.CHAIN.SOLANA]: 'phantom'
+      } as unknown as Record<ChainNamespace, string | undefined>,
+      connectors: [mockMetaMaskConnector]
+    })
+
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
+
+    const mockSolanaConnection: Connection = {
+      connectorId: 'phantom',
+      accounts: [{ address: 'SolanaAddress123456789', type: 'eoa' }]
+    }
+
+    vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
+      connections: [mockSolanaConnection],
+      recentConnections: []
+    })
+
+    const element = await fixture<W3mProfileWalletsView>(
+      html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
+    )
+
+    element['namespace'] = ConstantsUtil.CHAIN.SOLANA
+    element['currentTab'] = 1
+    await element.updateComplete
+
+    const walletItems = element.shadowRoot?.querySelectorAll('[data-testid="active-connection"]')
+
+    expect(walletItems).not.toBeNull()
+    expect(walletItems!.length).toBeGreaterThan(0)
+
+    walletItems?.forEach(item => {
+      expect((item as any).disabled).toBe(true)
+    })
+  })
+
+  it('should not disable wallet items when viewing a tab with same namespace as active caipNetwork', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      activeChain: ConstantsUtil.CHAIN.EVM,
+      activeCaipNetwork: mockEthereumNetwork,
+      chains: new Map([
+        [
+          ConstantsUtil.CHAIN.EVM,
+          { namespace: ConstantsUtil.CHAIN.EVM, caipNetworks: [mockEthereumNetwork] }
+        ],
+        [
+          ConstantsUtil.CHAIN.SOLANA,
+          { namespace: ConstantsUtil.CHAIN.SOLANA, caipNetworks: [mockSolanaNetwork] }
+        ]
+      ])
+    } as unknown as ChainControllerState)
+
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: {
+        [ConstantsUtil.CHAIN.EVM]: 'metamask'
+      } as unknown as Record<ChainNamespace, string | undefined>,
+      connectors: [mockMetaMaskConnector]
+    })
+
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
+
+    vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
+      connections: [mockActiveConnection],
+      recentConnections: []
+    })
+
+    const element = await fixture<W3mProfileWalletsView>(
+      html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
+    )
+
+    element['namespace'] = ConstantsUtil.CHAIN.EVM
+    await element.updateComplete
+
+    const walletItems = element.shadowRoot?.querySelectorAll('[data-testid="active-connection"]')
+
+    expect(walletItems).not.toBeNull()
+    expect(walletItems!.length).toBeGreaterThan(0)
+
+    walletItems?.forEach(item => {
+      expect((item as any).disabled).toBe(false)
+    })
   })
 })
 

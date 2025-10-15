@@ -51,10 +51,12 @@ export class WuiInactiveProfileWalletItem extends LitElement {
 
   @property({ type: Number }) public charsEnd = 6
 
+  @property({ type: Boolean }) public disabled = false
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex alignItems="center" columngap="2">
+      <wui-flex alignItems="center" columngap="2" class=${this.disabled ? 'disabled' : ''}>
         ${this.imageOrIconTemplate()} ${this.labelAndDescriptionTemplate()}
         ${this.buttonActionTemplate()}
       </wui-flex>
@@ -112,6 +114,7 @@ export class WuiInactiveProfileWalletItem extends LitElement {
           size="sm"
           variant=${this.buttonVariant}
           .loading=${this.loading}
+          .disabled=${this.disabled}
           @click=${this.handleButtonClick}
           data-testid="wui-inactive-profile-wallet-item-button"
         >

@@ -380,6 +380,8 @@ export class W3mProfileWalletsView extends LitElement {
           const shouldShowSeparator = connectionIdx !== 0 || accountIdx !== 0
           const isLoading = this.isAccountLoading(connection.connectorId, account.address)
 
+          const isDisabled = this.caipNetwork?.chainNamespace !== namespace
+
           return html`
             <wui-flex flexDirection="column">
               ${shouldShowSeparator ? html`<wui-separator></wui-separator>` : null}
@@ -402,6 +404,7 @@ export class W3mProfileWalletsView extends LitElement {
                 .icon=${authData.icon}
                 .iconSize=${authData.iconSize}
                 .loading=${isLoading}
+                .disabled=${isDisabled}
                 .showBalance=${false}
                 .charsStart=${UI_CONFIG.ADDRESS_DISPLAY.START}
                 .charsEnd=${UI_CONFIG.ADDRESS_DISPLAY.END}
