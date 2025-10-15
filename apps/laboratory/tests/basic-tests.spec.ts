@@ -49,7 +49,7 @@ basicTest('Should be able to open modal with the open hook', async () => {
 })
 
 basicTest('Should show socials enabled by default', async ({ library }) => {
-  if (library === 'bitcoin') {
+  if (library === 'bitcoin' || library === 'ton') {
     return
   }
 

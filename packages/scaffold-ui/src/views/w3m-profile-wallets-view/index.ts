@@ -68,19 +68,22 @@ const UI_CONFIG = {
 const NAMESPACE_ICONS = {
   eip155: 'ethereum',
   solana: 'solana',
-  bip122: 'bitcoin'
+  bip122: 'bitcoin',
+  ton: 'ton'
 } as const
 
 const NAMESPACE_TABS = [
   { namespace: 'eip155', icon: NAMESPACE_ICONS.eip155, label: 'EVM' },
   { namespace: 'solana', icon: NAMESPACE_ICONS.solana, label: 'Solana' },
-  { namespace: 'bip122', icon: NAMESPACE_ICONS.bip122, label: 'Bitcoin' }
+  { namespace: 'bip122', icon: NAMESPACE_ICONS.bip122, label: 'Bitcoin' },
+  { namespace: 'ton', icon: NAMESPACE_ICONS.ton, label: 'Ton' }
 ] as const satisfies { namespace: ChainNamespace; icon: string; label: string }[]
 
 const CHAIN_LABELS = {
   eip155: { title: 'Add EVM Wallet', description: 'Add your first EVM wallet' },
   solana: { title: 'Add Solana Wallet', description: 'Add your first Solana wallet' },
-  bip122: { title: 'Add Bitcoin Wallet', description: 'Add your first Bitcoin wallet' }
+  bip122: { title: 'Add Bitcoin Wallet', description: 'Add your first Bitcoin wallet' },
+  ton: { title: 'Add TON Wallet', description: 'Add your first TON wallet' }
 } as const
 
 @customElement('w3m-profile-wallets-view')

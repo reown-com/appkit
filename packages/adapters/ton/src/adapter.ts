@@ -41,6 +41,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {
     const connector = this.connectors.find(c => c.id === params.id)
+
     if (!connector) {
       throw new Error('Connector not found')
     }
@@ -86,7 +87,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
 
     this.addConnection({
       connectorId: connector.id,
-      accounts: [],
+      accounts: [{ address, type: 'eoa' }],
       caipNetwork: chain
     })
 
@@ -126,8 +127,9 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   ): Promise<AdapterBlueprint.DisconnectResult> {
     if (params?.id) {
       const connector = this.connectors.find(c => c.id === params.id)
+
       if (!connector) {
-        return { connections: [] }
+        throw new Error('TonAdapter:disconnect - connector not found')
       }
 
       const connection = this.getConnection({

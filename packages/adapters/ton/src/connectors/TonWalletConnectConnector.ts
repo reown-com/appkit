@@ -57,10 +57,6 @@ export class TonWalletConnectConnector
     )
   }
 
-  override async disconnect(): Promise<void> {
-    return Promise.resolve()
-  }
-
   public async signData(params: TonConnector.SignDataParams): Promise<string> {
     const chain = this.getActiveChain()
 

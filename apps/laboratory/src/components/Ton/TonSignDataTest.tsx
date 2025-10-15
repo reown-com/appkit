@@ -8,6 +8,7 @@ import { type TonConnector } from '@reown/appkit-adapter-ton'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function TonSignDataTest() {
   const toast = useChakraToast()
@@ -26,10 +27,10 @@ export function TonSignDataTest() {
         from: address
       })
       setSignature(sig)
-      toast({ title: 'Signed (text)', description: sig, type: 'success' })
+      toast({ title: ConstantsUtil.SigningSucceededToastTitle, description: sig, type: 'success' })
     } catch (err) {
       toast({
-        title: 'Sign error',
+        title: ConstantsUtil.SigningFailedToastTitle,
         description: (err as Error)?.message || 'Failed to sign text',
         type: 'error'
       })
@@ -47,9 +48,13 @@ export function TonSignDataTest() {
         from: address
       })
       setSignature(sig)
-      toast({ title: 'Signed (binary)', description: sig, type: 'success' })
+      toast({ title: ConstantsUtil.SigningSucceededToastTitle, description: sig, type: 'success' })
     } catch {
-      toast({ title: 'Sign error', description: 'Failed to sign binary', type: 'error' })
+      toast({
+        title: ConstantsUtil.SigningFailedToastTitle,
+        description: 'Failed to sign binary',
+        type: 'error'
+      })
     }
   }
 
@@ -66,9 +71,13 @@ export function TonSignDataTest() {
         from: address
       })
       setSignature(sig)
-      toast({ title: 'Signed (cell)', description: sig, type: 'success' })
+      toast({ title: ConstantsUtil.SigningSucceededToastTitle, description: sig, type: 'success' })
     } catch {
-      toast({ title: 'Sign error', description: 'Failed to sign cell', type: 'error' })
+      toast({
+        title: ConstantsUtil.SigningFailedToastTitle,
+        description: 'Failed to sign cell',
+        type: 'error'
+      })
     }
   }
 
@@ -80,7 +89,7 @@ export function TonSignDataTest() {
     <Flex flexDirection="column" gap="2" mb="2">
       <Stack direction="row" mt={3} gap={2}>
         <Button onClick={signText}>Sign Text</Button>
-        <Button onClick={signBinary} variant="outline">
+        <Button onClick={signBinary} variant="outline" data-testid="sign-message-button">
           Sign Binary
         </Button>
         <Button onClick={signCell} variant="outline">
