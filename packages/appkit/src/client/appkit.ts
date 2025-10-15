@@ -1,6 +1,5 @@
 /* eslint-disable max-depth */
 import {
-  type CaipAddress,
   type CaipNetworkId,
   type ChainNamespace,
   ConstantsUtil,
@@ -89,7 +88,7 @@ export class AppKit extends AppKitBaseClient {
         ? (`eip155:${user.chainId}` as CaipNetworkId)
         : (`${user.chainId}` as CaipNetworkId)
     // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
-    const caipAddress = `${caipNetworkId}:${user.address}` as CaipAddress
+    const caipAddress = `${caipNetworkId}:${user.address}` as const
 
     const defaultAccountType = OptionsController.state.defaultAccountTypes[namespace]
     const currentAccountType = getPreferredAccountType(namespace)
@@ -111,7 +110,7 @@ export class AppKit extends AppKitBaseClient {
       this.syncAuthConnectorTheme(this.authProvider),
       ConnectionController.syncAccount({
         address: user.address,
-        caipNetworkId: caipNetworkId
+        caipNetworkId
       })
     ])
 

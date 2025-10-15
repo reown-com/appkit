@@ -654,20 +654,20 @@ const controller = {
   async disconnectNamespace(namespace: ChainNamespace, initialDisconnect: boolean) {
     const connections = state.connections.get(namespace) || []
     const disconnectedConnectors = await Promise.all(
-      connections.map((connection: Connection) => {
-        return ConnectionController.disconnectConnector({
+      connections.map((connection: Connection) =>
+        ConnectionController.disconnectConnector({
           id: connection.connectorId,
           namespace
         })
-      })
+      )
     )
 
     if (disconnectedConnectors) {
-      disconnectedConnectors?.forEach(({ connections }: { connections: Connection[] }) => {
-        connections.forEach((connection: Connection) => {
+      disconnectedConnectors?.forEach(({ connections }: { connections: Connection[] }) =>
+        connections.forEach((connection: Connection) =>
           StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
-        })
-      })
+        )
+      )
     }
 
     if (initialDisconnect) {
