@@ -4,7 +4,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
 import {
-  AlertController,
   ApiController,
   ChainController,
   ConnectorController,
@@ -20,7 +19,6 @@ import {
 import { UiHelperUtil, customElement, initializeTheming, vars } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-card'
 import '@reown/appkit-ui/wui-flex'
-import { ErrorUtil } from '@reown/appkit-utils'
 
 import '../../partials/w3m-alertbar/index.js'
 import '../../partials/w3m-header/index.js'
@@ -67,8 +65,6 @@ export class W3mModalBase extends LitElement {
 
   @state() private mobileFullScreen = OptionsController.state.enableMobileFullScreen
 
-  @state() private plan = ApiController.state.plan
-
   public constructor() {
     super()
     this.initializeTheming()
@@ -89,8 +85,7 @@ export class W3mModalBase extends LitElement {
         RouterController.subscribeKey('view', () => {
           this.dataset['border'] = HelpersUtil.hasFooter() ? 'true' : 'false'
           this.padding = PADDING_OVERRIDES[RouterController.state.view] ?? vars.spacing[1]
-        }),
-        ApiController.subscribeKey('plan', val => (this.plan = val))
+        })
       ]
     )
   }
@@ -196,7 +191,6 @@ export class W3mModalBase extends LitElement {
     this.classList.add('open')
     this.onScrollLock()
     this.onAddKeyboardListener()
-    this.checkPlanUsage()
   }
 
   private onScrollLock() {
@@ -304,16 +298,6 @@ export class W3mModalBase extends LitElement {
       ApiController.prefetch()
       ApiController.fetchWalletsByPage({ page: 1 })
       this.hasPrefetched = true
-    }
-  }
-
-  private checkPlanUsage() {
-    const isFreeTier = this.plan.tier === 'starter' || this.plan.tier === 'none'
-    const hasExceededLimit = this.plan.limits.isAboveRpcLimit || this.plan.limits.isAboveMauLimit
-
-    if (isFreeTier && hasExceededLimit) {
-      AlertController.open(ErrorUtil.ALERT_ERRORS.USAGE_LIMIT_EXCEEDED, 'error')
-      console.log(ErrorUtil.ALERT_ERRORS.USAGE_LIMIT_EXCEEDED.debugMessage)
     }
   }
 }

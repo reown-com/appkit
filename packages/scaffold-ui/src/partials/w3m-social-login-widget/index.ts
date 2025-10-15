@@ -5,7 +5,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AlertController,
-  ApiController,
   ChainController,
   ConnectionController,
   ConnectorController,
@@ -48,8 +47,6 @@ export class W3mSocialLoginWidget extends LitElement {
 
   @state() private isPwaLoading = false
 
-  @state() private plan = ApiController.state.plan
-
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -57,8 +54,7 @@ export class W3mSocialLoginWidget extends LitElement {
         this.connectors = val
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
       }),
-      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val)),
-      ApiController.subscribeKey('plan', val => (this.plan = val))
+      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
     )
   }
 
@@ -207,11 +203,6 @@ export class W3mSocialLoginWidget extends LitElement {
       chain => chain === ChainController.state.activeChain
     )
 
-    const isFreeTier = this.plan.tier === 'starter' || this.plan.tier === 'none'
-    const hasExceededLimit = this.plan.limits.isAboveRpcLimit || this.plan.limits.isAboveMauLimit
-
-    const shouldRedirectToUsageExceededView = isFreeTier && hasExceededLimit
-
     if (!isAvailableChain) {
       /**
        * If we are trying to call this function when active network is nut supported by auth connector, we should switch to the first available network
@@ -226,9 +217,7 @@ export class W3mSocialLoginWidget extends LitElement {
       }
     }
 
-    if (shouldRedirectToUsageExceededView) {
-      RouterController.push('UsageExceeded')
-    } else if (socialProvider) {
+    if (socialProvider) {
       await executeSocialLogin(socialProvider)
     }
   }

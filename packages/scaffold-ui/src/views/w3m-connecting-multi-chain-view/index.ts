@@ -4,7 +4,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  ApiController,
   AssetUtil,
   type Connector,
   ConnectorController,
@@ -28,8 +27,6 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() protected activeConnector = ConnectorController.state.activeConnector
-
-  @state() private plan = ApiController.state.plan
 
   public constructor() {
     super()
@@ -105,17 +102,6 @@ export class W3mConnectingMultiChainView extends LitElement {
   private onConnector(provider: Connector) {
     const connector = this.activeConnector?.connectors?.find(p => p.chain === provider.chain)
     const redirectView = RouterController.state.data?.redirectView
-
-    const isFreeTier = this.plan.tier === 'starter' || this.plan.tier === 'none'
-    const hasExceededLimit = this.plan.limits.isAboveRpcLimit || this.plan.limits.isAboveMauLimit
-
-    const shouldRedirectToUsageExceededView = isFreeTier && hasExceededLimit
-
-    if (shouldRedirectToUsageExceededView) {
-      RouterController.push('UsageExceeded')
-
-      return
-    }
 
     if (!connector) {
       SnackController.showError('Failed to find connector')

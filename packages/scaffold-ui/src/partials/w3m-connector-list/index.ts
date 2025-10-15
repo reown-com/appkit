@@ -59,8 +59,6 @@ export class W3mConnectorList extends LitElement {
 
   @state() private loadingTelegram = false
 
-  @state() private plan = ApiController.state.plan
-
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -77,8 +75,7 @@ export class W3mConnectorList extends LitElement {
         if (!this.explorerWallets?.length) {
           this.explorerWallets = val
         }
-      }),
-      ApiController.subscribeKey('plan', val => (this.plan = val))
+      })
     )
 
     if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
@@ -306,12 +303,6 @@ export class W3mConnectorList extends LitElement {
 
   private onClickConnector(item: ConnectorItem) {
     const redirectView = RouterController.state.data?.redirectView
-
-    const isFreeTier = this.plan.tier === 'starter' || this.plan.tier === 'none'
-    const hasExceededLimit = this.plan.limits.isAboveRpcLimit || this.plan.limits.isAboveMauLimit
-
-    const shouldRedirectToUsageExceededView = isFreeTier && hasExceededLimit
-
     if (item.subtype === 'walletConnect') {
       ConnectorController.setActiveConnector(item.connector)
       if (CoreHelperUtil.isMobile()) {
@@ -324,27 +315,19 @@ export class W3mConnectorList extends LitElement {
     }
 
     if (item.subtype === 'multiChain') {
-      if (shouldRedirectToUsageExceededView) {
-        RouterController.push('UsageExceeded')
-      } else {
-        ConnectorController.setActiveConnector(item.connector)
-        RouterController.push('ConnectingMultiChain', { redirectView })
-      }
+      ConnectorController.setActiveConnector(item.connector)
+      RouterController.push('ConnectingMultiChain', { redirectView })
 
       return
     }
 
     if (item.subtype === 'injected') {
-      if (shouldRedirectToUsageExceededView) {
-        RouterController.push('UsageExceeded')
-      } else {
-        ConnectorController.setActiveConnector(item.connector)
-        RouterController.push('ConnectingExternal', {
-          connector: item.connector,
-          redirectView,
-          wallet: item.connector.explorerWallet
-        })
-      }
+      ConnectorController.setActiveConnector(item.connector)
+      RouterController.push('ConnectingExternal', {
+        connector: item.connector,
+        redirectView,
+        wallet: item.connector.explorerWallet
+      })
 
       return
     }
@@ -360,27 +343,19 @@ export class W3mConnectorList extends LitElement {
         return
       }
 
-      if (shouldRedirectToUsageExceededView) {
-        RouterController.push('UsageExceeded')
-      } else {
-        RouterController.push('ConnectingExternal', {
-          connector: item.connector,
-          redirectView,
-          wallet: item.connector.explorerWallet
-        })
-      }
+      RouterController.push('ConnectingExternal', {
+        connector: item.connector,
+        redirectView,
+        wallet: item.connector.explorerWallet
+      })
 
       return
     }
 
-    if (shouldRedirectToUsageExceededView) {
-      RouterController.push('UsageExceeded')
-    } else {
-      RouterController.push('ConnectingExternal', {
-        connector: item.connector,
-        redirectView
-      })
-    }
+    RouterController.push('ConnectingExternal', {
+      connector: item.connector,
+      redirectView
+    })
   }
 
   private renderWallet(item: WalletItem, index: number) {

@@ -57,6 +57,19 @@ const controller = {
   },
 
   async open(options?: ModalControllerArguments['open']) {
+    const { plan } = ApiController.state
+
+    const isFreeTier = plan.tier === 'starter' || plan.tier === 'none'
+    const hasExceededLimit = plan.limits.isAboveRpcLimit || plan.limits.isAboveMauLimit
+
+    const shouldRedirectToUsageExceededView = isFreeTier && hasExceededLimit
+
+    if (shouldRedirectToUsageExceededView) {
+      RouterController.reset('UsageExceeded')
+      state.open = true
+      return
+    }
+
     const namespace = options?.namespace
     const currentNamespace = ChainController.state.activeChain
     const isSwitchingNamespace = namespace && namespace !== currentNamespace
