@@ -243,7 +243,7 @@ export class W3mSwapView extends LitElement {
       return 'Select token'
     }
 
-    if (!this.sourceTokenAmount) {
+    if (!this.sourceTokenAmount || this.sourceTokenAmount === '0') {
       return 'Enter amount'
     }
 
@@ -326,7 +326,7 @@ export class W3mSwapView extends LitElement {
 
   private templateActionButton() {
     const haveNoTokenSelected = !this.toToken || !this.sourceToken
-    const haveNoAmount = !this.sourceTokenAmount
+    const haveNoAmount = !this.sourceTokenAmount || this.sourceTokenAmount === '0'
     const loading = this.loadingQuote || this.loadingPrices || this.loadingTransaction
     const disabled = loading || haveNoTokenSelected || haveNoAmount || this.inputError
 
