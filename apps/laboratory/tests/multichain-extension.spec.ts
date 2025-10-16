@@ -188,6 +188,7 @@ extensionTest(
     await modalPage.switchAccount()
     await modalPage.closeModal()
     await modalValidator.expectAccountButtonAddress(emailEthAddress)
+    await modalPage.disconnect()
   }
 )
 
