@@ -57,7 +57,10 @@ const controller = {
   },
 
   async open(options?: ModalControllerArguments['open']) {
-    if (ApiController.state.plan.hasExceededUsageLimit) {
+    const isUsingCore =
+      OptionsController.state.manualWCControl || ConnectionController.state.wcBasic
+
+    if (ApiController.state.plan.hasExceededUsageLimit && !isUsingCore) {
       RouterController.reset('UsageExceeded')
       state.open = true
 
