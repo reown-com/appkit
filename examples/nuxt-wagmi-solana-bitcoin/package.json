@@ -14,7 +14,7 @@
     "@reown/appkit-adapter-bitcoin": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
-    "@tanstack/vue-query": "5.75.5",
+    "@tanstack/vue-query": "5.90.5",
     "@vue/devtools-api": "7.7.2",
     "@wagmi/core": "2.21.2",
     "@wagmi/vue": "0.2.11",
