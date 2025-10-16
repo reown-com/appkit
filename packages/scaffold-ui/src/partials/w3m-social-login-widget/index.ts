@@ -5,6 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AlertController,
+  ApiController,
   ChainController,
   ConnectionController,
   ConnectorController,
@@ -47,6 +48,8 @@ export class W3mSocialLoginWidget extends LitElement {
 
   @state() private isPwaLoading = false
 
+  @state() private hasExceededUsageLimit = ApiController.state.plan.hasExceededUsageLimit
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -54,7 +57,11 @@ export class W3mSocialLoginWidget extends LitElement {
         this.connectors = val
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
       }),
-      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
+      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val)),
+      ApiController.subscribeKey(
+        'plan',
+        val => (this.hasExceededUsageLimit = val.hasExceededUsageLimit)
+      )
     )
   }
 
@@ -199,6 +206,12 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   async onSocialClick(socialProvider?: SocialProvider) {
+    if (this.hasExceededUsageLimit) {
+      RouterController.push('UsageExceeded')
+
+      return
+    }
+
     const isAvailableChain = CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(
       chain => chain === ChainController.state.activeChain
     )
