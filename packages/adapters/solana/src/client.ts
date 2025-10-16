@@ -58,6 +58,10 @@ const TRANSACTION_ERROR_MAP = [
   {
     pattern: /Insufficient funds for fee/iu,
     message: 'Not enough SOL to cover fees or rent'
+  },
+  {
+    pattern: /Transfer: insufficient lamports/iu,
+    message: 'Not enough SOL to cover this transfer'
   }
 ]
 
@@ -230,10 +234,13 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     const result = await provider.sendTransaction(transaction, connection).catch(error => {
       if (error instanceof SendTransactionError) {
+        // Check both message and logs
         const errMessage = error?.transactionError?.message ?? error?.message ?? ''
+        const logs = error?.logs?.join(' ') ?? ''
+        const fullErrorText = `${errMessage} ${logs}`
 
         for (const { pattern, message } of TRANSACTION_ERROR_MAP) {
-          if (pattern.test(errMessage)) {
+          if (pattern.test(fullErrorText)) {
             throw new Error(message)
           }
         }
