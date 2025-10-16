@@ -116,14 +116,12 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   }
 
   override async signMessage(): Promise<AdapterBlueprint.SignMessageResult> {
-    // TON uses signData method instead of signMessage
-    // This method exists only to satisfy the adapter interface
+    // TON uses signData method instead of signMessage. This method exists only to satisfy the adapter interface
     return Promise.resolve({ signature: '' })
   }
 
   override async sendTransaction(): Promise<AdapterBlueprint.SendTransactionResult> {
-    // TON uses sendMessage method instead of sendTransaction
-    // This method exists only to satisfy the adapter interface
+    // TON uses sendMessage method instead of sendTransaction. This method exists only to satisfy the adapter interface
     return Promise.resolve({ hash: '' })
   }
 
@@ -199,7 +197,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
       throw new Error('Provider not found')
     }
 
-    await provider.switchNetwork(params.caipNetwork.caipNetworkId)
+    return await provider.switchNetwork(params.caipNetwork.caipNetworkId)
   }
 
   public override async setUniversalProvider(universalProvider: UniversalProvider) {

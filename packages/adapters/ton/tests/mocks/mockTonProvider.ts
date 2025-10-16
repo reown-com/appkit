@@ -23,6 +23,7 @@ export function mockTonProvider(config?: { name?: string }) {
       payload: { items: [{ name: 'ton_addr', address: 'mock_ton_address' }] }
     }),
     send: vi.fn().mockResolvedValue({ result: 'mock_result' }),
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     listen: vi.fn().mockReturnValue(() => {})
   }
 
