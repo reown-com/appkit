@@ -53,11 +53,13 @@ import {
 
 describe('Base Public methods', () => {
   beforeEach(() => {
+    vi.clearAllMocks()
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
     mockRemoteFeatures()
     vi.spyOn(ApiController, 'fetchAllowedOrigins').mockResolvedValue(['http://localhost:3000'])
+    vi.spyOn(ApiController, 'fetchUsage').mockResolvedValue(undefined)
   })
 
   it('should open modal', async () => {
