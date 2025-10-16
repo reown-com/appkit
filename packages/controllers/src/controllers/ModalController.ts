@@ -59,10 +59,10 @@ const controller = {
   async open(options?: ModalControllerArguments['open']) {
     const { plan } = ApiController.state
 
-    const isFreeTier = plan.tier === 'starter' || plan.tier === 'none'
+    const isStarterPlan = plan.tier === 'starter'
     const hasExceededLimit = plan.limits.isAboveRpcLimit || plan.limits.isAboveMauLimit
 
-    const shouldRedirectToUsageExceededView = isFreeTier && hasExceededLimit
+    const shouldRedirectToUsageExceededView = isStarterPlan && hasExceededLimit
 
     if (shouldRedirectToUsageExceededView) {
       RouterController.reset('UsageExceeded')

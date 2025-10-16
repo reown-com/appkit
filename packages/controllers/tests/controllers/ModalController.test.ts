@@ -328,25 +328,6 @@ describe('ModalController', () => {
       expect(ModalController.state.open).toBe(true)
     })
 
-    it('should redirect to UsageExceeded view when on none tier and limits are exceeded', async () => {
-      vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
-        ...ApiController.state,
-        plan: {
-          tier: 'none',
-          limits: {
-            isAboveRpcLimit: true,
-            isAboveMauLimit: false
-          }
-        }
-      })
-      const resetSpy = vi.spyOn(RouterController, 'reset')
-
-      await ModalController.open()
-
-      expect(resetSpy).toHaveBeenCalledWith('UsageExceeded')
-      expect(ModalController.state.open).toBe(true)
-    })
-
     it('should not redirect to UsageExceeded view when on paid tier even if limits are exceeded', async () => {
       vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
         ...ApiController.state,
