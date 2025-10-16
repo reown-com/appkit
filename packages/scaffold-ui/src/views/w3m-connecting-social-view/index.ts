@@ -159,6 +159,7 @@ export class W3mConnectingSocialView extends LitElement {
       }
 
       const error = uri.substring(errorIndex)
+
       return error
     } catch {
       return null
