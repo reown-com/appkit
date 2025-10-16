@@ -124,6 +124,7 @@ emailSiweTest.afterEach(async ({ browserName, timingRecords }, testInfo) => {
     await afterEachCanary(modifiedTestInfo, beforeAllTimingRecords)
     // Clear the error so we only report it once
     beforeAllError = undefined
+
     return
   }
 
