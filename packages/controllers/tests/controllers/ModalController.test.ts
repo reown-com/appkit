@@ -290,15 +290,16 @@ describe('ModalController', () => {
   })
 
   describe('usage exceeded handling', () => {
-    it('should redirect to UsageExceeded view when on starter tier and RPC limit is exceeded', async () => {
+    it('should redirect to UsageExceeded view when usage limit is exceeded', async () => {
       vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
         ...ApiController.state,
         plan: {
           tier: 'starter',
           limits: {
             isAboveRpcLimit: true,
-            isAboveMauLimit: false
-          }
+            isAboveMauLimit: true
+          },
+          hasExceededUsageLimit: true
         }
       })
       const resetSpy = vi.spyOn(RouterController, 'reset')
@@ -309,49 +310,7 @@ describe('ModalController', () => {
       expect(ModalController.state.open).toBe(true)
     })
 
-    it('should redirect to UsageExceeded view when on starter tier and MAU limit is exceeded', async () => {
-      vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
-        ...ApiController.state,
-        plan: {
-          tier: 'starter',
-          limits: {
-            isAboveRpcLimit: false,
-            isAboveMauLimit: true
-          }
-        }
-      })
-      const resetSpy = vi.spyOn(RouterController, 'reset')
-
-      await ModalController.open()
-
-      expect(resetSpy).toHaveBeenCalledWith('UsageExceeded')
-      expect(ModalController.state.open).toBe(true)
-    })
-
-    it('should not redirect to UsageExceeded view when on paid tier even if limits are exceeded', async () => {
-      vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
-        ...ApiController.state,
-        plan: {
-          tier: 'pro',
-          limits: {
-            isAboveRpcLimit: true,
-            isAboveMauLimit: true
-          }
-        }
-      })
-      mockChainControllerState({
-        noAdapters: false,
-        chains: new Map([[ConstantsUtil.CHAIN.EVM, { accountState: { caipAddress: undefined } }]])
-      })
-      vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
-      const resetSpy = vi.spyOn(RouterController, 'reset')
-
-      await ModalController.open()
-
-      expect(resetSpy).not.toHaveBeenCalledWith('UsageExceeded')
-    })
-
-    it('should not redirect to UsageExceeded view when on free tier but limits are not exceeded', async () => {
+    it('should not redirect to UsageExceeded view when usage limit is not exceeded', async () => {
       vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
         ...ApiController.state,
         plan: {
@@ -359,7 +318,8 @@ describe('ModalController', () => {
           limits: {
             isAboveRpcLimit: false,
             isAboveMauLimit: false
-          }
+          },
+          hasExceededUsageLimit: false
         }
       })
       mockChainControllerState({
