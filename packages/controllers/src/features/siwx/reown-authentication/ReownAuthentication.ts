@@ -162,7 +162,7 @@ export class ReownAuthentication implements SIWXConfig {
   }
 
   async signMessage(message: string): Promise<string> {
-    this.signer.signMessage(message)
+    return this.signer.signMessage(message)
   }
 
   on<Event extends keyof ReownAuthentication.Events>(
