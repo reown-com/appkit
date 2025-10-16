@@ -647,7 +647,7 @@ const controller = {
 
   async disconnectNamespace(namespace: ChainNamespace, initialDisconnect: boolean) {
     const connections = state.connections.get(namespace) || []
-    const disconnectedConnectors = await Promise.all(
+    await Promise.all(
       connections.map((connection: Connection) =>
         ConnectionController.disconnectConnector({
           id: connection.connectorId,
@@ -655,26 +655,6 @@ const controller = {
         })
       )
     )
-
-    if (disconnectedConnectors) {
-      disconnectedConnectors?.forEach(({ connections }: { connections: Connection[] }) =>
-        connections.forEach((connection: Connection) => {
-          StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
-
-          const caipNetworkId = connection.caipNetwork?.caipNetworkId
-          connection.accounts.forEach(account => {
-            const address = account.address
-            if (!caipNetworkId || !address) {
-              return
-            }
-            const siwx = SIWXUtil.getSIWX()
-            if (siwx?.signOutOnDisconnect) {
-              siwx.revokeSession(caipNetworkId, address)
-            }
-          })
-        })
-      )
-    }
 
     if (initialDisconnect) {
       ChainController.resetAccount(namespace)
@@ -768,12 +748,29 @@ const controller = {
        */
       if (caipAddress || !OptionsController.state.enableReconnect) {
         const result = await adapter?.disconnect({ id })
+
         disconnectedConnections.push(...(result?.connections || []))
       }
       const isAuth = id === CommonConstantsUtil.CONNECTOR_ID.AUTH
       if (isAuth) {
         StorageUtil.deleteConnectedSocialProvider()
       }
+
+      disconnectedConnections.forEach((connection: Connection) => {
+        StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
+
+        const caipNetworkId = connection.caipNetwork?.caipNetworkId
+        connection.accounts.forEach(account => {
+          const address = account.address
+          if (!caipNetworkId || !address) {
+            return
+          }
+          const siwx = SIWXUtil.getSIWX()
+          if (siwx?.signOutOnDisconnect) {
+            siwx.revokeSession(caipNetworkId, address)
+          }
+        })
+      })
 
       return { connections: disconnectedConnections }
     } catch (error) {
