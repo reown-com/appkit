@@ -121,7 +121,7 @@ importers:
         version: 0.23.0(rollup@4.52.4)(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
       vitest:
         specifier: 2.1.9
-        version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0)
+        version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0)
 
   apps/browser-extension:
     dependencies:
@@ -793,7 +793,7 @@ importers:
         version: link:../../packages/appkit
       '@walletconnect/sign-client':
         specifier: 2.22.4
-        version: 2.22.4(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
+        version: 2.22.4(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
       bs58:
         specifier: 6.0.0
         version: 6.0.0
@@ -1474,8 +1474,8 @@ importers:
         specifier: 19.1.9
         version: 19.1.9(@types/react@19.1.15)
       '@vitejs/plugin-react':
-        specifier: 4.2.1
-        version: 4.2.1(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
+        specifier: 5.0.4
+        version: 5.0.4(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
       vite:
         specifier: 5.4.20
         version: 5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0)
@@ -1508,8 +1508,8 @@ importers:
         specifier: 19.1.9
         version: 19.1.9(@types/react@19.1.15)
       '@vitejs/plugin-react':
-        specifier: 4.2.1
-        version: 4.2.1(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
+        specifier: 5.0.4
+        version: 5.0.4(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
       vite:
         specifier: 5.4.20
         version: 5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0)
@@ -1539,8 +1539,8 @@ importers:
         specifier: 19.1.9
         version: 19.1.9(@types/react@19.1.15)
       '@vitejs/plugin-react':
-        specifier: 4.2.1
-        version: 4.2.1(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
+        specifier: 5.0.4
+        version: 5.0.4(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
       vite:
         specifier: 5.4.20
         version: 5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0)
@@ -1570,8 +1570,8 @@ importers:
         specifier: 19.1.9
         version: 19.1.9(@types/react@19.1.15)
       '@vitejs/plugin-react':
-        specifier: 4.2.1
-        version: 4.2.1(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
+        specifier: 5.0.4
+        version: 5.0.4(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
       vite:
         specifier: 5.4.20
         version: 5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0)
@@ -1601,8 +1601,8 @@ importers:
         specifier: 19.1.9
         version: 19.1.9(@types/react@19.1.15)
       '@vitejs/plugin-react':
-        specifier: 4.2.1
-        version: 4.2.1(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
+        specifier: 5.0.4
+        version: 5.0.4(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
       vite:
         specifier: 5.4.20
         version: 5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0)
@@ -1632,8 +1632,8 @@ importers:
         specifier: 19.1.9
         version: 19.1.9(@types/react@19.1.15)
       '@vitejs/plugin-react':
-        specifier: 4.2.1
-        version: 4.2.1(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
+        specifier: 5.0.4
+        version: 5.0.4(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
       vite:
         specifier: 5.4.20
         version: 5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0)
@@ -1663,8 +1663,8 @@ importers:
         specifier: 19.1.9
         version: 19.1.9(@types/react@19.1.15)
       '@vitejs/plugin-react':
-        specifier: 4.2.1
-        version: 4.2.1(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
+        specifier: 5.0.4
+        version: 5.0.4(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
       vite:
         specifier: 5.4.20
         version: 5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0)
@@ -1697,8 +1697,8 @@ importers:
         specifier: 19.1.9
         version: 19.1.9(@types/react@19.1.15)
       '@vitejs/plugin-react':
-        specifier: 4.2.1
-        version: 4.2.1(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
+        specifier: 5.0.4
+        version: 5.0.4(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
       vite:
         specifier: 5.4.20
         version: 5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0)
@@ -1734,8 +1734,8 @@ importers:
         specifier: 19.1.9
         version: 19.1.9(@types/react@19.1.15)
       '@vitejs/plugin-react':
-        specifier: 4.3.4
-        version: 4.3.4(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
+        specifier: 5.0.4
+        version: 5.0.4(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
       vite:
         specifier: 5.4.20
         version: 5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0)
@@ -2235,7 +2235,7 @@ importers:
         version: 2.22.4(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       vitest:
         specifier: 2.1.9
-        version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0)
+        version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0)
 
   packages/adapters/ethers:
     dependencies:
@@ -2291,7 +2291,7 @@ importers:
         version: 2.22.4(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       vitest:
         specifier: 2.1.9
-        version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0)
+        version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0)
 
   packages/adapters/ethers5:
     dependencies:
@@ -2347,7 +2347,7 @@ importers:
         version: 2.22.4(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       vitest:
         specifier: 2.1.9
-        version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0)
+        version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0)
 
   packages/adapters/polkadot:
     dependencies:
@@ -2511,7 +2511,7 @@ importers:
         version: 2.22.4(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       vitest:
         specifier: 2.1.9
-        version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0)
+        version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0)
 
   packages/appkit:
     dependencies:
@@ -7490,6 +7490,9 @@ packages:
   '@rolldown/pluginutils@1.0.0-beta.29':
     resolution: {integrity: sha512-NIJgOsMjbxAXvoGq/X0gD7VPMQ8j9g0BiDaNjVNVjvl+iKXxL3Jre0v31RmBYeLEmkbj2s02v8vFTbUXi5XS2Q==}
 
+  '@rolldown/pluginutils@1.0.0-beta.38':
+    resolution: {integrity: sha512-N/ICGKleNhA5nc9XXQG/kkKHJ7S55u0x0XUJbbkmdCnFuoRkM1Il12q9q0eX19+M7KKUEPw/daUPIRnxhcxAIw==}
+
   '@rolldown/pluginutils@1.0.0-beta.43':
     resolution: {integrity: sha512-5Uxg7fQUCmfhax7FJke2+8B6cqgeUJUD9o2uXIKXhD+mG0mL6NObmVoi9wXEU1tY89mZKgAYA6fTbftx3q2ZPQ==}
 
@@ -9227,17 +9230,11 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@vitejs/plugin-react@4.2.1':
-    resolution: {integrity: sha512-oojO9IDc4nCUUi8qIR11KoQm0XFFLIwsRBwHRR4d/88IWghn1y6ckz/bJ8GHDCsYEJee8mDzqtJxh15/cisJNQ==}
-    engines: {node: ^14.18.0 || >=16.0.0}
+  '@vitejs/plugin-react@5.0.4':
+    resolution: {integrity: sha512-La0KD0vGkVkSk6K+piWDKRUyg8Rl5iAIKRMH0vMJI0Eg47bq1eOxmoObAaQG37WMW9MSyk7Cs8EIWwJC1PtzKA==}
+    engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
-      vite: ^4.2.0 || ^5.0.0
-
-  '@vitejs/plugin-react@4.3.4':
-    resolution: {integrity: sha512-SCCPBJtYLdE8PX/7ZQAs1QAZ8Jqwih+0VBLum1EGqmCCQal+MIUqLCzj3ZUy8ufbC0cAM4LRlSTm7IQJwWT4ug==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    peerDependencies:
-      vite: ^4.2.0 || ^5.0.0 || ^6.0.0
+      vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
 
   '@vitejs/plugin-vue-jsx@5.1.1':
     resolution: {integrity: sha512-uQkfxzlF8SGHJJVH966lFTdjM/lGcwJGzwAHpVqAPDD/QcsqoUGa+q31ox1BrUfi+FLP2ChVp7uLXE3DkHyDdQ==}
@@ -10171,6 +10168,9 @@ packages:
 
   axios@1.12.2:
     resolution: {integrity: sha512-vMJzPewAlRyOgxV2dU0Cuz2O8zzzx9VYtbJOaBgXFeLc4IV/Eg50n4LowmehOOR61S8ZMpc2K5Sa7g6A4jfkUw==}
+
+  axios@1.8.4:
+    resolution: {integrity: sha512-eBSYY4Y68NNlHbHBMdeDmKNtDgXWhQsJcGqzO3iLUM0GraQFSS9cVgPX5I9b3lbdFKyYoAEGAZF1DwhTaljNAw==}
 
   axobject-query@4.1.0:
     resolution: {integrity: sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==}
@@ -15168,6 +15168,10 @@ packages:
 
   react-refresh@0.14.2:
     resolution: {integrity: sha512-jCvmsr+1IUSMUyzOkRcvnVbX3ZYC6g9TDrDbFuFmRDq7PD4yaGbLKNQL6k2jnArV8hjYxh7hVhAZB6s9HDGpZA==}
+    engines: {node: '>=0.10.0'}
+
+  react-refresh@0.17.0:
+    resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
     engines: {node: '>=0.10.0'}
 
   react-remove-scroll-bar@2.3.8:
@@ -21638,7 +21642,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
       '@types/debug': 4.1.12
-      debug: 4.3.4
+      debug: 4.4.3
       pony-cause: 2.1.11
       semver: 7.7.2
       uuid: 9.0.1
@@ -21652,7 +21656,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
       '@types/debug': 4.1.12
-      debug: 4.3.4
+      debug: 4.4.3
       pony-cause: 2.1.11
       semver: 7.7.2
       uuid: 9.0.1
@@ -25578,6 +25582,8 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.0-beta.29': {}
 
+  '@rolldown/pluginutils@1.0.0-beta.38': {}
+
   '@rolldown/pluginutils@1.0.0-beta.43': {}
 
   '@rollup/plugin-alias@5.1.1(rollup@4.52.4)':
@@ -25777,7 +25783,7 @@ snapshots:
 
   '@sats-connect/core@0.6.5(typescript@5.9.2)':
     dependencies:
-      axios: 1.12.2
+      axios: 1.8.4
       bitcoin-address-validation: 2.2.3
       buffer: 6.0.3
       jsontokens: 4.0.1
@@ -28020,24 +28026,14 @@ snapshots:
       - rollup
       - supports-color
 
-  '@vitejs/plugin-react@4.2.1(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))':
+  '@vitejs/plugin-react@5.0.4(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))':
     dependencies:
       '@babel/core': 7.28.4
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.4)
       '@babel/plugin-transform-react-jsx-source': 7.27.1(@babel/core@7.28.4)
+      '@rolldown/pluginutils': 1.0.0-beta.38
       '@types/babel__core': 7.20.5
-      react-refresh: 0.14.2
-      vite: 5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@vitejs/plugin-react@4.3.4(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))':
-    dependencies:
-      '@babel/core': 7.28.4
-      '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.4)
-      '@babel/plugin-transform-react-jsx-source': 7.27.1(@babel/core@7.28.4)
-      '@types/babel__core': 7.20.5
-      react-refresh: 0.14.2
+      react-refresh: 0.17.0
       vite: 5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0)
     transitivePeerDependencies:
       - supports-color
@@ -28089,7 +28085,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.1
       tinyrainbow: 1.2.0
-      vitest: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0)
+      vitest: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -28234,7 +28230,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 1.2.0
-      vitest: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0)
+      vitest: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0)
 
   '@vitest/utils@2.1.8':
     dependencies:
@@ -29427,6 +29423,50 @@ snapshots:
       - utf-8-validate
       - zod
 
+  '@walletconnect/core@2.22.4(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@walletconnect/heartbeat': 1.2.2
+      '@walletconnect/jsonrpc-provider': 1.0.14
+      '@walletconnect/jsonrpc-types': 1.0.4
+      '@walletconnect/jsonrpc-utils': 1.0.8
+      '@walletconnect/jsonrpc-ws-connection': 1.0.16(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/logger': 3.0.0
+      '@walletconnect/relay-api': 1.0.11
+      '@walletconnect/relay-auth': 1.1.0
+      '@walletconnect/safe-json': 1.0.2
+      '@walletconnect/time': 1.0.2
+      '@walletconnect/types': 2.22.4(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.22.4(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)
+      '@walletconnect/window-getters': 1.0.1
+      es-toolkit: 1.39.3
+      events: 3.3.0
+      uint8arrays: 3.1.1
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@deno/kv'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/blob'
+      - '@vercel/functions'
+      - '@vercel/kv'
+      - aws4fetch
+      - bufferutil
+      - db0
+      - ioredis
+      - typescript
+      - uploadthing
+      - utf-8-validate
+      - zod
+
   '@walletconnect/environment@1.0.1':
     dependencies:
       tslib: 1.14.1
@@ -30141,6 +30181,42 @@ snapshots:
       '@walletconnect/time': 1.0.2
       '@walletconnect/types': 2.22.4(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       '@walletconnect/utils': 2.22.4(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
+      events: 3.3.0
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@deno/kv'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@upstash/redis'
+      - '@vercel/blob'
+      - '@vercel/functions'
+      - '@vercel/kv'
+      - aws4fetch
+      - bufferutil
+      - db0
+      - ioredis
+      - typescript
+      - uploadthing
+      - utf-8-validate
+      - zod
+
+  '@walletconnect/sign-client@2.22.4(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@walletconnect/core': 2.22.4(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@walletconnect/events': 1.0.1
+      '@walletconnect/heartbeat': 1.2.2
+      '@walletconnect/jsonrpc-utils': 1.0.8
+      '@walletconnect/logger': 3.0.0
+      '@walletconnect/time': 1.0.2
+      '@walletconnect/types': 2.22.4(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.22.4(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -31755,6 +31831,14 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
+  axios@1.8.4:
+    dependencies:
+      follow-redirects: 1.15.11
+      form-data: 4.0.4
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
   axobject-query@4.1.0: {}
 
   b4a@1.7.3: {}
@@ -33149,7 +33233,7 @@ snapshots:
   engine.io-client@6.6.3(bufferutil@4.0.9)(utf-8-validate@5.0.10):
     dependencies:
       '@socket.io/component-emitter': 3.1.2
-      debug: 4.3.4
+      debug: 4.3.6
       engine.io-parser: 5.2.3
       ws: 8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       xmlhttprequest-ssl: 2.1.2
@@ -33959,7 +34043,7 @@ snapshots:
 
   extension-port-stream@3.0.0:
     dependencies:
-      readable-stream: 3.6.2
+      readable-stream: 4.7.0
       webextension-polyfill: 0.10.0
 
   external-editor@3.1.0:
@@ -37997,6 +38081,8 @@ snapshots:
 
   react-refresh@0.14.2: {}
 
+  react-refresh@0.17.0: {}
+
   react-remove-scroll-bar@2.3.8(@types/react@19.1.15)(react@19.1.1):
     dependencies:
       react: 19.1.1
@@ -38473,7 +38559,7 @@ snapshots:
 
   send@1.2.0:
     dependencies:
-      debug: 4.3.6
+      debug: 4.4.3
       encodeurl: 2.0.0
       escape-html: 1.0.3
       etag: 1.8.1
@@ -38729,7 +38815,7 @@ snapshots:
   socket.io-parser@4.2.4:
     dependencies:
       '@socket.io/component-emitter': 3.1.2
-      debug: 4.3.4
+      debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
 
@@ -40376,7 +40462,7 @@ snapshots:
     optionalDependencies:
       vite: 6.3.6(@types/node@22.13.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(yaml@2.8.1)
 
-  vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0):
+  vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.0):
     dependencies:
       '@vitest/expect': 2.1.9
       '@vitest/mocker': 2.1.9(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.0))
