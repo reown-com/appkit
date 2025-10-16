@@ -10,6 +10,7 @@ import {
   AdapterBlueprint,
   BlockchainApiController,
   ChainController,
+  ProviderController,
   WcHelpersUtil
 } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
@@ -17,7 +18,7 @@ import type { TonConnector } from '@reown/appkit-utils/ton'
 
 import { TonConnectConnector } from './connectors/TonConnectConnector.js'
 import { TonWalletConnectConnector } from './connectors/TonWalletConnectConnector.js'
-import { getWallets as getInjectedWallets } from './utils/TonConnectUtil.js'
+import { getInjectedWallets } from './utils/TonConnectUtil.js'
 
 export class TonAdapter extends AdapterBlueprint<TonConnector> {
   private universalProvider: UniversalProvider | undefined = undefined
@@ -115,10 +116,14 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   }
 
   override async signMessage(): Promise<AdapterBlueprint.SignMessageResult> {
+    // TON uses signData method instead of signMessage
+    // This method exists only to satisfy the adapter interface
     return Promise.resolve({ signature: '' })
   }
 
   override async sendTransaction(): Promise<AdapterBlueprint.SendTransactionResult> {
+    // TON uses sendMessage method instead of sendTransaction
+    // This method exists only to satisfy the adapter interface
     return Promise.resolve({ hash: '' })
   }
 
@@ -183,11 +188,18 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   }
 
   override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
-    const connector = this.getActiveConnector()
+    const providerType = ProviderController.getProviderId(params.caipNetwork.chainNamespace)
+    const provider = ProviderController.getProvider<TonConnector>(params.caipNetwork.chainNamespace)
 
-    if (connector) {
-      await connector.switchNetwork(params.caipNetwork.caipNetworkId)
+    if (providerType === 'WALLET_CONNECT' || providerType === 'AUTH') {
+      return await super.switchNetwork(params)
     }
+
+    if (!provider) {
+      throw new Error('Provider not found')
+    }
+
+    await provider.switchNetwork(params.caipNetwork.caipNetworkId)
   }
 
   public override async setUniversalProvider(universalProvider: UniversalProvider) {
@@ -294,7 +306,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
                 caipNetwork
               })
 
-              this.listenProviderEvents(connector.id, connector.provider as TonConnector)
+              this.listenProviderEvents(connector.id, connector)
             }
           }
         })

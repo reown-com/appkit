@@ -194,7 +194,7 @@ export function normalizeBase64(s?: string): string | undefined {
  * Fetch list of TON wallets (remote + injected) and merge them.
  * This function does not depend on any external SDKs.
  */
-export async function getWallets(params?: {
+export async function getInjectedWallets(params?: {
   sourceUrl?: string
   /** Optional in-memory cache TTL in milliseconds */
   cacheTTLMs?: number
