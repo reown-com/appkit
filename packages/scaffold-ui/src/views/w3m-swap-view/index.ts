@@ -235,6 +235,7 @@ export class W3mSwapView extends LitElement {
   }
 
   private actionButtonLabel(): string {
+    const haveNoAmount = !this.sourceTokenAmount || this.sourceTokenAmount === '0'
     if (this.fetchError) {
       return 'Swap'
     }
@@ -243,7 +244,7 @@ export class W3mSwapView extends LitElement {
       return 'Select token'
     }
 
-    if (!this.sourceTokenAmount || this.sourceTokenAmount === '0') {
+    if (haveNoAmount) {
       return 'Enter amount'
     }
 
