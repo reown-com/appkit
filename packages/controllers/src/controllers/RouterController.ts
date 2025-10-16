@@ -175,7 +175,7 @@ const controller = {
       finalData = undefined
     }
 
-    if (view !== state.view) {
+    if (finalView !== state.view) {
       state.view = finalView
       state.history.push(finalView)
       state.data = finalData
