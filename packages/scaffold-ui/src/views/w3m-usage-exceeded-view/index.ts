@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 
-import { ModalController } from '@reown/appkit-controllers'
+import { RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -52,7 +52,7 @@ export class W3mUsageExceededView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onTryAgainClick() {
-    ModalController.close()
+    RouterController.goBack()
   }
 }
 
