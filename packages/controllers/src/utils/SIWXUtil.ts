@@ -125,7 +125,10 @@ export const SIWXUtil = {
 
       let signature = ''
       if (!siwx.signMessage) {
-        // Missing EW Modal Handling
+const connectorId = ConnectorController.getConnectorId(network.chainNamespace)
+if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
+        RouterController.pushTransactionStack({})
+}
         signature = (await ConnectionController.signMessage(message)) || ''
       } else {
         signature = await siwx.signMessage({
