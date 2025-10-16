@@ -153,12 +153,13 @@ export class W3mConnectingSocialView extends LitElement {
 
   private parseURLError(uri: string) {
     try {
-      const errorIndex = uri.indexOf('error=')
+      const errorKey = 'error='
+      const errorIndex = uri.indexOf(errorKey)
       if (errorIndex === -1) {
         return null
       }
 
-      const error = uri.substring(errorIndex)
+      const error = uri.substring(errorIndex + errorKey.length)
 
       return error
     } catch {
