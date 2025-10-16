@@ -13,7 +13,7 @@ export class WuiListNetwork extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public imageSrc = 'ethereum'
+  @property() public imageSrc?: string = undefined
 
   @property() public name = 'Ethereum'
 
@@ -26,12 +26,25 @@ export class WuiListNetwork extends LitElement {
     return html`
       <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)}>
         <wui-flex gap="2" alignItems="center">
-          <wui-image ?boxed=${true} src=${this.imageSrc}></wui-image>
+          ${this.imageTemplate()}
           <wui-text variant="lg-regular" color="primary">${this.name}</wui-text>
         </wui-flex>
         <wui-icon name="chevronRight" size="lg" color="default"></wui-icon>
       </button>
     `
+  }
+
+  private imageTemplate() {
+    if (this.imageSrc) {
+      return html`<wui-image ?boxed=${true} src=${this.imageSrc}></wui-image>`
+    }
+
+    return html`<wui-image
+      ?boxed=${true}
+      icon="networkPlaceholder"
+      size="lg"
+      iconColor="default"
+    ></wui-image>`
   }
 }
 

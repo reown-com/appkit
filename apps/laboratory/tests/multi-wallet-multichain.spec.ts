@@ -225,3 +225,14 @@ test('should disconnect only the selected wallet', async () => {
   expect(await modal.getAddress('solana')).toBe(walletConnectSolanaAddress)
   expect(await modal.getAddress('eip155')).toBe(walletConnectEvmAddress)
 })
+
+test('should disconnect WC as expected for all namespaces', async () => {
+  await modal.openAccount()
+  await modal.clickWalletSwitchButton()
+  await modal.clickTab('solana')
+
+  await modal.clickProfileWalletsDisconnectButton()
+
+  await validator.expectDisconnected('solana')
+  await validator.expectDisconnected('eip155')
+})

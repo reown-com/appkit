@@ -50,6 +50,7 @@ function headings() {
     AllWallets: 'All Wallets',
     ApproveTransaction: 'Approve Transaction',
     BuyInProgress: 'Buy',
+    UsageExceeded: 'Usage Exceeded',
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
     ConnectingWalletConnectBasic: 'WalletConnect',

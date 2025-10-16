@@ -17,7 +17,7 @@ export class WuiQrCode extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public uri = ''
 
-  @property({ type: Number }) public size = 0
+  @property({ type: Number }) public size = 500
 
   @property() public theme: ThemeType = 'dark'
 
@@ -33,7 +33,6 @@ export class WuiQrCode extends LitElement {
   public override render() {
     this.dataset['theme'] = this.theme
     this.dataset['clear'] = String(this.arenaClear)
-    this.style.cssText = `--local-size: ${this.size}px`
 
     return html`<wui-flex
       alignItems="center"
@@ -51,7 +50,7 @@ export class WuiQrCode extends LitElement {
   // -- Private ------------------------------------------- //
   private templateSvg() {
     return svg`
-      <svg height=${this.size} width=${this.size}>
+      <svg viewBox="0 0 ${this.size} ${this.size}" width="100%" height="100%">
         ${QrCodeUtil.generate({
           uri: this.uri,
           size: this.size,

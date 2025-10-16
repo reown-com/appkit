@@ -13,13 +13,17 @@ config({ path: './.env.local' })
 const shardSuffix = process.env['PLAYWRIGHT_SHARD_SUFFIX']
 const blobOutputDir = 'playwright-blob-reports'
 const blobFileName = shardSuffix ? `report-${shardSuffix}.zip` : 'report.zip'
+const skipWS = process.env['SKIP_PLAYWRIGHT_WEBSERVER'] === 'true'
 
 export default defineConfig<ModalFixture>({
   testDir: './tests',
   fullyParallel: true,
   workers: getValue(8, 4),
   reporter: process.env['CI']
-    ? [['blob', { outputDir: blobOutputDir, fileName: blobFileName }]]
+    ? [
+        ['blob', { outputDir: blobOutputDir, fileName: blobFileName }],
+        ['json', { outputFile: 'test-results.json' }]
+      ]
     : [['list'], ['html', { host: '0.0.0.0' }], ['json', { outputFile: 'test-results.json' }]],
   // Limits the number of failed tests in the whole test suite. Playwright Test will stop after reaching this number of failed tests and skip any tests that were not executed yet
   maxFailures: getValue(10, undefined),
@@ -48,9 +52,13 @@ export default defineConfig<ModalFixture>({
   projects: getProjects(),
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'pnpm playwright:start',
-    url: BASE_URL,
-    reuseExistingServer: !process.env['CI'] || Boolean(process.env['SKIP_PLAYWRIGHT_WEBSERVER'])
-  }
+  ...(skipWS
+    ? {}
+    : {
+        webServer: {
+          command: 'pnpm playwright:start',
+          url: BASE_URL,
+          reuseExistingServer: !process.env['CI']
+        }
+      })
 })
