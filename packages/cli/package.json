@@ -11,15 +11,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "figlet": "1.8.0",
-    "inquirer": "12.4.2",
+    "figlet": "1.9.1",
+    "inquirer": "12.9.4",
     "tiged": "2.12.7"
   },
   "devDependencies": {
-    "@babel/plugin-transform-runtime": "7.27.4",
+    "@babel/plugin-transform-runtime": "7.28.3",
     "@babel/preset-env": "7.27.2",
     "@babel/runtime": "7.27.6",
-    "cross-env": "7.0.3",
+    "cross-env": "10.0.0",
     "esm": "3.2.25",
     "ts-node": "10.9.2"
   },
