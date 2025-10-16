@@ -1,7 +1,12 @@
 /** @type { import('@storybook/web-components-vite').StorybookConfig } */
 export default {
   stories: ['../stories/**/*.mdx', '../stories/**/*.stories.@(js|jsx|ts|tsx)'],
-  addons: ['@storybook/addon-links', '@storybook/addon-docs', 'storybook/addon-essentials'],
+  addons: [
+    '@storybook/addon-links',
+    '@storybook/addon-docs',
+    'storybook/addon-essentials',
+    '@chromatic-com/storybook'
+  ],
   core: {
     disableTelemetry: true
   },

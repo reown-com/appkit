@@ -53,11 +53,13 @@ import {
 
 describe('Base Public methods', () => {
   beforeEach(() => {
+    vi.clearAllMocks()
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
     mockRemoteFeatures()
     vi.spyOn(ApiController, 'fetchAllowedOrigins').mockResolvedValue(['http://localhost:3000'])
+    vi.spyOn(ApiController, 'fetchUsage').mockResolvedValue(undefined)
   })
 
   it('should open modal', async () => {
@@ -561,15 +563,6 @@ describe('Base Public methods', () => {
     expect(appKit.getApprovedCaipNetworkIds()).toEqual(['eip155:1'])
   })
 
-  it('should set approved CAIP networks data', () => {
-    const setApprovedCaipNetworksData = vi.spyOn(ChainController, 'setApprovedCaipNetworksData')
-
-    const appKit = new AppKit(mockOptions)
-    appKit.setApprovedCaipNetworksData('eip155')
-
-    expect(setApprovedCaipNetworksData).toHaveBeenCalledWith('eip155')
-  })
-
   it('should reset network', () => {
     const resetNetwork = vi.spyOn(ChainController, 'resetNetwork')
 
@@ -1069,7 +1062,7 @@ describe('Base Public methods', () => {
 
   it('should get account information with embedded wallet info even if no chain namespace is provided in getAccount', () => {
     const authConnector = {
-      id: 'ID_AUTH',
+      id: 'AUTH',
       name: 'ID Auth',
       imageUrl: 'https://example.com/id-auth.png'
     } as AuthConnector
@@ -1091,7 +1084,7 @@ describe('Base Public methods', () => {
     vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
       const connectorKey = getSafeConnectorIdKey(mainnet.chainNamespace)
       if (key === connectorKey) {
-        return 'ID_AUTH'
+        return 'AUTH'
       }
       if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
         return mainnet.caipNetworkId
@@ -1103,7 +1096,7 @@ describe('Base Public methods', () => {
       ChainController.state.activeChain
     )
 
-    expect(connectedConnectorId).toBe('ID_AUTH')
+    expect(connectedConnectorId).toBe('AUTH')
 
     const appKit = new AppKit(mockOptions)
     const account = appKit.getAccount()
@@ -1125,12 +1118,12 @@ describe('Base Public methods', () => {
 
   it('should get account information', () => {
     const authConnector = {
-      id: 'ID_AUTH',
+      id: 'AUTH',
       name: 'ID Auth',
       imageUrl: 'https://example.com/id-auth.png'
     } as AuthConnector
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(authConnector)
-    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('AUTH')
     vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('test-username')
     vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       caipAddress: 'eip155:1:0x123',

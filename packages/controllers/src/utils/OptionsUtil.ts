@@ -1,3 +1,4 @@
+import { OptionsController } from '../controllers/OptionsController.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
 import type { Features, FeaturesKeys, RemoteFeatures } from './TypeUtil.js'
@@ -17,18 +18,37 @@ export const OptionsUtil = {
       return socials as T
     }
 
+    let filteredSocials = socials
+
     if (CoreHelperUtil.isTelegram()) {
       if (CoreHelperUtil.isIos()) {
-        return socials.filter(s => s !== 'google')
+        filteredSocials = filteredSocials.filter(s => s !== 'google')
       }
       if (CoreHelperUtil.isMac()) {
-        return socials.filter(s => s !== 'x')
+        filteredSocials = filteredSocials.filter(s => s !== 'x')
       }
       if (CoreHelperUtil.isAndroid()) {
-        return socials.filter(s => !['facebook', 'x'].includes(s))
+        filteredSocials = filteredSocials.filter(s => !['facebook', 'x'].includes(s))
       }
     }
 
-    return socials
+    if (CoreHelperUtil.isMobile()) {
+      filteredSocials = filteredSocials.filter(s => s !== 'facebook')
+    }
+
+    return filteredSocials
+  },
+  isSocialsEnabled() {
+    return (
+      (Array.isArray(OptionsController.state.features?.socials) &&
+        OptionsController.state.features?.socials.length > 0) ||
+      (Array.isArray(OptionsController.state.remoteFeatures?.socials) &&
+        OptionsController.state.remoteFeatures?.socials.length > 0)
+    )
+  },
+  isEmailEnabled() {
+    return Boolean(
+      OptionsController.state.features?.email || OptionsController.state.remoteFeatures?.email
+    )
   }
 }

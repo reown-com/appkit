@@ -11,13 +11,13 @@ import {
   ConnectionController,
   CoreHelperUtil,
   ModalController,
-  SendController
+  SendController,
+  WcHelpersUtil
 } from '@reown/appkit-controllers'
 import { mockChainControllerState } from '@reown/appkit-controllers/testing'
 import { ErrorUtil, TokenUtil } from '@reown/appkit-utils'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client'
-import { WcHelpersUtil } from '../../src/utils/index'
 import { mainnet } from '../mocks/Networks'
 
 describe('AppKitBaseClient.checkAllowedOrigins', () => {
@@ -30,6 +30,15 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
       value: {
         getElementsByTagName: vi.fn(),
         querySelector: vi.fn()
+      },
+      writable: true
+    })
+
+    Object.defineProperty(globalThis, 'navigator', {
+      value: {
+        clipboard: {
+          readText: vi.fn(() => Promise.resolve(''))
+        }
       },
       writable: true
     })

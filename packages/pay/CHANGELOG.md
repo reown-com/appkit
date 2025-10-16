@@ -1,5 +1,49 @@
 # @reown/appkit-pay
 
+## 1.8.10
+
+### Patch Changes
+
+- [#5148](https://github.com/reown-com/appkit/pull/5148) [`bdce2c8`](https://github.com/reown-com/appkit/commit/bdce2c8dfa58bed7bd5f8114574c2db751e9bdd3) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where social login did not work with wallet button
+
+- Updated dependencies [[`bdce2c8`](https://github.com/reown-com/appkit/commit/bdce2c8dfa58bed7bd5f8114574c2db751e9bdd3), [`561a215`](https://github.com/reown-com/appkit/commit/561a215f4455a87a5993aa4850e553bc596d75e7), [`069ccbf`](https://github.com/reown-com/appkit/commit/069ccbfe215838a523beb362ec18c8a45ab92709), [`17ea7b3`](https://github.com/reown-com/appkit/commit/17ea7b32d4cbfca07cc74eac7ee98bf640fadec2)]:
+  - @reown/appkit-controllers@1.8.10
+  - @reown/appkit-utils@1.8.10
+  - @reown/appkit-common@1.8.10
+  - @reown/appkit-ui@1.8.10
+
+## 1.8.9
+
+### Patch Changes
+
+- [#5100](https://github.com/reown-com/appkit/pull/5100) [`6ba0dac`](https://github.com/reown-com/appkit/commit/6ba0dac506cbd4457034a13067207c5c6231e853) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrades Viem, Wagmi, WC, Solana and some other dependencies to latest
+
+- [#5098](https://github.com/reown-com/appkit/pull/5098) [`10cfb56`](https://github.com/reown-com/appkit/commit/10cfb56fc940e6d0371918ba8fb8f29692523fc0) Thanks [@magiziz](https://github.com/magiziz)! - Added `getDisabledCaipNetworks` to AppKit to get disabled caip networks
+
+- Updated dependencies [[`6ba0dac`](https://github.com/reown-com/appkit/commit/6ba0dac506cbd4457034a13067207c5c6231e853), [`a76c49d`](https://github.com/reown-com/appkit/commit/a76c49d82f831c5a2d112e4c7130bbd4f705b31a), [`0ec4969`](https://github.com/reown-com/appkit/commit/0ec49696487470b238f945997b11ea190380a93b), [`10cfb56`](https://github.com/reown-com/appkit/commit/10cfb56fc940e6d0371918ba8fb8f29692523fc0)]:
+  - @reown/appkit-utils@1.8.9
+  - @reown/appkit-controllers@1.8.9
+  - @reown/appkit-common@1.8.9
+  - @reown/appkit-ui@1.8.9
+
+## 1.8.8
+
+### Patch Changes
+
+- [#5079](https://github.com/reown-com/appkit/pull/5079) [`511a735`](https://github.com/reown-com/appkit/commit/511a73590a834a6f81bda675d9a740a4d61924d7) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the universal provider threw a random object error when the wallet rejected connection request
+
+- [#5078](https://github.com/reown-com/appkit/pull/5078) [`a0a1589`](https://github.com/reown-com/appkit/commit/a0a1589acfe3e92030fd85589fab961e4ea85b1d) Thanks [@magiziz](https://github.com/magiziz)! - Added chain image to token button component for the deposit from exchange view
+
+- [#4959](https://github.com/reown-com/appkit/pull/4959) [`5725b51`](https://github.com/reown-com/appkit/commit/5725b5100ba71bba47173dc5f6318cb857afec9d) Thanks [@magiziz](https://github.com/magiziz)! - Improved the send flow with improved design and added top-up options for users with insufficient token balances
+
+- [#5074](https://github.com/reown-com/appkit/pull/5074) [`216596d`](https://github.com/reown-com/appkit/commit/216596d01128aca0629346b75ac256ea3db7a391) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where the wallets would show a small glitch when rendering the connectors
+
+- Updated dependencies [[`511a735`](https://github.com/reown-com/appkit/commit/511a73590a834a6f81bda675d9a740a4d61924d7), [`a07270d`](https://github.com/reown-com/appkit/commit/a07270d862717bb6b46f93b09bb073ffd7e15035), [`10c029a`](https://github.com/reown-com/appkit/commit/10c029acd4fb16d0700823e6afaef095087ec247), [`a0a1589`](https://github.com/reown-com/appkit/commit/a0a1589acfe3e92030fd85589fab961e4ea85b1d), [`5725b51`](https://github.com/reown-com/appkit/commit/5725b5100ba71bba47173dc5f6318cb857afec9d), [`216596d`](https://github.com/reown-com/appkit/commit/216596d01128aca0629346b75ac256ea3db7a391)]:
+  - @reown/appkit-controllers@1.8.8
+  - @reown/appkit-utils@1.8.8
+  - @reown/appkit-common@1.8.8
+  - @reown/appkit-ui@1.8.8
+
 ## 1.8.7
 
 ### Patch Changes

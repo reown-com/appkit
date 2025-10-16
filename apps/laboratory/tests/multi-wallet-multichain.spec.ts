@@ -25,14 +25,14 @@ const test = extensionFixture.extend<{ library: string }>({
 
 test.describe.configure({ mode: 'serial' })
 
-test.beforeAll(async ({ context }) => {
+test.beforeAll(async ({ page: _page, context }) => {
   apiKey = process.env['MAILSAC_API_KEY'] as string
 
   if (!apiKey) {
     throw new Error('MAILSAC_API_KEY required')
   }
 
-  page = await context.newPage()
+  page = _page
   wallet = new WalletPage(await context.newPage())
   modal = new ModalPage(page, 'multichain-ethers-solana', 'default')
   validator = new ModalValidator(page)
@@ -224,4 +224,15 @@ test('should disconnect only the selected wallet', async () => {
 
   expect(await modal.getAddress('solana')).toBe(walletConnectSolanaAddress)
   expect(await modal.getAddress('eip155')).toBe(walletConnectEvmAddress)
+})
+
+test('should disconnect WC as expected for all namespaces', async () => {
+  await modal.openAccount()
+  await modal.clickWalletSwitchButton()
+  await modal.clickTab('solana')
+
+  await modal.clickProfileWalletsDisconnectButton()
+
+  await validator.expectDisconnected('solana')
+  await validator.expectDisconnected('eip155')
 })
