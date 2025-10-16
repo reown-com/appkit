@@ -1037,6 +1037,7 @@ export class ModalPage {
     const walletSelector = await this.getExtensionWallet()
     await walletSelector.click()
     if (!isFiltered) {
+      await this.page.waitForTimeout(1000)
       const chainSelector = this.page.getByTestId(`wui-list-chain-${chainNamespace}`)
       await chainSelector.click()
     }

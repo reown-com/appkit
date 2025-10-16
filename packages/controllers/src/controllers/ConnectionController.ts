@@ -658,9 +658,21 @@ const controller = {
 
     if (disconnectedConnectors) {
       disconnectedConnectors?.forEach(({ connections }: { connections: Connection[] }) =>
-        connections.forEach((connection: Connection) =>
+        connections.forEach((connection: Connection) => {
           StorageUtil.addDisconnectedConnectorId(connection.connectorId, namespace)
-        )
+
+          const caipNetworkId = connection.caipNetwork?.caipNetworkId
+          connection.accounts.forEach(account => {
+            const address = account.address
+            if (!caipNetworkId || !address) {
+              return
+            }
+            const siwx = SIWXUtil.getSIWX()
+            if (siwx?.signOutOnDisconnect) {
+              siwx.revokeSession(caipNetworkId, address)
+            }
+          })
+        })
       )
     }
 
