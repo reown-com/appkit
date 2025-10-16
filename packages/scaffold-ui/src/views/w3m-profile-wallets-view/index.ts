@@ -380,8 +380,6 @@ export class W3mProfileWalletsView extends LitElement {
           const shouldShowSeparator = connectionIdx !== 0 || accountIdx !== 0
           const isLoading = this.isAccountLoading(connection.connectorId, account.address)
 
-          const isDisabled = this.caipNetwork?.chainNamespace !== namespace
-
           return html`
             <wui-flex flexDirection="column">
               ${shouldShowSeparator ? html`<wui-separator></wui-separator>` : null}
@@ -404,7 +402,6 @@ export class W3mProfileWalletsView extends LitElement {
                 .icon=${authData.icon}
                 .iconSize=${authData.iconSize}
                 .loading=${isLoading}
-                .disabled=${isDisabled}
                 .showBalance=${false}
                 .charsStart=${UI_CONFIG.ADDRESS_DISPLAY.START}
                 .charsEnd=${UI_CONFIG.ADDRESS_DISPLAY.END}
@@ -515,6 +512,13 @@ export class W3mProfileWalletsView extends LitElement {
       this.isSwitching = true
       this.lastSelectedConnectorId = connection.connectorId
       this.lastSelectedAddress = address
+
+      const isDifferentNamespace = this.caipNetwork?.chainNamespace !== namespace
+
+      if (isDifferentNamespace && connection?.caipNetwork) {
+        ConnectorController.setFilterByNamespace(namespace)
+        await ChainController.switchActiveNetwork(connection?.caipNetwork)
+      }
 
       await ConnectionController.switchConnection({
         connection,

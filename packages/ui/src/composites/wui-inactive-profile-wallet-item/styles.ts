@@ -32,9 +32,4 @@ export default css`
     width: 8px;
     height: 8px;
   }
-
-  .disabled {
-    opacity: 0.5;
-    pointer-events: none;
-  }
 `
