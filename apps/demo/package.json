@@ -47,7 +47,7 @@
     "@sentry/nextjs": "8.55.0",
     "@solana/web3.js": "1.98.4",
     "@tanstack/react-query": "5.75.5",
-    "@wagmi/core": "2.21.2",
+    "@wagmi/core": "2.22.1",
     "autoprefixer": "10.4.21",
     "class-variance-authority": "0.7.1",
     "classnames": "2.5.1",
@@ -60,7 +60,7 @@
     "sonner": "1.7.4",
     "tailwind-merge": "2.6.0",
     "tailwindcss-animate": "1.0.7",
-    "viem": "2.37.9",
+    "viem": "2.38.2",
     "wagmi": "2.17.5",
     "valtio": "2.1.7"
   },
