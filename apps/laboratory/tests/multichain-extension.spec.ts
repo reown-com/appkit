@@ -188,6 +188,8 @@ extensionTest(
     await modalPage.switchAccount()
     await modalPage.closeModal()
     await modalValidator.expectAccountButtonAddress(emailEthAddress)
+    await modalPage.openProfileWalletsView()
+    await modalPage.clickProfileWalletsMoreButton()
     await modalPage.disconnect(false)
   }
 )
