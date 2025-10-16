@@ -29,6 +29,7 @@ export async function afterEachCanary(testInfo: TestInfo, timingRecords: TimingR
     if (!metricName) {
       throw new Error('Metric name must be defined')
     }
+
     const env = process.env['ENVIRONMENT'] || 'dev'
     const region = process.env['REGION'] || 'eu-central-1'
     if (env !== 'dev') {

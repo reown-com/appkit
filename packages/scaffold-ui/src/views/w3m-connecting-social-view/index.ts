@@ -62,10 +62,7 @@ export class W3mConnectingSocialView extends LitElement {
     const abortController = ErrorUtil.EmbeddedWalletAbortController
 
     abortController.signal.addEventListener('abort', () => {
-      if (this.socialWindow) {
-        this.socialWindow.close()
-        ChainController.setAccountProp('socialWindow', undefined, ChainController.state.activeChain)
-      }
+      this.closeSocialWindow()
     })
     this.unsubscribe.push(
       ...[
@@ -115,8 +112,7 @@ export class W3mConnectingSocialView extends LitElement {
       })
     }
 
-    this.socialWindow?.close()
-    ChainController.setAccountProp('socialWindow', undefined, ChainController.state.activeChain)
+    this.closeSocialWindow()
   }
 
   // -- Render -------------------------------------------- //
@@ -155,21 +151,36 @@ export class W3mConnectingSocialView extends LitElement {
     return html`<wui-loading-thumbnail radius=${radius * 9}></wui-loading-thumbnail>`
   }
 
+  private parseURLError(uri: string) {
+    try {
+      const errorKey = 'error='
+      const errorIndex = uri.indexOf(errorKey)
+      if (errorIndex === -1) {
+        return null
+      }
+
+      const error = uri.substring(errorIndex + errorKey.length)
+
+      return error
+    } catch {
+      return null
+    }
+  }
+
   private handleSocialConnection = async (event: MessageEvent) => {
     if (event.data?.resultUri) {
       if (event.origin === ConstantsUtil.SECURE_SITE_ORIGIN) {
         window.removeEventListener('message', this.handleSocialConnection, false)
         try {
           if (this.authConnector && !this.connecting) {
-            if (this.socialWindow) {
-              this.socialWindow.close()
-              ChainController.setAccountProp(
-                'socialWindow',
-                undefined,
-                ChainController.state.activeChain
-              )
-            }
             this.connecting = true
+            const error = this.parseURLError(event.data.resultUri)
+            if (error) {
+              this.handleSocialError(error)
+
+              return
+            }
+            this.closeSocialWindow()
             this.updateMessage()
             const uri = event.data.resultUri as string
 
@@ -180,6 +191,7 @@ export class W3mConnectingSocialView extends LitElement {
                 properties: { provider: this.socialProvider }
               })
             }
+
             await ConnectionController.connectExternal(
               {
                 id: this.authConnector.id,
@@ -249,6 +261,27 @@ export class W3mConnectingSocialView extends LitElement {
       this.message = 'Retrieving user data'
     } else {
       this.message = 'Connect in the provider window'
+    }
+  }
+
+  private handleSocialError(error: string) {
+    this.error = true
+    this.updateMessage()
+    if (this.socialProvider) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SOCIAL_LOGIN_ERROR',
+        properties: { provider: this.socialProvider, message: error }
+      })
+    }
+
+    this.closeSocialWindow()
+  }
+
+  private closeSocialWindow() {
+    if (this.socialWindow) {
+      this.socialWindow.close()
+      ChainController.setAccountProp('socialWindow', undefined, ChainController.state.activeChain)
     }
   }
 }
