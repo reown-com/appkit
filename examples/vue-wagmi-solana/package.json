@@ -12,7 +12,7 @@
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@solana/wallet-adapter-backpack": "0.1.14",
-    "@tanstack/vue-query": "5.75.5",
+    "@tanstack/vue-query": "5.90.5",
     "@wagmi/connectors": "5.11.2",
     "@wagmi/core": "2.21.2",
     "@wagmi/vue": "0.2.11",
