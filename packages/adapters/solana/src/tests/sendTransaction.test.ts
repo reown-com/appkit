@@ -1,6 +1,8 @@
 import { SendTransactionError } from '@solana/web3.js'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { ConstantsUtil, ProviderController } from '@reown/appkit-controllers'
+
 import { SolanaAdapter } from '../client'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil'
 import { TestConstants } from './util/TestConstants'
@@ -35,9 +37,12 @@ describe('SolanaAdapter - sendTransaction error handling', () => {
     SolStoreUtil.state.connection = mockConnection as any
 
     mockSendTransactionProvider = {
+      id: 'EXTERNAL',
       publicKey: TestConstants.accounts[0].publicKey,
       sendTransaction: vi.fn()
     }
+    ProviderController.setProvider('solana', mockSendTransactionProvider)
+    ProviderController.setProviderId('solana', 'EXTERNAL')
   })
 
   it('should throw custom error when "Transfer: insufficient lamports" pattern is found in message', async () => {
