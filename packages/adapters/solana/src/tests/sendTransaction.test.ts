@@ -1,7 +1,7 @@
 import { SendTransactionError } from '@solana/web3.js'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConstantsUtil, ProviderController } from '@reown/appkit-controllers'
+import { ProviderController } from '@reown/appkit-controllers'
 
 import { SolanaAdapter } from '../client'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil'
