@@ -356,7 +356,8 @@ export class W3mAccountDefaultWidget extends LitElement {
       const hasConnections = connectionsByNamespace.length > 0
       const connectorId =
         this.namespace && ConnectorController.state.activeConnectorIds[this.namespace]
-      if (connectorId && this.namespace) {
+      const filterByNamespace = ConnectorController.state.filterByNamespace
+      if (connectorId && this.namespace && filterByNamespace === this.namespace) {
         await ConnectionController.disconnectConnector({
           id: connectorId,
           namespace: this.namespace
