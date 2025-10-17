@@ -79,14 +79,14 @@ export class WuiListWallet extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateNamespaces() {
-    if (this.namespaces) {
+    if (this.namespaces?.length) {
       return html`<wui-flex alignItems="center" gap="0">
         ${this.namespaces.map(
           (namespace, index) =>
             html`<wui-flex
               alignItems="center"
               justifyContent="center"
-              style="z-index: ${(this.namespaces as ChainNamespace[]).length * 2 - index}"
+              zIndex=${(this.namespaces?.length ?? 0) * 2 - index}
               class="namespace-icon"
             >
               <wui-icon
