@@ -69,6 +69,7 @@ export class WuiFlex extends LitElement {
       margin-bottom: ${this.margin && UiHelperUtil.getSpacingStyles(this.margin, 2)};
       margin-left: ${this.margin && UiHelperUtil.getSpacingStyles(this.margin, 3)};
       width: ${this.width};
+      ${this.style.cssText}
     `
 
     return html`<slot></slot>`
