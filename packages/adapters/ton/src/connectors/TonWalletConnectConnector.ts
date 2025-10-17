@@ -102,6 +102,10 @@ export class TonWalletConnectConnector
     return this.internalRequest(args) as T
   }
 
+  public setDefaultChain(chainId: string) {
+    this.provider.setDefaultChain(chainId)
+  }
+
   // -- Internals ----------------------------------------------------- //
   private get sessionChains() {
     return WcHelpersUtil.getChainsFromNamespaces(this.provider.session?.namespaces)
