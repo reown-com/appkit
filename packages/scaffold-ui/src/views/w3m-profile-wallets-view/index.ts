@@ -513,6 +513,13 @@ export class W3mProfileWalletsView extends LitElement {
       this.lastSelectedConnectorId = connection.connectorId
       this.lastSelectedAddress = address
 
+      const isDifferentNamespace = this.caipNetwork?.chainNamespace !== namespace
+
+      if (isDifferentNamespace && connection?.caipNetwork) {
+        ConnectorController.setFilterByNamespace(namespace)
+        await ChainController.switchActiveNetwork(connection?.caipNetwork)
+      }
+
       await ConnectionController.switchConnection({
         connection,
         address,
