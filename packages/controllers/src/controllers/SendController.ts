@@ -400,6 +400,19 @@ const controller = {
     }
 
     ConnectionController._getClient()?.updateBalance('solana')
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SEND_SUCCESS',
+      properties: {
+        isSmartAccount: false,
+        token: SendController.state.token?.symbol || '',
+        amount: SendController.state.sendTokenAmount,
+        network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+        hash: hash || ''
+      }
+    })
+
     SendController.resetSend()
   },
 

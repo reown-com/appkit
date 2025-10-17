@@ -20,7 +20,10 @@ export default defineConfig<ModalFixture>({
   fullyParallel: true,
   workers: getValue(8, 4),
   reporter: process.env['CI']
-    ? [['blob', { outputDir: blobOutputDir, fileName: blobFileName }]]
+    ? [
+        ['blob', { outputDir: blobOutputDir, fileName: blobFileName }],
+        ['json', { outputFile: 'test-results.json' }]
+      ]
     : [['list'], ['html', { host: '0.0.0.0' }], ['json', { outputFile: 'test-results.json' }]],
   // Limits the number of failed tests in the whole test suite. Playwright Test will stop after reaching this number of failed tests and skip any tests that were not executed yet
   maxFailures: getValue(10, undefined),

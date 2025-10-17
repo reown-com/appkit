@@ -1,6 +1,18 @@
 #!/bin/bash
 # Not adding `set -e` so that S3 upload happens regardless
 
+# Run DNS troubleshooting for register.walletconnect.com
+echo ""
+echo "🔍 Running DNS Diagnostics"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+bash ./dns-check.sh || true
+echo ""
+echo "📄 DNS Diagnostics Output"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+cat dns-output.txt || echo "⚠️  dns-output.txt not found"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+
 bun run playwright:test:canary
 TEST_EXIT_CODE=$?
 
@@ -8,11 +20,13 @@ echo ""
 echo "✅ Playwright Test Results (json)"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 if [ -f "test-results.json" ]; then
-  cat test-results.json
-
   echo "Failed tests:"
   jq -r '.suites[].specs[] | select(.ok == false) | . as $spec | .tests[] | "[\(.projectName)] › \($spec.file):\($spec.line):\($spec.column) › \($spec.title)\nError: \(.results[] | select(.status == "failed") | .error.message)\n"' test-results.json || echo "No failures found"
+  cat test-results.json
+
+  cp test-results.json ./test-results/
 else
+
   echo "test-results.json not found"
 fi
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

@@ -91,7 +91,15 @@ const mockApiState: ApiControllerState = {
   isFetchingRecommendedWallets: false,
   filteredWallets: [],
   explorerWallets: [],
-  explorerFilteredWallets: []
+  explorerFilteredWallets: [],
+  plan: {
+    tier: 'starter',
+    hasExceededUsageLimit: false,
+    limits: {
+      isAboveRpcLimit: false,
+      isAboveMauLimit: false
+    }
+  }
 }
 
 describe('W3mAllWalletsWidget', () => {

@@ -118,7 +118,15 @@ describe('ApiController', () => {
       isFetchingRecommendedWallets: false,
       explorerWallets: [],
       explorerFilteredWallets: [],
-      promises: {}
+      promises: {},
+      plan: {
+        tier: 'none',
+        hasExceededUsageLimit: false,
+        limits: {
+          isAboveRpcLimit: false,
+          isAboveMauLimit: false
+        }
+      }
     })
   })
 
