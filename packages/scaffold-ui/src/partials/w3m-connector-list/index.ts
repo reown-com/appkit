@@ -249,6 +249,18 @@ export class W3mConnectorList extends LitElement {
     })
   }
 
+  private getConnectorNamespaces(item: ConnectorItem) {
+    if (item.subtype === 'walletConnect') {
+      return []
+    }
+
+    if (item.subtype === 'multiChain') {
+      return item.connector.connectors?.map(c => c.chain) as ChainNamespace[]
+    }
+
+    return [item.connector.chain] as ChainNamespace[]
+  }
+
   private renderConnector(item: ConnectorItem, index: number) {
     const connector = item.connector
     const imageSrc =
@@ -278,18 +290,6 @@ export class W3mConnectorList extends LitElement {
     const disabled =
       item.subtype === 'walletConnect' || item.subtype === 'external' ? hasWcConnection : false
 
-    function getConnectorNamespaces() {
-      if (item.subtype === 'walletConnect') {
-        return []
-      }
-
-      if (item.subtype === 'multiChain') {
-        return connector.connectors?.map(c => c.chain) as ChainNamespace[]
-      }
-
-      return [connector.chain] as ChainNamespace[]
-    }
-
     return html`
       <w3m-list-wallet
         displayIndex=${index}
@@ -305,7 +305,7 @@ export class W3mConnectorList extends LitElement {
         ?disabled=${disabled}
         rdnsId=${ifDefined(connector.explorerWallet?.rdns || undefined)}
         walletRank=${ifDefined(connector.explorerWallet?.order)}
-        .namespaces=${getConnectorNamespaces()}
+        .namespaces=${this.getConnectorNamespaces(item)}
       >
       </w3m-list-wallet>
     `
