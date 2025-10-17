@@ -1,7 +1,7 @@
 {
-  "name": "@reown/appkit-adapter-polkadot",
-  "version": "1.8.10",
-  "private": true,
+  "name": "@sacred-protocol/appkit-adapter-polkadot",
+  "version": "1.0.0",
+  "private": false,
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -50,10 +50,14 @@
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "SEE LICENSE IN LICENSE.md",
-  "homepage": "https://github.com/reown-com/appkit",
+  "homepage": "https://github.com/Sacred-Protocol/appkit",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reown-com/appkit.git"
+    "url": "git+https://github.com/Sacred-Protocol/appkit.git",
+    "directory": "packages/adapters/polkadot"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "bugs": {
     "url": "https://github.com/reown-com/appkit/issues"
