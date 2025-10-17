@@ -1,4 +1,4 @@
-import { proxy, ref, subscribe as sub } from 'valtio'
+import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import type { Connection } from '@reown/appkit-utils/solana'
