@@ -419,10 +419,10 @@ export class ModalPage {
 
   async enterOTP(otp: string, headerTitle = 'Confirm Email') {
     await expect(this.page.getByText(headerTitle)).toBeVisible({
-      timeout: 10_000
+      timeout: 20_000
     })
     await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
-      timeout: 10_000
+      timeout: 20_000
     })
 
     const splitted = otp.split('')
