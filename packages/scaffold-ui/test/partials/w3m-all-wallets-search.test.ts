@@ -71,6 +71,7 @@ describe('W3mAllWalletsSearch', () => {
       explorerFilteredWallets: [],
       plan: {
         tier: 'starter',
+        hasExceededUsageLimit: false,
         limits: {
           isAboveRpcLimit: false,
           isAboveMauLimit: false
@@ -110,6 +111,7 @@ describe('W3mAllWalletsSearch', () => {
       explorerFilteredWallets: [],
       plan: {
         tier: 'starter',
+        hasExceededUsageLimit: false,
         limits: {
           isAboveRpcLimit: false,
           isAboveMauLimit: false

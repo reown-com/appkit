@@ -56,6 +56,7 @@ export interface ApiControllerState {
   mobileFilteredOutWalletsLength?: number
   plan: {
     tier: Tier
+    hasExceededUsageLimit: boolean
     limits: ProjectLimits
   }
 }
@@ -89,6 +90,7 @@ const state = proxy<ApiControllerState>({
   explorerFilteredWallets: [],
   plan: {
     tier: 'none',
+    hasExceededUsageLimit: false,
     limits: {
       isAboveRpcLimit: false,
       isAboveMauLimit: false
@@ -191,8 +193,12 @@ export const ApiController = {
 
       const { tier, isAboveMauLimit, isAboveRpcLimit } = response.planLimits
 
+      const isStarterPlan = tier === 'starter'
+      const isAboveUsageLimit = isAboveMauLimit || isAboveRpcLimit
+
       ApiController.state.plan = {
         tier,
+        hasExceededUsageLimit: isStarterPlan && isAboveUsageLimit,
         limits: {
           isAboveRpcLimit,
           isAboveMauLimit
