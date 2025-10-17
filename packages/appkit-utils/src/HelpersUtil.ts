@@ -67,9 +67,9 @@ export const HelpersUtil = {
       async function tryCheck() {
         attempts += 1
 
-        const result = await conditionFn()
+        const isConditionMet = await conditionFn()
 
-        if (result) {
+        if (isConditionMet) {
           return resolve(true)
         }
 

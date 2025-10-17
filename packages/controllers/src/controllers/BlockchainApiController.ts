@@ -27,6 +27,8 @@ import type {
   BlockchainApiSwapTokensResponse,
   BlockchainApiTokenPriceRequest,
   BlockchainApiTokenPriceResponse,
+  BlockchainApiTonBalanceRequest,
+  BlockchainApiTonBalanceResponse,
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
   GenerateOnRampUrlArgs,
@@ -294,6 +296,20 @@ export const BlockchainApiController = {
       path: `/v1/convert/tokens`,
       params: { chainId }
     })
+  },
+
+  async fetchTonBalance({ caipNetworkId, address }: BlockchainApiTonBalanceRequest) {
+    return state.api
+      .post<BlockchainApiTonBalanceResponse>({
+        path: `/v1?chainId=${caipNetworkId}&projectId=${OptionsController.state.projectId}`,
+        body: {
+          id: '1',
+          jsonrpc: '2.0',
+          method: 'getAddressBalance',
+          params: { address }
+        }
+      })
+      .then(result => result.result)
   },
 
   async fetchTokenPrice({ addresses }: BlockchainApiTokenPriceRequest) {

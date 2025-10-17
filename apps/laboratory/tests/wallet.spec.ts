@@ -57,7 +57,7 @@ sampleWalletTest('it should show onramp button accordingly', async ({ library })
   const accountButton = await modalPage.getDefaultWalletFeaturesButton('fund-wallet')
   await accountButton.click()
 
-  if (library === 'bitcoin') {
+  if (library === 'bitcoin' || library === 'ton') {
     await modalValidator.expectOnrampButton(false)
   } else {
     await modalValidator.expectOnrampButton(true)
@@ -71,7 +71,7 @@ sampleWalletTest('it should be connected instantly after page refresh', async ()
 })
 
 sampleWalletTest('it should show disabled networks', async ({ library }) => {
-  if (library === 'bitcoin') {
+  if (library === 'bitcoin' || library === 'ton') {
     return
   }
 
@@ -228,7 +228,7 @@ sampleWalletTest('it should disconnect and connect to a single account', async (
 sampleWalletTest(
   'it should show switch network modal if network is not supported and switch to supported network',
   async ({ library }) => {
-    if (library === 'solana' || library === 'bitcoin') {
+    if (library === 'solana' || library === 'bitcoin' || library === 'ton') {
       return
     }
 
@@ -247,7 +247,7 @@ sampleWalletTest(
 sampleWalletTest(
   "it should switch to first available network when wallet doesn't support the active network of the appkit and sign message",
   async ({ library }) => {
-    if (library === 'solana' || library === 'bitcoin') {
+    if (library === 'solana' || library === 'bitcoin' || library === 'ton') {
       return
     }
 
