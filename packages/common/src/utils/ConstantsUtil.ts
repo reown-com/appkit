@@ -23,7 +23,7 @@ export const ConstantsUtil = {
   CONNECTOR_NAMES: {
     AUTH: 'Auth'
   },
-  AUTH_CONNECTOR_SUPPORTED_CHAINS: ['eip155', 'solana'] as ChainNamespace[],
+  AUTH_CONNECTOR_SUPPORTED_CHAINS: ['eip155', 'solana', 'polkadot'] as ChainNamespace[],
   LIMITS: {
     PENDING_TRANSACTIONS: 99
   },
