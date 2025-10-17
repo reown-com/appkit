@@ -79,7 +79,6 @@ interface SortableItemProps {
   index: number
   handle: boolean
   useDragOverlay?: boolean
-  onRemove?(id: UniqueIdentifier): void
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   style(values: any): React.CSSProperties
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -93,7 +92,6 @@ export function SortableConnectMethodItem({
   handle,
   id,
   index,
-  onRemove,
   style,
   renderItem,
   useDragOverlay,
@@ -142,7 +140,6 @@ export function SortableConnectMethodItem({
         isSorting,
         overIndex
       })}
-      onRemove={onRemove ? () => onRemove(id) : undefined}
       transform={transform}
       transition={transition}
       wrapperStyle={wrapperStyle?.({ index, isDragging, active, id })}

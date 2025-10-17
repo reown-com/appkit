@@ -13,7 +13,7 @@ cat dns-output.txt || echo "⚠️  dns-output.txt not found"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
-pnpm playwright:test:canary
+bun run playwright:test:canary
 TEST_EXIT_CODE=$?
 
 echo ""
