@@ -152,6 +152,48 @@ extensionTest(
   }
 )
 
+extensionTest(
+  'it should connect with email on Ethereum, switch to a different chain and be able to switch account type on Ethereum',
+  async () => {
+    const mailsacApiKey = process.env['MAILSAC_API_KEY']
+    if (!mailsacApiKey) {
+      throw new Error('MAILSAC_API_KEY is not set')
+    }
+
+    const email = new Email(mailsacApiKey)
+    await modalPage.emailFlow({
+      emailAddress: await email.getEmailAddressToUse(),
+      context: modalPage.page.context(),
+      mailsacApiKey,
+      clickConnectButton: true
+    })
+    await modalValidator.expectConnected()
+
+    const emailEthAddress = (await modalPage.page
+      .getByTestId('w3m-address')
+      .textContent()) as string
+
+    await modalPage.switchNetwork('Solana', true)
+    await modalPage.closeModal()
+    await modalValidator.expectConnected()
+    await modalValidator.expectNetworkButton('Solana')
+    await modalPage.openProfileWalletsView()
+    await modalPage.clickTab('evm')
+    await modalPage.switchAccount()
+    await modalPage.closeModal()
+    await modalValidator.expectConnected()
+    await modalValidator.expectNetworkButton('Ethereum')
+    await modalPage.openProfileWalletsView()
+    await modalPage.clickTab('evm')
+    await modalPage.switchAccount()
+    await modalPage.closeModal()
+    await modalValidator.expectAccountButtonAddress(emailEthAddress)
+    await modalPage.openProfileWalletsView()
+    await modalPage.clickProfileWalletsMoreButton()
+    await modalPage.disconnect(false)
+  }
+)
+
 extensionTest('it should be disconnected after page refresh', async () => {
   await modalPage.page.reload()
   await modalValidator.expectDisconnected()

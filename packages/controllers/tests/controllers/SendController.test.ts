@@ -7,12 +7,17 @@ import {
   ChainController,
   ConnectionController,
   CoreHelperUtil,
+  EventsController,
   RouterController,
   SendController,
   type SendControllerState,
   SnackController
 } from '../../exports/index.js'
-import { extendedMainnet, mockChainControllerState } from '../../exports/testing.js'
+import {
+  extendedMainnet,
+  mockChainControllerState,
+  solanaCaipNetwork
+} from '../../exports/testing.js'
 import { BalanceUtil } from '../../src/utils/BalanceUtil.js'
 
 // -- Setup --------------------------------------------------------------------
@@ -224,6 +229,10 @@ describe('SendController', () => {
       vi.spyOn(ConnectionController, 'updateBalance').mockResolvedValue(undefined)
       vi.spyOn(CoreHelperUtil, 'isCaipAddress').mockReturnValue(false)
       vi.spyOn(SendController, 'resetSend').mockImplementation(() => {})
+      vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+      mockChainControllerState({
+        activeCaipNetwork: extendedMainnet
+      })
     })
 
     it('should call sendTransaction without tokenMint', async () => {
@@ -279,6 +288,43 @@ describe('SendController', () => {
       })
       expect(ConnectionController.updateBalance).toHaveBeenCalledWith({ namespace: 'solana' })
       expect(SendController.resetSend).toHaveBeenCalled()
+    })
+
+    it('should trigger SEND_SUCCESS event after successful transaction', async () => {
+      mockChainControllerState({
+        activeCaipNetwork: solanaCaipNetwork
+      })
+
+      const solanaToken = {
+        name: 'SOL',
+        address: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:11111111111111111111111111111111',
+        symbol: 'SOL',
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        value: 100,
+        price: 1,
+        quantity: {
+          decimals: '9',
+          numeric: '100000000'
+        }
+      }
+
+      SendController.setToken(solanaToken as SendControllerState['token'])
+      SendController.setTokenAmount(50)
+      SendController.setReceiverAddress('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')
+
+      await SendController.sendSolanaToken()
+
+      expect(EventsController.sendEvent).toHaveBeenCalledWith({
+        type: 'track',
+        event: 'SEND_SUCCESS',
+        properties: {
+          isSmartAccount: false,
+          token: 'SOL',
+          amount: 50,
+          network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          hash: ''
+        }
+      })
     })
   })
 

@@ -117,6 +117,7 @@ describe('ApiController', () => {
       promises: {},
       plan: {
         tier: 'none',
+        hasExceededUsageLimit: false,
         limits: {
           isAboveRpcLimit: false,
           isAboveMauLimit: false
