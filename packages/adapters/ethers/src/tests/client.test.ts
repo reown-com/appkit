@@ -10,7 +10,6 @@ import {
 } from '@reown/appkit-common'
 import {
   ChainController,
-  type ConnectionControllerClient,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -139,10 +138,22 @@ describe('EthersAdapter', () => {
       }))
     }))
 
-    adapter = new EthersAdapter()
-    ChainController.initialize([adapter], mockCaipNetworks, {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
+    // Mock ProviderController
+    vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('WALLET_CONNECT')
+    vi.spyOn(ProviderController, 'getProvider').mockReturnValue({
+      ...mockProvider,
+      setDefaultChain: vi.fn()
     })
+
+    adapter = new EthersAdapter()
+    // Call construct with proper network data
+    adapter.construct({
+      namespace: 'eip155',
+      networks: mockCaipNetworks,
+      projectId: 'test-project-id',
+      adapterType: CommonConstantsUtil.ADAPTER_TYPES.ETHERS
+    })
+    ChainController.initialize([adapter], mockCaipNetworks)
     ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })
 
@@ -180,14 +191,14 @@ describe('EthersAdapter', () => {
 
       const result = await adapter.signMessage({
         message: 'Hello',
-        address: '0x123',
-        provider: mockProvider
+        address: '0x123'
       })
 
       expect(result.signature).toBe(mockSignature)
     })
 
     it('should throw error when provider is undefined', async () => {
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(undefined)
       await expect(
         adapter.signMessage({
           message: 'Hello',
@@ -216,7 +227,6 @@ describe('EthersAdapter', () => {
         data: '0x',
         gas: BigInt(21000),
         gasPrice: BigInt(2000000000),
-        provider: mockProvider,
         caipNetwork: mockCaipNetworks[0]
       })
 
@@ -224,6 +234,7 @@ describe('EthersAdapter', () => {
     })
 
     it('should throw error when provider is undefined', async () => {
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(undefined)
       vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
         address: '0x123',
         currentTab: 0,
@@ -256,7 +267,6 @@ describe('EthersAdapter', () => {
         fromAddress: '0x123',
         args: ['0x789', BigInt(1000)],
         tokenAddress: '0x789',
-        provider: mockProvider,
         caipNetwork: mockCaipNetworks[0],
         chainNamespace: 'eip155'
       })
@@ -308,7 +318,8 @@ describe('EthersAdapter', () => {
         if (request.method === 'wallet_switchEthereumChain') return Promise.resolve(null)
         return Promise.resolve(null)
       })
-
+      vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('EXTERNAL')
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
       const connectors = [
         {
           id: 'test',
@@ -973,6 +984,8 @@ describe('EthersAdapter', () => {
           }
           return Promise.resolve(null)
         })
+        vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('EXTERNAL')
+        vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
 
         const mockCaipNetwork = mockCaipNetworks[0]
 
@@ -1005,41 +1018,52 @@ describe('EthersAdapter', () => {
     })
 
     it('should switch network with Auth provider', async () => {
-      // Set up provider in ProviderController
-      ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, mockAuthProvider)
-      ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'AUTH')
+      // Recreate mock functions after vi.clearAllMocks()
+      const mockAuthProviderWithSpies = {
+        ...mockAuthProvider,
+        switchNetwork: vi.fn(),
+        getUser: vi.fn()
+      }
+
+      // Mock ProviderController methods directly to ensure they return what we expect
+      vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('AUTH')
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockAuthProviderWithSpies)
 
       // Mock ConnectorController.getAuthConnector to return our mock provider
       vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
-        provider: mockAuthProvider
+        provider: mockAuthProviderWithSpies
       } as any)
 
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0]
       })
 
-      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith({ chainId: 'eip155:1' })
-      expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
+      expect(mockAuthProviderWithSpies.switchNetwork).toHaveBeenCalledWith({ chainId: 'eip155:1' })
+      expect(mockAuthProviderWithSpies.getUser).toHaveBeenCalledWith({
         chainId: 'eip155:1',
         preferredAccountType: 'smartAccount'
       })
     })
 
     it('should add Ethereum chain with external provider and use chain default', async () => {
-      // Mock request so that switchEthereumChain throws with code: WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-      vi.mocked(mockProvider.request).mockImplementation(request => {
-        if (request.method === 'wallet_switchEthereumChain') {
-          throw new ErrorWithCode(
-            'Chain switch failed',
-            WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-          )
-        }
-        // Mock add chain to also fail
-        if (request.method === 'wallet_addEthereumChain') {
-          throw new Error('Chain is not supported')
-        }
-        return Promise.resolve(null)
-      })
+      vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('EXTERNAL')
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
+      vi
+        // Mock request so that switchEthereumChain throws with code: WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+        .mocked(mockProvider.request)
+        .mockImplementation(request => {
+          if (request.method === 'wallet_switchEthereumChain') {
+            throw new ErrorWithCode(
+              'Chain switch failed',
+              WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+            )
+          }
+          // Mock add chain to also fail
+          if (request.method === 'wallet_addEthereumChain') {
+            throw new Error('Chain is not supported')
+          }
+          return Promise.resolve(null)
+        })
 
       const mockCaipNetwork = mockCaipNetworks[0]
 
@@ -1061,6 +1085,8 @@ describe('EthersAdapter', () => {
         request: vi.fn(),
         setDefaultChain: vi.fn()
       } as unknown as UniversalProvider
+
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
 
       const params = {
         caipNetwork: {

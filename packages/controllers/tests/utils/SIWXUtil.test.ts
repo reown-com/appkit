@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ChainController, type SIWXConfig, SIWXUtil } from '../../exports/index.js'
 import { extendedMainnet, mockChainControllerState } from '../../exports/testing.js'
-import { ConnectionController } from '../../src/controllers/ConnectionController.js'
 import { EventsController } from '../../src/controllers/EventsController.js'
 import { OptionsController } from '../../src/controllers/OptionsController.js'
 import { SnackController } from '../../src/controllers/SnackController.js'
@@ -47,9 +46,6 @@ describe('SIWXUtil', () => {
       vi.spyOn(CoreHelperUtil, 'getPlainAddress').mockReturnValue(
         '0x1234567890123456789012345678901234567890'
       )
-      vi.spyOn(ConnectionController, '_getClient').mockReturnValue({
-        signMessage: vi.fn()
-      } as any)
 
       await SIWXUtil.requestSignMessage()
 
