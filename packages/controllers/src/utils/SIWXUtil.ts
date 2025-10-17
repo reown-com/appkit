@@ -543,9 +543,9 @@ export interface SIWXConfig {
     chainId,
     accountAddress
   }: {
-    message?: string
-    chainId?: string
-    accountAddress?: string
+    message: string
+    chainId: string
+    accountAddress: string
   }) => Promise<string>
 
   /**
