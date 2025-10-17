@@ -37,6 +37,7 @@ const mockEthereumNetwork = {
   id: 1,
   name: 'Ethereum',
   namespace: ConstantsUtil.CHAIN.EVM,
+  chainNamespace: ConstantsUtil.CHAIN.EVM,
   blockExplorers: {
     default: { url: 'https://etherscan.io' }
   }
@@ -45,13 +46,15 @@ const mockEthereumNetwork = {
 const mockSolanaNetwork = {
   id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   name: 'Solana',
-  namespace: ConstantsUtil.CHAIN.SOLANA
+  namespace: ConstantsUtil.CHAIN.SOLANA,
+  chainNamespace: ConstantsUtil.CHAIN.SOLANA
 } as unknown as CaipNetwork
 
 const mockBitcoinNetwork = {
   id: 'bitcoin:000000000019d6689c085ae165831e93',
   name: 'Bitcoin',
-  namespace: ConstantsUtil.CHAIN.BITCOIN
+  namespace: ConstantsUtil.CHAIN.BITCOIN,
+  chainNamespace: ConstantsUtil.CHAIN.BITCOIN
 } as unknown as CaipNetwork
 
 const mockMetaMaskConnector = {

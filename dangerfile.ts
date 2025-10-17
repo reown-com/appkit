@@ -13,6 +13,8 @@ const RELATIVE_IMPORT_PARENT_DIR = `'../`
 const RELATIVE_IMPORT_EXTENSION = `.js'`
 const PRIVATE_FUNCTION_REGEX = /private\s+(?:\w+)\s*\(\s*\)/gu
 const ALLOWED_DOMAINS = ['reown.com', 'walletconnect.com', 'walletconnect.org']
+// Allow as loose dependency because of recursive dependency with WalletConnect Monorepo
+const ALLOWED_LOOSE_DEPENDENCIES = ['@walletconnect/logger']
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git
@@ -39,7 +41,10 @@ async function checkPackageJsons() {
   for (const f of packageJsons) {
     const diff = await diffForFile(f)
     if (diff?.added.includes('^') || diff?.added.includes('~')) {
-      fail(`Loose dependency versions in ${f}, please use strict versioning`)
+      const isAllowed = ALLOWED_LOOSE_DEPENDENCIES.some(dep => diff.added.includes(`"${dep}"`))
+      if (!isAllowed) {
+        fail(`Loose dependency versions in ${f}, please use strict versioning`)
+      }
     }
   }
 }

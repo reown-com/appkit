@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@walletconnect/sign-client": "2.22.3",
-    "@walletconnect/types": "2.22.3",
+    "@walletconnect/sign-client": "2.22.4",
+    "@walletconnect/types": "2.22.4",
     "vue": "3.4.3"
   },
   "devDependencies": {
