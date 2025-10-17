@@ -54,7 +54,6 @@ describe('SolanaAdapter - sendTransaction error handling', () => {
 
     await expect(
       adapter.sendTransaction({
-        provider: mockSendTransactionProvider as any,
         to: TestConstants.accounts[1].address,
         value: 1000000
       })
@@ -82,7 +81,6 @@ describe('SolanaAdapter - sendTransaction error handling', () => {
 
     await expect(
       adapter.sendTransaction({
-        provider: mockSendTransactionProvider as any,
         to: TestConstants.accounts[1].address,
         value: 1000000
       })
@@ -103,7 +101,6 @@ describe('SolanaAdapter - sendTransaction error handling', () => {
 
     await expect(
       adapter.sendTransaction({
-        provider: mockSendTransactionProvider as any,
         to: TestConstants.accounts[1].address,
         value: 1000000
       })
@@ -124,7 +121,6 @@ describe('SolanaAdapter - sendTransaction error handling', () => {
 
     await expect(
       adapter.sendTransaction({
-        provider: mockSendTransactionProvider as any,
         to: TestConstants.accounts[1].address,
         value: 1000000
       })
@@ -152,7 +148,6 @@ describe('SolanaAdapter - sendTransaction error handling', () => {
 
     await expect(
       adapter.sendTransaction({
-        provider: mockSendTransactionProvider as any,
         to: TestConstants.accounts[1].address,
         value: 1000000
       })
@@ -171,7 +166,6 @@ describe('SolanaAdapter - sendTransaction error handling', () => {
 
     await expect(
       adapter.sendTransaction({
-        provider: mockSendTransactionProvider as any,
         to: TestConstants.accounts[1].address,
         value: 1000000
       })
@@ -185,7 +179,6 @@ describe('SolanaAdapter - sendTransaction error handling', () => {
 
     await expect(
       adapter.sendTransaction({
-        provider: mockSendTransactionProvider as any,
         to: TestConstants.accounts[1].address,
         value: 1000000
       })
@@ -206,7 +199,6 @@ describe('SolanaAdapter - sendTransaction error handling', () => {
 
     await expect(
       adapter.sendTransaction({
-        provider: mockSendTransactionProvider as any,
         to: TestConstants.accounts[1].address,
         value: 1000000
       })
@@ -227,7 +219,6 @@ describe('SolanaAdapter - sendTransaction error handling', () => {
 
     await expect(
       adapter.sendTransaction({
-        provider: mockSendTransactionProvider as any,
         to: TestConstants.accounts[1].address,
         value: 1000000
       })
