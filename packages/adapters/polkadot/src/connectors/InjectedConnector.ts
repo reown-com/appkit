@@ -1,167 +1,246 @@
-'use client';
+'use client'
 
-import type { CaipNetwork } from '@reown/appkit-common';
-import type { PolkadotProvider, PolkadotAccount, PolkadotWalletSource } from '../providers/PolkadotProvider.js';
+import type { CaipNetwork } from '@reown/appkit-common'
 
-/**
- * Event emitter for Polkadot connectors
- * Mimics AppKit's internal ProviderEventEmitter
- */
-class PolkadotEventEmitter {
-  private listeners: Map<string, Set<Function>> = new Map();
+import type {
+  PolkadotAccount,
+  PolkadotExtension,
+  PolkadotProvider,
+  PolkadotWalletSource
+} from '../providers/PolkadotProvider.js'
 
-  emit(event: string, ...args: any[]): void {
-    const eventListeners = this.listeners.get(event);
-    if (eventListeners) {
-      eventListeners.forEach(listener => {
-        try {
-          listener(...args);
-        } catch (error) {
-          console.error(`[PolkadotEventEmitter] Error in ${event} listener:`, error);
-        }
-      });
+/** Events this connector emits (aligns with AppKit expectations) */
+type PolkadotConnectorEvents = {
+  connect: [address: string]
+  accountsChanged: [accounts: Array<{ namespace: string; address: string; type: 'eoa' }>]
+  chainChanged: [chainId: string] // CAIP-2 (e.g. 'polkadot:...') or your string id
+  disconnect: []
+  error: [error: unknown]
+}
+
+/** Strongly typed event emitter */
+class PolkadotEventEmitter<EvtMap extends Record<string, unknown[]>> {
+  private listeners = new Map<keyof EvtMap, Set<(...args: any[]) => void>>()
+
+  emit<K extends keyof EvtMap>(event: K, ...args: EvtMap[K]) {
+    const set = this.listeners.get(event)
+    if (!set) return
+    for (const fn of set) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        fn(...(args as any[]))
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(`[PolkadotEventEmitter] Error in "${String(event)}" listener:`, err)
+      }
     }
   }
 
-  on(event: string, listener: Function): void {
-    if (!this.listeners.has(event)) {
-      this.listeners.set(event, new Set());
-    }
-    this.listeners.get(event)!.add(listener);
+  on<K extends keyof EvtMap>(event: K, listener: (...args: EvtMap[K]) => void) {
+    const set = this.listeners.get(event) ?? new Set()
+    set.add(listener as any)
+    this.listeners.set(event, set)
   }
 
-  off(event: string, listener: Function): void {
-    const eventListeners = this.listeners.get(event);
-    if (eventListeners) {
-      eventListeners.delete(listener);
-    }
+  off<K extends keyof EvtMap>(event: K, listener: (...args: EvtMap[K]) => void) {
+    const set = this.listeners.get(event)
+    set?.delete(listener as any)
   }
 
-  removeAllListeners(event?: string): void {
-    if (event) {
-      this.listeners.delete(event);
-    } else {
-      this.listeners.clear();
-    }
+  removeAllListeners(event?: keyof EvtMap) {
+    if (event) this.listeners.delete(event)
+    else this.listeners.clear()
+  }
+}
+
+/** Result your connectHandler should return */
+type ConnectResult = {
+  /** Primary address to announce via `connect` event */
+  address: string
+  /** Accounts to seed this connector with */
+  accounts?: PolkadotAccount[]
+  /** Optional canonical CAIP-2 chain id (e.g., 'polkadot:91b171...') */
+  chainId?: string | number // Allow number for AdapterBlueprint compatibility
+  /**
+   * Optional unsubscribe function if you subscribe to extension account changes.
+   * If provided, `disconnect()` will call it.
+   */
+  unsubscribe?: () => void
+}
+
+declare global {
+  interface Window {
+    injectedWeb3?: Record<string, PolkadotExtension>
+  }
+}
+
+/** Normalize known extension ids so `isInstalled()` is robust */
+function normalizeSource(source: PolkadotWalletSource): string {
+  // Common aliases used by extensions
+  switch (source) {
+    case 'talisman':
+    case 'talisman-extension':
+      return 'talisman'
+    case 'subwallet-js':
+    case 'subwallet':
+      return 'subwallet-js'
+    case 'polkadot-js':
+    case 'polkadotjs':
+      return 'polkadot-js'
+    default:
+      return String(source)
   }
 }
 
 /**
- * Polkadot connector provider that matches AppKit's expected interface
- * Extends event emitter to match WalletStandardProvider pattern
+ * Polkadot connector provider that matches AppKit’s expected interface.
+ * Extends a typed event emitter and exposes WalletStandard-like surface.
  */
-export class PolkadotConnectorProvider extends PolkadotEventEmitter {
-  public id: string;
-  public type: 'INJECTED' | 'ANNOUNCED' | 'EXTERNAL';
-  public name: string;
-  public imageUrl?: string;
-  public provider: PolkadotProvider | null;
-  public accounts: PolkadotAccount[];
-  public chains: CaipNetwork[];
-  public chain: string;
-  public namespace: string = 'polkadot';
+export class PolkadotConnectorProvider extends PolkadotEventEmitter<PolkadotConnectorEvents> {
+  public readonly id: string
+  public readonly type: 'INJECTED' | 'ANNOUNCED' | 'EXTERNAL' = 'INJECTED'
+  public readonly name: string
+  public readonly imageUrl?: string
+  public readonly imageId?: string
+  public readonly explorerId?: string
+  /** Important: AppKit expects `provider` to point to the instance */
+  public provider: PolkadotProvider | null
+  public readonly chains: CaipNetwork[]
+  /** Current chain identifier you use internally (often CAIP-2 string) */
+  public chain: string
+  public readonly namespace: string = 'polkadot'
+  public accounts: PolkadotAccount[] = []
 
-  private source: PolkadotWalletSource;
-  private connectHandler: (source: PolkadotWalletSource) => Promise<any>;
+  private readonly source: PolkadotWalletSource
+  private readonly connectHandler: (source: PolkadotWalletSource) => Promise<ConnectResult>
+  private unbindExternal?: () => void
 
   constructor(config: {
-    id: string;
-    source: PolkadotWalletSource;
-    name: string;
-    imageUrl?: string;
-    chains: CaipNetwork[];
-    chain: string;
-    connectHandler: (source: PolkadotWalletSource) => Promise<any>;
+    id: string
+    source: PolkadotWalletSource
+    name: string
+    imageUrl?: string
+    imageId?: string
+    explorerId?: string
+    chains: CaipNetwork[]
+    chain: string
+    connectHandler: (source: PolkadotWalletSource) => Promise<ConnectResult>
   }) {
-    super();
-    this.id = config.id;
-    this.source = config.source;
-    this.name = config.name;
-    this.imageUrl = config.imageUrl;
-    this.chains = config.chains;
-    this.chain = config.chain;
-    this.connectHandler = config.connectHandler;
-    this.type = 'INJECTED';
-    // IMPORTANT: Set provider to this (like WalletStandardProvider does)
-    // This tells AppKit that this connector is ready to be used
-    this.provider = this as any;
-    this.accounts = [];
-    
-    console.log(`[PolkadotConnectorProvider] Created connector:`, {
+    super()
+    this.id = config.id
+    this.source = config.source
+    this.name = config.name
+    this.imageUrl = config.imageUrl
+    this.imageId = config.imageId
+    this.explorerId = config.explorerId
+    this.chains = config.chains
+    this.chain = config.chain
+    this.connectHandler = config.connectHandler
+
+    // Mark as ready (WalletStandard pattern)
+    this.provider = this as unknown as PolkadotProvider
+
+    // eslint-disable-next-line no-console
+    console.log('[PolkadotConnectorProvider] Created', {
       id: this.id,
       name: this.name,
       type: this.type,
-      hasProvider: !!this.provider,
-      hasChainsConnect: !!this.chains,
-    });
+      source: this.source,
+      chains: this.chains.map(c => c.caipNetworkId ?? c.id)
+    })
 
-    // Bind Polkadot extension events (like WalletStandardProvider.bindEvents())
-    this.bindEvents();
+    this.bindEvents()
   }
 
-  /**
-   * Bind Polkadot extension events
-   * Similar to WalletStandardProvider.bindEvents() but for Polkadot extensions
-   */
+  /** Placeholder—most Polkadot extensions use subscribe APIs post-connect */
   private bindEvents(): void {
-    // Polkadot extensions use a different event system than wallet-standard
-    // They emit events through their accounts.subscribe() API
-    // However, we don't need to bind these at construction time since
-    // the connection will be established through our connectHandler
-    console.log(`[PolkadotConnectorProvider] Event bindings initialized for ${this.name}`);
+    // Keep for parity / future enhancements
+    // eslint-disable-next-line no-console
+    console.log(`[PolkadotConnectorProvider] Event bindings ready for ${this.name}`)
   }
 
   /**
-   * Connect to the wallet
-   * This is called by AppKit when user clicks the connector in the modal
+   * Called by AppKit when the user picks this connector.
+   * Must emit `connect` and seed `accounts`.
    */
   async connect(params?: { chainId?: string; socialUri?: string }): Promise<string> {
-    console.log(`[PolkadotConnectorProvider] ========================================`);
-    console.log(`[PolkadotConnectorProvider] CONNECT CALLED FOR ${this.name}`);
-    console.log(`[PolkadotConnectorProvider] Params:`, params);
-    console.log(`[PolkadotConnectorProvider] Source:`, this.source);
-    console.log(`[PolkadotConnectorProvider] ========================================`);
-    
+    // eslint-disable-next-line no-console
+    console.log('[PolkadotConnectorProvider] CONNECT', {
+      name: this.name,
+      source: this.source,
+      params
+    })
+
     try {
-      const result = await this.connectHandler(this.source);
-      console.log(`[PolkadotConnectorProvider] Connection result:`, result);
-      
-      // Emit connect event like AppKit expects
-      this.emit('connect', result.address);
-      
-      return result.address;
+      const res = await this.connectHandler(this.source)
+
+      // Seed internal state
+      if (res.accounts?.length) {
+        this.setAccounts(res.accounts)
+      }
+
+      if (res.chainId) {
+        this.chain = String(res.chainId) // Convert to string for compatibility
+        this.emit('chainChanged', String(res.chainId))
+      }
+
+      if (res.unsubscribe) this.unbindExternal = res.unsubscribe
+
+      // Announce connection
+      this.emit('connect', res.address)
+      return res.address
     } catch (error) {
-      console.error(`[PolkadotConnectorProvider] Connection failed:`, error);
-      this.emit('error', error);
-      throw error;
+      this.emit('error', error)
+      throw error
     }
   }
 
   /**
-   * Get accounts from the connector
+   * AppKit calls this to fetch normalized accounts.
+   * We map to { namespace, address, type } tuples.
    */
-  async getAccounts(): Promise<Array<{ namespace: string; address: string; type: string }>> {
-    return this.accounts.map(account => ({
+  async getAccounts(): Promise<Array<{ namespace: string; address: string; type: 'eoa' }>> {
+    return this.accounts.map(a => ({
       namespace: this.namespace,
-      address: account.address,
-      type: 'eoa',
-    }));
+      address: a.address,
+      type: 'eoa'
+    }))
   }
 
   /**
-   * Disconnect (not typically used for injected wallets)
+   * Disconnect and clear state. If you subscribed to extension events,
+   * provide an `unsubscribe` in your connectHandler—this will call it.
    */
   async disconnect(): Promise<void> {
-    this.provider = null;
-    this.accounts = [];
-    this.emit('disconnect');
+    try {
+      this.unbindExternal?.()
+    } catch {
+      /* noop */
+    } finally {
+      this.unbindExternal = undefined
+    }
+
+    this.provider = null
+    this.accounts = []
+    this.emit('disconnect')
   }
 
   /**
-   * Check if wallet is installed
+   * Lightweight install check based on injectedWeb3.
+   * Make sure `source` matches the injected key (normalized).
    */
   isInstalled(): boolean {
-    return typeof window !== 'undefined' && !!(window as any).injectedWeb3?.[this.source];
+    if (typeof window === 'undefined') return false
+    const key = normalizeSource(this.source)
+    return Boolean(window.injectedWeb3?.[key])
+  }
+
+  /** Update internal accounts and emit `accountsChanged` in AppKit shape */
+  private setAccounts(accounts: PolkadotAccount[]) {
+    this.accounts = accounts
+    this.emit(
+      'accountsChanged',
+      accounts.map(a => ({ namespace: this.namespace, address: a.address, type: 'eoa' as const }))
+    )
   }
 }
-

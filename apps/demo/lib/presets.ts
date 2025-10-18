@@ -28,7 +28,8 @@ export const networkImages = {
 export const chainImages = {
   eip155: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
   solana: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
-  bip122: '0b4838db-0161-4ffe-022d-532bf03dba00'
+  bip122: '0b4838db-0161-4ffe-022d-532bf03dba00',
+  polkadot: '7289c336-3981-4081-c5f4-efc26ac64a00'
 }
 
 export function getImageDeliveryURL(imageId: string) {

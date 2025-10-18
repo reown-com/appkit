@@ -258,6 +258,10 @@ export class W3mConnectorList extends LitElement {
       HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)
     )
 
+    // Check if connector is actually installed (for injected wallets)
+    const isInstalled =
+      typeof (connector as any).isInstalled === 'function' ? (connector as any).isInstalled() : true // Default to true for backwards compatibility
+
     let tagLabel: string | undefined = undefined
     let tagVariant: 'info' | 'success' | 'accent' | undefined = undefined
 
@@ -285,7 +289,7 @@ export class W3mConnectorList extends LitElement {
       <w3m-list-wallet
         displayIndex=${index}
         imageSrc=${ifDefined(imageSrc)}
-        .installed=${true}
+        .installed=${isInstalled}
         name=${connector.name ?? 'Unknown'}
         .tagVariant=${tagVariant}
         tagLabel=${ifDefined(tagLabel)}

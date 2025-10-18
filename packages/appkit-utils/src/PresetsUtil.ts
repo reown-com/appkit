@@ -40,7 +40,12 @@ export const PresetsUtil = {
     [ConstantsUtil.LEATHER_CONNECTOR_NAME]:
       '483afe1df1df63daf313109971ff3ef8356ddf1cc4e45877d205eee0b7893a13',
     [ConstantsUtil.OKX_CONNECTOR_NAME]:
-      '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709'
+      '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709',
+
+    /* Polkadot wallets */
+    [ConstantsUtil.SUBWALLET_CONNECTOR_NAME]: '03f5c08c-fb30-46a0-ca5c-d8fdd7250b00', // SubWallet - Official WC ID
+    [ConstantsUtil.TALISMAN_CONNECTOR_NAME]: 'ba290222-c3f3-4194-23bf-28ba7587af00', // Talisman - Official WC ID
+    [ConstantsUtil.POLKADOT_JS_CONNECTOR_NAME]: '73a29a37-29e6-4d42-a59f-3f3d8e7f9e00' // Polkadot.js - PLACEHOLDER: Get from WC Explorer
   } as Record<string, string>,
   NetworkImageIds: {
     // Ethereum
@@ -121,7 +126,12 @@ export const PresetsUtil = {
     [CommonConstantsUtil.CONNECTOR_ID.SAFE]: '461db637-8616-43ce-035a-d89b8a1d5800',
     [CommonConstantsUtil.CONNECTOR_ID.LEDGER]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300',
     [CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400',
-    [CommonConstantsUtil.CONNECTOR_ID.INJECTED]: '07ba87ed-43aa-4adf-4540-9e6a2b9cae00'
+    [CommonConstantsUtil.CONNECTOR_ID.INJECTED]: '07ba87ed-43aa-4adf-4540-9e6a2b9cae00',
+
+    /* Polkadot wallets - Using Explorer IDs as image IDs */
+    [ConstantsUtil.SUBWALLET_CONNECTOR_NAME]: '03f5c08c-fb30-46a0-ca5c-d8fdd7250b00',
+    [ConstantsUtil.TALISMAN_CONNECTOR_NAME]: 'ba290222-c3f3-4194-23bf-28ba7587af00',
+    [ConstantsUtil.POLKADOT_JS_CONNECTOR_NAME]: '73a29a37-29e6-4d42-a59f-3f3d8e7f9e00'
   } as Record<string, string>,
 
   ConnectorNamesMap: {

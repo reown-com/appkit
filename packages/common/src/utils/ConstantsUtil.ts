@@ -45,6 +45,7 @@ export const ConstantsUtil = {
   ADAPTER_TYPES: {
     BITCOIN: 'bitcoin',
     SOLANA: 'solana',
+    POLKADOT: 'polkadot',
     WAGMI: 'wagmi',
     ETHERS: 'ethers',
     ETHERS5: 'ethers5'
