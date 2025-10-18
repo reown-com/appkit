@@ -289,6 +289,12 @@ export class PolkadotAdapter extends AdapterBlueprint<any> {
     }
 
     console.log('[PolkadotAdapter] All injectedWeb3 extensions:', Object.keys(injectedWeb3))
+    
+    // Debug: Check for any SubWallet-related keys
+    const subwalletKeys = Object.keys(injectedWeb3).filter(key => 
+      key.toLowerCase().includes('subwallet')
+    )
+    console.log('[PolkadotAdapter] SubWallet-related keys found:', subwalletKeys)
 
     // Detect which of our preferred wallets are actually installed
     // Sort to ensure deterministic order
@@ -302,6 +308,18 @@ export class PolkadotAdapter extends AdapterBlueprint<any> {
         return false
       })
       .sort() // Alphabetical order for consistent UI
+
+    // Check for duplicate SubWallet entries and deduplicate
+    const hasSubwalletJs = detectedWallets.includes('subwallet-js')
+    const hasSubwallet = detectedWallets.includes('subwallet')
+    
+    if (hasSubwalletJs && hasSubwallet) {
+      console.log('[PolkadotAdapter] Found both subwallet-js and subwallet, removing subwallet')
+      const deduplicatedWallets = detectedWallets.filter(source => source !== 'subwallet')
+      console.log('[PolkadotAdapter] Deduplicated wallets:', deduplicatedWallets)
+      detectedWallets.length = 0
+      detectedWallets.push(...deduplicatedWallets)
+    }
 
     if (detectedWallets.length === 0) {
       console.log('[PolkadotAdapter] No preferred wallets detected in injectedWeb3')
@@ -392,6 +410,10 @@ export class PolkadotAdapter extends AdapterBlueprint<any> {
     console.log(
       '[PolkadotAdapter] Connector IDs:',
       newConnectors.map(c => c.id)
+    )
+    console.log(
+      '[PolkadotAdapter] Connector details:',
+      newConnectors.map(c => ({ id: c.id, name: c.name }))
     )
 
     // Emit connectors event to notify AppKit of available wallets
