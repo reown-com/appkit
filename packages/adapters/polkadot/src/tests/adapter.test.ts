@@ -238,12 +238,12 @@ describe('PolkadotAdapter', () => {
       expect(call.data.startsWith('0x')).toBe(true)
     })
 
-    it('throws when no connector for address', async () => {
+    it('throws when no connection for address', async () => {
       installPolkadotExtensionMocks([accountPolkadotJs])
       const adapter = createAdapter()
       await expect(
         adapter.signMessage({ address: '5Unconnected', message: 'hello' } as any)
-      ).rejects.toThrow('No connector found for address')
+      ).rejects.toThrow('No connection found for address')
     })
 
     it('throws when wallet lacks signRaw', async () => {

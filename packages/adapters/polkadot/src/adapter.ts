@@ -806,12 +806,20 @@ export class PolkadotAdapter extends AdapterBlueprint<any> {
   async signMessage(
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
-    const connector = this.connectors.find((c: any) =>
-      c.accounts.some((a: PolkadotAccount) => a.address === params.address)
+    // Find the connection for this address
+    const connection = this.connections.find(conn =>
+      conn.accounts?.some(acc => acc.address === params.address)
     )
 
+    if (!connection) {
+      throw new Error(`No connection found for address: ${params.address}`)
+    }
+
+    // Get the connector for this connection
+    const connector = this.connectors.find(c => c.id === connection.connectorId)
+
     if (!connector) {
-      throw new Error('No connector found for address')
+      throw new Error(`No connector found for connection: ${connection.connectorId}`)
     }
 
     // Prefer latest test-provided function when present to avoid stale refs in tests
