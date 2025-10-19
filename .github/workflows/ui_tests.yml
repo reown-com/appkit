@@ -197,7 +197,7 @@ jobs:
             ${{ runner.os }}-nextjs-lab-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
       - name: build laboratory
-        run: pnpm --filter @apps/laboratory build
+        run: pnpm build:laboratory
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
