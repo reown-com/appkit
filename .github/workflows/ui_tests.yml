@@ -86,8 +86,8 @@ permissions:
   contents: read
 
 jobs:
-  build_lab_and_extension:
-    name: 'Build Lab and Extension'
+  build_packages:
+    name: 'Build Packages'
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -122,19 +122,82 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
 
+      - name: build packages
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+
+      # Upload packages build output
+      - name: Upload packages artifacts
+        if: inputs.build-and-cache-only == false
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ 'ui-packages-dist-' }}${{ env.BRANCH_NAME }}
+          path: |
+            packages/*/dist/
+            .turbo/
+          retention-days: 1
+
+      # Upload node_modules for reuse in parallel jobs
+      - name: Upload node_modules
+        if: inputs.build-and-cache-only == false
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
+          path: node_modules
+          retention-days: 1
+
+  build_laboratory:
+    name: 'Build Laboratory'
+    needs: build_packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          repository: reown-com/appkit
+          ref: ${{ inputs.branch }}
+
+      - name: Set Branch Name with Underscores
+        run: |
+          BRANCH_NAME=${BRANCH_NAME//\//_} # replace all slashes with underscores
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "BRANCH_NAME is $BRANCH_NAME"
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      - name: Download packages artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ 'ui-packages-dist-' }}${{ env.BRANCH_NAME }}
+
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
+          path: node_modules
+
+      - name: Restore workspace symlinks
+        run: pnpm install --offline --prefer-offline
+
       - name: Cache NextJS Apps
         uses: actions/cache@v4
         with:
           path: |
-            ${{ github.workspace }}/apps/laboratory/out/cache
-            ${{ github.workspace }}/apps/demo/out/cache
-          # NOTE: apps/browser-extension likely does NOT use .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/laboratory/**.[jt]s?(x)', 'apps/demo/**.[jt]s?(x)', 'packages/**') }} # More specific key
+            ${{ github.workspace }}/apps/laboratory/.next/cache
+          key: ${{ runner.os }}-nextjs-lab-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/laboratory/**.[jt]s?(x)', 'packages/**') }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+            ${{ runner.os }}-nextjs-lab-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
-      - name: build packages and lab
-        run: pnpm build:laboratory
+      - name: build laboratory
+        run: pnpm --filter @apps/laboratory build
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
@@ -143,55 +206,140 @@ jobs:
           SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
 
+      - name: Upload laboratory build
+        if: inputs.build-and-cache-only == false
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ 'ui-laboratory-out-' }}${{ env.BRANCH_NAME }}
+          path: apps/laboratory/out/
+          retention-days: 1
+
+  build_extension:
+    name: 'Build Extension'
+    needs: build_packages
+    if: inputs.build-and-cache-only == false && inputs.secure-site-url == 'https://secure.walletconnect.org/sdk'
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          repository: reown-com/appkit
+          ref: ${{ inputs.branch }}
+
+      - name: Set Branch Name with Underscores
+        run: |
+          BRANCH_NAME=${BRANCH_NAME//\//_} # replace all slashes with underscores
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "BRANCH_NAME is $BRANCH_NAME"
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      - name: Download packages artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ 'ui-packages-dist-' }}${{ env.BRANCH_NAME }}
+
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
+          path: node_modules
+
+      - name: Restore workspace symlinks
+        run: pnpm install --offline --prefer-offline
+
       - name: build extension
-        if: inputs.build-and-cache-only == false && inputs.secure-site-url == 'https://secure.walletconnect.org/sdk'
         env:
           EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
           SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
           BIP122_PRIVATE_KEY: ${{ secrets.BIP122_PRIVATE_KEY }}
-          NODE_OPTIONS: '--max-old-space-size=4096' # Increase memory for webpack
+          NODE_OPTIONS: '--max-old-space-size=4096'
         working-directory: ./apps/browser-extension/
         run: pnpm build
 
-      - name: build Demo app
-        if: inputs.secure-site-url == 'https://secure.walletconnect.org/sdk'
-        run: pnpm build:demo
+      - name: Upload extension build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ 'ui-extension-dist-' }}${{ env.BRANCH_NAME }}
+          path: apps/browser-extension/dist/
+          retention-days: 1
+
+  build_demo:
+    name: 'Build Demo'
+    needs: build_packages
+    if: inputs.secure-site-url == 'https://secure.walletconnect.org/sdk'
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          repository: reown-com/appkit
+          ref: ${{ inputs.branch }}
+
+      - name: Set Branch Name with Underscores
+        run: |
+          BRANCH_NAME=${BRANCH_NAME//\//_} # replace all slashes with underscores
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "BRANCH_NAME is $BRANCH_NAME"
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      - name: Download packages artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ 'ui-packages-dist-' }}${{ env.BRANCH_NAME }}
+
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
+          path: node_modules
+
+      - name: Restore workspace symlinks
+        run: pnpm install --offline --prefer-offline
+
+      - name: Cache NextJS Apps
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/apps/demo/.next/cache
+          key: ${{ runner.os }}-nextjs-demo-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/demo/**.[jt]s?(x)', 'packages/**') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-demo-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+      - name: build demo
+        run: pnpm --filter @apps/demo build
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
           BASE_URL: ${{ inputs.demo-base-url }}
-          NODE_OPTIONS: '--max-old-space-size=4096' # Increase memory for webpack
+          NODE_OPTIONS: '--max-old-space-size=4096'
 
-      # Upload actual artifact in GitHub Actions
-      - name: Upload build artifacts (GitHub Actions)
-        if: inputs.build-and-cache-only == false
+      - name: Upload demo build
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ 'ui-build-output-' }}${{ env.BRANCH_NAME }}
-          path: |
-            dist/
-            .next/
-            turbo/
-            packages/*/dist/
-            apps/*/dist/
-            apps/demo/out/
-            apps/laboratory/out/
-            .turbo/
-          retention-days: 1
-
-      # Upload actual artifact in GitHub Actions
-      - name: Upload node_modules (GitHub Actions)
-        if: inputs.build-and-cache-only == false
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
-          path: node_modules
+          name: ${{ 'ui-demo-out-' }}${{ env.BRANCH_NAME }}
+          path: apps/demo/out/
           retention-days: 1
 
   ui_tests:
     if: inputs.build-and-cache-only == false
     name: 'Playwright Tests'
-    needs: build_lab_and_extension # Depend on the build job
+    needs: [build_laboratory, build_extension, build_demo] # Depend on all build jobs
     runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
     strategy:
       fail-fast: false
@@ -260,26 +408,40 @@ jobs:
           node-version: 22.x
           cache: 'pnpm'
 
-      # Download actual artifact in GitHub Actions
-      - name: Download build artifacts (GitHub Actions)
+      # Download all build artifacts
+      - name: Download packages artifacts
         uses: actions/download-artifact@v4
         with:
-          name: ${{ 'ui-build-output-' }}${{ env.BRANCH_NAME }}
-          # Note: download-artifact downloads into the workspace root by default
+          name: ${{ 'ui-packages-dist-' }}${{ env.BRANCH_NAME }}
 
-      # Download actual artifact in GitHub Actions
-      - name: Download node_modules (GitHub Actions)
+      - name: Download laboratory build
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ 'ui-laboratory-out-' }}${{ env.BRANCH_NAME }}
+          path: apps/laboratory/out/
+
+      - name: Download extension build
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ 'ui-extension-dist-' }}${{ env.BRANCH_NAME }}
+          path: apps/browser-extension/dist/
+        continue-on-error: true # Extension build might be skipped
+
+      - name: Download demo build
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ 'ui-demo-out-' }}${{ env.BRANCH_NAME }}
+          path: apps/demo/out/
+        continue-on-error: true # Demo build might be skipped
+
+      - name: Download node_modules
         uses: actions/download-artifact@v4
         with:
           name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
-          path: node_modules # Specify path to download into
+          path: node_modules
 
-      # Restore executable permissions for binaries (keep this after potential copy)
-      - name: Fix permissions
-        run: chmod +x node_modules/*/bin/* || true # Allow failure if no binaries found
-
-      - name: Install dependencies # Install again to link binaries, etc.
-        run: pnpm install --frozen-lockfile
+      - name: Restore workspace symlinks
+        run: pnpm install --offline --prefer-offline
 
       # The cache is scoped to the key, version, and branch.
       # Version includes the path e.g. /tmp/playwright_cache
@@ -416,15 +578,14 @@ jobs:
           node-version: 22.x
           cache: 'pnpm'
 
-      # Download actual artifact in GitHub Actions
-      - name: Download node_modules (GitHub Actions)
+      - name: Download node_modules
         uses: actions/download-artifact@v4
         with:
           name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
-          path: node_modules # Specify path to download into
+          path: node_modules
 
-      - name: Install dependencies # Install again to link binaries, etc.
-        run: pnpm install --frozen-lockfile
+      - name: Restore workspace symlinks
+        run: pnpm install --offline --prefer-offline
 
       - name: Install Playwright system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true' # <-- Re-enable condition

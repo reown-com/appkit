@@ -143,12 +143,8 @@ jobs:
           name: node-modules
           path: node_modules
 
-      # Restore executable permissions for binaries
-      - name: Fix permissions
-        run: chmod +x node_modules/*/bin/*
-
-      - name: install
-        run: pnpm install --frozen-lockfile
+      - name: Restore workspace symlinks
+        run: pnpm install --offline --prefer-offline
 
       - name: check
         run: pnpm ${{ matrix.style-command }}
@@ -190,12 +186,8 @@ jobs:
           name: node-modules
           path: node_modules
 
-      # Restore executable permissions for binaries
-      - name: Fix permissions
-        run: chmod +x node_modules/*/bin/*
-
-      - name: install
-        run: pnpm install --frozen-lockfile
+      - name: Restore workspace symlinks
+        run: pnpm install --offline --prefer-offline
 
       - name: build sample apps
         run: pnpm build:sample-apps
@@ -236,12 +228,8 @@ jobs:
           name: node-modules
           path: node_modules
 
-      # Restore executable permissions for binaries
-      - name: Fix permissions
-        run: chmod +x node_modules/*/bin/*
-
-      - name: install
-        run: pnpm install --frozen-lockfile
+      - name: Restore workspace symlinks
+        run: pnpm install --offline --prefer-offline
 
       - name: Test
         run: pnpm test:ci
