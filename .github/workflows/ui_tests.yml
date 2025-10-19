@@ -440,8 +440,8 @@ jobs:
           name: ${{ 'ui-node-modules-' }}${{ env.BRANCH_NAME }}
           path: node_modules
 
-      - name: Restore workspace symlinks
-        run: pnpm install --offline --prefer-offline
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       # The cache is scoped to the key, version, and branch.
       # Version includes the path e.g. /tmp/playwright_cache
