@@ -7,15 +7,13 @@ export default function InitializeBoundary({ children }: { children: React.React
   const [hasTimedOut, setHasTimedOut] = useState(false)
 
   useEffect(() => {
-    if (isInitialized) {
-      return
+    if (!isInitialized) {
+      const timeout = setTimeout(() => {
+        setHasTimedOut(true)
+      }, 20_000)
+
+      return () => clearTimeout(timeout)
     }
-
-    const timeout = setTimeout(() => {
-      setHasTimedOut(true)
-    }, 20_000)
-
-    return () => clearTimeout(timeout)
   }, [isInitialized])
 
   // Add a loading skeleton
