@@ -1,5 +1,5 @@
 {
-  "name": "@sacred-protocol/appkit-adapter-polkadot",
+  "name": "@reown/appkit-adapter-polkadot",
   "version": "1.0.0",
   "private": false,
   "sideEffects": false,

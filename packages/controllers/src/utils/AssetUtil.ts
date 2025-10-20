@@ -16,8 +16,9 @@ const namespaceImageIds: Record<ChainNamespace, string> = {
   eip155: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
   // Solana
   solana: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
-  // Polkadot
-  polkadot: '',
+  // Polkadot - Using custom icon URL in network definition instead of CDN
+  // No official Reown CDN UUID yet; use `icon` property in defineChain()
+  polkadot: '54e80308-8397-4fdb-8186-00a16e3190ba',
   // Bitcoin
   bip122: '0b4838db-0161-4ffe-022d-532bf03dba00',
   // Cosmos

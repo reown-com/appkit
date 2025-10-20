@@ -6,23 +6,23 @@
  * Basic injected account structure from Polkadot extensions
  */
 export interface InjectedAccount {
-  address: string;
-  genesisHash?: string;
-  name?: string;
-  type?: string;
+  address: string
+  genesisHash?: string
+  name?: string
+  type?: string
 }
 
 /**
  * Injected account with metadata from Polkadot extensions
  */
 export interface InjectedAccountWithMeta {
-  address: string;
+  address: string
   meta: {
-    genesisHash?: string;
-    name?: string;
-    source: string;
-  };
-  type?: string;
+    genesisHash?: string
+    name?: string
+    source: string
+  }
+  type?: string
 }
 
 /**
@@ -30,31 +30,31 @@ export interface InjectedAccountWithMeta {
  */
 export interface PolkadotProvider {
   // Extension identification
-  name: string;
-  version: string;
+  name: string
+  version: string
 
   // Account management
   accounts: {
-    get(anyType?: boolean): Promise<InjectedAccount[]>;
-    subscribe(callback: (accounts: InjectedAccount[]) => void): () => void;
-  };
+    get(anyType?: boolean): Promise<InjectedAccount[]>
+    subscribe(callback: (accounts: InjectedAccount[]) => void): () => void
+  }
 
   // Signer interface
-  signer: any;
+  signer: any
 
   // Metadata management
   metadata?: {
-    provide(metadata: Record<string, unknown>): Promise<boolean>;
-  };
+    provide(metadata: Record<string, unknown>): Promise<boolean>
+  }
 }
 
 /**
  * Polkadot extension metadata
  */
 export interface PolkadotExtension {
-  name: string;
-  version: string;
-  enable(origin: string): Promise<PolkadotProvider>;
+  name: string
+  version: string
+  enable(origin: string): Promise<PolkadotProvider>
 }
 
 /**
@@ -62,63 +62,72 @@ export interface PolkadotExtension {
  */
 declare global {
   interface Window {
-    injectedWeb3?: Record<string, PolkadotExtension>;
+    injectedWeb3?: Record<string, PolkadotExtension>
   }
 }
 
 /**
  * Wallet source identifiers used by Polkadot extensions
  */
-export type PolkadotWalletSource = 'subwallet-js' | 'talisman' | 'polkadot-js' | 'polkadot-vault';
+export type PolkadotWalletSource =
+  | 'subwallet-js'
+  | 'talisman'
+  | 'polkadot-js'
+  | 'polkadot-vault'
+  | 'polkadot-js-extension'
+  | 'polkadotjs-extension'
+  | 'subwallet'
+  | 'talisman-extension'
+  | 'polkadotjs'
 
 /**
  * Polkadot account structure
  */
 export interface PolkadotAccount {
-  address: string;
-  name?: string;
-  source: string;
-  type?: string;
-  genesisHash?: `0x${string}`;
+  address: string
+  name?: string
+  source: string
+  type?: string
+  genesisHash?: `0x${string}`
 }
 
 /**
  * Network configuration for Polkadot chains
  */
 export interface PolkadotNetworkConfig {
-  id: string;
-  name: string;
-  currency: string;
-  explorerUrl: string;
-  rpcUrl: string;
-  wsUrl?: string;
+  id: string
+  name: string
+  currency: string
+  explorerUrl: string
+  rpcUrl: string
+  wsUrl?: string
 }
 
 /**
  * Balance information
  */
 export interface PolkadotBalance {
-  free: string;
-  reserved: string;
-  frozen: string;
-  decimals: number;
-  symbol: string;
+  free: string
+  reserved: string
+  frozen: string
+  decimals: number
+  symbol: string
 }
 
 /**
  * Transaction parameters
  */
 export interface PolkadotTransactionParams {
-  to: string;
-  value: string;
-  data?: string;
+  to: string
+  value: string
+  data?: string
 }
 
 /**
  * Transaction result
  */
 export interface PolkadotTransactionResult {
-  hash: string;
-  blockHash?: string;
-  blockNumber?: number;
+  hash: string
+  blockHash?: string
+  blockNumber?: number
 }

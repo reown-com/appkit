@@ -2,16 +2,20 @@ import { type ChainNamespace } from '@reown/appkit-common'
 import {
   type AppKitNetwork,
   arbitrum,
+  assetHub,
   avalanche,
   base,
   bitcoin,
   bitcoinTestnet,
   bsc,
+  kusama,
   mainnet,
   optimism,
+  polkadot,
   polygon,
   solana,
   solanaDevnet,
+  westend,
   zksync
 } from '@reown/appkit/networks'
 
@@ -32,5 +36,9 @@ export const NETWORK_OPTIONS = [
   { namespace: 'solana', network: solana },
   { namespace: 'solana', network: solanaDevnet },
   { namespace: 'bip122', network: bitcoin },
-  { namespace: 'bip122', network: bitcoinTestnet }
+  { namespace: 'bip122', network: bitcoinTestnet },
+  { namespace: 'polkadot', network: polkadot },
+  { namespace: 'polkadot', network: kusama },
+  { namespace: 'polkadot', network: westend },
+  { namespace: 'polkadot', network: assetHub }
 ] as NetworkOption[]

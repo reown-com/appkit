@@ -14,6 +14,11 @@ export const ConstantsUtil = {
   XVERSE_CONNECTOR_NAME: 'Xverse Wallet',
   LEATHER_CONNECTOR_NAME: 'Leather',
   OKX_CONNECTOR_NAME: 'OKX Wallet',
+  
+  /* Polkadot wallets */
+  SUBWALLET_CONNECTOR_NAME: 'SubWallet',
+  TALISMAN_CONNECTOR_NAME: 'Talisman',
+  POLKADOT_JS_CONNECTOR_NAME: 'Polkadot{.js}',
 
   EIP155: CommonConstantsUtil.CHAIN.EVM,
   ADD_CHAIN_METHOD: 'wallet_addEthereumChain',

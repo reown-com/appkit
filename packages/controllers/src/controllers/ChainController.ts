@@ -425,6 +425,9 @@ const controller = {
     })
     StorageUtil.setActiveCaipNetworkId(caipNetwork.caipNetworkId)
 
+    // Apply network-specific feature overrides (e.g., disable socials for Polkadot)
+    OptionsController.applyNetworkSpecificFeatures(caipNetwork)
+
     const isSupported = ChainController.checkIfSupportedNetwork(caipNetwork.chainNamespace)
 
     if (

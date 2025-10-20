@@ -20,6 +20,7 @@ import type {
   Tokens,
   WalletFeature
 } from '../utils/TypeUtil.js'
+import { ChainController, type ChainControllerState } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerStatePublic {
@@ -210,6 +211,7 @@ export interface OptionsControllerStateInternal {
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
   remoteFeatures?: RemoteFeatures
+  _originalSocials?: SocialProvider[] | false
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
@@ -258,6 +260,27 @@ export const OptionsController = {
     if (state.features?.pay) {
       state.remoteFeatures.email = false
       state.remoteFeatures.socials = false
+    }
+
+    // Disable socials for Polkadot networks
+    this.applyNetworkSpecificFeatures(ChainController.state.activeCaipNetwork)
+  },
+
+  applyNetworkSpecificFeatures(activeNetwork?: ChainControllerState['activeCaipNetwork']) {
+    if (!state.remoteFeatures) {
+      return
+    }
+
+    // Store original socials value if not already stored
+    if (!state._originalSocials && state.remoteFeatures.socials) {
+      state._originalSocials = state.remoteFeatures.socials
+    }
+
+    // Disable socials for Polkadot, restore for other networks
+    if (activeNetwork?.chainNamespace === 'polkadot') {
+      state.remoteFeatures.socials = false
+    } else if (state._originalSocials) {
+      state.remoteFeatures.socials = state._originalSocials
     }
   },
 

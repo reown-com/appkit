@@ -39,14 +39,23 @@ export const NETWORK_ID_NAMESPACE_MAP = {
   '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'solana',
   EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'solana',
   '000000000019d6689c085ae165831e93': 'bip122',
-  '000000000933ea01ad0ee984209779ba': 'bip122'
+  '000000000933ea01ad0ee984209779ba': 'bip122',
+  '91b171bb158e2d3848fa23a9f1c25182': 'polkadot',
+  'b0a8d493285c2df73290dfb7e61f870f': 'polkadot',
+  'e143f23803ac50e8f6f8e62695d1ce9e': 'polkadot',
+  '68d56f15f85d3136970ec16946040bc1': 'polkadot'
 }
 
 export const NAMESPACE_NETWORK_IDS_MAP: Record<ChainNamespace, (string | number)[]> = {
   eip155: [1, 42161, 43114, 56, 10, 137, 324, 8453],
   solana: ['5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1'],
   bip122: ['000000000019d6689c085ae165831e93', '000000000933ea01ad0ee984209779ba'],
-  polkadot: [],
+  polkadot: [
+    '91b171bb158e2d3848fa23a9f1c25182',
+    'b0a8d493285c2df73290dfb7e61f870f',
+    'e143f23803ac50e8f6f8e62695d1ce9e',
+    '68d56f15f85d3136970ec16946040bc1'
+  ],
   cosmos: [],
   sui: [],
   stacks: []
