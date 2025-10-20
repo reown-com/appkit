@@ -218,7 +218,7 @@ export const bitcoinSdkOptions: SdkOption[] = [
   {
     title: 'Default',
     link: '/appkit?name=bitcoin',
-    description: 'Basic configuration using bitcoin as a driving library'
+    description: 'Basic configuration using Bitcoin as a driving library'
   },
   {
     title: 'Wallet Button',
@@ -231,7 +231,7 @@ export const tonSdkOptions: SdkOption[] = [
   {
     title: 'Default',
     link: '/appkit?name=ton',
-    description: 'Basic configuration using bitcoin as a driving library'
+    description: 'Basic configuration using Ton as a driving library'
   }
 ]
 

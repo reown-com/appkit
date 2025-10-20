@@ -257,12 +257,12 @@ export interface BlockchainApiSwapTokensRequest {
   chainId?: string
 }
 
-export interface BlockchainApiTonBalanceRequest {
+export interface BlockchainApiGetAddressBalanceRequest {
   caipNetworkId: string
   address: string
 }
 
-export interface BlockchainApiTonBalanceResponse {
+export interface BlockchainApiGetAddressBalanceResponse {
   ok: boolean
   result: string
   jsonrpc: string

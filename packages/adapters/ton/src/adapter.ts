@@ -245,7 +245,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
       return { balance: '0', symbol: 'TON' }
     }
 
-    const balance = await BlockchainApiController.fetchTonBalance({
+    const balance = await BlockchainApiController.getAddressBalance({
       caipNetworkId:
         chainToCaipNetworkIdMap[params.chainId as keyof typeof chainToCaipNetworkIdMap],
       address

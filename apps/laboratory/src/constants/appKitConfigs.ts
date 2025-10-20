@@ -1,6 +1,6 @@
 import type { CreateConfigParameters } from 'wagmi'
 
-import type { CreateAppKit } from '@reown/appkit'
+import { CoreHelperUtil, type CreateAppKit } from '@reown/appkit'
 import type { AppKitNetwork, CustomRpcUrlMap } from '@reown/appkit-common'
 import { DefaultSIWX, ReownAuthentication } from '@reown/appkit-siwx'
 
@@ -38,7 +38,7 @@ const metadata = {
   name: 'AppKit',
   description: 'AppKit Laboratory',
   // eslint-disable-next-line no-negated-condition
-  url: typeof window !== 'undefined' ? window.location.origin : '',
+  url: CoreHelperUtil.isClient() ? window.location.origin : '',
   icons: ['https://lab.reown.com/logo.png']
 }
 const commonAppKitConfig = {

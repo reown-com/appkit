@@ -37,6 +37,7 @@ export function TonSendMessageTest() {
       setBoc(res)
       toast({ title: 'Transaction prepared', description: res, type: 'success' })
     } catch (e) {
+      console.error('TON SendMessage error:', e)
       toast({
         title: 'Send error',
         description: e instanceof Error ? e.message : 'Failed to send transaction',

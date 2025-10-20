@@ -41,7 +41,7 @@ vi.mock('@reown/appkit-controllers', () => ({
 }))
 
 // Mock fetch
-global.fetch = vi.fn()
+global.fetch = vi.fn() as unknown as typeof fetch
 
 describe('TonConnectUtil', () => {
   beforeEach(() => {

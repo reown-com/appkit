@@ -14,6 +14,8 @@ import type {
   BlockchainApiGenerateApproveCalldataResponse,
   BlockchainApiGenerateSwapCalldataRequest,
   BlockchainApiGenerateSwapCalldataResponse,
+  BlockchainApiGetAddressBalanceRequest,
+  BlockchainApiGetAddressBalanceResponse,
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse,
   BlockchainApiLookupEnsName,
@@ -27,8 +29,6 @@ import type {
   BlockchainApiSwapTokensResponse,
   BlockchainApiTokenPriceRequest,
   BlockchainApiTokenPriceResponse,
-  BlockchainApiTonBalanceRequest,
-  BlockchainApiTonBalanceResponse,
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
   GenerateOnRampUrlArgs,
@@ -298,9 +298,9 @@ export const BlockchainApiController = {
     })
   },
 
-  async fetchTonBalance({ caipNetworkId, address }: BlockchainApiTonBalanceRequest) {
+  async getAddressBalance({ caipNetworkId, address }: BlockchainApiGetAddressBalanceRequest) {
     return state.api
-      .post<BlockchainApiTonBalanceResponse>({
+      .post<BlockchainApiGetAddressBalanceResponse>({
         path: `/v1?chainId=${caipNetworkId}&projectId=${OptionsController.state.projectId}`,
         body: {
           id: '1',
