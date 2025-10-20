@@ -1,18 +1,6 @@
 #!/bin/bash
 # Not adding `set -e` so that S3 upload happens regardless
 
-# Run DNS troubleshooting for register.walletconnect.com
-echo ""
-echo "🔍 Running DNS Diagnostics"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-bash ./dns-check.sh || true
-echo ""
-echo "📄 DNS Diagnostics Output"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-cat dns-output.txt || echo "⚠️  dns-output.txt not found"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
-
 bun run playwright:test:canary
 TEST_EXIT_CODE=$?
 
