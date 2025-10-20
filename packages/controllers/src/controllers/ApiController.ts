@@ -251,8 +251,30 @@ export const ApiController = {
 
   async fetchConnectorImages() {
     const { connectors } = ConnectorController.state
-    const ids = connectors.map(({ imageId }) => imageId).filter(Boolean)
-    await Promise.allSettled((ids as string[]).map(id => ApiController._fetchConnectorImage(id)))
+    const ids = connectors.map(({ imageId }) => imageId).filter(Boolean) as string[]
+
+    await Promise.allSettled(
+      ids.map(async id => {
+        try {
+          await ApiController._fetchConnectorImage(id)
+        } catch {
+          /* ignore and try fallback */
+        }
+
+        // Fallback: if connector image not present, try wallet image id and mirror to connectorImages
+        if (!AssetController.state.connectorImages[id]) {
+          try {
+            await ApiController._fetchWalletImage(id)
+            const url = AssetController.state.walletImages[id]
+            if (url) {
+              AssetController.setConnectorImage(id, url)
+            }
+          } catch {
+            /* ignore fallback errors */
+          }
+        }
+      })
+    )
   },
 
   async fetchCurrencyImages(currencies: string[] = []) {

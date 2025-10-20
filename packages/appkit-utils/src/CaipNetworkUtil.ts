@@ -183,8 +183,16 @@ export const CaipNetworksUtil = {
       chainNamespace,
       caipNetworkId,
       assets: {
-        imageId: PresetsUtil.NetworkImageIds[caipNetwork.id],
-        imageUrl: customNetworkImageUrls?.[caipNetwork.id]
+        // Preserve any existing network assets first, then apply overrides/fallbacks.
+        // This ensures chains like Polkadot that ship an explicit imageUrl keep their icon.
+        imageId:
+          (caipNetwork as CaipNetwork)?.assets?.imageId ??
+          PresetsUtil.NetworkImageIds[caipNetwork.id],
+        imageUrl:
+          // Highest priority: explicit custom override from options
+          (customNetworkImageUrls?.[caipNetwork.id] as string | undefined) ??
+          // Fallback: the imageUrl defined on the base network (e.g., Polkadot SVG)
+          (caipNetwork as CaipNetwork)?.assets?.imageUrl
       },
       rpcUrls: {
         ...caipNetwork.rpcUrls,
