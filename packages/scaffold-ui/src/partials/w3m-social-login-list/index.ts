@@ -3,6 +3,7 @@ import { property, state } from 'lit/decorators.js'
 
 import {
   AlertController,
+  ApiController,
   ConnectorController,
   ConstantsUtil,
   OptionsController,
@@ -35,6 +36,8 @@ export class W3mSocialLoginList extends LitElement {
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
   @state() private isPwaLoading = false
+
+  @state() private hasExceededUsageLimit = ApiController.state.plan.hasExceededUsageLimit
 
   public constructor() {
     super()
@@ -89,6 +92,12 @@ export class W3mSocialLoginList extends LitElement {
 
   // -- Private ------------------------------------------- //
   async onSocialClick(socialProvider?: SocialProvider) {
+    if (this.hasExceededUsageLimit) {
+      RouterController.push('UsageExceeded')
+
+      return
+    }
+
     if (socialProvider) {
       await executeSocialLogin(socialProvider)
     }
