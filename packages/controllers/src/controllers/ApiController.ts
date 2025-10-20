@@ -262,7 +262,8 @@ export const ApiController = {
         }
 
         // Fallback: if connector image not present, try wallet image id and mirror to connectorImages
-        if (!AssetController.state.connectorImages[id]) {
+        const connectorImage = AssetController.state.connectorImages[id]
+        if (connectorImage === undefined || connectorImage === null) {
           try {
             await ApiController._fetchWalletImage(id)
             const url = AssetController.state.walletImages[id]

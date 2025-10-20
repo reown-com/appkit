@@ -2126,7 +2126,9 @@ export abstract class AppKitBaseClient {
     // Apply connector image overrides, if any were provided in options.
     const overrides = this.options.connectorImages || {}
     const withOverrides = connectors.map(c =>
-      overrides && overrides[c.id] ? { ...c, imageUrl: overrides[c.id] } : c
+      overrides[c.id] !== undefined && overrides[c.id] !== null
+        ? { ...c, imageUrl: overrides[c.id] }
+        : c
     )
 
     const allConnectors = [...ConnectorController.state.allConnectors, ...withOverrides]
