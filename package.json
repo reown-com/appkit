@@ -38,7 +38,7 @@
     "test:ci": "vitest run --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true --coverage.all=false",
     "test:static": "bun run run typecheck; bun run run lint; bun run run prettier",
     "typecheck": "turbo run typecheck",
-    "lint": "turbo run lint",
+    "lint": "turbo run lint --filter={./packages/**/*}",
     "danger": "danger ci",
     "prettier": "prettier --check .",
     "prettier:format": "prettier --write .",
