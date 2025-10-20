@@ -3,18 +3,18 @@
   "version": "1.1.7",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "typecheck": "tsc --noEmit",
-    "playwright:start": "pnpm start",
+    "playwright:start": "bun run start",
     "playwright:test": "playwright test",
     "playwright:test:email": "playwright test --grep connections-email.spec.ts",
     "playwright:test:wallet": "playwright test --grep connections-wallet.spec.ts",
-    "playwright:debug": "pnpm playwright:test --debug",
-    "playwright:debug:email": "pnpm playwright:test:email --debug",
-    "playwright:debug:wallet": "pnpm playwright:test:wallet --debug"
+    "playwright:debug": "bun run playwright:test --debug",
+    "playwright:debug:email": "bun run playwright:test:email --debug",
+    "playwright:debug:wallet": "bun run playwright:test:wallet --debug"
   },
   "dependencies": {
     "@dnd-kit/core": "6.3.1",
@@ -53,7 +53,7 @@
     "classnames": "2.5.1",
     "clsx": "2.1.1",
     "ethers": "6.14.0",
-    "next": "14.2.32",
+    "next": "15.5.2",
     "next-themes": "0.4.6",
     "react": "19.1.1",
     "react-dom": "19.1.1",
@@ -65,16 +65,16 @@
     "valtio": "2.1.7"
   },
   "devDependencies": {
+    "@mailsac/api": "1.0.8",
+    "@playwright/test": "1.48.2",
+    "@reown/appkit-testing": "1.8.8",
     "@types/node": "22.13.4",
     "@types/react": "19.1.15",
     "@types/react-dom": "19.1.9",
-    "@mailsac/api": "1.0.8",
-    "@reown/appkit-testing": "1.8.8",
-    "@playwright/test": "1.48.2",
-    "eslint": "8.56.0",
-    "eslint-config-next": "14.1.0",
     "dotenv": "16.4.7",
+    "eslint-config-next": "14.1.0",
     "postcss": "8.5.3",
+    "postcss-import": "16.1.1",
     "tailwindcss": "3.4.17",
     "typescript": "5.9.2"
   }

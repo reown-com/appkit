@@ -1,12 +1,15 @@
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 
-const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
+// This is a public projectId only to use on localhost
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694'
 
-let provider: InstanceType<typeof EthereumProvider> | undefined
+let provider: InstanceType<typeof EthereumProvider> | undefined = undefined
 
 export async function initializeProvider() {
   // In Next.js, we want to avoid re-initializing on the server side
-  if (typeof window === 'undefined') return undefined
+  if (typeof window === 'undefined') {
+    return undefined
+  }
 
   if (!provider) {
     provider = await EthereumProvider.init({
@@ -25,6 +28,7 @@ export async function initializeProvider() {
       optionalChains: [1, 137]
     })
   }
+
   return provider
 }
 

@@ -56,7 +56,7 @@ export default defineConfig<ModalFixture>({
     ? {}
     : {
         webServer: {
-          command: 'pnpm playwright:start',
+          command: 'bun run playwright:start',
           url: BASE_URL,
           reuseExistingServer: !process.env['CI']
         }

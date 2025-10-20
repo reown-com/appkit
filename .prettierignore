@@ -1,9 +1,13 @@
 .changeset
 coverage
 pnpm-lock.yaml
+bun.lock
 .nuxt
 .svelte-kit
 bundle-analysis.html
 .open-next
 /apps/pay-test-exchange/**.d.ts
 next-env.d.ts
+.output
+.next
+out/

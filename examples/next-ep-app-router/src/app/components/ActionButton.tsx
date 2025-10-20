@@ -19,7 +19,9 @@ export default function ActionButtonList({
   onAccountChange,
   onNetworkChange
 }: ActionButtonListProps) {
-  if (!provider) return null
+  if (!provider) {
+    return null
+  }
 
   return (
     <div className="appkit-buttons-container">

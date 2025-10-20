@@ -13,15 +13,17 @@ import { initializeModal, initializeSignClient } from './config'
 
 export default function App() {
   const [signClient, setSignClient] = useState<InstanceType<typeof SignClient>>()
-  const [session, setSession] = useState<SessionTypes.Struct>()
+  const [session, setSession] = useState<SessionTypes.Struct | undefined>()
   const [account, setAccount] = useState<string>()
   const [network, setNetwork] = useState<string>()
 
   useEffect(() => {
     document.documentElement.className = 'light'
-    const init = async () => {
+    async function init() {
       const client = await initializeSignClient()
-      if (!client) return
+      if (!client) {
+        return
+      }
 
       setSignClient(client)
       initializeModal()
@@ -39,12 +41,15 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    if (!signClient) return
+    if (!signClient) {
+      return
+    }
 
-    const handleSessionUpdate = ({ topic, params }: { topic: string; params: any }) => {
-      const { namespaces } = params
-      const _session = signClient.session.get(topic)
+    function handleSessionUpdate({ topic, params }: { topic: string; params: unknown }) {
+      const { namespaces } = params as { namespaces: unknown }
+      const _session = signClient?.session.get(topic)
       const updatedSession = { ..._session, namespaces }
+      // @ts-expect-error - type mismatch
       setSession(updatedSession)
     }
 

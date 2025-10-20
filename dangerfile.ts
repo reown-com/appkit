@@ -29,13 +29,14 @@ async function checkPackageJsons() {
   const pnpmLock = updated_files.find(f => f.includes('pnpm-lock.yaml'))
   const yarnLock = updated_files.find(f => f.includes('yarn.lock'))
   const npmLock = updated_files.find(f => f.includes('package-lock.json'))
+  const bunLock = updated_files.find(f => f.includes('bun.lockb'))
 
-  if (packageJsons.length && !pnpmLock) {
-    warn('Changes were made to one or more package.json(s), but not to pnpm-lock.yaml')
+  if (packageJsons.length && !bunLock) {
+    warn('Changes were made to one or more package.json(s), but not to bun.lock')
   }
 
-  if (yarnLock || npmLock) {
-    fail('Non pnpm lockfile(s) detected (yarn / npm), please use pnpm')
+  if (yarnLock || npmLock || pnpmLock) {
+    fail('Non bun lockfile(s) detected (yarn / npm / pnpm), please use bun')
   }
 
   for (const f of packageJsons) {

@@ -83,8 +83,8 @@ describe('useAppKitProvider', () => {
 
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.get('[data-testid="provider"]').text()).toContain('new-provider')
-    expect(wrapper.get('[data-testid="type"]').text()).toBe('"new-provider-type"')
+    expect(wrapper.get('[data-testid="provider"]').text()).toBe('{"test":"provider"}')
+    expect(wrapper.get('[data-testid="type"]').text()).toBe('"test-provider"')
   })
 
   it('should unsubscribe on component unmount', () => {

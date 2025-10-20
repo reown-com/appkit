@@ -1,7 +1,7 @@
 #!/bin/bash
 # Not adding `set -e` so that S3 upload happens regardless
 
-pnpm playwright:test:canary
+bun run playwright:test:canary
 TEST_EXIT_CODE=$?
 
 echo ""
