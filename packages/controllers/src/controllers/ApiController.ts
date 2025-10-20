@@ -258,12 +258,12 @@ export const ApiController = {
         try {
           await ApiController._fetchConnectorImage(id)
         } catch {
-          /* ignore and try fallback */
+          /* primary fetch failed, attempt fallback */
         }
 
-        // Fallback: if connector image not present, try wallet image id and mirror to connectorImages
+        // Fallback: only if connector image still missing after primary attempt
         const connectorImage = AssetController.state.connectorImages[id]
-        if (connectorImage === undefined || connectorImage === null) {
+        if (connectorImage == null) {
           try {
             await ApiController._fetchWalletImage(id)
             const url = AssetController.state.walletImages[id]
