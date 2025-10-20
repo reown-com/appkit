@@ -52,10 +52,10 @@ import {
   OptionsController,
   StorageUtil,
   WalletConnectConnector
-} from '@laughingwhales/appkit-controllers'
-import { type ConnectorType, type Provider } from '@laughingwhales/appkit-controllers'
-import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@laughingwhales/appkit-utils'
-import type { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+} from '@reown/appkit-controllers'
+import { type ConnectorType, type Provider } from '@reown/appkit-controllers'
+import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { authConnector } from './connectors/AuthConnector.js'
 import { walletConnect } from './connectors/WalletConnectConnector.js'

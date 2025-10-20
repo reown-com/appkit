@@ -17,7 +17,7 @@ import {
   CoreHelperUtil,
   OptionsController,
   RouterController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mAccountWalletFeaturesWidget } from '../../src/partials/w3m-account-wallet-features-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'

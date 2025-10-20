@@ -9,7 +9,7 @@ import {
   ModalController,
   OptionsController,
   RouterController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import type { WuiAccountButton } from '@laughingwhales/appkit-ui/wui-account-button'
 
 import { W3mAccountButton } from '../../src/modal/w3m-account-button'

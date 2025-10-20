@@ -1,4 +1,4 @@
-import { CoreHelperUtil, EventsController, RouterController } from '@laughingwhales/appkit-controllers'
+import { CoreHelperUtil, EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 
 import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'

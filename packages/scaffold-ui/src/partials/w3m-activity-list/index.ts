@@ -11,7 +11,7 @@ import {
   RouterController,
   TransactionsController,
   getPreferredAccountType
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { TransactionUtil, customElement } from '@laughingwhales/appkit-ui'
 import type { TransactionType } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-flex'
@@ -20,7 +20,7 @@ import '@laughingwhales/appkit-ui/wui-link'
 import '@laughingwhales/appkit-ui/wui-text'
 import '@laughingwhales/appkit-ui/wui-transaction-list-item'
 import '@laughingwhales/appkit-ui/wui-transaction-list-item-loader'
-import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import styles from './styles.js'
 

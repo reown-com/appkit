@@ -1,7 +1,7 @@
 import { vi } from 'vitest'
 
 import type { AppKit } from '@laughingwhales/appkit'
-import { CaipNetworksUtil } from '@laughingwhales/appkit-utils'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 import { type Chain, mainnet } from '@laughingwhales/appkit/networks'
 
 export const mockCaipNetworks = [mainnet] as [Chain, ...Chain[]]

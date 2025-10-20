@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
-import type { Tokens } from '@laughingwhales/appkit-controllers'
-import { ChainController, ConnectorController } from '@laughingwhales/appkit-controllers'
+import type { Tokens } from '@reown/appkit-controllers'
+import { ChainController, ConnectorController } from '@reown/appkit-controllers'
 
 import { ConstantsUtil } from '../src/ConstantsUtil.js'
 import { HelpersUtil } from '../src/HelpersUtil.js'

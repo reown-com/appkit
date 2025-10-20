@@ -6,7 +6,7 @@ import {
   type ConnectionControllerClient,
   OptionsController,
   ProviderController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { SmartSessionsController } from '../../src/smart-session/controllers/SmartSessionsController'
 import {

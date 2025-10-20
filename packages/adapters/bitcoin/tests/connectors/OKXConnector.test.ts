@@ -1,7 +1,7 @@
 import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@laughingwhales/appkit-common'
-import { ChainController, CoreHelperUtil } from '@laughingwhales/appkit-controllers'
+import { ChainController, CoreHelperUtil } from '@reown/appkit-controllers'
 import { bitcoin, bitcoinTestnet } from '@laughingwhales/appkit/networks'
 
 import { OKXConnector } from '../../src/connectors/OKXConnector'

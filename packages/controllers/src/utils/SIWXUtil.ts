@@ -2,8 +2,8 @@ import UniversalProvider from '@walletconnect/universal-provider'
 
 import type { CaipNetworkId, ChainNamespace } from '@laughingwhales/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@laughingwhales/appkit-common'
-import type { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
-import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'

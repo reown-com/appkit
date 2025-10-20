@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import { type CaipNetwork, ConstantsUtil } from '@laughingwhales/appkit-common'
-import { AssetUtil, ChainController } from '@laughingwhales/appkit-controllers'
+import { AssetUtil, ChainController } from '@reown/appkit-controllers'
 
 import { W3mOnRampProviderItem } from '../../src/partials/w3m-onramp-provider-item'
 

@@ -9,7 +9,7 @@ import {
   CoreHelperUtil,
   OptionsController,
   type WcWallet
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { ConnectorUtil } from '../../src/utils/ConnectorUtil'
 

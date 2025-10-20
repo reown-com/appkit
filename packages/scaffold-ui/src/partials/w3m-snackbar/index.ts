@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { SnackController } from '@laughingwhales/appkit-controllers'
+import { SnackController } from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-snackbar'
 

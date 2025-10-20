@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "ethers": "6.14.0",
-    "@laughingwhales/appkit-adapter-ethers": "workspace:*",
-    "@laughingwhales/appkit": "workspace:*"
+    "@laughingwhales/appkit": "workspace:*",
+    "@reown/appkit-adapter-ethers": "workspace:*"
   },
   "devDependencies": {
     "vite": "5.4.20"

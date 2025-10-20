@@ -9,9 +9,9 @@ import {
   ProviderController,
   StorageUtil,
   WcHelpersUtil
-} from '@laughingwhales/appkit-controllers'
-import { HelpersUtil } from '@laughingwhales/appkit-utils'
-import { type BitcoinConnector, BitcoinConstantsUtil } from '@laughingwhales/appkit-utils/bitcoin'
+} from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
+import { type BitcoinConnector, BitcoinConstantsUtil } from '@reown/appkit-utils/bitcoin'
 import { bitcoin } from '@laughingwhales/appkit/networks'
 
 import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnectConnector.js'

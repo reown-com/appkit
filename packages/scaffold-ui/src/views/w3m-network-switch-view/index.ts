@@ -9,7 +9,7 @@ import {
   ConnectorController,
   RouterController,
   SIWXUtil
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-button'
 import '@laughingwhales/appkit-ui/wui-flex'

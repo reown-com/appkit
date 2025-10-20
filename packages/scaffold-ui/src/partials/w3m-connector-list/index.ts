@@ -13,10 +13,10 @@ import {
   CoreHelperUtil,
   RouterController,
   type WcWallet
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-flex'
-import { HelpersUtil } from '@laughingwhales/appkit-utils'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import styles from './styles.js'

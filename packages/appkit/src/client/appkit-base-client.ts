@@ -42,7 +42,7 @@ import type {
   User,
   WalletFeature,
   WriteContractArgs
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import {
   AdapterController,
   AlertController,
@@ -72,7 +72,7 @@ import {
   ThemeController,
   WcHelpersUtil,
   getPreferredAccountType
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { WalletUtil } from '@laughingwhales/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@laughingwhales/appkit-ui'
 import {
@@ -82,7 +82,7 @@ import {
   LoggerUtil,
   TokenUtil,
   ConstantsUtil as UtilConstantsUtil
-} from '@laughingwhales/appkit-utils'
+} from '@reown/appkit-utils'
 
 import { UniversalAdapter } from '../universal-adapter/client.js'
 import { ConfigUtil } from '../utils/ConfigUtil.js'
@@ -202,7 +202,7 @@ export abstract class AppKitBaseClient {
       OptionsController.state.features?.reownAuthentication ||
       OptionsController.state.remoteFeatures?.reownAuthentication
     ) {
-      const { ReownAuthentication } = await import('@laughingwhales/appkit-controllers/features')
+      const { ReownAuthentication } = await import('@reown/appkit-controllers/features')
       const currentSIWX = OptionsController.state.siwx
       if (!(currentSIWX instanceof ReownAuthentication)) {
         if (currentSIWX) {

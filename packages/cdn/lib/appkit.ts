@@ -4,8 +4,8 @@
  */
 import { AppKit, type AppKitOptions, CoreHelperUtil } from '@laughingwhales/appkit'
 import { SolanaAdapter } from '@laughingwhales/appkit-adapter-solana'
-import { WagmiAdapter } from '@laughingwhales/appkit-adapter-wagmi'
-import '@laughingwhales/appkit-polyfills'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import '@reown/appkit-polyfills'
 import { PACKAGE_VERSION } from '@laughingwhales/appkit/constants'
 import * as AppKitNetworks from '@laughingwhales/appkit/networks'
 

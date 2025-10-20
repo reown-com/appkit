@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type CaipNetwork, ConstantsUtil } from '@laughingwhales/appkit-common'
-import { ChainController, OptionsController, type SIWXSession } from '@laughingwhales/appkit-controllers'
-import { extendedMainnet, mockChainControllerState } from '@laughingwhales/appkit-controllers/testing'
+import { ChainController, OptionsController, type SIWXSession } from '@reown/appkit-controllers'
+import { extendedMainnet, mockChainControllerState } from '@reown/appkit-controllers/testing'
 
 import { createSIWEConfig, mapToSIWX } from '../exports'
 

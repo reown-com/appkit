@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { RouterController } from '@laughingwhales/appkit-controllers'
+import { RouterController } from '@reown/appkit-controllers'
 
 import '../../src/modal/w3m-router'
 

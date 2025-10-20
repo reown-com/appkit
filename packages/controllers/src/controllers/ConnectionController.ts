@@ -11,7 +11,7 @@ import {
   type Hex,
   ParseUtil
 } from '@laughingwhales/appkit-common'
-import type { W3mFrameTypes } from '@laughingwhales/appkit-wallet'
+import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
 import { ConnectionControllerUtil } from '../utils/ConnectionControllerUtil.js'

@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 
 import type { Balance } from '@laughingwhales/appkit-common'
 import { NumberUtil } from '@laughingwhales/appkit-common'
-import { RouterController, SendController } from '@laughingwhales/appkit-controllers'
+import { RouterController, SendController } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-button'
 import '@laughingwhales/appkit-ui/wui-flex'

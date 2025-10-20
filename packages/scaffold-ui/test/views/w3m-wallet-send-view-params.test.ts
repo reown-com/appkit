@@ -10,8 +10,8 @@ import {
   RouterController,
   SendController,
   SnackController
-} from '@laughingwhales/appkit-controllers'
-import { BalanceUtil } from '@laughingwhales/appkit-controllers/utils'
+} from '@reown/appkit-controllers'
+import { BalanceUtil } from '@reown/appkit-controllers/utils'
 
 import { W3mWalletSendView } from '../../src/views/w3m-wallet-send-view'
 

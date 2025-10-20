@@ -13,14 +13,14 @@ import {
   ConnectorController,
   CoreHelperUtil,
   OptionsController
-} from '@laughingwhales/appkit-controllers'
-import { EventsController, RouterController, SnackController } from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
+import { EventsController, RouterController, SnackController } from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-email-input'
 import '@laughingwhales/appkit-ui/wui-icon-link'
 import '@laughingwhales/appkit-ui/wui-loading-spinner'
 import '@laughingwhales/appkit-ui/wui-text'
-import { ErrorUtil } from '@laughingwhales/appkit-utils'
+import { ErrorUtil } from '@reown/appkit-utils'
 
 import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import styles from './styles.js'

@@ -7,8 +7,8 @@ import {
   ChainController,
   ConnectorController,
   StorageUtil
-} from '@laughingwhales/appkit-controllers'
-import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
+} from '@reown/appkit-controllers'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../components/wui-image/index.js'
 import '../../components/wui-loading-spinner/index.js'

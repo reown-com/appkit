@@ -3,7 +3,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 
 import type { ChainNamespace } from '@laughingwhales/appkit-common'
-import { ProviderController } from '@laughingwhales/appkit-controllers'
+import { ProviderController } from '@reown/appkit-controllers'
 
 import { type ConnectorType, createAppKit, useAppKitProvider } from '../../exports/vue-core.js'
 import { mainnet } from '../mocks/Networks.js'

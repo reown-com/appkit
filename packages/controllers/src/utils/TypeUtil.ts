@@ -16,7 +16,7 @@ import type {
   SwapProvider,
   Transaction
 } from '@laughingwhales/appkit-common'
-import type { W3mFrameProvider, W3mFrameTypes } from '@laughingwhales/appkit-wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 import type { AccountState } from '../controllers/ChainController.js'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'

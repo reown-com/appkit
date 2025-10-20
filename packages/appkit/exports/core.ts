@@ -3,7 +3,7 @@ import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { PACKAGE_VERSION } from './constants.js'
 
 // -- Utils & Other -----------------------------------------------------
-export type * from '@laughingwhales/appkit-controllers'
+export type * from '@reown/appkit-controllers'
 export type {
   CaipNetwork,
   CaipAddress,

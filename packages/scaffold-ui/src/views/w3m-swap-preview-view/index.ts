@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import { NumberUtil } from '@laughingwhales/appkit-common'
-import { ChainController, RouterController, SwapController } from '@laughingwhales/appkit-controllers'
+import { ChainController, RouterController, SwapController } from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-button'
 import '@laughingwhales/appkit-ui/wui-flex'

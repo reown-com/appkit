@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
-import { OptionsController } from '@laughingwhales/appkit-controllers'
+import { OptionsController } from '@reown/appkit-controllers'
 
 import { W3mLegalFooter } from '../../src/partials/w3m-legal-footer'
 

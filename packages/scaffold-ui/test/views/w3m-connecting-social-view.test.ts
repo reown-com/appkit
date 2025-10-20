@@ -15,7 +15,7 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mConnectingSocialView } from '../../src/views/w3m-connecting-social-view'
 

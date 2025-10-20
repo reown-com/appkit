@@ -9,7 +9,7 @@ import {
   type AuthConnector,
   ChainController,
   ConnectorController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mAccountView } from '../../src/views/w3m-account-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

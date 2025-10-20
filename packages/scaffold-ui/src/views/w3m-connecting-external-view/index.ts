@@ -4,7 +4,7 @@ import {
   ErrorUtil
 } from '@laughingwhales/appkit-common'
 import type { Connection } from '@laughingwhales/appkit-common'
-import type { BaseError, Connector } from '@laughingwhales/appkit-controllers'
+import type { BaseError, Connector } from '@reown/appkit-controllers'
 import {
   AppKitError,
   ConnectionController,
@@ -15,9 +15,9 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
-import { HelpersUtil } from '@laughingwhales/appkit-utils'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 

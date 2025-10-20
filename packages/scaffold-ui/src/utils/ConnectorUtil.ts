@@ -14,8 +14,8 @@ import {
   type SocialProvider,
   StorageUtil,
   type WcWallet
-} from '@laughingwhales/appkit-controllers'
-import { HelpersUtil } from '@laughingwhales/appkit-utils'
+} from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 import { WalletUtil } from './WalletUtil.js'
 

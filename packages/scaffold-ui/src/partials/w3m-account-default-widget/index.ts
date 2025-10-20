@@ -16,7 +16,7 @@ import {
   RouterController,
   SnackController,
   getPreferredAccountType
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-avatar'
 import '@laughingwhales/appkit-ui/wui-button'
@@ -29,7 +29,7 @@ import '@laughingwhales/appkit-ui/wui-tabs'
 import '@laughingwhales/appkit-ui/wui-tag'
 import '@laughingwhales/appkit-ui/wui-text'
 import '@laughingwhales/appkit-ui/wui-wallet-switch'
-import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../w3m-account-auth-button/index.js'
 import styles from './styles.js'

@@ -56,14 +56,14 @@
     "wagmi": "2.17.5",
     "valtio": "2.1.7",
     "@laughingwhales/appkit": "workspace:*",
-    "@laughingwhales/appkit-adapter-bitcoin": "workspace:*",
-    "@laughingwhales/appkit-adapter-ethers": "workspace:*",
     "@laughingwhales/appkit-adapter-polkadot": "workspace:*",
     "@laughingwhales/appkit-adapter-solana": "workspace:*",
     "@laughingwhales/appkit-common": "workspace:*",
-    "@laughingwhales/appkit-controllers": "workspace:*",
     "@laughingwhales/appkit-scaffold-ui": "workspace:*",
-    "@laughingwhales/appkit-ui": "workspace:*"
+    "@laughingwhales/appkit-ui": "workspace:*",
+    "@reown/appkit-adapter-bitcoin": "workspace:*",
+    "@reown/appkit-adapter-ethers": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.13.4",
@@ -81,6 +81,6 @@
     "postcss": "8.5.3",
     "tailwindcss": "3.4.17",
     "typescript": "5.9.2",
-    "@laughingwhales/appkit-testing": "workspace:*"
+    "@reown/appkit-testing": "workspace:*"
   }
 }

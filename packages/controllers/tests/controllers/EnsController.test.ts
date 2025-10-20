@@ -2,7 +2,7 @@ import { mainnet, polygon } from 'viem/chains'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@laughingwhales/appkit-common'
-import { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import {
   ChainController,

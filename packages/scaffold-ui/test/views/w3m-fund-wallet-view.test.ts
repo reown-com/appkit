@@ -9,7 +9,7 @@ import {
   ExchangeController,
   OptionsController,
   RouterController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mFundWalletView } from '../../src/views/w3m-fund-wallet-view'
 import { HelpersUtil } from '../utils/HelpersUtil'

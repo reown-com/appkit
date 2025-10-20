@@ -1,5 +1,5 @@
 import type { OnRampProvider } from '@laughingwhales/appkit-common'
-import type { RemoteFeatures, SdkVersion, SocialProvider } from '@laughingwhales/appkit-controllers'
+import type { RemoteFeatures, SdkVersion, SocialProvider } from '@reown/appkit-controllers'
 
 import type { AppKitOptions } from '../../src/utils/index.js'
 import { mockEvmAdapter, mockSolanaAdapter } from './Adapter.js'

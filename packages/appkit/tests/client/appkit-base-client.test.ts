@@ -13,9 +13,9 @@ import {
   ModalController,
   SendController,
   WcHelpersUtil
-} from '@laughingwhales/appkit-controllers'
-import { mockChainControllerState } from '@laughingwhales/appkit-controllers/testing'
-import { ErrorUtil, TokenUtil } from '@laughingwhales/appkit-utils'
+} from '@reown/appkit-controllers'
+import { mockChainControllerState } from '@reown/appkit-controllers/testing'
+import { ErrorUtil, TokenUtil } from '@reown/appkit-utils'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client'
 import { mainnet } from '../mocks/Networks'

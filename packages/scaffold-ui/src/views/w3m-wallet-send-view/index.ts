@@ -13,8 +13,8 @@ import {
   SendController,
   SnackController,
   SwapController
-} from '@laughingwhales/appkit-controllers'
-import { BalanceUtil } from '@laughingwhales/appkit-controllers/utils'
+} from '@reown/appkit-controllers'
+import { BalanceUtil } from '@reown/appkit-controllers/utils'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-button'
 import '@laughingwhales/appkit-ui/wui-flex'

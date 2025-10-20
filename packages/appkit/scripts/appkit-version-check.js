@@ -165,12 +165,21 @@ function reportResults(installed, baseline, mismatched) {
     console.error('')
     return false
   } else {
-    console.log(`\u001b[32m✓ All @laughingwhales/appkit packages are in sync (${baseline})\u001b[0m`)
+    console.log(
+      `\u001b[32m✓ All @laughingwhales/appkit packages are in sync (${baseline})\u001b[0m`
+    )
     return true
   }
 }
 
 function main() {
+  // Skip if running in the monorepo itself (workspace root has pnpm-workspace.yaml)
+  const potentialMonorepoRoot = dirname(dirname(dirname(__dirname)))
+  if (existsSync(join(potentialMonorepoRoot, 'pnpm-workspace.yaml'))) {
+    // Running in monorepo context, skip version check
+    return
+  }
+
   const project = findConsumerProject()
 
   if (!project) {

@@ -2,7 +2,7 @@ import { vi } from 'vitest'
 
 import type { CaipNetwork, ChainNamespace } from '@laughingwhales/appkit-common'
 import type { CaipNetworkId } from '@laughingwhales/appkit-common'
-import type { SIWXSession } from '@laughingwhales/appkit-controllers'
+import type { SIWXSession } from '@reown/appkit-controllers'
 
 import {
   type AccountState,

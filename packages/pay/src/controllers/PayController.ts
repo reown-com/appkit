@@ -11,7 +11,7 @@ import {
   ProviderController,
   RouterController,
   SnackController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import {
   AppKitPayErrorCodes,

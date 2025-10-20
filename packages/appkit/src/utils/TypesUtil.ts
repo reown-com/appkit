@@ -14,8 +14,8 @@ import type {
   OptionsControllerState,
   RemoteFeatures,
   ThemeMode
-} from '@laughingwhales/appkit-controllers'
-import type { AppKitSIWEClient } from '@laughingwhales/appkit-siwe'
+} from '@reown/appkit-controllers'
+import type { AppKitSIWEClient } from '@reown/appkit-siwe'
 
 export type AppKitOptions = {
   /**

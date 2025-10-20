@@ -24,7 +24,7 @@ import {
   RouterController,
   SnackController,
   StorageUtil
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mProfileWalletsView } from '../../src/views/w3m-profile-wallets-view/index'
 

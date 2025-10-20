@@ -17,7 +17,7 @@
     "vue": "3.4.3",
     "@laughingwhales/appkit": "workspace:*",
     "@laughingwhales/appkit-adapter-solana": "workspace:*",
-    "@laughingwhales/appkit-adapter-wagmi": "workspace:*"
+    "@reown/appkit-adapter-wagmi": "workspace:*"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.2.1",

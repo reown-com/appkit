@@ -10,16 +10,16 @@ import {
   CoreHelperUtil,
   OptionsController,
   RouterController
-} from '@laughingwhales/appkit-controllers'
-import type { WcWallet } from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
+import type { WcWallet } from '@reown/appkit-controllers'
 import type { WuiTabs } from '@laughingwhales/appkit-ui/wui-tabs'
-import { CaipNetworksUtil } from '@laughingwhales/appkit-utils'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 
 import type { W3mConnectingWcView } from '../../exports'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // vi.mock('@laughingwhales/appkit-controllers', async () => {
-//   const originalModule = await vi.importActual<typeof import('@laughingwhales/appkit-controllers')>(
+//   const originalModule = await vi.importActual<typeof import('@reown/appkit-controllers')>(
 //     '@laughingwhales/appkit-controllers'
 //   )
 //   return {

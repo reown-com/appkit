@@ -1,6 +1,6 @@
 {
-  "name": "@laughingwhales/appkit-adapter-bitcoin",
-  "version": "1.8.11",
+  "name": "@reown/appkit-adapter-bitcoin",
+  "version": "1.8.12",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -32,11 +32,11 @@
     "@walletconnect/universal-provider": "2.22.4",
     "bitcoinjs-lib": "6.1.7",
     "sats-connect": "3.5.0",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
     "@laughingwhales/appkit": "workspace:*",
     "@laughingwhales/appkit-common": "workspace:*",
-    "@laughingwhales/appkit-controllers": "workspace:*",
-    "@laughingwhales/appkit-utils": "workspace:*",
-    "@laughingwhales/appkit-polyfills": "workspace:*"
+    "@reown/appkit-controllers": "workspace:*"
   },
   "devDependencies": {
     "@leather.io/rpc": "2.20.13",
@@ -68,6 +68,6 @@
     "bitcoin"
   ],
   "publishConfig": {
-    "provenance": true
+    "provenance": false
   }
 }

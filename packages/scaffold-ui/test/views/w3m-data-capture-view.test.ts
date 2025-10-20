@@ -6,8 +6,8 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@laughingwhales/appkit-controllers'
-import { ReownAuthentication } from '@laughingwhales/appkit-controllers/features'
+} from '@reown/appkit-controllers'
+import { ReownAuthentication } from '@reown/appkit-controllers/features'
 
 import { W3mDataCaptureView } from '../../src/views/w3m-data-capture-view/index.js'
 import { HelpersUtil } from '../utils/HelpersUtil'

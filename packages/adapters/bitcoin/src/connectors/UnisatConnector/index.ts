@@ -1,6 +1,6 @@
 import { type CaipNetwork, ConstantsUtil } from '@laughingwhales/appkit-common'
-import { ChainController, CoreHelperUtil, type RequestArguments } from '@laughingwhales/appkit-controllers'
-import type { BitcoinConnector } from '@laughingwhales/appkit-utils/bitcoin'
+import { ChainController, CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
+import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@laughingwhales/appkit/networks'
 
 import { MethodNotSupportedError } from '../../errors/MethodNotSupportedError.js'

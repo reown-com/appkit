@@ -10,7 +10,7 @@ import {
   CoreHelperUtil,
   OptionsController,
   StorageUtil
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mConnectingWcBasicView } from '../../src/views/w3m-connecting-wc-basic-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

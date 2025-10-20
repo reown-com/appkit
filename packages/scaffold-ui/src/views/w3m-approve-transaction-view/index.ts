@@ -7,7 +7,7 @@ import {
   ModalController,
   OptionsController,
   ThemeController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 
 import styles from './styles.js'

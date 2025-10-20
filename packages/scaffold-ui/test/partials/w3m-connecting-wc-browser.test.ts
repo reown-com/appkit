@@ -13,7 +13,7 @@ import {
   EventsController,
   RouterController,
   type WcWallet
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 const WALLET = {
   name: 'MetaMask',

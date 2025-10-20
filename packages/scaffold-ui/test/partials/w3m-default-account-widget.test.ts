@@ -15,8 +15,8 @@ import {
   RouterController,
   SnackController,
   StorageUtil
-} from '@laughingwhales/appkit-controllers'
-import type { AccountState, AuthConnector, ChainControllerState } from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
+import type { AccountState, AuthConnector, ChainControllerState } from '@reown/appkit-controllers'
 
 import type { W3mAccountDefaultWidget } from '../../src/partials/w3m-account-default-widget/index.js'
 import { HelpersUtil } from '../utils/HelpersUtil'

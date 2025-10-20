@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { AlertController } from '@laughingwhales/appkit-controllers'
+import { AlertController } from '@reown/appkit-controllers'
 
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'

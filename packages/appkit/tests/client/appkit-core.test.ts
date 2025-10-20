@@ -9,7 +9,7 @@ import {
   ConnectionController,
   ConnectorController,
   ModalController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit-core'
 import { mockOptions } from '../mocks/Options'

@@ -12,7 +12,7 @@ import {
   UserRejectedRequestError
 } from '@laughingwhales/appkit-common'
 import { ContractUtil } from '@laughingwhales/appkit-common'
-import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { BalanceUtil } from '../utils/BalanceUtil.js'
 import {

@@ -3,7 +3,7 @@ import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ConnectionController, ModalController, ThemeController } from '@laughingwhales/appkit-controllers'
+import { ConnectionController, ModalController, ThemeController } from '@reown/appkit-controllers'
 
 import { PayController } from '../../src/controllers/PayController'
 import { AppKitPayErrorCodes, type AppKitPayErrorMessage } from '../../src/types/errors'

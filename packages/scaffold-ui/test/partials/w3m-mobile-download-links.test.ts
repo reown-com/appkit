@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { CoreHelperUtil, RouterController } from '@laughingwhales/appkit-controllers'
+import { CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
 
 import '../../src/partials/w3m-mobile-download-links/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

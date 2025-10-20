@@ -1,6 +1,6 @@
 {
-  "name": "@laughingwhales/appkit-adapter-ethers5",
-  "version": "1.8.11",
+  "name": "@reown/appkit-adapter-ethers5",
+  "version": "1.8.12",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -21,13 +21,13 @@
   "dependencies": {
     "@walletconnect/universal-provider": "2.22.4",
     "valtio": "2.1.7",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
     "@laughingwhales/appkit": "workspace:*",
     "@laughingwhales/appkit-common": "workspace:*",
-    "@laughingwhales/appkit-controllers": "workspace:*",
-    "@laughingwhales/appkit-polyfills": "workspace:*",
     "@laughingwhales/appkit-scaffold-ui": "workspace:*",
-    "@laughingwhales/appkit-utils": "workspace:*",
-    "@laughingwhales/appkit-wallet": "workspace:*"
+    "@reown/appkit-controllers": "workspace:*"
   },
   "optionalDependencies": {
     "@coinbase/wallet-sdk": "4.3.7",
@@ -66,6 +66,6 @@
     "bitcoin"
   ],
   "publishConfig": {
-    "provenance": true
+    "provenance": false
   }
 }

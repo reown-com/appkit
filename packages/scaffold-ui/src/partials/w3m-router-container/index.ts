@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { OptionsController } from '@laughingwhales/appkit-controllers'
+import { OptionsController } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@laughingwhales/appkit-ui'
 
 import styles from './styles.js'

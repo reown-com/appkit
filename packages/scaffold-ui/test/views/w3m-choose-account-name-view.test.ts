@@ -9,7 +9,7 @@ import {
   CoreHelperUtil,
   EventsController,
   RouterController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mChooseAccountNameView } from '../../src/views/w3m-choose-account-name-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

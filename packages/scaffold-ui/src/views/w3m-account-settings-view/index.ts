@@ -16,7 +16,7 @@ import {
   SendController,
   SnackController,
   getPreferredAccountType
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-avatar'
 import '@laughingwhales/appkit-ui/wui-flex'
@@ -24,7 +24,7 @@ import '@laughingwhales/appkit-ui/wui-icon-link'
 import '@laughingwhales/appkit-ui/wui-list-item'
 import '@laughingwhales/appkit-ui/wui-notice-card'
 import '@laughingwhales/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../partials/w3m-account-auth-button/index.js'
 

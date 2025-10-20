@@ -12,7 +12,7 @@ import {
   CoreHelperUtil,
   ModalController,
   OptionsController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import type { WuiAccountButton } from '@laughingwhales/appkit-ui/wui-account-button'
 import '@laughingwhales/appkit-ui/wui-account-button'

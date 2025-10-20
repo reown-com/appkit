@@ -9,14 +9,14 @@ import {
   type RequestArguments,
   SIWXUtil,
   getPreferredAccountType
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import type {
   AnyTransaction,
   Connection,
   GetActiveChain,
   Provider as SolanaProvider
-} from '@laughingwhales/appkit-utils/solana'
-import { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+} from '@reown/appkit-utils/solana'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'

@@ -11,7 +11,7 @@
     "ethers": "5.8.0",
     "vue": "3.4.3",
     "@laughingwhales/appkit": "workspace:*",
-    "@laughingwhales/appkit-adapter-ethers5": "workspace:*"
+    "@reown/appkit-adapter-ethers5": "workspace:*"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.0.2",

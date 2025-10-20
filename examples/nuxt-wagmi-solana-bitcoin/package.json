@@ -20,8 +20,8 @@
     "vue": "3.5.13",
     "vue-router": "latest",
     "@laughingwhales/appkit": "workspace:*",
-    "@laughingwhales/appkit-adapter-bitcoin": "workspace:*",
     "@laughingwhales/appkit-adapter-solana": "workspace:*",
-    "@laughingwhales/appkit-adapter-wagmi": "workspace:*"
+    "@reown/appkit-adapter-bitcoin": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*"
   }
 }

@@ -21,7 +21,7 @@ import {
   RouterController,
   SendController,
   SnackController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mAccountSettingsView } from '../../src/views/w3m-account-settings-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

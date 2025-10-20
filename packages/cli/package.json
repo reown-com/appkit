@@ -1,6 +1,6 @@
 {
-  "name": "@laughingwhales/appkit-cli",
-  "version": "1.8.11",
+  "name": "@reown/appkit-cli",
+  "version": "1.8.12",
   "sideEffects": false,
   "description": "Reown AppKit CLI",
   "main": "index.js",
@@ -40,6 +40,6 @@
     "url": "git+https://github.com/reown-com/appkit.git"
   },
   "publishConfig": {
-    "provenance": true
+    "provenance": false
   }
 }

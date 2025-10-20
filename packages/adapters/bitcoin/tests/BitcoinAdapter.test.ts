@@ -17,8 +17,8 @@ import {
   ProviderController,
   StorageUtil,
   WcHelpersUtil
-} from '@laughingwhales/appkit-controllers'
-import { HelpersUtil } from '@laughingwhales/appkit-utils'
+} from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
 import { bitcoin, bitcoinTestnet, mainnet } from '@laughingwhales/appkit/networks'
 
 import { BitcoinAdapter, type BitcoinConnector } from '../src'

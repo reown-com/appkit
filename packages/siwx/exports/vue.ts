@@ -1,6 +1,6 @@
 import { type Ref, onMounted, onUnmounted, ref } from 'vue'
 
-import { OptionsController, type SIWXConfig } from '@laughingwhales/appkit-controllers'
+import { OptionsController, type SIWXConfig } from '@reown/appkit-controllers'
 
 export function useAppKitSIWX<Config extends SIWXConfig = SIWXConfig>() {
   const state = ref(OptionsController.state.siwx)

@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 
 import { NavigationUtil } from '@laughingwhales/appkit-common'
-import { CoreHelperUtil, RouterController } from '@laughingwhales/appkit-controllers'
+import { CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-button'
 import '@laughingwhales/appkit-ui/wui-flex'

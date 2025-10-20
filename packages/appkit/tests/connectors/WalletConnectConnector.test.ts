@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@laughingwhales/appkit-common'
-import { ChainController, SIWXUtil } from '@laughingwhales/appkit-controllers'
-import { WalletConnectConnector } from '@laughingwhales/appkit-controllers'
-import { PresetsUtil } from '@laughingwhales/appkit-utils'
+import { ChainController, SIWXUtil } from '@reown/appkit-controllers'
+import { WalletConnectConnector } from '@reown/appkit-controllers'
+import { PresetsUtil } from '@reown/appkit-utils'
 
 import { bitcoin, mainnet, solana } from '../../src/networks'
 import mockProvider from '../mocks/UniversalProvider'

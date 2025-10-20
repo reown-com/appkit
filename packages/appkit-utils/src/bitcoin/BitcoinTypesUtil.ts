@@ -1,5 +1,5 @@
 import type { CaipNetwork } from '@laughingwhales/appkit-common'
-import type { Connector, Provider } from '@laughingwhales/appkit-controllers'
+import type { Connector, Provider } from '@reown/appkit-controllers'
 
 interface ChainAdapterConnector extends Connector {
   chains: CaipNetwork[]

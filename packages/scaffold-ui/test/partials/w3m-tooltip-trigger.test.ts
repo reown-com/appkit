@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ModalController, RouterController, TooltipController } from '@laughingwhales/appkit-controllers'
+import { ModalController, RouterController, TooltipController } from '@reown/appkit-controllers'
 
 import '../../src/partials/w3m-tooltip-trigger/index'
 

@@ -5,7 +5,7 @@ import {
   ConnectionController,
   CoreHelperUtil,
   EventsController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mainnet, sepolia } from '../mocks/Networks.js'

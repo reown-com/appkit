@@ -11,7 +11,7 @@ import {
   type ConnectedWalletInfo,
   type Metadata,
   OptionsController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import type { WuiVisualThumbnail } from '@laughingwhales/appkit-ui/wui-visual-thumbnail'
 
 import '../../src/partials/w3m-siwx-sign-message-thumbnails/index'

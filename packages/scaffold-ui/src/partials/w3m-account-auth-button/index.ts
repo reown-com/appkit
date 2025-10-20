@@ -8,7 +8,7 @@ import {
   RouterController,
   type SocialProvider,
   StorageUtil
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-list-item'
 import '@laughingwhales/appkit-ui/wui-text'

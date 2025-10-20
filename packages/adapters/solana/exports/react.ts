@@ -1,11 +1,11 @@
 import { useSnapshot } from 'valtio'
 
-import type { Connection } from '@laughingwhales/appkit-utils/solana'
+import type { Connection } from '@reown/appkit-utils/solana'
 
 import { SolStoreUtil } from '../src/utils/SolanaStoreUtil.js'
 
 // -- Types -----------------------------------------------------------
-export * from '@laughingwhales/appkit-utils/solana'
+export * from '@reown/appkit-utils/solana'
 
 // -- Source -----------------------------------------------------------
 export * from '../src/index.js'

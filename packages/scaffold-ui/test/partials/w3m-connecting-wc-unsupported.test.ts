@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { AssetUtil, EventsController, RouterController } from '@laughingwhales/appkit-controllers'
+import { AssetUtil, EventsController, RouterController } from '@reown/appkit-controllers'
 
 import '../../src/partials/w3m-connecting-wc-unsupported/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

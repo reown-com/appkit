@@ -1,4 +1,4 @@
-import { OptionsController } from '@laughingwhales/appkit-controllers'
+import { OptionsController } from '@reown/appkit-controllers'
 
 import type { Exchange, ExchangeBuyStatus } from '../types/exchange.js'
 import { API_URL } from './ConstantsUtil.js'

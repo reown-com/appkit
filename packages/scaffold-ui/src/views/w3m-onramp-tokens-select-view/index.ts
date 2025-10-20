@@ -8,8 +8,8 @@ import {
   OnRampController,
   OptionsController,
   OptionsStateController
-} from '@laughingwhales/appkit-controllers'
-import type { PurchaseCurrency } from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
+import type { PurchaseCurrency } from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-flex'
 import '@laughingwhales/appkit-ui/wui-list-item'

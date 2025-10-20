@@ -7,8 +7,8 @@ import {
   ChainController,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil
-} from '@laughingwhales/appkit-controllers'
-import { AdapterBlueprint, WalletConnectConnector } from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
+import { AdapterBlueprint, WalletConnectConnector } from '@reown/appkit-controllers'
 
 import { WcConstantsUtil } from '../utils/ConstantsUtil.js'
 

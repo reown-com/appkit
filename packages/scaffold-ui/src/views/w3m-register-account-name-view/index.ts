@@ -11,7 +11,7 @@ import {
   type ReownName,
   SnackController,
   getPreferredAccountType
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-account-name-suggestion-item'
 import '@laughingwhales/appkit-ui/wui-ens-input'
@@ -20,7 +20,7 @@ import '@laughingwhales/appkit-ui/wui-icon'
 import '@laughingwhales/appkit-ui/wui-icon-link'
 import '@laughingwhales/appkit-ui/wui-loading-spinner'
 import '@laughingwhales/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import styles from './styles.js'

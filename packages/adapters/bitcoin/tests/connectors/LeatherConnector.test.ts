@@ -3,7 +3,7 @@ import type { AddressPurpose, AddressType } from 'sats-connect'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@laughingwhales/appkit-common'
-import { ChainController } from '@laughingwhales/appkit-controllers'
+import { ChainController } from '@reown/appkit-controllers'
 import { bitcoin, bitcoinTestnet } from '@laughingwhales/appkit/networks'
 
 import { LeatherConnector } from '../../src/connectors/LeatherConnector'

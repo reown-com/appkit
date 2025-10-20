@@ -7,7 +7,7 @@ import {
   ConnectorControllerUtil,
   FetchUtil,
   type WcWallet
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { AppKitWalletButton } from '../client'
 import { ApiController } from '../controllers/ApiController'

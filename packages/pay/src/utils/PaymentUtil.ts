@@ -11,7 +11,7 @@ import {
   ConnectionController,
   CoreHelperUtil,
   ProviderController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { AppKitPayError } from '../types/errors.js'
 import { AppKitPayErrorCodes } from '../types/errors.js'

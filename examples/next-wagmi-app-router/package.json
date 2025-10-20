@@ -18,7 +18,7 @@
     "viem": "2.37.9",
     "wagmi": "2.17.5",
     "@laughingwhales/appkit": "workspace:*",
-    "@laughingwhales/appkit-adapter-wagmi": "workspace:*"
+    "@reown/appkit-adapter-wagmi": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.13.4",

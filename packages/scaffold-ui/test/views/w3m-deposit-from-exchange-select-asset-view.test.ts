@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ExchangeController, type PaymentAsset, RouterController } from '@laughingwhales/appkit-controllers'
+import { ExchangeController, type PaymentAsset, RouterController } from '@reown/appkit-controllers'
 
 import { W3mDepositFromExchangeSelectAssetView } from '../../src/views/w3m-deposit-from-exchange-select-asset-view'
 import { HelpersUtil } from '../utils/HelpersUtil'

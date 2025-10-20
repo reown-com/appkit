@@ -5,8 +5,8 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@laughingwhales/appkit-controllers'
-import { ReownAuthentication } from '@laughingwhales/appkit-controllers/features'
+} from '@reown/appkit-controllers'
+import { ReownAuthentication } from '@reown/appkit-controllers/features'
 import { customElement } from '@laughingwhales/appkit-ui'
 
 import {

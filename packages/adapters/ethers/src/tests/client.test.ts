@@ -18,10 +18,10 @@ import {
   ProviderController,
   SIWXUtil,
   WcHelpersUtil
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { ConnectorUtil } from '@laughingwhales/appkit-scaffold-ui/utils'
-import { CaipNetworksUtil, HelpersUtil } from '@laughingwhales/appkit-utils'
-import type { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+import { CaipNetworksUtil, HelpersUtil } from '@reown/appkit-utils'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { mainnet, polygon } from '@laughingwhales/appkit/networks'
 
 import { EthersAdapter } from '../client'

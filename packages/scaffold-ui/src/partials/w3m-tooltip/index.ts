@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { TooltipController } from '@laughingwhales/appkit-controllers'
+import { TooltipController } from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-flex'
 import '@laughingwhales/appkit-ui/wui-icon'

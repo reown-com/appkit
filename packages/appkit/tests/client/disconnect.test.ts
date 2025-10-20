@@ -13,11 +13,11 @@ import {
   type SIWXConfig,
   SIWXUtil,
   StorageUtil
-} from '@laughingwhales/appkit-controllers'
-import { ModalController, ProviderController, RouterController } from '@laughingwhales/appkit-controllers'
-import type { AdapterBlueprint } from '@laughingwhales/appkit-controllers'
-import { mockChainControllerState } from '@laughingwhales/appkit-controllers/testing'
-import { ConstantsUtil as UtilConstantsUtil } from '@laughingwhales/appkit-utils'
+} from '@reown/appkit-controllers'
+import { ModalController, ProviderController, RouterController } from '@reown/appkit-controllers'
+import type { AdapterBlueprint } from '@reown/appkit-controllers'
+import { mockChainControllerState } from '@reown/appkit-controllers/testing'
+import { ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 
 import { mainnetCaipNetwork, solanaCaipNetwork } from '../../exports/testing.js'
 import { AppKit } from '../../src/client/appkit.js'

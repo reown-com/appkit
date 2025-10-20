@@ -13,7 +13,7 @@ import {
   ConnectorControllerUtil,
   ModalController,
   RouterController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { ApiController } from '../src/controllers/ApiController.js'
 import { WalletButtonController } from '../src/controllers/WalletButtonController.js'

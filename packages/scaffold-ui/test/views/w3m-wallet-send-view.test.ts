@@ -9,7 +9,7 @@ import {
   RouterController,
   SendController,
   SwapController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mWalletSendView } from '../../src/views/w3m-wallet-send-view'
 

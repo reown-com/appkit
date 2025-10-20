@@ -1,6 +1,6 @@
 {
-  "name": "@laughingwhales/appkit-codemod",
-  "version": "1.8.11",
+  "name": "@reown/appkit-codemod",
+  "version": "1.8.12",
   "sideEffects": false,
   "description": "Reown AppKit Codemod",
   "main": "index.js",
@@ -34,6 +34,6 @@
     "bitcoin"
   ],
   "publishConfig": {
-    "provenance": true
+    "provenance": false
   }
 }

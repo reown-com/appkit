@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
-import { PresetsUtil } from '@laughingwhales/appkit-utils'
+import { PresetsUtil } from '@reown/appkit-utils'
 import { mainnet } from '@laughingwhales/appkit/networks'
 
 import {

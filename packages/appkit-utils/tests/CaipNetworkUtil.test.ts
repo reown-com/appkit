@@ -3,7 +3,7 @@ import { immutableZkEvmTestnet } from 'viem/chains'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork, ConstantsUtil, type CustomRpcUrlMap } from '@laughingwhales/appkit-common'
-import { ChainController, StorageUtil } from '@laughingwhales/appkit-controllers'
+import { ChainController, StorageUtil } from '@reown/appkit-controllers'
 
 import { CaipNetworksUtil } from '../src/CaipNetworkUtil'
 

@@ -1,4 +1,4 @@
-import type { AdapterBlueprint } from '@laughingwhales/appkit-controllers'
+import type { AdapterBlueprint } from '@reown/appkit-controllers'
 
 import type { AppKit } from '../client/appkit.js'
 

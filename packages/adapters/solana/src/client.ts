@@ -14,12 +14,12 @@ import {
   OptionsController,
   StorageUtil,
   WcHelpersUtil
-} from '@laughingwhales/appkit-controllers'
-import { ErrorUtil } from '@laughingwhales/appkit-utils'
-import { HelpersUtil } from '@laughingwhales/appkit-utils'
-import type { Provider as SolanaProvider } from '@laughingwhales/appkit-utils/solana'
-import { SolConstantsUtil } from '@laughingwhales/appkit-utils/solana'
-import { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+} from '@reown/appkit-controllers'
+import { ErrorUtil } from '@reown/appkit-utils'
+import { HelpersUtil } from '@reown/appkit-utils'
+import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
+import { SolConstantsUtil } from '@reown/appkit-utils/solana'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { AuthProvider } from './providers/AuthProvider.js'
 import {
@@ -487,7 +487,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     if (this.registerWalletStandard) {
       const { SolanaWalletConnectStandardWallet } = await import(
-        '@laughingwhales/appkit-utils/wallet-standard'
+        '@reown/appkit-utils/wallet-standard'
       )
       SolanaWalletConnectStandardWallet.register(universalProvider)
     }

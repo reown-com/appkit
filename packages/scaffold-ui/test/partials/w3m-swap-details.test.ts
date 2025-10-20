@@ -5,8 +5,8 @@ import { html } from 'lit'
 
 import { NumberUtil } from '@laughingwhales/appkit-common'
 import type { CaipNetwork } from '@laughingwhales/appkit-common'
-import { ChainController, SwapController } from '@laughingwhales/appkit-controllers'
-import type { SwapTokenWithBalance } from '@laughingwhales/appkit-controllers'
+import { ChainController, SwapController } from '@reown/appkit-controllers'
+import type { SwapTokenWithBalance } from '@reown/appkit-controllers'
 
 import { WuiSwapDetails } from '../../src/partials/w3m-swap-details'
 import { HelpersUtil } from '../utils/HelpersUtil'

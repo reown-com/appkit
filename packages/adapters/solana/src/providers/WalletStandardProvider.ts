@@ -29,14 +29,14 @@ import {
 import base58 from 'bs58'
 
 import { type CaipNetwork, ConstantsUtil, UserRejectedRequestError } from '@laughingwhales/appkit-common'
-import { ConnectorController, type RequestArguments } from '@laughingwhales/appkit-controllers'
-import type { Provider as CoreProvider } from '@laughingwhales/appkit-controllers'
-import { PresetsUtil } from '@laughingwhales/appkit-utils'
+import { ConnectorController, type RequestArguments } from '@reown/appkit-controllers'
+import type { Provider as CoreProvider } from '@reown/appkit-controllers'
+import { PresetsUtil } from '@reown/appkit-utils'
 import type {
   AnyTransaction,
   GetActiveChain,
   Provider as SolanaProvider
-} from '@laughingwhales/appkit-utils/solana'
+} from '@reown/appkit-utils/solana'
 
 import { solanaChains } from '../utils/chains.js'
 import { WalletStandardFeatureNotSupportedError } from './shared/Errors.js'

@@ -4,4 +4,4 @@ export * from './storages/index.js'
 export * from './configs/index.js'
 export * from './core/index.js'
 
-export type { SIWXMessage, SIWXConfig, SIWXSession } from '@laughingwhales/appkit-controllers'
+export type { SIWXMessage, SIWXConfig, SIWXSession } from '@reown/appkit-controllers'

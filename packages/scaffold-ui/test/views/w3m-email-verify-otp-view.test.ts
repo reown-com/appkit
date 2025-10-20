@@ -13,7 +13,7 @@ import {
   RouterController,
   type SIWXConfig,
   SnackController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mEmailVerifyOtpView } from '../../src/views/w3m-email-verify-otp-view/index'
 

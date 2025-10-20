@@ -10,13 +10,13 @@ import {
   SnackController,
   ThemeController,
   getPreferredAccountType
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-compatible-network'
 import '@laughingwhales/appkit-ui/wui-flex'
 import '@laughingwhales/appkit-ui/wui-qr-code'
 import '@laughingwhales/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import styles from './styles.js'
 

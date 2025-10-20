@@ -16,10 +16,10 @@ import {
 
 import type { CaipNetwork } from '@laughingwhales/appkit-common'
 import { ConstantsUtil } from '@laughingwhales/appkit-common'
-import { ChainController, CoreHelperUtil } from '@laughingwhales/appkit-controllers'
-import type { RequestArguments } from '@laughingwhales/appkit-controllers'
-import { HelpersUtil, PresetsUtil } from '@laughingwhales/appkit-utils'
-import type { BitcoinConnector } from '@laughingwhales/appkit-utils/bitcoin'
+import { ChainController, CoreHelperUtil } from '@reown/appkit-controllers'
+import type { RequestArguments } from '@reown/appkit-controllers'
+import { HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
+import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 
 import { mapSatsConnectAddressPurpose } from '../utils/BitcoinConnector.js'
 import { AddressPurpose } from '../utils/BitcoinConnector.js'

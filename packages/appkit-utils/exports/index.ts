@@ -1,6 +1,6 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 
-import type { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 export { ConstantsUtil } from '../src/ConstantsUtil.js'
 export { PresetsUtil } from '../src/PresetsUtil.js'

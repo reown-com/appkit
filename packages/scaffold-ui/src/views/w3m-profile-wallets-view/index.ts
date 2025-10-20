@@ -20,7 +20,7 @@ import {
   RouterController,
   SnackController,
   StorageUtil
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { MathUtil, customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-active-profile-wallet-item'
 import '@laughingwhales/appkit-ui/wui-balance'
@@ -32,7 +32,7 @@ import '@laughingwhales/appkit-ui/wui-list-item'
 import '@laughingwhales/appkit-ui/wui-separator'
 import '@laughingwhales/appkit-ui/wui-tabs'
 import '@laughingwhales/appkit-ui/wui-text'
-import { HelpersUtil } from '@laughingwhales/appkit-utils'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 import { ConnectionUtil } from '../../utils/ConnectionUtil.js'
 import styles from './styles.js'

@@ -1,6 +1,6 @@
 {
   "name": "@laughingwhales/appkit-adapter-solana",
-  "version": "1.8.11",
+  "version": "1.8.12",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -59,10 +59,10 @@
     "valtio": "2.1.7",
     "@laughingwhales/appkit": "workspace:*",
     "@laughingwhales/appkit-common": "workspace:*",
-    "@laughingwhales/appkit-controllers": "workspace:*",
-    "@laughingwhales/appkit-polyfills": "workspace:*",
-    "@laughingwhales/appkit-utils": "workspace:*",
-    "@laughingwhales/appkit-wallet": "workspace:*"
+    "@reown/appkit-controllers": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*"
   },
   "optionalDependencies": {
     "borsh": "0.7.0",
@@ -101,6 +101,6 @@
     "bitcoin"
   ],
   "publishConfig": {
-    "provenance": true
+    "provenance": false
   }
 }

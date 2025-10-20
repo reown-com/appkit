@@ -4,8 +4,8 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
-import { type Connector, ConnectorController, OptionsController } from '@laughingwhales/appkit-controllers'
-import { ConstantsUtil as AppKitConstantsUtil } from '@laughingwhales/appkit-utils'
+import { type Connector, ConnectorController, OptionsController } from '@reown/appkit-controllers'
+import { ConstantsUtil as AppKitConstantsUtil } from '@reown/appkit-utils'
 
 import { W3mEmailLoginView } from '../../src/views/w3m-email-login-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

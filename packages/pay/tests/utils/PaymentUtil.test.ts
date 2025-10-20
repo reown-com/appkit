@@ -6,7 +6,7 @@ import {
   ConnectionController,
   CoreHelperUtil,
   ProviderController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { AppKitPayError, AppKitPayErrorCodes } from '../../src/types/errors'
 import type { PaymentAsset } from '../../src/types/options.js'

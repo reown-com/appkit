@@ -3,7 +3,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { CoreHelperUtil, RouterController, SnackController } from '@laughingwhales/appkit-controllers'
+import { CoreHelperUtil, RouterController, SnackController } from '@reown/appkit-controllers'
 
 import { W3mAllWalletsView } from '../../src/views/w3m-all-wallets-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

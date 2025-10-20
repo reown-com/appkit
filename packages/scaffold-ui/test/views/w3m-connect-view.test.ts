@@ -11,7 +11,7 @@ import {
   type ConnectorWithProviders,
   CoreHelperUtil,
   OptionsController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mConnectView } from '../../src/views/w3m-connect-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

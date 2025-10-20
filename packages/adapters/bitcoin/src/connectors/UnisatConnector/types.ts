@@ -1,5 +1,5 @@
 import type { CaipNetwork } from '@laughingwhales/appkit-common'
-import type { BitcoinConnector } from '@laughingwhales/appkit-utils/bitcoin'
+import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 
 export namespace UnisatConnector {
   export type Chain =

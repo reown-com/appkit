@@ -6,7 +6,7 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-certified-switch'
 import '@laughingwhales/appkit-ui/wui-flex'

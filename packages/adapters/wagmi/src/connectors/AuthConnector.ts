@@ -16,9 +16,9 @@ import {
   SIWXUtil,
   getActiveCaipNetwork,
   getPreferredAccountType
-} from '@laughingwhales/appkit-controllers'
-import { ErrorUtil } from '@laughingwhales/appkit-utils'
-import { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+} from '@reown/appkit-controllers'
+import { ErrorUtil } from '@reown/appkit-utils'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { W3mFrameProviderSingleton } from '@laughingwhales/appkit/auth-provider'
 
 // -- Types ----------------------------------------------------------------------------------------

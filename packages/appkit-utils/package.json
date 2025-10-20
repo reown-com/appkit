@@ -1,6 +1,6 @@
 {
-  "name": "@laughingwhales/appkit-utils",
-  "version": "1.8.11",
+  "name": "@reown/appkit-utils",
+  "version": "1.8.12",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -61,10 +61,10 @@
     "@walletconnect/universal-provider": "2.22.4",
     "valtio": "2.1.7",
     "viem": ">=2.37.9",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
     "@laughingwhales/appkit-common": "workspace:*",
-    "@laughingwhales/appkit-controllers": "workspace:*",
-    "@laughingwhales/appkit-polyfills": "workspace:*",
-    "@laughingwhales/appkit-wallet": "workspace:*"
+    "@reown/appkit-controllers": "workspace:*"
   },
   "devDependencies": {
     "@walletconnect/types": "2.22.4",
@@ -105,6 +105,6 @@
     "bitcoin"
   ],
   "publishConfig": {
-    "provenance": true
+    "provenance": false
   }
 }

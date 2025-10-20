@@ -10,7 +10,7 @@ import {
   ModalController,
   OptionsController,
   ThemeController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mApproveTransactionView } from '../../src/views/w3m-approve-transaction-view/index'
 

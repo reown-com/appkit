@@ -1,7 +1,7 @@
 import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type CaipNetwork, ConstantsUtil } from '@laughingwhales/appkit-common'
-import { type AccountState, ChainController } from '@laughingwhales/appkit-controllers'
+import { type AccountState, ChainController } from '@reown/appkit-controllers'
 import { bitcoin, bitcoinTestnet } from '@laughingwhales/appkit/networks'
 
 import { BitcoinWalletConnectConnector } from '../../src/connectors/BitcoinWalletConnectConnector'

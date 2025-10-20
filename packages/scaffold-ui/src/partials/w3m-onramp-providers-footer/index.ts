@@ -6,13 +6,13 @@ import {
   OptionsController,
   RouterController,
   getPreferredAccountType
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-flex'
 import '@laughingwhales/appkit-ui/wui-icon'
 import '@laughingwhales/appkit-ui/wui-link'
 import '@laughingwhales/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import styles from './styles.js'
 

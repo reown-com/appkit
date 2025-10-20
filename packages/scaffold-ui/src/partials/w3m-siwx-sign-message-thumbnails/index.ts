@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 
-import { ChainController, OptionsController } from '@laughingwhales/appkit-controllers'
+import { ChainController, OptionsController } from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-visual-thumbnail'
 

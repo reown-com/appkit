@@ -6,8 +6,8 @@ import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,
   WriteContractArgs
-} from '@laughingwhales/appkit-controllers'
-import { type Provider } from '@laughingwhales/appkit-utils/ethers'
+} from '@reown/appkit-controllers'
+import { type Provider } from '@reown/appkit-utils/ethers'
 
 export const Ethers5Methods = {
   signMessage: async (message: string, provider: Provider, address: string) => {

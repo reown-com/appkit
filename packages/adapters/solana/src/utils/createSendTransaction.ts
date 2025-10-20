@@ -7,7 +7,7 @@ import {
   Transaction
 } from '@solana/web3.js'
 
-import type { Provider } from '@laughingwhales/appkit-utils/solana'
+import type { Provider } from '@reown/appkit-utils/solana'
 
 type SendTransactionArgs = {
   provider: Provider

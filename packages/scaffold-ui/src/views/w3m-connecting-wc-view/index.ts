@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
 import { ErrorUtil } from '@laughingwhales/appkit-common'
-import type { BaseError, Platform } from '@laughingwhales/appkit-controllers'
+import type { BaseError, Platform } from '@reown/appkit-controllers'
 import {
   AppKitError,
   ChainController,
@@ -13,9 +13,9 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
-import { CaipNetworksUtil } from '@laughingwhales/appkit-utils'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 
 import '../../partials/w3m-connecting-header/index.js'
 import '../../partials/w3m-connecting-wc-browser/index.js'

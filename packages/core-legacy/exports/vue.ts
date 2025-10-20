@@ -1,1 +1,1 @@
-export * from '@laughingwhales/appkit-controllers/vue'
+export * from '@reown/appkit-controllers/vue'

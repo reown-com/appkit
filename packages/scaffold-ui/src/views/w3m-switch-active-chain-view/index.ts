@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { type ChainNamespace, ConstantsUtil } from '@laughingwhales/appkit-common'
-import { ChainController, ConnectorController, RouterController } from '@laughingwhales/appkit-controllers'
+import { ChainController, ConnectorController, RouterController } from '@reown/appkit-controllers'
 import { type VisualType, customElement } from '@laughingwhales/appkit-ui'
 
 import styles from './styles.js'

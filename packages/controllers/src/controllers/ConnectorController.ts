@@ -7,7 +7,7 @@ import {
   ConstantsUtil,
   getW3mThemeVariables
 } from '@laughingwhales/appkit-common'
-import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
 import { MobileWalletUtil } from '../utils/MobileWallet.js'

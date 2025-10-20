@@ -71,7 +71,7 @@ export function getAppKit(appKit: AppKit) {
 }
 
 // -- Core Hooks ---------------------------------------------------------------
-export * from '@laughingwhales/appkit-controllers/react'
+export * from '@reown/appkit-controllers/react'
 
 export function useAppKitTheme() {
   if (!modal) {

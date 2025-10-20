@@ -5,12 +5,12 @@ import {
   ConstantsUtil as ActualConstantsUtil,
   AlertController,
   ApiController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import type {
   Features as CtrlFeatures,
   RemoteFeatures,
   TypedFeatureConfig
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import type { AppKitOptionsWithSdk } from '../../src/client/appkit-base-client.js'
 import { ConfigUtil } from '../../src/utils/ConfigUtil.js'
@@ -21,7 +21,7 @@ const getMockOptions = (): AppKitOptionsWithSdk => JSON.parse(JSON.stringify(ini
 vi.mock('@laughingwhales/appkit-controllers', async () => {
   const actualModule = (await vi.importActual(
     '@laughingwhales/appkit-controllers'
-  )) as typeof import('@laughingwhales/appkit-controllers')
+  )) as typeof import('@reown/appkit-controllers')
 
   return {
     baseUSDC: actualModule.baseUSDC,

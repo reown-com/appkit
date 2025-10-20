@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ChainController, ModalController, OnRampController } from '@laughingwhales/appkit-controllers'
+import { ChainController, ModalController, OnRampController } from '@reown/appkit-controllers'
 
 import '../../src/modal/w3m-onramp-widget'
 

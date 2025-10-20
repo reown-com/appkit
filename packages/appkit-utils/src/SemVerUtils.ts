@@ -1,5 +1,5 @@
 import { type AppKitSdkVersion, ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
-import { StorageUtil } from '@laughingwhales/appkit-controllers'
+import { StorageUtil } from '@reown/appkit-controllers'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
 

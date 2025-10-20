@@ -7,8 +7,8 @@ import {
 import { type MockInstance, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@laughingwhales/appkit-common'
-import { ChainController, CoreHelperUtil } from '@laughingwhales/appkit-controllers'
-import { HelpersUtil } from '@laughingwhales/appkit-utils'
+import { ChainController, CoreHelperUtil } from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
 import { bitcoin, bitcoinTestnet, mainnet } from '@laughingwhales/appkit/networks'
 
 import { SatsConnectConnector } from '../../src/connectors/SatsConnectConnector'

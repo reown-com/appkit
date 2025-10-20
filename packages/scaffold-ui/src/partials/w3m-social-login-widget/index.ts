@@ -14,14 +14,14 @@ import {
   RouterController,
   type SocialProvider,
   type WalletGuideType
-} from '@laughingwhales/appkit-controllers'
-import { executeSocialLogin } from '@laughingwhales/appkit-controllers/utils'
-import { CoreHelperUtil } from '@laughingwhales/appkit-controllers/utils'
+} from '@reown/appkit-controllers'
+import { executeSocialLogin } from '@reown/appkit-controllers/utils'
+import { CoreHelperUtil } from '@reown/appkit-controllers/utils'
 import { UiHelperUtil, customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-flex'
 import '@laughingwhales/appkit-ui/wui-list-social'
 import '@laughingwhales/appkit-ui/wui-logo-select'
-import { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import styles from './styles.js'
 

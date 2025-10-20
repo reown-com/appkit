@@ -9,7 +9,7 @@ import {
   RouterController,
   SnackController,
   ThemeController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import type { IconType } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-button'
 import '@laughingwhales/appkit-ui/wui-flex'

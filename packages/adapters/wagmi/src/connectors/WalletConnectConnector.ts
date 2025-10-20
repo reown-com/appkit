@@ -27,7 +27,7 @@ import {
   OptionsController,
   StorageUtil,
   WcHelpersUtil
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void

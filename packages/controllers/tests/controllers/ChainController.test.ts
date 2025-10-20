@@ -7,7 +7,7 @@ import {
   SafeLocalStorageKeys
 } from '@laughingwhales/appkit-common'
 import { SafeLocalStorage } from '@laughingwhales/appkit-common'
-import { W3mFrameConstants, W3mFrameStorage } from '@laughingwhales/appkit-wallet'
+import { W3mFrameConstants, W3mFrameStorage } from '@reown/appkit-wallet'
 
 import { CoreHelperUtil, OptionsController } from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'

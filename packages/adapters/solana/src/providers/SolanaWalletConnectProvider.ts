@@ -12,13 +12,13 @@ import base58 from 'bs58'
 
 import { type RequestArguments } from '@laughingwhales/appkit'
 import { type CaipAddress, type CaipNetwork, ParseUtil } from '@laughingwhales/appkit-common'
-import { AssetController, WalletConnectConnector, WcHelpersUtil } from '@laughingwhales/appkit-controllers'
-import { SolConstantsUtil } from '@laughingwhales/appkit-utils/solana'
+import { AssetController, WalletConnectConnector, WcHelpersUtil } from '@reown/appkit-controllers'
+import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import type {
   AnyTransaction,
   Provider,
   ProviderEventEmitterMethods
-} from '@laughingwhales/appkit-utils/solana'
+} from '@reown/appkit-utils/solana'
 
 import { WalletConnectMethodNotSupportedError } from './shared/Errors.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'

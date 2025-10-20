@@ -15,7 +15,7 @@ import {
   type SocialProvider,
   StorageUtil,
   getPreferredAccountType
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-balance'
 import '@laughingwhales/appkit-ui/wui-button'
@@ -23,7 +23,7 @@ import '@laughingwhales/appkit-ui/wui-flex'
 import '@laughingwhales/appkit-ui/wui-tabs'
 import '@laughingwhales/appkit-ui/wui-tooltip'
 import '@laughingwhales/appkit-ui/wui-wallet-switch'
-import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import { HelpersUtil } from '../../utils/HelpersUtil.js'

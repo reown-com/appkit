@@ -2,7 +2,7 @@ import { LitElement, type PropertyValues, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { EventsController, RouterController } from '@laughingwhales/appkit-controllers'
+import { EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import type { IWalletImage, IconType, TagType } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-list-wallet'

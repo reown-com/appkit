@@ -11,9 +11,9 @@ import {
   EventsController,
   ProviderController,
   StorageUtil
-} from '@laughingwhales/appkit-controllers'
-import { ConstantsUtil as UtilConstantsUtil } from '@laughingwhales/appkit-utils'
-import type { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+} from '@reown/appkit-controllers'
+import { ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter.js'

@@ -10,7 +10,7 @@ import {
   OptionsController,
   OptionsStateController,
   type PaymentCurrency
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mOnrampFiatSelectView } from '../../src/views/w3m-onramp-fiat-select-view'
 

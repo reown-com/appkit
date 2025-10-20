@@ -16,7 +16,7 @@ import {
   EventsController,
   RouterController,
   SendController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import type { WuiButton } from '@laughingwhales/appkit-ui/wui-button'
 
 import { W3mWalletSendPreviewView } from '../../src/views/w3m-wallet-send-preview-view'

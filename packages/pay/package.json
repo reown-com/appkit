@@ -1,6 +1,6 @@
 {
-  "name": "@laughingwhales/appkit-pay",
-  "version": "1.8.11",
+  "name": "@reown/appkit-pay",
+  "version": "1.8.12",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -32,10 +32,10 @@
   "dependencies": {
     "lit": "3.3.0",
     "valtio": "2.1.7",
+    "@reown/appkit-utils": "workspace:*",
     "@laughingwhales/appkit-common": "workspace:*",
-    "@laughingwhales/appkit-controllers": "workspace:*",
-    "@laughingwhales/appkit-utils": "workspace:*",
-    "@laughingwhales/appkit-ui": "workspace:*"
+    "@laughingwhales/appkit-ui": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "SEE LICENSE IN LICENSE.md",
@@ -66,6 +66,6 @@
     "bitcoin"
   ],
   "publishConfig": {
-    "provenance": true
+    "provenance": false
   }
 }

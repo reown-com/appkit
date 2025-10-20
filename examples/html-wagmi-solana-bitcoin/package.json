@@ -8,10 +8,10 @@
   },
   "dependencies": {
     "ethers": "6.14.0",
-    "@laughingwhales/appkit-adapter-wagmi": "workspace:*",
     "@laughingwhales/appkit-adapter-solana": "workspace:*",
-    "@laughingwhales/appkit-adapter-bitcoin": "workspace:*",
-    "@laughingwhales/appkit": "workspace:*"
+    "@laughingwhales/appkit": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit-adapter-bitcoin": "workspace:*"
   },
   "devDependencies": {
     "vite": "5.4.20"

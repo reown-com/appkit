@@ -9,7 +9,7 @@ import {
   EventsController,
   RouterController,
   SnackController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import type { WuiLink } from '@laughingwhales/appkit-ui/wui-link'
 
 import { W3mEmailVerifyDeviceView } from '../../src/views/w3m-email-verify-device-view/index'

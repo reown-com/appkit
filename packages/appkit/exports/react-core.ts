@@ -1,5 +1,5 @@
-import { type UseAppKitNetworkReturn } from '@laughingwhales/appkit-controllers'
-import { useAppKitNetworkCore } from '@laughingwhales/appkit-controllers/react'
+import { type UseAppKitNetworkReturn } from '@reown/appkit-controllers'
+import { useAppKitNetworkCore } from '@reown/appkit-controllers/react'
 import type { AppKitNetwork } from '@laughingwhales/appkit/networks'
 
 import { AppKit } from '../src/client/appkit-core.js'
@@ -12,9 +12,9 @@ export * from '../src/library/react/index.js'
 
 // -- Utils & Other -----------------------------------------------------
 export * from '../src/utils/index.js'
-export type * from '@laughingwhales/appkit-controllers'
+export type * from '@reown/appkit-controllers'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@laughingwhales/appkit-common'
-export { CoreHelperUtil } from '@laughingwhales/appkit-controllers'
+export { CoreHelperUtil } from '@reown/appkit-controllers'
 
 export let modal: AppKit | undefined = undefined
 
@@ -54,4 +54,4 @@ export function useAppKitNetwork(): UseAppKitNetworkReturn {
   }
 }
 
-export { useAppKitAccount } from '@laughingwhales/appkit-controllers/react'
+export { useAppKitAccount } from '@reown/appkit-controllers/react'

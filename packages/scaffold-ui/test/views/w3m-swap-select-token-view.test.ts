@@ -9,8 +9,8 @@ import {
   SwapController,
   type SwapControllerState,
   type SwapTokenWithBalance
-} from '@laughingwhales/appkit-controllers'
-import { extendedMainnet, mockChainControllerState } from '@laughingwhales/appkit-controllers/testing'
+} from '@reown/appkit-controllers'
+import { extendedMainnet, mockChainControllerState } from '@reown/appkit-controllers/testing'
 
 import { W3mSwapSelectTokenView } from '../../src/views/w3m-swap-select-token-view'
 

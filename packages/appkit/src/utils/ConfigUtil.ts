@@ -1,15 +1,15 @@
 /* eslint-disable max-params */
 import type { OnRampProvider, SocialProvider, SwapProvider } from '@laughingwhales/appkit-common'
-import { AlertController, ApiController, ConstantsUtil } from '@laughingwhales/appkit-controllers'
+import { AlertController, ApiController, ConstantsUtil } from '@reown/appkit-controllers'
 import type {
   EmailCaptureOptions,
   FeatureConfigMap,
   FeatureID,
   RemoteFeatures,
   TypedFeatureConfig
-} from '@laughingwhales/appkit-controllers'
-import type {} from '@laughingwhales/appkit-controllers'
-import { ErrorUtil } from '@laughingwhales/appkit-utils'
+} from '@reown/appkit-controllers'
+import type {} from '@reown/appkit-controllers'
+import { ErrorUtil } from '@reown/appkit-utils'
 
 import type { AppKitOptionsWithSdk } from '../client/appkit-base-client.js'
 

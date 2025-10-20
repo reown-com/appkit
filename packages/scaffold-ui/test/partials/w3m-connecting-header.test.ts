@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import type { Platform } from '@laughingwhales/appkit-controllers'
+import type { Platform } from '@reown/appkit-controllers'
 import type { WuiTabs } from '@laughingwhales/appkit-ui/wui-tabs'
 
 import { W3mConnectingHeader } from '../../src/partials/w3m-connecting-header'

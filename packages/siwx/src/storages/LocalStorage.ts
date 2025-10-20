@@ -1,5 +1,5 @@
 import type { CaipNetworkId } from '@laughingwhales/appkit-common'
-import type { SIWXSession } from '@laughingwhales/appkit-controllers'
+import type { SIWXSession } from '@reown/appkit-controllers'
 
 import type { SIWXStorage } from '../core/SIWXStorage.js'
 

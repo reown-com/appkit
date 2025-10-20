@@ -1,7 +1,7 @@
 import { getAddress } from 'viem'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ChainController, OptionsController } from '@laughingwhales/appkit-controllers'
+import { ChainController, OptionsController } from '@reown/appkit-controllers'
 import { mainnet } from '@laughingwhales/appkit/networks'
 
 import { walletConnect } from '../connectors/WalletConnectConnector'
@@ -15,7 +15,7 @@ import {
 } from './mocks/AppKit'
 
 vi.mock('@laughingwhales/appkit-controllers', async importOriginal => {
-  const actual = await importOriginal<typeof import('@laughingwhales/appkit-controllers')>()
+  const actual = await importOriginal<typeof import('@reown/appkit-controllers')>()
   return {
     ...actual,
     StorageUtil: {

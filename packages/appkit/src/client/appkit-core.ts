@@ -1,13 +1,13 @@
 import { type ChainNamespace } from '@laughingwhales/appkit-common'
-import type { ChainAdapter } from '@laughingwhales/appkit-controllers'
+import type { ChainAdapter } from '@reown/appkit-controllers'
 import {
   ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController
-} from '@laughingwhales/appkit-controllers'
-import type { AdapterBlueprint } from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
+import type { AdapterBlueprint } from '@reown/appkit-controllers'
 
 import {
   AppKitBaseClient,

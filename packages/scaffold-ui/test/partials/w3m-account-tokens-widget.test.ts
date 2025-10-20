@@ -8,7 +8,7 @@ import {
   ChainController,
   OptionsController,
   RouterController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mAccountTokensWidget } from '../../src/partials/w3m-account-tokens-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'

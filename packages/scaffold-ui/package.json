@@ -1,6 +1,6 @@
 {
   "name": "@laughingwhales/appkit-scaffold-ui",
-  "version": "1.8.11",
+  "version": "1.8.12",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -112,10 +112,10 @@
   "dependencies": {
     "lit": "3.3.0",
     "@laughingwhales/appkit-common": "workspace:*",
-    "@laughingwhales/appkit-controllers": "workspace:*",
     "@laughingwhales/appkit-ui": "workspace:*",
-    "@laughingwhales/appkit-utils": "workspace:*",
-    "@laughingwhales/appkit-wallet": "workspace:*"
+    "@reown/appkit-controllers": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "SEE LICENSE IN LICENSE.md",
@@ -145,6 +145,6 @@
     "bitcoin"
   ],
   "publishConfig": {
-    "provenance": true
+    "provenance": false
   }
 }

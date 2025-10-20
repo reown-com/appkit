@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { OptionsController, OptionsStateController } from '@laughingwhales/appkit-controllers'
+import { OptionsController, OptionsStateController } from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-checkbox'
 import '@laughingwhales/appkit-ui/wui-text'

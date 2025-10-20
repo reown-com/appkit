@@ -10,8 +10,8 @@ import {
   CoreHelperUtil,
   EventsController,
   OptionsController
-} from '@laughingwhales/appkit-controllers'
-import { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+} from '@reown/appkit-controllers'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { W3mSocialLoginWidget } from '../../src/partials/w3m-social-login-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'

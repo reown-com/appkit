@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { AssetUtil, ChainController, type OnRampProvider } from '@laughingwhales/appkit-controllers'
+import { AssetUtil, ChainController, type OnRampProvider } from '@reown/appkit-controllers'
 import { type ColorType, customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-flex'
 import '@laughingwhales/appkit-ui/wui-icon'

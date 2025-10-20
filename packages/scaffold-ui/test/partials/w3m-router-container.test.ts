@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { OptionsController } from '@laughingwhales/appkit-controllers'
+import { OptionsController } from '@reown/appkit-controllers'
 
 import '../../src/partials/w3m-router-container/index'
 import type { W3mRouterContainer } from '../../src/partials/w3m-router-container/index'

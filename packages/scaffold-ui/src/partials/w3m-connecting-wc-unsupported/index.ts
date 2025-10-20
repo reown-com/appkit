@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { AssetUtil, EventsController, RouterController } from '@laughingwhales/appkit-controllers'
+import { AssetUtil, EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-flex'
 import '@laughingwhales/appkit-ui/wui-text'

@@ -9,8 +9,8 @@
 // Note: UniversalProvider not used - Polkadot only uses injected connectors, not WalletConnect
 // import type UniversalProvider from '@walletconnect/universal-provider'
 import type { CaipNetwork, ChainNamespace, Connection } from '@laughingwhales/appkit-common'
-import { AdapterBlueprint } from '@laughingwhales/appkit-controllers'
-import { ConstantsUtil, PresetsUtil } from '@laughingwhales/appkit-utils'
+import { AdapterBlueprint } from '@reown/appkit-controllers'
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 
 import { PolkadotConnectorProvider } from './connectors/InjectedConnector.js'
 import type {

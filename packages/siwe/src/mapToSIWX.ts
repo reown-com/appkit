@@ -6,8 +6,8 @@ import {
   type SIWXMessage,
   type SIWXSession,
   getActiveCaipNetwork
-} from '@laughingwhales/appkit-controllers'
-import { HelpersUtil } from '@laughingwhales/appkit-utils'
+} from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 import type { AppKitSIWEClient } from '../exports/index.js'
 

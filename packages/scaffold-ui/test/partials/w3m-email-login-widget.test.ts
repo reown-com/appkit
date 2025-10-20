@@ -14,7 +14,7 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mEmailLoginWidget } from '../../src/partials/w3m-email-login-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'

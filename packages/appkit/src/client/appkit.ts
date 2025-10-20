@@ -23,7 +23,7 @@ import {
   SIWXUtil,
   getActiveCaipNetwork,
   getPreferredAccountType
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import {
   AlertController,
   ChainController,
@@ -32,12 +32,12 @@ import {
   ProviderController,
   StorageUtil,
   ThemeController
-} from '@laughingwhales/appkit-controllers'
-import type { AdapterBlueprint } from '@laughingwhales/appkit-controllers'
-import { ErrorUtil, HelpersUtil, ConstantsUtil as UtilConstantsUtil } from '@laughingwhales/appkit-utils'
-import { W3mFrameHelpers, W3mFrameProvider } from '@laughingwhales/appkit-wallet'
-import type { W3mFrameTypes } from '@laughingwhales/appkit-wallet'
-import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
+} from '@reown/appkit-controllers'
+import type { AdapterBlueprint } from '@reown/appkit-controllers'
+import { ErrorUtil, HelpersUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
+import { W3mFrameHelpers, W3mFrameProvider } from '@reown/appkit-wallet'
+import type { W3mFrameTypes } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { W3mFrameProviderSingleton } from '../auth-provider/W3MFrameProviderSingleton.js'
 import { AppKitBaseClient, type AppKitOptionsWithSdk } from './appkit-base-client.js'
@@ -660,7 +660,7 @@ export class AppKit extends AppKitBaseClient {
     }
 
     if (features.pay || remoteFeatures.payments) {
-      featureImportPromises.push(import('@laughingwhales/appkit-pay'))
+      featureImportPromises.push(import('@reown/appkit-pay'))
     }
 
     if (remoteFeatures.emailCapture) {

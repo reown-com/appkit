@@ -1,6 +1,6 @@
 import { type Ref, onUnmounted, ref } from 'vue'
 
-import { ChainController, type UseAppKitNetworkReturn } from '@laughingwhales/appkit-controllers'
+import { ChainController, type UseAppKitNetworkReturn } from '@reown/appkit-controllers'
 import type { AppKitNetwork } from '@laughingwhales/appkit/networks'
 
 import { AppKit } from '../src/client/appkit-core.js'
@@ -13,9 +13,9 @@ export * from '../src/library/vue/index.js'
 
 // -- Utils & Other -----------------------------------------------------
 export * from '../src/utils/index.js'
-export type * from '@laughingwhales/appkit-controllers'
+export type * from '@reown/appkit-controllers'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@laughingwhales/appkit-common'
-export { CoreHelperUtil } from '@laughingwhales/appkit-controllers'
+export { CoreHelperUtil } from '@reown/appkit-controllers'
 
 let modal: AppKit | undefined = undefined
 

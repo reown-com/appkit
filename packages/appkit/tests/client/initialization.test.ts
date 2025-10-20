@@ -11,9 +11,9 @@ import {
   OptionsController,
   PublicStateController,
   StorageUtil
-} from '@laughingwhales/appkit-controllers'
-import { ReownAuthentication } from '@laughingwhales/appkit-controllers/features'
-import { CaipNetworksUtil, ErrorUtil } from '@laughingwhales/appkit-utils'
+} from '@reown/appkit-controllers'
+import { ReownAuthentication } from '@reown/appkit-controllers/features'
+import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter.js'

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { NetworkUtil } from '@laughingwhales/appkit-common'
-import { ChainController } from '@laughingwhales/appkit-controllers'
+import { ChainController } from '@reown/appkit-controllers'
 
 // Mock the controllers
 vi.mock('@laughingwhales/appkit-controllers', () => ({

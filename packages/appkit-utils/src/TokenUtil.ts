@@ -1,4 +1,4 @@
-import { baseSepoliaUSDC, baseUSDC } from '@laughingwhales/appkit-controllers'
+import { baseSepoliaUSDC, baseUSDC } from '@reown/appkit-controllers'
 
 export const TokenUtil = {
   TOKEN_ADDRESSES_BY_SYMBOL: {

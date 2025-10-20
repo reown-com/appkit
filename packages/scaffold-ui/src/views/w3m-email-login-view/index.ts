@@ -2,9 +2,9 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
-import { type Connector, ConnectorController, OptionsController } from '@laughingwhales/appkit-controllers'
+import { type Connector, ConnectorController, OptionsController } from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
-import { ConstantsUtil as AppKitConstantsUtil } from '@laughingwhales/appkit-utils'
+import { ConstantsUtil as AppKitConstantsUtil } from '@reown/appkit-utils'
 
 @customElement('w3m-email-login-view')
 export class W3mEmailLoginView extends LitElement {

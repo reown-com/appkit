@@ -10,7 +10,7 @@ import {
   OptionsController,
   type OptionsControllerState,
   type OptionsControllerStateInternal
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import type { WuiNetworkButton } from '@laughingwhales/appkit-ui/wui-network-button'
 
 import { W3mNetworkButton } from '../../src/modal/w3m-network-button'

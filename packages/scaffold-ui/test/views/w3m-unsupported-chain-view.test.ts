@@ -11,7 +11,7 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { W3mUnsupportedChainView } from '../../src/views/w3m-unsupported-chain-view/index'
 

@@ -9,9 +9,9 @@ import {
   OptionsController,
   RouterController,
   SIWXUtil
-} from '@laughingwhales/appkit-controllers'
-import { type AppKitSIWEClient, createSIWEConfig } from '@laughingwhales/appkit-siwe'
-import { CaipNetworksUtil } from '@laughingwhales/appkit-utils'
+} from '@reown/appkit-controllers'
+import { type AppKitSIWEClient, createSIWEConfig } from '@reown/appkit-siwe'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 import * as networks from '@laughingwhales/appkit/networks'
 
 import { mockUniversalAdapter } from './mocks/Adapter'

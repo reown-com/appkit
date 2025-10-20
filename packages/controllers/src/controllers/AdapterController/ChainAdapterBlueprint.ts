@@ -11,7 +11,7 @@ import {
   type ParsedCaipAddress,
   UserRejectedRequestError
 } from '@laughingwhales/appkit-common'
-import type { W3mFrameProvider, W3mFrameTypes } from '@laughingwhales/appkit-wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { getPreferredAccountType } from '../../utils/ChainControllerUtil.js'
 import { CoreHelperUtil } from '../../utils/CoreHelperUtil.js'

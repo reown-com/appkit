@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type AccountState, ChainController, SIWXUtil } from '@laughingwhales/appkit-controllers'
+import { type AccountState, ChainController, SIWXUtil } from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockOptions } from '../mocks/Options.js'

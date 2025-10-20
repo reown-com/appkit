@@ -1,5 +1,5 @@
 import { type CaipNetworkId, NetworkUtil } from '@laughingwhales/appkit-common'
-import { ChainController, type SIWXMessage } from '@laughingwhales/appkit-controllers'
+import { ChainController, type SIWXMessage } from '@reown/appkit-controllers'
 
 import { SIWXMessenger } from '../core/SIWXMessenger.js'
 

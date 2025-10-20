@@ -2,8 +2,8 @@ import { type PublicClient, createPublicClient, http } from 'viem'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 import type { CaipNetwork } from '@laughingwhales/appkit-common'
-import { ChainController } from '@laughingwhales/appkit-controllers'
-import { mockSession } from '@laughingwhales/appkit-controllers/testing'
+import { ChainController } from '@reown/appkit-controllers'
+import { mockSession } from '@reown/appkit-controllers/testing'
 
 import { EIP155Verifier } from '../../src/index.js'
 

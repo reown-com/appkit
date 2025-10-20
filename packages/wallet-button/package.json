@@ -1,6 +1,6 @@
 {
   "name": "@laughingwhales/appkit-wallet-button",
-  "version": "1.8.11",
+  "version": "1.8.12",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -40,9 +40,9 @@
     "lit": "3.3.0",
     "valtio": "2.1.7",
     "@laughingwhales/appkit-common": "workspace:*",
-    "@laughingwhales/appkit-controllers": "workspace:*",
     "@laughingwhales/appkit-ui": "workspace:*",
-    "@laughingwhales/appkit-utils": "workspace:*"
+    "@reown/appkit-controllers": "workspace:*",
+    "@reown/appkit-utils": "workspace:*"
   },
   "optionalDependencies": {
     "@lit/react": "1.0.8"
@@ -78,6 +78,6 @@
     "bitcoin"
   ],
   "publishConfig": {
-    "provenance": true
+    "provenance": false
   }
 }

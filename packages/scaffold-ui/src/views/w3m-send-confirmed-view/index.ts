@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 
-import { ModalController } from '@laughingwhales/appkit-controllers'
+import { ModalController } from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-button'
 import '@laughingwhales/appkit-ui/wui-flex'

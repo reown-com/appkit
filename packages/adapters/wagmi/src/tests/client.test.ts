@@ -28,9 +28,9 @@ import {
   OptionsController,
   ProviderController,
   type SocialProvider
-} from '@laughingwhales/appkit-controllers'
-import { CaipNetworksUtil } from '@laughingwhales/appkit-utils'
-import type { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+} from '@reown/appkit-controllers'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { WagmiAdapter } from '../client'
 import * as auth from '../connectors/AuthConnector'

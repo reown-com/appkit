@@ -1,5 +1,5 @@
 import { isSafe } from '@laughingwhales/appkit-common'
-import { OptionsController } from '@laughingwhales/appkit-controllers'
+import { OptionsController } from '@reown/appkit-controllers'
 
 const abortController = new AbortController()
 

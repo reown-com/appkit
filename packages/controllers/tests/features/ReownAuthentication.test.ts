@@ -11,13 +11,13 @@ import {
   ApiController,
   BlockchainApiController,
   ChainController
-} from '@laughingwhales/appkit-controllers'
-import { ReownAuthentication } from '@laughingwhales/appkit-controllers/features'
+} from '@reown/appkit-controllers'
+import { ReownAuthentication } from '@reown/appkit-controllers/features'
 import {
   extendedMainnet,
   mockChainControllerState,
   mockSession
-} from '@laughingwhales/appkit-controllers/testing'
+} from '@reown/appkit-controllers/testing'
 
 vi.useFakeTimers({
   now: new Date('2024-12-05T16:02:32.905Z')

@@ -2,7 +2,7 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@laughingwhales/appkit-common'
-import { WalletConnectConnector } from '@laughingwhales/appkit-controllers'
+import { WalletConnectConnector } from '@reown/appkit-controllers'
 
 import { UniversalAdapter } from '../src/universal-adapter/client'
 

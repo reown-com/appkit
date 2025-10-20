@@ -8,7 +8,7 @@ import {
   ConnectorController,
   StorageUtil,
   type Tokens
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
 

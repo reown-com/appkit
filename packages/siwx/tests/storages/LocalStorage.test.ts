@@ -1,6 +1,6 @@
 import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
 
-import { mockSession } from '@laughingwhales/appkit-controllers/testing'
+import { mockSession } from '@reown/appkit-controllers/testing'
 
 import { LocalStorage } from '../../src'
 

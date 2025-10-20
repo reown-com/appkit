@@ -11,8 +11,8 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController
-} from '@laughingwhales/appkit-controllers'
-import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
+} from '@reown/appkit-controllers'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { W3mWalletReceiveView } from '../../src/views/w3m-wallet-receive-view'
 

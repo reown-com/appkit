@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import { ConstantsUtil } from '@laughingwhales/appkit-common'
-import { RouterController } from '@laughingwhales/appkit-controllers'
+import { RouterController } from '@reown/appkit-controllers'
 
 import { W3mSwitchActiveChainView } from '../../src/views/w3m-switch-active-chain-view'
 

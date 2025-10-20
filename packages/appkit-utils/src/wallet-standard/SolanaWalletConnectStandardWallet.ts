@@ -26,7 +26,7 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
 import { type CaipAddress, type CaipNetworkId, ParseUtil } from '@laughingwhales/appkit-common'
-import { RouterController } from '@laughingwhales/appkit-controllers'
+import { RouterController } from '@reown/appkit-controllers'
 
 import { createNamespaces } from '../WCNamespaceUtil.js'
 import { SolConstantsUtil } from '../solana/SolanaConstantsUtil.js'

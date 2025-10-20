@@ -9,7 +9,7 @@ import {
   ChainController,
   CoreHelperUtil,
   NetworkUtil
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-flex'
 import '@laughingwhales/appkit-ui/wui-input-text'

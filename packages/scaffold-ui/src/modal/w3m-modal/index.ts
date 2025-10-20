@@ -15,7 +15,7 @@ import {
   SnackController,
   SwapController,
   ThemeController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement, initializeTheming, vars } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-card'
 import '@laughingwhales/appkit-ui/wui-flex'

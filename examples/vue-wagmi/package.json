@@ -15,7 +15,7 @@
     "viem": "2.37.9",
     "vue": "3.4.3",
     "@laughingwhales/appkit": "workspace:*",
-    "@laughingwhales/appkit-adapter-wagmi": "workspace:*"
+    "@reown/appkit-adapter-wagmi": "workspace:*"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.1.4",

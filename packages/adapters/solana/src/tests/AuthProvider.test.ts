@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@laughingwhales/appkit-common'
-import { type AccountState, ChainController } from '@laughingwhales/appkit-controllers'
+import { type AccountState, ChainController } from '@reown/appkit-controllers'
 
 import { AuthProvider } from '../providers/AuthProvider'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'

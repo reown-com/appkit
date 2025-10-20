@@ -9,7 +9,7 @@ import {
   EventsController,
   RouterController,
   type WcWallet
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 
 // -- Constants ------------------------------------------- //
 const WC_URI = 'xyz'

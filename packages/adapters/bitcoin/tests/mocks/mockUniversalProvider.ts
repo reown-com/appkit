@@ -2,7 +2,7 @@ import type { SessionTypes } from '@walletconnect/types'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { vi } from 'vitest'
 
-import type { BitcoinConnector } from '@laughingwhales/appkit-utils/bitcoin'
+import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { bitcoin } from '@laughingwhales/appkit/networks'
 
 export function mockUniversalProvider(

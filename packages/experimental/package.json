@@ -1,6 +1,6 @@
 {
-  "name": "@laughingwhales/appkit-experimental",
-  "version": "1.8.11",
+  "name": "@reown/appkit-experimental",
+  "version": "1.8.12",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -50,11 +50,11 @@
     "valtio": "2.1.7",
     "viem": "2.37.9",
     "zod": "3.22.4",
+    "@reown/appkit-utils": "workspace:*",
     "@laughingwhales/appkit": "workspace:*",
     "@laughingwhales/appkit-common": "workspace:*",
-    "@laughingwhales/appkit-controllers": "workspace:*",
     "@laughingwhales/appkit-ui": "workspace:*",
-    "@laughingwhales/appkit-utils": "workspace:*"
+    "@reown/appkit-controllers": "workspace:*"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",
@@ -83,6 +83,6 @@
     "bitcoin"
   ],
   "publishConfig": {
-    "provenance": true
+    "provenance": false
   }
 }

@@ -35,8 +35,8 @@ import {
   SnackController,
   StorageUtil,
   ThemeController
-} from '@laughingwhales/appkit-controllers'
-import { CaipNetworksUtil, ConstantsUtil as UtilConstantsUtil } from '@laughingwhales/appkit-utils'
+} from '@reown/appkit-controllers'
+import { CaipNetworksUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockUser, mockUserBalance } from '../mocks/Account.js'

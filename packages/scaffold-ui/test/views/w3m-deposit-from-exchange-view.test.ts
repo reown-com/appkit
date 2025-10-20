@@ -10,7 +10,7 @@ import {
   ExchangeController,
   RouterController,
   SnackController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import type { WuiTokenButton } from '@laughingwhales/appkit-ui/wui-token-button'
 
 import { W3mDepositFromExchangeView } from '../../src/views/w3m-deposit-from-exchange-view'

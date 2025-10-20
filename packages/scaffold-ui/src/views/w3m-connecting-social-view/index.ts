@@ -15,14 +15,14 @@ import {
   SnackController,
   StorageUtil,
   ThemeController
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-flex'
 import '@laughingwhales/appkit-ui/wui-icon-box'
 import '@laughingwhales/appkit-ui/wui-loading-thumbnail'
 import '@laughingwhales/appkit-ui/wui-logo'
 import '@laughingwhales/appkit-ui/wui-text'
-import { ErrorUtil } from '@laughingwhales/appkit-utils'
+import { ErrorUtil } from '@reown/appkit-utils'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import styles from './styles.js'

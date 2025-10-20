@@ -1,8 +1,8 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
-import type { WcWallet } from '@laughingwhales/appkit-controllers'
-import { CoreHelperUtil, RouterController } from '@laughingwhales/appkit-controllers'
+import type { WcWallet } from '@reown/appkit-controllers'
+import { CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-cta-button'
 

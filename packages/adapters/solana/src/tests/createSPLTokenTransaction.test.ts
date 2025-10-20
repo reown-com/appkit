@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js'
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import type { Provider } from '@laughingwhales/appkit-utils/solana'
+import type { Provider } from '@reown/appkit-utils/solana'
 
 import { createSPLTokenTransaction } from '../utils/createSPLTokenTransaction'
 import { mockConnection } from './mocks/Connection'

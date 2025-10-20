@@ -16,13 +16,13 @@ import {
   type RemoteFeatures,
   RouterController,
   type WalletGuideType
-} from '@laughingwhales/appkit-controllers'
+} from '@reown/appkit-controllers'
 import { MathUtil, customElement } from '@laughingwhales/appkit-ui'
 import '@laughingwhales/appkit-ui/wui-flex'
 import '@laughingwhales/appkit-ui/wui-list-button'
 import '@laughingwhales/appkit-ui/wui-separator'
 import '@laughingwhales/appkit-ui/wui-ux-by-reown'
-import { ConstantsUtil as AppKitConstantsUtil } from '@laughingwhales/appkit-utils'
+import { ConstantsUtil as AppKitConstantsUtil } from '@reown/appkit-utils'
 
 import '../../partials/w3m-email-login-widget/index.js'
 import '../../partials/w3m-legal-checkbox/index.js'
