@@ -83,7 +83,7 @@ describe('useAppKitProvider', () => {
 
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.get('[data-testid="provider"]').text()).toContain('new-provider')
+    expect(wrapper.get('[data-testid="provider"]').text()).toContain({ test: 'new-provider' })
     expect(wrapper.get('[data-testid="type"]').text()).toBe('"new-provider-type"')
   })
 
