@@ -4,7 +4,7 @@ import { Keypair } from '@solana/web3.js'
 import Big from 'big.js'
 import { privateKeyToAccount } from 'viem/accounts'
 
-import { ChainNamespace } from '@reown/appkit-common'
+import { ChainNamespace } from '@laughingwhales/appkit-common'
 
 import { Box } from '../../components/Box'
 import Tab from '../../components/ChainTabs'

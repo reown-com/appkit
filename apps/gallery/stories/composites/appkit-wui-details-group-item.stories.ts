@@ -2,9 +2,9 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-details-group'
-import type { WuiDetailsGroupItem } from '@reown/appkit-ui/wui-details-group-item'
-import '@reown/appkit-ui/wui-list-item'
+import '@laughingwhales/appkit-ui/wui-details-group'
+import type { WuiDetailsGroupItem } from '@laughingwhales/appkit-ui/wui-details-group-item'
+import '@laughingwhales/appkit-ui/wui-list-item'
 
 import '../../components/gallery-container'
 

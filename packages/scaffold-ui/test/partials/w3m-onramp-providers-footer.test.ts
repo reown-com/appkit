@@ -3,15 +3,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   type ChainControllerState,
   EventsController,
   OptionsController,
   RouterController
-} from '@reown/appkit-controllers'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-controllers'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import { W3mOnRampProvidersFooter } from '../../src/partials/w3m-onramp-providers-footer'
 

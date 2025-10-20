@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import type { AdapterType, AppKitSdkVersion, SdkFramework } from '@reown/appkit-common'
+import type { AdapterType, AppKitSdkVersion, SdkFramework } from '@laughingwhales/appkit-common'
 
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
 

@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import type { SIWXSession } from '@reown/appkit'
-import type { ReownAuthentication } from '@reown/appkit-siwx'
-import { useAppKitSIWX } from '@reown/appkit-siwx/react'
+import type { SIWXSession } from '@laughingwhales/appkit'
+import type { ReownAuthentication } from '@laughingwhales/appkit-siwx'
+import { useAppKitSIWX } from '@laughingwhales/appkit-siwx/react'
 
 type SessionContextType = SIWXSession | undefined
 

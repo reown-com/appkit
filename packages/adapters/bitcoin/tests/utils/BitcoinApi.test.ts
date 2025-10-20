@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+import { bitcoin, bitcoinTestnet } from '@laughingwhales/appkit/networks'
 
 import { BitcoinApi } from '../../src/utils/BitcoinApi'
 import { mockUTXO } from '../mocks/mockUTXO'

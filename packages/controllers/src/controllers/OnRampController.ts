@@ -1,8 +1,8 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import type { OnRampProvider as OnRampProviderName } from '@reown/appkit-common'
-import { ConstantsUtil } from '@reown/appkit-common'
+import type { OnRampProvider as OnRampProviderName } from '@laughingwhales/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 
 import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
 import type { PaymentCurrency, PurchaseCurrency } from '../utils/TypeUtil.js'

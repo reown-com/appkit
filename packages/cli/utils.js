@@ -55,7 +55,7 @@ export async function runReactNativeCLI(directoryName) {
   const { execSync } = await import('child_process')
   try {
     const nameCommand = directoryName ? `--name ${directoryName}` : ''
-    execSync(`npx @reown/appkit-react-native-cli --no-banner ${nameCommand}`, {
+    execSync(`npx @laughingwhales/appkit-react-native-cli --no-banner ${nameCommand}`, {
       stdio: 'inherit'
     })
   } catch (error) {

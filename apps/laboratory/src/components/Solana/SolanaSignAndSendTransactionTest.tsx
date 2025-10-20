@@ -9,8 +9,8 @@ import {
   VersionedTransaction
 } from '@solana/web3.js'
 
-import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
-import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+import { type Provider, useAppKitConnection } from '@laughingwhales/appkit-adapter-solana/react'
+import { useAppKitAccount, useAppKitProvider } from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { ErrorUtil } from '@/src/utils/ErrorUtil'

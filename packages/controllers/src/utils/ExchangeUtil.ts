@@ -1,4 +1,4 @@
-import { type CaipNetworkId, type ChainNamespace, ParseUtil } from '@reown/appkit-common'
+import { type CaipNetworkId, type ChainNamespace, ParseUtil } from '@laughingwhales/appkit-common'
 
 import { OptionsController } from '../controllers/OptionsController.js'
 

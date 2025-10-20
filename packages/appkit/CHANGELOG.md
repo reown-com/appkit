@@ -1,5 +1,30 @@
 # @reown/appkit
 
+## 1.8.11
+
+### Patch Changes
+
+- 15d9b6b: Fixes an issue where the user would see an incorrect error message on SOL transactions
+- 1a9f436: Fixes issue where declining a Discord connection would cause subsequent connections to fail.
+- 99cc58b: Fixes package version injecting when building packages
+- fda02dc: Added usage limit UI in AppKit that displays when limits are exceeded
+- Updated dependencies [6b543c3]
+- Updated dependencies [0e17516]
+- Updated dependencies [1a9f436]
+- Updated dependencies [99cc58b]
+- Updated dependencies [135b5c0]
+- Updated dependencies [fbaaa96]
+- Updated dependencies [fda02dc]
+- Updated dependencies [2778f7d]
+  - @laughingwhales/appkit-scaffold-ui@1.8.11
+  - @laughingwhales/appkit-ui@1.8.11
+  - @laughingwhales/appkit-controllers@1.8.11
+  - @laughingwhales/appkit-utils@1.8.11
+  - @laughingwhales/appkit-common@1.8.11
+  - @laughingwhales/appkit-pay@1.8.11
+  - @laughingwhales/appkit-polyfills@1.8.11
+  - @laughingwhales/appkit-wallet@1.8.11
+
 ## 1.8.10
 
 ### Patch Changes

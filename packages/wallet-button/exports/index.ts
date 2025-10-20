@@ -1,4 +1,4 @@
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
 
 import { AppKitWalletButton } from '../src/client.js'
 

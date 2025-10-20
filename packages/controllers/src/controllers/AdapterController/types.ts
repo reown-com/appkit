@@ -1,4 +1,4 @@
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
 
 import type { Connector } from '../../utils/TypeUtil.js'
 

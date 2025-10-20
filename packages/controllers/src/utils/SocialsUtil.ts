@@ -1,6 +1,6 @@
 import { ref } from 'valtio'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'

@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-wallet-switch'
-import type { WuiWalletSwitch } from '@reown/appkit-ui/wui-wallet-switch'
+import '@laughingwhales/appkit-ui/wui-wallet-switch'
+import type { WuiWalletSwitch } from '@laughingwhales/appkit-ui/wui-wallet-switch'
 
 import { iconOptions, walletImageSrc } from '../../utils/PresetUtils'
 

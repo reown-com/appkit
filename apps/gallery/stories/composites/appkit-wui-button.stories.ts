@@ -2,9 +2,9 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import type { IconType } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-button'
-import type { WuiButton } from '@reown/appkit-ui/wui-button'
+import type { IconType } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-button'
+import type { WuiButton } from '@laughingwhales/appkit-ui/wui-button'
 
 import { buttonOptions, iconOptions } from '../../utils/PresetUtils'
 

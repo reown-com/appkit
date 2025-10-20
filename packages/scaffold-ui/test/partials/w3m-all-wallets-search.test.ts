@@ -12,7 +12,7 @@ import {
   OptionsController,
   RouterController,
   type WcWallet
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mAllWalletsSearch } from '../../src/partials/w3m-all-wallets-search'
 

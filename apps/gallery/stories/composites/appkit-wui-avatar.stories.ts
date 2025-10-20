@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-avatar'
-import type { WuiAvatar } from '@reown/appkit-ui/wui-avatar'
+import '@laughingwhales/appkit-ui/wui-avatar'
+import type { WuiAvatar } from '@laughingwhales/appkit-ui/wui-avatar'
 
 import { address, avatarImageSrc } from '../../utils/PresetUtils'
 

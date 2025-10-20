@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-toast-message'
-import type { WuiToastMessage } from '@reown/appkit-ui/wui-toast-message'
+import '@laughingwhales/appkit-ui/wui-toast-message'
+import type { WuiToastMessage } from '@laughingwhales/appkit-ui/wui-toast-message'
 
 import '../../components/gallery-container'
 import { toastMessageOptions } from '../../utils/PresetUtils'

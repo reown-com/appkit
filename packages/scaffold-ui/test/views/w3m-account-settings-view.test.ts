@@ -8,7 +8,7 @@ import {
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   type Connection
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 import {
   type AccountState,
   AssetController,
@@ -21,7 +21,7 @@ import {
   RouterController,
   SendController,
   SnackController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mAccountSettingsView } from '../../src/views/w3m-account-settings-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

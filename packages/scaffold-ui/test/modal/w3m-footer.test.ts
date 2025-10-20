@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { EventsController, RouterController } from '@reown/appkit-controllers'
+import { EventsController, RouterController } from '@laughingwhales/appkit-controllers'
 
 import '../../src/modal/w3m-footer'
 import { HelpersUtil } from '../../src/utils/HelpersUtil'

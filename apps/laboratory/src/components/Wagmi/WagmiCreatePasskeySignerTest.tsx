@@ -4,7 +4,7 @@ import { Button, Stack } from '@chakra-ui/react'
 import { privateKeyToAccount } from 'viem/accounts'
 import { createCredential } from 'webauthn-p256'
 
-import type { Address } from '@reown/appkit-common'
+import type { Address } from '@laughingwhales/appkit-common'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { usePasskey } from '@/src/context/PasskeyContext'

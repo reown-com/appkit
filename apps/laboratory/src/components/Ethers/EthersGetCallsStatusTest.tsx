@@ -8,7 +8,7 @@ import {
   useAppKitAccount,
   useAppKitNetwork,
   useAppKitProvider
-} from '@reown/appkit/react'
+} from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { useEthersActiveCapabilities } from '@/src/hooks/useEthersActiveCapabilities'

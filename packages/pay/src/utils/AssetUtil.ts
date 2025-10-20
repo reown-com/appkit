@@ -1,5 +1,5 @@
-import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
-import { ParseUtil } from '@reown/appkit-common'
+import type { CaipNetworkId, ChainNamespace } from '@laughingwhales/appkit-common'
+import { ParseUtil } from '@laughingwhales/appkit-common'
 
 const SUPPORT_PAY_WITH_WALLET_CHAIN_NAMESPACES = ['eip155', 'solana']
 

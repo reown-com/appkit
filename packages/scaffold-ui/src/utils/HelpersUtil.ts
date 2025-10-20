@@ -1,5 +1,5 @@
-import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { OptionsController, RouterController } from '@reown/appkit-controllers'
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
+import { OptionsController, RouterController } from '@laughingwhales/appkit-controllers'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
 

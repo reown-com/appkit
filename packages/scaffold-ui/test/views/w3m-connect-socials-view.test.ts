@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { OptionsController, OptionsStateController } from '@reown/appkit-controllers'
+import { OptionsController, OptionsStateController } from '@laughingwhales/appkit-controllers'
 
 import { W3mConnectSocialsView } from '../../src/views/w3m-connect-socials-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

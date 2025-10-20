@@ -4,7 +4,7 @@ import { Button, Flex, Input, Stack, Text, Tooltip } from '@chakra-ui/react'
 import { BrowserProvider, type Eip1193Provider, Interface } from 'ethers'
 import { type WalletCapabilities, parseGwei, toHex } from 'viem'
 
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { useCapabilities } from '@/src/hooks/useCapabilities'

@@ -1,4 +1,4 @@
-import { type CaipNetworkId, NetworkUtil } from '@reown/appkit-common'
+import { type CaipNetworkId, NetworkUtil } from '@laughingwhales/appkit-common'
 
 import { ChainController } from '../../controllers/ChainController.js'
 import type { SIWXMessage } from '../../utils/SIWXUtil.js'

@@ -1,4 +1,4 @@
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
 
 import type { Connector, WcWallet } from '../../utils/TypeUtil.js'
 import { ConnectorController } from '../ConnectorController.js'

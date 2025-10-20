@@ -17,7 +17,7 @@ import {
   type PreferredAccountTypes,
   RouterController,
   type SdkVersion
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mAllWalletsWidget } from '../../src/partials/w3m-all-wallets-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'

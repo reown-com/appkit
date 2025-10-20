@@ -1,6 +1,6 @@
 import { proxy } from 'valtio/vanilla'
 
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@laughingwhales/appkit-common'
 
 import { ApiController } from '../controllers/ApiController.js'
 import { AssetController } from '../controllers/AssetController.js'

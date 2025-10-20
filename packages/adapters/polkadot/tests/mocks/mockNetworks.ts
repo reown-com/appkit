@@ -1,7 +1,7 @@
 /**
  * Mock Polkadot network configurations for testing
  */
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
 
 /**
  * Polkadot Relay Chain (mainnet)

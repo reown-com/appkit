@@ -1,4 +1,4 @@
-import { SIWXUtil } from '@reown/appkit-controllers'
+import { SIWXUtil } from '@laughingwhales/appkit-controllers'
 
 import { type SIWEControllerClient } from '../core/controller/SIWEController.js'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'

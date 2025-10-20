@@ -9,7 +9,7 @@ import {
   type ChainNamespace,
   type Connection,
   ConstantsUtil
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 import {
   type AccountState,
   ChainController,
@@ -24,7 +24,7 @@ import {
   RouterController,
   SnackController,
   StorageUtil
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mProfileWalletsView } from '../../src/views/w3m-profile-wallets-view/index'
 

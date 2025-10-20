@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   AssetUtil,
   ChainController,
@@ -16,20 +16,20 @@ import {
   RouterController,
   SnackController,
   getPreferredAccountType
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-avatar'
-import '@reown/appkit-ui/wui-button'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-icon-link'
-import '@reown/appkit-ui/wui-list-item'
-import '@reown/appkit-ui/wui-notice-card'
-import '@reown/appkit-ui/wui-tabs'
-import '@reown/appkit-ui/wui-tag'
-import '@reown/appkit-ui/wui-text'
-import '@reown/appkit-ui/wui-wallet-switch'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-avatar'
+import '@laughingwhales/appkit-ui/wui-button'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon'
+import '@laughingwhales/appkit-ui/wui-icon-link'
+import '@laughingwhales/appkit-ui/wui-list-item'
+import '@laughingwhales/appkit-ui/wui-notice-card'
+import '@laughingwhales/appkit-ui/wui-tabs'
+import '@laughingwhales/appkit-ui/wui-tag'
+import '@laughingwhales/appkit-ui/wui-text'
+import '@laughingwhales/appkit-ui/wui-wallet-switch'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import '../w3m-account-auth-button/index.js'
 import styles from './styles.js'

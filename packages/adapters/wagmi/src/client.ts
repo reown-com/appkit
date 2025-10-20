@@ -34,7 +34,7 @@ import {
   parseUnits
 } from 'viem'
 
-import { ErrorUtil, UserRejectedRequestError } from '@reown/appkit-common'
+import { ErrorUtil, UserRejectedRequestError } from '@laughingwhales/appkit-common'
 import type {
   AppKitNetwork,
   BaseNetwork,
@@ -42,8 +42,8 @@ import type {
   ChainNamespace,
   Connection,
   CustomRpcUrlMap
-} from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@laughingwhales/appkit-common'
 import {
   AdapterBlueprint,
   AssetController,
@@ -52,10 +52,10 @@ import {
   OptionsController,
   StorageUtil,
   WalletConnectConnector
-} from '@reown/appkit-controllers'
-import { type ConnectorType, type Provider } from '@reown/appkit-controllers'
-import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
+} from '@laughingwhales/appkit-controllers'
+import { type ConnectorType, type Provider } from '@laughingwhales/appkit-controllers'
+import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@laughingwhales/appkit-utils'
+import type { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
 
 import { authConnector } from './connectors/AuthConnector.js'
 import { walletConnect } from './connectors/WalletConnectConnector.js'

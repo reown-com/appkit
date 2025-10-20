@@ -14,7 +14,7 @@ import {
   Text
 } from '@chakra-ui/react'
 
-import { useAppKitState } from '@reown/appkit/react'
+import { useAppKitState } from '@laughingwhales/appkit/react'
 
 export function MultiChainInfo() {
   const { activeChain, selectedNetworkId } = useAppKitState()

@@ -1,7 +1,7 @@
 'use client'
 
-import { type ChainNamespace } from '@reown/appkit-common'
-import { useAppKitAccount } from '@reown/appkit-controllers/react'
+import { type ChainNamespace } from '@laughingwhales/appkit-common'
+import { useAppKitAccount } from '@laughingwhales/appkit-controllers/react'
 
 import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
 import { AlertDescription } from '@/components/ui/alert'

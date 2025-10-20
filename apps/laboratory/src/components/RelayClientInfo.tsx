@@ -4,7 +4,7 @@ import { Box, Text } from '@chakra-ui/react'
 import { Heading } from '@chakra-ui/react'
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import { useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitProvider } from '@laughingwhales/appkit/react'
 
 export function RelayClientInfo() {
   const [clientId, setClientId] = React.useState<string | undefined>(undefined)

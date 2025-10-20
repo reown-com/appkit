@@ -1,7 +1,7 @@
 import { fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
 import {
   AssetController,
   AssetUtil,
@@ -10,8 +10,8 @@ import {
   OptionsController,
   type OptionsControllerState,
   type OptionsControllerStateInternal
-} from '@reown/appkit-controllers'
-import type { WuiNetworkButton } from '@reown/appkit-ui/wui-network-button'
+} from '@laughingwhales/appkit-controllers'
+import type { WuiNetworkButton } from '@laughingwhales/appkit-ui/wui-network-button'
 
 import { W3mNetworkButton } from '../../src/modal/w3m-network-button'
 import { HelpersUtil } from '../utils/HelpersUtil'

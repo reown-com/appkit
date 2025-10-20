@@ -7,8 +7,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@reown/appkit-adapter-solana": "workspace:*",
-    "@reown/appkit": "workspace:*"
+    "@laughingwhales/appkit-adapter-solana": "workspace:*",
+    "@laughingwhales/appkit": "workspace:*"
   },
   "devDependencies": {
     "vite": "5.4.20"

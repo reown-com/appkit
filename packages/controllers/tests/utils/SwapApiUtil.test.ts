@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Balance } from '@reown/appkit-common'
+import type { Balance } from '@laughingwhales/appkit-common'
 
 import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
 import { type AccountState } from '../../src/controllers/ChainController'

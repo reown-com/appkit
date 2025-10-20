@@ -1,5 +1,5 @@
-import type { TransactionStatus } from '@reown/appkit-common'
-import type { TransactionType } from '@reown/appkit-ui'
+import type { TransactionStatus } from '@laughingwhales/appkit-common'
+import type { TransactionType } from '@laughingwhales/appkit-ui'
 import type {
   AccountEntryType,
   BackgroundType,
@@ -35,7 +35,7 @@ import type {
   ThemeType,
   ToastMessageVariant,
   VisualType
-} from '@reown/appkit-ui/src/utils/TypeUtil'
+} from '@laughingwhales/appkit-ui/src/utils/TypeUtil'
 
 export const textColorOptions: TextColorType[] = [
   'primary',

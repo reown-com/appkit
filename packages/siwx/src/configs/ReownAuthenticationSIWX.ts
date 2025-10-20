@@ -1,3 +1,3 @@
-import { ReownAuthentication } from '@reown/appkit-controllers/features'
+import { ReownAuthentication } from '@laughingwhales/appkit-controllers/features'
 
 export { ReownAuthentication as CloudAuthSIWX, ReownAuthentication }

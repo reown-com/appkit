@@ -4,7 +4,7 @@ import { Button } from '@chakra-ui/react'
 import Provider from '@walletconnect/universal-provider'
 import base58 from 'bs58'
 
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { BitcoinUtil } from '@/src/utils/BitcoinUtil'

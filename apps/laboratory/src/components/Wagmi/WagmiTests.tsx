@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react'
 import type { Config } from 'wagmi'
 
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@laughingwhales/appkit/react'
 
 import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
 

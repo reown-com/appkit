@@ -1,6 +1,6 @@
 import CredentialsProvider from 'next-auth/providers/credentials'
 
-import { getAddressFromMessage, getChainIdFromMessage, verifySignature } from '@reown/appkit-siwe'
+import { getAddressFromMessage, getChainIdFromMessage, verifySignature } from '@laughingwhales/appkit-siwe'
 
 // Define Session type manually
 interface Session {

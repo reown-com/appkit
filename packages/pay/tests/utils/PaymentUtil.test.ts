@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 
-import { type Address, type CaipNetwork, ConstantsUtil, erc20ABI } from '@reown/appkit-common'
+import { type Address, type CaipNetwork, ConstantsUtil, erc20ABI } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   ConnectionController,
   CoreHelperUtil,
   ProviderController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { AppKitPayError, AppKitPayErrorCodes } from '../../src/types/errors'
 import type { PaymentAsset } from '../../src/types/options.js'
@@ -18,7 +18,7 @@ import {
 } from '../../src/utils/PaymentUtil'
 
 // --- Mocks -------------------------------------------------------------------
-vi.mock('@reown/appkit-controllers', () => ({
+vi.mock('@laughingwhales/appkit-controllers', () => ({
   ChainController: {
     switchActiveNetwork: vi.fn(),
     getNetworkProp: vi.fn()

@@ -1,7 +1,7 @@
 import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
 
-import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   type AccountState,
   AssetUtil,
@@ -11,8 +11,8 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-controllers'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import { W3mWalletReceiveView } from '../../src/views/w3m-wallet-receive-view'
 

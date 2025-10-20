@@ -6,7 +6,7 @@ import type {
   SocialProvider,
   SwapProvider,
   ThemeVariables
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 import type {
   ChainAdapter,
   FeatureID,
@@ -14,8 +14,8 @@ import type {
   OptionsControllerState,
   RemoteFeatures,
   ThemeMode
-} from '@reown/appkit-controllers'
-import type { AppKitSIWEClient } from '@reown/appkit-siwe'
+} from '@laughingwhales/appkit-controllers'
+import type { AppKitSIWEClient } from '@laughingwhales/appkit-siwe'
 
 export type AppKitOptions = {
   /**

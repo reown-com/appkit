@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import type { CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetworkId } from '@laughingwhales/appkit-common'
 
 import { formatCaip19Asset } from '../../src/utils/AssetUtil.js'
 

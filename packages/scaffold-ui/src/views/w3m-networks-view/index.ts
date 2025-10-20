@@ -2,20 +2,20 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type CaipNetwork } from '@reown/appkit-common'
+import { type CaipNetwork } from '@laughingwhales/appkit-common'
 import {
   AssetController,
   AssetUtil,
   ChainController,
   CoreHelperUtil,
   NetworkUtil
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-input-text'
-import '@reown/appkit-ui/wui-link'
-import '@reown/appkit-ui/wui-list-network'
-import '@reown/appkit-ui/wui-text'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-input-text'
+import '@laughingwhales/appkit-ui/wui-link'
+import '@laughingwhales/appkit-ui/wui-list-network'
+import '@laughingwhales/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

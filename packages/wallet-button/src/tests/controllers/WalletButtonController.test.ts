@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import type { ParsedCaipAddress } from '@reown/appkit-common'
+import type { ParsedCaipAddress } from '@laughingwhales/appkit-common'
 
 import { WalletButtonController } from '../../controllers/WalletButtonController'
 

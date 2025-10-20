@@ -1,6 +1,6 @@
 import { type BrowserContext, expect, test } from '@playwright/test'
 
-import { BASE_URL, WalletPage } from '@reown/appkit-testing'
+import { BASE_URL, WalletPage } from '@laughingwhales/appkit-testing'
 
 import { ReownAuthenticationModalPage } from './shared/pages/ReownAuthenticationModalPage'
 import { ReownAuthenticationModalValidator } from './shared/validators/ReownAuthenticationModalValidator'

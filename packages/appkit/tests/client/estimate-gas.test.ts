@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type Address, ConstantsUtil, type Hex } from '@reown/appkit-common'
-import { ProviderController } from '@reown/appkit-controllers'
-import type { EstimateGasTransactionArgs } from '@reown/appkit-controllers'
-import { mockChainControllerState } from '@reown/appkit-controllers/testing'
+import { type Address, ConstantsUtil, type Hex } from '@laughingwhales/appkit-common'
+import { ProviderController } from '@laughingwhales/appkit-controllers'
+import type { EstimateGasTransactionArgs } from '@laughingwhales/appkit-controllers'
+import { mockChainControllerState } from '@laughingwhales/appkit-controllers/testing'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client.js'
 import { mockEvmAdapter } from '../mocks/Adapter.js'

@@ -1,7 +1,7 @@
 import { Verifier } from 'bip322-js'
 
-import { ConstantsUtil } from '@reown/appkit-common'
-import type { SIWXSession } from '@reown/appkit-controllers'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
+import type { SIWXSession } from '@laughingwhales/appkit-controllers'
 
 import { SIWXVerifier } from '../core/SIWXVerifier.js'
 

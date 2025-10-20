@@ -8,5 +8,5 @@ export * from './polkadot/index.js'
 export * from './utils.js'
 
 // -- Types ---------------------------------------------------------------
-export type { AppKitNetwork, ChainNamespace } from '@reown/appkit-common'
-export { AVAILABLE_NAMESPACES } from '@reown/appkit-common'
+export type { AppKitNetwork, ChainNamespace } from '@laughingwhales/appkit-common'
+export { AVAILABLE_NAMESPACES } from '@laughingwhales/appkit-common'

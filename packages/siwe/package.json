@@ -1,6 +1,6 @@
 {
-  "name": "@reown/appkit-siwe",
-  "version": "1.8.10",
+  "name": "@laughingwhales/appkit-siwe",
+  "version": "1.8.11",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -19,15 +19,15 @@
     "test": "vitest run --dir tests --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
   },
   "dependencies": {
-    "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-controllers": "workspace:*",
-    "@reown/appkit-ui": "workspace:*",
-    "@reown/appkit-utils": "workspace:*",
-    "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/utils": "2.22.4",
     "lit": "3.1.0",
     "valtio": "2.1.7",
-    "viem": "2.37.9"
+    "viem": "2.37.9",
+    "@laughingwhales/appkit-common": "workspace:*",
+    "@laughingwhales/appkit-controllers": "workspace:*",
+    "@laughingwhales/appkit-ui": "workspace:*",
+    "@laughingwhales/appkit-utils": "workspace:*",
+    "@laughingwhales/appkit-wallet": "workspace:*"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "SEE LICENSE IN LICENSE.md",

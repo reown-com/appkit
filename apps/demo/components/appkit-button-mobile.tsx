@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 
-import { useAppKit } from '@reown/appkit/react'
+import { useAppKit } from '@laughingwhales/appkit/react'
 
 import { Button } from '@/components/ui/button'
 

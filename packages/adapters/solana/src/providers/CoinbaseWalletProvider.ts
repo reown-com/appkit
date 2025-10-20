@@ -1,12 +1,12 @@
 import type { Connection, PublicKey, SendOptions } from '@solana/web3.js'
 
-import { type CaipNetwork, ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import type { RequestArguments } from '@reown/appkit-controllers'
-import type { Provider as CoreProvider } from '@reown/appkit-controllers'
-import { PresetsUtil } from '@reown/appkit-utils'
-import { type AnyTransaction, type Provider as SolanaProvider } from '@reown/appkit-utils/solana'
-import { solana } from '@reown/appkit/networks'
+import { type CaipNetwork, ConstantsUtil, UserRejectedRequestError } from '@laughingwhales/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
+import type { RequestArguments } from '@laughingwhales/appkit-controllers'
+import type { Provider as CoreProvider } from '@laughingwhales/appkit-controllers'
+import { PresetsUtil } from '@laughingwhales/appkit-utils'
+import { type AnyTransaction, type Provider as SolanaProvider } from '@laughingwhales/appkit-utils/solana'
+import { solana } from '@laughingwhales/appkit/networks'
 
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 

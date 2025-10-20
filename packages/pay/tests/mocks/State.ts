@@ -1,4 +1,4 @@
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@laughingwhales/appkit-common'
 
 import type { Exchange } from '../../src/types/exchange.js'
 import type { PaymentAsset } from '../../src/types/options.js'

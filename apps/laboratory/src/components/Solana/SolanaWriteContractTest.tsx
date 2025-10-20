@@ -11,8 +11,8 @@ import {
   VersionedTransaction
 } from '@solana/web3.js'
 
-import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
-import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { type Provider, useAppKitConnection } from '@laughingwhales/appkit-adapter-solana/react'
+import { useAppKitNetwork, useAppKitProvider } from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { COUNTER_ACCOUNT_SIZE } from '@/src/utils/SolanaConstants'

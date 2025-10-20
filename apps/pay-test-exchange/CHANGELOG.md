@@ -1,5 +1,12 @@
 # pay-test-exchange
 
+## 0.1.16
+
+### Patch Changes
+
+- 99cc58b: Fixes package version injecting when building packages
+- fda02dc: Added usage limit UI in AppKit that displays when limits are exceeded
+
 ## 0.1.15
 
 ### Patch Changes

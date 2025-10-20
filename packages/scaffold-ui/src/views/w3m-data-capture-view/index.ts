@@ -1,15 +1,15 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
+import { SafeLocalStorage, SafeLocalStorageKeys } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   OptionsController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
-import { ReownAuthentication } from '@reown/appkit-controllers/features'
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+} from '@laughingwhales/appkit-controllers'
+import { ReownAuthentication } from '@laughingwhales/appkit-controllers/features'
+import { UiHelperUtil, customElement } from '@laughingwhales/appkit-ui'
 
 import styles from './styles.js'
 

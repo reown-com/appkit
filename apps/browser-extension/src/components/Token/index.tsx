@@ -1,4 +1,4 @@
-import { ChainNamespace } from '@reown/appkit-common'
+import { ChainNamespace } from '@laughingwhales/appkit-common'
 
 import { touchableStyles } from '../../css/touchableStyles'
 import { Box } from '../Box'

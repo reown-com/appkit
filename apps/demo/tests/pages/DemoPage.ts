@@ -2,13 +2,13 @@
 import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
 import {
   BASE_URL,
   DEFAULT_SESSION_PARAMS,
   WalletPage,
   WalletValidator
-} from '@reown/appkit-testing'
+} from '@laughingwhales/appkit-testing'
 
 import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistirationPage'

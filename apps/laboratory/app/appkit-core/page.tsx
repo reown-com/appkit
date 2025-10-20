@@ -1,7 +1,7 @@
 'use client'
 
-import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
-import { createAppKit } from '@reown/appkit/react-core'
+import { type AppKitNetwork, mainnet } from '@laughingwhales/appkit/networks'
+import { createAppKit } from '@laughingwhales/appkit/react-core'
 
 import { AppKitCoreHooks } from '@/src/components/AppKitCoreHooks'
 import { AppKitInfo } from '@/src/components/AppKitInfo'

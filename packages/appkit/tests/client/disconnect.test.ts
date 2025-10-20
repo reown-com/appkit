@@ -3,7 +3,7 @@ import { EventEmitter } from 'events'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   ConnectionController,
   ConnectorController,
@@ -13,11 +13,11 @@ import {
   type SIWXConfig,
   SIWXUtil,
   StorageUtil
-} from '@reown/appkit-controllers'
-import { ModalController, ProviderController, RouterController } from '@reown/appkit-controllers'
-import type { AdapterBlueprint } from '@reown/appkit-controllers'
-import { mockChainControllerState } from '@reown/appkit-controllers/testing'
-import { ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
+} from '@laughingwhales/appkit-controllers'
+import { ModalController, ProviderController, RouterController } from '@laughingwhales/appkit-controllers'
+import type { AdapterBlueprint } from '@laughingwhales/appkit-controllers'
+import { mockChainControllerState } from '@laughingwhales/appkit-controllers/testing'
+import { ConstantsUtil as UtilConstantsUtil } from '@laughingwhales/appkit-utils'
 
 import { mainnetCaipNetwork, solanaCaipNetwork } from '../../exports/testing.js'
 import { AppKit } from '../../src/client/appkit.js'

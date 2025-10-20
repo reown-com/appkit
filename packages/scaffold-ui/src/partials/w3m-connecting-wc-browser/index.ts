@@ -1,5 +1,5 @@
-import { ErrorUtil } from '@reown/appkit-common'
-import type { BaseError } from '@reown/appkit-controllers'
+import { ErrorUtil } from '@laughingwhales/appkit-common'
+import type { BaseError } from '@laughingwhales/appkit-controllers'
 import {
   AppKitError,
   ConnectionController,
@@ -7,8 +7,8 @@ import {
   EventsController,
   ModalController,
   RouterController
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
 
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 

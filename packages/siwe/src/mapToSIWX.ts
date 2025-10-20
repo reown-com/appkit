@@ -1,4 +1,4 @@
-import { ConstantsUtil, NetworkUtil } from '@reown/appkit-common'
+import { ConstantsUtil, NetworkUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   CoreHelperUtil,
@@ -6,8 +6,8 @@ import {
   type SIWXMessage,
   type SIWXSession,
   getActiveCaipNetwork
-} from '@reown/appkit-controllers'
-import { HelpersUtil } from '@reown/appkit-utils'
+} from '@laughingwhales/appkit-controllers'
+import { HelpersUtil } from '@laughingwhales/appkit-utils'
 
 import type { AppKitSIWEClient } from '../exports/index.js'
 

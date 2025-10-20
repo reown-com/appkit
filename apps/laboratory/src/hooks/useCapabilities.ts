@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { type Hex, type WalletCapabilities } from 'viem'
 
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
 
 import {
   getFilteredCapabilitySupportedChainInfo,

@@ -3,8 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { AlertController } from '@reown/appkit-controllers'
-import type { WuiAlertBar } from '@reown/appkit-ui/wui-alertbar'
+import { AlertController } from '@laughingwhales/appkit-controllers'
+import type { WuiAlertBar } from '@laughingwhales/appkit-ui/wui-alertbar'
 
 import { W3mAlertBar, presets } from '../../src/partials/w3m-alertbar'
 import { HelpersUtil } from '../utils/HelpersUtil'

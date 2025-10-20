@@ -1,11 +1,11 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { TooltipController } from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-text'
+import { TooltipController } from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon'
+import '@laughingwhales/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { App } from 'vue'
 import { createApp, nextTick } from 'vue'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 
 import {
   type AuthConnector,

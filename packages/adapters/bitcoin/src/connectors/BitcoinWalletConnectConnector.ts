@@ -1,11 +1,11 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import { type RequestArguments } from '@reown/appkit'
-import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ChainController } from '@reown/appkit-controllers'
-import { WalletConnectConnector, WcHelpersUtil } from '@reown/appkit-controllers'
-import { HelpersUtil } from '@reown/appkit-utils'
-import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
+import { type RequestArguments } from '@laughingwhales/appkit'
+import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
+import { ChainController } from '@laughingwhales/appkit-controllers'
+import { WalletConnectConnector, WcHelpersUtil } from '@laughingwhales/appkit-controllers'
+import { HelpersUtil } from '@laughingwhales/appkit-utils'
+import type { BitcoinConnector } from '@laughingwhales/appkit-utils/bitcoin'
 
 import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'

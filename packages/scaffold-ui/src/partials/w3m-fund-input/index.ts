@@ -2,12 +2,12 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-button'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-input-amount'
-import '@reown/appkit-ui/wui-link'
-import '@reown/appkit-ui/wui-text'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-button'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-input-amount'
+import '@laughingwhales/appkit-ui/wui-link'
+import '@laughingwhales/appkit-ui/wui-text'
 
 @customElement('w3m-fund-input')
 export class W3mFundInput extends LitElement {

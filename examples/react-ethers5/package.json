@@ -7,11 +7,11 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@reown/appkit": "workspace:*",
-    "@reown/appkit-adapter-ethers5": "workspace:*",
     "ethers": "5.8.0",
     "react": "19.1.1",
-    "react-dom": "19.1.1"
+    "react-dom": "19.1.1",
+    "@laughingwhales/appkit": "workspace:*",
+    "@laughingwhales/appkit-adapter-ethers5": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "19.1.15",

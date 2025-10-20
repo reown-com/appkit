@@ -4,7 +4,7 @@ import Big from 'big.js'
 import { Address, formatEther } from 'viem'
 import { useBalance as useWagmiBalance } from 'wagmi'
 
-import { ChainNamespace } from '@reown/appkit-common'
+import { ChainNamespace } from '@laughingwhales/appkit-common'
 
 export function useBalance(chain: ChainNamespace, account: string) {
   const { data: ethereumBalance } = useWagmiBalance({

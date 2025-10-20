@@ -1,8 +1,8 @@
 import { vi } from 'vitest'
 
-import { ErrorUtil } from '@reown/appkit-utils'
-import { type W3mFrameTypes } from '@reown/appkit-wallet'
-import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
+import { ErrorUtil } from '@laughingwhales/appkit-utils'
+import { type W3mFrameTypes } from '@laughingwhales/appkit-wallet'
+import { W3mFrameProviderSingleton } from '@laughingwhales/appkit/auth-provider'
 
 import type { AuthProvider } from '../../providers/AuthProvider.js'
 import { TestConstants } from '../util/TestConstants.js'

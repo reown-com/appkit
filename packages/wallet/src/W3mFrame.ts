@@ -1,4 +1,4 @@
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 
 import { SECURE_SITE_SDK, SECURE_SITE_SDK_VERSION, W3mFrameConstants } from './W3mFrameConstants.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'

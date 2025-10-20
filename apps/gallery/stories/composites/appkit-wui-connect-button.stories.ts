@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-connect-button'
-import type { WuiConnectButton } from '@reown/appkit-ui/wui-connect-button'
+import '@laughingwhales/appkit-ui/wui-connect-button'
+import type { WuiConnectButton } from '@laughingwhales/appkit-ui/wui-connect-button'
 
 type Component = Meta<WuiConnectButton>
 

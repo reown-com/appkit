@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react'
 
-import { useAppKitSIWX } from '@reown/appkit-siwx/react'
-import { useAppKitTheme } from '@reown/appkit/react'
+import { useAppKitSIWX } from '@laughingwhales/appkit-siwx/react'
+import { useAppKitTheme } from '@laughingwhales/appkit/react'
 
 import ActionButtonList from './components/ActionButton'
 import Footer from './components/Footer'

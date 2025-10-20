@@ -5,8 +5,8 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
-import { ReownAuthentication } from '@reown/appkit-controllers/features'
+} from '@laughingwhales/appkit-controllers'
+import { ReownAuthentication } from '@laughingwhales/appkit-controllers/features'
 
 import { W3mDataCaptureOtpConfirmView } from '../../src/views/w3m-data-capture-otp-confirm-view/index.js'
 
@@ -14,7 +14,7 @@ import { W3mDataCaptureOtpConfirmView } from '../../src/views/w3m-data-capture-o
 const mockConfirmEmailOtp = vi.fn().mockResolvedValue(true)
 const mockRequestEmailOtp = vi.fn().mockResolvedValue({ uuid: 'test-uuid' })
 
-vi.mock('@reown/appkit-controllers/features', () => ({
+vi.mock('@laughingwhales/appkit-controllers/features', () => ({
   ReownAuthentication: vi.fn().mockImplementation(() => ({
     confirmEmailOtp: mockConfirmEmailOtp,
     requestEmailOtp: mockRequestEmailOtp
@@ -22,7 +22,7 @@ vi.mock('@reown/appkit-controllers/features', () => ({
 }))
 
 // Mock controllers
-vi.mock('@reown/appkit-controllers', () => ({
+vi.mock('@laughingwhales/appkit-controllers', () => ({
   ChainController: {
     getAccountData: vi.fn()
   },

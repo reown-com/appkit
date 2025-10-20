@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Transaction } from '@reown/appkit-common'
+import type { Transaction } from '@laughingwhales/appkit-common'
 
 import {
   BlockchainApiController,

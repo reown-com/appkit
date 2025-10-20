@@ -1,7 +1,7 @@
 import test, { type Page, expect } from '@playwright/test'
 
-import { WalletPage, WalletValidator } from '@reown/appkit-testing'
-import { BASE_URL, DEFAULT_CHAIN_NAME, DEFAULT_SESSION_PARAMS } from '@reown/appkit-testing'
+import { WalletPage, WalletValidator } from '@laughingwhales/appkit-testing'
+import { BASE_URL, DEFAULT_CHAIN_NAME, DEFAULT_SESSION_PARAMS } from '@laughingwhales/appkit-testing'
 
 import { timingFixture } from './shared/fixtures/timing-fixture'
 import { testMEthersVerifyDomainMismatch } from './shared/fixtures/w3m-ethers-verify-domain-mismatch-fixture'

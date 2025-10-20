@@ -11,15 +11,15 @@ import {
   ExchangeController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-chip-button'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon-link'
-import '@reown/appkit-ui/wui-image'
-import '@reown/appkit-ui/wui-list-item'
-import '@reown/appkit-ui/wui-shimmer'
-import '@reown/appkit-ui/wui-text'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-chip-button'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon-link'
+import '@laughingwhales/appkit-ui/wui-image'
+import '@laughingwhales/appkit-ui/wui-list-item'
+import '@laughingwhales/appkit-ui/wui-shimmer'
+import '@laughingwhales/appkit-ui/wui-text'
 
 import '../../partials/w3m-fund-input/index.js'
 import styles from './styles.js'

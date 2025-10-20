@@ -1,6 +1,6 @@
 {
-  "name": "@reown/appkit-siwx",
-  "version": "1.8.10",
+  "name": "@laughingwhales/appkit-siwx",
+  "version": "1.8.11",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -36,13 +36,13 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-controllers": "workspace:*",
-    "@reown/appkit-utils": "workspace:*",
     "bip322-js": "2.0.0",
     "bs58": "6.0.0",
     "tweetnacl": "1.0.3",
-    "viem": "2.37.9"
+    "viem": "2.37.9",
+    "@laughingwhales/appkit-common": "workspace:*",
+    "@laughingwhales/appkit-controllers": "workspace:*",
+    "@laughingwhales/appkit-utils": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "19.1.15",

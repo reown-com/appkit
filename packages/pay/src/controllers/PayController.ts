@@ -1,7 +1,7 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type Address, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
+import { type Address, ConstantsUtil, ParseUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   ConnectionController,
@@ -11,7 +11,7 @@ import {
   ProviderController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import {
   AppKitPayErrorCodes,

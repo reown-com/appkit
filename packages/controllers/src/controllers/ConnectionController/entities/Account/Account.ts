@@ -1,4 +1,4 @@
-import type { Balance, CaipAddress, ChainNamespace, SocialProvider } from '@reown/appkit-common'
+import type { Balance, CaipAddress, ChainNamespace, SocialProvider } from '@laughingwhales/appkit-common'
 
 import type { NamespaceTypeMap, PreferredAccountTypes } from '../../../../utils/TypeUtil.js'
 

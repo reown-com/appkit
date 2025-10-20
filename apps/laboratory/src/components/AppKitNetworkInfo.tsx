@@ -11,7 +11,7 @@ import {
   Text
 } from '@chakra-ui/react'
 
-import { useAppKitNetwork } from '@reown/appkit/react'
+import { useAppKitNetwork } from '@laughingwhales/appkit/react'
 
 export function AppKitNetworkInfo() {
   const { chainId, caipNetwork } = useAppKitNetwork()

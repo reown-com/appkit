@@ -8,10 +8,10 @@ import {
   type CustomWallet,
   EventsController,
   OptionsController
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-item'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-list-item'
 
 const EXPLORER = 'https://walletconnect.com/explorer'
 

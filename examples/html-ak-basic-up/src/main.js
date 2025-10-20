@@ -1,8 +1,8 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 import base58 from 'bs58'
 
-import { createAppKit } from '@reown/appkit/core'
-import { bitcoin, mainnet, polygon, solana } from '@reown/appkit/networks'
+import { createAppKit } from '@laughingwhales/appkit/core'
+import { bitcoin, mainnet, polygon, solana } from '@laughingwhales/appkit/networks'
 
 // Constants
 const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694'

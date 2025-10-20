@@ -7,12 +7,12 @@ import {
   OptionsController,
   RouterController,
   getPreferredAccountType
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-description'
-import '@reown/appkit-ui/wui-list-token'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-list-description'
+import '@laughingwhales/appkit-ui/wui-list-token'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import styles from './styles.js'
 

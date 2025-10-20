@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
+import { ConstantsUtil, getW3mThemeVariables } from '@laughingwhales/appkit-common'
 
 import {
   type AuthConnector,

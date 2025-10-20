@@ -1,5 +1,20 @@
 # @reown/appkit-siwx
 
+## 1.8.11
+
+### Patch Changes
+
+- 99cc58b: Fixes package version injecting when building packages
+- fda02dc: Added usage limit UI in AppKit that displays when limits are exceeded
+- Updated dependencies [1a9f436]
+- Updated dependencies [99cc58b]
+- Updated dependencies [135b5c0]
+- Updated dependencies [fda02dc]
+- Updated dependencies [2778f7d]
+  - @laughingwhales/appkit-controllers@1.8.11
+  - @laughingwhales/appkit-utils@1.8.11
+  - @laughingwhales/appkit-common@1.8.11
+
 ## 1.8.10
 
 ### Patch Changes

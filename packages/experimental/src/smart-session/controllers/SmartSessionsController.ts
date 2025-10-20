@@ -1,7 +1,7 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { ConstantsUtil as CommonConstantsUtil, type Hex } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, type Hex } from '@laughingwhales/appkit-common'
 import {
   BlockchainApiController,
   ChainController,
@@ -10,7 +10,7 @@ import {
   ProviderController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import {
   assertWalletGrantPermissionsResponse,

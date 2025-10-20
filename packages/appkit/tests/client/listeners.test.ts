@@ -8,7 +8,7 @@ import {
   ModalController,
   ProviderController,
   StorageUtil
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { emitter, mockEvmAdapter, solanaEmitter } from '../mocks/Adapter'

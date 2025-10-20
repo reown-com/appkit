@@ -3,7 +3,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { SnackController } from '@reown/appkit-controllers'
+import { SnackController } from '@laughingwhales/appkit-controllers'
 
 import '../../src/partials/w3m-snackbar/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

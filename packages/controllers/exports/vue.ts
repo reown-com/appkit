@@ -1,7 +1,7 @@
 import { type Ref, onMounted, onUnmounted, ref } from 'vue'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
-import type { Connection } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil } from '@laughingwhales/appkit-common'
+import type { Connection } from '@laughingwhales/appkit-common'
 
 import { AlertController } from '../src/controllers/AlertController.js'
 import { AssetController } from '../src/controllers/AssetController.js'
@@ -22,7 +22,7 @@ import type {
 import { AssetUtil } from './utils.js'
 
 // -- Types ------------------------------------------------------------
-export type { Connection } from '@reown/appkit-common'
+export type { Connection } from '@laughingwhales/appkit-common'
 
 interface DisconnectParams {
   id?: string

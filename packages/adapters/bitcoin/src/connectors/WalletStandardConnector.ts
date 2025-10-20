@@ -2,11 +2,11 @@
 import { getWallets } from '@wallet-standard/app'
 import type { Wallet, WalletWithFeatures } from '@wallet-standard/base'
 
-import type { CaipNetwork } from '@reown/appkit-common'
-import type { Provider, RequestArguments } from '@reown/appkit-controllers'
-import { PresetsUtil } from '@reown/appkit-utils'
-import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
+import type { Provider, RequestArguments } from '@laughingwhales/appkit-controllers'
+import { PresetsUtil } from '@laughingwhales/appkit-utils'
+import type { BitcoinConnector } from '@laughingwhales/appkit-utils/bitcoin'
+import { bitcoin, bitcoinTestnet } from '@laughingwhales/appkit/networks'
 
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import { AddressPurpose } from '../utils/BitcoinConnector.js'

@@ -1,9 +1,9 @@
-import type { ChainAdapter } from '@reown/appkit'
-import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
-import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import type { ChainAdapter } from '@laughingwhales/appkit'
+import { BitcoinAdapter } from '@laughingwhales/appkit-adapter-bitcoin'
+import { EthersAdapter } from '@laughingwhales/appkit-adapter-ethers'
+import { Ethers5Adapter } from '@laughingwhales/appkit-adapter-ethers5'
+import { SolanaAdapter } from '@laughingwhales/appkit-adapter-solana'
+import { WagmiAdapter } from '@laughingwhales/appkit-adapter-wagmi'
 
 import { type Adapter, type WagmiConfig, appKitConfigs } from '@/src/constants/appKitConfigs'
 

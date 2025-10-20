@@ -29,16 +29,16 @@ import {
 } from '@chakra-ui/react'
 import { Card } from '@chakra-ui/react'
 
-import type { CaipNetworkId } from '@reown/appkit-common'
-import type { Exchange, PayUrlParams, PaymentAsset } from '@reown/appkit-pay'
-import { baseETH, baseSepoliaETH, baseUSDC, pay } from '@reown/appkit-pay'
+import type { CaipNetworkId } from '@laughingwhales/appkit-common'
+import type { Exchange, PayUrlParams, PaymentAsset } from '@laughingwhales/appkit-pay'
+import { baseETH, baseSepoliaETH, baseUSDC, pay } from '@laughingwhales/appkit-pay'
 import {
   type ExchangeBuyStatus,
   useAvailableExchanges,
   useExchangeBuyStatus,
   usePayUrlActions
-} from '@reown/appkit-pay/react'
-import { solana, solanaDevnet } from '@reown/appkit/networks'
+} from '@laughingwhales/appkit-pay/react'
+import { solana, solanaDevnet } from '@laughingwhales/appkit/networks'
 
 import { useChakraToast } from './Toast'
 

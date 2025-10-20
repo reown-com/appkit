@@ -11,9 +11,9 @@ import {
   RouterController,
   SnackController,
   getPreferredAccountType
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import { SIWEController } from '../../../core/controller/SIWEController.js'
 

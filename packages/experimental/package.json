@@ -1,6 +1,6 @@
 {
-  "name": "@reown/appkit-experimental",
-  "version": "1.8.10",
+  "name": "@laughingwhales/appkit-experimental",
+  "version": "1.8.11",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -46,15 +46,15 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@reown/appkit": "workspace:*",
-    "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-controllers": "workspace:*",
-    "@reown/appkit-ui": "workspace:*",
-    "@reown/appkit-utils": "workspace:*",
     "lit": "3.3.0",
     "valtio": "2.1.7",
     "viem": "2.37.9",
-    "zod": "3.22.4"
+    "zod": "3.22.4",
+    "@laughingwhales/appkit": "workspace:*",
+    "@laughingwhales/appkit-common": "workspace:*",
+    "@laughingwhales/appkit-controllers": "workspace:*",
+    "@laughingwhales/appkit-ui": "workspace:*",
+    "@laughingwhales/appkit-utils": "workspace:*"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",

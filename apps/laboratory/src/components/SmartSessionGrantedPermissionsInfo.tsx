@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Box, Heading, Stack, StackDivider, Text } from '@chakra-ui/react'
 import { formatDistanceToNow } from 'date-fns'
 
-import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
+import type { SmartSessionGrantPermissionsResponse } from '@laughingwhales/appkit-experimental/smart-session'
 
 import { getChain } from '@/src/utils/NetworksUtil'
 

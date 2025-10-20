@@ -7,11 +7,11 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@reown/appkit": "workspace:*",
     "@walletconnect/universal-provider": "2.22.4",
     "ethers": "6.14.0",
     "react": "19.1.1",
-    "react-dom": "19.1.1"
+    "react-dom": "19.1.1",
+    "@laughingwhales/appkit": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "19.1.15",

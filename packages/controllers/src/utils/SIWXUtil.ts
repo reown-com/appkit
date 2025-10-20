@@ -1,9 +1,9 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+import type { CaipNetworkId, ChainNamespace } from '@laughingwhales/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@laughingwhales/appkit-common'
+import type { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
@@ -507,7 +507,7 @@ export const SIWXUtil = {
 
 /**
  * This interface represents the SIWX configuration plugin, which is used to create and manage SIWX messages and sessions.
- * AppKit provides predefined implementations for this interface through `@reown/appkit-siwx`.
+ * AppKit provides predefined implementations for this interface through `@laughingwhales/appkit-siwx`.
  * You may use it to create a custom implementation following your needs, but watch close for the methods requirements.
  */
 export interface SIWXConfig {

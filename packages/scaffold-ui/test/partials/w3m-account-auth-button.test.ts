@@ -8,7 +8,7 @@ import {
   ConnectorController,
   RouterController,
   StorageUtil
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mAccountAuthButton } from '../../src/partials/w3m-account-auth-button'
 import { HelpersUtil } from '../utils/HelpersUtil'

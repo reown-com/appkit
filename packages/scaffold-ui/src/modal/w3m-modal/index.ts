@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork } from '@laughingwhales/appkit-common'
 import {
   ApiController,
   ChainController,
@@ -15,10 +15,10 @@ import {
   SnackController,
   SwapController,
   ThemeController
-} from '@reown/appkit-controllers'
-import { UiHelperUtil, customElement, initializeTheming, vars } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-card'
-import '@reown/appkit-ui/wui-flex'
+} from '@laughingwhales/appkit-controllers'
+import { UiHelperUtil, customElement, initializeTheming, vars } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-card'
+import '@laughingwhales/appkit-ui/wui-flex'
 
 import '../../partials/w3m-alertbar/index.js'
 import '../../partials/w3m-header/index.js'

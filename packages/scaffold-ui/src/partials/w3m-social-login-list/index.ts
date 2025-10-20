@@ -9,13 +9,13 @@ import {
   OptionsController,
   RouterController,
   type SocialProvider
-} from '@reown/appkit-controllers'
-import { executeSocialLogin } from '@reown/appkit-controllers/utils'
-import { CoreHelperUtil } from '@reown/appkit-controllers/utils'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-social'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+} from '@laughingwhales/appkit-controllers'
+import { executeSocialLogin } from '@laughingwhales/appkit-controllers/utils'
+import { CoreHelperUtil } from '@laughingwhales/appkit-controllers/utils'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-list-social'
+import { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
 
 import styles from './styles.js'
 

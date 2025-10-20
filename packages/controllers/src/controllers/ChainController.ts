@@ -11,8 +11,8 @@ import {
   NetworkUtil,
   ParseUtil,
   type SocialProvider
-} from '@reown/appkit-common'
-import { W3mFrameConstants, W3mFrameStorage } from '@reown/appkit-wallet'
+} from '@laughingwhales/appkit-common'
+import { W3mFrameConstants, W3mFrameStorage } from '@laughingwhales/appkit-wallet'
 
 import { BalanceUtil } from '../utils/BalanceUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'

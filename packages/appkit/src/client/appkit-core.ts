@@ -1,13 +1,13 @@
-import { type ChainNamespace } from '@reown/appkit-common'
-import type { ChainAdapter } from '@reown/appkit-controllers'
+import { type ChainNamespace } from '@laughingwhales/appkit-common'
+import type { ChainAdapter } from '@laughingwhales/appkit-controllers'
 import {
   ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController
-} from '@reown/appkit-controllers'
-import type { AdapterBlueprint } from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
+import type { AdapterBlueprint } from '@laughingwhales/appkit-controllers'
 
 import {
   AppKitBaseClient,
@@ -74,8 +74,8 @@ export class AppKit extends AppKitBaseClient {
 
   protected override async injectModalUi() {
     if (!isInitialized && CoreHelperUtil.isClient()) {
-      await import('@reown/appkit-scaffold-ui/basic')
-      await import('@reown/appkit-scaffold-ui/w3m-modal')
+      await import('@laughingwhales/appkit-scaffold-ui/basic')
+      await import('@laughingwhales/appkit-scaffold-ui/w3m-modal')
 
       const isElementCreated = document.querySelector('w3m-modal')
       if (!isElementCreated) {

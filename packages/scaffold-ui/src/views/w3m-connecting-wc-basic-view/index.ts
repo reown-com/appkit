@@ -6,9 +6,9 @@ import {
   CoreHelperUtil,
   OptionsController,
   StorageUtil
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
 
 import '../../partials/w3m-all-wallets-widget/index.js'
 import '../../partials/w3m-connector-list/index.js'

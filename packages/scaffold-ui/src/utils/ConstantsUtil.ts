@@ -1,4 +1,4 @@
-import type { ConnectMethod } from '@reown/appkit-controllers'
+import type { ConnectMethod } from '@laughingwhales/appkit-controllers'
 
 export const ConstantsUtil = {
   ACCOUNT_TABS: [{ label: 'Tokens' }, { label: 'Activity' }],

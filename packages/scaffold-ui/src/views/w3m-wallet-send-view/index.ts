@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { type CaipAddress } from '@reown/appkit-common'
+import { type CaipAddress } from '@laughingwhales/appkit-common'
 import {
   AssetUtil,
   ChainController,
@@ -13,13 +13,13 @@ import {
   SendController,
   SnackController,
   SwapController
-} from '@reown/appkit-controllers'
-import { BalanceUtil } from '@reown/appkit-controllers/utils'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-button'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon-box'
-import '@reown/appkit-ui/wui-separator'
+} from '@laughingwhales/appkit-controllers'
+import { BalanceUtil } from '@laughingwhales/appkit-controllers/utils'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-button'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon-box'
+import '@laughingwhales/appkit-ui/wui-separator'
 
 import '../../partials/w3m-input-address/index.js'
 import '../../partials/w3m-input-token/index.js'

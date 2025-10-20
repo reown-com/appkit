@@ -1,7 +1,7 @@
-import { createAppKit } from '@reown/appkit'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { createAppKitWalletButton } from '@reown/appkit-wallet-button'
-import { mainnet, polygon } from '@reown/appkit/networks'
+import { createAppKit } from '@laughingwhales/appkit'
+import { WagmiAdapter } from '@laughingwhales/appkit-adapter-wagmi'
+import { createAppKitWalletButton } from '@laughingwhales/appkit-wallet-button'
+import { mainnet, polygon } from '@laughingwhales/appkit/networks'
 
 // Get projectId
 export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost

@@ -3,9 +3,9 @@ import type { Meta } from '@storybook/web-components'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { WuiAlertBar } from '@reown/appkit-ui/wui-alertbar'
-import '@reown/appkit-ui/wui-alertbar'
-import '@reown/appkit-ui/wui-semantic-chip'
+import type { WuiAlertBar } from '@laughingwhales/appkit-ui/wui-alertbar'
+import '@laughingwhales/appkit-ui/wui-alertbar'
+import '@laughingwhales/appkit-ui/wui-semantic-chip'
 
 import '../../components/gallery-container'
 

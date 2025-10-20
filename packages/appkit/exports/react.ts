@@ -1,6 +1,6 @@
-import { CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-controllers'
-import { useAppKitNetworkCore } from '@reown/appkit-controllers/react'
-import type { AppKitNetwork } from '@reown/appkit/networks'
+import { CoreHelperUtil, type UseAppKitNetworkReturn } from '@laughingwhales/appkit-controllers'
+import { useAppKitNetworkCore } from '@laughingwhales/appkit-controllers/react'
+import type { AppKitNetwork } from '@laughingwhales/appkit/networks'
 
 import { AppKit } from '../src/client/appkit.js'
 import { getAppKit } from '../src/library/react/index.js'
@@ -13,10 +13,10 @@ export * from '../src/library/react/index.js'
 
 // -- Utils & Other -----------------------------------------------------
 export * from '../src/utils/index.js'
-export type * from '@reown/appkit-controllers'
-export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@reown/appkit-common'
+export type * from '@laughingwhales/appkit-controllers'
+export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@laughingwhales/appkit-common'
 export type { AppKitBaseClient, OpenOptions, Views } from '../src/client/appkit-base-client.js'
-export { CoreHelperUtil } from '@reown/appkit-controllers'
+export { CoreHelperUtil } from '@laughingwhales/appkit-controllers'
 
 export let modal: AppKit | undefined = undefined
 
@@ -44,7 +44,7 @@ export type { AppKitOptions }
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/react/index.js'
 
-export { useAppKitProvider } from '@reown/appkit-controllers/react'
+export { useAppKitProvider } from '@laughingwhales/appkit-controllers/react'
 
 export function useAppKitNetwork(): UseAppKitNetworkReturn {
   const { caipNetwork, caipNetworkId, chainId } = useAppKitNetworkCore()
@@ -71,7 +71,7 @@ export function useAppKitBalance() {
   }
 }
 
-export { useAppKitAccount } from '@reown/appkit-controllers/react'
+export { useAppKitAccount } from '@laughingwhales/appkit-controllers/react'
 
 export {
   AppKitButton,

@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-promo'
-import type { WuiPromo } from '@reown/appkit-ui/wui-promo'
+import '@laughingwhales/appkit-ui/wui-promo'
+import type { WuiPromo } from '@laughingwhales/appkit-ui/wui-promo'
 
 type Component = Meta<WuiPromo>
 

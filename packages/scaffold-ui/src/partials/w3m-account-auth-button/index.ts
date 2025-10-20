@@ -1,17 +1,17 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   ConnectorController,
   RouterController,
   type SocialProvider,
   StorageUtil
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-list-item'
-import '@reown/appkit-ui/wui-text'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-list-item'
+import '@laughingwhales/appkit-ui/wui-text'
 
 @customElement('w3m-account-auth-button')
 export class W3mAccountAuthButton extends LitElement {

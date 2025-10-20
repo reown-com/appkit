@@ -2,7 +2,7 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import { proxy, ref, subscribe } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
 
 import type { ConnectorType } from '../utils/TypeUtil.js'
 import type { ChainControllerState } from './ChainController.js'

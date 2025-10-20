@@ -1,4 +1,4 @@
-import { useAppKitState } from '@reown/appkit/react'
+import { useAppKitState } from '@laughingwhales/appkit/react'
 
 export default function InitializeBoundary({ children }: { children: React.ReactNode }) {
   const { initialized: isInitialized } = useAppKitState()

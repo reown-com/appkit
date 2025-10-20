@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import type { CaipNetwork } from '@reown/appkit-common'
-import { AssetUtil, RouterController } from '@reown/appkit-controllers'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
+import { AssetUtil, RouterController } from '@laughingwhales/appkit-controllers'
 
 import '../../src/partials/w3m-wallet-send-details/index'
 import type { W3mWalletSendDetails } from '../../src/partials/w3m-wallet-send-details/index'

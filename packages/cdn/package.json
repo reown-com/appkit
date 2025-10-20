@@ -1,6 +1,6 @@
 {
-  "name": "@reown/appkit-cdn",
-  "version": "1.8.10",
+  "name": "@laughingwhales/appkit-cdn",
+  "version": "1.8.11",
   "sideEffects": false,
   "main": "dist/wagmi.js",
   "type": "module",
@@ -29,17 +29,17 @@
     }
   },
   "dependencies": {
-    "@reown/appkit": "workspace:*",
-    "@reown/appkit-adapter-ethers": "workspace:*",
-    "@reown/appkit-adapter-ethers5": "workspace:*",
-    "@reown/appkit-adapter-solana": "workspace:*",
-    "@reown/appkit-adapter-wagmi": "workspace:*",
-    "@reown/appkit-polyfills": "workspace:*",
     "@wagmi/connectors": "5.11.2",
     "@wagmi/core": "2.21.2",
     "viem": "2.37.9",
     "vite": "5.4.20",
-    "wagmi": "2.17.5"
+    "wagmi": "2.17.5",
+    "@laughingwhales/appkit": "workspace:*",
+    "@laughingwhales/appkit-adapter-ethers": "workspace:*",
+    "@laughingwhales/appkit-adapter-ethers5": "workspace:*",
+    "@laughingwhales/appkit-adapter-solana": "workspace:*",
+    "@laughingwhales/appkit-adapter-wagmi": "workspace:*",
+    "@laughingwhales/appkit-polyfills": "workspace:*"
   },
   "keywords": [
     "appkit",

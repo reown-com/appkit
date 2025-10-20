@@ -2,7 +2,7 @@
 import React, { type ReactNode } from 'react'
 import { createContext } from 'react'
 
-import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
+import type { SmartSessionGrantPermissionsResponse } from '@laughingwhales/appkit-experimental/smart-session'
 
 import { useLocalStorageState } from '@/src/hooks/useLocalStorageState'
 import { SMART_SESSION_KEY, removeLocalStorageItem } from '@/src/utils/LocalStorage'

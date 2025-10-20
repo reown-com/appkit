@@ -2,9 +2,9 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { OptionsController, OptionsStateController } from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
+import { OptionsController, OptionsStateController } from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
 
 import '../../partials/w3m-legal-checkbox/index.js'
 import '../../partials/w3m-social-login-list/index.js'

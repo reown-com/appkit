@@ -1,7 +1,7 @@
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import type { SIWEStatus } from '@reown/appkit-common'
+import type { SIWEStatus } from '@laughingwhales/appkit-common'
 
 import type {
   SIWEClientMethods,

@@ -6,7 +6,7 @@ import {
   type CaipNetwork,
   ConstantsUtil,
   ParseUtil
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
 import { ChainController } from '../controllers/ChainController.js'

@@ -3,7 +3,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
+import type { CaipAddress, ChainNamespace } from '@laughingwhales/appkit-common'
 import {
   AssetUtil,
   ChainController,
@@ -12,9 +12,9 @@ import {
   ConnectorControllerUtil,
   ModalController,
   RouterController
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-wallet-button'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-wallet-button'
 
 import { ApiController } from '../../controllers/ApiController.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'

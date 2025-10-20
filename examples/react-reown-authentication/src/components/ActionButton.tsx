@@ -1,5 +1,5 @@
-import { mainnet } from '@reown/appkit/networks'
-import { useAppKit, useAppKitNetwork, useAppKitTheme, useDisconnect } from '@reown/appkit/react'
+import { mainnet } from '@laughingwhales/appkit/networks'
+import { useAppKit, useAppKitNetwork, useAppKitTheme, useDisconnect } from '@laughingwhales/appkit/react'
 
 export function ActionButtonList() {
   const modal = useAppKit()

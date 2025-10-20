@@ -1,4 +1,4 @@
-import { css } from '@reown/appkit-ui'
+import { css } from '@laughingwhales/appkit-ui'
 
 export default css`
   @keyframes shake {

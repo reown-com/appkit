@@ -3,13 +3,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { NavigationUtil } from '@reown/appkit-common'
+import { NavigationUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   CoreHelperUtil,
   EventsController,
   RouterController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mChooseAccountNameView } from '../../src/views/w3m-choose-account-name-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

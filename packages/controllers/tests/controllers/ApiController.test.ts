@@ -1,6 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil } from '@laughingwhales/appkit-common'
 
 import {
   ApiController,

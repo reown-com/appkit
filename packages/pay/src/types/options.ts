@@ -1,4 +1,4 @@
-import type { CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetworkId } from '@laughingwhales/appkit-common'
 
 export type AssetMetadata = {
   name: string

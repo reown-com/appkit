@@ -1,10 +1,10 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   type ChainNamespace,
   type OnRampProvider,
   type SocialProvider,
   type SwapProvider
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 
 import type { SIWXConfig } from './SIWXUtil.js'
 import type { Features, PreferredAccountTypes, RemoteFeatures } from './TypeUtil.js'

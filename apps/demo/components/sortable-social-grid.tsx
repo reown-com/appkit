@@ -29,7 +29,7 @@ import {
   sortableKeyboardCoordinates
 } from '@dnd-kit/sortable'
 
-import { type SocialProvider } from '@reown/appkit-controllers'
+import { type SocialProvider } from '@laughingwhales/appkit-controllers'
 
 import { SortableSocialOptionItem } from '@/components/sortable-item-social-option'
 import { List } from '@/components/ui/list'

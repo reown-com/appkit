@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import type { ChainNamespace, Connection } from '@reown/appkit-common'
+import type { ChainNamespace, Connection } from '@laughingwhales/appkit-common'
 import {
   type AccountState,
   type AuthConnector,
@@ -15,7 +15,7 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mConnectingSocialView } from '../../src/views/w3m-connecting-social-view'
 

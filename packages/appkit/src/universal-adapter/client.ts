@@ -2,13 +2,13 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 import { toHex } from 'viem'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil
-} from '@reown/appkit-controllers'
-import { AdapterBlueprint, WalletConnectConnector } from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
+import { AdapterBlueprint, WalletConnectConnector } from '@laughingwhales/appkit-controllers'
 
 import { WcConstantsUtil } from '../utils/ConstantsUtil.js'
 

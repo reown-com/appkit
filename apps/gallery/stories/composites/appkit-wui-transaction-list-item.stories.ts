@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-transaction-list-item'
-import type { WuiTransactionListItem } from '@reown/appkit-ui/wui-transaction-list-item'
+import '@laughingwhales/appkit-ui/wui-transaction-list-item'
+import type { WuiTransactionListItem } from '@laughingwhales/appkit-ui/wui-transaction-list-item'
 
 import '../../components/gallery-container'
 import { walletImageSrc } from '../../utils/PresetUtils'

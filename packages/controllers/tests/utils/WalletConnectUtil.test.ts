@@ -1,7 +1,7 @@
 import type { SessionTypes } from '@walletconnect/types'
 import { describe, expect, test } from 'vitest'
 
-import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil } from '@laughingwhales/appkit-common'
 
 import { WcHelpersUtil } from '../../src/utils/WalletConnectUtil.js'
 

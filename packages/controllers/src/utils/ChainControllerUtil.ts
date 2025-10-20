@@ -1,5 +1,5 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import type { ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
 
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectorControllerUtil } from './ConnectorControllerUtil.js'

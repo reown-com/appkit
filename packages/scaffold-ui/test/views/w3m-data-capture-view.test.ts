@@ -1,19 +1,19 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
+import { SafeLocalStorage, SafeLocalStorageKeys } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   OptionsController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
-import { ReownAuthentication } from '@reown/appkit-controllers/features'
+} from '@laughingwhales/appkit-controllers'
+import { ReownAuthentication } from '@laughingwhales/appkit-controllers/features'
 
 import { W3mDataCaptureView } from '../../src/views/w3m-data-capture-view/index.js'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // Mock controllers
-vi.mock('@reown/appkit-controllers', () => ({
+vi.mock('@laughingwhales/appkit-controllers', () => ({
   ChainController: {
     getActiveCaipAddress: vi.fn(),
     getAccountData: vi.fn()
@@ -35,7 +35,7 @@ vi.mock('@reown/appkit-controllers', () => ({
 }))
 
 // Mock SafeLocalStorage
-vi.mock('@reown/appkit-common', () => ({
+vi.mock('@laughingwhales/appkit-common', () => ({
   SafeLocalStorage: {
     getItem: vi.fn(),
     setItem: vi.fn()

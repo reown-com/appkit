@@ -7,8 +7,8 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   ConstantsUtil,
   type EmbeddedWalletTimeoutReason
-} from '@reown/appkit-common'
-import { NetworkUtil } from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
+import { NetworkUtil } from '@laughingwhales/appkit-common'
 import {
   AlertController,
   ChainController,
@@ -16,10 +16,10 @@ import {
   SIWXUtil,
   getActiveCaipNetwork,
   getPreferredAccountType
-} from '@reown/appkit-controllers'
-import { ErrorUtil } from '@reown/appkit-utils'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
-import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
+} from '@laughingwhales/appkit-controllers'
+import { ErrorUtil } from '@laughingwhales/appkit-utils'
+import { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+import { W3mFrameProviderSingleton } from '@laughingwhales/appkit/auth-provider'
 
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {

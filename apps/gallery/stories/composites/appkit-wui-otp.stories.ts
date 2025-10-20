@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-otp'
-import type { WuiOtp } from '@reown/appkit-ui/wui-otp'
+import '@laughingwhales/appkit-ui/wui-otp'
+import type { WuiOtp } from '@laughingwhales/appkit-ui/wui-otp'
 
 import '../../components/gallery-container'
 

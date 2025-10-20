@@ -3,8 +3,8 @@ import { useCallback, useMemo, useState } from 'react'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { type WalletCapabilities } from 'viem'
 
-import { W3mFrameProvider } from '@reown/appkit-wallet'
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@laughingwhales/appkit/react'
 
 import { getCapabilities } from '../utils/EIP5792Utils'
 

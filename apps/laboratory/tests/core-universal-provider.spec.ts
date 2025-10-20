@@ -1,6 +1,6 @@
 import { type BrowserContext, test } from '@playwright/test'
 
-import { BASE_URL, WalletPage, WalletValidator } from '@reown/appkit-testing'
+import { BASE_URL, WalletPage, WalletValidator } from '@laughingwhales/appkit-testing'
 
 import { expect } from './shared/fixtures/w3m-fixture'
 import { ModalPage } from './shared/pages/ModalPage'

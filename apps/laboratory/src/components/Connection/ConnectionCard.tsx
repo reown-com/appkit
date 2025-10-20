@@ -1,7 +1,7 @@
 import { Badge, Box, Flex, HStack, Image, Stack, Text } from '@chakra-ui/react'
 
-import type { ChainNamespace } from '@reown/appkit-common'
-import { type Connection } from '@reown/appkit/react'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
+import { type Connection } from '@laughingwhales/appkit/react'
 
 import { ConnectionAccount } from './ConnectionAccount'
 

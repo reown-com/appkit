@@ -3,14 +3,14 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 
 import { html } from 'lit'
 
-import { type ThemeType, type ThemeVariables, getW3mThemeVariables } from '@reown/appkit-common'
+import { type ThemeType, type ThemeVariables, getW3mThemeVariables } from '@laughingwhales/appkit-common'
 import {
   type AuthConnector,
   ConnectorController,
   ModalController,
   OptionsController,
   ThemeController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mApproveTransactionView } from '../../src/views/w3m-approve-transaction-view/index'
 

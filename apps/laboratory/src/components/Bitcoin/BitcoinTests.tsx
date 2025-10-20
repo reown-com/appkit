@@ -11,7 +11,7 @@ import {
   Text
 } from '@chakra-ui/react'
 
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@laughingwhales/appkit/react'
 
 import { BitcoinSendTransferTest } from './BitcoinSendTransferTest'
 import { BitcoinSignMessageTest } from './BitcoinSignMessageTest'

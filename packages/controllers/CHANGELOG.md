@@ -1,5 +1,19 @@
 # @reown/appkit-core
 
+## 1.8.11
+
+### Patch Changes
+
+- 1a9f436: Fixes issue where declining a Discord connection would cause subsequent connections to fail.
+- 99cc58b: Fixes package version injecting when building packages
+- fda02dc: Added usage limit UI in AppKit that displays when limits are exceeded
+- 2778f7d: Fixes an issue where we wouldn't send an event after SOL send transaction
+- Updated dependencies [99cc58b]
+- Updated dependencies [135b5c0]
+- Updated dependencies [fda02dc]
+  - @laughingwhales/appkit-common@1.8.11
+  - @laughingwhales/appkit-wallet@1.8.11
+
 ## 1.8.10
 
 ### Patch Changes

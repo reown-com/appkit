@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import type { Transaction } from '@reown/appkit-common'
+import type { Transaction } from '@laughingwhales/appkit-common'
 
 import { TransactionUtil } from '../src/utils/TransactionUtil.js'
 

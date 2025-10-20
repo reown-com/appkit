@@ -1,9 +1,9 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ChainController, ConnectorController } from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
+import { ChainController, ConnectorController } from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
 
 import '../../partials/w3m-account-default-widget/index.js'
 import '../../partials/w3m-account-wallet-features-widget/index.js'

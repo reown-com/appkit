@@ -1,6 +1,6 @@
 import type { Namespace, NamespaceConfig } from '@walletconnect/universal-provider'
 
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
 
 export const DEFAULT_METHODS = {
   solana: [

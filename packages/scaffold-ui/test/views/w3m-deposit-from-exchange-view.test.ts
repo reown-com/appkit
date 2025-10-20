@@ -3,15 +3,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   ConnectionController,
   ExchangeController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
-import type { WuiTokenButton } from '@reown/appkit-ui/wui-token-button'
+} from '@laughingwhales/appkit-controllers'
+import type { WuiTokenButton } from '@laughingwhales/appkit-ui/wui-token-button'
 
 import { W3mDepositFromExchangeView } from '../../src/views/w3m-deposit-from-exchange-view'
 import { HelpersUtil } from '../utils/HelpersUtil'

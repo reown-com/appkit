@@ -1,10 +1,10 @@
 import type { RpcEndpointMap, RpcSendTransferParams } from '@leather.io/rpc'
 import type { MessageSigningProtocols } from 'sats-connect'
 
-import { ConstantsUtil } from '@reown/appkit-common'
-import { ChainController } from '@reown/appkit-controllers'
-import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
-import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
+import { ChainController } from '@laughingwhales/appkit-controllers'
+import type { BitcoinConnector } from '@laughingwhales/appkit-utils/bitcoin'
+import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@laughingwhales/appkit/networks'
 
 import { SatsConnectConnector } from './SatsConnectConnector.js'
 

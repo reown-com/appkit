@@ -16,8 +16,8 @@ import {
   type TransactionInstruction
 } from '@solana/web3.js'
 
-import { SPL_COMPUTE_BUDGET_CONSTANTS } from '@reown/appkit-utils/solana'
-import type { SPLTokenTransactionArgs } from '@reown/appkit-utils/solana'
+import { SPL_COMPUTE_BUDGET_CONSTANTS } from '@laughingwhales/appkit-utils/solana'
+import type { SPLTokenTransactionArgs } from '@laughingwhales/appkit-utils/solana'
 
 async function getMintOwnerProgramId(connection: Connection, mint: PublicKey) {
   const info = await connection.getAccountInfo(mint)

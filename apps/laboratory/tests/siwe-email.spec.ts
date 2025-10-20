@@ -1,6 +1,6 @@
 import { type BrowserContext, expect } from '@playwright/test'
 
-import { SECURE_WEBSITE_URL } from '@reown/appkit-testing'
+import { SECURE_WEBSITE_URL } from '@laughingwhales/appkit-testing'
 
 import { type TimingRecords, timingFixture } from './shared/fixtures/timing-fixture'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'

@@ -3,7 +3,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 
 import { html } from 'lit'
 
-import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   type ChainControllerState,
@@ -11,7 +11,7 @@ import {
   type ConnectorWithProviders,
   CoreHelperUtil,
   OptionsController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mConnectView } from '../../src/views/w3m-connect-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

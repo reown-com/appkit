@@ -4,7 +4,7 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
 
 import { PolkadotAdapter } from '../src/adapter.js'
 import type { PolkadotAdapterOptions } from '../src/adapter.js'

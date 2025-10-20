@@ -1,6 +1,6 @@
 import { type BrowserContext, type Page, test } from '@playwright/test'
 
-import { BASE_URL } from '@reown/appkit-testing'
+import { BASE_URL } from '@laughingwhales/appkit-testing'
 
 import { expect } from './shared/fixtures/w3m-fixture'
 import { ModalPage } from './shared/pages/ModalPage'

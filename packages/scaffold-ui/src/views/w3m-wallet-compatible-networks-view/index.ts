@@ -6,12 +6,12 @@ import {
   ChainController,
   CoreHelperUtil,
   getPreferredAccountType
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-banner'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-network'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-banner'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-list-network'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import styles from './styles.js'
 

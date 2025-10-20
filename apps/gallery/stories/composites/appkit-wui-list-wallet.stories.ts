@@ -3,7 +3,7 @@ import type { Meta } from '@storybook/web-components'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { WuiListWallet } from '@reown/appkit-ui/wui-list-wallet'
+import type { WuiListWallet } from '@laughingwhales/appkit-ui/wui-list-wallet'
 
 import '../../components/gallery-container'
 import { iconOptions, tagOptions, walletImageSrc } from '../../utils/PresetUtils'

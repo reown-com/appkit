@@ -1,7 +1,7 @@
 import { fixture, html } from '@open-wc/testing'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConnectionController, CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
+import { ConnectionController, CoreHelperUtil, RouterController } from '@laughingwhales/appkit-controllers'
 
 import { W3mConnectingWcMobile } from '../../src/partials/w3m-connecting-wc-mobile'
 

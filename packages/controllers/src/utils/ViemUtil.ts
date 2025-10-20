@@ -1,6 +1,6 @@
 import { type createPublicClient, type defineChain, type http } from 'viem'
 
-import { type CaipNetwork, type CaipNetworkId, ParseUtil } from '@reown/appkit-common'
+import { type CaipNetwork, type CaipNetworkId, ParseUtil } from '@laughingwhales/appkit-common'
 
 import { OptionsController } from '../controllers/OptionsController.js'
 

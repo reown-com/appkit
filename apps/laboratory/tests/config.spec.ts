@@ -1,6 +1,6 @@
 import { type BrowserContext, type Page, test } from '@playwright/test'
 
-import { ALL_SOCIALS, WalletPage } from '@reown/appkit-testing'
+import { ALL_SOCIALS, WalletPage } from '@laughingwhales/appkit-testing'
 
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'

@@ -7,8 +7,8 @@ import { type P256Credential, serializePublicKey } from 'webauthn-p256'
 import {
   type SmartSessionGrantPermissionsRequest,
   grantPermissions
-} from '@reown/appkit-experimental/smart-session'
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+} from '@laughingwhales/appkit-experimental/smart-session'
+import { useAppKitAccount, useAppKitNetwork } from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { usePasskey } from '@/src/context/PasskeyContext'

@@ -4,9 +4,9 @@ import {
   CoreHelperUtil,
   OptionsController,
   StorageUtil
-} from '@reown/appkit-controllers'
-import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-controllers'
-import { HelpersUtil } from '@reown/appkit-utils'
+} from '@laughingwhales/appkit-controllers'
+import type { ConnectMethod, Connector, Features, WcWallet } from '@laughingwhales/appkit-controllers'
+import { HelpersUtil } from '@laughingwhales/appkit-utils'
 
 import { ConnectorUtil } from './ConnectorUtil.js'
 import { ConstantsUtil } from './ConstantsUtil.js'

@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-toggle'
-import type { WuiToggle } from '@reown/appkit-ui/wui-toggle'
+import '@laughingwhales/appkit-ui/wui-toggle'
+import type { WuiToggle } from '@laughingwhales/appkit-ui/wui-toggle'
 
 import '../../components/gallery-container'
 

@@ -1,6 +1,6 @@
 import { BitcoinNetworkType } from 'sats-connect'
 
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+import { bitcoin, bitcoinTestnet } from '@laughingwhales/appkit/networks'
 
 export function mapCaipNetworkToXverseName(caipNetworkId: string | undefined): BitcoinNetworkType {
   if (!caipNetworkId) {

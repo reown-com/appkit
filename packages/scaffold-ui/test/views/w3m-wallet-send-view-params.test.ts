@@ -1,7 +1,7 @@
 import { fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@laughingwhales/appkit-common'
 import {
   type AccountState,
   AssetUtil,
@@ -10,8 +10,8 @@ import {
   RouterController,
   SendController,
   SnackController
-} from '@reown/appkit-controllers'
-import { BalanceUtil } from '@reown/appkit-controllers/utils'
+} from '@laughingwhales/appkit-controllers'
+import { BalanceUtil } from '@laughingwhales/appkit-controllers/utils'
 
 import { W3mWalletSendView } from '../../src/views/w3m-wallet-send-view'
 

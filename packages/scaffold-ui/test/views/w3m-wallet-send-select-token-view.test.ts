@@ -1,8 +1,8 @@
 import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
 
-import type { Balance, CaipAddress, CaipNetwork } from '@reown/appkit-common'
-import { ChainController, RouterController, SendController } from '@reown/appkit-controllers'
+import type { Balance, CaipAddress, CaipNetwork } from '@laughingwhales/appkit-common'
+import { ChainController, RouterController, SendController } from '@laughingwhales/appkit-controllers'
 
 import { W3mSendSelectTokenView } from '../../src/views/w3m-wallet-send-select-token-view'
 

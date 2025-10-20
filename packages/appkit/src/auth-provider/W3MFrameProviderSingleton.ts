@@ -4,9 +4,9 @@ import type {
   ChainNamespace,
   EmbeddedWalletTimeoutReason,
   SdkVersion
-} from '@reown/appkit-common'
-import { type Metadata, OptionsController } from '@reown/appkit-controllers'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+} from '@laughingwhales/appkit-common'
+import { type Metadata, OptionsController } from '@laughingwhales/appkit-controllers'
+import { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
 
 interface W3mFrameProviderConfig {
   projectId: string

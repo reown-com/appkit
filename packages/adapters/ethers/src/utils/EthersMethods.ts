@@ -10,13 +10,13 @@ import {
   toUtf8Bytes
 } from 'ethers'
 
-import type { Hex } from '@reown/appkit-common'
+import type { Hex } from '@laughingwhales/appkit-common'
 import type {
   EstimateGasTransactionArgs,
   Provider,
   SendTransactionArgs,
   WriteContractArgs
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 export const EthersMethods = {
   signMessage: async (message: string, provider: Provider, address: string) => {

@@ -19,7 +19,7 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import { checksumAddress } from 'viem'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipAddress, ConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   type ConnectionControllerClient,
@@ -28,9 +28,9 @@ import {
   OptionsController,
   ProviderController,
   type SocialProvider
-} from '@reown/appkit-controllers'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
+} from '@laughingwhales/appkit-controllers'
+import { CaipNetworksUtil } from '@laughingwhales/appkit-utils'
+import type { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
 
 import { WagmiAdapter } from '../client'
 import * as auth from '../connectors/AuthConnector'

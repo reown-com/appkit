@@ -1,9 +1,9 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type Address, type CaipNetworkId, type Hex, NumberUtil } from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+import { type Address, type CaipNetworkId, type Hex, NumberUtil } from '@laughingwhales/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import { BalanceUtil } from '../utils/BalanceUtil.js'
 import {

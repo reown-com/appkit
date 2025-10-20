@@ -1,4 +1,4 @@
-import type { CaipAddress, Hex } from '@reown/appkit-common'
+import type { CaipAddress, Hex } from '@laughingwhales/appkit-common'
 
 export const tokensResponse = {
   tokens: [

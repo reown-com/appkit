@@ -5,19 +5,19 @@ import {
   NetworkUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 import {
   type AccountState,
   ApiController,
   BlockchainApiController,
   ChainController
-} from '@reown/appkit-controllers'
-import { ReownAuthentication } from '@reown/appkit-controllers/features'
+} from '@laughingwhales/appkit-controllers'
+import { ReownAuthentication } from '@laughingwhales/appkit-controllers/features'
 import {
   extendedMainnet,
   mockChainControllerState,
   mockSession
-} from '@reown/appkit-controllers/testing'
+} from '@laughingwhales/appkit-controllers/testing'
 
 vi.useFakeTimers({
   now: new Date('2024-12-05T16:02:32.905Z')

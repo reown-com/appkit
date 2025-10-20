@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-chip-button'
-import type { WuiChipButton } from '@reown/appkit-ui/wui-chip-button'
+import '@laughingwhales/appkit-ui/wui-chip-button'
+import type { WuiChipButton } from '@laughingwhales/appkit-ui/wui-chip-button'
 
 import {
   chipButtonSizes,

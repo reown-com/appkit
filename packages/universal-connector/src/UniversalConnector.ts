@@ -6,9 +6,9 @@ import {
   type UniversalProviderOpts
 } from '@walletconnect/universal-provider'
 
-import type { CreateAppKit } from '@reown/appkit'
-import type { CaipNetwork, CustomCaipNetwork } from '@reown/appkit-common'
-import { AppKit, type Metadata, createAppKit } from '@reown/appkit/core'
+import type { CreateAppKit } from '@laughingwhales/appkit'
+import type { CaipNetwork, CustomCaipNetwork } from '@laughingwhales/appkit-common'
+import { AppKit, type Metadata, createAppKit } from '@laughingwhales/appkit/core'
 
 type ExtendedNamespaces = Omit<SessionTypes.Namespace, 'chains' | 'accounts'> & {
   chains: CustomCaipNetwork[]

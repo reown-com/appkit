@@ -2,7 +2,7 @@ import type { Wallet, WalletAccount } from '@wallet-standard/base'
 import type { StandardEventsOnMethod } from '@wallet-standard/features'
 import { vi } from 'vitest'
 
-import { bitcoin } from '@reown/appkit/networks'
+import { bitcoin } from '@laughingwhales/appkit/networks'
 
 import type { BitcoinFeatures } from '../../src/utils/wallet-standard/WalletFeatures.js'
 

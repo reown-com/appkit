@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   ConnectionController,
@@ -15,8 +15,8 @@ import {
   RouterController,
   SnackController,
   StorageUtil
-} from '@reown/appkit-controllers'
-import type { AccountState, AuthConnector, ChainControllerState } from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
+import type { AccountState, AuthConnector, ChainControllerState } from '@laughingwhales/appkit-controllers'
 
 import type { W3mAccountDefaultWidget } from '../../src/partials/w3m-account-default-widget/index.js'
 import { HelpersUtil } from '../utils/HelpersUtil'

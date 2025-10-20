@@ -14,17 +14,17 @@ import {
   SnackController,
   StorageUtil,
   ThemeController
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-button'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-icon-box'
-import '@reown/appkit-ui/wui-loading-thumbnail'
-import '@reown/appkit-ui/wui-logo'
-import '@reown/appkit-ui/wui-qr-code'
-import '@reown/appkit-ui/wui-shimmer'
-import '@reown/appkit-ui/wui-text'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-button'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon'
+import '@laughingwhales/appkit-ui/wui-icon-box'
+import '@laughingwhales/appkit-ui/wui-loading-thumbnail'
+import '@laughingwhales/appkit-ui/wui-logo'
+import '@laughingwhales/appkit-ui/wui-qr-code'
+import '@laughingwhales/appkit-ui/wui-shimmer'
+import '@laughingwhales/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

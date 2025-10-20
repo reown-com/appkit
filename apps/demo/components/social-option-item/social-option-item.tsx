@@ -4,9 +4,9 @@ import type { DraggableSyntheticListeners } from '@dnd-kit/core'
 import type { Transform } from '@dnd-kit/utilities'
 import classNames from 'classnames'
 
-import { type SocialProvider } from '@reown/appkit-controllers'
-import '@reown/appkit-ui/jsx'
-import '@reown/appkit-ui/wui-logo'
+import { type SocialProvider } from '@laughingwhales/appkit-controllers'
+import '@laughingwhales/appkit-ui/jsx'
+import '@laughingwhales/appkit-ui/wui-logo'
 
 import { useAppKitContext } from '@/hooks/use-appkit'
 

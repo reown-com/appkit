@@ -1,8 +1,8 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { RouterController, type RouterControllerState } from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
+import { RouterController, type RouterControllerState } from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
 
 import '../w3m-footer/index.js'
 import styles from './styles.js'

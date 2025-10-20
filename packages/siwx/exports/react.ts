@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { OptionsController, type SIWXConfig } from '@reown/appkit-controllers'
+import { OptionsController, type SIWXConfig } from '@laughingwhales/appkit-controllers'
 
 export function useAppKitSIWX<Config extends SIWXConfig = SIWXConfig>() {
   const [siwx, setSiwx] = useState(OptionsController.state.siwx as Config | undefined)

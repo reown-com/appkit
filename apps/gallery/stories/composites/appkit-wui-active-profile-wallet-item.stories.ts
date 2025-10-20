@@ -3,8 +3,8 @@ import type { Meta } from '@storybook/web-components'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import '@reown/appkit-ui/wui-active-profile-wallet-item'
-import type { WuiActiveProfileWalletItem } from '@reown/appkit-ui/wui-active-profile-wallet-item'
+import '@laughingwhales/appkit-ui/wui-active-profile-wallet-item'
+import type { WuiActiveProfileWalletItem } from '@laughingwhales/appkit-ui/wui-active-profile-wallet-item'
 
 import { iconOptions, walletImagesOptions } from '../../utils/PresetUtils'
 

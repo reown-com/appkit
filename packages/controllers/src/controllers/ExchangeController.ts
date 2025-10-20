@@ -1,7 +1,7 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type CaipNetworkId, NumberUtil } from '@reown/appkit-common'
+import { type CaipNetworkId, NumberUtil } from '@laughingwhales/appkit-common'
 
 import { getActiveNetworkTokenAddress } from '../utils/ChainControllerUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'

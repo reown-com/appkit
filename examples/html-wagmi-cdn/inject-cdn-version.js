@@ -15,7 +15,7 @@ let mainJsContent = fs.readFileSync(mainJsPath, 'utf8')
 const versionRegex = /@reown\/appkit-cdn@(__VERSION__|[\d.]+)/
 
 if (versionRegex.test(mainJsContent)) {
-  mainJsContent = mainJsContent.replace(versionRegex, `@reown/appkit-cdn@${appkitVersion}`)
+  mainJsContent = mainJsContent.replace(versionRegex, `@laughingwhales/appkit-cdn@${appkitVersion}`)
   fs.writeFileSync(mainJsPath, mainJsContent, 'utf8')
   console.log(`Version ${appkitVersion} injected into main.js file.`)
 } else {

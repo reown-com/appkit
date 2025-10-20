@@ -1,6 +1,6 @@
 {
-  "name": "@reown/appkit-core",
-  "version": "1.8.10",
+  "name": "@laughingwhales/appkit-core",
+  "version": "1.8.11",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -46,7 +46,7 @@
     }
   },
   "dependencies": {
-    "@reown/appkit-controllers": "workspace:*"
+    "@laughingwhales/appkit-controllers": "workspace:*"
   },
   "peerDependencies": {},
   "devDependencies": {

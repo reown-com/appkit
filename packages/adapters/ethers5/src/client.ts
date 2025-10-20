@@ -2,14 +2,14 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import * as ethers from 'ethers'
 import { formatEther } from 'ethers/lib/utils.js'
 
-import { WcConstantsUtil } from '@reown/appkit'
+import { WcConstantsUtil } from '@laughingwhales/appkit'
 import {
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   ErrorUtil,
   ParseUtil,
   UserRejectedRequestError
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 import {
   AdapterBlueprint,
   AssetController,
@@ -25,12 +25,12 @@ import {
   WalletConnectConnector,
   WcHelpersUtil,
   getPreferredAccountType
-} from '@reown/appkit-controllers'
-import { ProviderController } from '@reown/appkit-controllers'
-import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
-import { type Address, EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
+} from '@laughingwhales/appkit-controllers'
+import { ProviderController } from '@laughingwhales/appkit-controllers'
+import { ConnectorUtil } from '@laughingwhales/appkit-scaffold-ui/utils'
+import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@laughingwhales/appkit-utils'
+import { type Address, EthersHelpersUtil, type ProviderType } from '@laughingwhales/appkit-utils/ethers'
+import type { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
 
 import { Ethers5Methods } from './utils/Ethers5Methods.js'
 

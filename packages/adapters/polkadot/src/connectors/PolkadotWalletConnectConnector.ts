@@ -2,9 +2,9 @@
 
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import type { RequestArguments } from '@reown/appkit'
-import { type CaipNetwork } from '@reown/appkit-common'
-import { WalletConnectConnector, WcHelpersUtil } from '@reown/appkit-controllers'
+import type { RequestArguments } from '@laughingwhales/appkit'
+import { type CaipNetwork } from '@laughingwhales/appkit-common'
+import { WalletConnectConnector, WcHelpersUtil } from '@laughingwhales/appkit-controllers'
 
 /**
  * WalletConnect connector for Polkadot chains

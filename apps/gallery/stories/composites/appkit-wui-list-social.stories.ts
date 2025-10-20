@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import type { WuiListSocial } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-list-social'
+import type { WuiListSocial } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-list-social'
 
 import '../../components/gallery-container'
 

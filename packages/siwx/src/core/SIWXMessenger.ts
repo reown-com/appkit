@@ -1,4 +1,4 @@
-import type { SIWXMessage } from '@reown/appkit-controllers'
+import type { SIWXMessage } from '@laughingwhales/appkit-controllers'
 
 /**
  * This is the base class for a SIWX messenger.

@@ -9,7 +9,7 @@ import {
   type ChainNamespace,
   ParseUtil,
   type ParsedCaipAddress
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 
 import { EnsController } from '../controllers/EnsController.js'
 import type { OptionsControllerState } from '../controllers/OptionsController.js'

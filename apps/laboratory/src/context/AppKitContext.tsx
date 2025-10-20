@@ -5,8 +5,8 @@ import { createContext, useEffect, useMemo } from 'react'
 import { useColorMode } from '@chakra-ui/react'
 import { useSnapshot } from 'valtio/react'
 
-import type { AppKit, CreateAppKit } from '@reown/appkit'
-import { createAppKit } from '@reown/appkit/react'
+import type { AppKit, CreateAppKit } from '@laughingwhales/appkit'
+import { createAppKit } from '@laughingwhales/appkit/react'
 
 import InitializeBoundary from '../components/InitializeBoundary'
 import { useProjectId } from '../hooks/useProjectId'

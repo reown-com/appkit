@@ -6,14 +6,14 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-link'
-import '@reown/appkit-ui/wui-loading-spinner'
-import '@reown/appkit-ui/wui-otp'
-import '@reown/appkit-ui/wui-text'
-import { W3mFrameHelpers } from '@reown/appkit-wallet'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-link'
+import '@laughingwhales/appkit-ui/wui-loading-spinner'
+import '@laughingwhales/appkit-ui/wui-otp'
+import '@laughingwhales/appkit-ui/wui-text'
+import { W3mFrameHelpers } from '@laughingwhales/appkit-wallet'
 
 import styles from './styles.js'
 

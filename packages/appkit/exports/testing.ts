@@ -1,4 +1,4 @@
-import { CaipNetworksUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil } from '@laughingwhales/appkit-utils'
 
 import { bitcoin, bitcoinTestnet, mainnet, polygon, solana, solanaTestnet } from './networks.js'
 

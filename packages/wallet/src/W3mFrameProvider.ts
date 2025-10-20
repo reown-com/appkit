@@ -2,8 +2,8 @@ import {
   type ChainNamespace,
   type EmbeddedWalletTimeoutReason,
   ParseUtil
-} from '@reown/appkit-common'
-import type { CaipNetwork, CaipNetworkId, SdkVersion } from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
+import type { CaipNetwork, CaipNetworkId, SdkVersion } from '@laughingwhales/appkit-common'
 
 import { W3mFrame } from './W3mFrame.js'
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'

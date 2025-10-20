@@ -1,4 +1,4 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   ApiController,
   ChainController,
@@ -14,8 +14,8 @@ import {
   type SocialProvider,
   StorageUtil,
   type WcWallet
-} from '@reown/appkit-controllers'
-import { HelpersUtil } from '@reown/appkit-utils'
+} from '@laughingwhales/appkit-controllers'
+import { HelpersUtil } from '@laughingwhales/appkit-utils'
 
 import { WalletUtil } from './WalletUtil.js'
 

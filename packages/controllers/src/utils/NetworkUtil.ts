@@ -1,4 +1,4 @@
-import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil } from '@laughingwhales/appkit-common'
 
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'

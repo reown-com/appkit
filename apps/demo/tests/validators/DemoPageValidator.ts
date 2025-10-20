@@ -1,8 +1,8 @@
 import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
 
-import type { ChainNamespace } from '@reown/appkit-common'
-import { getMaximumWaitConnections } from '@reown/appkit-testing'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
+import { getMaximumWaitConnections } from '@laughingwhales/appkit-testing'
 
 const MAX_WAIT = getMaximumWaitConnections()
 

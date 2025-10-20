@@ -3,24 +3,24 @@ import { describe, expect, test, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   ConnectionController,
   CoreHelperUtil,
   OptionsController,
   RouterController
-} from '@reown/appkit-controllers'
-import type { WcWallet } from '@reown/appkit-controllers'
-import type { WuiTabs } from '@reown/appkit-ui/wui-tabs'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
+} from '@laughingwhales/appkit-controllers'
+import type { WcWallet } from '@laughingwhales/appkit-controllers'
+import type { WuiTabs } from '@laughingwhales/appkit-ui/wui-tabs'
+import { CaipNetworksUtil } from '@laughingwhales/appkit-utils'
 
 import type { W3mConnectingWcView } from '../../exports'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
-// vi.mock('@reown/appkit-controllers', async () => {
-//   const originalModule = await vi.importActual<typeof import('@reown/appkit-controllers')>(
-//     '@reown/appkit-controllers'
+// vi.mock('@laughingwhales/appkit-controllers', async () => {
+//   const originalModule = await vi.importActual<typeof import('@laughingwhales/appkit-controllers')>(
+//     '@laughingwhales/appkit-controllers'
 //   )
 //   return {
 //     ...originalModule,

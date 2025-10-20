@@ -3,8 +3,8 @@ import * as React from 'react'
 import UniversalProvider from '@walletconnect/universal-provider'
 import { type Hex } from 'viem'
 
-import { type Address, ConstantsUtil } from '@reown/appkit-common'
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { type Address, ConstantsUtil } from '@laughingwhales/appkit-common'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@laughingwhales/appkit/react'
 
 import type { GetCapabilitiesResult } from '../types/EIP5792'
 import type { Asset, WalletGetAssetsRPCRequest, WalletGetAssetsRPCResponse } from '../types/ERC7811'

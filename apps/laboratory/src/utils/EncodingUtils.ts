@@ -1,6 +1,6 @@
 import bs58 from 'bs58'
 
-import type { Address } from '@reown/appkit-common'
+import type { Address } from '@laughingwhales/appkit-common'
 
 const PUBLIC_KEY_PREFIX = 0x04
 const PUBLIC_KEY_LENGTH = 65

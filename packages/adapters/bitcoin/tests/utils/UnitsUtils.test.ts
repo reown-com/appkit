@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { bitcoin } from '@reown/appkit/networks'
+import { bitcoin } from '@laughingwhales/appkit/networks'
 
 import { UnitsUtil } from '../../src/utils/UnitsUtil'
 

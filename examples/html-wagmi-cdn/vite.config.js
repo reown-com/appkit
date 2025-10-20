@@ -6,7 +6,7 @@ export default defineConfig({
     port: 3000
   },
   optimizeDeps: {
-    exclude: ['@reown/appkit-cdn']
+    exclude: ['@laughingwhales/appkit-cdn']
   },
   build: {
     commonjsOptions: {

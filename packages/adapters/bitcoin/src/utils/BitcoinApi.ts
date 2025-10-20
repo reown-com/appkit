@@ -1,5 +1,5 @@
-import type { CaipNetwork } from '@reown/appkit-common'
-import { bitcoinTestnet } from '@reown/appkit/networks'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
+import { bitcoinTestnet } from '@laughingwhales/appkit/networks'
 
 export const BitcoinApi: BitcoinApi.Interface = {
   getUTXOs: async ({ network, address }: BitcoinApi.GetUTXOsParams): Promise<BitcoinApi.UTXO[]> => {

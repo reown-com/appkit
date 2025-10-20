@@ -10,16 +10,16 @@ import {
   vi
 } from 'vitest'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   type ConnectionControllerClient,
   ProviderController,
   StorageUtil,
   WcHelpersUtil
-} from '@reown/appkit-controllers'
-import { HelpersUtil } from '@reown/appkit-utils'
-import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
+} from '@laughingwhales/appkit-controllers'
+import { HelpersUtil } from '@laughingwhales/appkit-utils'
+import { bitcoin, bitcoinTestnet, mainnet } from '@laughingwhales/appkit/networks'
 
 import { BitcoinAdapter, type BitcoinConnector } from '../src'
 import { BitcoinWalletConnectConnector } from '../src/connectors/BitcoinWalletConnectConnector'

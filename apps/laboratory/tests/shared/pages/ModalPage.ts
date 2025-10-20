@@ -3,15 +3,15 @@
 import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 
-import type { WalletFeature } from '@reown/appkit'
-import type { Address, ChainNamespace, Hex } from '@reown/appkit-common'
-import { WalletPage, WalletValidator } from '@reown/appkit-testing'
+import type { WalletFeature } from '@laughingwhales/appkit'
+import type { Address, ChainNamespace, Hex } from '@laughingwhales/appkit-common'
+import { WalletPage, WalletValidator } from '@laughingwhales/appkit-testing'
 import {
   BASE_URL,
   DEFAULT_SESSION_PARAMS,
   EXTENSION_NAME,
   EXTENSION_RDNS
-} from '@reown/appkit-testing'
+} from '@laughingwhales/appkit-testing'
 
 import { getNamespaceByLibrary } from '@/tests/shared/utils/namespace'
 

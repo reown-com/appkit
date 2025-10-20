@@ -1,5 +1,12 @@
 # @reown/appkit-experimental
 
+## 1.8.11
+
+### Patch Changes
+
+- 99cc58b: Fixes package version injecting when building packages
+- fda02dc: Added usage limit UI in AppKit that displays when limits are exceeded
+
 ## 1.8.10
 
 ### Patch Changes

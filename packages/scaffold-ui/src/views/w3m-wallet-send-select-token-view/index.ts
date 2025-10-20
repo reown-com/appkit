@@ -1,23 +1,23 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import type { Balance } from '@reown/appkit-common'
+import type { Balance } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   CoreHelperUtil,
   RouterController,
   SendController,
   SwapController
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-icon-box'
-import '@reown/appkit-ui/wui-input-text'
-import '@reown/appkit-ui/wui-link'
-import '@reown/appkit-ui/wui-list-token'
-import '@reown/appkit-ui/wui-separator'
-import '@reown/appkit-ui/wui-text'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon'
+import '@laughingwhales/appkit-ui/wui-icon-box'
+import '@laughingwhales/appkit-ui/wui-input-text'
+import '@laughingwhales/appkit-ui/wui-link'
+import '@laughingwhales/appkit-ui/wui-list-token'
+import '@laughingwhales/appkit-ui/wui-separator'
+import '@laughingwhales/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

@@ -8,7 +8,7 @@ import type {
   ConnectorType,
   SIWXConfig,
   SocialProvider
-} from '@reown/appkit'
+} from '@laughingwhales/appkit'
 import {
   type Balance,
   type CaipNetwork,
@@ -16,7 +16,7 @@ import {
   SafeLocalStorage,
   SafeLocalStorageKeys,
   getSafeConnectorIdKey
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 import {
   ApiController,
   AssetUtil,
@@ -35,8 +35,8 @@ import {
   SnackController,
   StorageUtil,
   ThemeController
-} from '@reown/appkit-controllers'
-import { CaipNetworksUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
+} from '@laughingwhales/appkit-controllers'
+import { CaipNetworksUtil, ConstantsUtil as UtilConstantsUtil } from '@laughingwhales/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockUser, mockUserBalance } from '../mocks/Account.js'

@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ConstantsUtil as CommonConstantsUtil, ErrorUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, ErrorUtil } from '@laughingwhales/appkit-common'
 import {
   AppKitError,
   ChainController,
@@ -9,13 +9,13 @@ import {
   RouterController,
   SendController,
   SnackController
-} from '@reown/appkit-controllers'
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-button'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-preview-item'
-import '@reown/appkit-ui/wui-text'
+} from '@laughingwhales/appkit-controllers'
+import { UiHelperUtil, customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-button'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon'
+import '@laughingwhales/appkit-ui/wui-preview-item'
+import '@laughingwhales/appkit-ui/wui-text'
 
 import '../../partials/w3m-wallet-send-details/index.js'
 import styles from './styles.js'

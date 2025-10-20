@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   type AccountState,
   ApiController,
@@ -9,7 +9,7 @@ import {
   ConnectionController,
   ConnectorController,
   ModalController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit-core'
 import { mockOptions } from '../mocks/Options'

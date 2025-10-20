@@ -3,13 +3,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   type AccountState,
   type AuthConnector,
   ChainController,
   ConnectorController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mAccountView } from '../../src/views/w3m-account-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

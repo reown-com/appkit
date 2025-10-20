@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-banner'
-import type { WuiBanner } from '@reown/appkit-ui/wui-banner'
+import '@laughingwhales/appkit-ui/wui-banner'
+import type { WuiBanner } from '@laughingwhales/appkit-ui/wui-banner'
 
 import '../../components/gallery-container'
 import { iconOptions } from '../../utils/PresetUtils'

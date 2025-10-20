@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type Balance } from '@reown/appkit-common'
+import { type Balance } from '@laughingwhales/appkit-common'
 
 import {
   type AccountState,

@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { type CaipAddress, type CaipNetwork, NumberUtil } from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork, NumberUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   CoreHelperUtil,
@@ -12,14 +12,14 @@ import {
   type SwapInputTarget,
   type SwapToken,
   getPreferredAccountType
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-button'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-icon-box'
-import '@reown/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-button'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon'
+import '@laughingwhales/appkit-ui/wui-icon-box'
+import '@laughingwhales/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import type { SwapInputArguments } from '../../../../controllers/dist/types/src/controllers/SwapController.js'
 import '../../partials/w3m-swap-details/index.js'

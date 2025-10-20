@@ -12,7 +12,7 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mConnectingFarcasterView } from '../../src/views/w3m-connecting-farcaster-view/index'
 

@@ -3,13 +3,13 @@ import { useState } from 'react'
 import { Button, Link, Spacer, Stack, Text } from '@chakra-ui/react'
 import { ethers } from 'ethers5'
 
-import { optimism, sepolia } from '@reown/appkit/networks'
+import { optimism, sepolia } from '@laughingwhales/appkit/networks'
 import {
   type Provider,
   useAppKitAccount,
   useAppKitNetwork,
   useAppKitProvider
-} from '@reown/appkit/react'
+} from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { abi, address as donutAddress } from '@/src/utils/DonutContract'

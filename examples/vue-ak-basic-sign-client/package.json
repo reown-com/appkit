@@ -8,10 +8,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@reown/appkit": "workspace:*",
     "@walletconnect/sign-client": "2.22.4",
     "@walletconnect/types": "2.22.4",
-    "vue": "3.4.3"
+    "vue": "3.4.3",
+    "@laughingwhales/appkit": "workspace:*"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.0.2",

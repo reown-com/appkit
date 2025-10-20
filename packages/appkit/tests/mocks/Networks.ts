@@ -1,6 +1,6 @@
-import type { CaipNetwork } from '@reown/appkit'
-import { ConstantsUtil } from '@reown/appkit-common'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
+import type { CaipNetwork } from '@laughingwhales/appkit'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
+import { CaipNetworksUtil } from '@laughingwhales/appkit-utils'
 
 import {
   base as baseNetwork,

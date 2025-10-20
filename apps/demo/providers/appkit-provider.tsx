@@ -4,7 +4,7 @@ import React, { type ReactNode } from 'react'
 
 import { ref } from 'valtio/vanilla'
 
-import { createAppKit } from '@reown/appkit/react'
+import { createAppKit } from '@laughingwhales/appkit/react'
 
 import { appKitConfigs, initialConfig } from '@/lib/config'
 import { ThemeStore } from '@/lib/theme-store'

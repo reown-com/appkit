@@ -3,7 +3,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
 import {
   type AccountState,
   type ChainAdapter,
@@ -11,8 +11,8 @@ import {
   type ConnectedWalletInfo,
   type Metadata,
   OptionsController
-} from '@reown/appkit-controllers'
-import type { WuiVisualThumbnail } from '@reown/appkit-ui/wui-visual-thumbnail'
+} from '@laughingwhales/appkit-controllers'
+import type { WuiVisualThumbnail } from '@laughingwhales/appkit-ui/wui-visual-thumbnail'
 
 import '../../src/partials/w3m-siwx-sign-message-thumbnails/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

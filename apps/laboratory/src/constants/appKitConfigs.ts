@@ -1,8 +1,8 @@
 import type { CreateConfigParameters } from 'wagmi'
 
-import type { CreateAppKit } from '@reown/appkit'
-import type { AppKitNetwork, CustomRpcUrlMap } from '@reown/appkit-common'
-import { DefaultSIWX, ReownAuthentication } from '@reown/appkit-siwx'
+import type { CreateAppKit } from '@laughingwhales/appkit'
+import type { AppKitNetwork, CustomRpcUrlMap } from '@laughingwhales/appkit-common'
+import { DefaultSIWX, ReownAuthentication } from '@laughingwhales/appkit-siwx'
 
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { siweConfig } from '@/src/utils/SiweUtils'

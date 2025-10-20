@@ -9,13 +9,13 @@ import {
   ConnectorController,
   OptionsController,
   RouterController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 import type {
   ApiControllerState,
   ChainControllerState,
   Connector,
   WcWallet
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mAllWalletsList } from '../../src/partials/w3m-all-wallets-list'
 import { HelpersUtil } from '../utils/HelpersUtil'

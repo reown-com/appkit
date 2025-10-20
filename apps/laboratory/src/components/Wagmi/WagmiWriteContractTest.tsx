@@ -5,7 +5,7 @@ import { parseEther } from 'viem'
 import { useAccount, useReadContract, useSimulateContract, useWriteContract } from 'wagmi'
 import { optimism, sepolia } from 'wagmi/chains'
 
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { abi, address } from '@/src/utils/DonutContract'

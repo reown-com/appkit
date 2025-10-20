@@ -6,12 +6,12 @@ import {
   EventsController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon-box'
-import '@reown/appkit-ui/wui-link'
-import '@reown/appkit-ui/wui-text'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon-box'
+import '@laughingwhales/appkit-ui/wui-link'
+import '@laughingwhales/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

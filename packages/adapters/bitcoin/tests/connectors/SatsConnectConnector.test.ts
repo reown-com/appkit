@@ -6,10 +6,10 @@ import {
 } from 'sats-connect'
 import { type MockInstance, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { CaipNetwork } from '@reown/appkit-common'
-import { ChainController, CoreHelperUtil } from '@reown/appkit-controllers'
-import { HelpersUtil } from '@reown/appkit-utils'
-import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
+import { ChainController, CoreHelperUtil } from '@laughingwhales/appkit-controllers'
+import { HelpersUtil } from '@laughingwhales/appkit-utils'
+import { bitcoin, bitcoinTestnet, mainnet } from '@laughingwhales/appkit/networks'
 
 import { SatsConnectConnector } from '../../src/connectors/SatsConnectConnector'
 import { mockSatsConnectProvider } from '../mocks/mockSatsConnect'

@@ -8,10 +8,10 @@ import {
   CoreHelperUtil,
   OptionsController,
   type WcWallet
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-card-select-loader'
-import '@reown/appkit-ui/wui-grid'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-card-select-loader'
+import '@laughingwhales/appkit-ui/wui-grid'
 
 import { WalletUtil } from '../../utils/WalletUtil.js'
 import '../w3m-all-wallets-list-item/index.js'

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type Hex } from '@reown/appkit-common'
+import { type Hex } from '@laughingwhales/appkit-common'
 
 import { ConstantsUtil } from '../../src/smart-session/utils/ConstantUtils'
 import {

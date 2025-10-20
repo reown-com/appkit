@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
 
-import '@reown/appkit-ui'
+import '@laughingwhales/appkit-ui'
 
 import '../exports/index.js'
 

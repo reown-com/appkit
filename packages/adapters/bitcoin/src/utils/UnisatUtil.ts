@@ -1,4 +1,4 @@
-import { CoreHelperUtil } from '@reown/appkit-controllers'
+import { CoreHelperUtil } from '@laughingwhales/appkit-controllers'
 
 import type { UnisatConnector } from '../connectors/UnisatConnector/types.js'
 

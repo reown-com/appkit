@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import type { ThemeVariables } from '@reown/appkit-common'
+import type { ThemeVariables } from '@laughingwhales/appkit-common'
 
 import { createRootStyles } from '../src/utils/ThemeUtil.js'
 

@@ -3,7 +3,7 @@ import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ParseUtil } from '@reown/appkit-common'
+import { ParseUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   type Connector,
@@ -13,8 +13,8 @@ import {
   ModalController,
   RouterController,
   type WcWallet
-} from '@reown/appkit-controllers'
-import { ConnectorControllerUtil } from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
+import { ConnectorControllerUtil } from '@laughingwhales/appkit-controllers'
 
 import { ApiController } from '../../controllers/ApiController.js'
 import '../../scaffold-ui/appkit-wallet-button/index.js'

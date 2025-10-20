@@ -1,13 +1,13 @@
 import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
 
-import type { ParsedCaipAddress } from '@reown/appkit-common'
+import type { ParsedCaipAddress } from '@laughingwhales/appkit-common'
 import {
   type Connector,
   ConnectorController,
   ConnectorControllerUtil,
   FetchUtil,
   type WcWallet
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { AppKitWalletButton } from '../client'
 import { ApiController } from '../controllers/ApiController'

@@ -11,13 +11,13 @@ import {
   ModalUtil,
   OptionsController,
   RouterController
-} from '@reown/appkit-controllers'
-import { customElement, vars } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon-button'
-import '@reown/appkit-ui/wui-select'
-import '@reown/appkit-ui/wui-tag'
-import '@reown/appkit-ui/wui-text'
+} from '@laughingwhales/appkit-controllers'
+import { customElement, vars } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon-button'
+import '@laughingwhales/appkit-ui/wui-select'
+import '@laughingwhales/appkit-ui/wui-tag'
+import '@laughingwhales/appkit-ui/wui-text'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import styles from './styles.js'

@@ -8,14 +8,14 @@
     "build": "parcel build"
   },
   "dependencies": {
-    "@reown/appkit": "workspace:*",
-    "@reown/appkit-adapter-wagmi": "workspace:*",
     "@walletconnect/universal-provider": "2.22.4",
     "@walletconnect/utils": "2.22.4",
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "viem": "2.37.9",
-    "wagmi": "2.17.5"
+    "wagmi": "2.17.5",
+    "@laughingwhales/appkit": "workspace:*",
+    "@laughingwhales/appkit-adapter-wagmi": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "19.1.15",

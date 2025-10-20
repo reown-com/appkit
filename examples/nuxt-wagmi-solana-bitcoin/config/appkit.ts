@@ -1,6 +1,6 @@
-import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { BitcoinAdapter } from '@laughingwhales/appkit-adapter-bitcoin'
+import { SolanaAdapter } from '@laughingwhales/appkit-adapter-solana'
+import { WagmiAdapter } from '@laughingwhales/appkit-adapter-wagmi'
 import {
   base,
   bitcoin,
@@ -9,7 +9,7 @@ import {
   polygon,
   solana,
   solanaDevnet
-} from '@reown/appkit/networks'
+} from '@laughingwhales/appkit/networks'
 
 export const networks = [mainnet, polygon, base, solana, solanaDevnet, bitcoin, bitcoinTestnet]
 

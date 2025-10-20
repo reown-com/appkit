@@ -1,7 +1,7 @@
 import { type BrowserContext, test } from '@playwright/test'
 
-import { WalletPage } from '@reown/appkit-testing'
-import { DEFAULT_SESSION_PARAMS } from '@reown/appkit-testing'
+import { WalletPage } from '@laughingwhales/appkit-testing'
+import { DEFAULT_SESSION_PARAMS } from '@laughingwhales/appkit-testing'
 
 import { ModalPage } from './shared/pages/ModalPage'
 import { Email } from './shared/utils/email'

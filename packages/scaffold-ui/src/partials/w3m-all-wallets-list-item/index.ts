@@ -7,13 +7,13 @@ import {
   EventsController,
   RouterController,
   type WcWallet
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-shimmer'
-import '@reown/appkit-ui/wui-text'
-import '@reown/appkit-ui/wui-wallet-image'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon'
+import '@laughingwhales/appkit-ui/wui-shimmer'
+import '@laughingwhales/appkit-ui/wui-text'
+import '@laughingwhales/appkit-ui/wui-wallet-image'
 
 import styles from './styles.js'
 

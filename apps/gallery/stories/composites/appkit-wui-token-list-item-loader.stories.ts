@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-token-list-item-loader'
-import type { WuiTokenListItemLoader } from '@reown/appkit-ui/wui-token-list-item-loader'
+import '@laughingwhales/appkit-ui/wui-token-list-item-loader'
+import type { WuiTokenListItemLoader } from '@laughingwhales/appkit-ui/wui-token-list-item-loader'
 
 import '../../components/gallery-container'
 

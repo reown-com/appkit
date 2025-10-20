@@ -12,7 +12,7 @@ import {
   StackDivider
 } from '@chakra-ui/react'
 
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@laughingwhales/appkit/react'
 
 import { useEthersActiveCapabilities } from '@/src/hooks/useEthersActiveCapabilities'
 

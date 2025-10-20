@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import type { WuiEnsInput } from '@reown/appkit-ui/wui-ens-input'
-import '@reown/appkit-ui/wui-ens-input'
+import type { WuiEnsInput } from '@laughingwhales/appkit-ui/wui-ens-input'
+import '@laughingwhales/appkit-ui/wui-ens-input'
 
 import '../../components/gallery-container'
 

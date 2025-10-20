@@ -1,6 +1,6 @@
 import { formatUnits } from 'viem'
 
-import type { Balance, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
+import type { Balance, CaipNetworkId, ChainNamespace } from '@laughingwhales/appkit-common'
 
 type Hex = `0x${string}`
 interface TokenMetadata {

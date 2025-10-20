@@ -1,18 +1,18 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 
-import { type AppKitOptions, CoreHelperUtil, type Provider } from '@reown/appkit'
-import { type ChainNamespace, ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { type AppKitOptions, CoreHelperUtil, type Provider } from '@laughingwhales/appkit'
+import { type ChainNamespace, ConstantsUtil, UserRejectedRequestError } from '@laughingwhales/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   AdapterBlueprint,
   ChainController,
   ProviderController,
   StorageUtil,
   WcHelpersUtil
-} from '@reown/appkit-controllers'
-import { HelpersUtil } from '@reown/appkit-utils'
-import { type BitcoinConnector, BitcoinConstantsUtil } from '@reown/appkit-utils/bitcoin'
-import { bitcoin } from '@reown/appkit/networks'
+} from '@laughingwhales/appkit-controllers'
+import { HelpersUtil } from '@laughingwhales/appkit-utils'
+import { type BitcoinConnector, BitcoinConstantsUtil } from '@laughingwhales/appkit-utils/bitcoin'
+import { bitcoin } from '@laughingwhales/appkit/networks'
 
 import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnectConnector.js'
 import { LeatherConnector } from './connectors/LeatherConnector.js'

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import { useEffect, useState } from 'react'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
 import type {
   AppKitAccountButton,
   AppKitButton,
@@ -11,7 +11,7 @@ import type {
   W3mButton,
   W3mConnectButton,
   W3mNetworkButton
-} from '@reown/appkit-scaffold-ui'
+} from '@laughingwhales/appkit-scaffold-ui'
 
 import type {
   AppKitBaseClient as AppKit,
@@ -71,7 +71,7 @@ export function getAppKit(appKit: AppKit) {
 }
 
 // -- Core Hooks ---------------------------------------------------------------
-export * from '@reown/appkit-controllers/react'
+export * from '@laughingwhales/appkit-controllers/react'
 
 export function useAppKitTheme() {
   if (!modal) {

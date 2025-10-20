@@ -2,13 +2,13 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import { UiHelperUtil } from '@reown/appkit-ui'
-import type { WuiDetailsGroup } from '@reown/appkit-ui/wui-details-group'
-import '@reown/appkit-ui/wui-details-group-item'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-image'
-import '@reown/appkit-ui/wui-semantic-chip'
-import '@reown/appkit-ui/wui-text'
+import { UiHelperUtil } from '@laughingwhales/appkit-ui'
+import type { WuiDetailsGroup } from '@laughingwhales/appkit-ui/wui-details-group'
+import '@laughingwhales/appkit-ui/wui-details-group-item'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-image'
+import '@laughingwhales/appkit-ui/wui-semantic-chip'
+import '@laughingwhales/appkit-ui/wui-text'
 
 import '../../components/gallery-container'
 

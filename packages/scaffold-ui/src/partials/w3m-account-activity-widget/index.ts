@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 
-import { customElement } from '@reown/appkit-ui'
+import { customElement } from '@laughingwhales/appkit-ui'
 
 import '../w3m-activity-list/index.js'
 import styles from './styles.js'

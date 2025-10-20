@@ -10,10 +10,6 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@reown/appkit": "workspace:*",
-    "@reown/appkit-adapter-bitcoin": "workspace:*",
-    "@reown/appkit-adapter-solana": "workspace:*",
-    "@reown/appkit-adapter-wagmi": "workspace:*",
     "@tanstack/vue-query": "5.75.5",
     "@vue/devtools-api": "7.7.2",
     "@wagmi/core": "2.21.2",
@@ -22,6 +18,10 @@
     "nuxt": "4.1.2",
     "viem": "2.37.9",
     "vue": "3.5.13",
-    "vue-router": "latest"
+    "vue-router": "latest",
+    "@laughingwhales/appkit": "workspace:*",
+    "@laughingwhales/appkit-adapter-bitcoin": "workspace:*",
+    "@laughingwhales/appkit-adapter-solana": "workspace:*",
+    "@laughingwhales/appkit-adapter-wagmi": "workspace:*"
   }
 }

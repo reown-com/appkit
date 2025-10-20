@@ -1,6 +1,6 @@
-import type { InferredCaipNetwork } from '@reown/appkit-common'
-import type { AppKitNetwork } from '@reown/appkit/networks'
-import { bitcoin, mainnet, polygon, solana } from '@reown/appkit/networks'
+import type { InferredCaipNetwork } from '@laughingwhales/appkit-common'
+import type { AppKitNetwork } from '@laughingwhales/appkit/networks'
+import { bitcoin, mainnet, polygon, solana } from '@laughingwhales/appkit/networks'
 
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 

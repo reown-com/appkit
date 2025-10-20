@@ -1,11 +1,11 @@
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
 import {
   type Connector,
   ConnectorController,
   ConnectorControllerUtil,
   ModalController,
   RouterController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { ApiController } from './controllers/ApiController.js'
 import { WalletButtonController } from './controllers/WalletButtonController.js'

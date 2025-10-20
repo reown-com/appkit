@@ -1,9 +1,9 @@
 import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
 
-import type { CaipNetworkId } from '@reown/appkit'
-import type { ChainNamespace } from '@reown/appkit-common'
-import { getMaximumWaitConnections } from '@reown/appkit-testing'
+import type { CaipNetworkId } from '@laughingwhales/appkit'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
+import { getMaximumWaitConnections } from '@laughingwhales/appkit-testing'
 
 import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
 import { verifySignature } from '../../../src/utils/SignatureUtil'

@@ -2,12 +2,12 @@
  * Due to some limitations on exporting multiple modules with UMD, we needed to export all of our modules in this file.
  * For now exporting only Wagmi and Solana adapters. Until we found a better workaround and need other adapters, we can keep it this way.
  */
-import { AppKit, type AppKitOptions, CoreHelperUtil } from '@reown/appkit'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import '@reown/appkit-polyfills'
-import { PACKAGE_VERSION } from '@reown/appkit/constants'
-import * as AppKitNetworks from '@reown/appkit/networks'
+import { AppKit, type AppKitOptions, CoreHelperUtil } from '@laughingwhales/appkit'
+import { SolanaAdapter } from '@laughingwhales/appkit-adapter-solana'
+import { WagmiAdapter } from '@laughingwhales/appkit-adapter-wagmi'
+import '@laughingwhales/appkit-polyfills'
+import { PACKAGE_VERSION } from '@laughingwhales/appkit/constants'
+import * as AppKitNetworks from '@laughingwhales/appkit/networks'
 
 // -- Export Wagmi ------------------------------------------- //
 export * as Viem from 'viem'

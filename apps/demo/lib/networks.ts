@@ -1,4 +1,4 @@
-import { type ChainNamespace } from '@reown/appkit-common'
+import { type ChainNamespace } from '@laughingwhales/appkit-common'
 import {
   type AppKitNetwork,
   arbitrum,
@@ -17,7 +17,7 @@ import {
   solanaDevnet,
   westend,
   zksync
-} from '@reown/appkit/networks'
+} from '@laughingwhales/appkit/networks'
 
 export type NetworkOption = {
   namespace: ChainNamespace

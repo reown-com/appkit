@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
 import {
   type AccountType,
   ChainController,
@@ -11,9 +11,9 @@ import {
   EventsController,
   ProviderController,
   StorageUtil
-} from '@reown/appkit-controllers'
-import { ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
+} from '@laughingwhales/appkit-controllers'
+import { ConstantsUtil as UtilConstantsUtil } from '@laughingwhales/appkit-utils'
+import type { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter.js'

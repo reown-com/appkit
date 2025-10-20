@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import type { Address, Hex } from '@reown/appkit-common'
+import type { Address, Hex } from '@laughingwhales/appkit-common'
 
 import type { SmartSessionGrantPermissionsRequest } from '../../../exports/smart-session/index.js'
 import { validateRequest } from '../../../src/smart-session/helper/index.js'

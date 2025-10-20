@@ -3,9 +3,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ConstantsUtil } from '@reown/appkit-common'
-import type { ConnectorWithProviders } from '@reown/appkit-controllers'
-import { ConnectorController, CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
+import type { ConnectorWithProviders } from '@laughingwhales/appkit-controllers'
+import { ConnectorController, CoreHelperUtil, RouterController } from '@laughingwhales/appkit-controllers'
 
 import { W3mConnectingMultiChainView } from '../../src/views/w3m-connecting-multi-chain-view'
 import { HelpersUtil } from '../utils/HelpersUtil'

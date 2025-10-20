@@ -1,5 +1,18 @@
 # @reown/appkit-universal-connector
 
+## 1.8.11
+
+### Patch Changes
+
+- 99cc58b: Fixes package version injecting when building packages
+- fda02dc: Added usage limit UI in AppKit that displays when limits are exceeded
+- Updated dependencies [15d9b6b]
+- Updated dependencies [1a9f436]
+- Updated dependencies [99cc58b]
+- Updated dependencies [fda02dc]
+  - @laughingwhales/appkit@1.8.11
+  - @laughingwhales/appkit-common@1.8.11
+
 ## 1.8.10
 
 ### Patch Changes

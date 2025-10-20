@@ -15,8 +15,8 @@ import { Button, Heading, Spacer, Stack, Text } from '@chakra-ui/react'
 import { BrowserProvider, type Eip1193Provider } from 'ethers'
 import { type WalletCapabilities, parseGwei, toHex } from 'viem'
 
-import type { Address, Hex } from '@reown/appkit-common'
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import type { Address, Hex } from '@laughingwhales/appkit-common'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@laughingwhales/appkit/react'
 
 import { AddTransactionModal } from '@/src/components/AddTransactionModal'
 import { useChakraToast } from '@/src/components/Toast'

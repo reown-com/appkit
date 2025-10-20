@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   type ConnectionControllerClient,
@@ -8,9 +8,9 @@ import {
   type Provider as CoreProvider,
   ProviderController,
   WcHelpersUtil
-} from '@reown/appkit-controllers'
-import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
-import { solana } from '@reown/appkit/networks'
+} from '@laughingwhales/appkit-controllers'
+import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@laughingwhales/appkit-utils'
+import { solana } from '@laughingwhales/appkit/networks'
 
 import { SolanaAdapter } from '../client'
 import { AuthProvider } from '../providers/AuthProvider'

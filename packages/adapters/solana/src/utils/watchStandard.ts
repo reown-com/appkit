@@ -2,7 +2,7 @@ import { isWalletAdapterCompatibleStandardWallet } from '@solana/wallet-adapter-
 import { getWallets } from '@wallet-standard/app'
 import type { Wallet } from '@wallet-standard/base'
 
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
 
 import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
 

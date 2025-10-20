@@ -1,11 +1,11 @@
 import { ref } from 'vue'
 
-import type { Connection } from '@reown/appkit-utils/solana'
+import type { Connection } from '@laughingwhales/appkit-utils/solana'
 
 import { SolStoreUtil } from '../src/utils/SolanaStoreUtil.js'
 
 // -- Types -----------------------------------------------------------
-export * from '@reown/appkit-utils/solana'
+export * from '@laughingwhales/appkit-utils/solana'
 
 // -- Source -----------------------------------------------------------
 export * from '../src/index.js'

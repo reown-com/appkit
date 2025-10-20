@@ -6,7 +6,7 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   ParseUtil,
   type ParsedCaipAddress
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 
 import type { AccountState } from '../../exports/index.js'
 import type {

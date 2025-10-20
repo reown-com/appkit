@@ -8,13 +8,13 @@ import {
   polygon,
   solana,
   solanaTestnet
-} from '@reown/appkit/networks'
+} from '@laughingwhales/appkit/networks'
 import {
   useAppKit,
   useAppKitAccount,
   useAppKitNetwork,
   useDisconnect
-} from '@reown/appkit/react-core'
+} from '@laughingwhales/appkit/react-core'
 
 export interface AppKitCoreHooksProps {
   networks?: AppKitNetwork[]

@@ -1,8 +1,8 @@
 import { browser } from '$app/environment'
 
-import { createAppKit } from '@reown/appkit'
-import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { arbitrum, mainnet, optimism, polygon } from '@reown/appkit/networks'
+import { createAppKit } from '@laughingwhales/appkit'
+import { EthersAdapter } from '@laughingwhales/appkit-adapter-ethers'
+import { arbitrum, mainnet, optimism, polygon } from '@laughingwhales/appkit/networks'
 
 // Only initialize in browser environment
 let modal: ReturnType<typeof createAppKit> | undefined = undefined

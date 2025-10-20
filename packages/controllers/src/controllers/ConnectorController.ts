@@ -6,8 +6,8 @@ import {
   type ChainNamespace,
   ConstantsUtil,
   getW3mThemeVariables
-} from '@reown/appkit-common'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-common'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
 import { MobileWalletUtil } from '../utils/MobileWallet.js'

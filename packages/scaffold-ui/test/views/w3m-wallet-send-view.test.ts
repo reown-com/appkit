@@ -1,7 +1,7 @@
 import { fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Balance } from '@reown/appkit-common'
+import type { Balance } from '@laughingwhales/appkit-common'
 import {
   type AccountState,
   ChainController,
@@ -9,7 +9,7 @@ import {
   RouterController,
   SendController,
   SwapController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mWalletSendView } from '../../src/views/w3m-wallet-send-view'
 

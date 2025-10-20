@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetworkId } from '@laughingwhales/appkit-common'
 
 import { OptionsController } from '../../src/controllers/OptionsController'
 import {

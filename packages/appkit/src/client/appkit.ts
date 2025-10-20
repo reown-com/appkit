@@ -8,7 +8,7 @@ import {
   type EmbeddedWalletTimeoutReason,
   type SocialProvider,
   getW3mThemeVariables
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 import {
   ApiController,
   ConnectionController,
@@ -23,7 +23,7 @@ import {
   SIWXUtil,
   getActiveCaipNetwork,
   getPreferredAccountType
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 import {
   AlertController,
   ChainController,
@@ -32,12 +32,12 @@ import {
   ProviderController,
   StorageUtil,
   ThemeController
-} from '@reown/appkit-controllers'
-import type { AdapterBlueprint } from '@reown/appkit-controllers'
-import { ErrorUtil, HelpersUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
-import { W3mFrameHelpers, W3mFrameProvider } from '@reown/appkit-wallet'
-import type { W3mFrameTypes } from '@reown/appkit-wallet'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-controllers'
+import type { AdapterBlueprint } from '@laughingwhales/appkit-controllers'
+import { ErrorUtil, HelpersUtil, ConstantsUtil as UtilConstantsUtil } from '@laughingwhales/appkit-utils'
+import { W3mFrameHelpers, W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+import type { W3mFrameTypes } from '@laughingwhales/appkit-wallet'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import { W3mFrameProviderSingleton } from '../auth-provider/W3MFrameProviderSingleton.js'
 import { AppKitBaseClient, type AppKitOptionsWithSdk } from './appkit-base-client.js'
@@ -625,54 +625,54 @@ export class AppKit extends AppKitBaseClient {
     const usingEmbeddedWallet =
       remoteFeatures.email || (remoteFeatures.socials && remoteFeatures.socials.length > 0)
     if (usingEmbeddedWallet) {
-      featureImportPromises.push(import('@reown/appkit-scaffold-ui/embedded-wallet'))
+      featureImportPromises.push(import('@laughingwhales/appkit-scaffold-ui/embedded-wallet'))
     }
 
     if (remoteFeatures.email) {
-      featureImportPromises.push(import('@reown/appkit-scaffold-ui/email'))
+      featureImportPromises.push(import('@laughingwhales/appkit-scaffold-ui/email'))
     }
     if (remoteFeatures.socials) {
-      featureImportPromises.push(import('@reown/appkit-scaffold-ui/socials'))
+      featureImportPromises.push(import('@laughingwhales/appkit-scaffold-ui/socials'))
     }
 
     if (remoteFeatures.swaps && remoteFeatures.swaps.length > 0) {
-      featureImportPromises.push(import('@reown/appkit-scaffold-ui/swaps'))
+      featureImportPromises.push(import('@laughingwhales/appkit-scaffold-ui/swaps'))
     }
 
     if (features.send) {
-      featureImportPromises.push(import('@reown/appkit-scaffold-ui/send'))
+      featureImportPromises.push(import('@laughingwhales/appkit-scaffold-ui/send'))
     }
 
     if (features.receive) {
-      featureImportPromises.push(import('@reown/appkit-scaffold-ui/receive'))
+      featureImportPromises.push(import('@laughingwhales/appkit-scaffold-ui/receive'))
     }
 
     if (remoteFeatures.onramp && remoteFeatures.onramp.length > 0) {
-      featureImportPromises.push(import('@reown/appkit-scaffold-ui/onramp'))
+      featureImportPromises.push(import('@laughingwhales/appkit-scaffold-ui/onramp'))
     }
 
     if (remoteFeatures.payWithExchange) {
-      featureImportPromises.push(import('@reown/appkit-scaffold-ui/pay-with-exchange'))
+      featureImportPromises.push(import('@laughingwhales/appkit-scaffold-ui/pay-with-exchange'))
     }
 
     if (remoteFeatures.activity) {
-      featureImportPromises.push(import('@reown/appkit-scaffold-ui/transactions'))
+      featureImportPromises.push(import('@laughingwhales/appkit-scaffold-ui/transactions'))
     }
 
     if (features.pay || remoteFeatures.payments) {
-      featureImportPromises.push(import('@reown/appkit-pay'))
+      featureImportPromises.push(import('@laughingwhales/appkit-pay'))
     }
 
     if (remoteFeatures.emailCapture) {
       featureImportPromises.push(
-        import('@reown/appkit-scaffold-ui/reown-authentication/data-capture')
+        import('@laughingwhales/appkit-scaffold-ui/reown-authentication/data-capture')
       )
     }
 
     await Promise.all([
       ...featureImportPromises,
-      import('@reown/appkit-scaffold-ui'),
-      import('@reown/appkit-scaffold-ui/w3m-modal')
+      import('@laughingwhales/appkit-scaffold-ui'),
+      import('@laughingwhales/appkit-scaffold-ui/w3m-modal')
     ])
   }
 }

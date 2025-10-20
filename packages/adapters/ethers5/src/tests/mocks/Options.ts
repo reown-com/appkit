@@ -1,5 +1,5 @@
-import type { AppKitOptions, ChainAdapter } from '@reown/appkit'
-import { mainnet, solana } from '@reown/appkit/networks'
+import type { AppKitOptions, ChainAdapter } from '@laughingwhales/appkit'
+import { mainnet, solana } from '@laughingwhales/appkit/networks'
 
 export const mockMainnetChainImage =
   'https://assets.coingecko.com/coins/images/279/large/ethereum.png'

@@ -1,5 +1,21 @@
 # @reown/appkit-adapter-polkadot
 
+## 1.8.11
+
+### Patch Changes
+
+- Updated dependencies [15d9b6b]
+- Updated dependencies [1a9f436]
+- Updated dependencies [99cc58b]
+- Updated dependencies [135b5c0]
+- Updated dependencies [fda02dc]
+- Updated dependencies [2778f7d]
+  - @laughingwhales/appkit@1.8.11
+  - @laughingwhales/appkit-controllers@1.8.11
+  - @laughingwhales/appkit-utils@1.8.11
+  - @laughingwhales/appkit-common@1.8.11
+  - @laughingwhales/appkit-polyfills@1.8.11
+
 ## 1.5.2
 
 ### Patch Changes

@@ -4,7 +4,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { createRef, ref } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   AlertController,
   ApiController,
@@ -13,14 +13,14 @@ import {
   ConnectorController,
   CoreHelperUtil,
   OptionsController
-} from '@reown/appkit-controllers'
-import { EventsController, RouterController, SnackController } from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-email-input'
-import '@reown/appkit-ui/wui-icon-link'
-import '@reown/appkit-ui/wui-loading-spinner'
-import '@reown/appkit-ui/wui-text'
-import { ErrorUtil } from '@reown/appkit-utils'
+} from '@laughingwhales/appkit-controllers'
+import { EventsController, RouterController, SnackController } from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-email-input'
+import '@laughingwhales/appkit-ui/wui-icon-link'
+import '@laughingwhales/appkit-ui/wui-loading-spinner'
+import '@laughingwhales/appkit-ui/wui-text'
+import { ErrorUtil } from '@laughingwhales/appkit-utils'
 
 import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import styles from './styles.js'

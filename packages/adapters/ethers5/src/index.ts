@@ -1,7 +1,7 @@
-import '@reown/appkit-polyfills'
+import '@laughingwhales/appkit-polyfills'
 
 export { Ethers5Adapter } from './client.js'
-export * from '@reown/appkit-utils/ethers'
+export * from '@laughingwhales/appkit-utils/ethers'
 
 // -- Types
-export type { ProviderType } from '@reown/appkit-utils/ethers'
+export type { ProviderType } from '@laughingwhales/appkit-utils/ethers'

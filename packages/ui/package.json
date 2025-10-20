@@ -1,6 +1,6 @@
 {
-  "name": "@reown/appkit-ui",
-  "version": "1.8.10",
+  "name": "@laughingwhales/appkit-ui",
+  "version": "1.8.11",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -456,11 +456,11 @@
   },
   "dependencies": {
     "@phosphor-icons/webcomponents": "2.1.5",
-    "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-controllers": "workspace:*",
-    "@reown/appkit-wallet": "workspace:*",
     "lit": "3.3.0",
-    "qrcode": "1.5.3"
+    "qrcode": "1.5.3",
+    "@laughingwhales/appkit-common": "workspace:*",
+    "@laughingwhales/appkit-controllers": "workspace:*",
+    "@laughingwhales/appkit-wallet": "workspace:*"
   },
   "devDependencies": {
     "@types/qrcode": "1.5.5",

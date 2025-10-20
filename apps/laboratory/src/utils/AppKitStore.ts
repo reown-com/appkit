@@ -1,6 +1,6 @@
 import { proxy, ref } from 'valtio/vanilla'
 
-import type { AppKit } from '@reown/appkit'
+import type { AppKit } from '@laughingwhales/appkit'
 
 export const AppKitStore = proxy<{
   appKit: AppKit | undefined

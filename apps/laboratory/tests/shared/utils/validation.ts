@@ -1,4 +1,4 @@
-import { WalletValidator } from '@reown/appkit-testing'
+import { WalletValidator } from '@laughingwhales/appkit-testing'
 
 import type { ModalValidator } from '../validators/ModalValidator'
 

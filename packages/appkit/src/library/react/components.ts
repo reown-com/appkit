@@ -7,7 +7,7 @@ import {
   AppKitButton as AppKitButtonComponent,
   AppKitConnectButton as AppKitConnectButtonComponent,
   AppKitNetworkButton as AppKitNetworkButtonComponent
-} from '@reown/appkit-scaffold-ui'
+} from '@laughingwhales/appkit-scaffold-ui'
 
 export const AppKitButton = createComponent({
   tagName: 'appkit-button',

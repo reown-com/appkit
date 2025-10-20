@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button } from '@chakra-ui/react'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
 
-import { type Provider, useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+import { type Provider, useAppKitAccount, useAppKitProvider } from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'

@@ -1,4 +1,4 @@
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
 
 export const POLKADOT_MAINNET: CaipNetwork = {
   id: '91b171bb158e2d3848fa23a9f1c25182',

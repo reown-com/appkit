@@ -10,7 +10,7 @@ import {
   type ConnectorTypeOrder,
   CoreHelperUtil,
   StorageUtil
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mConnectorList } from '../../src/partials/w3m-connector-list'
 import { ConnectorUtil } from '../../src/utils/ConnectorUtil'

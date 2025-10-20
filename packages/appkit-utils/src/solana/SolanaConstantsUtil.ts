@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js'
 
-import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil } from '@laughingwhales/appkit-common'
 
 export const SolConstantsUtil = {
   UNIVERSAL_PROVIDER_RELAY_URL: 'wss://relay.walletconnect.org',

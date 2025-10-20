@@ -10,8 +10,8 @@ import {
   Text
 } from '@chakra-ui/react'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { TokenUtil } from '@reown/appkit-utils'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
+import { TokenUtil } from '@laughingwhales/appkit-utils'
 import {
   base,
   bitcoin,
@@ -20,7 +20,7 @@ import {
   polygon,
   solana,
   solanaTestnet
-} from '@reown/appkit/networks'
+} from '@laughingwhales/appkit/networks'
 import {
   AppKitButton,
   AppKitNetworkButton,
@@ -29,7 +29,7 @@ import {
   useAppKitAccount,
   useAppKitNetwork,
   useDisconnect
-} from '@reown/appkit/react'
+} from '@laughingwhales/appkit/react'
 
 import type { Adapter } from '../constants/appKitConfigs'
 import { ConstantsUtil } from '../utils/ConstantsUtil'

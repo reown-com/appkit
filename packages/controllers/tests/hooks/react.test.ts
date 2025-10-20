@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConstantsUtil as CommonConstantsUtil, ConstantsUtil } from '@reown/appkit-common'
-import type { Connection } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, ConstantsUtil } from '@laughingwhales/appkit-common'
+import type { Connection } from '@laughingwhales/appkit-common'
 
 import {
   type AuthConnector,

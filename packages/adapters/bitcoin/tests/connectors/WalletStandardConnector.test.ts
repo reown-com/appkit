@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { CaipNetwork } from '@reown/appkit-common'
-import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
+import { bitcoin, bitcoinTestnet, mainnet } from '@laughingwhales/appkit/networks'
 
 import { WalletStandardConnector } from '../../src/connectors/WalletStandardConnector'
 import { MethodNotSupportedError } from '../../src/errors/MethodNotSupportedError'

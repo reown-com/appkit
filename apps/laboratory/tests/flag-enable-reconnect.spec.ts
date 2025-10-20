@@ -1,6 +1,6 @@
 import { type BrowserContext } from '@playwright/test'
 
-import { WalletPage } from '@reown/appkit-testing'
+import { WalletPage } from '@laughingwhales/appkit-testing'
 
 import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'

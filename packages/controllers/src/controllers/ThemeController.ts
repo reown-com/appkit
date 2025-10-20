@@ -1,7 +1,7 @@
 import { proxy, snapshot, subscribe as sub } from 'valtio/vanilla'
 
-import { getW3mThemeVariables } from '@reown/appkit-common'
-import type { W3mThemeVariables } from '@reown/appkit-common'
+import { getW3mThemeVariables } from '@laughingwhales/appkit-common'
+import type { W3mThemeVariables } from '@laughingwhales/appkit-common'
 
 import type { ThemeMode, ThemeVariables } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'

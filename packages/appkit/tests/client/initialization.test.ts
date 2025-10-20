@@ -1,7 +1,7 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type AppKitNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { type AppKitNetwork, ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   AlertController,
   ApiController,
@@ -11,9 +11,9 @@ import {
   OptionsController,
   PublicStateController,
   StorageUtil
-} from '@reown/appkit-controllers'
-import { ReownAuthentication } from '@reown/appkit-controllers/features'
-import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
+} from '@laughingwhales/appkit-controllers'
+import { ReownAuthentication } from '@laughingwhales/appkit-controllers/features'
+import { CaipNetworksUtil, ErrorUtil } from '@laughingwhales/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter.js'
@@ -27,7 +27,7 @@ import {
   mockWindowAndDocument
 } from '../test-utils.js'
 
-vi.mock('@reown/appkit-controllers/features', () => ({
+vi.mock('@laughingwhales/appkit-controllers/features', () => ({
   ReownAuthentication: vi.fn()
 }))
 

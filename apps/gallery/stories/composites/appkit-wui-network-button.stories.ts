@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-network-button'
-import type { WuiNetworkButton } from '@reown/appkit-ui/wui-network-button'
+import '@laughingwhales/appkit-ui/wui-network-button'
+import type { WuiNetworkButton } from '@laughingwhales/appkit-ui/wui-network-button'
 
 import { networkImageSrc } from '../../utils/PresetUtils'
 

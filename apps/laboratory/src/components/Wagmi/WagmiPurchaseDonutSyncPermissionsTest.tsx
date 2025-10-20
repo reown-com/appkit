@@ -4,8 +4,8 @@ import { Button, Flex, Stack, Text } from '@chakra-ui/react'
 import { encodeFunctionData, parseEther } from 'viem'
 import { useReadContract } from 'wagmi'
 
-import type { Address } from '@reown/appkit-common'
-import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
+import type { Address } from '@laughingwhales/appkit-common'
+import type { SmartSessionGrantPermissionsResponse } from '@laughingwhales/appkit-experimental/smart-session'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { usePasskey } from '@/src/context/PasskeyContext'

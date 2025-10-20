@@ -1,8 +1,8 @@
 import SignClient from '@walletconnect/sign-client'
 
-import { createAppKit } from '@reown/appkit/core'
-import { solana } from '@reown/appkit/networks'
-import { mainnet } from '@reown/appkit/networks'
+import { createAppKit } from '@laughingwhales/appkit/core'
+import { solana } from '@laughingwhales/appkit/networks'
+import { mainnet } from '@laughingwhales/appkit/networks'
 
 export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
 

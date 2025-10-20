@@ -1,4 +1,4 @@
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@laughingwhales/appkit-common'
 
 import type { ConnectedWalletInfo } from '../../../../utils/TypeUtil.js'
 import type { Account } from '../Account/Account.js'

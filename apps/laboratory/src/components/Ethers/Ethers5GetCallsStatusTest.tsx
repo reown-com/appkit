@@ -4,13 +4,13 @@ import { Button, Input, Stack, Text } from '@chakra-ui/react'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { ethers } from 'ethers5'
 
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
 import {
   type Provider,
   useAppKitAccount,
   useAppKitNetwork,
   useAppKitProvider
-} from '@reown/appkit/react'
+} from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { type GetCallsStatusParams } from '@/src/types/EIP5792'

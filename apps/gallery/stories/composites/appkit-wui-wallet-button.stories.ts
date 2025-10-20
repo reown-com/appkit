@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-wallet-button'
-import type { WuiWalletButton } from '@reown/appkit-ui/wui-wallet-button'
+import '@laughingwhales/appkit-ui/wui-wallet-button'
+import type { WuiWalletButton } from '@laughingwhales/appkit-ui/wui-wallet-button'
 
 import { iconOptions, walletImagesOptions } from '../../utils/PresetUtils'
 

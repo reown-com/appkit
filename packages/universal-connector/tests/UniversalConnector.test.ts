@@ -1,7 +1,7 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import * as AppKitCore from '@reown/appkit/core'
+import * as AppKitCore from '@laughingwhales/appkit/core'
 
 import { type Config, UniversalConnector } from '../src/UniversalConnector'
 

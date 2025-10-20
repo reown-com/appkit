@@ -1,5 +1,5 @@
 /* eslint no-console: 0 */
-import { WalletValidator } from '@reown/appkit-testing'
+import { WalletValidator } from '@laughingwhales/appkit-testing'
 
 import { testConnectedMW } from './shared/fixtures/w3m-wallet-fixture'
 import { timeEnd, timeStart } from './shared/utils/logs'

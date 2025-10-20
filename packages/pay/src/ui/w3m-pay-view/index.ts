@@ -3,27 +3,27 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetworkId } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   ConnectionController,
   CoreHelperUtil,
   ModalController,
   SnackController
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-button'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-icon-button'
-import '@reown/appkit-ui/wui-icon-link'
-import '@reown/appkit-ui/wui-image'
-import '@reown/appkit-ui/wui-list-item'
-import '@reown/appkit-ui/wui-loading-spinner'
-import '@reown/appkit-ui/wui-network-image'
-import '@reown/appkit-ui/wui-separator'
-import '@reown/appkit-ui/wui-text'
-import '@reown/appkit-ui/wui-wallet-image'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-button'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon'
+import '@laughingwhales/appkit-ui/wui-icon-button'
+import '@laughingwhales/appkit-ui/wui-icon-link'
+import '@laughingwhales/appkit-ui/wui-image'
+import '@laughingwhales/appkit-ui/wui-list-item'
+import '@laughingwhales/appkit-ui/wui-loading-spinner'
+import '@laughingwhales/appkit-ui/wui-network-image'
+import '@laughingwhales/appkit-ui/wui-separator'
+import '@laughingwhales/appkit-ui/wui-text'
+import '@laughingwhales/appkit-ui/wui-wallet-image'
 
 import { PayController } from '../../controllers/PayController.js'
 import { isPayWithWalletSupported } from '../../utils/AssetUtil.js'

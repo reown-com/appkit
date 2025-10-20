@@ -1,4 +1,4 @@
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
 import type {
   ConnectMethod,
   Features,
@@ -6,7 +6,7 @@ import type {
   ThemeMode,
   ThemeVariables,
   WalletFeature
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { defaultCustomizationConfig } from '@/lib/defaultConfig'
 

@@ -1,14 +1,14 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { getW3mThemeVariables } from '@reown/appkit-common'
+import { getW3mThemeVariables } from '@laughingwhales/appkit-common'
 import {
   ConnectorController,
   ModalController,
   OptionsController,
   ThemeController
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
 
 import styles from './styles.js'
 

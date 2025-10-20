@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   ConnectorController,
@@ -15,15 +15,15 @@ import {
   type SocialProvider,
   StorageUtil,
   getPreferredAccountType
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-balance'
-import '@reown/appkit-ui/wui-button'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-tabs'
-import '@reown/appkit-ui/wui-tooltip'
-import '@reown/appkit-ui/wui-wallet-switch'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-balance'
+import '@laughingwhales/appkit-ui/wui-button'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-tabs'
+import '@laughingwhales/appkit-ui/wui-tooltip'
+import '@laughingwhales/appkit-ui/wui-wallet-switch'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import { HelpersUtil } from '../../utils/HelpersUtil.js'

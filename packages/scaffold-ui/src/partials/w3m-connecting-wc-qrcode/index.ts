@@ -8,15 +8,15 @@ import {
   EventsController,
   RouterController,
   ThemeController
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-link'
-import '@reown/appkit-ui/wui-qr-code'
-import '@reown/appkit-ui/wui-shimmer'
-import '@reown/appkit-ui/wui-text'
-import '@reown/appkit-ui/wui-ux-by-reown'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon'
+import '@laughingwhales/appkit-ui/wui-link'
+import '@laughingwhales/appkit-ui/wui-qr-code'
+import '@laughingwhales/appkit-ui/wui-shimmer'
+import '@laughingwhales/appkit-ui/wui-text'
+import '@laughingwhales/appkit-ui/wui-ux-by-reown'
 
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 import '../w3m-mobile-download-links/index.js'

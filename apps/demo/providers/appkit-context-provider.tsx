@@ -7,14 +7,14 @@ import { useTheme } from 'next-themes'
 import { Toaster } from 'sonner'
 import { useSnapshot } from 'valtio'
 
-import { type ChainNamespace } from '@reown/appkit-common'
-import { type ConnectMethod, ConstantsUtil, type RemoteFeatures } from '@reown/appkit-controllers'
+import { type ChainNamespace } from '@laughingwhales/appkit-common'
+import { type ConnectMethod, ConstantsUtil, type RemoteFeatures } from '@laughingwhales/appkit-controllers'
 import {
   type Features,
   type ThemeMode,
   type ThemeVariables,
   useAppKitState
-} from '@reown/appkit/react'
+} from '@laughingwhales/appkit/react'
 
 import { AppKitContext } from '@/contexts/appkit-context'
 import { initialConfig, initialEnabledNetworks } from '@/lib/config'

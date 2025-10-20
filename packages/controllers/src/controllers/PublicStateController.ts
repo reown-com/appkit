@@ -1,7 +1,7 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey } from 'valtio/vanilla/utils'
 
-import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetworkId, ChainNamespace } from '@laughingwhales/appkit-common'
 
 // -- Types --------------------------------------------- //
 export interface PublicStateControllerState {

@@ -1,7 +1,7 @@
 import { Button } from '@chakra-ui/react'
 import { useAccount, useSignTypedData } from 'wagmi'
 
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 

@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-semantic-chip'
-import type { WuiSemanticChip } from '@reown/appkit-ui/wui-semantic-chip'
+import '@laughingwhales/appkit-ui/wui-semantic-chip'
+import type { WuiSemanticChip } from '@laughingwhales/appkit-ui/wui-semantic-chip'
 
 import { semanticChipSizes, semanticChipTypes } from '../../utils/PresetUtils'
 

@@ -2,11 +2,11 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
-import { ModalController } from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import type { WuiConnectButton } from '@reown/appkit-ui/wui-connect-button'
-import '@reown/appkit-ui/wui-connect-button'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
+import { ModalController } from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import type { WuiConnectButton } from '@laughingwhales/appkit-ui/wui-connect-button'
+import '@laughingwhales/appkit-ui/wui-connect-button'
 
 class W3mConnectButtonBase extends LitElement {
   // -- Members ------------------------------------------- //

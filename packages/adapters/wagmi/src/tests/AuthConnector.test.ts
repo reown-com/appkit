@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { NetworkUtil } from '@reown/appkit-common'
-import { ChainController } from '@reown/appkit-controllers'
+import { NetworkUtil } from '@laughingwhales/appkit-common'
+import { ChainController } from '@laughingwhales/appkit-controllers'
 
 // Mock the controllers
-vi.mock('@reown/appkit-controllers', () => ({
+vi.mock('@laughingwhales/appkit-controllers', () => ({
   ChainController: {
     getCaipNetworks: vi.fn(),
     getActiveCaipNetwork: vi.fn(),
@@ -26,14 +26,14 @@ vi.mock('@reown/appkit-controllers', () => ({
 }))
 
 // Mock the auth provider
-vi.mock('@reown/appkit/auth-provider', () => ({
+vi.mock('@laughingwhales/appkit/auth-provider', () => ({
   W3mFrameProviderSingleton: {
     getInstance: vi.fn()
   }
 }))
 
 // Mock the utils
-vi.mock('@reown/appkit-utils', () => ({
+vi.mock('@laughingwhales/appkit-utils', () => ({
   ErrorUtil: {
     ALERT_ERRORS: {
       IFRAME_LOAD_FAILED: 'IFRAME_LOAD_FAILED',

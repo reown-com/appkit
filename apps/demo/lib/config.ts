@@ -1,9 +1,9 @@
-import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
-import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { PolkadotAdapter } from '@reown/appkit-adapter-polkadot'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana'
-import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { type ChainAdapter, ConstantsUtil } from '@reown/appkit-controllers'
+import { BitcoinAdapter } from '@laughingwhales/appkit-adapter-bitcoin'
+import { EthersAdapter } from '@laughingwhales/appkit-adapter-ethers'
+import { PolkadotAdapter } from '@laughingwhales/appkit-adapter-polkadot'
+import { SolanaAdapter } from '@laughingwhales/appkit-adapter-solana'
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
+import { type ChainAdapter, ConstantsUtil } from '@laughingwhales/appkit-controllers'
 import {
   type AppKitNetwork,
   arbitrum,
@@ -22,8 +22,8 @@ import {
   solanaDevnet,
   westend,
   zksync
-} from '@reown/appkit/networks'
-import { type CreateAppKit } from '@reown/appkit/react'
+} from '@laughingwhales/appkit/networks'
+import { type CreateAppKit } from '@laughingwhales/appkit/react'
 
 import { urlStateUtils } from '@/lib/url-state'
 

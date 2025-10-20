@@ -1,1 +1,1 @@
-export * from '@reown/appkit-controllers'
+export * from '@laughingwhales/appkit-controllers'

@@ -1,7 +1,7 @@
 import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi } from 'vitest'
 
-import type { CaipAddress } from '@reown/appkit-common'
+import type { CaipAddress } from '@laughingwhales/appkit-common'
 import {
   BlockchainApiController,
   RouterController,
@@ -9,8 +9,8 @@ import {
   SwapController,
   type SwapControllerState,
   type SwapTokenWithBalance
-} from '@reown/appkit-controllers'
-import { extendedMainnet, mockChainControllerState } from '@reown/appkit-controllers/testing'
+} from '@laughingwhales/appkit-controllers'
+import { extendedMainnet, mockChainControllerState } from '@laughingwhales/appkit-controllers/testing'
 
 import { W3mSwapSelectTokenView } from '../../src/views/w3m-swap-select-token-view'
 

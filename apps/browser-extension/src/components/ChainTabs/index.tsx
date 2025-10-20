@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ChainNamespace, ConstantsUtil } from '@laughingwhales/appkit-common'
 
 import { sprinkles } from '../../css/sprinkless.css'
 import { Btc } from '../Icons/Btc'

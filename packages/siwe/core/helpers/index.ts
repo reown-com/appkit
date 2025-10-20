@@ -1,7 +1,7 @@
 import { createPublicClient, http } from 'viem'
 
-import type { CaipNetworkId, Hex } from '@reown/appkit-common'
-import { getBlockchainApiRpcUrl } from '@reown/appkit-utils'
+import type { CaipNetworkId, Hex } from '@laughingwhales/appkit-common'
+import { getBlockchainApiRpcUrl } from '@laughingwhales/appkit-utils'
 
 const ETH_ADDRESS_PATTERN = /0x[a-fA-F0-9]{40}/u
 const ETH_CHAIN_ID_IN_SIWE_PATTERN = /Chain ID: (?<temp1>\d+)/u

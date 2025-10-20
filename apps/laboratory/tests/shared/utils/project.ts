@@ -1,6 +1,6 @@
 import { devices } from '@playwright/test'
 
-import { DESKTOP_DEVICES, MOBILE_DEVICES } from '@reown/appkit-testing'
+import { DESKTOP_DEVICES, MOBILE_DEVICES } from '@laughingwhales/appkit-testing'
 
 const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana', 'bitcoin'] as const
 const MULTICHAIN_LIBRARIES = [

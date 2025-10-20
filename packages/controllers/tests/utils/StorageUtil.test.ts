@@ -1,9 +1,9 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { SafeLocalStorage, getSafeConnectorIdKey } from '@reown/appkit-common'
-import { SafeLocalStorageKeys } from '@reown/appkit-common'
-import type { Connection } from '@reown/appkit-common'
-import { W3mFrameConstants, W3mFrameHelpers, W3mFrameStorage } from '@reown/appkit-wallet'
+import { SafeLocalStorage, getSafeConnectorIdKey } from '@laughingwhales/appkit-common'
+import { SafeLocalStorageKeys } from '@laughingwhales/appkit-common'
+import type { Connection } from '@laughingwhales/appkit-common'
+import { W3mFrameConstants, W3mFrameHelpers, W3mFrameStorage } from '@laughingwhales/appkit-wallet'
 
 import { StorageUtil } from '../../src/utils/StorageUtil'
 import type { SocialProvider, WcWallet } from '../../src/utils/TypeUtil'

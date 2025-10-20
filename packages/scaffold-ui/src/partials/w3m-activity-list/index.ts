@@ -1,8 +1,8 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { DateUtil } from '@reown/appkit-common'
-import type { Transaction } from '@reown/appkit-common'
+import { DateUtil } from '@laughingwhales/appkit-common'
+import type { Transaction } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   CoreHelperUtil,
@@ -11,16 +11,16 @@ import {
   RouterController,
   TransactionsController,
   getPreferredAccountType
-} from '@reown/appkit-controllers'
-import { TransactionUtil, customElement } from '@reown/appkit-ui'
-import type { TransactionType } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon-box'
-import '@reown/appkit-ui/wui-link'
-import '@reown/appkit-ui/wui-text'
-import '@reown/appkit-ui/wui-transaction-list-item'
-import '@reown/appkit-ui/wui-transaction-list-item-loader'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-controllers'
+import { TransactionUtil, customElement } from '@laughingwhales/appkit-ui'
+import type { TransactionType } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon-box'
+import '@laughingwhales/appkit-ui/wui-link'
+import '@laughingwhales/appkit-ui/wui-text'
+import '@laughingwhales/appkit-ui/wui-transaction-list-item'
+import '@laughingwhales/appkit-ui/wui-transaction-list-item-loader'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import styles from './styles.js'
 

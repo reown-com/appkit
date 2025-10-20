@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { Button } from '@chakra-ui/react'
 
-import type { Provider } from '@reown/appkit-adapter-solana'
-import { useAppKitProvider } from '@reown/appkit/react'
+import type { Provider } from '@laughingwhales/appkit-adapter-solana'
+import { useAppKitProvider } from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'

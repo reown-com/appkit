@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { createComponent } from '@lit/react'
 import { useSnapshot } from 'valtio'
 
-import type { ChainNamespace, ParsedCaipAddress } from '@reown/appkit-common'
+import type { ChainNamespace, ParsedCaipAddress } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   type Connector,
@@ -13,7 +13,7 @@ import {
   ConnectorControllerUtil,
   ModalController,
   RouterController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { ApiController } from '../src/controllers/ApiController.js'
 import { WalletButtonController } from '../src/controllers/WalletButtonController.js'

@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   ApiController,
   AssetController,
@@ -13,10 +13,10 @@ import {
   CoreHelperUtil,
   RouterController,
   type WcWallet
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import { HelpersUtil } from '@reown/appkit-utils'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import { HelpersUtil } from '@laughingwhales/appkit-utils'
 
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import styles from './styles.js'

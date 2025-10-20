@@ -9,7 +9,7 @@ import {
   ConnectionController,
   ModalController,
   SnackController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { PayController } from '../../src/controllers/PayController'
 import { W3mPayView } from '../../src/ui/w3m-pay-view'

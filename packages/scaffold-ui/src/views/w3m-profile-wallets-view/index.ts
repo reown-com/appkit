@@ -7,8 +7,8 @@ import {
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   ParseUtil
-} from '@reown/appkit-common'
-import type { Connection } from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
+import type { Connection } from '@laughingwhales/appkit-common'
 import {
   AssetUtil,
   ChainController,
@@ -20,19 +20,19 @@ import {
   RouterController,
   SnackController,
   StorageUtil
-} from '@reown/appkit-controllers'
-import { MathUtil, customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-active-profile-wallet-item'
-import '@reown/appkit-ui/wui-balance'
-import '@reown/appkit-ui/wui-button'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-icon-box'
-import '@reown/appkit-ui/wui-inactive-profile-wallet-item'
-import '@reown/appkit-ui/wui-list-item'
-import '@reown/appkit-ui/wui-separator'
-import '@reown/appkit-ui/wui-tabs'
-import '@reown/appkit-ui/wui-text'
-import { HelpersUtil } from '@reown/appkit-utils'
+} from '@laughingwhales/appkit-controllers'
+import { MathUtil, customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-active-profile-wallet-item'
+import '@laughingwhales/appkit-ui/wui-balance'
+import '@laughingwhales/appkit-ui/wui-button'
+import '@laughingwhales/appkit-ui/wui-icon'
+import '@laughingwhales/appkit-ui/wui-icon-box'
+import '@laughingwhales/appkit-ui/wui-inactive-profile-wallet-item'
+import '@laughingwhales/appkit-ui/wui-list-item'
+import '@laughingwhales/appkit-ui/wui-separator'
+import '@laughingwhales/appkit-ui/wui-tabs'
+import '@laughingwhales/appkit-ui/wui-text'
+import { HelpersUtil } from '@laughingwhales/appkit-utils'
 
 import { ConnectionUtil } from '../../utils/ConnectionUtil.js'
 import styles from './styles.js'

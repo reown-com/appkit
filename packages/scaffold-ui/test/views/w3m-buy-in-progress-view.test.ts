@@ -10,7 +10,7 @@ import {
   RouterController,
   SnackController,
   ThemeController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mBuyInProgressView } from '../../src/views/w3m-buy-in-progress-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'

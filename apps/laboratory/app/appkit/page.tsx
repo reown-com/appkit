@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { WagmiProvider } from 'wagmi'
 
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { WagmiAdapter } from '@laughingwhales/appkit-adapter-wagmi'
 
 import DemoContent from '@/src/components/DemoContent'
 import { AppKitProvider } from '@/src/context/AppKitContext'

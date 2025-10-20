@@ -1,16 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { OnRampProvider, SwapProvider } from '@reown/appkit-common'
+import type { OnRampProvider, SwapProvider } from '@laughingwhales/appkit-common'
 import {
   ConstantsUtil as ActualConstantsUtil,
   AlertController,
   ApiController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 import type {
   Features as CtrlFeatures,
   RemoteFeatures,
   TypedFeatureConfig
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import type { AppKitOptionsWithSdk } from '../../src/client/appkit-base-client.js'
 import { ConfigUtil } from '../../src/utils/ConfigUtil.js'
@@ -18,10 +18,10 @@ import { mockOptions as initialMockOptions } from '../mocks/Options.js'
 
 const getMockOptions = (): AppKitOptionsWithSdk => JSON.parse(JSON.stringify(initialMockOptions))
 
-vi.mock('@reown/appkit-controllers', async () => {
+vi.mock('@laughingwhales/appkit-controllers', async () => {
   const actualModule = (await vi.importActual(
-    '@reown/appkit-controllers'
-  )) as typeof import('@reown/appkit-controllers')
+    '@laughingwhales/appkit-controllers'
+  )) as typeof import('@laughingwhales/appkit-controllers')
 
   return {
     baseUSDC: actualModule.baseUSDC,

@@ -6,7 +6,7 @@ import {
   SafeLocalStorage,
   type SafeLocalStorageItems,
   SafeLocalStorageKeys
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 
 import { ApiController } from '../../controllers/ApiController.js'
 import { BlockchainApiController } from '../../controllers/BlockchainApiController.js'

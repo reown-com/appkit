@@ -1,4 +1,4 @@
-import { solana } from '@reown/appkit/networks'
+import { solana } from '@laughingwhales/appkit/networks'
 
 import { useAppKit, useAppKitNetwork, useAppKitTheme, useDisconnect } from '../config'
 

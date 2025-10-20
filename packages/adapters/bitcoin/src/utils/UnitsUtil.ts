@@ -1,4 +1,4 @@
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork } from '@laughingwhales/appkit-common'
 
 export const UnitsUtil = {
   parseSatoshis(amount: string, network: CaipNetwork): string {

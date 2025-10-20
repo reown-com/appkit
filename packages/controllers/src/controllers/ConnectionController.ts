@@ -10,8 +10,8 @@ import {
   type Connection,
   type Hex,
   ParseUtil
-} from '@reown/appkit-common'
-import type { W3mFrameTypes } from '@reown/appkit-wallet'
+} from '@laughingwhales/appkit-common'
+import type { W3mFrameTypes } from '@laughingwhales/appkit-wallet'
 
 import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
 import { ConnectionControllerUtil } from '../utils/ConnectionControllerUtil.js'

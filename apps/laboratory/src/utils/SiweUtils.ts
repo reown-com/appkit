@@ -1,7 +1,7 @@
 import { getCsrfToken, signIn, signOut } from 'next-auth/react'
 
-import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from '@reown/appkit-siwe'
-import { createSIWEConfig, formatMessage } from '@reown/appkit-siwe'
+import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from '@laughingwhales/appkit-siwe'
+import { createSIWEConfig, formatMessage } from '@laughingwhales/appkit-siwe'
 
 import { getSession } from '@/src/utils/auth-get-session'
 

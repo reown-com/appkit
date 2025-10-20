@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-preview-item'
-import type { WuiPreviewItem } from '@reown/appkit-ui/wui-preview-item'
+import '@laughingwhales/appkit-ui/wui-preview-item'
+import type { WuiPreviewItem } from '@laughingwhales/appkit-ui/wui-preview-item'
 
 import { address, networkImageSrc } from '../../utils/PresetUtils'
 

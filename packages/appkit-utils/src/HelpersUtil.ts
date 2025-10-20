@@ -2,13 +2,13 @@ import {
   type CaipNetworkId,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 import {
   ChainController,
   ConnectorController,
   StorageUtil,
   type Tokens
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
 

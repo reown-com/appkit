@@ -13,9 +13,9 @@ import {
 } from '@chakra-ui/react'
 import Image from 'next/image'
 
-import type { ChainNamespace } from '@reown/appkit-common'
-import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
-import { type UseAppKitAccountReturn, useAppKitAccount, useWalletInfo } from '@reown/appkit/react'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
+import { convertCaip10ToErc3770 } from '@laughingwhales/appkit-experimental/erc3770'
+import { type UseAppKitAccountReturn, useAppKitAccount, useWalletInfo } from '@laughingwhales/appkit/react'
 
 import type { AppKitConfigObject } from '../constants/appKitConfigs'
 import { AppKitNetworkInfo } from './AppKitNetworkInfo'

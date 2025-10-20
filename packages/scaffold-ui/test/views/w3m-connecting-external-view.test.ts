@@ -3,8 +3,8 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { type ChainNamespace, type Connection } from '@reown/appkit-common'
-import type { Connector } from '@reown/appkit-controllers'
+import { type ChainNamespace, type Connection } from '@laughingwhales/appkit-common'
+import type { Connector } from '@laughingwhales/appkit-controllers'
 import {
   ConnectionController,
   ConnectionControllerUtil,
@@ -14,7 +14,7 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 // --- Constants ---------------------------------------------------- //
 const TEST_CHAIN: ChainNamespace = 'eip155'

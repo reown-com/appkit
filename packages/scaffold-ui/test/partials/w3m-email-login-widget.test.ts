@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   type AuthConnector,
   ChainController,
@@ -14,7 +14,7 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mEmailLoginWidget } from '../../src/partials/w3m-email-login-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'

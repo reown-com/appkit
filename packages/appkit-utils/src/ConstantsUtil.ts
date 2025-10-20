@@ -1,4 +1,4 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
 
 export const ConstantsUtil = {
   /* Connector names */
@@ -56,6 +56,6 @@ export const ConstantsUtil = {
 AppKit SDK version ${currentVersion} is outdated. Latest version is ${latestVersion}. Please update to the latest version for bug fixes and new features.
             
 Changelog: https://github.com/reown-com/appkit/releases
-NPM Registry: https://www.npmjs.com/package/@reown/appkit`
+NPM Registry: https://www.npmjs.com/package/@laughingwhales/appkit`
   }
 }

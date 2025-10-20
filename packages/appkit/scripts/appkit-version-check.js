@@ -10,7 +10,7 @@ const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 /* CONFIG ------------------------------------------------------------------ */
-const REOWN_SCOPE_PREFIX = '@reown/appkit'
+const REOWN_SCOPE_PREFIX = '@laughingwhales/appkit'
 const sections = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']
 /* ------------------------------------------------------------------------- */
 
@@ -25,15 +25,15 @@ function findProjectRoot(startPath) {
       try {
         const pkg = JSON.parse(readFileSync(packageJsonPath, 'utf8'))
 
-        // Check if this package.json has @reown/appkit dependencies
+        // Check if this package.json has @laughingwhales/appkit dependencies
         const hasReownDeps = sections.some(
           section =>
             pkg[section] &&
             Object.keys(pkg[section]).some(dep => dep.startsWith(REOWN_SCOPE_PREFIX))
         )
 
-        // If it has @reown/appkit deps and it's not the @reown/appkit package itself
-        if (hasReownDeps && pkg.name !== '@reown/appkit') {
+        // If it has @laughingwhales/appkit deps and it's not the @laughingwhales/appkit package itself
+        if (hasReownDeps && pkg.name !== '@laughingwhales/appkit') {
           return { pkg, path: current }
         }
       } catch (error) {
@@ -59,7 +59,7 @@ function findProjectRootAlternative() {
           pkg[section] && Object.keys(pkg[section]).some(dep => dep.startsWith(REOWN_SCOPE_PREFIX))
       )
 
-      if (hasReownDeps && pkg.name !== '@reown/appkit') {
+      if (hasReownDeps && pkg.name !== '@laughingwhales/appkit') {
         return { pkg, path: initCwd }
       }
     } catch (error) {
@@ -76,7 +76,7 @@ function findConsumerProject() {
 }
 
 function getReownPackagesFromProject(project) {
-  // Get ALL @reown/appkit packages from the project
+  // Get ALL @laughingwhales/appkit packages from the project
   return Object.fromEntries(
     sections
       .flatMap(s => Object.entries(project.pkg[s] || {}))
@@ -145,19 +145,19 @@ function checkVersionMismatches(installed, baseline) {
 }
 
 function reportResults(installed, baseline, mismatched) {
-  console.log('Installed @reown/appkit packages and versions:')
+  console.log('Installed @laughingwhales/appkit packages and versions:')
   Object.entries(installed).forEach(([pkg, version]) => {
     console.log(`  ${pkg}: ${version}`)
   })
 
   if (mismatched.length > 0) {
     console.error('\n\u001b[31m✖ Reown AppKit version mismatch detected!\u001b[0m')
-    console.error(`   Expected all @reown/appkit packages to be version ${baseline}\n`)
+    console.error(`   Expected all @laughingwhales/appkit packages to be version ${baseline}\n`)
     console.error('   Mismatched packages:')
     mismatched.forEach(([pkg, version]) => {
       console.error(`     • ${pkg}: ${version} (expected ${baseline})`)
     })
-    console.error(`\n   Please update all @reown/appkit packages to version ${baseline}`)
+    console.error(`\n   Please update all @laughingwhales/appkit packages to version ${baseline}`)
     console.error('   You can run the following commands:')
     mismatched.forEach(([pkg]) => {
       console.error(`     npm install ${pkg}@${baseline}`)
@@ -165,7 +165,7 @@ function reportResults(installed, baseline, mismatched) {
     console.error('')
     return false
   } else {
-    console.log(`\u001b[32m✓ All @reown/appkit packages are in sync (${baseline})\u001b[0m`)
+    console.log(`\u001b[32m✓ All @laughingwhales/appkit packages are in sync (${baseline})\u001b[0m`)
     return true
   }
 }
@@ -174,7 +174,7 @@ function main() {
   const project = findConsumerProject()
 
   if (!project) {
-    console.log('Could not find consumer project with @reown/appkit dependencies')
+    console.log('Could not find consumer project with @laughingwhales/appkit dependencies')
     return
   }
 
@@ -182,17 +182,17 @@ function main() {
   console.log(`Found project: ${project.pkg.name}`)
 
   const allReownPackages = getReownPackagesFromProject(project)
-  console.log('Found @reown/appkit packages:', Object.keys(allReownPackages))
+  console.log('Found @laughingwhales/appkit packages:', Object.keys(allReownPackages))
 
   if (!Object.keys(allReownPackages).length) {
-    console.log('No @reown/appkit packages found in project')
+    console.log('No @laughingwhales/appkit packages found in project')
     return
   }
 
   const installed = resolveInstalledVersions(allReownPackages, project.path)
 
   if (!Object.keys(installed).length) {
-    console.log('No @reown/appkit packages could be resolved')
+    console.log('No @laughingwhales/appkit packages could be resolved')
     return
   }
 

@@ -6,7 +6,7 @@ import {
   type CaipAddress,
   ConstantsUtil as CommonConstantsUtil,
   Emitter
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 import {
   ChainController,
   type ConnectionControllerClient,
@@ -15,11 +15,11 @@ import {
   ProviderController,
   SIWXUtil,
   WcHelpersUtil
-} from '@reown/appkit-controllers'
-import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
-import { CaipNetworksUtil, HelpersUtil } from '@reown/appkit-utils'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
-import { mainnet, polygon } from '@reown/appkit/networks'
+} from '@laughingwhales/appkit-controllers'
+import { ConnectorUtil } from '@laughingwhales/appkit-scaffold-ui/utils'
+import { CaipNetworksUtil, HelpersUtil } from '@laughingwhales/appkit-utils'
+import type { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
+import { mainnet, polygon } from '@laughingwhales/appkit/networks'
 
 import { Ethers5Adapter } from '../client'
 import { Ethers5Methods } from '../utils/Ethers5Methods'

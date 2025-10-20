@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil } from '@laughingwhales/appkit-common'
 
 import type { ChainAdapter } from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'

@@ -1,6 +1,6 @@
 import { ZodError } from 'zod'
 
-import { type Address } from '@reown/appkit-common'
+import { type Address } from '@laughingwhales/appkit-common'
 
 import { ERROR_MESSAGES, SmartSessionGrantPermissionsRequestSchema } from '../schema/index.js'
 import {

@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { ChainNamespace, SdkVersion } from '@reown/appkit-common'
-import { AlertController, ApiController, OptionsController } from '@reown/appkit-controllers'
-import type { AdapterBlueprint } from '@reown/appkit-controllers'
-import { ErrorUtil } from '@reown/appkit-utils'
+import type { ChainNamespace, SdkVersion } from '@laughingwhales/appkit-common'
+import { AlertController, ApiController, OptionsController } from '@laughingwhales/appkit-controllers'
+import type { AdapterBlueprint } from '@laughingwhales/appkit-controllers'
+import { ErrorUtil } from '@laughingwhales/appkit-utils'
 
 import { AppKitBaseClient, type AppKitOptionsWithSdk } from '../../src/client/appkit-base-client'
 

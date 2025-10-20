@@ -1,6 +1,6 @@
 import { type UniqueIdentifier } from '@dnd-kit/core'
 
-import { ConstantsUtil, type SocialProvider } from '@reown/appkit-controllers'
+import { ConstantsUtil, type SocialProvider } from '@laughingwhales/appkit-controllers'
 
 import { SortableSocialGrid } from '@/components/sortable-social-grid'
 import { useAppKitContext } from '@/hooks/use-appkit'

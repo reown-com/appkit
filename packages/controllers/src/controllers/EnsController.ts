@@ -1,7 +1,7 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type Address, type Hex } from '@reown/appkit-common'
+import { type Address, type Hex } from '@laughingwhales/appkit-common'
 
 import { EnsUtil } from '../utils/EnsUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'

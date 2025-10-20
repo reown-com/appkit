@@ -13,7 +13,7 @@ import {
   sepolia,
   zkSync,
   zora
-} from '@reown/appkit/networks'
+} from '@laughingwhales/appkit/networks'
 
 export const EthersConstants = {
   chains: [

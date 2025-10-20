@@ -1,5 +1,5 @@
-import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
-import { arbitrum, mainnet, optimism, polygon } from '@reown/appkit/networks'
+import { Ethers5Adapter } from '@laughingwhales/appkit-adapter-ethers5'
+import { arbitrum, mainnet, optimism, polygon } from '@laughingwhales/appkit/networks'
 import {
   createAppKit,
   useAppKit,
@@ -10,7 +10,7 @@ import {
   useAppKitTheme,
   useDisconnect,
   useWalletInfo
-} from '@reown/appkit/react'
+} from '@laughingwhales/appkit/react'
 
 import ActionButtonList from './components/ActionButton'
 import Footer from './components/Footer'

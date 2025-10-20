@@ -1,7 +1,7 @@
 import type { SessionTypes } from '@walletconnect/types'
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@laughingwhales/appkit-common'
 
 import { SIWXUtil } from '../../utils/SIWXUtil.js'
 import { WcHelpersUtil } from '../../utils/WalletConnectUtil.js'

@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-account-name-suggestion-item'
-import type { WuiAccountNameSuggestionItem } from '@reown/appkit-ui/wui-account-name-suggestion-item'
+import '@laughingwhales/appkit-ui/wui-account-name-suggestion-item'
+import type { WuiAccountNameSuggestionItem } from '@laughingwhales/appkit-ui/wui-account-name-suggestion-item'
 
 import '../../components/gallery-container'
 

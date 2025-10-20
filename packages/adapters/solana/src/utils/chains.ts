@@ -1,5 +1,5 @@
-import { type CaipNetwork, type CaipNetworkId } from '@reown/appkit-common'
-import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
+import { type CaipNetwork, type CaipNetworkId } from '@laughingwhales/appkit-common'
+import { solana, solanaDevnet, solanaTestnet } from '@laughingwhales/appkit/networks'
 
 export const solanaChains = {
   'solana:mainnet': solana,

@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-card-select-loader'
-import type { WuiCardSelectLoader } from '@reown/appkit-ui/wui-card-select-loader'
+import '@laughingwhales/appkit-ui/wui-card-select-loader'
+import type { WuiCardSelectLoader } from '@laughingwhales/appkit-ui/wui-card-select-loader'
 
 import { cardSelectOptions } from '../../utils/PresetUtils'
 

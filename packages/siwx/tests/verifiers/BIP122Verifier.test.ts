@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
 
-import { type SIWXSession } from '@reown/appkit-controllers'
-import { mockSession } from '@reown/appkit-controllers/testing'
+import { type SIWXSession } from '@laughingwhales/appkit-controllers'
+import { mockSession } from '@laughingwhales/appkit-controllers/testing'
 
 import { BIP122Verifier } from '../../src/verifiers/BIP122Verifier.js'
 

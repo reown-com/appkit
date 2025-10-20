@@ -10,9 +10,9 @@ import {
   ErrorUtil,
   NumberUtil,
   UserRejectedRequestError
-} from '@reown/appkit-common'
-import { ContractUtil } from '@reown/appkit-common'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-common'
+import { ContractUtil } from '@laughingwhales/appkit-common'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import { BalanceUtil } from '../utils/BalanceUtil.js'
 import {

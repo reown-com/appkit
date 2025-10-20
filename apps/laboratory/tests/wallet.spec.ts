@@ -1,6 +1,6 @@
 import { type BrowserContext, test } from '@playwright/test'
 
-import type { CaipNetworkId } from '@reown/appkit'
+import type { CaipNetworkId } from '@laughingwhales/appkit'
 import {
   DEFAULT_CHAIN_NAME,
   WalletPage,
@@ -8,7 +8,7 @@ import {
   getBalanceSymbolByLibrary,
   getLastNetworkNameByLibrary,
   getNetworksByLibrary
-} from '@reown/appkit-testing'
+} from '@laughingwhales/appkit-testing'
 
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'

@@ -5,13 +5,13 @@ import {
   type ChainNamespace,
   ConstantsUtil,
   ContractUtil
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 import {
   ChainController,
   ConnectionController,
   CoreHelperUtil,
   ProviderController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { AppKitPayError } from '../types/errors.js'
 import { AppKitPayErrorCodes } from '../types/errors.js'

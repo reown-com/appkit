@@ -15,8 +15,8 @@ import {
 } from '@chakra-ui/react'
 import type { SessionTypes } from '@walletconnect/types'
 
-import type { CustomCaipNetwork } from '@reown/appkit-common'
-import { UniversalConnector } from '@reown/appkit-universal-connector'
+import type { CustomCaipNetwork } from '@laughingwhales/appkit-common'
+import { UniversalConnector } from '@laughingwhales/appkit-universal-connector'
 
 const suiMainnet: CustomCaipNetwork<'sui'> = {
   id: 784,

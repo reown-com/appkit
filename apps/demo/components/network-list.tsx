@@ -1,6 +1,6 @@
 'use client'
 
-import { useAppKitAccount } from '@reown/appkit-controllers/react'
+import { useAppKitAccount } from '@laughingwhales/appkit-controllers/react'
 
 import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
 import { AlertDescription } from '@/components/ui/alert'

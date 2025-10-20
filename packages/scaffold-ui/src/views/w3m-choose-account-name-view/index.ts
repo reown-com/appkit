@@ -1,22 +1,22 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { NavigationUtil } from '@reown/appkit-common'
+import { NavigationUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   CoreHelperUtil,
   EventsController,
   RouterController,
   getPreferredAccountType
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-button'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-icon-box'
-import '@reown/appkit-ui/wui-link'
-import '@reown/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-button'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon'
+import '@laughingwhales/appkit-ui/wui-icon-box'
+import '@laughingwhales/appkit-ui/wui-link'
+import '@laughingwhales/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import styles from './styles.js'
 

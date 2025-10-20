@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   AssetController,
   ChainController,
@@ -16,15 +16,15 @@ import {
   SendController,
   SnackController,
   getPreferredAccountType
-} from '@reown/appkit-controllers'
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-avatar'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon-link'
-import '@reown/appkit-ui/wui-list-item'
-import '@reown/appkit-ui/wui-notice-card'
-import '@reown/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-controllers'
+import { UiHelperUtil, customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-avatar'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon-link'
+import '@laughingwhales/appkit-ui/wui-list-item'
+import '@laughingwhales/appkit-ui/wui-notice-card'
+import '@laughingwhales/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import '../../partials/w3m-account-auth-button/index.js'
 

@@ -1,8 +1,8 @@
 import { parseUnits } from 'viem'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
-import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
-import { ConstantsUtil } from '@reown/appkit-common'
+import type { CaipAddress, CaipNetwork } from '@laughingwhales/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 
 import {
   type AccountState,

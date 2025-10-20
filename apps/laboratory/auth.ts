@@ -2,7 +2,7 @@ import NextAuth from 'next-auth'
 import type { Session } from 'next-auth'
 import credentialsProvider from 'next-auth/providers/credentials'
 
-import { getAddressFromMessage, getChainIdFromMessage, verifySignature } from '@reown/appkit-siwe'
+import { getAddressFromMessage, getChainIdFromMessage, verifySignature } from '@laughingwhales/appkit-siwe'
 
 // Extend the Session type to include address and chainId
 interface ExtendedSession extends Session {

@@ -2,12 +2,12 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type CaipNetwork } from '@reown/appkit-common'
-import { AssetUtil, RouterController } from '@reown/appkit-controllers'
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-content'
-import '@reown/appkit-ui/wui-text'
+import { type CaipNetwork } from '@laughingwhales/appkit-common'
+import { AssetUtil, RouterController } from '@laughingwhales/appkit-controllers'
+import { UiHelperUtil, customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-list-content'
+import '@laughingwhales/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

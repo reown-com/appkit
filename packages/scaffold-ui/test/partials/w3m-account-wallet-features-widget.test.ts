@@ -8,7 +8,7 @@ import {
   type CaipNetwork,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 import {
   type AccountState,
   ChainController,
@@ -17,7 +17,7 @@ import {
   CoreHelperUtil,
   OptionsController,
   RouterController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mAccountWalletFeaturesWidget } from '../../src/partials/w3m-account-wallet-features-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'

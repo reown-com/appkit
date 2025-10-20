@@ -2,9 +2,9 @@ import {
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   ErrorUtil
-} from '@reown/appkit-common'
-import type { Connection } from '@reown/appkit-common'
-import type { BaseError, Connector } from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-common'
+import type { Connection } from '@laughingwhales/appkit-common'
+import type { BaseError, Connector } from '@laughingwhales/appkit-controllers'
 import {
   AppKitError,
   ConnectionController,
@@ -15,9 +15,9 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import { HelpersUtil } from '@reown/appkit-utils'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import { HelpersUtil } from '@laughingwhales/appkit-utils'
 
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 

@@ -1,8 +1,8 @@
 /* eslint-disable no-await-in-loop */
 import type { Page } from '@playwright/test'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { WalletPage } from '@reown/appkit-testing'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
+import { WalletPage } from '@laughingwhales/appkit-testing'
 
 import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'

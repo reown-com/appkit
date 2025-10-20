@@ -12,8 +12,8 @@ import {
 } from '@chakra-ui/react'
 import Image from 'next/image'
 
-import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
-import { useAppKitAccount, useAppKitNetwork, useWalletInfo } from '@reown/appkit/react'
+import { convertCaip10ToErc3770 } from '@laughingwhales/appkit-experimental/erc3770'
+import { useAppKitAccount, useAppKitNetwork, useWalletInfo } from '@laughingwhales/appkit/react'
 
 import { RelayClientInfo } from '@/src/components/RelayClientInfo'
 

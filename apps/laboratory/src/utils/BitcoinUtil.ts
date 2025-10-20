@@ -2,9 +2,9 @@ import ecc from '@bitcoinerlab/secp256k1'
 import * as bitcoin from 'bitcoinjs-lib'
 import * as bitcoinPSBTUtils from 'bitcoinjs-lib/src/psbt/psbtutils'
 
-import type { CaipNetwork, CaipNetworkId } from '@reown/appkit'
-import type { BitcoinConnector } from '@reown/appkit-adapter-bitcoin'
-import * as networks from '@reown/appkit/networks'
+import type { CaipNetwork, CaipNetworkId } from '@laughingwhales/appkit'
+import type { BitcoinConnector } from '@laughingwhales/appkit-adapter-bitcoin'
+import * as networks from '@laughingwhales/appkit/networks'
 
 bitcoin.initEccLib(ecc)
 

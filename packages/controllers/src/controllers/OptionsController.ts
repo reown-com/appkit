@@ -1,7 +1,7 @@
 import { proxy, snapshot } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import type { CaipNetworkId, CustomRpcUrl } from '@reown/appkit-common'
+import type { CaipNetworkId, CustomRpcUrl } from '@laughingwhales/appkit-common'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'

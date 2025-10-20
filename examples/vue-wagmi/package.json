@@ -8,14 +8,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@reown/appkit": "workspace:*",
-    "@reown/appkit-adapter-wagmi": "workspace:*",
     "@tanstack/vue-query": "5.75.5",
     "@wagmi/connectors": "5.11.2",
     "@wagmi/core": "2.21.2",
     "@wagmi/vue": "0.2.11",
     "viem": "2.37.9",
-    "vue": "3.4.3"
+    "vue": "3.4.3",
+    "@laughingwhales/appkit": "workspace:*",
+    "@laughingwhales/appkit-adapter-wagmi": "workspace:*"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.1.4",

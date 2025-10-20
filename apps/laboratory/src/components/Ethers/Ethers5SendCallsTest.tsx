@@ -4,9 +4,9 @@ import { Button, Heading, Spacer, Stack, Text } from '@chakra-ui/react'
 import { ethers } from 'ethers5'
 import { type WalletCapabilities, toHex } from 'viem'
 
-import type { Provider as RawProvider } from '@reown/appkit'
-import type { Address, Hex } from '@reown/appkit-common'
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import type { Provider as RawProvider } from '@laughingwhales/appkit'
+import type { Address, Hex } from '@laughingwhales/appkit-common'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { useCapabilities } from '@/src/hooks/useCapabilities'

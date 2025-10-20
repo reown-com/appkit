@@ -9,16 +9,16 @@ import {
   RouterController,
   SnackController,
   ThemeController
-} from '@reown/appkit-controllers'
-import type { IconType } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-button'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-icon-box'
-import '@reown/appkit-ui/wui-link'
-import '@reown/appkit-ui/wui-loading-thumbnail'
-import '@reown/appkit-ui/wui-text'
-import '@reown/appkit-ui/wui-wallet-image'
+} from '@laughingwhales/appkit-controllers'
+import type { IconType } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-button'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon'
+import '@laughingwhales/appkit-ui/wui-icon-box'
+import '@laughingwhales/appkit-ui/wui-link'
+import '@laughingwhales/appkit-ui/wui-loading-thumbnail'
+import '@laughingwhales/appkit-ui/wui-text'
+import '@laughingwhales/appkit-ui/wui-wallet-image'
 
 import '../../partials/w3m-mobile-download-links/index.js'
 import styles from './styles.js'

@@ -1,5 +1,5 @@
-import type { CaipNetwork, SocialProvider } from '@reown/appkit'
-import type { Wallet } from '@reown/appkit-wallet-button'
+import type { CaipNetwork, SocialProvider } from '@laughingwhales/appkit'
+import type { Wallet } from '@laughingwhales/appkit-wallet-button'
 import {
   abstract,
   arbitrum,
@@ -23,8 +23,8 @@ import {
   solanaTestnet,
   unichainSepolia,
   zkSync
-} from '@reown/appkit/networks'
-import type { AppKitNetwork } from '@reown/appkit/networks'
+} from '@laughingwhales/appkit/networks'
+import type { AppKitNetwork } from '@laughingwhales/appkit/networks'
 
 import { getLocalStorageItem } from './LocalStorage'
 

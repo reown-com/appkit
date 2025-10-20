@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/wui-list-button'
-import type { WuiListButton } from '@reown/appkit-ui/wui-list-button'
+import '@laughingwhales/appkit-ui/wui-list-button'
+import type { WuiListButton } from '@laughingwhales/appkit-ui/wui-list-button'
 
 import '../../components/gallery-container'
 import { iconOptions } from '../../utils/PresetUtils'

@@ -1,6 +1,6 @@
 import { test } from '@playwright/test'
 
-import { WalletPage } from '@reown/appkit-testing'
+import { WalletPage } from '@laughingwhales/appkit-testing'
 
 import { DemoPage } from './pages/DemoPage'
 import { DemoPageValidator } from './validators/DemoPageValidator'

@@ -1,4 +1,4 @@
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 
 import { ChainController, type ChainControllerState } from '../controllers/ChainController.js'
 

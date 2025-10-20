@@ -4,7 +4,7 @@ import { state } from 'lit/decorators/state.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   ConnectionController,
@@ -16,13 +16,13 @@ import {
   type RemoteFeatures,
   RouterController,
   type WalletGuideType
-} from '@reown/appkit-controllers'
-import { MathUtil, customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-button'
-import '@reown/appkit-ui/wui-separator'
-import '@reown/appkit-ui/wui-ux-by-reown'
-import { ConstantsUtil as AppKitConstantsUtil } from '@reown/appkit-utils'
+} from '@laughingwhales/appkit-controllers'
+import { MathUtil, customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-list-button'
+import '@laughingwhales/appkit-ui/wui-separator'
+import '@laughingwhales/appkit-ui/wui-ux-by-reown'
+import { ConstantsUtil as AppKitConstantsUtil } from '@laughingwhales/appkit-utils'
 
 import '../../partials/w3m-email-login-widget/index.js'
 import '../../partials/w3m-legal-checkbox/index.js'

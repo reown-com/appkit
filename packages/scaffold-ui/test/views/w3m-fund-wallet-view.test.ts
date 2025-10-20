@@ -3,13 +3,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   ExchangeController,
   OptionsController,
   RouterController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { W3mFundWalletView } from '../../src/views/w3m-fund-wallet-view'
 import { HelpersUtil } from '../utils/HelpersUtil'

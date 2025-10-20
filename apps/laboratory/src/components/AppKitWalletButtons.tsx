@@ -12,14 +12,14 @@ import {
   Text
 } from '@chakra-ui/react'
 
-import type { ChainNamespace } from '@reown/appkit-common'
-import type { Wallet } from '@reown/appkit-wallet-button'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
+import type { Wallet } from '@laughingwhales/appkit-wallet-button'
 import {
   AppKitWalletButton,
   useAppKitUpdateEmail,
   useAppKitWallet
-} from '@reown/appkit-wallet-button/react'
-import { type SocialProvider, useAppKitAccount } from '@reown/appkit/react'
+} from '@laughingwhales/appkit-wallet-button/react'
+import { type SocialProvider, useAppKitAccount } from '@laughingwhales/appkit/react'
 
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 

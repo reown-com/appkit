@@ -7,7 +7,7 @@ import {
   type CaipNetwork,
   ConstantsUtil,
   UserRejectedRequestError
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 import {
   AppKitError,
   type ChainAdapter,
@@ -16,8 +16,8 @@ import {
   EventsController,
   RouterController,
   SendController
-} from '@reown/appkit-controllers'
-import type { WuiButton } from '@reown/appkit-ui/wui-button'
+} from '@laughingwhales/appkit-controllers'
+import type { WuiButton } from '@laughingwhales/appkit-ui/wui-button'
 
 import { W3mWalletSendPreviewView } from '../../src/views/w3m-wallet-send-preview-view'
 

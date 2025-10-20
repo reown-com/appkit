@@ -1,8 +1,8 @@
 import { type BrowserContext, type Page, expect, test } from '@playwright/test'
 
-import type { CaipNetworkId } from '@reown/appkit'
-import { SECURE_WEBSITE_URL } from '@reown/appkit-testing'
-import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+import type { CaipNetworkId } from '@laughingwhales/appkit'
+import { SECURE_WEBSITE_URL } from '@laughingwhales/appkit-testing'
+import { mainnet, polygon, solana, solanaTestnet } from '@laughingwhales/appkit/networks'
 
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type AppKitSdkVersion, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { type AppKitSdkVersion, ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
 
 import { ConstantsUtil } from '../exports'
 import { SemVerUtils } from '../src/SemVerUtils'
@@ -199,7 +199,7 @@ describe('SemVerUtils', () => {
       // Wait for the async fetch to complete
       await new Promise(process.nextTick)
 
-      expect(fetchSpy).toHaveBeenCalledWith('https://registry.npmjs.org/@reown/appkit/latest')
+      expect(fetchSpy).toHaveBeenCalledWith('https://registry.npmjs.org/@laughingwhales/appkit/latest')
       expect(consoleWarnSpy).toHaveBeenCalledWith('Version warning message')
 
       coreHelperMock.mockRestore()
@@ -223,7 +223,7 @@ describe('SemVerUtils', () => {
       // Wait for the async fetch to complete
       await new Promise(process.nextTick)
 
-      expect(fetchSpy).toHaveBeenCalledWith('https://registry.npmjs.org/@reown/appkit/latest')
+      expect(fetchSpy).toHaveBeenCalledWith('https://registry.npmjs.org/@laughingwhales/appkit/latest')
       expect(consoleWarnSpy).not.toHaveBeenCalled()
 
       coreHelperMock.mockRestore()
@@ -246,7 +246,7 @@ describe('SemVerUtils', () => {
       // Wait for the async fetch to complete
       await new Promise(process.nextTick)
 
-      expect(fetchSpy).toHaveBeenCalledWith('https://registry.npmjs.org/@reown/appkit/latest')
+      expect(fetchSpy).toHaveBeenCalledWith('https://registry.npmjs.org/@laughingwhales/appkit/latest')
       expect(consoleWarnSpy).not.toHaveBeenCalled()
 
       coreHelperMock.mockRestore()

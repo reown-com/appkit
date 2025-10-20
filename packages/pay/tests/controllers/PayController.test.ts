@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type Address, type CaipNetworkId, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
+import { type Address, type CaipNetworkId, ConstantsUtil, ParseUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   CoreHelperUtil,
@@ -9,7 +9,7 @@ import {
   ProviderController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
 
 import { PayController } from '../../src/controllers/PayController'
 import { AppKitPayError, AppKitPayErrorCodes, AppKitPayErrorMessages } from '../../src/types/errors'

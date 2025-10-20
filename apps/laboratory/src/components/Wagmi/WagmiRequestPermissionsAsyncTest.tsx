@@ -7,8 +7,8 @@ import {
   type SmartSessionGrantPermissionsRequest,
   createSubscription,
   grantPermissions
-} from '@reown/appkit-experimental/smart-session'
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+} from '@laughingwhales/appkit-experimental/smart-session'
+import { useAppKitAccount, useAppKitNetwork } from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { useLocalEcdsaKey } from '@/src/context/LocalEcdsaKeyContext'

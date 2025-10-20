@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 import { type PrivateKeyAccount, generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 
-import type { Address } from '@reown/appkit-common'
+import type { Address } from '@laughingwhales/appkit-common'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { useLocalStorageState } from '@/src/hooks/useLocalStorageState'

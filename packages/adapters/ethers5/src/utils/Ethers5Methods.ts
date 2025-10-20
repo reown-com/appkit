@@ -1,13 +1,13 @@
 /* eslint-disable max-params */
 import { Contract, ethers } from 'ethers'
 
-import type { Hex } from '@reown/appkit-common'
+import type { Hex } from '@laughingwhales/appkit-common'
 import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,
   WriteContractArgs
-} from '@reown/appkit-controllers'
-import { type Provider } from '@reown/appkit-utils/ethers'
+} from '@laughingwhales/appkit-controllers'
+import { type Provider } from '@laughingwhales/appkit-utils/ethers'
 
 export const Ethers5Methods = {
   signMessage: async (message: string, provider: Provider, address: string) => {

@@ -1,7 +1,7 @@
 import { Box, Heading, Text, VStack } from '@chakra-ui/react'
 
-import type { ChainNamespace } from '@reown/appkit-common'
-import type { Connection } from '@reown/appkit/react'
+import type { ChainNamespace } from '@laughingwhales/appkit-common'
+import type { Connection } from '@laughingwhales/appkit/react'
 
 import { ConnectionCard } from './ConnectionCard'
 

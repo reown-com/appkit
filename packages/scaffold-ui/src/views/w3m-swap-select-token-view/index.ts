@@ -5,16 +5,16 @@ import {
   RouterController,
   SwapController,
   type SwapTokenWithBalance
-} from '@reown/appkit-controllers'
-import { MathUtil, customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-button'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-input-text'
-import '@reown/appkit-ui/wui-text'
-import '@reown/appkit-ui/wui-token-button'
-import '@reown/appkit-ui/wui-token-list-item'
-import '@reown/appkit-ui/wui-token-list-item-loader'
+} from '@laughingwhales/appkit-controllers'
+import { MathUtil, customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-button'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon'
+import '@laughingwhales/appkit-ui/wui-input-text'
+import '@laughingwhales/appkit-ui/wui-text'
+import '@laughingwhales/appkit-ui/wui-token-button'
+import '@laughingwhales/appkit-ui/wui-token-list-item'
+import '@laughingwhales/appkit-ui/wui-token-list-item-loader'
 
 import styles from './styles.js'
 

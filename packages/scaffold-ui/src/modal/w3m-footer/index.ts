@@ -1,8 +1,8 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { EventsController, RouterController } from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
+import { EventsController, RouterController } from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
 
 import '../../partials/w3m-legal-footer/index.js'
 import '../../partials/w3m-onramp-providers-footer/index.js'

@@ -1,7 +1,7 @@
 import { type Page, expect } from '@playwright/test'
 
-import { WalletPage, WalletValidator } from '@reown/appkit-testing'
-import { DEFAULT_SESSION_PARAMS } from '@reown/appkit-testing'
+import { WalletPage, WalletValidator } from '@laughingwhales/appkit-testing'
+import { DEFAULT_SESSION_PARAMS } from '@laughingwhales/appkit-testing'
 
 import { extensionFixture } from '../shared/fixtures/extension-fixture'
 import { ModalPage } from '../shared/pages/ModalPage'

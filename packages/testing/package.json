@@ -1,6 +1,6 @@
 {
-  "name": "@reown/appkit-testing",
-  "version": "1.8.10",
+  "name": "@laughingwhales/appkit-testing",
+  "version": "1.8.11",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -18,7 +18,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@reown/appkit": "workspace:*"
+    "@laughingwhales/appkit": "workspace:*"
   },
   "devDependencies": {
     "vitest": "3.1.3",

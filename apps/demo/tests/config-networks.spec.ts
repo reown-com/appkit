@@ -1,6 +1,6 @@
 import { test } from '@playwright/test'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 
 import { NETWORK_OPTIONS } from '@/lib/networks'
 

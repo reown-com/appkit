@@ -21,8 +21,8 @@ import { type Chain, erc20Abi } from 'viem'
 import { type Config, useAccount } from 'wagmi'
 import { getWalletClient } from 'wagmi/actions'
 
-import type { Address, Hex } from '@reown/appkit-common'
-import { arbitrum, base, optimism, sepolia } from '@reown/appkit/networks'
+import type { Address, Hex } from '@laughingwhales/appkit-common'
+import { arbitrum, base, optimism, sepolia } from '@laughingwhales/appkit/networks'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { useTransactionToast } from '@/src/components/TransactionToast'

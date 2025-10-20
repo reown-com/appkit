@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type AccountState, ChainController, SIWXUtil } from '@reown/appkit-controllers'
+import { type AccountState, ChainController, SIWXUtil } from '@laughingwhales/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockOptions } from '../mocks/Options.js'
@@ -11,8 +11,8 @@ import {
 } from '../test-utils.js'
 
 // Mock the SIWXUtil
-vi.mock('@reown/appkit-controllers', async () => {
-  const actual = await vi.importActual('@reown/appkit-controllers')
+vi.mock('@laughingwhales/appkit-controllers', async () => {
+  const actual = await vi.importActual('@laughingwhales/appkit-controllers')
   return {
     ...actual,
     SIWXUtil: {

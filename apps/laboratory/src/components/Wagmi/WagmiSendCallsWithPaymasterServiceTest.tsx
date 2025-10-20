@@ -5,8 +5,8 @@ import { type WalletCapabilities, encodeFunctionData, parseEther, toHex } from '
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi'
 
-import type { Address } from '@reown/appkit-common'
-import { useAppKitAccount } from '@reown/appkit/react'
+import type { Address } from '@laughingwhales/appkit-common'
+import { useAppKitAccount } from '@laughingwhales/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { useCapabilities } from '@/src/hooks/useCapabilities'

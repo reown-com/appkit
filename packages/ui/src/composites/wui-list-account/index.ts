@@ -1,14 +1,14 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   BlockchainApiController,
   ChainController,
   ConnectorController,
   StorageUtil
-} from '@reown/appkit-controllers'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-controllers'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import '../../components/wui-image/index.js'
 import '../../components/wui-loading-spinner/index.js'

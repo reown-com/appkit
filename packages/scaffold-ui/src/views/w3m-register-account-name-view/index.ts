@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { type Ref, createRef, ref } from 'lit/directives/ref.js'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   ChainController,
   CoreHelperUtil,
@@ -11,16 +11,16 @@ import {
   type ReownName,
   SnackController,
   getPreferredAccountType
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-account-name-suggestion-item'
-import '@reown/appkit-ui/wui-ens-input'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-icon-link'
-import '@reown/appkit-ui/wui-loading-spinner'
-import '@reown/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-account-name-suggestion-item'
+import '@laughingwhales/appkit-ui/wui-ens-input'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-icon'
+import '@laughingwhales/appkit-ui/wui-icon-link'
+import '@laughingwhales/appkit-ui/wui-loading-spinner'
+import '@laughingwhales/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@laughingwhales/appkit-wallet/utils'
 
 import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import styles from './styles.js'

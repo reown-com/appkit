@@ -6,8 +6,8 @@ import {
   SafeLocalStorage,
   SafeLocalStorageKeys,
   getSafeConnectorIdKey
-} from '@reown/appkit-common'
-import type { Connection } from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
+import type { Connection } from '@laughingwhales/appkit-common'
 
 import type {
   BlockchainApiBalanceResponse,

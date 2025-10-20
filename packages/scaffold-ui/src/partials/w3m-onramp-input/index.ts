@@ -8,13 +8,13 @@ import {
   OnRampController,
   type PaymentCurrency,
   type PurchaseCurrency
-} from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-image'
-import '@reown/appkit-ui/wui-input-text'
-import '@reown/appkit-ui/wui-loading-spinner'
-import '@reown/appkit-ui/wui-text'
+} from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-image'
+import '@laughingwhales/appkit-ui/wui-input-text'
+import '@laughingwhales/appkit-ui/wui-loading-spinner'
+import '@laughingwhales/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

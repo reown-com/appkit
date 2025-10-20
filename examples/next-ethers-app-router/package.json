@@ -9,8 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@reown/appkit": "workspace:*",
-    "@reown/appkit-adapter-ethers": "workspace:*",
     "@tanstack/react-query": "5.75.5",
     "@wagmi/core": "2.21.2",
     "next": "14.2.32",
@@ -18,7 +16,9 @@
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "viem": "2.37.9",
-    "wagmi": "2.17.5"
+    "wagmi": "2.17.5",
+    "@laughingwhales/appkit": "workspace:*",
+    "@laughingwhales/appkit-adapter-ethers": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.13.4",

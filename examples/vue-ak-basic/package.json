@@ -8,8 +8,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@reown/appkit": "workspace:*",
-    "vue": "3.4.3"
+    "vue": "3.4.3",
+    "@laughingwhales/appkit": "workspace:*"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.0.2",

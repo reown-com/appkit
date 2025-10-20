@@ -1,5 +1,5 @@
-import { type AppKitSdkVersion, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { StorageUtil } from '@reown/appkit-controllers'
+import { type AppKitSdkVersion, ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
+import { StorageUtil } from '@laughingwhales/appkit-controllers'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
 
@@ -40,7 +40,7 @@ export const SemVerUtils = {
     }
 
     try {
-      fetch('https://registry.npmjs.org/@reown/appkit/latest')
+      fetch('https://registry.npmjs.org/@laughingwhales/appkit/latest')
         .then(response => response.json())
         .then(data => {
           const latestVersion = data.version

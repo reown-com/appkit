@@ -6,7 +6,7 @@ import {
   type ChainNamespace,
   ConstantsUtil,
   type EmbeddedWalletTimeoutReason
-} from '@reown/appkit-common'
+} from '@laughingwhales/appkit-common'
 
 import { W3mFrameConstants } from '../src/W3mFrameConstants.js'
 import { W3mFrameProvider } from '../src/W3mFrameProvider.js'

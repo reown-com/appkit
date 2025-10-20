@@ -1,8 +1,8 @@
 import { fixture } from '@open-wc/testing'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { Transaction, TransactionTransfer } from '@reown/appkit-common'
-import { TransactionsController } from '@reown/appkit-controllers'
+import type { Transaction, TransactionTransfer } from '@laughingwhales/appkit-common'
+import { TransactionsController } from '@laughingwhales/appkit-controllers'
 
 import type { W3mActivityList } from '../../src/partials/w3m-activity-list'
 import { HelpersUtil } from '../utils/HelpersUtil'

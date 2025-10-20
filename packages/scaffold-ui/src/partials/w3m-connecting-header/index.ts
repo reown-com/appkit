@@ -1,10 +1,10 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
-import type { Platform } from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-tabs'
+import type { Platform } from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-tabs'
 
 @customElement('w3m-connecting-header')
 export class W3mConnectingHeader extends LitElement {

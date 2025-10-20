@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import type { WuiListNetwork } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-list-network'
+import type { WuiListNetwork } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-list-network'
 
 import '../../components/gallery-container'
 import { networkImageSrc } from '../../utils/PresetUtils'

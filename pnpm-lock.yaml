@@ -134,18 +134,18 @@ importers:
       '@bitcoinerlab/secp256k1':
         specifier: 1.2.0
         version: 1.2.0
+      '@laughingwhales/appkit-common':
+        specifier: workspace:*
+        version: link:../../packages/common
+      '@laughingwhales/appkit-ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@noble/curves':
         specifier: 1.9.2
         version: 1.9.2
       '@noble/secp256k1':
         specifier: 1.7.2
         version: 1.7.2
-      '@reown/appkit-common':
-        specifier: workspace:*
-        version: link:../../packages/common
-      '@reown/appkit-ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       '@solana/wallet-standard':
         specifier: 1.1.4
         version: 1.1.4(@solana/wallet-adapter-base@0.9.27(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)))(@solana/web3.js@1.98.4(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10))(bs58@6.0.0)(react@19.1.1)
@@ -318,6 +318,33 @@ importers:
       '@hookform/resolvers':
         specifier: 3.9.0
         version: 3.9.0(react-hook-form@7.65.0(react@19.1.1))
+      '@laughingwhales/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
+      '@laughingwhales/appkit-adapter-bitcoin':
+        specifier: workspace:*
+        version: link:../../packages/adapters/bitcoin
+      '@laughingwhales/appkit-adapter-ethers':
+        specifier: workspace:*
+        version: link:../../packages/adapters/ethers
+      '@laughingwhales/appkit-adapter-polkadot':
+        specifier: workspace:*
+        version: link:../../packages/adapters/polkadot
+      '@laughingwhales/appkit-adapter-solana':
+        specifier: workspace:*
+        version: link:../../packages/adapters/solana
+      '@laughingwhales/appkit-common':
+        specifier: workspace:*
+        version: link:../../packages/common
+      '@laughingwhales/appkit-controllers':
+        specifier: workspace:*
+        version: link:../../packages/controllers
+      '@laughingwhales/appkit-scaffold-ui':
+        specifier: workspace:*
+        version: link:../../packages/scaffold-ui
+      '@laughingwhales/appkit-ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@next/third-parties':
         specifier: 15.2.1
         version: 15.2.1(next@14.2.32(@opentelemetry/api@1.9.0)(@playwright/test@1.48.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
@@ -357,33 +384,6 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: 1.2.8
         version: 1.2.8(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      '@reown/appkit':
-        specifier: workspace:*
-        version: link:../../packages/appkit
-      '@reown/appkit-adapter-bitcoin':
-        specifier: workspace:*
-        version: link:../../packages/adapters/bitcoin
-      '@reown/appkit-adapter-ethers':
-        specifier: workspace:*
-        version: link:../../packages/adapters/ethers
-      '@reown/appkit-adapter-polkadot':
-        specifier: workspace:*
-        version: link:../../packages/adapters/polkadot
-      '@reown/appkit-adapter-solana':
-        specifier: workspace:*
-        version: link:../../packages/adapters/solana
-      '@reown/appkit-common':
-        specifier: workspace:*
-        version: link:../../packages/common
-      '@reown/appkit-controllers':
-        specifier: workspace:*
-        version: link:../../packages/controllers
-      '@reown/appkit-scaffold-ui':
-        specifier: workspace:*
-        version: link:../../packages/scaffold-ui
-      '@reown/appkit-ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       '@sentry/core':
         specifier: 8.55.0
         version: 8.55.0
@@ -445,6 +445,9 @@ importers:
         specifier: 2.17.5
         version: 2.17.5(@tanstack/query-core@5.75.5)(@tanstack/react-query@5.75.5(react@19.1.1))(@types/react@19.1.15)(bufferutil@4.0.9)(react@19.1.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(viem@2.37.9(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12))(zod@4.1.12)
     devDependencies:
+      '@laughingwhales/appkit-testing':
+        specifier: workspace:*
+        version: link:../../packages/testing
       '@mailsac/api':
         specifier: 1.0.8
         version: 1.0.8
@@ -463,9 +466,6 @@ importers:
       '@polkadot/util-crypto':
         specifier: ^13.0.0
         version: 13.5.7(@polkadot/util@13.5.7)
-      '@reown/appkit-testing':
-        specifier: workspace:*
-        version: link:../../packages/testing
       '@types/node':
         specifier: 22.13.4
         version: 22.13.4
@@ -496,13 +496,13 @@ importers:
 
   apps/gallery:
     dependencies:
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../../packages/common
-      '@reown/appkit-scaffold-ui':
+      '@laughingwhales/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../packages/scaffold-ui
-      '@reown/appkit-ui':
+      '@laughingwhales/appkit-ui':
         specifier: workspace:*
         version: link:../../packages/ui
       lit:
@@ -548,49 +548,49 @@ importers:
       '@chakra-ui/react':
         specifier: 2.10.7
         version: 2.10.7(@emotion/react@11.14.0(@types/react@19.1.15)(react@19.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.1.15)(react@19.1.1))(@types/react@19.1.15)(react@19.1.1))(@types/react@19.1.15)(framer-motion@10.18.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-bitcoin':
+      '@laughingwhales/appkit-adapter-bitcoin':
         specifier: workspace:*
         version: link:../../packages/adapters/bitcoin
-      '@reown/appkit-adapter-ethers':
+      '@laughingwhales/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
-      '@reown/appkit-adapter-ethers5':
+      '@laughingwhales/appkit-adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
-      '@reown/appkit-adapter-solana':
+      '@laughingwhales/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../../packages/common
-      '@reown/appkit-experimental':
+      '@laughingwhales/appkit-experimental':
         specifier: workspace:*
         version: link:../../packages/experimental
-      '@reown/appkit-pay':
+      '@laughingwhales/appkit-pay':
         specifier: workspace:*
         version: link:../../packages/pay
-      '@reown/appkit-siwe':
+      '@laughingwhales/appkit-siwe':
         specifier: workspace:*
         version: link:../../packages/siwe
-      '@reown/appkit-siwx':
+      '@laughingwhales/appkit-siwx':
         specifier: workspace:*
         version: link:../../packages/siwx
-      '@reown/appkit-universal-connector':
+      '@laughingwhales/appkit-universal-connector':
         specifier: workspace:*
         version: link:../../packages/universal-connector
-      '@reown/appkit-utils':
+      '@laughingwhales/appkit-utils':
         specifier: workspace:*
         version: link:../../packages/appkit-utils
-      '@reown/appkit-wallet':
+      '@laughingwhales/appkit-wallet':
         specifier: workspace:*
         version: link:../../packages/wallet
-      '@reown/appkit-wallet-button':
+      '@laughingwhales/appkit-wallet-button':
         specifier: workspace:*
         version: link:../../packages/wallet-button
       '@safe-global/safe-apps-provider':
@@ -687,15 +687,15 @@ importers:
       '@aws-sdk/client-cloudwatch':
         specifier: 3.758.0
         version: 3.758.0
+      '@laughingwhales/appkit-testing':
+        specifier: workspace:*
+        version: link:../../packages/testing
       '@mailsac/api':
         specifier: 1.0.8
         version: 1.0.8
       '@playwright/test':
         specifier: 1.48.2
         version: 1.48.2
-      '@reown/appkit-testing':
-        specifier: workspace:*
-        version: link:../../packages/testing
       '@types/node':
         specifier: 22.13.4
         version: 22.13.4
@@ -787,7 +787,7 @@ importers:
 
   examples/html-ak-basic:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
       bs58:
@@ -803,7 +803,7 @@ importers:
 
   examples/html-ak-basic-sign-client:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/sign-client':
@@ -819,7 +819,7 @@ importers:
 
   examples/html-ak-basic-up:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/universal-provider':
@@ -835,10 +835,10 @@ importers:
 
   examples/html-bitcoin:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-bitcoin':
+      '@laughingwhales/appkit-adapter-bitcoin':
         specifier: workspace:*
         version: link:../../packages/adapters/bitcoin
     devDependencies:
@@ -858,10 +858,10 @@ importers:
 
   examples/html-ethers:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-ethers':
+      '@laughingwhales/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
       ethers:
@@ -874,10 +874,10 @@ importers:
 
   examples/html-solana:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-solana':
+      '@laughingwhales/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
     devDependencies:
@@ -887,10 +887,10 @@ importers:
 
   examples/html-wagmi:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       ethers:
@@ -909,16 +909,16 @@ importers:
 
   examples/html-wagmi-solana-bitcoin:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-bitcoin':
+      '@laughingwhales/appkit-adapter-bitcoin':
         specifier: workspace:*
         version: link:../../packages/adapters/bitcoin
-      '@reown/appkit-adapter-solana':
+      '@laughingwhales/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       ethers:
@@ -931,13 +931,13 @@ importers:
 
   examples/html-wagmi-wallet-button:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@reown/appkit-wallet-button':
+      '@laughingwhales/appkit-wallet-button':
         specifier: workspace:*
         version: link:../../packages/wallet-button
       ethers:
@@ -950,7 +950,7 @@ importers:
 
   examples/next-ak-basic-app-router:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
       '@tanstack/react-query':
@@ -993,7 +993,7 @@ importers:
 
   examples/next-ak-basic-sign-client-app-router:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
       '@tanstack/react-query':
@@ -1042,7 +1042,7 @@ importers:
 
   examples/next-ak-basic-up-app-router:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
       '@tanstack/react-query':
@@ -1088,13 +1088,13 @@ importers:
 
   examples/next-bitcoin-app-router:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-bitcoin':
+      '@laughingwhales/appkit-adapter-bitcoin':
         specifier: workspace:*
         version: link:../../packages/adapters/bitcoin
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@tanstack/react-query':
@@ -1143,7 +1143,7 @@ importers:
 
   examples/next-ep-app-router:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/ethereum-provider':
@@ -1186,10 +1186,10 @@ importers:
 
   examples/next-ethers-app-router:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-ethers':
+      '@laughingwhales/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
       '@tanstack/react-query':
@@ -1238,10 +1238,10 @@ importers:
 
   examples/next-wagmi-app-router:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@tanstack/react-query':
@@ -1290,16 +1290,16 @@ importers:
 
   examples/next-wagmi-solana-bitcoin-app-router:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-bitcoin':
+      '@laughingwhales/appkit-adapter-bitcoin':
         specifier: workspace:*
         version: link:../../packages/adapters/bitcoin
-      '@reown/appkit-adapter-solana':
+      '@laughingwhales/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@tanstack/react-query':
@@ -1348,10 +1348,10 @@ importers:
 
   examples/nuxt-wagmi:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@tanstack/vue-query':
@@ -1384,16 +1384,16 @@ importers:
 
   examples/nuxt-wagmi-solana-bitcoin:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-bitcoin':
+      '@laughingwhales/appkit-adapter-bitcoin':
         specifier: workspace:*
         version: link:../../packages/adapters/bitcoin
-      '@reown/appkit-adapter-solana':
+      '@laughingwhales/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@tanstack/vue-query':
@@ -1426,10 +1426,10 @@ importers:
 
   examples/parcel:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@walletconnect/universal-provider':
@@ -1466,10 +1466,10 @@ importers:
 
   examples/react-ak-basic:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-ethers':
+      '@laughingwhales/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
       ethers:
@@ -1497,7 +1497,7 @@ importers:
 
   examples/react-ak-basic-sign-client:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/sign-client':
@@ -1531,7 +1531,7 @@ importers:
 
   examples/react-ak-basic-up:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/universal-provider':
@@ -1562,7 +1562,7 @@ importers:
 
   examples/react-ep:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/ethereum-provider':
@@ -1593,10 +1593,10 @@ importers:
 
   examples/react-ethers:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-ethers':
+      '@laughingwhales/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
       ethers:
@@ -1624,10 +1624,10 @@ importers:
 
   examples/react-ethers5:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-ethers5':
+      '@laughingwhales/appkit-adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
       ethers:
@@ -1658,10 +1658,10 @@ importers:
       '@esbuild-plugins/node-globals-polyfill':
         specifier: 0.2.3
         version: 0.2.3(esbuild@0.25.11)
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-siwx':
+      '@laughingwhales/appkit-siwx':
         specifier: workspace:*
         version: link:../../packages/siwx
       react:
@@ -1686,10 +1686,10 @@ importers:
 
   examples/react-solana:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-solana':
+      '@laughingwhales/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
       '@solana/wallet-adapter-backpack':
@@ -1720,10 +1720,10 @@ importers:
 
   examples/react-wagmi:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@tanstack/react-query':
@@ -1757,10 +1757,10 @@ importers:
 
   examples/sveltekit-4-wagmi:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@walletconnect/logger':
@@ -1806,10 +1806,10 @@ importers:
 
   examples/sveltekit-ethers:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-ethers':
+      '@laughingwhales/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
       '@walletconnect/logger':
@@ -1852,10 +1852,10 @@ importers:
 
   examples/sveltekit-wagmi:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@walletconnect/logger':
@@ -1901,7 +1901,7 @@ importers:
 
   examples/vue-ak-basic:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
       vue:
@@ -1923,7 +1923,7 @@ importers:
 
   examples/vue-ak-basic-sign-client:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/sign-client':
@@ -1951,7 +1951,7 @@ importers:
 
   examples/vue-ak-basic-up:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/universal-provider':
@@ -1998,13 +1998,13 @@ importers:
 
   examples/vue-ethers-solana:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-ethers':
+      '@laughingwhales/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
-      '@reown/appkit-adapter-solana':
+      '@laughingwhales/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
       ethers:
@@ -2029,10 +2029,10 @@ importers:
 
   examples/vue-ethers5:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-ethers5':
+      '@laughingwhales/appkit-adapter-ethers5':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers5
       ethers:
@@ -2060,10 +2060,10 @@ importers:
       '@esbuild-plugins/node-globals-polyfill':
         specifier: 0.2.3
         version: 0.2.3(esbuild@0.25.11)
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-siwx':
+      '@laughingwhales/appkit-siwx':
         specifier: workspace:*
         version: link:../../packages/siwx
       vue:
@@ -2088,10 +2088,10 @@ importers:
 
   examples/vue-solana:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-solana':
+      '@laughingwhales/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
       '@solana/wallet-adapter-backpack':
@@ -2116,10 +2116,10 @@ importers:
 
   examples/vue-wagmi:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@tanstack/vue-query':
@@ -2156,13 +2156,13 @@ importers:
 
   examples/vue-wagmi-solana:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-adapter-solana':
+      '@laughingwhales/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@solana/wallet-adapter-backpack':
@@ -2205,19 +2205,19 @@ importers:
       '@exodus/bitcoin-wallet-standard':
         specifier: 0.0.0
         version: 0.0.0
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../appkit
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../../controllers
-      '@reown/appkit-polyfills':
+      '@laughingwhales/appkit-polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@reown/appkit-utils':
+      '@laughingwhales/appkit-utils':
         specifier: workspace:*
         version: link:../../appkit-utils
       '@wallet-standard/app':
@@ -2257,25 +2257,25 @@ importers:
       '@ethersproject/sha2':
         specifier: 5.8.0
         version: 5.8.0
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../appkit
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../../controllers
-      '@reown/appkit-polyfills':
+      '@laughingwhales/appkit-polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@reown/appkit-scaffold-ui':
+      '@laughingwhales/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@reown/appkit-utils':
+      '@laughingwhales/appkit-utils':
         specifier: workspace:*
         version: link:../../appkit-utils
-      '@reown/appkit-wallet':
+      '@laughingwhales/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
       '@walletconnect/universal-provider':
@@ -2313,25 +2313,25 @@ importers:
       '@ethersproject/sha2':
         specifier: 5.8.0
         version: 5.8.0
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../appkit
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../../controllers
-      '@reown/appkit-polyfills':
+      '@laughingwhales/appkit-polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@reown/appkit-scaffold-ui':
+      '@laughingwhales/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@reown/appkit-utils':
+      '@laughingwhales/appkit-utils':
         specifier: workspace:*
         version: link:../../appkit-utils
-      '@reown/appkit-wallet':
+      '@laughingwhales/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
       '@walletconnect/universal-provider':
@@ -2366,19 +2366,19 @@ importers:
 
   packages/adapters/polkadot:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../appkit
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../../controllers
-      '@reown/appkit-polyfills':
+      '@laughingwhales/appkit-polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@reown/appkit-utils':
+      '@laughingwhales/appkit-utils':
         specifier: workspace:*
         version: link:../../appkit-utils
       '@walletconnect/universal-provider':
@@ -2406,22 +2406,22 @@ importers:
 
   packages/adapters/solana:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../appkit
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../../controllers
-      '@reown/appkit-polyfills':
+      '@laughingwhales/appkit-polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@reown/appkit-utils':
+      '@laughingwhales/appkit-utils':
         specifier: workspace:*
         version: link:../../appkit-utils
-      '@reown/appkit-wallet':
+      '@laughingwhales/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
       '@solana/spl-token':
@@ -2492,25 +2492,25 @@ importers:
 
   packages/adapters/wagmi:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../../appkit
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../../common
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../../controllers
-      '@reown/appkit-polyfills':
+      '@laughingwhales/appkit-polyfills':
         specifier: workspace:*
         version: link:../../polyfills
-      '@reown/appkit-scaffold-ui':
+      '@laughingwhales/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../scaffold-ui
-      '@reown/appkit-utils':
+      '@laughingwhales/appkit-utils':
         specifier: workspace:*
         version: link:../../appkit-utils
-      '@reown/appkit-wallet':
+      '@laughingwhales/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
       '@wagmi/core':
@@ -2551,28 +2551,28 @@ importers:
 
   packages/appkit:
     dependencies:
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../controllers
-      '@reown/appkit-pay':
+      '@laughingwhales/appkit-pay':
         specifier: workspace:*
         version: link:../pay
-      '@reown/appkit-polyfills':
+      '@laughingwhales/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@reown/appkit-scaffold-ui':
+      '@laughingwhales/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../scaffold-ui
-      '@reown/appkit-ui':
+      '@laughingwhales/appkit-ui':
         specifier: workspace:*
         version: link:../ui
-      '@reown/appkit-utils':
+      '@laughingwhales/appkit-utils':
         specifier: workspace:*
         version: link:../appkit-utils
-      '@reown/appkit-wallet':
+      '@laughingwhales/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/universal-provider':
@@ -2595,7 +2595,7 @@ importers:
         specifier: 1.0.8
         version: 1.0.8(@types/react@19.1.15)
     devDependencies:
-      '@reown/appkit-siwe':
+      '@laughingwhales/appkit-siwe':
         specifier: workspace:*
         version: link:../siwe
       '@testing-library/react':
@@ -2634,16 +2634,16 @@ importers:
 
   packages/appkit-utils:
     dependencies:
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../controllers
-      '@reown/appkit-polyfills':
+      '@laughingwhales/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@reown/appkit-wallet':
+      '@laughingwhales/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@wallet-standard/wallet':
@@ -2698,22 +2698,22 @@ importers:
 
   packages/cdn:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../appkit
-      '@reown/appkit-adapter-ethers':
+      '@laughingwhales/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../adapters/ethers
-      '@reown/appkit-adapter-ethers5':
+      '@laughingwhales/appkit-adapter-ethers5':
         specifier: workspace:*
         version: link:../adapters/ethers5
-      '@reown/appkit-adapter-solana':
+      '@laughingwhales/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../adapters/solana
-      '@reown/appkit-adapter-wagmi':
+      '@laughingwhales/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../adapters/wagmi
-      '@reown/appkit-polyfills':
+      '@laughingwhales/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
       '@wagmi/connectors':
@@ -2809,10 +2809,10 @@ importers:
 
   packages/controllers:
     dependencies:
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@reown/appkit-wallet':
+      '@laughingwhales/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/universal-provider':
@@ -2852,7 +2852,7 @@ importers:
 
   packages/core-legacy:
     dependencies:
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../controllers
     devDependencies:
@@ -2865,19 +2865,19 @@ importers:
 
   packages/experimental:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../appkit
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../controllers
-      '@reown/appkit-ui':
+      '@laughingwhales/appkit-ui':
         specifier: workspace:*
         version: link:../ui
-      '@reown/appkit-utils':
+      '@laughingwhales/appkit-utils':
         specifier: workspace:*
         version: link:../appkit-utils
       lit:
@@ -2902,16 +2902,16 @@ importers:
 
   packages/pay:
     dependencies:
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../controllers
-      '@reown/appkit-ui':
+      '@laughingwhales/appkit-ui':
         specifier: workspace:*
         version: link:../ui
-      '@reown/appkit-utils':
+      '@laughingwhales/appkit-utils':
         specifier: workspace:*
         version: link:../appkit-utils
       lit:
@@ -2946,19 +2946,19 @@ importers:
 
   packages/scaffold-ui:
     dependencies:
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../controllers
-      '@reown/appkit-ui':
+      '@laughingwhales/appkit-ui':
         specifier: workspace:*
         version: link:../ui
-      '@reown/appkit-utils':
+      '@laughingwhales/appkit-utils':
         specifier: workspace:*
         version: link:../appkit-utils
-      '@reown/appkit-wallet':
+      '@laughingwhales/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       lit:
@@ -2977,19 +2977,19 @@ importers:
 
   packages/siwe:
     dependencies:
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../controllers
-      '@reown/appkit-ui':
+      '@laughingwhales/appkit-ui':
         specifier: workspace:*
         version: link:../ui
-      '@reown/appkit-utils':
+      '@laughingwhales/appkit-utils':
         specifier: workspace:*
         version: link:../appkit-utils
-      '@reown/appkit-wallet':
+      '@laughingwhales/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/utils':
@@ -3007,13 +3007,13 @@ importers:
 
   packages/siwx:
     dependencies:
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../controllers
-      '@reown/appkit-utils':
+      '@laughingwhales/appkit-utils':
         specifier: workspace:*
         version: link:../appkit-utils
       bip322-js:
@@ -3053,7 +3053,7 @@ importers:
 
   packages/testing:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../appkit
     devDependencies:
@@ -3075,18 +3075,18 @@ importers:
 
   packages/ui:
     dependencies:
+      '@laughingwhales/appkit-common':
+        specifier: workspace:*
+        version: link:../common
+      '@laughingwhales/appkit-controllers':
+        specifier: workspace:*
+        version: link:../controllers
+      '@laughingwhales/appkit-wallet':
+        specifier: workspace:*
+        version: link:../wallet
       '@phosphor-icons/webcomponents':
         specifier: 2.1.5
         version: 2.1.5
-      '@reown/appkit-common':
-        specifier: workspace:*
-        version: link:../common
-      '@reown/appkit-controllers':
-        specifier: workspace:*
-        version: link:../controllers
-      '@reown/appkit-wallet':
-        specifier: workspace:*
-        version: link:../wallet
       lit:
         specifier: 3.3.0
         version: 3.3.0
@@ -3124,10 +3124,10 @@ importers:
 
   packages/universal-connector:
     dependencies:
-      '@reown/appkit':
+      '@laughingwhales/appkit':
         specifier: workspace:*
         version: link:../appkit
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../common
       '@walletconnect/types':
@@ -3155,10 +3155,10 @@ importers:
 
   packages/wallet:
     dependencies:
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@reown/appkit-polyfills':
+      '@laughingwhales/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
       '@walletconnect/logger':
@@ -3180,16 +3180,16 @@ importers:
 
   packages/wallet-button:
     dependencies:
-      '@reown/appkit-common':
+      '@laughingwhales/appkit-common':
         specifier: workspace:*
         version: link:../common
-      '@reown/appkit-controllers':
+      '@laughingwhales/appkit-controllers':
         specifier: workspace:*
         version: link:../controllers
-      '@reown/appkit-ui':
+      '@laughingwhales/appkit-ui':
         specifier: workspace:*
         version: link:../ui
-      '@reown/appkit-utils':
+      '@laughingwhales/appkit-utils':
         specifier: workspace:*
         version: link:../appkit-utils
       lit:
@@ -33609,8 +33609,8 @@ snapshots:
       '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.9.2)
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@8.56.0)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint-import-resolver-typescript@3.10.1)(eslint@8.56.0)
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.56.0)
       eslint-plugin-react: 7.37.5(eslint@8.56.0)
       eslint-plugin-react-hooks: 5.0.0-canary-7118f5dd7-20230705(eslint@8.56.0)
@@ -33629,8 +33629,8 @@ snapshots:
       '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.9.2)
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@8.56.0)
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint-import-resolver-typescript@3.10.1)(eslint@8.56.0)
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint@8.56.0))(eslint@8.56.0)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.56.0)
       eslint-plugin-react: 7.37.5(eslint@8.56.0)
       eslint-plugin-react-hooks: 5.2.0(eslint@8.56.0)
@@ -33653,7 +33653,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@8.56.0):
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.3
@@ -33664,7 +33664,33 @@ snapshots:
       tinyglobby: 0.2.15
       unrs-resolver: 1.11.1
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint-import-resolver-typescript@3.10.1)(eslint@8.56.0)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
+    transitivePeerDependencies:
+      - supports-color
+
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint@8.56.0))(eslint@8.56.0):
+    dependencies:
+      '@nolyfill/is-core-module': 1.0.39
+      debug: 4.4.3
+      eslint: 8.56.0
+      get-tsconfig: 4.12.0
+      is-bun-module: 2.0.0
+      stable-hash: 0.0.5
+      tinyglobby: 0.2.15
+      unrs-resolver: 1.11.1
+    optionalDependencies:
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
+    transitivePeerDependencies:
+      - supports-color
+
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0):
+    dependencies:
+      debug: 3.2.7
+    optionalDependencies:
+      '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.9.2)
+      eslint: 8.56.0
+      eslint-import-resolver-node: 0.3.9
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -33675,11 +33701,40 @@ snapshots:
       '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.9.2)
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@8.56.0)
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint@8.56.0))(eslint@8.56.0)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint-import-resolver-typescript@3.10.1)(eslint@8.56.0):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0):
+    dependencies:
+      '@rtsao/scc': 1.1.0
+      array-includes: 3.1.9
+      array.prototype.findlastindex: 1.2.6
+      array.prototype.flat: 1.3.3
+      array.prototype.flatmap: 1.3.3
+      debug: 3.2.7
+      doctrine: 2.1.0
+      eslint: 8.56.0
+      eslint-import-resolver-node: 0.3.9
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
+      hasown: 2.0.2
+      is-core-module: 2.13.1
+      is-glob: 4.0.3
+      minimatch: 3.1.2
+      object.fromentries: 2.0.8
+      object.groupby: 1.0.3
+      object.values: 1.2.1
+      semver: 6.3.1
+      string.prototype.trimend: 1.0.9
+      tsconfig-paths: 3.15.0
+    optionalDependencies:
+      '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.9.2)
+    transitivePeerDependencies:
+      - eslint-import-resolver-typescript
+      - eslint-import-resolver-webpack
+      - supports-color
+
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.9.2))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9

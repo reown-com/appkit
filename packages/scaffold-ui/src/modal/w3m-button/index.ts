@@ -2,9 +2,9 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
-import { ChainController } from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
+import type { CaipAddress, ChainNamespace } from '@laughingwhales/appkit-common'
+import { ChainController } from '@laughingwhales/appkit-controllers'
+import { customElement } from '@laughingwhales/appkit-ui'
 
 import type { W3mAccountButton } from '../w3m-account-button/index.js'
 import type { W3mConnectButton } from '../w3m-connect-button/index.js'

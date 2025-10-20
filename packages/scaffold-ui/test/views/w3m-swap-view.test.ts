@@ -1,7 +1,7 @@
 import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi, expect as vitestExpect } from 'vitest'
 
-import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
+import type { CaipAddress, CaipNetwork } from '@laughingwhales/appkit-common'
 import {
   type AccountState,
   ChainController,
@@ -9,8 +9,8 @@ import {
   RouterController,
   SwapController,
   type SwapTokenWithBalance
-} from '@reown/appkit-controllers'
-import { EventsController } from '@reown/appkit-controllers'
+} from '@laughingwhales/appkit-controllers'
+import { EventsController } from '@laughingwhales/appkit-controllers'
 
 import { W3mSwapView } from '../../src/views/w3m-swap-view'
 

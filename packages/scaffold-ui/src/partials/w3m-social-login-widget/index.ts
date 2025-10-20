@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@laughingwhales/appkit-common'
 import {
   AlertController,
   ApiController,
@@ -14,14 +14,14 @@ import {
   RouterController,
   type SocialProvider,
   type WalletGuideType
-} from '@reown/appkit-controllers'
-import { executeSocialLogin } from '@reown/appkit-controllers/utils'
-import { CoreHelperUtil } from '@reown/appkit-controllers/utils'
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-social'
-import '@reown/appkit-ui/wui-logo-select'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+} from '@laughingwhales/appkit-controllers'
+import { executeSocialLogin } from '@laughingwhales/appkit-controllers/utils'
+import { CoreHelperUtil } from '@laughingwhales/appkit-controllers/utils'
+import { UiHelperUtil, customElement } from '@laughingwhales/appkit-ui'
+import '@laughingwhales/appkit-ui/wui-flex'
+import '@laughingwhales/appkit-ui/wui-list-social'
+import '@laughingwhales/appkit-ui/wui-logo-select'
+import { W3mFrameProvider } from '@laughingwhales/appkit-wallet'
 
 import styles from './styles.js'
 

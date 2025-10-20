@@ -1,7 +1,7 @@
 import { GLOBALS_UPDATED, SET_GLOBALS } from 'storybook/internal/core-events'
 import { addons } from 'storybook/preview-api'
 
-import { initializeTheming, setColorTheme } from '@reown/appkit-ui'
+import { initializeTheming, setColorTheme } from '@laughingwhales/appkit-ui'
 
 // -- Utilities ------------------------------------------------------------
 setColorTheme('dark')
