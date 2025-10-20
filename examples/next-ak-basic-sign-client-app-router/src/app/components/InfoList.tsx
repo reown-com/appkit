@@ -24,7 +24,7 @@ export default function InfoList({ account, network, session }: InfoListProps) {
       <section className="code-container">
         <h2 className="code-container-title">Session</h2>
         <div className="code-container-content">
-          {session && <pre>{JSON.stringify(session, null, 2)}</pre>}
+          {session ? <pre>{JSON.stringify(session, null, 2)}</pre> : null}
         </div>
       </section>
     </div>

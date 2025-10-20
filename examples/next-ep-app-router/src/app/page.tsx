@@ -60,10 +60,12 @@ export default function App() {
     provider.on('accountsChanged', handleAccountsChanged)
     provider.on('connect', handleConnect)
 
+    // eslint-disable-next-line consistent-return
     return () => {
       provider.removeListener('chainChanged', handleChainChanged)
       provider.removeListener('accountsChanged', handleAccountsChanged)
       provider.removeListener('connect', handleConnect)
+
       return undefined
     }
   }, [provider])

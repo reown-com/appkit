@@ -13,7 +13,7 @@ import { initializeModal, initializeSignClient } from './config'
 
 export default function App() {
   const [signClient, setSignClient] = useState<InstanceType<typeof SignClient>>()
-  const [session, setSession] = useState<SessionTypes.Struct>()
+  const [session, setSession] = useState<SessionTypes.Struct | undefined>()
   const [account, setAccount] = useState<string>()
   const [network, setNetwork] = useState<string>()
 
@@ -47,8 +47,9 @@ export default function App() {
 
     function handleSessionUpdate({ topic, params }: { topic: string; params: unknown }) {
       const { namespaces } = params as { namespaces: unknown }
-      const _session = signClient.session.get(topic)
+      const _session = signClient?.session.get(topic)
       const updatedSession = { ..._session, namespaces }
+      // @ts-expect-error - type mismatch
       setSession(updatedSession)
     }
 
