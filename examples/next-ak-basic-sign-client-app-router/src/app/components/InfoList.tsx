@@ -1,7 +1,7 @@
 interface InfoListProps {
   account?: string
   network?: string
-  session: any
+  session: unknown
 }
 
 export default function InfoList({ account, network, session }: InfoListProps) {

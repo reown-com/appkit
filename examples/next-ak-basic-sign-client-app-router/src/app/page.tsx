@@ -19,9 +19,11 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.className = 'light'
-    const init = async () => {
+    async function init() {
       const client = await initializeSignClient()
-      if (!client) return
+      if (!client) {
+        return
+      }
 
       setSignClient(client)
       initializeModal()
@@ -39,10 +41,12 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    if (!signClient) return
+    if (!signClient) {
+      return
+    }
 
-    const handleSessionUpdate = ({ topic, params }: { topic: string; params: any }) => {
-      const { namespaces } = params
+    function handleSessionUpdate({ topic, params }: { topic: string; params: unknown }) {
+      const { namespaces } = params as { namespaces: unknown }
       const _session = signClient.session.get(topic)
       const updatedSession = { ..._session, namespaces }
       setSession(updatedSession)

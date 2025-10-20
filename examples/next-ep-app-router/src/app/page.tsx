@@ -12,38 +12,48 @@ import { initializeProvider } from './config'
 
 export default function App() {
   const [provider, setProvider] = useState<InstanceType<typeof EthereumProvider>>()
-  const [session, setSession] = useState<any>()
+  const [session, setSession] = useState<unknown>()
   const [account, setAccount] = useState<string>()
   const [network, setNetwork] = useState<string>()
   const [balance, setBalance] = useState<string>()
 
   useEffect(() => {
     document.documentElement.className = 'light'
-    const init = async () => {
+    async function init() {
       const ethProvider = await initializeProvider()
-      if (!ethProvider) return
+      if (!ethProvider) {
+        return
+      }
 
       setProvider(ethProvider)
-      if (ethProvider.session) setSession(ethProvider.session)
-      if (ethProvider.accounts?.[0]) setAccount(ethProvider.accounts[0])
-      if (ethProvider.chainId) setNetwork(ethProvider.chainId.toString())
+      if (ethProvider.session) {
+        setSession(ethProvider.session)
+      }
+      if (ethProvider.accounts?.[0]) {
+        setAccount(ethProvider.accounts[0])
+      }
+      if (ethProvider.chainId) {
+        setNetwork(ethProvider.chainId.toString())
+      }
     }
     init()
   }, [])
 
   useEffect(() => {
-    if (!provider) return
+    if (!provider) {
+      return
+    }
 
-    const handleChainChanged = (chainId: string) => {
+    function handleChainChanged(chainId: string) {
       setNetwork(chainId)
     }
 
-    const handleAccountsChanged = (accounts: string[]) => {
+    function handleAccountsChanged(accounts: string[]) {
       setAccount(accounts[0])
     }
 
-    const handleConnect = (session: any) => {
-      setSession(session)
+    function handleConnect(providerSession: unknown) {
+      setSession(providerSession)
     }
 
     provider.on('chainChanged', handleChainChanged)
@@ -54,6 +64,7 @@ export default function App() {
       provider.removeListener('chainChanged', handleChainChanged)
       provider.removeListener('accountsChanged', handleAccountsChanged)
       provider.removeListener('connect', handleConnect)
+      return undefined
     }
   }, [provider])
 

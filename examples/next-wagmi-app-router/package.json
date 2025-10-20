@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "start": "next start"
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
