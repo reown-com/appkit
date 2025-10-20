@@ -58,9 +58,7 @@ describe('Base', () => {
 
       expect(initialize).toHaveBeenCalledOnce()
 
-      expect(initialize).toHaveBeenCalledWith(mockOptions.adapters, [mainnet, sepolia, solana], {
-        connectionControllerClient: expect.any(Object)
-      })
+      expect(initialize).toHaveBeenCalledWith(mockOptions.adapters, [mainnet, sepolia, solana])
     })
 
     it('should construct', async () => {

@@ -1,4 +1,9 @@
-import { erc20Abi, formatUnits } from 'viem'
+import {
+  type GetCapabilitiesParameters,
+  type GetCapabilitiesReturnType,
+  erc20Abi,
+  formatUnits
+} from 'viem'
 
 import {
   type Address,
@@ -14,7 +19,11 @@ import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { ERC7811Utils } from './ERC7811Util.js'
 import { StorageUtil } from './StorageUtil.js'
-import type { BlockchainApiBalanceResponse } from './TypeUtil.js'
+import type {
+  BlockchainApiBalanceResponse,
+  WalletGetAssetsParams,
+  WalletGetAssetsResponse
+} from './TypeUtil.js'
 import { ViemUtil } from './ViemUtil.js'
 
 // -- Types -------------------------------------------------------------------- //
@@ -79,16 +88,22 @@ export const BalanceUtil = {
   async getEIP155Balances(address: string, caipNetwork: CaipNetwork) {
     try {
       const chainIdHex = ERC7811Utils.getChainIdHexFromCAIP2ChainId(caipNetwork.caipNetworkId)
-      const walletCapabilities = (await ConnectionController.getCapabilities(address)) as Record<
-        string,
-        { assetDiscovery?: { supported: boolean } }
-      >
+      const walletCapabilities = (await ConnectionController.request<
+        GetCapabilitiesParameters & { chainFilter: `0x${string}`[] },
+        GetCapabilitiesReturnType
+      >('wallet_getCapabilities', {
+        account: address as Address,
+        chainFilter: [chainIdHex]
+      })) as Record<string, { assetDiscovery?: { supported: boolean } }>
 
       if (!walletCapabilities?.[chainIdHex]?.['assetDiscovery']?.supported) {
         return null
       }
 
-      const walletGetAssetsResponse = await ConnectionController.walletGetAssets({
+      const walletGetAssetsResponse = await ConnectionController.request<
+        WalletGetAssetsParams,
+        WalletGetAssetsResponse
+      >('wallet_getAssets', {
         account: address as Address,
         chainFilter: [chainIdHex]
       })

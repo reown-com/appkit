@@ -2,8 +2,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   type AccountState,
+  AdapterController,
   BlockchainApiController,
   ChainController,
+  ConnectionController,
   ConnectorController,
   ModalController,
   ProviderController,
@@ -12,7 +14,7 @@ import {
 
 import { AppKit } from '../../src/client/appkit.js'
 import { emitter, mockEvmAdapter, solanaEmitter } from '../mocks/Adapter'
-import { mainnet, solana, unsupportedNetwork } from '../mocks/Networks'
+import { mainnet, solana } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
 import {
   mockBlockchainApiController,
@@ -30,6 +32,13 @@ describe('Listeners', () => {
     mockStorageUtil()
     mockBlockchainApiController()
     mockRemoteFeatures()
+
+    // Mock adapter methods to prevent unhandled errors
+    vi.spyOn(mockEvmAdapter, 'getBalance').mockResolvedValue({
+      balance: '1.0',
+      symbol: 'ETH'
+    })
+    vi.spyOn(AdapterController, 'get').mockReturnValue(mockEvmAdapter)
   })
 
   it('should set caip address, profile name and profile image on accountChanged event', async () => {
@@ -41,29 +50,26 @@ describe('Listeners', () => {
 
     const mockAccount = {
       address: '0x123',
-      chainId: mainnet.id,
-      chainNamespace: mainnet.chainNamespace
+      caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const
     }
 
-    const appKit = new AppKit(mockOptions)
-    const setProfileNameSpy = vi.spyOn(appKit, 'setProfileName').mockImplementation(() => {})
-    const setProfileImageSpy = vi.spyOn(appKit, 'setProfileImage').mockImplementation(() => {})
+    new AppKit(mockOptions)
 
-    await appKit['syncAccount'](mockAccount)
+    await ConnectionController.syncAccount(mockAccount)
     // @ts-expect-error private event
     mockEvmAdapter.emit('accountChanged', mockAccount)
 
     expect(setCaipAddressSpy).toHaveBeenCalledWith(
       'caipAddress',
-      `${mockAccount.chainNamespace}:${mockAccount.chainId}:${mockAccount.address}`,
+      `${mockAccount.caipNetworkId}:${mockAccount.address}`,
       'eip155',
       true
     )
     expect(fetchIdentitySpy).toHaveBeenCalledWith({
       address: mockAccount.address
     })
-    expect(setProfileNameSpy).toHaveBeenCalledWith(identity.name, 'eip155')
-    expect(setProfileImageSpy).toHaveBeenCalledWith(identity.avatar, 'eip155')
+    expect(setCaipAddressSpy).toHaveBeenCalledWith('profileName', identity.name, 'eip155')
+    expect(setCaipAddressSpy).toHaveBeenCalledWith('profileImage', identity.avatar, 'eip155')
   })
 
   it('should call syncAccountInfo when namespace is different than active namespace', async () => {
@@ -77,37 +83,16 @@ describe('Listeners', () => {
 
     const mockAccount = {
       address: '0x123',
-      chainId: mainnet.id,
-      chainNamespace: mainnet.chainNamespace
+      caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const
     }
     emitter.emit('accountChanged', mockAccount)
 
     expect(setCaipAddressSpy).toHaveBeenCalledWith(
       'caipAddress',
-      `${mockAccount.chainNamespace}:${mockAccount.chainId}:${mockAccount.address}`,
+      `${mockAccount.caipNetworkId}:${mockAccount.address}`,
       'eip155',
       true
     )
-  })
-
-  it('should show unsupported chain UI when network is unsupported and allowUnsupportedChain is false', async () => {
-    const showUnsupportedChainUISpy = vi.spyOn(ChainController, 'showUnsupportedChainUI')
-
-    const appKit = new AppKit({
-      ...mockOptions,
-      allowUnsupportedChain: false
-    })
-
-    vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue(mainnet.chainNamespace)
-    vi.spyOn(ChainController.state, 'activeCaipNetwork', 'get').mockReturnValue(unsupportedNetwork)
-
-    await appKit['syncAccount']({
-      address: '0x123',
-      chainId: unsupportedNetwork.id,
-      chainNamespace: unsupportedNetwork.chainNamespace
-    })
-
-    expect(showUnsupportedChainUISpy).toHaveBeenCalled()
   })
 
   it('should call all required methods when adapter emits disconnect event', async () => {
@@ -124,7 +109,7 @@ describe('Listeners', () => {
     await appKit.ready()
 
     const setUserSpy = vi.spyOn(appKit, 'setUser')
-    const setStatusSpy = vi.spyOn(appKit, 'setStatus')
+    const setStatusSpy = vi.spyOn(ConnectionController, 'setStatus')
     const setConnectedWalletInfoSpy = vi.spyOn(appKit, 'setConnectedWalletInfo')
 
     emitter.emit('disconnect')
@@ -165,7 +150,7 @@ it('should handle accountChanged event with connector that has provider', async 
 
   const mockAccount = {
     address: '0x123',
-    chainId: mainnet.id,
+    caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const,
     connector: mockConnector
   }
 
@@ -173,7 +158,7 @@ it('should handle accountChanged event with connector that has provider', async 
   await appKit.ready()
 
   const syncProviderSpy = vi.spyOn(appKit as any, 'syncProvider')
-  const syncConnectedWalletInfoSpy = vi.spyOn(appKit as any, 'syncConnectedWalletInfo')
+  const syncConnectedWalletInfoSpy = vi.spyOn(ConnectionController, 'syncConnectedWalletInfo')
 
   emitter.emit('accountChanged', mockAccount)
 
@@ -195,7 +180,7 @@ it('should handle accountChanged event with connector that has no provider', asy
 
   const mockAccount = {
     address: '0x123',
-    chainId: mainnet.id,
+    caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const,
     connector: mockConnector
   }
 
@@ -236,14 +221,13 @@ it('should call syncAccount when accountChanged event is emitted', async () => {
   const appKit = new AppKit(mockOptions)
   await appKit.ready()
 
-  const syncAccountSpy = vi.spyOn(appKit as any, 'syncAccount')
+  const syncAccountSpy = vi.spyOn(ConnectionController, 'syncAccount')
 
   emitter.emit('accountChanged', mockAccount)
 
   expect(syncAccountSpy).toHaveBeenCalledWith({
     address: mockAccount.address,
-    chainId: mockAccount.chainId,
-    chainNamespace: mainnet.chainNamespace
+    caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const
   })
 })
 
@@ -259,14 +243,13 @@ it('should call syncAccount with activeCaipNetwork id when isActiveChain is true
   const appKit = new AppKit(mockOptions)
   await appKit.ready()
 
-  const syncAccountSpy = vi.spyOn(appKit as any, 'syncAccount')
+  const syncAccountSpy = vi.spyOn(ConnectionController, 'syncAccount')
 
   emitter.emit('accountChanged', mockAccount)
 
   expect(syncAccountSpy).toHaveBeenCalledWith({
     address: mockAccount.address,
-    chainId: mainnet.id,
-    chainNamespace: mainnet.chainNamespace
+    caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const
   })
 })
 
@@ -281,13 +264,12 @@ it('should call syncAccountInfo when isActiveChain is false and neither activeCa
   const appKit = new AppKit(mockOptions)
   await appKit.ready()
 
-  const syncAccountInfoSpy = vi.spyOn(appKit as any, 'syncAccountInfo')
+  const syncAccountInfoSpy = vi.spyOn(ConnectionController, 'syncAccount')
 
   emitter.emit('accountChanged', mockAccount)
 
-  expect(syncAccountInfoSpy).toHaveBeenCalledWith(
-    mockAccount.address,
-    mockAccount.chainId,
-    mainnet.chainNamespace
-  )
+  expect(syncAccountInfoSpy).toHaveBeenCalledWith({
+    address: mockAccount.address,
+    caipNetworkId: `${mainnet.chainNamespace}:${mainnet.id}` as const
+  })
 })

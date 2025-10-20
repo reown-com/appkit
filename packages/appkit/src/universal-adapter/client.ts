@@ -21,7 +21,7 @@ export class UniversalAdapter extends AdapterBlueprint {
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
-        caipNetworks: this.getCaipNetworks(),
+        caipNetworks: this.networks,
         namespace: this.namespace
       })
     )
@@ -124,7 +124,8 @@ export class UniversalAdapter extends AdapterBlueprint {
   public override async signMessage(
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
-    const { provider, message, address } = params
+    const { message, address } = params
+    const provider = this.provider as UniversalProvider
     if (!provider) {
       throw new Error('UniversalAdapter:signMessage - provider is undefined')
     }

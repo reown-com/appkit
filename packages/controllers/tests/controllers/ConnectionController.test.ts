@@ -8,16 +8,15 @@ import {
   type ParsedCaipAddress
 } from '@reown/appkit-common'
 
-import type { AccountState } from '../../exports/index.js'
+import type { AccountState, AdapterBlueprint } from '../../exports/index.js'
 import type {
-  ChainAdapter,
-  ConnectionControllerClient,
   Connector,
   ConnectorType,
   ModalControllerState,
   RouterControllerState
 } from '../../exports/index.js'
 import {
+  AdapterController,
   ChainController,
   ConnectionController,
   ConnectionControllerUtil,
@@ -36,92 +35,57 @@ const walletConnectUri = 'wc://uri?=123'
 const externalId = 'coinbaseWallet'
 const type = 'WALLET_CONNECT' as ConnectorType
 const caipNetworks = [
-  { ...polygon, chainNamespace: chain, caipNetworkId: 'eip155:137' } as CaipNetwork
-]
+  { ...polygon, chainNamespace: chain, caipNetworkId: 'eip155:137' },
+  {
+    chainNamespace: 'solana' as const,
+    caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    id: '1'
+  },
+  { chainNamespace: 'bip122' as const, caipNetworkId: 'bip122:1', id: '1' }
+] as CaipNetwork[]
 
-const client: ConnectionControllerClient = {
-  connectWalletConnect: async () => {},
-  disconnect: async () => Promise.resolve(),
-  disconnectConnector: async () => Promise.resolve(),
-  signMessage: async (message: string) => Promise.resolve(message),
-  estimateGas: async () => Promise.resolve(BigInt(0)),
-  connectExternal: async _id => Promise.resolve({ address: '' }),
-  checkInstalled: _id => true,
-  parseUnits: value => BigInt(value),
-  formatUnits: value => value.toString(),
-  sendTransaction: () => Promise.resolve('0x'),
-  writeContract: () => Promise.resolve('0x'),
-  getEnsAddress: async (value: string) => Promise.resolve(value),
-  getEnsAvatar: async (value: string) => Promise.resolve(value),
-  getCapabilities: async () => Promise.resolve(''),
-  grantPermissions: async () => Promise.resolve('0x'),
-  revokePermissions: async () => Promise.resolve('0x'),
-  walletGetAssets: async () => Promise.resolve({}),
-  updateBalance: () => Promise.resolve()
-}
-
-const clientConnectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
-const clientConnectExternalSpy = vi.spyOn(client, 'connectExternal')
-const clientCheckInstalledSpy = vi.spyOn(client, 'checkInstalled')
-
-const partialClient: ConnectionControllerClient = {
-  connectWalletConnect: async () => Promise.resolve(),
-  disconnect: async () => Promise.resolve(),
-  disconnectConnector: async () => Promise.resolve(),
-  estimateGas: async () => Promise.resolve(BigInt(0)),
-  signMessage: async (message: string) => Promise.resolve(message),
-  parseUnits: value => BigInt(value),
-  formatUnits: value => value.toString(),
-  sendTransaction: () => Promise.resolve('0x'),
-  writeContract: () => Promise.resolve('0x'),
-  getEnsAddress: async (value: string) => Promise.resolve(value),
-  getEnsAvatar: async (value: string) => Promise.resolve(value),
-  getCapabilities: async () => Promise.resolve(''),
-  grantPermissions: async () => Promise.resolve('0x'),
-  revokePermissions: async () => Promise.resolve('0x'),
-  walletGetAssets: async () => Promise.resolve({}),
-  updateBalance: () => Promise.resolve()
-}
+const baseAdapter = {
+  connectWalletConnect: vi.fn(),
+  disconnect: vi.fn(),
+  connect: vi.fn()
+} as unknown as AdapterBlueprint
 
 const evmAdapter = {
-  namespace: CommonConstantsUtil.CHAIN.EVM,
-  connectionControllerClient: client
-}
+  ...baseAdapter,
+  namespace: CommonConstantsUtil.CHAIN.EVM
+} as unknown as AdapterBlueprint
 
 const solanaAdapter = {
-  namespace: CommonConstantsUtil.CHAIN.SOLANA,
-  connectionControllerClient: client
-}
+  ...baseAdapter,
+  namespace: CommonConstantsUtil.CHAIN.SOLANA
+} as unknown as AdapterBlueprint
 
 const bip122Adapter = {
-  namespace: CommonConstantsUtil.CHAIN.BITCOIN,
-  connectionControllerClient: client
-}
+  ...baseAdapter,
+  namespace: CommonConstantsUtil.CHAIN.BITCOIN
+} as unknown as AdapterBlueprint
 
-const adapters = [evmAdapter, solanaAdapter, bip122Adapter] as ChainAdapter[]
+const adapters = [evmAdapter, solanaAdapter, bip122Adapter] as AdapterBlueprint[]
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize(adapters, [], {
-    connectionControllerClient: client
-  })
-  ConnectionController.setClient(evmAdapter.connectionControllerClient)
+  ChainController.initialize(adapters, [])
+  AdapterController.initialize(adapters)
 })
 
 describe('ConnectionController', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks()
+  })
   it('should have valid default state', () => {
     ChainController.initialize(
       [
         {
           namespace: CommonConstantsUtil.CHAIN.EVM,
-          connectionControllerClient: client,
           caipNetworks
         }
       ],
-      caipNetworks,
-      {
-        connectionControllerClient: client
-      }
+      caipNetworks
     )
 
     expect(ConnectionController.state).toEqual({
@@ -130,34 +94,29 @@ describe('ConnectionController', () => {
       wcError: false,
       buffering: false,
       isSwitchingConnection: false,
-      status: 'disconnected',
-      _client: evmAdapter.connectionControllerClient
+      status: 'disconnected'
     })
   })
   it('should update state correctly and set wcPromisae on connectWalletConnect()', async () => {
     const setConnectorIdSpy = vi.spyOn(ConnectorController, 'setConnectorId')
     // Await on set promise and check results
     await ConnectionController.connectWalletConnect()
-    expect(clientConnectWalletConnectSpy).toHaveBeenCalled()
+    expect(evmAdapter.connectWalletConnect).toHaveBeenCalled()
     expect(setConnectorIdSpy).not.toBeCalled()
     // Just in case
     vi.useRealTimers()
   })
 
-  it('connectExternal() should trigger internal client call and set connector in storage', async () => {
+  it('connectExternal() should trigger adapter call and set connector in storage', async () => {
     const options = { id: externalId, type }
     await ConnectionController.connectExternal(options, chain)
-    expect(clientConnectExternalSpy).toHaveBeenCalledWith(options)
-  })
-
-  it('checkInstalled() should trigger internal client call', () => {
-    ConnectionController.checkInstalled([externalId])
-    expect(clientCheckInstalledSpy).toHaveBeenCalledWith([externalId])
-  })
-
-  it('should not throw on checkInstalled() without ids', () => {
-    ConnectionController.checkInstalled()
-    expect(clientCheckInstalledSpy).toHaveBeenCalledWith(undefined)
+    expect(evmAdapter.connect).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: externalId,
+        type,
+        chainId: polygon.id
+      })
+    )
   })
 
   it('should not throw when optional methods are undefined', async () => {
@@ -165,20 +124,12 @@ describe('ConnectionController', () => {
       [
         {
           namespace: CommonConstantsUtil.CHAIN.EVM,
-          connectionControllerClient: partialClient,
           caipNetworks: []
         }
       ],
-      [],
-      {
-        connectionControllerClient: partialClient
-      }
+      []
     )
     await ConnectionController.connectExternal({ id: externalId, type }, chain)
-    ConnectionController.checkInstalled([externalId])
-    expect(clientCheckInstalledSpy).toHaveBeenCalledWith([externalId])
-    expect(clientCheckInstalledSpy).toHaveBeenCalledWith(undefined)
-    expect(ConnectionController._getClient()).toEqual(evmAdapter.connectionControllerClient)
   })
 
   it('should update state correctly on resetWcConnection()', () => {
@@ -200,14 +151,52 @@ describe('ConnectionController', () => {
   })
 
   it('should disconnect correctly', async () => {
-    const disconnectSpy = vi.spyOn(client, 'disconnect')
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      chains: new Map([
+        [chain, { accountState: { caipAddress: 'eip155:137:0x123' } as unknown as AccountState }],
+        [
+          CommonConstantsUtil.CHAIN.SOLANA,
+          {
+            accountState: {
+              caipAddress: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:0x123'
+            } as unknown as AccountState
+          }
+        ],
+        [
+          CommonConstantsUtil.CHAIN.BITCOIN,
+          { accountState: { caipAddress: 'bip122:1:0x123' } as unknown as AccountState }
+        ]
+      ]),
+      activeChain: chain,
+      activeCaipAddress: 'eip155:137:0x123',
+      noAdapters: false,
+      isSwitchingNamespace: false
+    })
+    vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+      new Map([
+        [chain, [{ connectorId: 'eip155-connector', accounts: [{ address: '0x123' }] }]],
+        [
+          CommonConstantsUtil.CHAIN.SOLANA,
+          [{ connectorId: 'solana-connector', accounts: [{ address: '0x123' }] }]
+        ],
+        [
+          CommonConstantsUtil.CHAIN.BITCOIN,
+          [{ connectorId: 'bip122-connector', accounts: [{ address: '0x123' }] }]
+        ]
+      ])
+    )
+    const disconnectEvmSpy = vi.spyOn(evmAdapter, 'disconnect')
+    const disconnectSolanaSpy = vi.spyOn(solanaAdapter, 'disconnect')
+    const disconnectBitcoinSpy = vi.spyOn(bip122Adapter, 'disconnect')
     await ConnectionController.disconnect()
 
-    expect(disconnectSpy).toHaveBeenCalled()
+    expect(disconnectEvmSpy).toHaveBeenCalled()
+    expect(disconnectSolanaSpy).toHaveBeenCalled()
+    expect(disconnectBitcoinSpy).toHaveBeenCalled()
   })
 
   it('should handle connectWalletConnect correctly on telegram or safari on ios', async () => {
-    const connectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
+    const connectWalletConnectSpy = vi.spyOn(evmAdapter, 'connectWalletConnect')
 
     vi.spyOn(CoreHelperUtil, 'isPairingExpired').mockReturnValue(true)
     vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(true)
@@ -225,9 +214,9 @@ describe('ConnectionController', () => {
     vi.spyOn(CoreHelperUtil, 'isSafari').mockReturnValue(true)
     vi.spyOn(CoreHelperUtil, 'isIos').mockReturnValue(true)
 
-    const connectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
+    const connectWalletConnectSpy = vi.spyOn(evmAdapter, 'connectWalletConnect')
 
-    await ConnectionController.connectWalletConnect({ cache: 'never' })
+    await ConnectionController.connectWalletConnect()
 
     expect(connectWalletConnectSpy).toHaveBeenCalledTimes(1)
   })

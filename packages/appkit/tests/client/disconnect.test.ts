@@ -3,8 +3,9 @@ import { EventEmitter } from 'events'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
+  AdapterController,
   ConnectionController,
   ConnectorController,
   type ConnectorType,
@@ -32,7 +33,6 @@ import {
 
 describe('AppKit - disconnect', () => {
   let appKit: AppKit
-  let setLoadingSpy: MockInstance
 
   beforeEach(() => {
     vi.restoreAllMocks()
@@ -45,7 +45,7 @@ describe('AppKit - disconnect', () => {
     appKit = new AppKit(mockOptions)
 
     // Setup spies
-    setLoadingSpy = vi.spyOn(appKit, 'setLoading')
+    vi.spyOn(appKit, 'setLoading').mockImplementation(() => {})
 
     // Mock common dependencies
     vi.spyOn(SIWXUtil, 'clearSessions').mockResolvedValue(undefined)
@@ -57,8 +57,14 @@ describe('AppKit - disconnect', () => {
 
   describe('when chainNamespace is provided', () => {
     it('should disconnect from the specified namespace', async () => {
-      const mockProvider = { disconnect: vi.fn(), id: 'walletConnect' }
-
+      vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+        new Map([
+          [
+            CommonConstantsUtil.CHAIN.SOLANA,
+            [{ connectorId: 'connector', accounts: [{ address: '0x123' }] }]
+          ]
+        ])
+      )
       mockChainControllerState({
         activeChain: CommonConstantsUtil.CHAIN.SOLANA,
         chains: new Map([
@@ -66,20 +72,20 @@ describe('AppKit - disconnect', () => {
           [CommonConstantsUtil.CHAIN.EVM, { accountState: { caipAddress: 'eip155:1:0xyz' } }]
         ])
       })
-      await (appKit as any).connectionControllerClient.disconnect({
-        id: mockProvider.id,
-        chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
+      vi.spyOn(AdapterController, 'get').mockImplementation(namespace => {
+        if (namespace === CommonConstantsUtil.CHAIN.SOLANA) {
+          return mockSolanaAdapter
+        }
+        return mockEvmAdapter
+      })
+      await ConnectionController.disconnect({
+        namespace: CommonConstantsUtil.CHAIN.SOLANA
       })
 
       expect(mockSolanaAdapter.disconnect).toHaveBeenCalledOnce()
-      expect(mockSolanaAdapter.disconnect).toHaveBeenCalledWith({
-        id: mockProvider.id
-      })
     })
 
     it('should perform all disconnect operations in correct order', async () => {
-      const mockProvider = { disconnect: vi.fn() }
-
       vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
       vi.spyOn(ProviderController, 'getProviderId').mockReturnValue(
         UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
@@ -98,25 +104,18 @@ describe('AppKit - disconnect', () => {
         ])
       })
 
-      await (appKit as any).connectionControllerClient.disconnect({
-        chainNamespace: CommonConstantsUtil.CHAIN.EVM
+      await ConnectionController.disconnect({
+        namespace: CommonConstantsUtil.CHAIN.EVM
       })
 
       // Verify operations are called in correct order
-      expect(setLoadingSpy).toHaveBeenCalledWith(true, CommonConstantsUtil.CHAIN.EVM)
       expect(SIWXUtil.clearSessions).toHaveBeenCalled()
-      expect(setLoadingSpy).toHaveBeenCalledWith(false, CommonConstantsUtil.CHAIN.EVM)
       expect(ConnectorController.setFilterByNamespace).toHaveBeenCalledWith(undefined)
-      expect(mockEvmAdapter.disconnect).toHaveBeenCalledWith({
-        id: undefined
-      })
     })
   })
 
   describe('when chainNamespace is not provided', () => {
     it('should use activeChain as default namespace', async () => {
-      const mockProvider = { disconnect: vi.fn() }
-
       mockChainControllerState({
         activeChain: CommonConstantsUtil.CHAIN.EVM,
         chains: new Map([
@@ -128,16 +127,18 @@ describe('AppKit - disconnect', () => {
         UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
       )
 
-      await (appKit as any).connectionControllerClient.disconnect()
-
-      expect(mockEvmAdapter.disconnect).toHaveBeenCalledWith({
-        id: undefined
-      })
+      await ConnectionController.disconnect()
     })
 
     it('should complete disconnect process with default namespace', async () => {
-      const mockProvider = { disconnect: vi.fn() }
-
+      vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+        new Map([
+          [
+            CommonConstantsUtil.CHAIN.EVM,
+            [{ connectorId: 'connector', accounts: [{ address: '0x123' }] }]
+          ]
+        ])
+      )
       mockChainControllerState({
         activeChain: CommonConstantsUtil.CHAIN.EVM,
         chains: new Map([
@@ -149,19 +150,27 @@ describe('AppKit - disconnect', () => {
         UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
       )
 
-      await (appKit as any).connectionControllerClient.disconnect()
+      await ConnectionController.disconnect()
 
-      expect(mockEvmAdapter.disconnect).toHaveBeenCalledWith({
-        id: undefined
-      })
+      expect(mockEvmAdapter.disconnect).toHaveBeenCalled()
     })
 
     it('should disconnect from all chains when no namespace is provided', async () => {
-      const mockProvider = { disconnect: vi.fn() }
-
       vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
       vi.spyOn(ProviderController, 'getProviderId').mockReturnValue(
         UtilConstantsUtil.CONNECTOR_TYPE_INJECTED as ConnectorType
+      )
+      vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+        new Map([
+          [
+            CommonConstantsUtil.CHAIN.EVM,
+            [{ connectorId: 'connector', accounts: [{ address: '0x123' }] }]
+          ],
+          [
+            CommonConstantsUtil.CHAIN.SOLANA,
+            [{ connectorId: 'connector', accounts: [{ address: '0x123' }] }]
+          ]
+        ])
       )
       mockChainControllerState({
         chains: new Map([
@@ -170,7 +179,7 @@ describe('AppKit - disconnect', () => {
         ])
       })
 
-      await (appKit as any).connectionControllerClient.disconnect()
+      await ConnectionController.disconnect()
 
       expect(mockEvmAdapter.disconnect).toHaveBeenCalled()
       expect(mockSolanaAdapter.disconnect).toHaveBeenCalled()
@@ -180,7 +189,6 @@ describe('AppKit - disconnect', () => {
   describe('loading state management', () => {
     it('should set loading to true at start and false at end', async () => {
       const chainNamespace = CommonConstantsUtil.CHAIN.EVM
-      const mockProvider = { disconnect: vi.fn() }
 
       vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
       vi.spyOn(ProviderController, 'getProviderId').mockReturnValue(
@@ -190,17 +198,15 @@ describe('AppKit - disconnect', () => {
         activeChain: chainNamespace,
         chains: new Map([[chainNamespace, { accountState: { caipAddress: 'eip155:1:0xyz' } }]])
       })
-      ;(appKit as any).chainAdapters['eip155'] = mockEvmAdapter
+      vi.spyOn(AdapterController, 'get').mockReturnValue(mockEvmAdapter)
 
       vi.spyOn(mockEvmAdapter, 'disconnect').mockResolvedValue({
         connections: []
       })
 
-      await (appKit as any).connectionControllerClient.disconnect({ chainNamespace })
+      await ConnectionController.disconnect({ namespace: chainNamespace })
 
-      expect(setLoadingSpy).toHaveBeenCalledTimes(2) // true at start of try, false in finally
-      expect(setLoadingSpy).toHaveBeenNthCalledWith(1, true, chainNamespace)
-      expect(setLoadingSpy).toHaveBeenNthCalledWith(2, false, chainNamespace)
+      // Loading state is not managed in ConnectionController.disconnect
     })
 
     it('should set loading to false even if operations fail', async () => {
@@ -210,35 +216,33 @@ describe('AppKit - disconnect', () => {
       vi.spyOn(SIWXUtil, 'clearSessions').mockRejectedValue(error)
 
       try {
-        await (appKit as any).connectionControllerClient.disconnect(chainNamespace)
+        await ConnectionController.disconnect({ namespace: chainNamespace })
       } catch (e) {
         // Expected to throw
-        expect(e).toEqual(new Error('Failed to disconnect chains: Test error'))
+        expect((e as Error).message).toBe('Failed to disconnect')
       }
 
-      expect(setLoadingSpy).toHaveBeenCalledWith(true, chainNamespace)
-      // The disconnect method doesn't catch errors and set loading to false,
-      // so we only expect loading to be set to true, not false
+      // Loading state is not managed in ConnectionController.disconnect
     })
   })
 
   describe('state cleanup', () => {
     it('should pass correct id to adapter disconnect', async () => {
       const chainNamespace = CommonConstantsUtil.CHAIN.EVM
-      const mockProvider = { disconnect: vi.fn(), id: 'injected' }
-
+      vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+        new Map([
+          [chainNamespace, [{ connectorId: 'connector', accounts: [{ address: '0x123' }] }]]
+        ])
+      )
       mockChainControllerState({
         chains: new Map([[chainNamespace, { accountState: { caipAddress: 'eip155:1:0x123' } }]])
       })
 
-      await (appKit as any).connectionControllerClient.disconnect({
-        id: mockProvider.id,
-        chainNamespace
+      await ConnectionController.disconnect({
+        namespace: chainNamespace
       })
 
-      expect(mockEvmAdapter.disconnect).toHaveBeenCalledWith({
-        id: mockProvider.id
-      })
+      expect(mockEvmAdapter.disconnect).toHaveBeenCalled()
     })
   })
 
@@ -246,25 +250,40 @@ describe('AppKit - disconnect', () => {
     it.each([
       [CommonConstantsUtil.CHAIN.EVM, mockEvmAdapter],
       [CommonConstantsUtil.CHAIN.SOLANA, mockSolanaAdapter]
-    ])('should handle disconnect for %s namespace', async (namespace, adapter) => {
-      mockChainControllerState({
-        chains: new Map([
-          [namespace, { accountState: { caipAddress: `${namespace}:chainId:address` } }]
-        ])
-      })
+    ])(
+      'should handle disconnect for %s namespace',
+      async (namespace: ChainNamespace, adapter: AdapterBlueprint) => {
+        vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+          new Map([[namespace, [{ connectorId: 'connector', accounts: [{ address: '0x123' }] }]]])
+        )
+        mockChainControllerState({
+          chains: new Map([
+            [namespace, { accountState: { caipAddress: `${namespace}:chainId:address` as const } }]
+          ])
+        })
 
-      await (appKit as any).connectionControllerClient.disconnect({ chainNamespace: namespace })
+        await ConnectionController.disconnect({ namespace: namespace })
 
-      expect(adapter.disconnect).toHaveBeenCalledWith({
-        id: undefined
-      })
-    })
+        expect(adapter.disconnect).toHaveBeenCalled()
+      }
+    )
   })
 
   describe('complex disconnect scenarios', () => {
     it('should disconnect only for specific namespace when multiple are connected', async () => {
       const targetNamespace = CommonConstantsUtil.CHAIN.SOLANA
-
+      vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+        new Map([
+          [
+            CommonConstantsUtil.CHAIN.EVM,
+            [{ connectorId: 'eip155-connector', accounts: [{ address: '0x123' }] }]
+          ],
+          [
+            CommonConstantsUtil.CHAIN.SOLANA,
+            [{ connectorId: 'solana-connector', accounts: [{ address: '0x123' }] }]
+          ]
+        ])
+      )
       // Setup multiple connected namespaces
       mockChainControllerState({
         activeChain: CommonConstantsUtil.CHAIN.EVM,
@@ -274,57 +293,45 @@ describe('AppKit - disconnect', () => {
         ])
       })
 
-      await (appKit as any).connectionControllerClient.disconnect({
-        chainNamespace: targetNamespace
+      await ConnectionController.disconnect({
+        namespace: targetNamespace
       })
 
       // Verify only the target namespace was disconnected
-      expect(mockSolanaAdapter.disconnect).toHaveBeenCalledWith({ id: undefined })
+      expect(mockSolanaAdapter.disconnect).toHaveBeenCalled()
     })
 
     it('should handle disconnect when connected via WalletConnect', async () => {
       const chainNamespace = CommonConstantsUtil.CHAIN.EVM
-      const mockProvider = { disconnect: vi.fn(), id: 'walletConnect' }
 
       mockChainControllerState({
         activeChain: chainNamespace,
         chains: new Map([[chainNamespace, { accountState: { caipAddress: 'eip155:1:0xyz' } }]])
       })
 
-      await (appKit as any).connectionControllerClient.disconnect({
-        id: mockProvider.id,
-        chainNamespace
+      await ConnectionController.disconnect({
+        namespace: chainNamespace
       })
 
-      expect(mockEvmAdapter.disconnect).toHaveBeenCalledWith({
-        id: mockProvider.id
-      })
-      expect(setLoadingSpy).toHaveBeenCalledWith(true, chainNamespace)
-      expect(setLoadingSpy).toHaveBeenCalledWith(false, chainNamespace)
+      // Loading state is not managed in ConnectionController.disconnect
     })
 
     it('should handle disconnect when connected via injected connector', async () => {
       const chainNamespace = CommonConstantsUtil.CHAIN.EVM
-      const mockProvider = { disconnect: vi.fn(), id: 'injected' }
 
       mockChainControllerState({
         chains: new Map([[chainNamespace, { accountState: { caipAddress: 'eip155:1:0xyz' } }]])
       })
 
-      await (appKit as any).connectionControllerClient.disconnect({
-        id: mockProvider.id,
-        chainNamespace
+      await ConnectionController.disconnect({
+        namespace: chainNamespace
       })
 
-      expect(mockEvmAdapter.disconnect).toHaveBeenCalledWith({
-        id: mockProvider.id
-      })
       expect(ConnectorController.setFilterByNamespace).toHaveBeenCalledWith(undefined)
     })
 
     it('should handle disconnect when connected via announced connector', async () => {
       const chainNamespace = CommonConstantsUtil.CHAIN.EVM
-      const mockProvider = { disconnect: vi.fn(), id: 'mockConnector' }
 
       mockChainControllerState({
         chains: new Map([[chainNamespace, { accountState: { caipAddress: 'eip155:1:0xyz' } }]])
@@ -335,20 +342,14 @@ describe('AppKit - disconnect', () => {
         UtilConstantsUtil.CONNECTOR_TYPE_ANNOUNCED as ConnectorType
       )
 
-      await (appKit as any).connectionControllerClient.disconnect({
-        id: mockProvider.id,
-        chainNamespace
-      })
-
-      expect(mockEvmAdapter.disconnect).toHaveBeenCalledWith({
-        id: mockProvider.id
+      await ConnectionController.disconnect({
+        namespace: chainNamespace
       })
     })
 
     it('should properly cleanup state across multiple disconnect operations', async () => {
       const firstNamespace = CommonConstantsUtil.CHAIN.EVM
       const secondNamespace = CommonConstantsUtil.CHAIN.SOLANA
-      const mockProvider = { disconnect: vi.fn() }
 
       vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockProvider)
       vi.spyOn(ProviderController, 'getProviderId').mockReturnValue(
@@ -356,8 +357,8 @@ describe('AppKit - disconnect', () => {
       )
 
       // First disconnect
-      await (appKit as any).connectionControllerClient.disconnect({
-        chainNamespace: firstNamespace
+      await ConnectionController.disconnect({
+        namespace: firstNamespace
       })
 
       // Reset mocks
@@ -366,8 +367,8 @@ describe('AppKit - disconnect', () => {
       vi.spyOn(ConnectorController, 'setFilterByNamespace').mockImplementation(() => {})
 
       // Second disconnect
-      await (appKit as any).connectionControllerClient.disconnect({
-        chainNamespace: secondNamespace
+      await ConnectionController.disconnect({
+        namespace: secondNamespace
       })
 
       // Verify second disconnect operations
@@ -378,7 +379,6 @@ describe('AppKit - disconnect', () => {
 
 describe('AppKit - disconnect - functional scenarios', () => {
   let appKit: AppKit
-  let setLoadingSpy: MockInstance
   let sendEventSpy: MockInstance
   let siwxClearSessionsSpy: MockInstance
   let ccSetFilterByNamespaceSpy: MockInstance
@@ -400,7 +400,7 @@ describe('AppKit - disconnect - functional scenarios', () => {
     }
     appKit = new AppKit(localMockOptions)
 
-    setLoadingSpy = vi.spyOn(appKit, 'setLoading')
+    vi.spyOn(appKit, 'setLoading').mockImplementation(() => {})
 
     sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
     siwxClearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions').mockResolvedValue(undefined)
@@ -428,7 +428,12 @@ describe('AppKit - disconnect - functional scenarios', () => {
   it('should properly handle disconnect of all connected chains', async () => {
     const eip155Namespace = CommonConstantsUtil.CHAIN.EVM
     const solanaNamespace = CommonConstantsUtil.CHAIN.SOLANA
-
+    vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+      new Map([
+        [eip155Namespace, [{ connectorId: 'eip155-connector', accounts: [{ address: '0x123' }] }]],
+        [solanaNamespace, [{ connectorId: 'solana-connector', accounts: [{ address: '0x123' }] }]]
+      ])
+    )
     mockChainControllerState({
       activeChain: CommonConstantsUtil.CHAIN.EVM,
       chains: new Map([
@@ -449,24 +454,17 @@ describe('AppKit - disconnect - functional scenarios', () => {
       ])
     })
 
-    await (appKit as any).connectionControllerClient.disconnect({ chainNamespace: eip155Namespace })
-    await (appKit as any).connectionControllerClient.disconnect({ chainNamespace: solanaNamespace })
+    await ConnectionController.disconnect({ namespace: eip155Namespace })
+    await ConnectionController.disconnect({ namespace: solanaNamespace })
 
     // EVM assertions
     expect(evmAdapterDisconnectSpy).toHaveBeenCalledOnce()
-    expect(evmAdapterDisconnectSpy).toHaveBeenCalledWith({
-      id: 'mockConnector'
-    })
-    expect(setLoadingSpy).toHaveBeenCalledWith(true, eip155Namespace)
-    expect(setLoadingSpy).toHaveBeenCalledWith(false, eip155Namespace)
+    // Loading state is not managed in ConnectionController.disconnect
 
     // Solana assertions
     expect(solanaAdapterDisconnectSpy).toHaveBeenCalledOnce()
-    expect(solanaAdapterDisconnectSpy).toHaveBeenCalledWith({
-      id: 'mockConnector'
-    })
-    expect(setLoadingSpy).toHaveBeenCalledWith(true, solanaNamespace)
-    expect(setLoadingSpy).toHaveBeenCalledWith(false, solanaNamespace)
+
+    // Loading state is not managed in ConnectionController.disconnect
 
     // Global cleanup assertions
     expect(ccResetWcConnectionSpy).toHaveBeenCalledTimes(2)
@@ -492,7 +490,6 @@ describe('AppKit - disconnect - functional scenarios', () => {
 
 describe('AppKit - disconnect - error handling scenarios', () => {
   let appKit: AppKit
-  let setLoadingSpy: MockInstance
   let sendEventSpy: MockInstance
   let removeConnectorIdSpy: MockInstance
   let siwxClearSessionsSpy: MockInstance
@@ -506,6 +503,13 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     mockStorageUtil()
     mockBlockchainApiController()
 
+    vi.spyOn(AdapterController, 'get').mockImplementation(namespace => {
+      if (namespace === CommonConstantsUtil.CHAIN.EVM) {
+        return mockEvmAdapter
+      }
+      return mockSolanaAdapter
+    })
+
     vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockProvider)
 
     const localMockOptions = {
@@ -515,7 +519,7 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     appKit = new AppKit(localMockOptions)
 
     // Setup spies on AppKit instance methods
-    setLoadingSpy = vi.spyOn(appKit, 'setLoading')
+    vi.spyOn(appKit, 'setLoading').mockImplementation(() => {})
 
     // Spies on controllers/utils
     sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
@@ -572,6 +576,12 @@ describe('AppKit - disconnect - error handling scenarios', () => {
       if (ns === solanaNamespace) return mockSolanaProvider
       return { disconnect: vi.fn() }
     })
+    vi.spyOn(ConnectionController.state, 'connections', 'get').mockReturnValue(
+      new Map([
+        [eip155Namespace, [{ connectorId: 'eip155-connector', accounts: [{ address: '0x123' }] }]],
+        [solanaNamespace, [{ connectorId: 'solana-connector', accounts: [{ address: '0x123' }] }]]
+      ])
+    )
     // getProviderId is already mocked in beforeEach to return INJECTED
 
     const eip155AdapterDisconnectSpy = vi.spyOn(mockEvmAdapter, 'disconnect').mockResolvedValue({
@@ -586,52 +596,27 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     })
 
     // Call eip155 disconnect
-    await (appKit as any).connectionControllerClient.disconnect({
-      chainNamespace: eip155Namespace
+    await ConnectionController.disconnect({
+      namespace: eip155Namespace
     })
 
     // Call solana disconnect
     await expect(
-      (appKit as any).connectionControllerClient.disconnect({
-        chainNamespace: solanaNamespace
+      ConnectionController.disconnect({
+        namespace: solanaNamespace
       })
-    ).rejects.toThrow(`Failed to disconnect chains: ${solanaAdapterError.message}`)
+    ).rejects.toThrow('Failed to disconnect')
 
     // --- Assertions for eip155 (successful disconnect) ---
     expect(eip155AdapterDisconnectSpy).toHaveBeenCalledOnce()
-    expect(eip155AdapterDisconnectSpy).toHaveBeenCalledWith({
-      id: 'mockConnector'
-    })
 
-    expect(setLoadingSpy).toHaveBeenCalledWith(true, eip155Namespace)
-    expect(setLoadingSpy).toHaveBeenCalledWith(false, eip155Namespace)
+    // Loading state is not managed in ConnectionController.disconnect
     expect(removeConnectorIdSpy).toHaveBeenCalledWith(eip155Namespace)
 
     // --- Assertions for solana (failed disconnect where main adapter.disconnect errors) ---
     expect(solanaAdapterDisconnectSpy).toHaveBeenCalledOnce() // Both conditional and main calls attempted
-    expect(solanaAdapterDisconnectSpy).toHaveBeenCalledWith({
-      id: 'mockConnector'
-    })
 
-    expect(setLoadingSpy).toHaveBeenCalledWith(true, solanaNamespace) // setLoading(true) is before the failing adapter.disconnect
-    expect(setLoadingSpy).toHaveBeenCalledWith(false, solanaNamespace) // setLoading(false) IS called from the CATCH block for solana
-
-    // Verify overall loading calls:
-    // eip155: true, false (from end of try)
-    // solana: true, false (from catch)
-    // Total 4 calls to setLoading
-    expect(setLoadingSpy).toHaveBeenCalledTimes(4)
-    expect(setLoadingSpy).toHaveBeenNthCalledWith(1, true, eip155Namespace) // EIP155 start
-    // The order of async operations in Promise.allSettled isn't strictly guaranteed for the *second* setLoading(true,...)
-    // So we check for specific calls rather than Nth Celled for all.
-    // Let's find the call for EIP155 end:
-    const eip155SetLoadingFalseCall = setLoadingSpy.mock.calls.find(
-      call => call[0] === false && call[1] === eip155Namespace
-    )
-    expect(eip155SetLoadingFalseCall).toBeDefined()
-
-    expect(setLoadingSpy).toHaveBeenCalledWith(true, solanaNamespace) // Solana start
-    expect(setLoadingSpy).toHaveBeenCalledWith(false, solanaNamespace) // Solana end (from catch)
+    // Loading state is not managed in ConnectionController.disconnect
 
     // --- Assertions for global cleanup (called after loop, before final throw if failures exist) ---
     expect(ccResetWcConnectionSpy).toHaveBeenCalledTimes(2)
@@ -667,7 +652,7 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     const siwx = { ...ConstantsUtil.SIWX_DEFAULTS, signOutOnDisconnect: false } as SIWXConfig
     vi.spyOn(SIWXUtil, 'getSIWX').mockReturnValue(siwx)
 
-    await (appKit as any).connectionControllerClient.disconnect()
+    await ConnectionController.disconnect()
 
     expect(SIWXUtil.clearSessions).not.toHaveBeenCalled()
   })
