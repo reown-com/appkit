@@ -21,6 +21,11 @@ import { HelpersUtil } from '@reown/appkit-utils'
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import styles from './styles.js'
 
+// Interface for connectors that may have an isInstalled method
+interface ConnectorWithInstallCheck {
+  isInstalled?: () => boolean
+}
+
 type ConnectorItem = {
   kind: 'connector'
   subtype: 'injected' | 'announced' | 'multiChain' | 'external' | 'walletConnect'
@@ -259,8 +264,11 @@ export class W3mConnectorList extends LitElement {
     )
 
     // Check if connector is actually installed (for injected wallets)
+    const connectorWithInstallCheck = connector as ConnectorWithInstallCheck
     const isInstalled =
-      typeof (connector as any).isInstalled === 'function' ? (connector as any).isInstalled() : true // Default to true for backwards compatibility
+      typeof connectorWithInstallCheck.isInstalled === 'function'
+        ? connectorWithInstallCheck.isInstalled()
+        : true // Default to true for backwards compatibility
 
     let tagLabel: string | undefined = undefined
     let tagVariant: 'info' | 'success' | 'accent' | undefined = undefined

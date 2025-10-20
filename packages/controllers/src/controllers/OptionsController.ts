@@ -271,11 +271,6 @@ export const OptionsController = {
       return
     }
 
-    console.log('[OptionsController] Applying network-specific features', {
-      network: activeNetwork?.chainNamespace,
-      currentSocials: state.remoteFeatures.socials
-    })
-
     // Store original socials value if not already stored
     if (!state._originalSocials && state.remoteFeatures.socials) {
       state._originalSocials = state.remoteFeatures.socials
@@ -283,10 +278,8 @@ export const OptionsController = {
 
     // Disable socials for Polkadot, restore for other networks
     if (activeNetwork?.chainNamespace === 'polkadot') {
-      console.log('[OptionsController] Disabling socials for Polkadot')
       state.remoteFeatures.socials = false
     } else if (state._originalSocials) {
-      console.log('[OptionsController] Restoring socials for', activeNetwork?.chainNamespace)
       state.remoteFeatures.socials = state._originalSocials
     }
   },
