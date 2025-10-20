@@ -65,15 +65,16 @@
     "valtio": "2.1.7"
   },
   "devDependencies": {
+    "@mailsac/api": "1.0.8",
+    "@playwright/test": "1.48.2",
+    "@reown/appkit-testing": "1.8.8",
     "@types/node": "22.13.4",
     "@types/react": "19.1.15",
     "@types/react-dom": "19.1.9",
-    "@mailsac/api": "1.0.8",
-    "@reown/appkit-testing": "1.8.8",
-    "@playwright/test": "1.48.2",
-    "eslint-config-next": "14.1.0",
     "dotenv": "16.4.7",
+    "eslint-config-next": "14.1.0",
     "postcss": "8.5.3",
+    "postcss-import": "16.1.1",
     "tailwindcss": "3.4.17",
     "typescript": "5.9.2"
   }
