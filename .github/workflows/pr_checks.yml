@@ -260,14 +260,13 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
+      - uses: oven-sh/setup-bun@v2
+        name: Install Bun
 
       - name: setup-node
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-          cache: 'pnpm'
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -283,8 +282,9 @@ jobs:
       - name: Fix permissions
         run: chmod +x node_modules/*/bin/*
 
-      - name: install
-        run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: bun install
+        shell: bash
 
       - name: Check bundle size
         id: size-limit
@@ -294,7 +294,7 @@ jobs:
 
           # Run size-limit and capture output
           set +e
-          pnpm size > size-output.txt 2>&1
+          bun run size > size-output.txt 2>&1
           SIZE_EXIT_CODE=$?
           set -e
 

@@ -1,6 +1,6 @@
 FROM node:22-bullseye
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
+ENV BUN_HOME="/bun"
+ENV PATH="$BUN_HOME:$PATH"
 RUN corepack enable
 
 RUN apt update && apt install -y awscli jq
@@ -8,12 +8,12 @@ RUN apt update && apt install -y awscli jq
 WORKDIR /src
 
 COPY ../ ./
-RUN pnpm install
-RUN pnpm build
+RUN bun install
+RUN bun run build
 
 WORKDIR ./apps/laboratory/
 
-RUN pnpm playwright:install
+RUN bun run playwright:install
 
 ENV TIMING_LOGS=true
 ENV CI=true
