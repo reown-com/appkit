@@ -37,6 +37,7 @@ export function TonSendMessageTest() {
       setBoc(res)
       toast({ title: 'Transaction prepared', description: res, type: 'success' })
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error('TON SendMessage error:', e)
       toast({
         title: 'Send error',

@@ -29,6 +29,7 @@ export function TonSignDataTest() {
       setSignature(sig)
       toast({ title: ConstantsUtil.SigningSucceededToastTitle, description: sig, type: 'success' })
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error('TON SignData error:', err)
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
