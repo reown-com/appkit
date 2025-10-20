@@ -27,5 +27,9 @@ export const assetHub = defineChain({
       url: 'https://assethub-polkadot.subscan.io'
     }
   },
+  assets: {
+    imageUrl: 'https://app.sacredprotocol.com/assets/polkadot.svg',
+    imageId: undefined
+  },
   testnet: false
 })

@@ -27,6 +27,10 @@ export const westend = defineChain({
       url: 'https://westend.subscan.io'
     }
   },
+  assets: {
+    imageUrl: 'https://app.sacredprotocol.com/assets/polkadot.svg',
+    imageId: undefined
+  },
   testnet: true
 })
 

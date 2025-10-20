@@ -27,6 +27,9 @@ export const kusama = defineChain({
       url: 'https://kusama.subscan.io'
     }
   },
+  assets: {
+    imageUrl: 'https://app.sacredprotocol.com/assets/polkadot.svg',
+    imageId: undefined
+  },
   testnet: false
 })
-

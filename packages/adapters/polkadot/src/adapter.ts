@@ -289,9 +289,9 @@ export class PolkadotAdapter extends AdapterBlueprint<any> {
     }
 
     console.log('[PolkadotAdapter] All injectedWeb3 extensions:', Object.keys(injectedWeb3))
-    
+
     // Debug: Check for any SubWallet-related keys
-    const subwalletKeys = Object.keys(injectedWeb3).filter(key => 
+    const subwalletKeys = Object.keys(injectedWeb3).filter(key =>
       key.toLowerCase().includes('subwallet')
     )
     console.log('[PolkadotAdapter] SubWallet-related keys found:', subwalletKeys)
@@ -312,7 +312,7 @@ export class PolkadotAdapter extends AdapterBlueprint<any> {
     // Check for duplicate SubWallet entries and deduplicate
     const hasSubwalletJs = detectedWallets.includes('subwallet-js')
     const hasSubwallet = detectedWallets.includes('subwallet')
-    
+
     if (hasSubwalletJs && hasSubwallet) {
       console.log('[PolkadotAdapter] Found both subwallet-js and subwallet, removing subwallet')
       const deduplicatedWallets = detectedWallets.filter(source => source !== 'subwallet')
