@@ -47,6 +47,7 @@ import {
   AdapterController,
   AlertController,
   ApiController,
+  AssetController,
   AssetUtil,
   BlockchainApiController,
   ChainController,
@@ -437,6 +438,21 @@ export abstract class AppKitBaseClient {
     OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain)
     OptionsController.setUniversalProviderConfigOverride(options.universalProviderConfigOverride)
     OptionsController.setPreferUniversalLinks(options.experimental_preferUniversalLinks)
+
+    // Initialize custom connector images, if provided.
+    // The keys in options.connectorImages are connector ids; set them as imageUrl overrides
+    // and also seed AssetController so UI fallbacks can access by id.
+    if (options.connectorImages) {
+      Object.entries(options.connectorImages).forEach(([connectorId, imageUrl]) => {
+        if (imageUrl) {
+          try {
+            AssetController.setConnectorImage(connectorId, imageUrl)
+          } catch {
+            /* ignore set errors */
+          }
+        }
+      })
+    }
 
     // Save option in controller
     OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
@@ -2107,7 +2123,13 @@ export abstract class AppKitBaseClient {
     ChainController.getAccountData(chainNamespace)?.address
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
-    const allConnectors = [...ConnectorController.state.allConnectors, ...connectors]
+    // Apply connector image overrides, if any were provided in options.
+    const overrides = this.options.connectorImages || {}
+    const withOverrides = connectors.map(c =>
+      overrides[c.id] != null ? { ...c, imageUrl: overrides[c.id] } : c
+    )
+
+    const allConnectors = [...ConnectorController.state.allConnectors, ...withOverrides]
     ConnectorController.setConnectors(allConnectors)
   }
 
