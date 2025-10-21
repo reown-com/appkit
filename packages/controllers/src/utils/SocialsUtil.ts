@@ -1,4 +1,4 @@
-import { ref } from 'valtio'
+import { ref } from 'valtio/vanilla'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 

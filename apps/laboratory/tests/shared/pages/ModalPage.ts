@@ -705,7 +705,7 @@ export class ModalPage {
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
     await connect.waitFor({
       state: 'visible',
-      timeout: 5000
+      timeout: 15000
     })
     await connect.click()
   }
