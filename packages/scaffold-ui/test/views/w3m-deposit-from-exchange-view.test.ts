@@ -51,6 +51,15 @@ describe('W3mDepositFromExchangeView', () => {
     vi.clearAllMocks()
   })
 
+  it('should reset state on constructor', async () => {
+    vi.spyOn(ExchangeController, 'reset')
+    const element: W3mDepositFromExchangeView = await fixture(
+      html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`
+    )
+    await elementUpdated(element)
+    expect(ExchangeController.reset).toHaveBeenCalled()
+  })
+
   it('should fetch and set default payment asset on first update', async () => {
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
@@ -113,12 +122,6 @@ describe('W3mDepositFromExchangeView', () => {
     }
 
     // Seed controller state for exchanges and amount
-    ExchangeController.state.exchanges = [
-      { id: 'ex1', imageUrl: 'https://img1', name: 'Exchange One' },
-      { id: 'ex2', imageUrl: 'https://img2', name: 'Exchange Two' }
-    ] as any
-    ExchangeController.state.amount = 0
-    ExchangeController.state.paymentAsset = mockPaymentAsset
 
     // Avoid side effects on firstUpdated
     vi.spyOn(ExchangeController, 'getAssetsForNetwork').mockResolvedValue([mockPaymentAsset])
@@ -127,6 +130,12 @@ describe('W3mDepositFromExchangeView', () => {
     const element: W3mDepositFromExchangeView = await fixture(
       html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`
     )
+    ExchangeController.state.exchanges = [
+      { id: 'ex1', imageUrl: 'https://img1', name: 'Exchange One' },
+      { id: 'ex2', imageUrl: 'https://img2', name: 'Exchange Two' }
+    ] as any
+    ExchangeController.state.amount = 0
+    ExchangeController.state.paymentAsset = mockPaymentAsset
     await elementUpdated(element)
 
     // Asset token button should reflect payment asset symbol
@@ -229,7 +238,7 @@ describe('W3mDepositFromExchangeView', () => {
 
     element.disconnectedCallback()
 
-    expect(resetSpy).not.toHaveBeenCalled()
+    expect(resetSpy).toHaveBeenCalledOnce()
   })
 
   it('resets when transaction succeeds', async () => {

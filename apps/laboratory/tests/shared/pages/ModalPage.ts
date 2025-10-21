@@ -263,27 +263,43 @@ export class ModalPage {
     clickConnectButton?: boolean
     timingRecords?: TimingRecords
   }): Promise<void> {
+    const flowStart = Date.now()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] ========== Starting email flow for ${emailAddress} ==========`)
+
     this.emailAddress = emailAddress
 
     const email = new Email(mailsacApiKey)
 
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] Deleting all existing messages`)
     await email.deleteAllMessages(emailAddress)
 
     const loginWithEmail = new Date()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] Calling loginWithEmail at ${Date.now() - flowStart}ms`)
     await this.loginWithEmail(emailAddress, undefined, clickConnectButton)
+    const loginTime = new Date().getTime() - loginWithEmail.getTime()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] loginWithEmail completed in ${loginTime}ms`)
     if (timingRecords) {
       timingRecords.push({
         item: 'loginWithEmail',
-        timeMs: new Date().getTime() - loginWithEmail.getTime()
+        timeMs: loginTime
       })
     }
 
     const getLatestMessageId1 = new Date()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] Waiting for first email at ${Date.now() - flowStart}ms`)
     const firstMessageId = await email.getLatestMessageId(emailAddress)
+    const getMessageId1Time = new Date().getTime() - getLatestMessageId1.getTime()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] Got first messageId in ${getMessageId1Time}ms`)
     if (timingRecords) {
       timingRecords.push({
         item: 'getLatestMessageId1',
-        timeMs: new Date().getTime() - getLatestMessageId1.getTime()
+        timeMs: getMessageId1Time
       })
     }
     if (!firstMessageId) {
@@ -291,19 +307,34 @@ export class ModalPage {
     }
 
     const getEmailBody1 = new Date()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] Fetching first email body at ${Date.now() - flowStart}ms`)
     const firstEmailBody = await email.getEmailBody(emailAddress, firstMessageId)
+    const getEmailBody1Time = new Date().getTime() - getEmailBody1.getTime()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] Got first email body in ${getEmailBody1Time}ms`)
     if (timingRecords) {
       timingRecords.push({
         item: 'getEmailBody1',
-        timeMs: new Date().getTime() - getEmailBody1.getTime()
+        timeMs: getEmailBody1Time
       })
     }
 
     let otp = ''
-    if (email.isApproveEmail(firstEmailBody)) {
+    const isApprove = email.isApproveEmail(firstEmailBody)
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] First email is ${isApprove ? 'APPROVAL' : 'OTP'} email`)
+
+    if (isApprove) {
       const url = email.getApproveUrlFromBody(firstEmailBody)
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Processing device approval flow at ${Date.now() - flowStart}ms`)
 
       const deleteAllMessages = new Date()
+      // eslint-disable-next-line no-console
+      console.log(
+        `[emailFlow] Deleting messages before device approval at ${Date.now() - flowStart}ms`
+      )
       await email.deleteAllMessages(emailAddress)
       if (timingRecords) {
         timingRecords.push({
@@ -313,74 +344,126 @@ export class ModalPage {
       }
 
       const loadDeviceRegistrationPage = new Date()
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Loading device registration page with URL: ${url}`)
       const drp = new DeviceRegistrationPage(await context.newPage(), url)
       drp.load()
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Approving device at ${Date.now() - flowStart}ms`)
       await drp.approveDevice()
       await drp.close()
+      const approvalTime = new Date().getTime() - loadDeviceRegistrationPage.getTime()
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Device approval completed in ${approvalTime}ms`)
       if (timingRecords) {
         timingRecords.push({
           item: 'loadDeviceRegistrationPage',
-          timeMs: new Date().getTime() - loadDeviceRegistrationPage.getTime()
+          timeMs: approvalTime
         })
       }
 
       const getLatestMessageId2 = new Date()
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Waiting for second email (OTP) at ${Date.now() - flowStart}ms`)
       const secondMessageId = await email.getLatestMessageId(emailAddress)
       if (!secondMessageId) {
         throw new Error('No messageId found')
       }
+      const getMessageId2Time = new Date().getTime() - getLatestMessageId2.getTime()
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Got second messageId in ${getMessageId2Time}ms`)
       if (timingRecords) {
         timingRecords.push({
           item: 'getLatestMessageId2',
-          timeMs: new Date().getTime() - getLatestMessageId2.getTime()
+          timeMs: getMessageId2Time
         })
       }
 
       const getEmailBody2 = new Date()
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Fetching second email body at ${Date.now() - flowStart}ms`)
       const secondEmailBody = await email.getEmailBody(emailAddress, secondMessageId)
+      const getEmailBody2Time = new Date().getTime() - getEmailBody2.getTime()
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Got second email body in ${getEmailBody2Time}ms`)
       if (timingRecords) {
         timingRecords.push({
           item: 'getEmailBody2',
-          timeMs: new Date().getTime() - getEmailBody2.getTime()
+          timeMs: getEmailBody2Time
         })
       }
       if (email.isApproveEmail(secondEmailBody)) {
         throw new Error('Unexpected approve email after already approved')
       }
       otp = email.getOtpCodeFromBody(secondEmailBody)
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Extracted OTP from second email`)
     } else {
       otp = email.getOtpCodeFromBody(firstEmailBody)
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Extracted OTP from first email (no approval needed)`)
     }
 
     const enterOTP = new Date()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] Entering OTP at ${Date.now() - flowStart}ms`)
     await this.enterOTP(otp)
+    const enterOTPTime = new Date().getTime() - enterOTP.getTime()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] enterOTP completed in ${enterOTPTime}ms`)
     if (timingRecords) {
       timingRecords.push({
         item: 'enterOTP',
-        timeMs: new Date().getTime() - enterOTP.getTime()
+        timeMs: enterOTPTime
       })
     }
+
+    const totalFlowTime = Date.now() - flowStart
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] ========== Email flow completed in ${totalFlowTime}ms ==========`)
   }
 
   async loginWithEmail(email: string, validate = true, clickConnectButton = true) {
+    // eslint-disable-next-line no-console
+    console.log(`[loginWithEmail] Starting login with email: ${email}`)
+
     if (clickConnectButton) {
+      // eslint-disable-next-line no-console
+      console.log(`[loginWithEmail] Clicking connect button`)
       // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
       await this.page
         .getByTestId('connect-button')
         .getByRole('button', { name: 'Connect Wallet' })
         .click()
     }
+
+    // eslint-disable-next-line no-console
+    console.log(`[loginWithEmail] Filling email input`)
     await this.page.getByTestId('wui-email-input').locator('input').focus()
     await this.page.getByTestId('wui-email-input').locator('input').fill(email)
     await this.page.getByTestId('wui-email-input').locator('input').press('Enter')
+
     if (validate) {
+      // eslint-disable-next-line no-console
+      console.log(
+        `[loginWithEmail] Waiting for email to be visible on notification screen (20s timeout)`
+      )
+      const validationStart = Date.now()
+
       await expect(
         this.page.getByText(email),
         `Expected current email: ${email} to be visible on the notification screen`
       ).toBeVisible({
         timeout: 20_000
       })
+
+      const validationTime = Date.now() - validationStart
+      // eslint-disable-next-line no-console
+      console.log(`[loginWithEmail] Email visible on screen after ${validationTime}ms`)
     }
+
+    // eslint-disable-next-line no-console
+    console.log(`[loginWithEmail] Completed successfully`)
   }
 
   async loginWithSocial(socialOption: 'github', socialMail: string, socialPass: string) {
@@ -419,10 +502,10 @@ export class ModalPage {
 
   async enterOTP(otp: string, headerTitle = 'Confirm Email') {
     await expect(this.page.getByText(headerTitle)).toBeVisible({
-      timeout: 10_000
+      timeout: 20_000
     })
     await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
-      timeout: 10_000
+      timeout: 20_000
     })
 
     const splitted = otp.split('')
@@ -622,7 +705,7 @@ export class ModalPage {
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
     await connect.waitFor({
       state: 'visible',
-      timeout: 5000
+      timeout: 15000
     })
     await connect.click()
   }

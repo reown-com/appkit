@@ -30,6 +30,16 @@ export const extendedMainnet = {
   }
 } as CaipNetwork
 
+export const solanaCaipNetwork = {
+  id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  name: 'Solana',
+  chainNamespace: 'solana',
+  nativeCurrency: { name: 'Solana', symbol: 'SOL', decimals: 9 },
+  rpcUrls: { default: { http: [] } },
+  blockExplorers: { default: { name: 'Solscan', url: 'https://solscan.io' } }
+} as CaipNetwork
+
 export function mockChainControllerState(
   state: Partial<
     Omit<ChainControllerState, 'chains'> & {

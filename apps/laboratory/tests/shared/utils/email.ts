@@ -29,6 +29,10 @@ export class Email {
   }
 
   async getLatestMessageId(email: string): Promise<string> {
+    const startTime = Date.now()
+    // eslint-disable-next-line no-console
+    console.log(`[getLatestMessageId] Starting to poll for email at ${email}`)
+
     let checks = 0
     /* eslint-disable no-await-in-loop */
     while (checks < MAX_EMAIL_CHECK) {
@@ -43,12 +47,26 @@ export class Email {
           throw new Error(`Message id not present for address ${email}`)
         }
 
+        const elapsedTime = Date.now() - startTime
+        // eslint-disable-next-line no-console
+        console.log(
+          `[getLatestMessageId] Found message after ${checks + 1} attempt(s) in ${elapsedTime}ms for ${email}`
+        )
+
         return id
       }
-      await this.timeout(EMAIL_CHECK_INTERVAL)
       checks += 1
+      // eslint-disable-next-line no-console
+      console.log(
+        `[getLatestMessageId] Attempt ${checks}/${MAX_EMAIL_CHECK}: No messages yet, waiting ${EMAIL_CHECK_INTERVAL}ms...`
+      )
+      await this.timeout(EMAIL_CHECK_INTERVAL)
     }
-    throw new Error(`No email found for address ${email}`)
+
+    const elapsedTime = Date.now() - startTime
+    throw new Error(
+      `No email found for address ${email} after ${MAX_EMAIL_CHECK} attempts (${elapsedTime}ms)`
+    )
   }
 
   async getEmailBody(email: string, messageId: string): Promise<string> {
