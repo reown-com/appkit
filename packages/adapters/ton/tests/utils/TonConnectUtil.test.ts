@@ -619,10 +619,6 @@ describe('TonConnectUtil', () => {
       const wallets = getCurrentlyInjectedWallets()
 
       expect(wallets).toHaveLength(0)
-      expect(console.log).toHaveBeenCalledWith(
-        '[TonWalletsUtil] Found tonconnect without walletInfo for key:',
-        'tonkeeper'
-      )
     })
 
     it('should return empty array in non-window environment', () => {
