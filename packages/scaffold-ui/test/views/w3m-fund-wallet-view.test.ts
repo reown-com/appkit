@@ -327,6 +327,18 @@ describe('W3mFundWalletView', () => {
     expect(depositFromExchangeButton).toBeNull()
   })
 
+  it('should reset exchange state when component is disconnected', async () => {
+    const resetSpy = vi.spyOn(ExchangeController, 'reset')
+    const element: W3mFundWalletView = await fixture(
+      html`<w3m-fund-wallet-view></w3m-fund-wallet-view>`
+    )
+    await elementUpdated(element)
+    const exchangeButton = HelpersUtil.getByTestId(element, DEPOSIT_FROM_EXCHANGE_BUTTON_TEST_ID)
+    exchangeButton?.click()
+    await elementUpdated(element)
+    expect(resetSpy).toHaveBeenCalled()
+  })
+
   it('should fetch exchanges and set default payment asset on first update', async () => {
     const mockNetwork = {
       id: '1',
