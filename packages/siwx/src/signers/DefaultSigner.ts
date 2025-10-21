@@ -6,7 +6,7 @@ import {
   RouterController
 } from '@reown/appkit-controllers'
 
-import type { SIWXSigner } from '../core/SIWXSigner'
+import type { SIWXSigner } from '../core/SIWXSigner.js'
 
 export default class DefaultSigner implements SIWXSigner {
   public async signMessage(message: string): Promise<string> {
