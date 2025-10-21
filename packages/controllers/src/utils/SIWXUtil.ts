@@ -124,18 +124,18 @@ export const SIWXUtil = {
       const message = siwxMessage.toString()
 
       let signature = ''
-      if (!siwx.signMessage) {
-const connectorId = ConnectorController.getConnectorId(network.chainNamespace)
-if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
-        RouterController.pushTransactionStack({})
-}
-        signature = (await ConnectionController.signMessage(message)) || ''
-      } else {
+      if (siwx.signMessage) {
         signature = await siwx.signMessage({
           message,
           chainId: network.caipNetworkId,
           accountAddress: address
         })
+      } else {
+        const connectorId = ConnectorController.getConnectorId(network.chainNamespace)
+        if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
+          RouterController.pushTransactionStack({})
+        }
+        signature = (await ConnectionController.signMessage(message)) || ''
       }
 
       await siwx.addSession({
