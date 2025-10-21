@@ -1,4 +1,4 @@
-import type { ProviderInterface } from '@coinbase/wallet-sdk'
+import type { ProviderInterface } from '@base-org/account'
 import type { SafeAppProvider } from '@safe-global/safe-apps-provider'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
@@ -16,7 +16,7 @@ export type Address = `0x${string}`
 
 export type ProviderType = {
   injected?: Provider
-  coinbase?: ProviderInterface
+  baseAccount?: ProviderInterface
   safe?: SafeAppProvider
   auth?: {
     email?: boolean

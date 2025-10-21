@@ -113,12 +113,6 @@ describe('W3mDepositFromExchangeView', () => {
     }
 
     // Seed controller state for exchanges and amount
-    ExchangeController.state.exchanges = [
-      { id: 'ex1', imageUrl: 'https://img1', name: 'Exchange One' },
-      { id: 'ex2', imageUrl: 'https://img2', name: 'Exchange Two' }
-    ] as any
-    ExchangeController.state.amount = 0
-    ExchangeController.state.paymentAsset = mockPaymentAsset
 
     // Avoid side effects on firstUpdated
     vi.spyOn(ExchangeController, 'getAssetsForNetwork').mockResolvedValue([mockPaymentAsset])
@@ -127,6 +121,12 @@ describe('W3mDepositFromExchangeView', () => {
     const element: W3mDepositFromExchangeView = await fixture(
       html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`
     )
+    ExchangeController.state.exchanges = [
+      { id: 'ex1', imageUrl: 'https://img1', name: 'Exchange One' },
+      { id: 'ex2', imageUrl: 'https://img2', name: 'Exchange Two' }
+    ] as any
+    ExchangeController.state.amount = 0
+    ExchangeController.state.paymentAsset = mockPaymentAsset
     await elementUpdated(element)
 
     // Asset token button should reflect payment asset symbol

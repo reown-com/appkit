@@ -102,7 +102,6 @@ export const SIWXUtil = {
     const siwx = OptionsController.state.siwx
     const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
     const network = getActiveCaipNetwork()
-    const client = ConnectionController._getClient()
 
     if (!siwx) {
       throw new Error('SIWX is not enabled')
@@ -116,10 +115,6 @@ export const SIWXUtil = {
       throw new Error('No ActiveCaipNetwork or client found')
     }
 
-    if (!client) {
-      throw new Error('No ConnectionController client found')
-    }
-
     try {
       const siwxMessage = await siwx.createMessage({
         chainId: network.caipNetworkId,
@@ -127,13 +122,21 @@ export const SIWXUtil = {
       })
 
       const message = siwxMessage.toString()
-      const connectorId = ConnectorController.getConnectorId(network.chainNamespace)
 
-      if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
-        RouterController.pushTransactionStack({})
+      let signature = ''
+      if (siwx.signMessage) {
+        signature = await siwx.signMessage({
+          message,
+          chainId: network.caipNetworkId,
+          accountAddress: address
+        })
+      } else {
+        const connectorId = ConnectorController.getConnectorId(network.chainNamespace)
+        if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
+          RouterController.pushTransactionStack({})
+        }
+        signature = (await ConnectionController.signMessage(message)) || ''
       }
-
-      const signature = await client.signMessage(message)
 
       await siwx.addSession({
         data: siwxMessage,
@@ -522,6 +525,28 @@ export interface SIWXConfig {
    * @returns SIWXMessage
    */
   createMessage: (input: SIWXMessage.Input) => Promise<SIWXMessage>
+
+  /**
+   * This method will be called to sign a message with the wallet using the signer handler.
+   * This behavior can be overriden by passing in a `signer` parameter to the `SIWXConfig` constructor.
+   * Constraints:
+   * - This method MUST forward the message to the wallet for a signature request.
+   * - If the signature process fails or is cancelled it MUST throw an error.
+   *
+   * @param message string
+   * @param chainId CaipNetworkId
+   * @param accountAddress string
+   * @returns string
+   */
+  signMessage?: ({
+    message,
+    chainId,
+    accountAddress
+  }: {
+    message: string
+    chainId: string
+    accountAddress: string
+  }) => Promise<string>
 
   /**
    * This method will be called to store a new single session.
