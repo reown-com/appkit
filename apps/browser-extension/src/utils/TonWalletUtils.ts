@@ -57,7 +57,7 @@ function parseHexAddress(raw: string): { wc: 0 | -1; hex: Uint8Array } {
 function hexToBytes(hex: string): Uint8Array {
   const out = new Uint8Array(hex.length / 2)
   for (let i = 0; i < out.length; i += 1) {
-    out[i] = parseInt(hex.substr(i * 2, 2), 16)
+    out[i] = parseInt(hex.substring(i * 2, 2), 16)
   }
 
   return out

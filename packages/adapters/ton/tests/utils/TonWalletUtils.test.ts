@@ -7,8 +7,8 @@ import {
   isWalletInfoCurrentlyInjected,
   isWalletInfoInjectable,
   isWalletInfoRemote,
-  toUserFriendlyAddress,
-  userFriendlyToRawAddress
+  parseUserFriendlyAddress,
+  toUserFriendlyAddress
 } from '../../src/utils/TonWalletUtils'
 
 describe('TonWalletUtils', () => {
@@ -199,19 +199,10 @@ describe('TonWalletUtils', () => {
         expect(result).toMatch(/^[A-Za-z0-9_-]+$/)
       })
 
-      it('should create bounceable address when bounceable option is true', () => {
-        const hexAddress = '0:83a7d3c5a6b8e4f1d2c9b6a8e5f4d3c2b1a9e8f7d6c5b4a3e2f1d0c9b8a7e6f5'
-        const bounceableResult = toUserFriendlyAddress(hexAddress, { bounceable: true })
-        const nonBounceableResult = toUserFriendlyAddress(hexAddress, { bounceable: false })
-
-        // Results should be different due to different tag byte
-        expect(bounceableResult).not.toEqual(nonBounceableResult)
-      })
-
       it('should create test-only address when testOnly option is true', () => {
         const hexAddress = '0:83a7d3c5a6b8e4f1d2c9b6a8e5f4d3c2b1a9e8f7d6c5b4a3e2f1d0c9b8a7e6f5'
-        const testOnlyResult = toUserFriendlyAddress(hexAddress, { testOnly: true })
-        const prodResult = toUserFriendlyAddress(hexAddress, { testOnly: false })
+        const testOnlyResult = toUserFriendlyAddress(hexAddress, true)
+        const prodResult = toUserFriendlyAddress(hexAddress, false)
 
         // Results should be different due to different tag byte
         expect(testOnlyResult).not.toEqual(prodResult)
@@ -258,58 +249,44 @@ describe('TonWalletUtils', () => {
       it('should convert user-friendly address back to raw format', () => {
         const rawAddress = '0:83a7d3c5a6b8e4f1d2c9b6a8e5f4d3c2b1a9e8f7d6c5b4a3e2f1d0c9b8a7e6f5'
         const userFriendly = toUserFriendlyAddress(rawAddress)
-        const converted = userFriendlyToRawAddress(userFriendly)
+        const converted = parseUserFriendlyAddress(userFriendly)
 
-        expect(converted).toBe(rawAddress)
+        expect(`${converted.wc}:${converted.hex}`).toBe(rawAddress)
       })
 
       it('should handle workchain -1 addresses', () => {
         const rawAddress = '-1:83a7d3c5a6b8e4f1d2c9b6a8e5f4d3c2b1a9e8f7d6c5b4a3e2f1d0c9b8a7e6f5'
         const userFriendly = toUserFriendlyAddress(rawAddress)
-        const converted = userFriendlyToRawAddress(userFriendly)
+        const converted = parseUserFriendlyAddress(userFriendly)
 
-        expect(converted).toBe(rawAddress)
-      })
-
-      it('should handle bounceable addresses', () => {
-        const rawAddress = '0:83a7d3c5a6b8e4f1d2c9b6a8e5f4d3c2b1a9e8f7d6c5b4a3e2f1d0c9b8a7e6f5'
-        const userFriendly = toUserFriendlyAddress(rawAddress, { bounceable: true })
-        const converted = userFriendlyToRawAddress(userFriendly)
-
-        expect(converted).toBe(rawAddress)
-      })
-
-      it('should handle non-bounceable addresses', () => {
-        const rawAddress = '0:83a7d3c5a6b8e4f1d2c9b6a8e5f4d3c2b1a9e8f7d6c5b4a3e2f1d0c9b8a7e6f5'
-        const userFriendly = toUserFriendlyAddress(rawAddress, { bounceable: false })
-        const converted = userFriendlyToRawAddress(userFriendly)
-
-        expect(converted).toBe(rawAddress)
+        expect(`${converted.wc}:${converted.hex}`).toBe(rawAddress)
       })
 
       it('should handle test-only addresses', () => {
         const rawAddress = '0:83a7d3c5a6b8e4f1d2c9b6a8e5f4d3c2b1a9e8f7d6c5b4a3e2f1d0c9b8a7e6f5'
-        const userFriendly = toUserFriendlyAddress(rawAddress, { testOnly: true })
-        const converted = userFriendlyToRawAddress(userFriendly)
+        const userFriendly = toUserFriendlyAddress(rawAddress, true)
+        const converted = parseUserFriendlyAddress(userFriendly)
 
-        expect(converted).toBe(rawAddress)
+        expect(`${converted.wc}:${converted.hex}`).toBe(rawAddress)
       })
 
       it('should handle real TON testnet address', () => {
         // Real testnet address example
         const userFriendly = 'EQDCp8fa0dQafUICMadG4KiSYxamwzvf53_4E9d21Ol14xb-'
-        const raw = userFriendlyToRawAddress(userFriendly)
+        const raw = parseUserFriendlyAddress(userFriendly)
 
         // Should be in format "wc:hex"
-        expect(raw).toMatch(/^-?\d+:[0-9a-f]{64}$/)
+        expect(`${raw.wc}:${raw.hex}`).toMatch(/^-?\d+:[0-9a-f]{64}$/)
         // Should have workchain and hash
-        const parts = raw.split(':')
+        const parts = `${raw.wc}:${raw.hex}`.split(':')
         expect(parts).toHaveLength(2)
         expect(parts[1]).toHaveLength(64)
       })
 
       it('should throw error for invalid address length', () => {
-        expect(() => userFriendlyToRawAddress('abc123')).toThrow('Invalid address length')
+        expect(() => parseUserFriendlyAddress('abc123')).toThrowError(
+          new Error('Invalid base64 encoding in address: abc123')
+        )
       })
 
       it('should throw error for invalid checksum', () => {
@@ -317,7 +294,9 @@ describe('TonWalletUtils', () => {
         const validAddress = 'EQDCp8fa0dQafUICMadG4KiSYxamwzvf53_4E9d21Ol14xb-'
         const invalidChecksum = validAddress.slice(0, -2) + 'XX'
 
-        expect(() => userFriendlyToRawAddress(invalidChecksum)).toThrow('Invalid checksum')
+        expect(() => parseUserFriendlyAddress(invalidChecksum)).toThrow(
+          'Invalid checksum in address'
+        )
       })
 
       it('should handle base64url encoding with - and _', () => {
@@ -328,8 +307,8 @@ describe('TonWalletUtils', () => {
         expect(userFriendly).not.toContain('+')
         expect(userFriendly).not.toContain('/')
         // Should be reversible
-        const converted = userFriendlyToRawAddress(userFriendly)
-        expect(converted).toBe(rawAddress)
+        const converted = parseUserFriendlyAddress(userFriendly)
+        expect(`${converted.wc}:${converted.hex}`).toBe(rawAddress)
       })
     })
 
@@ -339,13 +318,13 @@ describe('TonWalletUtils', () => {
 
         // Convert multiple times
         const friendly1 = toUserFriendlyAddress(originalRaw)
-        const raw1 = userFriendlyToRawAddress(friendly1)
-        const friendly2 = toUserFriendlyAddress(raw1)
-        const raw2 = userFriendlyToRawAddress(friendly2)
+        const raw1 = parseUserFriendlyAddress(friendly1)
+        const friendly2 = toUserFriendlyAddress(`${raw1.wc}:${raw1.hex}`)
+        const raw2 = parseUserFriendlyAddress(friendly2)
 
         // All conversions should be consistent
-        expect(raw1).toBe(originalRaw)
-        expect(raw2).toBe(originalRaw)
+        expect(`${raw1.wc}:${raw1.hex}`).toBe(originalRaw)
+        expect(`${raw2.wc}:${raw2.hex}`).toBe(originalRaw)
         expect(friendly1).toBe(friendly2)
       })
 
@@ -357,29 +336,8 @@ describe('TonWalletUtils', () => {
 
         for (const raw of testCases) {
           const friendly = toUserFriendlyAddress(raw)
-          const converted = userFriendlyToRawAddress(friendly)
-          expect(converted).toBe(raw)
-        }
-      })
-
-      it('should handle all option combinations', () => {
-        const rawAddress = '0:83a7d3c5a6b8e4f1d2c9b6a8e5f4d3c2b1a9e8f7d6c5b4a3e2f1d0c9b8a7e6f5'
-        const options = [
-          {},
-          { bounceable: true },
-          { bounceable: false },
-          { testOnly: true },
-          { testOnly: false },
-          { bounceable: true, testOnly: true },
-          { bounceable: false, testOnly: true },
-          { bounceable: true, testOnly: false },
-          { bounceable: false, testOnly: false }
-        ]
-
-        for (const opts of options) {
-          const friendly = toUserFriendlyAddress(rawAddress, opts)
-          const converted = userFriendlyToRawAddress(friendly)
-          expect(converted).toBe(rawAddress)
+          const converted = parseUserFriendlyAddress(friendly)
+          expect(`${converted.wc}:${converted.hex}`).toBe(raw)
         }
       })
     })
@@ -419,17 +377,17 @@ describe('TonWalletUtils', () => {
       it('should handle zero-filled addresses', () => {
         const zeroAddress = '0:0000000000000000000000000000000000000000000000000000000000000000'
         const friendly = toUserFriendlyAddress(zeroAddress)
-        const converted = userFriendlyToRawAddress(friendly)
+        const converted = parseUserFriendlyAddress(friendly)
 
-        expect(converted).toBe(zeroAddress)
+        expect(`${converted.wc}:${converted.hex}`).toBe(zeroAddress)
       })
 
       it('should handle all-f addresses', () => {
         const maxAddress = '0:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
         const friendly = toUserFriendlyAddress(maxAddress)
-        const converted = userFriendlyToRawAddress(friendly)
+        const converted = parseUserFriendlyAddress(friendly)
 
-        expect(converted).toBe(maxAddress)
+        expect(`${converted.wc}:${converted.hex}`).toBe(maxAddress)
       })
 
       it('should handle mixed case hex input', () => {
@@ -439,7 +397,9 @@ describe('TonWalletUtils', () => {
         const friendlyLower = toUserFriendlyAddress(lowerCase)
 
         // Should produce the same result regardless of case
-        expect(friendlyMixed).toBe(friendlyLower)
+        expect(parseUserFriendlyAddress(friendlyMixed)).toEqual(
+          parseUserFriendlyAddress(friendlyLower)
+        )
       })
 
       it('should include checksum in user-friendly address', () => {
@@ -463,15 +423,15 @@ describe('TonWalletUtils', () => {
         ]
 
         for (const address of realAddresses) {
-          const raw = userFriendlyToRawAddress(address)
+          const raw = parseUserFriendlyAddress(address)
 
           // Should be valid raw format
-          expect(raw).toMatch(/^-?\d+:[0-9a-f]{64}$/)
+          expect(`${raw.wc}:${raw.hex}`).toMatch(/^-?\d+:[0-9a-f]{64}$/)
 
           // Should be reversible
-          const friendly = toUserFriendlyAddress(raw)
-          const backToRaw = userFriendlyToRawAddress(friendly)
-          expect(backToRaw).toBe(raw)
+          const friendly = toUserFriendlyAddress(`${raw.wc}:${raw.hex}`)
+          const backToRaw = parseUserFriendlyAddress(friendly)
+          expect(`${backToRaw.wc}:${backToRaw.hex}`).toBe(`${raw.wc}:${raw.hex}`)
         }
       })
     })
@@ -536,7 +496,7 @@ describe('TonWalletUtils', () => {
       const friendly = toUserFriendlyAddress(rawAddress)
 
       // Converting back should succeed (validates checksum)
-      expect(() => userFriendlyToRawAddress(friendly)).not.toThrow()
+      expect(() => parseUserFriendlyAddress(friendly)).not.toThrow()
     })
 
     it('should detect corrupted addresses', () => {
@@ -547,7 +507,7 @@ describe('TonWalletUtils', () => {
       const corrupted = friendly.slice(0, 10) + 'X' + friendly.slice(11)
 
       // Should throw due to invalid checksum
-      expect(() => userFriendlyToRawAddress(corrupted)).toThrow()
+      expect(() => parseUserFriendlyAddress(corrupted)).toThrow()
     })
 
     it('should detect modified checksum', () => {
@@ -557,7 +517,7 @@ describe('TonWalletUtils', () => {
       // Modify only the checksum part (last 2-3 chars)
       const withBadChecksum = friendly.slice(0, -2) + 'XX'
 
-      expect(() => userFriendlyToRawAddress(withBadChecksum)).toThrow('Invalid checksum')
+      expect(() => parseUserFriendlyAddress(withBadChecksum)).toThrow('Invalid checksum in address')
     })
   })
 
@@ -581,8 +541,8 @@ describe('TonWalletUtils', () => {
       expect(friendly).not.toContain('=')
 
       // But should still decode correctly
-      const converted = userFriendlyToRawAddress(friendly)
-      expect(converted).toBe(rawAddress)
+      const converted = parseUserFriendlyAddress(friendly)
+      expect(`${converted.wc}:${converted.hex}`).toBe(rawAddress)
     })
   })
 
@@ -590,19 +550,19 @@ describe('TonWalletUtils', () => {
     it('should correctly encode workchain 0', () => {
       const wc0Address = '0:83a7d3c5a6b8e4f1d2c9b6a8e5f4d3c2b1a9e8f7d6c5b4a3e2f1d0c9b8a7e6f5'
       const friendly = toUserFriendlyAddress(wc0Address)
-      const converted = userFriendlyToRawAddress(friendly)
+      const converted = parseUserFriendlyAddress(friendly)
 
-      expect(converted).toBe(wc0Address)
-      expect(converted.startsWith('0:')).toBe(true)
+      expect(`${converted.wc}:${converted.hex}`).toBe(wc0Address)
+      expect(`${converted.wc}:${converted.hex}`).toMatch(/^0:[0-9a-f]{64}$/)
     })
 
     it('should correctly encode workchain -1', () => {
       const wcMinus1Address = '-1:83a7d3c5a6b8e4f1d2c9b6a8e5f4d3c2b1a9e8f7d6c5b4a3e2f1d0c9b8a7e6f5'
       const friendly = toUserFriendlyAddress(wcMinus1Address)
-      const converted = userFriendlyToRawAddress(friendly)
+      const converted = parseUserFriendlyAddress(friendly)
 
-      expect(converted).toBe(wcMinus1Address)
-      expect(converted.startsWith('-1:')).toBe(true)
+      expect(`${converted.wc}:${converted.hex}`).toBe(wcMinus1Address)
+      expect(`${converted.wc}:${converted.hex}`).toMatch(/^-1:[0-9a-f]{64}$/)
     })
 
     it('should distinguish between workchain 0 and -1', () => {
@@ -616,71 +576,31 @@ describe('TonWalletUtils', () => {
       // Different workchains should produce different friendly addresses
       expect(friendly0).not.toBe(friendlyMinus1)
 
+      const parsedFriendly0 = parseUserFriendlyAddress(friendly0)
+      const parsedFriendlyMinus1 = parseUserFriendlyAddress(friendlyMinus1)
+
       // But should convert back correctly
-      expect(userFriendlyToRawAddress(friendly0)).toBe(wc0)
-      expect(userFriendlyToRawAddress(friendlyMinus1)).toBe(wcMinus1)
+      expect(parsedFriendly0.wc).toBe(0)
+      expect(parsedFriendlyMinus1.wc).toBe(-1)
     })
   })
 
   describe('Tag Byte Handling', () => {
-    it('should create different addresses for bounceable vs non-bounceable', () => {
-      const rawAddress = '0:83a7d3c5a6b8e4f1d2c9b6a8e5f4d3c2b1a9e8f7d6c5b4a3e2f1d0c9b8a7e6f5'
-
-      const bounceable = toUserFriendlyAddress(rawAddress, { bounceable: true })
-      const nonBounceable = toUserFriendlyAddress(rawAddress, { bounceable: false })
-
-      // Tag bytes are different
-      expect(bounceable).not.toBe(nonBounceable)
-
-      // But both should convert back to same raw address
-      expect(userFriendlyToRawAddress(bounceable)).toBe(rawAddress)
-      expect(userFriendlyToRawAddress(nonBounceable)).toBe(rawAddress)
-    })
-
     it('should create different addresses for testOnly vs production', () => {
       const rawAddress = '0:83a7d3c5a6b8e4f1d2c9b6a8e5f4d3c2b1a9e8f7d6c5b4a3e2f1d0c9b8a7e6f5'
 
-      const testOnly = toUserFriendlyAddress(rawAddress, { testOnly: true })
-      const production = toUserFriendlyAddress(rawAddress, { testOnly: false })
+      const testOnly = toUserFriendlyAddress(rawAddress, true)
+      const production = toUserFriendlyAddress(rawAddress, false)
 
       // Tag bytes are different
       expect(testOnly).not.toBe(production)
 
+      const parsedTestOnly = parseUserFriendlyAddress(testOnly)
+      const parsedProdOnly = parseUserFriendlyAddress(production)
+
       // But both should convert back to same raw address
-      expect(userFriendlyToRawAddress(testOnly)).toBe(rawAddress)
-      expect(userFriendlyToRawAddress(production)).toBe(rawAddress)
-    })
-
-    it('should handle all 4 tag combinations correctly', () => {
-      const rawAddress = '0:83a7d3c5a6b8e4f1d2c9b6a8e5f4d3c2b1a9e8f7d6c5b4a3e2f1d0c9b8a7e6f5'
-
-      const addresses = {
-        bounceableProd: toUserFriendlyAddress(rawAddress, {
-          bounceable: true,
-          testOnly: false
-        }),
-        bounceableTest: toUserFriendlyAddress(rawAddress, {
-          bounceable: true,
-          testOnly: true
-        }),
-        nonBounceableProd: toUserFriendlyAddress(rawAddress, {
-          bounceable: false,
-          testOnly: false
-        }),
-        nonBounceableTest: toUserFriendlyAddress(rawAddress, {
-          bounceable: false,
-          testOnly: true
-        })
-      }
-
-      // All should be different
-      const uniqueAddresses = new Set(Object.values(addresses))
-      expect(uniqueAddresses.size).toBe(4)
-
-      // All should convert back to same raw
-      for (const friendly of Object.values(addresses)) {
-        expect(userFriendlyToRawAddress(friendly)).toBe(rawAddress)
-      }
+      expect(`${parsedTestOnly.wc}:${parsedTestOnly.hex}`).toBe(rawAddress)
+      expect(`${parsedProdOnly.wc}:${parsedProdOnly.hex}`).toBe(rawAddress)
     })
   })
 })

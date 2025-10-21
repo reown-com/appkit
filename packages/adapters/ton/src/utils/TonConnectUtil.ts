@@ -193,13 +193,14 @@ export function createConnectRequest(manifestUrl: string, tonProof?: string) {
   return { manifestUrl, items }
 }
 
-export function normalizeBase64(s?: string): string | undefined {
-  if (typeof s !== 'string') {
+export function normalizeBase64(data: string | undefined): string | undefined {
+  if (typeof data !== 'string') {
     return undefined
   }
-  const pad = s.length + ((4 - (s.length % 4)) % 4)
 
-  return s.replace(/-/gu, '+').replace(/_/gu, '/').padEnd(pad, '=')
+  const paddedLength = data.length + ((4 - (data.length % 4)) % 4)
+
+  return data.replace(/-/gu, '+').replace(/_/gu, '/').padEnd(paddedLength, '=')
 }
 
 /**

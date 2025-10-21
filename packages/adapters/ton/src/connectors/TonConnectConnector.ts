@@ -13,7 +13,7 @@ import {
   getTonConnect,
   normalizeBase64
 } from '../utils/TonConnectUtil.js'
-import { toUserFriendlyAddress, userFriendlyToRawAddress } from '../utils/TonWalletUtils.js'
+import { parseUserFriendlyAddress, toUserFriendlyAddress } from '../utils/TonWalletUtils.js'
 
 export class TonConnectConnector implements TonConnector {
   public readonly chain = 'ton'
@@ -123,7 +123,8 @@ export class TonConnectConnector implements TonConnector {
       bytes?: string
       network?: string
     }
-    const from = userFriendlyToRawAddress(payload.from || this.currentAddress || '')
+    const { wc, hex } = parseUserFriendlyAddress(payload.from || this.currentAddress || '')
+    const from = `${wc}:${hex}`
     const base = { ...payload, from }
 
     let normalized: Record<string, unknown> = {}

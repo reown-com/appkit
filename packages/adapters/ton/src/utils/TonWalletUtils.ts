@@ -4,6 +4,8 @@ import type {
   TonWalletInfoRemote
 } from '@reown/appkit-utils/ton'
 
+import { Base64 } from './Base64.js'
+
 export function isWalletInfoInjectable(value: TonWalletInfo): value is TonWalletInfoInjectable {
   return 'jsBridgeKey' in value
 }
@@ -32,26 +34,30 @@ export type ToUserFriendlyOpts = {
   bounceable?: boolean
 }
 
-export function toUserFriendlyAddress(hexAddress: string, opts: ToUserFriendlyOpts = {}): string {
+const bounceableTag = 0x11
+const noBounceableTag = 0x51
+const testOnlyTag = 0x80
+
+export function toUserFriendlyAddress(hexAddress: string, testOnly = false): string {
   const { wc, hex } = parseHexAddress(hexAddress)
 
-  let tag = opts.bounceable ? 0x11 : 0x51
-  if (opts.testOnly) {
-    tag |= 0x80
+  let tag = noBounceableTag
+  if (testOnly) {
+    tag |= testOnlyTag
   }
 
-  const addr = new Uint8Array(34)
+  const addr = new Int8Array(34)
   addr[0] = tag
-  addr[1] = wc === -1 ? 0xff : 0x00
+  addr[1] = wc
   addr.set(hex, 2)
 
-  const out = new Uint8Array(36)
-  out.set(addr, 0)
-  out.set(crc16(addr), 34)
+  const addressWithChecksum = new Uint8Array(36)
+  addressWithChecksum.set(addr)
+  addressWithChecksum.set(crc16(Uint8Array.from(addr)), 34)
 
-  const b64 = base64FromBytes(out)
+  const addressBase64 = Base64.encode(addressWithChecksum)
 
-  return b64.replace(/\+/gu, '-').replace(/\//gu, '_')
+  return addressBase64.replace(/\+/gu, '-').replace(/\//gu, '_')
 }
 
 function parseHexAddress(raw: string): { wc: 0 | -1; hex: Uint8Array } {
@@ -83,13 +89,43 @@ function parseHexAddress(raw: string): { wc: 0 | -1; hex: Uint8Array } {
   return { wc: wcNum as 0 | -1, hex: hexToBytes(hex) }
 }
 
-function hexToBytes(hex: string): Uint8Array {
-  const out = new Uint8Array(hex.length / 2)
-  for (let i = 0; i < out.length; i += 1) {
-    out[i] = parseInt(hex.substr(i * 2, 2), 16)
+const toByteMap: Record<string, number> = {}
+
+for (let ord = 0; ord <= 0xff; ord += 1) {
+  let s = ord.toString(16)
+  if (s.length < 2) {
+    s = `0${s}`
+  }
+  toByteMap[s] = ord
+}
+
+export function hexToBytes(hex: string): Uint8Array {
+  const lowerHex = hex.toLowerCase()
+  const length2 = lowerHex.length
+
+  if (length2 % 2 !== 0) {
+    throw new Error(`Hex string must have length a multiple of 2: ${lowerHex}`)
   }
 
-  return out
+  const length = length2 / 2
+  const result = new Uint8Array(length)
+
+  for (let i = 0; i < length; i += 1) {
+    const doubled = i * 2
+    const hexSubstring = lowerHex.substring(doubled, doubled + 2)
+
+    if (!Object.hasOwn(toByteMap, hexSubstring)) {
+      throw new Error(`Invalid hex character: ${hexSubstring}`)
+    }
+
+    const byteValue = toByteMap[hexSubstring]
+    if (byteValue === undefined) {
+      throw new Error(`Invalid hex character: ${hexSubstring}`)
+    }
+    result[i] = byteValue
+  }
+
+  return result
 }
 
 function crc16(data: Uint8Array): Uint8Array {
@@ -115,54 +151,74 @@ function crc16(data: Uint8Array): Uint8Array {
   return new Uint8Array([Math.floor(reg / 256), reg % 256])
 }
 
-function base64FromBytes(bytes: Uint8Array): string {
-  if (typeof Buffer !== 'undefined') {
-    return Buffer.from(bytes).toString('base64')
-  }
-  let bin = ''
-  for (const byte of bytes) {
-    bin += String.fromCharCode(byte)
-  }
-
-  return btoa(bin)
-}
-
 // -- Reverse: user-friendly (base64url) -> raw hex address ------------------- //
-export function userFriendlyToRawAddress(address: string): string {
-  const bytes = base64UrlToBytes(address)
-  if (bytes.length !== 36) {
-    throw new Error('Invalid address length')
+/**
+ * Parses user-friendly address and returns its components.
+ * @param address user-friendly address
+ * @returns parsed address components
+ */
+export function parseUserFriendlyAddress(address: string): {
+  wc: 0 | -1
+  hex: string
+  testOnly: boolean
+  isBounceable: boolean
+} {
+  const base64 = address.replace(/-/gu, '+').replace(/_/gu, '/')
+
+  let decoded: Uint8Array | undefined = undefined
+  try {
+    decoded = Base64.decode(base64).toUint8Array()
+  } catch {
+    throw new Error(`Invalid base64 encoding in address: ${address}`)
   }
 
-  const addr = bytes.slice(0, 34)
-  const checksum = bytes.slice(34, 36)
-  const calc = crc16(addr)
-  if (checksum[0] !== calc[0] || checksum[1] !== calc[1]) {
-    throw new Error('Invalid checksum')
+  if (decoded.length !== 36) {
+    throw new Error(`Invalid address length: ${address}`)
   }
 
-  const wcByte = addr[1]
-  const wc = wcByte === 0xff ? -1 : 0
+  const addr = decoded.slice(0, 34)
+  const checksum = decoded.slice(34, 36)
 
-  const hash = addr.slice(2)
-  const hex = Array.from(hash)
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('')
-
-  return `${wc}:${hex}`
-}
-
-function base64UrlToBytes(s: string): Uint8Array {
-  const b64 = s.replace(/-/gu, '+').replace(/_/gu, '/')
-  const padded = b64.padEnd(b64.length + ((4 - (b64.length % 4)) % 4), '=')
-  if (typeof Buffer !== 'undefined') {
-    return Uint8Array.from(Buffer.from(padded, 'base64'))
-  }
-  const bin = atob(padded)
-  const out = new Uint8Array(bin.length)
-  for (let i = 0; i < bin.length; i += 1) {
-    out[i] = bin.charCodeAt(i)
+  const calculatedChecksum = crc16(addr)
+  if (!checksum.every((byte, i) => byte === calculatedChecksum[i])) {
+    throw new Error(`Invalid checksum in address: ${address}`)
   }
 
-  return out
+  const tagValue = addr[0]
+  if (tagValue === undefined) {
+    throw new Error(`Invalid address: missing tag byte`)
+  }
+  let tag = tagValue
+  let isTestOnly = false
+  let isBounceable = false
+  if (tag & testOnlyTag) {
+    isTestOnly = true
+    tag ^= testOnlyTag
+  }
+  if (tag !== bounceableTag && tag !== noBounceableTag) {
+    throw new Error(`Unknown address tag: ${tag}`)
+  }
+
+  isBounceable = tag === bounceableTag
+  let wc = null
+  if (addr[1] === 0xff) {
+    // Note: This is a simplified check for workchain -1 (0xff as unsigned byte)
+    wc = -1
+  } else {
+    wc = addr[1] as 0 | -1
+  }
+  const hex = addr.slice(2)
+
+  if (wc !== 0 && wc !== -1) {
+    throw new Error(`Invalid workchain: ${wc}`)
+  }
+
+  return {
+    wc,
+    hex: Array.from(hex)
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join(''),
+    testOnly: isTestOnly,
+    isBounceable
+  }
 }
