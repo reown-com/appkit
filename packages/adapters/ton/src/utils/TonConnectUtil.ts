@@ -16,10 +16,10 @@ import type {
   TonWalletFeature
 } from './TonConnectTypeUtils.js'
 
-const TONCONNECT_WALLETS_LIST_URL = 'https://config.ton.org/wallets-v2.json'
+const TONCONNECT_WALLETS_LIST_URL = 'https://api.reown.com/ton/v1/wallets'
+const TONCONNECT_MANIFEST_URL = 'https://api.reown.com/ton/v1/manifest'
 
 export function getTonConnectManifestUrl(): string {
-  const base = 'https://api.reown.com/ton/v1/manifest'
   const { metadata, projectId } = OptionsController.state
   const { st, sv } = BlockchainApiController.getSdkProperties()
 
@@ -27,7 +27,7 @@ export function getTonConnectManifestUrl(): string {
   const name = metadata?.name || ''
   const iconUrl = metadata?.icons?.[0] || ''
 
-  const u = new URL(base)
+  const u = new URL(TONCONNECT_MANIFEST_URL)
   u.searchParams.set('projectId', projectId)
   u.searchParams.set('st', st)
   u.searchParams.set('sv', sv)
