@@ -38,6 +38,17 @@ export function getTonConnectManifestUrl(): string {
   return u.toString()
 }
 
+export function getTonConnectWalletsListUrl(): string {
+  const { projectId } = OptionsController.state
+  const { st, sv } = BlockchainApiController.getSdkProperties()
+
+  const u = new URL(TONCONNECT_WALLETS_LIST_URL)
+  u.searchParams.set('projectId', projectId)
+  u.searchParams.set('st', st)
+  u.searchParams.set('sv', sv)
+  return u.toString()
+}
+
 // -- Internal cache ------------------------------------------------------------ //
 let cachePromise: Promise<TonWalletInfoDTO[]> | null = null
 let cacheCreatedAt: number | null = null
@@ -371,7 +382,7 @@ async function fetchWalletsListDTO(params?: { cacheTTLMs?: number }): Promise<To
   if (!cachePromise) {
     cachePromise = (async () => {
       try {
-        const res = await fetch(TONCONNECT_WALLETS_LIST_URL, { credentials: 'omit' })
+        const res = await fetch(getTonConnectWalletsListUrl(), { credentials: 'omit' })
         if (!res.ok) {
           throw new Error(`HTTP ${res.status}`)
         }
