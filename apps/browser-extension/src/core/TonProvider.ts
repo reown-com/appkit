@@ -177,6 +177,135 @@ export class TonProvider {
 
     throw new Error('Unsupported sign data type')
   }
+
+  public createTonConnectInterface(walletIcon: string) {
+    const listeners: Array<(event: TonConnectEvent) => void> = []
+    const emit = (event: TonConnectEvent) => {
+      listeners.forEach(cb => {
+        try {
+          cb(event)
+        } catch {
+          // Listener error ignored
+        }
+      })
+    }
+
+    const createConnectEvent = (): TonConnectEvent => {
+      const address = this.getAddress()
+
+      return {
+        event: 'connect',
+        id: Date.now(),
+        payload: {
+          items: [
+            {
+              name: 'ton_addr',
+              address,
+              network: '-3',
+              publicKey: this.keypair.publicKey.toString('hex'),
+              walletStateInit: ''
+            }
+          ],
+          device: {
+            platform: 'chrome-extension',
+            appName: 'Reown',
+            appVersion: '1.0.0',
+            maxProtocolVersion: 2,
+            features: [
+              { name: 'SendTransaction', maxMessages: 4 },
+              { name: 'SignData', supportedPayloadTypes: ['text', 'binary', 'cell'] }
+            ]
+          }
+        }
+      }
+    }
+
+    return {
+      _listeners: listeners,
+      _emit: emit,
+      connect: async (): Promise<string> => {
+        this.connect()
+        const address = this.getAddress()
+        const evt = createConnectEvent()
+        emit(evt)
+
+        return Promise.resolve(address)
+      },
+      restoreConnection: (): TonConnectEvent => {
+        const evt = createConnectEvent()
+        emit(evt)
+
+        return evt
+      },
+      send: async (
+        message: TonConnectRequest
+      ): Promise<
+        | { boc: string; id: number | string }
+        | { signature: string; id: number | string }
+        | TonConnectEvent
+      > => {
+        const { method, params, id } = message
+
+        if (method === 'sendTransaction') {
+          const prepared = (params?.[0] as TonProvider.SendMessage['params']) || {
+            messages: []
+          }
+          const boc = await this.sendMessage(prepared, 'ton:testnet')
+
+          return { boc, id }
+        }
+
+        if (method === 'signData') {
+          const payloadParam = params?.[0]
+          const payload =
+            typeof payloadParam === 'string'
+              ? (JSON.parse(payloadParam) as TonProvider.SignData['params'])
+              : (payloadParam as TonProvider.SignData['params'])
+          const result = this.signData(payload)
+
+          return { signature: result.signature, id }
+        }
+
+        if (method === 'disconnect') {
+          this.disconnect()
+          const evt: TonConnectEvent = { event: 'disconnect', id: Date.now(), payload: {} }
+          emit(evt)
+
+          return evt
+        }
+
+        throw new Error(`Unsupported method: ${method}`)
+      },
+      listen: (callback: (event: TonConnectEvent) => void): (() => void) => {
+        listeners.push(callback)
+
+        return () => {
+          const idx = listeners.indexOf(callback)
+          if (idx >= 0) {
+            listeners.splice(idx, 1)
+          }
+        }
+      },
+      disconnect: async (): Promise<TonConnectEvent> => {
+        this.disconnect()
+        const evt: TonConnectEvent = { event: 'disconnect', id: Date.now(), payload: {} }
+        emit(evt)
+
+        return Promise.resolve(evt)
+      },
+      walletInfo: {
+        name: 'Reown',
+        app_name: 'reown',
+        image: walletIcon,
+        about_url: 'https://reown.com',
+        platforms: ['chrome', 'firefox'],
+        injected: true,
+        embedded: false
+      },
+      isWalletBrowser: false,
+      protocolVersion: 2
+    }
+  }
 }
 
 export namespace TonProvider {
@@ -219,3 +348,14 @@ export namespace TonProvider {
     }
   >
 }
+
+export type TonConnectEvent = {
+  event: 'connect' | 'disconnect'
+  id: number
+  payload: Record<string, unknown>
+}
+
+export type TonConnectRequest =
+  | { method: 'sendTransaction'; params: [Record<string, unknown>]; id: number | string }
+  | { method: 'signData'; params: [string | Record<string, unknown>]; id: number | string }
+  | { method: 'disconnect'; params?: []; id: number | string }
