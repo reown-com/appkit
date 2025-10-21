@@ -111,11 +111,11 @@ describe('EthersAdapter', () => {
         ancestorOrigins: ['https://app.safe.global']
       }
     })
-    vi.mock('@coinbase/wallet-sdk', async () => {
-      const actual = await import('@coinbase/wallet-sdk')
+    vi.mock('@base-org/account', async () => {
+      const actual = await import('@base-org/account')
       return {
         ...actual,
-        createCoinbaseWalletSDK: vi.fn(() => ({
+        createBaseAccountSDK: vi.fn(() => ({
           getProvider: vi.fn(() => {
             return {
               request: vi.fn(),
@@ -1266,7 +1266,7 @@ describe('EthersAdapter', () => {
       const ethersAdapter = new EthersAdapter()
       const providers = await ethersAdapter['createEthersConfig']()
 
-      expect(providers?.coinbase).toBeDefined()
+      expect(providers?.baseAccount).toBeDefined()
     })
 
     it('should create Ethers config without coinbase provider if disabled', async () => {
@@ -1276,7 +1276,7 @@ describe('EthersAdapter', () => {
       })
       const providers = await adapter['createEthersConfig']()
 
-      expect(providers?.coinbase).toBeUndefined()
+      expect(providers?.baseAccount).toBeUndefined()
     })
 
     it('should create Ethers config with safe provider if in iframe and ancestor is app.safe.global', async () => {

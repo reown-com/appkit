@@ -69,14 +69,14 @@ export async function getSafeConnector(
   return null
 }
 
-export async function getCoinbaseConnector(
+export async function getBaseAccountConnector(
   connectors: readonly Connector[]
 ): Promise<CreateConnectorFn | null> {
   try {
-    const { coinbaseWallet } = await import('@wagmi/connectors')
+    const { baseAccount } = await import('@wagmi/connectors')
 
-    if (coinbaseWallet && !connectors.some(c => c.id === 'coinbaseWalletSDK')) {
-      return coinbaseWallet()
+    if (baseAccount && !connectors.some(c => c.id === 'baseAccount')) {
+      return baseAccount()
     }
   } catch (error) {
     // eslint-disable-next-line no-console

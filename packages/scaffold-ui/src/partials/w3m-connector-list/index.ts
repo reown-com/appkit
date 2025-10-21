@@ -167,7 +167,11 @@ export class W3mConnectorList extends LitElement {
     const custom = byType.custom
     const recent = byType.recent
     const external = this.processConnectorsByType(
-      byType.external.filter(c => c.id !== CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK)
+      byType.external.filter(
+        c =>
+          c.id !== CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK &&
+          c.id !== CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT
+      )
     )
     const recommended = byType.recommended
     const featured = byType.featured
