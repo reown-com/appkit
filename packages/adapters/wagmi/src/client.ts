@@ -362,7 +362,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
-    console.log('imageId', PresetsUtil.ConnectorImageIds[connector.id])
+
     this.emit('accountChanged', {
       address: this.toChecksummedAddress(address),
       chainId,
