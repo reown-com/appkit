@@ -183,7 +183,8 @@ export class TonProvider {
 
   public createTonConnectInterface(walletIcon: string) {
     const listeners: Array<(event: TonConnectEvent) => void> = []
-    function emit(event: TonConnectEvent) {
+    // eslint-disable-next-line func-style
+    const emit = (event: TonConnectEvent) => {
       listeners.forEach(cb => {
         try {
           cb(event)
@@ -193,12 +194,22 @@ export class TonProvider {
       })
     }
 
-    function createConnectEvent(): TonConnectEvent {
+    const createConnectEvent = (): TonConnectEvent => {
+      const address = this.getAddress()
+
       return {
         event: 'connect',
         id: Date.now(),
         payload: {
-          items: [],
+          items: [
+            {
+              name: 'ton_addr',
+              address,
+              network: '-3',
+              publicKey: this.keypair.publicKey.toString('hex'),
+              walletStateInit: ''
+            }
+          ],
           device: {
             platform: 'chrome-extension',
             appName: 'Reown',
