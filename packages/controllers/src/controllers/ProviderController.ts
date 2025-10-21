@@ -22,6 +22,7 @@ export type ProviderType =
   | 'eip6963'
   | 'AUTH'
   | 'coinbaseWalletSDK'
+  | 'baseAccount'
 
 const CLEAN_PROVIDERS_STATE = {
   eip155: undefined,
