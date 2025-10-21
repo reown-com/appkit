@@ -46,6 +46,7 @@ export function getTonConnectWalletsListUrl(): string {
   u.searchParams.set('projectId', projectId)
   u.searchParams.set('st', st)
   u.searchParams.set('sv', sv)
+
   return u.toString()
 }
 
