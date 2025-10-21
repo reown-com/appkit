@@ -236,7 +236,7 @@ describe('TonAdapter', () => {
     it('should return balance for mainnet', async () => {
       vi.spyOn(
         (await import('@reown/appkit-controllers')).BlockchainApiController,
-        'fetchTonBalance'
+        'getAddressBalance'
       ).mockResolvedValueOnce('10000000000')
 
       const balance = await adapter.getBalance({

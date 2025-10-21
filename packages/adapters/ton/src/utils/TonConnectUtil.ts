@@ -327,8 +327,8 @@ export function getCurrentlyInjectedWallets(): TonWalletInfoInjectable[] {
         (value as unknown as Record<string, unknown>)['tonconnect'] &&
         !isJSBridgeWithMetadata(value)
       ) {
-        // eslint-disable-next-line no-console
-        console.log('[TonWalletsUtil] Found tonconnect without walletInfo for key:', key)
+        // eslint-disable-next-line no-continue
+        continue
       }
 
       if (!isJSBridgeWithMetadata(value)) {
@@ -352,19 +352,6 @@ export function getCurrentlyInjectedWallets(): TonWalletInfoInjectable[] {
     } catch {
       // Skip cross-origin or inaccessible properties
     }
-  }
-  try {
-    // eslint-disable-next-line no-console
-    console.log(
-      '[TonWalletsUtil] Injected wallets detected:',
-      wallets.map(wallet => ({
-        name: wallet.name,
-        key: wallet.jsBridgeKey,
-        embedded: wallet.embedded
-      }))
-    )
-  } catch {
-    // Ignore errors when logging
   }
 
   return wallets
