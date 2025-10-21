@@ -52,8 +52,7 @@ describe('TonAdapter', () => {
       mockWalletConnect = vi.mocked(
         new TonWalletConnectConnector({
           provider: mockUniversalProvider(),
-          chains: [tonTestnet],
-          getActiveChain: () => tonTestnet
+          chains: [tonTestnet]
         })
       )
       adapter.connectors.push(mockWalletConnect)
