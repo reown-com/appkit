@@ -6,8 +6,7 @@ import { Address, TonClient, WalletContractV4, internal } from '@ton/ton'
 import { AccountUtil } from '../utils/AccountUtil'
 import { userFriendlyToRawAddress } from '../utils/TonWalletUtils'
 
-const TON_TESTNET_RPC = 'https://testnet.toncenter.com/api/v2/jsonRPC'
-const TON_MAINNET_RPC = 'https://toncenter.com/api/v2/jsonRPC'
+const TON_TESTNET_RPC = 'https://rpc.walletconnect.org/v1'
 
 // Initialize keypair synchronously like other providers
 function initKeypair(): KeyPair {
@@ -101,7 +100,7 @@ export class TonProvider {
     params: TonProvider.SendMessage['params'],
     chainId: string
   ): Promise<TonProvider.SendMessage['result']> {
-    const client = this.getTonClient(chainId)
+    const client = this.getTonClient()
     const walletContract = client.open(this.wallet)
     const seqno = await walletContract.getSeqno()
     const messages = (params.messages || []).map(m => {
@@ -163,16 +162,8 @@ export class TonProvider {
     return result
   }
 
-  private getTonClient(chainId: string): TonClient {
-    const rpc = chainId.includes('testnet') ? TON_TESTNET_RPC : TON_MAINNET_RPC
-
-    if (!rpc) {
-      throw new Error('There is no RPC URL for the provided chain')
-    }
-
-    return new TonClient({
-      endpoint: rpc
-    })
+  private getTonClient(): TonClient {
+    return new TonClient({ endpoint: TON_TESTNET_RPC })
   }
 
   private getToSign(params: TonProvider.SignData['params']): Buffer {
