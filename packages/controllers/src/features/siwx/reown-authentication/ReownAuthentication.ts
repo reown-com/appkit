@@ -8,11 +8,11 @@ import {
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
 
-import { ApiController } from '../../controllers/ApiController.js'
-import { BlockchainApiController } from '../../controllers/BlockchainApiController.js'
-import { ChainController } from '../../controllers/ChainController.js'
-import { getActiveCaipNetwork } from '../../utils/ChainControllerUtil.js'
-import type { SIWXConfig, SIWXMessage, SIWXSession } from '../../utils/SIWXUtil.js'
+import { ApiController } from '../../../controllers/ApiController.js'
+import { BlockchainApiController } from '../../../controllers/BlockchainApiController.js'
+import { ChainController } from '../../../controllers/ChainController.js'
+import { getActiveCaipNetwork } from '../../../utils/ChainControllerUtil.js'
+import type { SIWXConfig, SIWXMessage, SIWXSession } from '../../../utils/SIWXUtil.js'
 import { ReownAuthenticationMessenger } from './ReownAuthenticationMessenger.js'
 
 /**
@@ -23,7 +23,6 @@ export class ReownAuthentication implements SIWXConfig {
   private readonly localAuthStorageKey: keyof SafeLocalStorageItems
   private readonly localNonceStorageKey: keyof SafeLocalStorageItems
   private readonly messenger: ReownAuthenticationMessenger
-
   private required: boolean
   private otpUuid: string | null = null
 
