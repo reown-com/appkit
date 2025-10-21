@@ -34,7 +34,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   async syncConnectors() {
     const injectedNow = await getInjectedWallets({ cacheTTLMs: 60_000 })
 
-    const chains = this.getCaipNetworks()
+    const chains = ChainController.getCaipNetworks()
     injectedNow.forEach(wallet => this.addConnector(new TonConnectConnector({ wallet, chains })))
   }
 
@@ -216,8 +216,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     this.addConnector(
       new TonWalletConnectConnector({
         provider: universalProvider,
-        chains: this.getCaipNetworks(),
-        getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
+        chains: ChainController.getCaipNetworks()
       })
     )
 
@@ -377,8 +376,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   ): AdapterBlueprint.GetWalletConnectProviderResult {
     const walletConnectProvider = new TonWalletConnectConnector({
       provider: params.provider as UniversalProvider,
-      chains: params.caipNetworks,
-      getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
+      chains: params.caipNetworks
     })
 
     return walletConnectProvider as unknown as UniversalProvider

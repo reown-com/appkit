@@ -1,6 +1,7 @@
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, ConstantsUtil } from '@reown/appkit-common'
 import {
+  ChainController,
   type RequestArguments,
   WalletConnectConnector,
   WcHelpersUtil
@@ -9,11 +10,9 @@ import type { TonConnector } from '@reown/appkit-utils/ton'
 
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 
-type GetActiveChain = () => CaipNetwork | undefined
 export type WalletConnectProviderConfig = {
   provider: WalletConnectConnector['provider']
   chains: CaipNetwork[]
-  getActiveChain: () => CaipNetwork | undefined
 }
 
 export class TonWalletConnectConnector
@@ -21,16 +20,14 @@ export class TonWalletConnectConnector
   implements TonConnector
 {
   public override readonly chain = CommonConstantsUtil.CHAIN.TON
-  private readonly getActiveChain: GetActiveChain
 
   private eventEmitter = new ProviderEventEmitter()
   public readonly emit = this.eventEmitter.emit.bind(this.eventEmitter)
   public readonly on = this.eventEmitter.on.bind(this.eventEmitter)
   public readonly removeListener = this.eventEmitter.removeListener.bind(this.eventEmitter)
 
-  constructor({ provider, chains, getActiveChain }: WalletConnectProviderConfig) {
+  constructor({ provider, chains }: WalletConnectProviderConfig) {
     super({ provider, caipNetworks: chains, namespace: ConstantsUtil.CHAIN.TON })
-    this.getActiveChain = getActiveChain
   }
 
   get imageUrl(): string | undefined {
@@ -58,7 +55,7 @@ export class TonWalletConnectConnector
   }
 
   public async signData(params: TonConnector.SignDataParams): Promise<string> {
-    const chain = this.getActiveChain()
+    const chain = ChainController.getCaipNetworkByNamespace(ConstantsUtil.CHAIN.TON)
 
     if (!chain) {
       throw new Error('Chain not found')
@@ -75,7 +72,7 @@ export class TonWalletConnectConnector
   }
 
   public async sendMessage(params: TonConnector.SendMessageParams): Promise<string> {
-    const chain = this.getActiveChain()
+    const chain = ChainController.getCaipNetworkByNamespace(ConstantsUtil.CHAIN.TON)
 
     if (!chain) {
       throw new Error('Chain not found')
