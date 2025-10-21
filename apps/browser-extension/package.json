@@ -20,6 +20,7 @@
     "@noble/curves": "1.9.2",
     "@noble/secp256k1": "1.7.2",
     "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-adapter-ton": "workspace:*",
     "@ton/core": "0.59.0",
     "@ton/crypto": "3.3.0",
     "@ton/ton": "15.1.0",

@@ -3,8 +3,9 @@
 import { KeyPair, keyPairFromSecretKey, keyPairFromSeed, sign, signVerify } from '@ton/crypto'
 import { Address, TonClient, WalletContractV4, internal } from '@ton/ton'
 
+import { parseUserFriendlyAddress } from '@reown/appkit-adapter-ton/utils'
+
 import { AccountUtil } from '../utils/AccountUtil'
-import { userFriendlyToRawAddress } from '../utils/TonWalletUtils'
 
 const TON_TESTNET_RPC = 'https://rpc.walletconnect.org/v1'
 
@@ -70,7 +71,9 @@ export class TonProvider {
   }
 
   public getAddress() {
-    return userFriendlyToRawAddress(this.wallet.address.toString())
+    const { wc, hex } = parseUserFriendlyAddress(this.wallet.address.toString())
+
+    return `${wc}:${hex}`
   }
 
   public connect(): string {

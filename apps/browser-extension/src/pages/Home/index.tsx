@@ -4,6 +4,7 @@ import { Keypair } from '@solana/web3.js'
 import Big from 'big.js'
 import { privateKeyToAccount } from 'viem/accounts'
 
+import { toUserFriendlyAddress } from '@reown/appkit-adapter-ton/utils'
 import { ChainNamespace } from '@reown/appkit-common'
 
 import { Box } from '../../components/Box'
@@ -17,7 +18,6 @@ import { TonProvider } from '../../core/TonProvider'
 import { useBalance } from '../../hooks/useBalance'
 import { AccountUtil } from '../../utils/AccountUtil'
 import { HelperUtil } from '../../utils/HelperUtil'
-import { toUserFriendlyAddress } from '../../utils/TonWalletUtils'
 
 // EVM
 const { address } = privateKeyToAccount(AccountUtil.privateKeyEvm)
