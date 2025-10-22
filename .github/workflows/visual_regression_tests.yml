@@ -46,7 +46,6 @@ jobs:
           buildScriptName: build
           onlyChanged: true
           autoAcceptChanges: false
-          exitOnceUploaded: true
           zip: true
 
       - name: Comment on PR with Chromatic results
