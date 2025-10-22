@@ -11,6 +11,7 @@ import {
   ConnectionController,
   CoreHelperUtil,
   ModalController,
+  type RemoteFeatures,
   SendController,
   WcHelpersUtil
 } from '@reown/appkit-controllers'
@@ -18,6 +19,7 @@ import { mockChainControllerState } from '@reown/appkit-controllers/testing'
 import { ErrorUtil, TokenUtil } from '@reown/appkit-utils'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client'
+import { ConfigUtil } from '../../src/utils/ConfigUtil'
 import { mainnet } from '../mocks/Networks'
 
 describe('AppKitBaseClient.checkAllowedOrigins', () => {
@@ -536,5 +538,108 @@ describe('AppKitBaseClient.getDisabledCaipNetworks', () => {
     expect(isDisabledMock).toHaveBeenCalled()
     expect(result).toHaveLength(1)
     expect(result[0]?.caipNetworkId).toBe('eip155:56')
+  })
+})
+
+describe('AppKitBaseClient initialization', () => {
+  let fetchRemoteFeaturesSpy: MockInstance
+
+  beforeAll(() => {
+    Object.defineProperty(globalThis, 'document', {
+      value: {
+        getElementsByTagName: vi.fn(),
+        querySelector: vi.fn()
+      },
+      writable: true
+    })
+
+    Object.defineProperty(globalThis, 'navigator', {
+      value: {
+        clipboard: {
+          readText: vi.fn(() => Promise.resolve(''))
+        }
+      },
+      writable: true
+    })
+
+    Object.defineProperty(globalThis, 'window', {
+      value: { location: { origin: '' } },
+      writable: true
+    })
+  })
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    fetchRemoteFeaturesSpy = vi
+      .spyOn(ConfigUtil, 'fetchRemoteFeatures')
+      .mockResolvedValue({} as RemoteFeatures)
+  })
+
+  it('should not fetch remote config if using basic mode', async () => {
+    new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1',
+          basic: true
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+
+      override async syncAdapterConnections() {
+        return Promise.resolve()
+      }
+    })()
+
+    await vi.waitFor(() => expect(fetchRemoteFeaturesSpy).not.toHaveBeenCalled())
+  })
+
+  it('should not fetch remote config if using manual WC control', async () => {
+    new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1',
+          manualWCControl: true
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+
+      override async syncAdapterConnections() {
+        return Promise.resolve()
+      }
+    })()
+
+    await vi.waitFor(() => expect(fetchRemoteFeaturesSpy).not.toHaveBeenCalled())
+  })
+
+  it('should fetch remote config if not using basic or manual WC control', async () => {
+    new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1'
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+
+      override async syncAdapterConnections() {
+        return Promise.resolve()
+      }
+    })()
+
+    await vi.waitFor(() => expect(fetchRemoteFeaturesSpy).toHaveBeenCalled())
   })
 })
