@@ -39,6 +39,7 @@ jobs:
 
       - name: Run Chromatic
         id: chromatic
+        continue-on-error: true
         uses: chromaui/action@latest
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
@@ -64,7 +65,7 @@ jobs:
             const status = outcome === 'success' ? '✅ Passed' : '❌ Failed';
             const changesText = changeCount > 0 ? `⚠️ ${changeCount} visual change(s) detected` : '✨ No visual changes detected';
 
-            const comment = `## Visual Regression Test Results ${status}
+            const commentBody = `## Visual Regression Test Results ${status}
 
             ${changesText}
 
@@ -73,9 +74,37 @@ jobs:
 
             ${changeCount > 0 ? '👉 Please review the visual changes in Chromatic and accept or reject them.' : ''}`;
 
-            github.rest.issues.createComment({
+            // Find existing comment
+            const comments = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: comment
             });
+
+            const botComment = comments.data.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Visual Regression Test Results')
+            );
+
+            // Update existing comment or create new one
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                comment_id: botComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+            }
+
+      - name: Fail workflow if visual changes detected
+        if: steps.chromatic.outcome == 'failure'
+        run: |
+          echo "❌ Visual changes detected - workflow failed"
+          exit 1
