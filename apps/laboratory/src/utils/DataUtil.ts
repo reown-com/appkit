@@ -51,11 +51,6 @@ export const wagmiSdkOptions: SdkOption[] = [
     description: 'Configuration using wagmi without socials'
   },
   {
-    title: 'Wallet Button',
-    link: '/appkit?name=wagmi-wallet-button',
-    description: 'Configuration using wagmi with wallet buttons'
-  },
-  {
     title: 'Permissions(Sync)',
     link: '/appkit?name=wagmi-permissions-sync',
     description: 'Configuration using wagmi and implementing ERC-7715 with passkey'
