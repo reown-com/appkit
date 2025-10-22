@@ -82,11 +82,6 @@ export const ethersSdkOptions: SdkOption[] = [
     title: 'Without Socials',
     link: '/appkit?name=ethers-no-socials',
     description: 'Configuration using ethers without socials'
-  },
-  {
-    title: 'Wallet Button',
-    link: '/appkit?name=ethers-wallet-button',
-    description: 'Configuration using ethers with wallet buttons'
   }
 ]
 
@@ -105,11 +100,6 @@ export const ethers5SdkOptions: SdkOption[] = [
     title: 'Without Socials',
     link: '/appkit?name=ethers5-no-socials',
     description: 'Configuration using ethers without socials'
-  },
-  {
-    title: 'Wallet Button',
-    link: '/appkit?name=ethers5-wallet-button',
-    description: 'Configuration using ethers with socials'
   }
 ]
 
@@ -128,11 +118,6 @@ export const solanaSdkOptions: SdkOption[] = [
     title: 'Without Socials',
     link: '/appkit?name=solana-no-socials',
     description: 'Configuration using ethers without socials'
-  },
-  {
-    title: 'Wallet Button',
-    link: '/appkit?name=solana-wallet-button',
-    description: 'Configuration using solana with wallet buttons'
   }
 ]
 
@@ -214,11 +199,6 @@ export const bitcoinSdkOptions: SdkOption[] = [
     title: 'Default',
     link: '/appkit?name=bitcoin',
     description: 'Basic configuration using bitcoin as a driving library'
-  },
-  {
-    title: 'Wallet Button',
-    link: '/appkit?name=bitcoin-wallet-button',
-    description: 'Configuration using bitcoin with wallet buttons'
   }
 ]
 
