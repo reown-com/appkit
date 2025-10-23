@@ -1,4 +1,4 @@
-# @reown/appkit-adapter-solana
+# @reown/appkit-adapter-ton
 
 ## 1.8.6
 
