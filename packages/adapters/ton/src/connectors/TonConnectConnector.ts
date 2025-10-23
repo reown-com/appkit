@@ -50,12 +50,12 @@ export class TonConnectConnector implements TonConnector {
   async connect(): Promise<string> {
     if ('jsBridgeKey' in this.wallet && this.wallet.jsBridgeKey) {
       const address = await TonConnectUtil.connectInjected(this.wallet.jsBridgeKey)
-      this.currentAddress = toUserFriendlyAddress(address)
 
       if (!address) {
         throw new Error('No address available')
       }
 
+      this.currentAddress = toUserFriendlyAddress(address)
       this.emit('accountsChanged', [this.currentAddress])
 
       return this.currentAddress
