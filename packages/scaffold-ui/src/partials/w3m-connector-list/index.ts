@@ -259,7 +259,7 @@ export class W3mConnectorList extends LitElement {
     }
 
     if (item.subtype === 'multiChain') {
-      return item.connector.connectors?.map(c => c.chain) as ChainNamespace[]
+      return (item.connector.connectors?.map(c => c.chain) as ChainNamespace[]) || []
     }
 
     return [item.connector.chain] as ChainNamespace[]
