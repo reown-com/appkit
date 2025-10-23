@@ -11,6 +11,7 @@ import { WagmiProvider } from 'wagmi'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 
 import DemoContent from '@/src/components/DemoContent'
+import DemoContentHeadless from '@/src/components/Headless/DemoContentHeadless'
 import { AppKitProvider } from '@/src/context/AppKitContext'
 import { getAppKitAdapters, getAppKitConfigByName } from '@/src/utils/AppKitConfigUtil'
 
@@ -19,8 +20,9 @@ const queryClient = new QueryClient()
 export default function Page() {
   const searchParams = useSearchParams()
   const config = getAppKitConfigByName(searchParams.get('name') || '')
+  const isHeadless = searchParams.get('name') === 'headless'
 
-  if (!config) {
+  if (!config && !isHeadless) {
     return (
       <Card p={4} mt={2}>
         <Heading size="xs" textTransform="uppercase" pb="2">
@@ -44,7 +46,7 @@ export default function Page() {
       <WagmiProvider config={wagmiAdapter.wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <AppKitProvider config={appKitConfig}>
-            <DemoContent config={config} />
+            {isHeadless ? <DemoContentHeadless /> : <DemoContent config={config} />}
           </AppKitProvider>
         </QueryClientProvider>
       </WagmiProvider>

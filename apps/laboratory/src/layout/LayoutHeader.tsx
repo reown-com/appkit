@@ -20,6 +20,7 @@ import Link from 'next/link'
 import { useChakraToast } from '@/src/components/Toast'
 import { DOCS_URL, GALLERY_URL, REPO_URL } from '@/src/utils/ConstantsUtil'
 
+import { AppkitConnectDrawer } from './AppkitConnectDrawer'
 import { CustomWallet } from './CustomWallet'
 import { NetworksDrawer } from './NetworksDrawer'
 import { OptionsDrawer } from './OptionsDrawer'

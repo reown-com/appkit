@@ -119,6 +119,10 @@ export type Connector = {
   explorerWallet?: WcWallet
 }
 
+export interface ConnectorWithProviders extends Connector {
+  connectors?: Connector[]
+}
+
 export interface AuthConnector extends Connector {
   provider: W3mFrameProvider
   socials?: SocialProvider[]
@@ -152,6 +156,7 @@ export interface WcWallet {
   id: string
   name: string
   badge_type?: BadgeType
+  description?: string
   chains?: CaipNetworkId[]
   homepage?: string
   image_id?: string

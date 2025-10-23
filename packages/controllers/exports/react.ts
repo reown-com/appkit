@@ -1,17 +1,20 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
 import { type ChainNamespace, type Connection, ConstantsUtil } from '@reown/appkit-common'
 
 import { AlertController } from '../src/controllers/AlertController.js'
+import { ApiController } from '../src/controllers/ApiController.js'
 import { AssetController } from '../src/controllers/AssetController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { OptionsController } from '../src/controllers/OptionsController.js'
 import { ProviderController } from '../src/controllers/ProviderController.js'
+import { ConnectUtil, type WalletItem2 } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
+import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import type {
   NamespaceTypeMap,
@@ -22,6 +25,7 @@ import { AssetUtil, StorageUtil } from './utils.js'
 
 // -- Types ------------------------------------------------------------
 export type { Connection } from '@reown/appkit-common'
+export type { WalletItem2 } from '../src/utils/ConnectUtil.js'
 
 interface DisconnectParams {
   id?: string
@@ -283,5 +287,138 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
     isPending: isSwitchingConnection,
     switchConnection,
     deleteConnection
+  }
+}
+
+// -- Headless Connect Hook ---------------------------------
+interface UseAppKitConnectOptions {
+  /**
+   * Optional namespace to filter wallets by chain.
+   * If not provided, all wallets across all chains will be returned.
+   */
+  namespace?: ChainNamespace
+  onHandleWcUri?: (uri: string) => void
+}
+
+export interface UseAppKitConnectReturn {
+  /**
+   * List of all wallets (injected connectors and WalletConnect wallets combined).
+   * Each wallet has type and chains values so developers can build UI with better UX.
+   * For example, they can render wallets with `recent` badge, just like AppKit does.
+   */
+  wallets: WalletItem2[]
+
+  /**
+   * Boolean that indicates if the user is currently connecting to a wallet.
+   */
+  isConnecting: boolean
+
+  /**
+   * Boolean that indicates if WalletConnect wallets are being fetched.
+   */
+  isFetchingWcWallets: boolean
+
+  /**
+   * Function to fetch WalletConnect wallets from the explorer API.
+   * This is useful for pagination or initial load.
+   * @param options - Options for fetching wallets
+   * @param options.page - Page number to fetch (default: 1)
+   */
+  fetchWcWallets: (options?: { page?: number }) => Promise<void>
+
+  /**
+   * Function to connect to a wallet.
+   * - For WalletConnect wallets: initiates WC connection and returns the URI in the onSuccess callback
+   * - For injected connectors: triggers the extension/wallet directly
+   *
+   * @param wallet - The wallet item to connect to
+   * @param callbacks - Success and error callbacks
+   * @returns Promise that resolves when connection completes or rejects on error
+   */
+  connect: (wallet: WalletItem2, namespace?: ChainNamespace) => Promise<void>
+
+  /**
+   * The current WalletConnect URI for QR code display.
+   * This is set when connecting to a WalletConnect wallet.
+   */
+  wcUri?: string
+
+  /**
+   * Function to clear the WalletConnect URI.
+   */
+  clearWcUri: () => void
+}
+
+/**
+ * Headless hook for wallet connection.
+ * Provides all the data and functions needed to build a custom connect UI.
+ */
+export function useAppKitConnect(options?: UseAppKitConnectOptions): UseAppKitConnectReturn {
+  const connectorState = useSnapshot(ConnectorController.state)
+  const apiState = useSnapshot(ApiController.state)
+  const { status, wcUri } = useSnapshot(ConnectionController.state)
+
+  useEffect(() => {
+    if (wcUri) {
+      options?.onHandleWcUri?.(wcUri)
+    }
+  }, [wcUri])
+
+  const [isFetchingWcWallets, setIsFetchingWcWallets] = useState(false)
+
+  const wallets = ConnectUtil.getUnifiedWalletList()
+
+  void connectorState.connectors.length
+  void apiState.wallets.length
+
+  const isConnecting = status === 'connecting'
+
+  const clearWcUri = useCallback(() => {
+    ConnectionController.resetUri()
+  }, [])
+
+  /**
+   * Fetch WalletConnect wallets from the explorer API
+   */
+  const fetchWcWallets = useCallback(async (fetchOptions?: { page?: number }) => {
+    setIsFetchingWcWallets(true)
+    try {
+      await ApiController.fetchWalletsByPage({ page: fetchOptions?.page ?? 1 })
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to fetch WalletConnect wallets:', error)
+    } finally {
+      setIsFetchingWcWallets(false)
+    }
+  }, [])
+
+  /**
+   * Connect to a wallet
+   */
+  async function connect(_wallet: WalletItem2, namespace?: ChainNamespace) {
+    const wallet = wallets.find(w => w.name === _wallet.name)
+    const connector = wallet?.connectors.find(c => c.chain === namespace)
+
+    const getConnector = ConnectorController.getConnector({
+      id: connector?.id,
+      rdns: connector?.rdns,
+      namespace: namespace
+    })
+
+    if (_wallet.isInjected && getConnector) {
+      await ConnectorControllerUtil.connectExternal(getConnector)
+    } else {
+      await ConnectionController.connectWalletConnect({ cache: 'never' })
+    }
+  }
+
+  return {
+    wallets,
+    isConnecting,
+    isFetchingWcWallets,
+    fetchWcWallets,
+    connect,
+    wcUri,
+    clearWcUri
   }
 }
