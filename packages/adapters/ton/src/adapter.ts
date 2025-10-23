@@ -32,7 +32,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   }
 
   async syncConnectors() {
-    const injectedNow = await getInjectedWallets({ cacheTTLMs: 60_000 })
+    const injectedNow = await getInjectedWallets()
 
     const chains = ChainController.getCaipNetworks()
     injectedNow.forEach(wallet => this.addConnector(new TonConnectConnector({ wallet, chains })))

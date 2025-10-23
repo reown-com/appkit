@@ -1,7 +1,10 @@
 import {
+  ApiController,
   BlockchainApiController,
   CoreHelperUtil,
-  OptionsController
+  FetchUtil,
+  OptionsController,
+  StorageUtil
 } from '@reown/appkit-controllers'
 import type {
   TonWalletInfo,
@@ -16,8 +19,11 @@ import type {
   TonWalletFeature
 } from './TonConnectTypeUtils.js'
 
-const TONCONNECT_WALLETS_LIST_URL = 'https://api.web3modal.com/ton/v1/wallets'
 const TONCONNECT_MANIFEST_URL = 'https://api.reown.com/ton/v1/manifest'
+const api = new FetchUtil({
+  baseUrl: CoreHelperUtil.getApiUrl(),
+  clientId: null
+})
 
 export function getTonConnectManifestUrl(): string {
   const { metadata, projectId } = OptionsController.state
@@ -37,22 +43,6 @@ export function getTonConnectManifestUrl(): string {
 
   return u.toString()
 }
-
-export function getTonConnectWalletsListUrl(): string {
-  const { projectId } = OptionsController.state
-  const { st, sv } = BlockchainApiController.getSdkProperties()
-
-  const u = new URL(TONCONNECT_WALLETS_LIST_URL)
-  u.searchParams.set('projectId', projectId)
-  u.searchParams.set('st', st)
-  u.searchParams.set('sv', sv)
-
-  return u.toString()
-}
-
-// -- Internal cache ------------------------------------------------------------ //
-let cachePromise: Promise<TonWalletInfoDTO[]> | null = null
-let cacheCreatedAt: number | null = null
 
 // -- TonConnect SDK Utils -------------------------------- //
 /**
@@ -207,12 +197,8 @@ export function normalizeBase64(data: string | undefined): string | undefined {
  * Fetch list of TON wallets (remote + injected) and merge them.
  * This function does not depend on any external SDKs.
  */
-export async function getInjectedWallets(params?: {
-  sourceUrl?: string
-  /** Optional in-memory cache TTL in milliseconds */
-  cacheTTLMs?: number
-}): Promise<TonWalletInfo[]> {
-  const dtoList = await fetchWalletsListDTO(params)
+export async function getInjectedWallets(): Promise<TonWalletInfo[]> {
+  const dtoList = await fetchWalletsListDTO()
 
   // Build map: jsBridgeKey -> remote DTO
   const remoteByKey = new Map<string, TonWalletInfoDTO>()
@@ -371,47 +357,21 @@ export function getCurrentlyInjectedWallets(): TonWalletInfoInjectable[] {
 }
 
 // -- Implementation ------------------------------------------------------------ //
-async function fetchWalletsListDTO(params?: { cacheTTLMs?: number }): Promise<TonWalletInfoDTO[]> {
-  if (
-    params?.cacheTTLMs &&
-    cachePromise &&
-    cacheCreatedAt &&
-    Date.now() < cacheCreatedAt + params.cacheTTLMs
-  ) {
-    return cachePromise
+async function fetchWalletsListDTO(): Promise<TonWalletInfoDTO[]> {
+  const tonWalletsCache = StorageUtil.getTonWalletsCache()
+
+  if (tonWalletsCache) {
+    return tonWalletsCache.wallets.filter(isCorrectWalletInfoDTO)
   }
 
-  if (!cachePromise) {
-    cachePromise = (async () => {
-      try {
-        const res = await fetch(getTonConnectWalletsListUrl(), { credentials: 'omit' })
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`)
-        }
-        const data = await res.json()
-        if (!Array.isArray(data)) {
-          throw new Error('wallets list is not an array')
-        }
+  const response = await api.get<TonWalletInfoDTO[]>({
+    path: '/ton/v1/wallets',
+    params: ApiController._getSdkProperties()
+  })
 
-        const valid = data.filter(isCorrectWalletInfoDTO)
+  StorageUtil.updateTonWalletsCache(response)
 
-        return valid
-      } catch (err) {
-        console.warn('TonConnectConnector: failed to fetch wallets list', err)
-
-        return [] as TonWalletInfoDTO[]
-      }
-    })()
-
-    cachePromise
-      .then(() => (cacheCreatedAt = Date.now()))
-      .catch(() => {
-        cachePromise = null
-        cacheCreatedAt = null
-      })
-  }
-
-  return cachePromise
+  return response.filter(isCorrectWalletInfoDTO)
 }
 
 function isCorrectWalletInfoDTO(value: unknown): value is TonWalletInfoDTO {
