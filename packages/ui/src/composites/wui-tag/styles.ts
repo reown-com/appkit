@@ -7,6 +7,7 @@ export default css`
     align-items: center;
     gap: ${({ spacing }) => spacing[1]};
     text-transform: uppercase;
+    white-space: nowrap;
   }
 
   :host([data-variant='accent']) {
