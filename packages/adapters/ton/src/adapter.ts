@@ -18,7 +18,7 @@ import type { TonConnector } from '@reown/appkit-utils/ton'
 
 import { TonConnectConnector } from './connectors/TonConnectConnector.js'
 import { TonWalletConnectConnector } from './connectors/TonWalletConnectConnector.js'
-import { getInjectedWallets } from './utils/TonConnectUtil.js'
+import { TonConnectUtil } from './utils/TonConnectUtil.js'
 
 export class TonAdapter extends AdapterBlueprint<TonConnector> {
   private universalProvider: UniversalProvider | undefined = undefined
@@ -32,7 +32,7 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   }
 
   async syncConnectors() {
-    const injectedNow = await getInjectedWallets()
+    const injectedNow = await TonConnectUtil.getInjectedWallets()
 
     const chains = ChainController.getCaipNetworks()
     injectedNow.forEach(wallet => this.addConnector(new TonConnectConnector({ wallet, chains })))

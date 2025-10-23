@@ -19,10 +19,11 @@ import { HelpersUtil } from '@reown/appkit-utils'
 import { ton, tonTestnet } from '@reown/appkit/networks'
 
 import { TonAdapter } from '../src/adapter'
-import { TonConnectConnector } from '../src/connectors/TonConnectConnector'
-import { TonWalletConnectConnector } from '../src/connectors/TonWalletConnectConnector'
-import { mockTonProvider } from '../tests/mocks/mockTonProvider'
-import { mockUniversalProvider } from '../tests/mocks/mockUniversalProvider'
+import { TonConnectConnector } from '../src/connectors/TonConnectConnector.js'
+import { TonWalletConnectConnector } from '../src/connectors/TonWalletConnectConnector.js'
+import { TonConnectUtil } from '../src/utils/TonConnectUtil.js'
+import { mockTonProvider } from '../tests/mocks/mockTonProvider.js'
+import { mockUniversalProvider } from '../tests/mocks/mockUniversalProvider.js'
 
 describe('TonAdapter', () => {
   let adapter: TonAdapter
@@ -158,6 +159,31 @@ describe('TonAdapter', () => {
 
   describe('syncConnectors', () => {
     it('should get wallets from injected providers', async () => {
+      vi.spyOn(TonConnectUtil, 'fetchWalletsListDTO').mockResolvedValueOnce([
+        {
+          app_name: 'tonkeeper',
+          name: 'Tonkeeper',
+          image: 'https://config.ton.org/assets/tonkeeper.png',
+          tondns: 'tonkeeper.ton',
+          about_url: 'https://tonkeeper.com',
+          universal_url: 'https://app.tonkeeper.com/ton-connect',
+          deepLink: 'tonkeeper-tc://',
+          bridge: [
+            { type: 'sse', url: 'https://bridge.tonapi.io/bridge' },
+            { type: 'js', key: 'tonkeeper' }
+          ],
+          platforms: ['ios', 'android', 'chrome', 'firefox', 'macos', 'windows', 'linux'],
+          features: [
+            {
+              name: 'SendTransaction',
+              maxMessages: 255,
+              extraCurrencySupported: true
+            },
+            { name: 'SignData', types: ['text', 'binary', 'cell'] }
+          ]
+        }
+      ])
+
       // Mock global.window.tonkeeper
       ;(global as any).window = {
         tonkeeper: {

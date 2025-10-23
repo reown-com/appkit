@@ -5,14 +5,7 @@ import { CoreHelperUtil } from '@reown/appkit-controllers'
 import type { TonConnector, TonWalletInfo, TonWalletInfoInjectable } from '@reown/appkit-utils/ton'
 
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
-import {
-  assertSendTransactionSupported,
-  assertSignDataSupported,
-  connectInjected,
-  getJSBridgeKey,
-  getTonConnect,
-  normalizeBase64
-} from '../utils/TonConnectUtil.js'
+import { TonConnectUtil } from '../utils/TonConnectUtil.js'
 import { parseUserFriendlyAddress, toUserFriendlyAddress } from '../utils/TonWalletUtils.js'
 
 export class TonConnectConnector implements TonConnector {
@@ -56,7 +49,7 @@ export class TonConnectConnector implements TonConnector {
 
   async connect(): Promise<string> {
     if ('jsBridgeKey' in this.wallet && this.wallet.jsBridgeKey) {
-      const address = await connectInjected(this.wallet.jsBridgeKey)
+      const address = await TonConnectUtil.connectInjected(this.wallet.jsBridgeKey)
       this.currentAddress = toUserFriendlyAddress(address)
 
       if (!address) {
@@ -77,8 +70,8 @@ export class TonConnectConnector implements TonConnector {
         return
       }
 
-      const jsBridgeKey = getJSBridgeKey(this.wallet as TonWalletInfoInjectable)
-      const wallet = getTonConnect(jsBridgeKey)
+      const jsBridgeKey = TonConnectUtil.getJSBridgeKey(this.wallet as TonWalletInfoInjectable)
+      const wallet = TonConnectUtil.getTonConnect(jsBridgeKey)
 
       if (!wallet) {
         return
@@ -104,13 +97,13 @@ export class TonConnectConnector implements TonConnector {
       return Promise.resolve('')
     }
 
-    const jsBridgeKey = getJSBridgeKey(this.wallet as TonWalletInfoInjectable)
+    const jsBridgeKey = TonConnectUtil.getJSBridgeKey(this.wallet as TonWalletInfoInjectable)
 
     if (!jsBridgeKey) {
       throw new Error('TON signData over bridge not implemented')
     }
 
-    const wallet = getTonConnect(jsBridgeKey)
+    const wallet = TonConnectUtil.getTonConnect(jsBridgeKey)
 
     if (!wallet || typeof wallet.send !== 'function') {
       throw new Error('Injected wallet not available')
@@ -129,9 +122,9 @@ export class TonConnectConnector implements TonConnector {
 
     let normalized: Record<string, unknown> = {}
     if (base?.type === 'cell') {
-      normalized = { ...base, cell: normalizeBase64(base.cell) }
+      normalized = { ...base, cell: TonConnectUtil.normalizeBase64(base.cell) }
     } else if (base?.type === 'binary') {
-      normalized = { ...base, bytes: normalizeBase64(base.bytes) }
+      normalized = { ...base, bytes: TonConnectUtil.normalizeBase64(base.bytes) }
     } else {
       normalized = { ...base, network: base.network || '-239' }
     }
@@ -140,7 +133,9 @@ export class TonConnectConnector implements TonConnector {
 
     if (requestedType === 'text' || requestedType === 'binary' || requestedType === 'cell') {
       try {
-        assertSignDataSupported(this.wallet as TonWalletInfoInjectable, [requestedType])
+        TonConnectUtil.assertSignDataSupported(this.wallet as TonWalletInfoInjectable, [
+          requestedType
+        ])
       } catch (e: unknown) {
         const errorMessage =
           e instanceof Error ? e.message : `Wallet does not support SignData type: ${requestedType}`
@@ -166,7 +161,7 @@ export class TonConnectConnector implements TonConnector {
       throw new Error('TON sendMessage over bridge not implemented')
     }
 
-    const wallet = getTonConnect(this.wallet.jsBridgeKey)
+    const wallet = TonConnectUtil.getTonConnect(this.wallet.jsBridgeKey)
 
     if (!wallet || typeof wallet.send !== 'function') {
       throw new Error(
@@ -199,8 +194,8 @@ export class TonConnectConnector implements TonConnector {
       return {
         address: m.address,
         amount: amountStr,
-        payload: normalizeBase64(m.payload),
-        stateInit: normalizeBase64(m.stateInit),
+        payload: TonConnectUtil.normalizeBase64(m.payload),
+        stateInit: TonConnectUtil.normalizeBase64(m.stateInit),
         extra_currency: m.extraCurrency
       }
     })
@@ -213,7 +208,11 @@ export class TonConnectConnector implements TonConnector {
       m => m?.extraCurrency && Object.keys(m.extraCurrency).length > 0
     )
     try {
-      assertSendTransactionSupported(this.wallet, messages.length, hasExtraCurrencies)
+      TonConnectUtil.assertSendTransactionSupported(
+        this.wallet,
+        messages.length,
+        hasExtraCurrencies
+      )
     } catch (e: unknown) {
       const errorMessage =
         e instanceof Error ? e.message : 'Wallet does not support SendTransaction'

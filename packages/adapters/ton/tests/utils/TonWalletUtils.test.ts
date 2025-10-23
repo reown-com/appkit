@@ -483,7 +483,7 @@ describe('TonWalletUtils', () => {
         jsBridgeKey: 'testWallet',
         injected: true,
         embedded: false,
-        features: ['SendTransaction', 'SignData']
+        features: [{ name: 'SendTransaction' }, { name: 'SignData' }]
       }
 
       expect(isWalletInfoInjectable(walletWithFeatures)).toBe(true)

@@ -45,7 +45,16 @@ export declare namespace TonConnector {
 
 // -- TonConnect Types -------------------------------- //
 type WalletPlatform = string
-type WalletFeature = string
+type WalletFeature =
+  | {
+      name: 'SendTransaction'
+      maxMessages?: number
+      extraCurrencySupported?: boolean
+    }
+  | {
+      name: 'SignData'
+      types?: Array<'text' | 'binary' | 'cell'>
+    }
 
 export type TonWalletInfoBase = {
   name: string
