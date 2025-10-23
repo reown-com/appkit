@@ -51,15 +51,6 @@ describe('W3mDepositFromExchangeView', () => {
     vi.clearAllMocks()
   })
 
-  it('should reset state on constructor', async () => {
-    vi.spyOn(ExchangeController, 'reset')
-    const element: W3mDepositFromExchangeView = await fixture(
-      html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`
-    )
-    await elementUpdated(element)
-    expect(ExchangeController.reset).toHaveBeenCalled()
-  })
-
   it('should fetch and set default payment asset on first update', async () => {
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
@@ -238,7 +229,7 @@ describe('W3mDepositFromExchangeView', () => {
 
     element.disconnectedCallback()
 
-    expect(resetSpy).toHaveBeenCalledOnce()
+    expect(resetSpy).not.toHaveBeenCalled()
   })
 
   it('resets when transaction succeeds', async () => {

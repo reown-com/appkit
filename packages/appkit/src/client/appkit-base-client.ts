@@ -79,7 +79,6 @@ import {
   ErrorUtil,
   HelpersUtil,
   LoggerUtil,
-  SemVerUtils,
   TokenUtil,
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
@@ -156,8 +155,6 @@ export abstract class AppKitBaseClient {
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
     this.readyPromise = this.initialize(options)
-
-    SemVerUtils.checkSDKVersion(options.sdkVersion)
   }
 
   private getChainNamespacesSet(adapters: AdapterBlueprint[], caipNetworks: CaipNetwork[]) {
@@ -185,7 +182,9 @@ export abstract class AppKitBaseClient {
     } else {
       await this.unSyncExistingConnection()
     }
-    this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+    if (!options.basic && !options.manualWCControl) {
+      this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+    }
     await ApiController.fetchUsage()
     OptionsController.setRemoteFeatures(this.remoteFeatures)
     if (this.remoteFeatures.onramp) {

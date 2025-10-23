@@ -2,5 +2,5 @@
   "buildScriptName": "build",
   "zip": true,
   "onlyChanged": true,
-  "exitOnceUploaded": true
+  "exitZeroOnChanges": false
 }
