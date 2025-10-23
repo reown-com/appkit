@@ -56,6 +56,7 @@ export class AppKit extends AppKitBaseClient {
   static override instance?: AppKit
 
   private authProvider?: W3mFrameProvider
+  private authListenersBound = false
 
   // -- Private ------------------------------------------------------------------
 
@@ -121,6 +122,9 @@ export class AppKit extends AppKitBaseClient {
     this.setLoading(false, namespace)
   }
   private setupAuthConnectorListeners(provider: W3mFrameProvider) {
+    if (this.authListenersBound) {
+      return
+    }
     provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
       if (W3mFrameHelpers.checkIfRequestExists(request)) {
         if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
@@ -197,6 +201,7 @@ export class AppKit extends AppKitBaseClient {
 
       this.setPreferredAccountType(type as W3mFrameTypes.AccountType, namespace)
     })
+    this.authListenersBound = true
   }
 
   private async syncAuthConnectorTheme(provider: W3mFrameProvider | undefined) {
@@ -391,6 +396,10 @@ export class AppKit extends AppKitBaseClient {
     const shouldSyncAccount =
       chainNamespace === ChainController.state.activeChain &&
       OptionsController.state.enableReconnect
+
+    if (this.authProvider) {
+      this.setupAuthConnectorListeners(this.authProvider)
+    }
 
     if (OptionsController.state.enableReconnect === false) {
       this.syncAuthConnectorTheme(this.authProvider)
