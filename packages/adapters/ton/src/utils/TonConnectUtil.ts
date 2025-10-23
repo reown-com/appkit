@@ -16,7 +16,7 @@ import type {
   TonWalletFeature
 } from './TonConnectTypeUtils.js'
 
-const TONCONNECT_WALLETS_LIST_URL = 'https://api.reown.com/ton/v1/wallets'
+const TONCONNECT_WALLETS_LIST_URL = 'https://api.web3modal.com/ton/v1/wallets'
 const TONCONNECT_MANIFEST_URL = 'https://api.reown.com/ton/v1/manifest'
 
 export function getTonConnectManifestUrl(): string {
