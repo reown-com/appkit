@@ -182,7 +182,9 @@ export abstract class AppKitBaseClient {
     } else {
       await this.unSyncExistingConnection()
     }
-    this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+    if (!options.basic && !options.manualWCControl) {
+      this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+    }
     await ApiController.fetchUsage()
     OptionsController.setRemoteFeatures(this.remoteFeatures)
     if (this.remoteFeatures.onramp) {
