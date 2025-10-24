@@ -1792,11 +1792,11 @@ export abstract class AppKitBaseClient {
     this.universalProvider =
       this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
 
-    const originalDisconnect = this.universalProvider.disconnect?.bind(this.universalProvider)
+    const originalDisconnect = this.universalProvider.disconnect.bind(this.universalProvider)
 
     this.universalProvider.disconnect = async () => {
       try {
-        return await originalDisconnect?.()
+        return await originalDisconnect()
       } catch (error) {
         if (error instanceof Error) {
           const isAlreadyDisconnected = error.message.includes(
