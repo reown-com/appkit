@@ -1,5 +1,18 @@
 # @reown/appkit-experimental
 
+## 1.8.12
+
+### Patch Changes
+
+- [#5274](https://github.com/reown-com/appkit/pull/5274) [`100ee2b`](https://github.com/reown-com/appkit/commit/100ee2bf54f9036e72e5961300e0b3edb8089239) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where remote config endpoint was being called when using appkit core
+
+- Updated dependencies [[`100ee2b`](https://github.com/reown-com/appkit/commit/100ee2bf54f9036e72e5961300e0b3edb8089239), [`c9ed02e`](https://github.com/reown-com/appkit/commit/c9ed02edd9149484e92407fa48219f7ac7e39568)]:
+  - @reown/appkit@1.8.12
+  - @reown/appkit-utils@1.8.12
+  - @reown/appkit-common@1.8.12
+  - @reown/appkit-controllers@1.8.12
+  - @reown/appkit-ui@1.8.12
+
 ## 1.8.11
 
 ### Patch Changes
