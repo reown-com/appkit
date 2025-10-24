@@ -46,15 +46,15 @@ export class WalletPage {
      * Otherwise click the home button.
      */
     if (this.connectToSingleAccount) {
-      await this.gotoHome.click()
       await this.page.goto(`${this.baseURL}/walletconnect?addressesToApprove=1`)
+      await this.page.waitForLoadState()
     } else {
       await this.gotoHome.click()
     }
     const input = this.page.getByTestId('uri-input')
     await input.waitFor({
       state: 'visible',
-      timeout: 30_000
+      timeout: 10000
     })
     await input.fill(uri)
     const connectButton = this.page.getByTestId('uri-connect-button')
