@@ -108,6 +108,9 @@ export function UpaSignMessageTest() {
 
       await walletProvider.request(payload, caipNetwork?.caipNetworkId)
 
+      // eslint-disable-next-line no-console
+      console.trace('clicked sign message button')
+
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
         description: 'Success',
