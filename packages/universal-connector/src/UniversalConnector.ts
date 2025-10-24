@@ -24,6 +24,7 @@ export type Config = {
     'networks' | 'projectId' | 'metadata' | 'universalProvider' | 'manualWCControl'
   >
   providerConfig?: Omit<UniversalProviderOpts, 'projectId' | 'metadata'>
+  expiry?: number
 }
 
 export class UniversalConnector {
@@ -49,7 +50,8 @@ export class UniversalConnector {
     const provider = await UniversalProvider.init({
       ...(config.providerConfig || {}),
       projectId: config.projectId,
-      metadata: config.metadata
+      metadata: config.metadata,
+      ...(config.expiry ? { expiry: config.expiry } : {})
     })
 
     const appKitConfig: CreateAppKit = {
@@ -111,8 +113,8 @@ export class UniversalConnector {
     await this.provider.disconnect()
   }
 
-  async request(params: RequestArguments, chain: string) {
-    return await this.provider.request(params, chain)
+  async request(params: RequestArguments, chain: string, expiry?: number) {
+    return await this.provider.request(params, chain, expiry)
   }
 }
 
