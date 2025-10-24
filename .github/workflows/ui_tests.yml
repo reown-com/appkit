@@ -192,7 +192,7 @@ jobs:
     if: inputs.build-and-cache-only == false
     name: 'Playwright Tests'
     needs: build_lab_and_extension # Depend on the build job
-    runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       # Update matrix to use fromJson with the new input
