@@ -20,7 +20,7 @@ on:
         type: string
       wallet-url:
         description: 'The wallet url'
-        default: 'https://react-wallet-v2-o53lepooy-reown-com.vercel.app/'
+        default: 'https://react-wallet.walletconnect.com/'
         required: false
         type: string
       command:
