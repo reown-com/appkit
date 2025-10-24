@@ -46,8 +46,8 @@ export class WalletPage {
      * Otherwise click the home button.
      */
     if (this.connectToSingleAccount) {
+      await this.gotoHome.click()
       await this.page.goto(`${this.baseURL}/walletconnect?addressesToApprove=1`)
-      await this.page.waitForLoadState()
     } else {
       await this.gotoHome.click()
     }
