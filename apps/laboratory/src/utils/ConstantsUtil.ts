@@ -32,7 +32,7 @@ const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
-export const WALLET_URL = 'https://react-wallet-v2-o53lepooy-reown-com.vercel.app/'
+export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.walletconnect.com/'
 export const USEROP_BUILDER_SERVICE_BASE_URL = 'https://rpc.walletconnect.org/v1/wallet'
 
 export const GALLERY_URL = 'https://appkit-gallery.reown.com/'
