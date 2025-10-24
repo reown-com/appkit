@@ -233,6 +233,7 @@ export const iconOptions: IconType[] = [
   'desktop',
   'signOut',
   'discord',
+  'telegram',
   'etherscan',
   'extension',
   'externalLink',
@@ -291,7 +292,8 @@ export const logoOptions: LogoType[] = [
   'google',
   'telegram',
   'twitch',
-  'x'
+  'x',
+  'telegram'
 ]
 
 export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'left']

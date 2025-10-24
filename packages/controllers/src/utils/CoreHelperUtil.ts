@@ -229,6 +229,27 @@ export const CoreHelperUtil = {
     )
   },
 
+  returnOpenHrefForTelegramPopup() {
+    const iframe = document.getElementById('w3m-iframe') as HTMLIFrameElement
+
+    if (!iframe) {
+      throw new Error('Secure site iframe not found')
+    }
+
+    const iframeUrl = new URL(iframe.src)
+    const params = iframeUrl.searchParams
+
+    const url = new URL(`${CommonConstants.SECURE_SITE_SDK_ORIGIN}/sdk/oauth`)
+
+    for (const [key, value] of params.entries()) {
+      url.searchParams.set(key, value)
+    }
+
+    url.searchParams.set('social', 'telegram')
+
+    return window?.open(url.toString(), '_blank')
+  },
+
   isTelegram() {
     return (
       typeof window !== 'undefined' &&

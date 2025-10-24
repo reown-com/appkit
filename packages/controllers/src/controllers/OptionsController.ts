@@ -144,7 +144,7 @@ export interface OptionsControllerStatePublic {
   debug?: boolean
   /**
    * Features configuration object.
-   * @default { swaps: true, onramp: true, email: true, socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'], history: true, analytics: true, allWallets: true }
+   * @default { swaps: true, onramp: true, email: true, socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook', 'telegram'], history: true, analytics: true, allWallets: true }
    * @see https://docs.reown.com/appkit/react/core/options#features
    */
   features?: Features

@@ -60,6 +60,9 @@ export const AppSwitchNetworkRequest = z.object({
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const AppConnectSocialRequest = z.object({
+  socialProvider: z
+    .enum(['google', 'github', 'apple', 'facebook', 'x', 'discord', 'telegram'])
+    .optional(),
   uri: z.string(),
   preferredAccountType: z.optional(z.string()),
   chainId: z.optional(z.string().or(z.number())),
@@ -74,7 +77,7 @@ export const AppGetUserRequest = z.object({
   rpcUrl: z.optional(z.string())
 })
 export const AppGetSocialRedirectUriRequest = z.object({
-  provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord'])
+  provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord', 'telegram'])
 })
 export const AppUpdateEmailRequest = z.object({ email: z.string().email() })
 export const AppUpdateEmailPrimaryOtpRequest = z.object({ otp: z.string() })

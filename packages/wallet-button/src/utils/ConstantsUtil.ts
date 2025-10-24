@@ -5,7 +5,16 @@ export const ConstantsUtil = {
       ? process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN']
       : undefined) || 'https://secure.walletconnect.org',
 
-  Socials: ['google', 'github', 'apple', 'facebook', 'x', 'discord', 'farcaster'] as const,
+  Socials: [
+    'google',
+    'github',
+    'apple',
+    'facebook',
+    'x',
+    'discord',
+    'farcaster',
+    'telegram'
+  ] as const,
   Email: 'email' as const,
 
   WalletButtonsIds: {

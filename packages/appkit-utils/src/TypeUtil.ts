@@ -6,6 +6,7 @@ export type SocialProvider =
   | 'x'
   | 'discord'
   | 'farcaster'
+  | 'telegram'
 
 // eslint-disable-next-line no-shadow
 export enum SocialProviderEnum {
@@ -15,5 +16,6 @@ export enum SocialProviderEnum {
   Facebook = 'facebook',
   X = 'x',
   Discord = 'discord',
-  Farcaster = 'farcaster'
+  Farcaster = 'farcaster',
+  Telegram = 'telegram'
 }

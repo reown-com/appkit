@@ -226,7 +226,8 @@ export const ConstantsUtil = {
       'farcaster',
       'github',
       'apple',
-      'facebook'
+      'facebook',
+      'telegram'
     ] as SocialProvider[],
     activity: true,
     reownBranding: true,
@@ -277,7 +278,8 @@ export const ConstantsUtil = {
     'discord',
     'apple',
     'github',
-    'facebook'
+    'facebook',
+    'telegram'
   ] as SocialProvider[],
 
   DEFAULT_ACCOUNT_TYPES: {

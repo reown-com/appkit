@@ -200,7 +200,14 @@ export namespace W3mFrameTypes {
   export type AccountType =
     (typeof W3mFrameRpcConstants.ACCOUNT_TYPES)[keyof typeof W3mFrameRpcConstants.ACCOUNT_TYPES]
 
-  export type SocialProvider = 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord'
+  export type SocialProvider =
+    | 'google'
+    | 'github'
+    | 'apple'
+    | 'facebook'
+    | 'x'
+    | 'discord'
+    | 'telegram'
 
   export type ProviderRequestType =
     | 'ConnectEmail'

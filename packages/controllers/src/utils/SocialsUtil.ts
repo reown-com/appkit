@@ -11,18 +11,6 @@ import { CoreHelperUtil } from './CoreHelperUtil.js'
 import { StorageUtil } from './StorageUtil.js'
 import type { SocialProvider } from './TypeUtil.js'
 
-function getPopupWindow() {
-  try {
-    return CoreHelperUtil.returnOpenHref(
-      `${ConstantsUtil.SECURE_SITE_SDK_ORIGIN}/loading`,
-      'popupWindow',
-      'width=600,height=800,scrollbars=yes'
-    )
-  } catch (error) {
-    throw new Error('Could not open social popup')
-  }
-}
-
 export async function connectFarcaster() {
   RouterController.push('ConnectingFarcaster')
   const authConnector = ConnectorController.getAuthConnector()
@@ -42,9 +30,11 @@ export async function connectFarcaster() {
 }
 
 export async function connectSocial(
-  socialProvider: 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord'
+  socialProvider: 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord' | 'telegram'
 ): Promise<void> {
   RouterController.push('ConnectingSocial')
+
+  const isTelegramProvider = socialProvider === 'telegram'
 
   const authConnector = ConnectorController.getAuthConnector()
 
@@ -57,37 +47,48 @@ export async function connectSocial(
 
     if (authConnector && socialProvider) {
       if (!CoreHelperUtil.isTelegram()) {
-        popupWindow = getPopupWindow()
-      }
+        if (isTelegramProvider) {
+          await authConnector.provider?.init()
 
+          popupWindow = CoreHelperUtil.returnOpenHrefForTelegramPopup()
+        } else {
+          popupWindow = CoreHelperUtil.returnOpenHref(
+            `${ConstantsUtil.SECURE_SITE_SDK_ORIGIN}/loading`,
+            'popupWindow',
+            'width=600,height=800,scrollbars=yes'
+          )
+        }
+      }
       if (popupWindow) {
         ChainController.setAccountProp(
           'socialWindow',
           ref(popupWindow),
           ChainController.state.activeChain
         )
-      } else if (!CoreHelperUtil.isTelegram()) {
+      } else if (!isTelegramProvider && !CoreHelperUtil.isTelegram()) {
         throw new Error('Could not create social popup')
       }
 
-      const { uri } = await authConnector.provider.getSocialRedirectUri({
-        provider: socialProvider
-      })
+      if (!isTelegramProvider) {
+        const { uri } = await authConnector.provider.getSocialRedirectUri({
+          provider: socialProvider
+        })
 
-      if (!uri) {
-        popupWindow?.close()
-        throw new Error('Could not fetch the social redirect uri')
-      }
+        if (!uri) {
+          popupWindow?.close()
+          throw new Error('Could not fetch the social redirect uri')
+        }
 
-      if (popupWindow) {
-        popupWindow.location.href = uri
-      }
+        if (popupWindow) {
+          popupWindow.location.href = uri
+        }
 
-      if (CoreHelperUtil.isTelegram()) {
-        StorageUtil.setTelegramSocialProvider(socialProvider)
-        const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
+        if (CoreHelperUtil.isTelegram()) {
+          StorageUtil.setTelegramSocialProvider(socialProvider)
+          const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
 
-        CoreHelperUtil.openHref(parsedUri, '_top')
+          CoreHelperUtil.openHref(parsedUri, '_top')
+        }
       }
 
       clearTimeout(timeout)

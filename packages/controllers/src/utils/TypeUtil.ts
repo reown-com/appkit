@@ -97,6 +97,7 @@ export type SocialProvider =
   | 'x'
   | 'discord'
   | 'farcaster'
+  | 'telegram'
 
 export type EmailCaptureOptions = 'required'
 

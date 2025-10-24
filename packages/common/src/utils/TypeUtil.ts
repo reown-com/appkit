@@ -205,6 +205,7 @@ export type SocialProvider =
   | 'x'
   | 'discord'
   | 'farcaster'
+  | 'telegram'
 
 export type SwapProvider = '1inch'
 
