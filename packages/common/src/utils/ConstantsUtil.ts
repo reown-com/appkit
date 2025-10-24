@@ -14,6 +14,7 @@ export const ConstantsUtil = {
     WALLET_STANDARD: 'announced',
     COINBASE: 'coinbaseWallet',
     COINBASE_SDK: 'coinbaseWalletSDK',
+    BASE_ACCOUNT: 'baseAccount',
     SAFE: 'safe',
     LEDGER: 'ledger',
     OKX: 'okx',

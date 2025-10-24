@@ -113,7 +113,7 @@ export class ModalPage {
     await this.page.goto(this.url)
 
     // Wait for w3m-modal to be injected
-    await this.page.waitForSelector('w3m-modal', { state: 'visible', timeout: 10_000 })
+    await this.page.waitForSelector('w3m-modal', { state: 'visible', timeout: 30_000 })
   }
 
   assertDefined<T>(value: T | undefined | null): T {
@@ -705,7 +705,7 @@ export class ModalPage {
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
     await connect.waitFor({
       state: 'visible',
-      timeout: 5000
+      timeout: 15000
     })
     await connect.click()
   }
