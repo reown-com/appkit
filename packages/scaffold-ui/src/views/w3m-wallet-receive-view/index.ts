@@ -97,7 +97,10 @@ export class W3mWalletReceiveView extends LitElement {
           theme=${ThemeController.state.themeMode}
           uri=${this.address}
           ?arenaClear=${true}
-          color=${ifDefined(ThemeController.state.themeVariables['--w3m-qr-color'])}
+          color=${ifDefined(
+            ThemeController.state.themeVariables['--apkt-qr-color'] ??
+              ThemeController.state.themeVariables['--w3m-qr-color']
+          )}
           data-testid="wui-qr-code"
         ></wui-qr-code>
         <wui-text variant="lg-regular" color="primary" align="center">

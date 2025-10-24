@@ -7,6 +7,42 @@ import type { ThemeVariables } from './TypeUtil.js'
 
 const PREFIX_VAR = '--apkt'
 
+function normalizeThemeVariables(themeVariables?: ThemeVariables): Record<string, string | number> {
+  if (!themeVariables) {
+    return {}
+  }
+
+  const normalized: Record<string, string | number> = {}
+
+  normalized['font-family'] =
+    themeVariables['--apkt-font-family'] ?? themeVariables['--w3m-font-family'] ?? 'KHTeka'
+
+  normalized['accent'] =
+    themeVariables['--apkt-accent'] ?? themeVariables['--w3m-accent'] ?? '#0988F0'
+
+  normalized['color-mix'] =
+    themeVariables['--apkt-color-mix'] ?? themeVariables['--w3m-color-mix'] ?? '#000'
+
+  normalized['color-mix-strength'] =
+    themeVariables['--apkt-color-mix-strength'] ?? themeVariables['--w3m-color-mix-strength'] ?? 0
+
+  normalized['font-size-master'] =
+    themeVariables['--apkt-font-size-master'] ?? themeVariables['--w3m-font-size-master'] ?? '10px'
+
+  normalized['border-radius-master'] =
+    themeVariables['--apkt-border-radius-master'] ??
+    themeVariables['--w3m-border-radius-master'] ??
+    '4px'
+
+  if (themeVariables['--apkt-z-index'] !== undefined) {
+    normalized['z-index'] = themeVariables['--apkt-z-index']
+  } else if (themeVariables['--w3m-z-index'] !== undefined) {
+    normalized['z-index'] = themeVariables['--w3m-z-index']
+  }
+
+  return normalized
+}
+
 export const ThemeHelperUtil = {
   /**
    * Recursively transforms a nested styles object into a new object with CSS variable strings.
@@ -142,15 +178,16 @@ export const ThemeHelperUtil = {
       return {}
     }
 
+    const normalized = normalizeThemeVariables(themeVariables)
     const variables: Record<string, string> = {}
 
-    // Set default values and user overrides
-    variables['--w3m-font-family'] = themeVariables['--w3m-font-family'] || 'KHTeka'
-    variables['--w3m-accent'] = themeVariables['--w3m-accent'] || '#0988F0'
-    variables['--w3m-color-mix'] = themeVariables['--w3m-color-mix'] || '#000'
-    variables['--w3m-color-mix-strength'] = `${themeVariables['--w3m-color-mix-strength'] || 0}%`
-    variables['--w3m-font-size-master'] = themeVariables['--w3m-font-size-master'] || '10px'
-    variables['--w3m-border-radius-master'] = themeVariables['--w3m-border-radius-master'] || '4px'
+    // Set default values and user overrides (keep --w3m-* names for backwards compatibility)
+    variables['--w3m-font-family'] = normalized['font-family'] as string
+    variables['--w3m-accent'] = normalized['accent'] as string
+    variables['--w3m-color-mix'] = normalized['color-mix'] as string
+    variables['--w3m-color-mix-strength'] = `${normalized['color-mix-strength']}%`
+    variables['--w3m-font-size-master'] = normalized['font-size-master'] as string
+    variables['--w3m-border-radius-master'] = normalized['border-radius-master'] as string
 
     return variables
   },
@@ -163,23 +200,24 @@ export const ThemeHelperUtil = {
       return {}
     }
 
+    const normalized = normalizeThemeVariables(themeVariables)
     const overrides: Record<string, string> = {}
 
-    // Map --w3m-accent to accent-related --apkt variables
-    if (themeVariables['--w3m-accent']) {
-      const accentColor = themeVariables['--w3m-accent']
+    // Map accent to accent-related --apkt variables (check both prefixes)
+    if (themeVariables['--apkt-accent'] || themeVariables['--w3m-accent']) {
+      const accentColor = normalized['accent'] as string
       overrides['--apkt-tokens-core-iconAccentPrimary'] = accentColor
       overrides['--apkt-tokens-core-borderAccentPrimary'] = accentColor
       overrides['--apkt-tokens-core-textAccentPrimary'] = accentColor
       overrides['--apkt-tokens-core-backgroundAccentPrimary'] = accentColor
     }
 
-    if (themeVariables['--w3m-font-family']) {
-      overrides['--apkt-fontFamily-regular'] = themeVariables['--w3m-font-family']
+    if (themeVariables['--apkt-font-family'] || themeVariables['--w3m-font-family']) {
+      overrides['--apkt-fontFamily-regular'] = normalized['font-family'] as string
     }
 
-    if (themeVariables['--w3m-z-index']) {
-      overrides['--apkt-tokens-core-zIndex'] = `${themeVariables['--w3m-z-index']}`
+    if (normalized['z-index'] !== undefined) {
+      overrides['--apkt-tokens-core-zIndex'] = `${normalized['z-index']}`
     }
 
     return overrides
@@ -193,10 +231,11 @@ export const ThemeHelperUtil = {
       return {}
     }
 
+    const normalized = normalizeThemeVariables(themeVariables)
     const scaledVars: Record<string, string> = {}
 
-    if (themeVariables['--w3m-font-size-master']) {
-      const masterSize = parseFloat(themeVariables['--w3m-font-size-master'].replace('px', ''))
+    if (themeVariables['--apkt-font-size-master'] || themeVariables['--w3m-font-size-master']) {
+      const masterSize = parseFloat((normalized['font-size-master'] as string).replace('px', ''))
 
       // 50px default
       scaledVars['--apkt-textSize-h1'] = `${Number(masterSize) * 5}px`
@@ -218,10 +257,13 @@ export const ThemeHelperUtil = {
       scaledVars['--apkt-textSize-small'] = `${Number(masterSize) * 1.2}px`
     }
 
-    // Scale border radius based on --w3m-border-radius-master
-    if (themeVariables['--w3m-border-radius-master']) {
+    // Scale border radius based on --apkt-border-radius-master or --w3m-border-radius-master
+    if (
+      themeVariables['--apkt-border-radius-master'] ||
+      themeVariables['--w3m-border-radius-master']
+    ) {
       const masterRadius = parseFloat(
-        themeVariables['--w3m-border-radius-master'].replace('px', '')
+        (normalized['border-radius-master'] as string).replace('px', '')
       )
 
       // 4px default
@@ -371,12 +413,10 @@ export const ThemeHelperUtil = {
         'var(--apkt-tokens-core-backgroundAccentPrimary-base)'
     }
 
-    if (!themeVariables?.['--w3m-color-mix'] || !themeVariables['--w3m-color-mix-strength']) {
-      return colorMixVariables
-    }
-
-    const colorMix = themeVariables['--w3m-color-mix']
-    const strength = themeVariables['--w3m-color-mix-strength']
+    // Use normalized values to respect --apkt-* precedence
+    const normalized = normalizeThemeVariables(themeVariables)
+    const colorMix = normalized['color-mix']
+    const strength = normalized['color-mix-strength']
 
     if (!strength || strength === 0) {
       return colorMixVariables
