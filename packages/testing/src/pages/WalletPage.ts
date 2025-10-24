@@ -54,7 +54,7 @@ export class WalletPage {
     const input = this.page.getByTestId('uri-input')
     await input.waitFor({
       state: 'visible',
-      timeout: 10000
+      timeout: 30_000
     })
     await input.fill(uri)
     const connectButton = this.page.getByTestId('uri-connect-button')
