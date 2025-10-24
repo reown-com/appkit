@@ -42,7 +42,8 @@ export const mockAuthProvider = {
   syncTheme: vi.fn()
 }
 
-export const mockUniversalProvider: Mocked<Pick<UniversalProvider, 'on' | 'off'>> = {
+export const mockUniversalProvider: Mocked<Pick<UniversalProvider, 'on' | 'off' | 'disconnect'>> = {
   off: vi.fn(),
-  on: vi.fn()
+  on: vi.fn(),
+  disconnect: vi.fn().mockResolvedValue(undefined)
 }
