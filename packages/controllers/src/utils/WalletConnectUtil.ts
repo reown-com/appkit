@@ -25,6 +25,7 @@ interface ListenWcProviderParams {
 }
 
 export const DEFAULT_METHODS = {
+  ton: ['ton_sendMessage', 'ton_signData'],
   solana: [
     'solana_signMessage',
     'solana_signTransaction',

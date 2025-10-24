@@ -62,7 +62,6 @@ export function SolanaSignAndSendTransaction() {
 
         // Make a versioned transaction
         const versionedTranasction = new VersionedTransaction(messageV0)
-
         signature = await walletProvider.signAndSendTransaction(versionedTranasction)
       } else {
         // Create a new transaction

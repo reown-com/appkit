@@ -52,7 +52,7 @@ walletButtonTest('it should be connected after page refresh', async () => {
 })
 
 walletButtonTest('it should connect with email', async ({ library }) => {
-  if (library === 'bitcoin') {
+  if (library === 'bitcoin' || library === 'ton') {
     return
   }
 

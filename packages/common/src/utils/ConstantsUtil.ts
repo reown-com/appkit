@@ -32,7 +32,8 @@ export const ConstantsUtil = {
     EVM: 'eip155',
     SOLANA: 'solana',
     POLKADOT: 'polkadot',
-    BITCOIN: 'bip122'
+    BITCOIN: 'bip122',
+    TON: 'ton'
   } as const satisfies Record<string, ChainNamespace>,
   CHAIN_NAME_MAP: {
     eip155: 'EVM Networks',
@@ -41,14 +42,16 @@ export const ConstantsUtil = {
     bip122: 'Bitcoin',
     cosmos: 'Cosmos',
     sui: 'Sui',
-    stacks: 'Stacks'
+    stacks: 'Stacks',
+    ton: 'TON'
   } as const satisfies Record<ChainNamespace, string>,
   ADAPTER_TYPES: {
     BITCOIN: 'bitcoin',
     SOLANA: 'solana',
     WAGMI: 'wagmi',
     ETHERS: 'ethers',
-    ETHERS5: 'ethers5'
+    ETHERS5: 'ethers5',
+    TON: 'ton'
   } as const satisfies Record<string, string>,
   USDT_CONTRACT_ADDRESSES: [
     // Mainnet

@@ -5,11 +5,22 @@ import { v4 as uuidv4 } from 'uuid'
 import { BitcoinProvider } from './core/BitcoinProvider'
 import { EvmProvider } from './core/EvmProvider'
 import { SolanaProvider } from './core/SolanaProvider'
+import { TonProvider } from './core/TonProvider'
 import { ConstantsUtil } from './utils/ConstantsUtil'
 
 const evmProvider = new EvmProvider()
 const solanaProvider = new SolanaProvider()
 const bitcoinProvider = new BitcoinProvider()
+const tonProvider = new TonProvider()
+
+// Inject TON provider into window for TonConnect
+;(
+  window as unknown as {
+    reownTon: { tonconnect: ReturnType<TonProvider['createTonConnectInterface']> }
+  }
+).reownTon = {
+  tonconnect: tonProvider.createTonConnectInterface(ConstantsUtil.IconRaw)
+}
 
 announceProvider({
   info: {

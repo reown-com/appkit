@@ -202,6 +202,14 @@ export const bitcoinSdkOptions: SdkOption[] = [
   }
 ]
 
+export const tonSdkOptions: SdkOption[] = [
+  {
+    title: 'Default',
+    link: '/appkit?name=ton',
+    description: 'Basic configuration using Ton as a driving library'
+  }
+]
+
 export const siwxSdkOptions: SdkOption[] = [
   {
     title: 'Reown Authentication',
