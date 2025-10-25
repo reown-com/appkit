@@ -117,7 +117,7 @@ export const appKitConfigs = {
   defaultNetwork: mainnet,
   metadata,
   features: initialConfig?.features || ConstantsUtil.DEFAULT_FEATURES,
-  enableWallets: initialConfig?.enableWallets || true,
+  enableWallets: initialConfig?.enableWallets ?? true,
   themeMode: initialConfig?.themeMode || 'dark',
   themeVariables: initialConfig?.themeVariables || {},
   termsConditionsUrl: initialConfig?.termsConditionsUrl || '',
