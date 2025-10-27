@@ -14,6 +14,8 @@ export default function InitializeBoundary({ children }: { children: React.React
 
       return () => clearTimeout(timeout)
     }
+
+    return undefined
   }, [isInitialized])
 
   // Add a loading skeleton
