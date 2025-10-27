@@ -116,6 +116,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-onramp-token-select-view></w3m-onramp-token-select-view>`
       case 'OnRampFiatSelect':
         return html`<w3m-onramp-fiat-select-view></w3m-onramp-fiat-select-view>`
+      case 'Buy':
+        return html`<w3m-buy-view></w3m-buy-view>`
       case 'UpgradeEmailWallet':
         return html`<w3m-upgrade-wallet-view></w3m-upgrade-wallet-view>`
       case 'UpdateEmailWallet':
@@ -130,6 +132,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-swap-view></w3m-swap-view>`
       case 'SwapSelectToken':
         return html`<w3m-swap-select-token-view></w3m-swap-select-token-view>`
+      case 'BuySelectToken':
+        return html`<w3m-buy-select-token-view></w3m-buy-select-token-view>`
       case 'SwapPreview':
         return html`<w3m-swap-preview-view></w3m-swap-preview-view>`
       case 'WalletSend':

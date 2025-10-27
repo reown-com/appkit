@@ -56,6 +56,7 @@ export interface RouterControllerState {
     | 'GetWallet'
     | 'Networks'
     | 'OnRampFiatSelect'
+    | 'Buy'
     | 'OnRampProviders'
     | 'OnRampTokenSelect'
     | 'ProfileWallets'
@@ -78,6 +79,7 @@ export interface RouterControllerState {
     | 'WhatIsABuy'
     | 'Swap'
     | 'SwapSelectToken'
+    | 'BuySelectToken'
     | 'SwapPreview'
     | 'ConnectingMultiChain'
     | 'SwitchActiveChain'
@@ -107,6 +109,7 @@ export interface RouterControllerState {
     swap?: SwapInputArguments
     addWalletForNamespace?: ChainNamespace
     send?: SendInputArguments
+    onRampSelectType?: 'fiat' | 'crypto'
   }
   transactionStack: TransactionAction[]
 }

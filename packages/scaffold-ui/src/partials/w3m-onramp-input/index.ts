@@ -1,120 +1,164 @@
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import { property } from 'lit/decorators.js'
 
 import {
-  AssetController,
-  ModalController,
-  OnRampController,
-  type PaymentCurrency,
-  type PurchaseCurrency
+  type OnRampCryptoCurrency,
+  type OnRampFiatCurrency,
+  RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-image'
-import '@reown/appkit-ui/wui-input-text'
-import '@reown/appkit-ui/wui-loading-spinner'
 import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-token-button'
 
 import styles from './styles.js'
 
-type Currency = {
-  name: string
-  symbol: string
-}
-
 @customElement('w3m-onramp-input')
-export class W3mInputCurrency extends LitElement {
-  public static override styles = styles
-
-  // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
+export class W3mOnrampInput extends LitElement {
+  public static override styles = [styles]
 
   // -- State & Properties -------------------------------- //
-  @property({ type: String }) public type: 'Token' | 'Fiat' = 'Token'
-  @property({ type: Number }) public value = 0
-  @state() public currencies: Currency[] | null = []
-  @state() public selectedCurrency = this.currencies?.[0]
+  @property() public type: 'fiat' | 'crypto' = 'crypto'
 
-  // -- Private ------------------------------------------- //
-  @state() private currencyImages = AssetController.state.currencyImages
-  @state() private tokenImages = AssetController.state.tokenImages
+  @property() public readOnly?: boolean
 
-  public constructor() {
-    super()
-    this.unsubscribe.push(
-      OnRampController.subscribeKey('purchaseCurrency', val => {
-        if (!val || this.type === 'Fiat') {
-          return
-        }
-        this.selectedCurrency = this.formatPurchaseCurrency(val)
-      }),
-      OnRampController.subscribeKey('paymentCurrency', val => {
-        if (!val || this.type === 'Token') {
-          return
-        }
-        this.selectedCurrency = this.formatPaymentCurrency(val)
-      }),
-      OnRampController.subscribe(val => {
-        if (this.type === 'Fiat') {
-          this.currencies = val.purchaseCurrencies.map(this.formatPurchaseCurrency)
-        } else {
-          this.currencies = val.paymentCurrencies.map(this.formatPaymentCurrency)
-        }
-      }),
-      AssetController.subscribe(val => {
-        this.currencyImages = { ...val.currencyImages }
-        this.tokenImages = { ...val.tokenImages }
-      })
-    )
-  }
+  @property() public focused = false
 
-  // -- Lifecycle ----------------------------------------- //
-  public override firstUpdated() {
-    OnRampController.getAvailableCurrencies()
-  }
+  @property() public balance: string | undefined
 
-  public override disconnectedCallback() {
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
-  }
+  @property() public value?: string
+
+  @property() public price = 0
+
+  @property() public disabled?: boolean
+
+  @property() public currency?: OnRampFiatCurrency | OnRampCryptoCurrency
+
+  @property() public placeholderButtonLabel = 'Select token'
+
+  @property() public target: 'sourceToken' | 'targetToken' = 'sourceToken'
+
+  @property() public onSetAmount: ((value: string) => void) | null = null
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const symbol = this.selectedCurrency?.symbol || ''
-    const image = this.currencyImages[symbol] || this.tokenImages[symbol]
-
-    return html`<wui-input-text type="number" size="lg" value=${this.value}>
-      ${this.selectedCurrency
-        ? html` <wui-flex
-            class="currency-container"
-            justifyContent="space-between"
-            alignItems="center"
-            gap="1"
-            @click=${() => ModalController.open({ view: `OnRamp${this.type}Select` })}
-          >
-            <wui-image src=${ifDefined(image)}></wui-image>
-            <wui-text color="primary">${this.selectedCurrency.symbol}</wui-text>
-          </wui-flex>`
-        : html`<wui-loading-spinner></wui-loading-spinner>`}
-    </wui-input-text>`
+    return html`
+      <wui-flex
+        class="${this.focused ? 'focus' : ''}"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <wui-flex
+          flex="1"
+          flexDirection="column"
+          alignItems="flex-start"
+          justifyContent="center"
+          class="swap-input"
+        >
+          <input
+            data-testid="swap-input-${this.target}"
+            @focusin=${() => this.onFocusChange(true)}
+            @focusout=${() => this.onFocusChange(false)}
+            ?disabled=${this.disabled}
+            value=${this.value || ''}
+            @input=${this.dispatchInputChangeEvent}
+            placeholder="0"
+            type="text"
+            inputmode="decimal"
+            pattern="[0-9,.]*"
+            ?readonly=${this.readOnly}
+          />
+        </wui-flex>
+        ${this.templateTokenSelectButton()}
+      </wui-flex>
+    `
   }
 
-  private formatPaymentCurrency(currency: PaymentCurrency) {
-    return {
-      name: currency.id,
-      symbol: currency.id
+  // -- Private ------------------------------------------- //
+
+  private dispatchInputChangeEvent(event: InputEvent) {
+    if (!this.onSetAmount) {
+      return
+    }
+
+    const value = (event.target as HTMLInputElement).value.replace(/[^0-9.]/gu, '')
+
+    if (value === ',' || value === '.') {
+      this.onSetAmount('0.')
+    } else if (value.endsWith(',')) {
+      this.onSetAmount(value.replace(',', '.'))
+    } else {
+      this.onSetAmount(value)
     }
   }
-  private formatPurchaseCurrency(currency: PurchaseCurrency) {
-    return {
-      name: currency.name,
-      symbol: currency.symbol
+
+  private templateTokenSelectButton() {
+    if (!this.currency) {
+      return html` <wui-button
+        data-testid="swap-select-token-button-${this.target}"
+        class="swap-token-button"
+        size="md"
+        variant="neutral-secondary"
+        @click=${this.onSelectToken.bind(this)}
+      >
+        ${this.placeholderButtonLabel}
+      </wui-button>`
     }
+
+    return html`
+      <wui-flex
+        class="swap-token-button"
+        flexDirection="column"
+        alignItems="flex-end"
+        justifyContent="center"
+        gap="1"
+      >
+        <wui-token-button
+          data-testid="onramp-input-currency-${this.target}"
+          text=${this.currency.symbol}
+          imageSrc=${this.getImageSrc()}
+          @click=${this.onSelectToken.bind(this)}
+        >
+        </wui-token-button>
+      </wui-flex>
+    `
+  }
+
+  private onFocusChange(state: boolean) {
+    this.focused = state
+  }
+
+  private onSelectToken() {
+    if (this.type === 'fiat') {
+      RouterController.push('BuySelectToken', {
+        onRampSelectType: 'fiat'
+      })
+    } else {
+      RouterController.push('BuySelectToken', {
+        onRampSelectType: 'crypto'
+      })
+    }
+  }
+
+  private getImageSrc() {
+    if (!this.currency) {
+      return null
+    }
+
+    if ('icon' in this.currency) {
+      const base64 = btoa(unescape(encodeURIComponent(this.currency.icon)))
+      const src = 'data:image/svg+xml;base64,' + base64
+
+      return src
+    }
+
+    return this.currency.image.small ?? null
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-onramp-input': W3mInputCurrency
+    'w3m-onramp-input': W3mOnrampInput
   }
 }

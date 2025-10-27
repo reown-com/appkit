@@ -144,7 +144,7 @@ export class W3mFundWalletView extends LitElement {
   }
 
   private onBuyCrypto() {
-    RouterController.push('OnRampProviders')
+    RouterController.push('Buy')
   }
 
   private onReceive() {

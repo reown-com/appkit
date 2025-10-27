@@ -1086,21 +1086,6 @@ export type PurchaseCurrency = {
   networks: CoinbaseNetwork[]
 }
 
-export type OnrampQuote = {
-  paymentTotal: QuoteAmount
-  paymentSubtotal: QuoteAmount
-  purchaseAmount: QuoteAmount
-  networkFee: QuoteAmount
-  quoteId: string
-}
-
-export type GetQuoteArgs = {
-  purchaseCurrency: PurchaseCurrency
-  paymentCurrency: PaymentCurrency
-  amount: string
-  network: string
-}
-
 export type NamespaceTypeMap = {
   eip155: 'eoa' | 'smartAccount'
   solana: 'eoa'
@@ -1499,4 +1484,56 @@ export type Tier = 'none' | 'starter' | 'pro' | 'enteprise'
 export type ProjectLimits = {
   isAboveRpcLimit: boolean
   isAboveMauLimit: boolean
+}
+
+export type OnRampFiatCurrency = {
+  symbol: string
+  supportingCountries: string[]
+  logoSymbol: string
+  name: string
+  paymentOptions: {
+    name: string
+    id: string
+    icon: string
+    minAmountForPayOut?: number
+    maxAmountForPayOut?: number
+  }
+  icon: string
+}
+
+export type OnRampCryptoCurrency = {
+  coinId: string
+  address: string | null
+  decimals?: number
+  image: {
+    small: string
+  }
+  name?: string
+  symbol: string
+  kycCountriesNotSupported: string[]
+  network: {
+    chainId: string | null
+  }
+}
+
+export type OnRampQuote = {
+  fiatCurrency: string
+  cryptoCurrency: string
+  paymentMethod: string
+  fiatAmount: number
+  cryptoAmount: number
+  network: string
+  totalFee: number
+  feeBreakdown: {
+    name: string
+    value: number
+  }[]
+}
+
+export type GetQuoteParameters = {
+  fiatCurrency: OnRampFiatCurrency
+  cryptoCurrency: OnRampCryptoCurrency
+  network: string
+  paymentMethod: string
+  fiatAmount: string
 }

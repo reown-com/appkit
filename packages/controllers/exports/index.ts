@@ -108,6 +108,7 @@ export { SIWXUtil } from '../src/utils/SIWXUtil.js'
 export { ModalUtil } from '../src/utils/ModalUtil.js'
 export { NetworkUtil } from '../src/utils/NetworkUtil.js'
 export { ViemUtil } from '../src/utils/ViemUtil.js'
+export { OnRampUtil } from '../src/utils/OnRampUtil.js'
 export { withErrorBoundary, AppKitError } from '../src/utils/withErrorBoundary.js'
 export {
   baseSepoliaUSDC,

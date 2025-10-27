@@ -30,8 +30,10 @@ import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
   GenerateOnRampUrlArgs,
-  GetQuoteArgs,
-  OnrampQuote,
+  GetQuoteParameters,
+  OnRampCryptoCurrency,
+  OnRampFiatCurrency,
+  OnRampQuote,
   PaymentCurrency,
   PurchaseCurrency
 } from '../utils/TypeUtil.js'
@@ -117,16 +119,19 @@ const DEFAULT_OPTIONS = {
 export interface BlockchainApiControllerState {
   clientId: string | null
   api: FetchUtil
+  devApi: FetchUtil
   supportedChains: { http: CaipNetworkId[]; ws: CaipNetworkId[] }
 }
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getBlockchainApiUrl()
+const devBaseUrl = 'http://localhost:3000'
 
 // -- State --------------------------------------------- //
 const state = proxy<BlockchainApiControllerState>({
   clientId: null,
   api: new FetchUtil({ baseUrl, clientId: null }),
+  devApi: new FetchUtil({ baseUrl: devBaseUrl, clientId: null }),
   supportedChains: { http: [], ws: [] }
 })
 
@@ -134,7 +139,7 @@ const state = proxy<BlockchainApiControllerState>({
 export const BlockchainApiController = {
   state,
 
-  async get<T>(request: RequestArguments): Promise<T> {
+  async get<T>(request: RequestArguments, isDev: boolean = false): Promise<T> {
     const { st, sv } = BlockchainApiController.getSdkProperties()
     const projectId = OptionsController.state.projectId
 
@@ -145,10 +150,15 @@ export const BlockchainApiController = {
       projectId
     }
 
-    return state.api.get<T>({
-      ...request,
-      params
-    })
+    return isDev
+      ? state.devApi.get<T>({
+          ...request,
+          params
+        })
+      : state.api.get<T>({
+          ...request,
+          params
+        })
   },
 
   getSdkProperties() {
@@ -574,10 +584,11 @@ export const BlockchainApiController = {
     return response.url
   },
 
-  async getOnrampOptions() {
+  async getOnRampOptions() {
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
+
     if (!isSupported) {
       return { paymentCurrencies: [], purchaseCurrencies: [] }
     }
@@ -596,44 +607,57 @@ export const BlockchainApiController = {
     }
   },
 
-  async getOnrampQuote({
-    purchaseCurrency,
-    paymentCurrency,
-    amount,
-    network
-  }: GetQuoteArgs): Promise<OnrampQuote | null> {
-    try {
-      const isSupported = await BlockchainApiController.isNetworkSupported(
-        ChainController.state.activeCaipNetwork?.caipNetworkId
-      )
-      if (!isSupported) {
-        return null
-      }
+  async getOnRampCryptoCurrencies() {
+    const response = await BlockchainApiController.get<OnRampCryptoCurrency[]>(
+      {
+        path: `/api/onramp/crypto-currencies`
+      },
+      true
+    )
 
-      const response = await state.api.post<OnrampQuote>({
-        path: `/v1/onramp/quote`,
+    return response
+  },
+
+  async getOnRampFiatCurrencies() {
+    const response = await BlockchainApiController.get<OnRampFiatCurrency[]>(
+      {
+        path: `/api/onramp/fiat-currencies`
+      },
+      true
+    )
+
+    return response
+  },
+
+  async getOnRampQuote({
+    fiatCurrency,
+    cryptoCurrency,
+    paymentMethod,
+    fiatAmount,
+    network
+  }: GetQuoteParameters): Promise<OnRampQuote | null> {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return null
+    }
+
+    const response = await BlockchainApiController.get<OnRampQuote>(
+      {
+        path: `/api/onramp/quotes`,
         params: {
-          projectId: OptionsController.state.projectId
-        },
-        body: {
-          purchaseCurrency,
-          paymentCurrency,
-          amount,
+          fiatCurrency: fiatCurrency.symbol,
+          cryptoCurrency: cryptoCurrency.symbol,
+          paymentMethod,
+          fiatAmount,
           network
         }
-      })
+      },
+      true
+    )
 
-      return response
-    } catch (e) {
-      // Mocking response as 1:1 until endpoint is ready
-      return {
-        networkFee: { amount, currency: paymentCurrency.id },
-        paymentSubtotal: { amount, currency: paymentCurrency.id },
-        paymentTotal: { amount, currency: paymentCurrency.id },
-        purchaseAmount: { amount, currency: paymentCurrency.id },
-        quoteId: 'mocked-quote-id'
-      }
-    }
+    return response
   },
 
   async getSmartSessions(caipAddress: CaipAddress) {

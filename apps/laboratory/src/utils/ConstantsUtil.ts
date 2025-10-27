@@ -200,5 +200,7 @@ export const ConstantsUtil = {
     'discord',
     'farcaster'
   ] as SocialProvider[],
-  Email: 'email' as const
+  Email: 'email' as const,
+  TRANSAK_BASE_API_URL: 'https://api-stg.transak.com',
+  TRANSAK_API_KEY: process.env['TRANSAK_API_KEY']
 }

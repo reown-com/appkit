@@ -1,11 +1,17 @@
-import { proxy, subscribe as sub } from 'valtio/vanilla'
+import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import type { OnRampProvider as OnRampProviderName } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
-import type { PaymentCurrency, PurchaseCurrency } from '../utils/TypeUtil.js'
+import type {
+  OnRampCryptoCurrency,
+  OnRampFiatCurrency,
+  OnRampQuote,
+  PaymentCurrency,
+  PurchaseCurrency
+} from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ApiController } from './ApiController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
@@ -29,11 +35,18 @@ export interface OnRampControllerState {
   paymentCurrency: PaymentCurrency
   purchaseCurrencies: PurchaseCurrency[]
   paymentCurrencies: PaymentCurrency[]
-  purchaseAmount?: number
-  paymentAmount?: number
+  cryptoAmount?: string
+  fiatAmount?: string
   providers: OnRampProvider[]
   error: string | null
-  quotesLoading: boolean
+  cryptoCurrencies: OnRampCryptoCurrency[]
+  cryptoCurrenciesLoading: boolean
+  fiatCurrencies: OnRampFiatCurrency[]
+  fiatCurrenciesLoading: boolean
+  selectedCryptoCurrency: OnRampCryptoCurrency | null
+  selectedFiatCurrency: OnRampFiatCurrency | null
+  quote: OnRampQuote | null
+  quoteLoading: boolean
 }
 
 type StateKey = keyof OnRampControllerState
@@ -82,11 +95,21 @@ const defaultState = {
   paymentCurrency: USD_CURRENCY_DEFAULT,
   purchaseCurrencies: [USDC_CURRENCY_DEFAULT],
   paymentCurrencies: [],
-  quotesLoading: false
+  cryptoCurrencies: [],
+  cryptoCurrenciesLoading: false,
+  fiatCurrencies: [],
+  fiatCurrenciesLoading: false,
+  selectedCryptoCurrency: null,
+  selectedFiatCurrency: null,
+  quote: null,
+  quoteLoading: false
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<OnRampControllerState>(defaultState)
+
+const DEFAULT_PAYMENT_METHOD = 'credit_debit_card'
+const DEFAULT_NETWORK = 'ethereum'
 
 // -- Controller ---------------------------------------- //
 const controller = {
@@ -138,16 +161,16 @@ const controller = {
     state.paymentCurrency = currency
   },
 
-  setPurchaseAmount(amount: number) {
-    OnRampController.state.purchaseAmount = amount
+  setCryptoAmount(amount: string) {
+    OnRampController.state.cryptoAmount = amount
   },
 
-  setPaymentAmount(amount: number) {
-    OnRampController.state.paymentAmount = amount
+  setFiatAmount(amount: string) {
+    OnRampController.state.fiatAmount = amount
   },
 
   async getAvailableCurrencies() {
-    const options = await BlockchainApiController.getOnrampOptions()
+    const options = await BlockchainApiController.getOnRampOptions()
     state.purchaseCurrencies = options.purchaseCurrencies
     state.paymentCurrencies = options.paymentCurrencies
     state.paymentCurrency = options.paymentCurrencies[0] || USD_CURRENCY_DEFAULT
@@ -158,26 +181,66 @@ const controller = {
     )
   },
 
-  async getQuote() {
-    state.quotesLoading = true
+  async getCryptoCurrencies() {
     try {
-      const quote = await BlockchainApiController.getOnrampQuote({
-        purchaseCurrency: state.purchaseCurrency,
-        paymentCurrency: state.paymentCurrency,
-        amount: state.paymentAmount?.toString() || '0',
-        network: state.purchaseCurrency?.symbol
+      state.cryptoCurrenciesLoading = true
+      const currencies = await BlockchainApiController.getOnRampCryptoCurrencies()
+      state.cryptoCurrencies = currencies
+    } finally {
+      state.cryptoCurrenciesLoading = false
+    }
+  },
+
+  async getFiatCurrencies() {
+    try {
+      state.fiatCurrenciesLoading = true
+      const currencies = await BlockchainApiController.getOnRampFiatCurrencies()
+      state.fiatCurrencies = currencies
+    } finally {
+      state.fiatCurrenciesLoading = false
+    }
+  },
+
+  setSelectedCryptoCurrency(currency: OnRampCryptoCurrency) {
+    state.selectedCryptoCurrency = currency
+  },
+
+  setSelectedFiatCurrency(currency: OnRampFiatCurrency) {
+    state.selectedFiatCurrency = currency
+  },
+
+  async getQuote() {
+    try {
+      state.quote = null
+      state.quoteLoading = true
+
+      if (!state.selectedFiatCurrency) {
+        throw new Error('Fiat currency is not selected')
+      }
+
+      if (!state.selectedCryptoCurrency) {
+        throw new Error('Crypto currency is not selected')
+      }
+
+      if (!state.fiatAmount) {
+        throw new Error('Payment amount is not set')
+      }
+
+      const quote = await BlockchainApiController.getOnRampQuote({
+        fiatCurrency: state.selectedFiatCurrency,
+        cryptoCurrency: state.selectedCryptoCurrency,
+        paymentMethod: DEFAULT_PAYMENT_METHOD,
+        fiatAmount: state.fiatAmount,
+        network: DEFAULT_NETWORK
       })
-      state.quotesLoading = false
-      state.purchaseAmount = Number(quote?.purchaseAmount.amount)
+
+      console.log('quote', quote)
+
+      state.quote = ref({ ...quote }) as OnRampQuote
 
       return quote
-    } catch (error) {
-      state.error = (error as Error).message
-      state.quotesLoading = false
-
-      return null
     } finally {
-      state.quotesLoading = false
+      state.quoteLoading = false
     }
   },
 
@@ -188,9 +251,16 @@ const controller = {
     state.paymentCurrency = USD_CURRENCY_DEFAULT
     state.purchaseCurrencies = [USDC_CURRENCY_DEFAULT]
     state.paymentCurrencies = []
-    state.paymentAmount = undefined
-    state.purchaseAmount = undefined
-    state.quotesLoading = false
+    state.cryptoCurrencies = []
+    state.fiatCurrencies = []
+    state.fiatAmount = undefined
+    state.cryptoAmount = undefined
+    state.quote = null
+    state.quoteLoading = false
+    state.selectedCryptoCurrency = null
+    state.selectedFiatCurrency = null
+    state.cryptoCurrenciesLoading = false
+    state.fiatCurrenciesLoading = false
   }
 }
 

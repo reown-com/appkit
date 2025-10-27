@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" style="height: 100%">
+  <body style="margin: 0; padding: 0; height: 100%; display: grid">
+    <div
+      style="
+        position: relative;
+        width: 500px;
+        height: 80dvh;
+        margin: auto;
+        box-shadow: 0 0 15px #1461db;
+        border-radius: 15px;
+        overflow: hidden;
+      "
+    >
+      <iframe
+        id="transakIframe"
+        allow="camera;microphone;payment"
+        style="height: 100%; width: 100%; border: none"
+      >
+      </iframe>
+    </div>
+
+    <script>
+      class Pusher {
+        constructor(apiKey, options) {
+          console.log('Pusher initialized with API key:', apiKey)
+        }
+
+        subscribe(channelName) {
+          console.log('Subscribed to channel:', channelName)
+          return {
+            bind_global(callback) {
+              console.log('Bound to all events globally')
+            },
+            bind(eventName, callback) {
+              console.log(`Bound to event '${eventName}'`)
+            }
+          }
+        }
+      }
+
+      // Simulate the Transak object
+      const Transak = {
+        EVENTS: {
+          TRANSAK_ORDER_CREATED: 'TRANSAK_ORDER_CREATED'
+        },
+        on(eventName, callback) {
+          console.log(`Listening for event '${eventName}'`)
+        }
+      }
+
+      // import pako from 'pako';
+
+      // const callData = '0xc2db2c4200000000000000000000000000000000000000000000000000000000ee6b2812'
+
+      // const encodedCallData = encodeURIComponent(btoa(String.fromCharCode.apply(null, pako.deflate(callData))))
+
+      const encodedCallData = 'eJwzqEg2SkkySjYxMiATpKaaJRlZGBoBAFugD64%3D'
+
+      // Define settings object
+      const settings = {
+        apiKey: '69feba7f-a1c2-4cfa-a9bd-43072768b0e6',
+        environment: 'staging',
+        themeColor: '000000',
+        defaultPaymentMethod: 'credit_debit_card',
+        walletAddress: '0x908749aDd4B3b19096d7591fA60388eaaB8A9A52',
+        exchangeScreenTitle: 'Buy NFT',
+        disableWalletAddressForm: true,
+        estimatedGasLimit: 70000,
+        calldata: encodedCallData,
+        network: 'vechain',
+        cryptoCurrencyCode: 'VET',
+        nftData: [
+          {
+            imageURL: 'https://pokemon-nfts.s3.ap-southeast-2.amazonaws.com/images/1.png',
+            nftName: 'Pokemon Metadata Legends',
+            collectionAddress: '0x8a20e9e8e736643161ce6a2fe8dd8dd62050cd1e',
+            tokenID: ['6'],
+            price: [15],
+            quantity: 1,
+            nftType: 'ERC721'
+          }
+        ],
+        isNFT: true,
+        contractId: '65ba3f332c9ed19d88a2c6db'
+      }
+
+      // Construct nftData string
+      const nftDataString = encodeURIComponent(btoa(JSON.stringify(settings.nftData)))
+
+      // Set iframe src with settings
+      const iframe = document.getElementById('transakIframe')
+      iframe.src = `https://global-stg.transak.com/
+?apiKey=${settings.apiKey}
+&environment=${settings.environment}
+&themeColor=${settings.themeColor}
+&defaultPaymentMethod=${settings.defaultPaymentMethod}
+&walletAddress=${settings.walletAddress}
+&exchangeScreenTitle=${encodeURIComponent(settings.exchangeScreenTitle)}
+&disableWalletAddressForm=${settings.disableWalletAddressForm}
+&estimatedGasLimit=${settings.estimatedGasLimit}
+&calldata=${settings.calldata}
+&network=${settings.network}
+&cryptoCurrencyCode=${settings.cryptoCurrencyCode}
+&nftData=${nftDataString}
+&isNFT=${settings.isNFT}
+&contractId=${settings.contractId}`
+
+      // Simulate the init function
+      function initTransak() {
+        console.log('Transak initialized')
+      }
+
+      // Call the init function
+      initTransak()
+    </script>
+  </body>
+</html>
