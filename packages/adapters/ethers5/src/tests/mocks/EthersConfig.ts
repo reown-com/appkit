@@ -15,8 +15,8 @@ export const mockEthersConfig = {
     on: vi.fn(),
     removeListener: vi.fn()
   },
-  coinbase: {
-    // Mock Coinbase provider
+  baseAccount: {
+    // Mock Base Account provider
     request: vi.fn(),
     on: vi.fn(),
     removeListener: vi.fn()

@@ -454,7 +454,8 @@ describe('W3mFundWalletView', () => {
     expect(depositFromExchangeButton?.hasAttribute('loading')).toBe(true)
   })
 
-  it('should navigate to PayWithExchange when deposit from exchange button is clicked', async () => {
+  it('should navigate to PayWithExchange and reset exchange state when deposit from exchange button is clicked', async () => {
+    const resetSpy = vi.spyOn(ExchangeController, 'reset')
     const mockNetwork = {
       id: '1',
       caipNetworkId: 'eip155:1' as const,
@@ -504,5 +505,6 @@ describe('W3mFundWalletView', () => {
     expect(pushSpy).toHaveBeenCalledWith('PayWithExchange', {
       redirectView: undefined
     })
+    expect(resetSpy).toHaveBeenCalled()
   })
 })
