@@ -87,11 +87,10 @@ function parseSchemelessHostPort(pattern: string): { host: string; port?: string
   }
 }
 
-function matchNonWildcardPattern(current: URL, currentOrigin: string, pattern: string): boolean {
+function matchNonWildcardPattern(currentOrigin: string, pattern: string): boolean {
   const url = parseUrl(pattern)
   if (url) {
     // When scheme is specified, compare origins only (ignore path)
-
     return url.origin === currentOrigin
   }
 
@@ -430,7 +429,7 @@ export const WcHelpersUtil = {
           return true
         }
         // Keep checking remaining patterns
-      } else if (matchNonWildcardPattern(current, currentOrigin, pattern)) {
+      } else if (matchNonWildcardPattern(currentOrigin, pattern)) {
         return true
       }
     }
