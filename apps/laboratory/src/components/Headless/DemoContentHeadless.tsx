@@ -18,9 +18,10 @@ import {
 import { useAppKitAccount, useDisconnect } from '@reown/appkit/react'
 
 import { AppkitConnectDrawer } from '../../layout/AppkitConnectDrawer'
+import { AccountCard } from '../AccountCard'
 
 export default function DemoContentHeadless() {
-  const { isConnected, address } = useAppKitAccount()
+  const currentAccount = useAppKitAccount()
   const { disconnect } = useDisconnect()
   const controls = useDisclosure({ id: 'headless' })
 
@@ -28,7 +29,7 @@ export default function DemoContentHeadless() {
     <>
       <AppkitConnectDrawer controls={controls} />
 
-      <Card marginTop={10}>
+      <Card marginTop={10} marginBottom={4}>
         <CardHeader>
           <Heading size="md">AppKit Interactions</Heading>
         </CardHeader>
@@ -41,9 +42,11 @@ export default function DemoContentHeadless() {
                   <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
                     Default Button
                   </Text>
-                  <Text fontSize="sm">{address}</Text>
-                  {isConnected ? (
-                    <Button onClick={() => disconnect()}>Disconnect</Button>
+                  <Text fontSize="sm">{currentAccount?.address}</Text>
+                  {currentAccount?.isConnected ? (
+                    <Button width="auto" onClick={() => disconnect()}>
+                      Disconnect
+                    </Button>
                   ) : (
                     <Button onClick={controls.onOpen}>Connect</Button>
                   )}
@@ -53,6 +56,8 @@ export default function DemoContentHeadless() {
           </Stack>
         </CardBody>
       </Card>
+
+      <AccountCard account={currentAccount} />
     </>
   )
 }
