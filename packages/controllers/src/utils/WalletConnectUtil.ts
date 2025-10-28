@@ -65,6 +65,137 @@ export const DEFAULT_METHODS = {
   bip122: ['sendTransfer', 'signMessage', 'signPsbt', 'getAccountAddresses']
 }
 
+function parseUrl(value: string): URL | null {
+  try {
+    return new URL(value)
+  } catch {
+    return null
+  }
+}
+
+function parseSchemelessHostPort(pattern: string): { host: string; port?: string } {
+  const parts = pattern.split('/')
+  const withoutPath = parts.length > 0 && parts[0] !== undefined ? parts[0] : ''
+  const lastColon = withoutPath.lastIndexOf(':')
+  if (lastColon === -1) {
+    return { host: withoutPath }
+  }
+
+  return {
+    host: withoutPath.slice(0, lastColon),
+    port: withoutPath.slice(lastColon + 1)
+  }
+}
+
+function matchNonWildcardPattern(current: URL, currentOrigin: string, pattern: string): boolean {
+  const url = parseUrl(pattern)
+  if (url) {
+    // When scheme is specified, compare origins only (ignore path)
+
+    return url.origin === currentOrigin
+  }
+
+  // Schemeless: treat as hostname[:port]
+  const { host, port } = parseSchemelessHostPort(pattern)
+  // Compare against raw host from the original origin to preserve case-sensitivity
+  const raw = parseOriginRaw(currentOrigin)
+  if (raw && host === raw.host) {
+    if (port !== undefined) {
+      return port === raw.port
+    }
+
+    return true
+  }
+
+  return false
+}
+
+function matchWildcardPattern(current: URL, currentOrigin: string, pattern: string): boolean {
+  // Extract scheme if present and strip path
+  let working = pattern
+  let scheme: string | undefined = undefined
+  const schemeIdx = working.indexOf('://')
+  if (schemeIdx !== -1) {
+    scheme = working.slice(0, schemeIdx)
+    working = working.slice(schemeIdx + 3)
+  }
+  const slashIdx = working.indexOf('/')
+  if (slashIdx !== -1) {
+    working = working.slice(0, slashIdx)
+  }
+
+  // Split host and optional port
+  let hostPart = working
+  let portPart: string | undefined = undefined
+  const lastColon = hostPart.lastIndexOf(':')
+  if (lastColon !== -1) {
+    portPart = hostPart.slice(lastColon + 1)
+    hostPart = hostPart.slice(0, lastColon)
+  }
+
+  // Validate wildcard usage (only full-label '*')
+  const patternLabels = hostPart.split('.')
+  for (const label of patternLabels) {
+    if (label.includes('*') && label !== '*') {
+      return false
+    }
+  }
+
+  // Scheme must match when specified
+  const currentScheme = current.protocol.replace(/:$/u, '')
+  if (scheme && scheme !== currentScheme) {
+    return false
+  }
+
+  // Port must match exactly when specified (or '*' allows any)
+  if (portPart !== undefined) {
+    if (portPart !== '*' && portPart !== current.port) {
+      return false
+    }
+  }
+
+  // Host must have the same number of labels; '*' matches exactly one label
+  /*
+   * Use raw host from the original origin to preserve case-sensitivity
+   */
+  const raw = parseOriginRaw(currentOrigin)
+  const hostForCompare = raw ? raw.host : current.hostname
+  const currentLabels = hostForCompare.split('.')
+  if (patternLabels.length !== currentLabels.length) {
+    return false
+  }
+
+  for (let i = patternLabels.length - 1; i >= 0; i -= 1) {
+    const p = patternLabels[i]
+    const c = currentLabels[i]
+    if (p !== '*' && p !== c) {
+      return false
+    }
+  }
+
+  return true
+}
+
+function parseOriginRaw(origin: string): { scheme: string; host: string; port?: string } | null {
+  const schemeIdx = origin.indexOf('://')
+  if (schemeIdx === -1) {
+    return null
+  }
+  const scheme = origin.slice(0, schemeIdx)
+  const start = schemeIdx + 3
+  let end = origin.indexOf('/', start)
+  if (end === -1) {
+    end = origin.length
+  }
+  const hostPort = origin.slice(start, end)
+  const lastColon = hostPort.lastIndexOf(':')
+  if (lastColon === -1) {
+    return { scheme, host: hostPort }
+  }
+
+  return { scheme, host: hostPort.slice(0, lastColon), port: hostPort.slice(lastColon + 1) }
+}
+
 export const WcHelpersUtil = {
   RPC_ERROR_CODE: {
     USER_REJECTED: 5000,
@@ -271,34 +402,39 @@ export const WcHelpersUtil = {
     allowedPatterns: string[],
     defaultAllowedOrigins: string[]
   ): boolean {
-    for (const pattern of [...allowedPatterns, ...defaultAllowedOrigins]) {
-      if (pattern.includes('*')) {
-        // Convert wildcard pattern to regex, escape special chars, replace *, match whole string
-        const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
-        const regexString = `^${escapedPattern.replace(/\\\*/gu, '.*')}$`
-        const regex = new RegExp(regexString, 'u')
+    const patterns = [...allowedPatterns, ...defaultAllowedOrigins]
+    // Spec: empty allowlist allows all origins
+    if (allowedPatterns.length === 0) {
+      return true
+    }
+    // Parse current origin up-front
+    const current = parseUrl(currentOrigin)
+    if (!current) {
+      // Always allow localhost and 127.0.0.1
+      if (currentOrigin.startsWith('localhost') || currentOrigin.startsWith('127.0.0.1')) {
+        return true
+      }
 
-        if (regex.test(currentOrigin)) {
+      // Legacy exact string equality when pattern has no wildcard
+      return patterns.some(pattern => !pattern.includes('*') && pattern === currentOrigin)
+    }
+
+    // Local development is always permitted
+    if (current.hostname === 'localhost' || current.hostname === '127.0.0.1') {
+      return true
+    }
+
+    for (const pattern of patterns) {
+      if (pattern.includes('*')) {
+        if (matchWildcardPattern(current, currentOrigin, pattern)) {
           return true
         }
-      } else {
-        /**
-         * There are some cases where pattern is getting just the origin, where using new URL(pattern).origin will throw an error
-         * thus we a try catch to handle this case
-         */
-        try {
-          if (new URL(pattern).origin === currentOrigin) {
-            return true
-          }
-        } catch (e) {
-          if (pattern === currentOrigin) {
-            return true
-          }
-        }
+        // Keep checking remaining patterns
+      } else if (matchNonWildcardPattern(current, currentOrigin, pattern)) {
+        return true
       }
     }
 
-    // No match found
     return false
   },
 

@@ -549,8 +549,10 @@ describe('WcHelpersUtil', () => {
       ).toBe(false)
     })
 
-    test('should deny if allowed lists are empty', () => {
-      expect(WcHelpersUtil.isOriginAllowed('https://any.com', [], [])).toBe(false)
+    test('should allow if allowed lists are empty (spec: empty allowlist allows all)', () => {
+      expect(WcHelpersUtil.isOriginAllowed('https://any.com', [], [])).toBe(true)
+      expect(WcHelpersUtil.isOriginAllowed('http://any.com', [], [])).toBe(true)
+      expect(WcHelpersUtil.isOriginAllowed('https://sub.any.com', [], [])).toBe(true)
     })
 
     test('should handle origins and patterns with dots correctly', () => {
@@ -585,6 +587,62 @@ describe('WcHelpersUtil', () => {
       expect(
         WcHelpersUtil.isOriginAllowed('https://app.SAFE.org', allowedPatterns, defaultOrigins)
       ).toBe(false)
+    })
+
+    // Spec-specific coverage
+    test('wildcard should only match a single label (spec: https://*.example.com)', () => {
+      const patterns = ['https://*.example.com']
+      expect(WcHelpersUtil.isOriginAllowed('https://www.example.com', patterns, [])).toBe(true)
+      expect(WcHelpersUtil.isOriginAllowed('https://example.com', patterns, [])).toBe(false)
+      expect(WcHelpersUtil.isOriginAllowed('https://www.subdomain.example.com', patterns, [])).toBe(
+        false
+      )
+    })
+
+    test('multi-label wildcards (spec: https://*.*.example.com)', () => {
+      const patterns = ['https://*.*.example.com']
+      expect(WcHelpersUtil.isOriginAllowed('https://www.subdomain.example.com', patterns, [])).toBe(
+        true
+      )
+      expect(WcHelpersUtil.isOriginAllowed('https://www.example.com', patterns, [])).toBe(false)
+      expect(WcHelpersUtil.isOriginAllowed('https://example.com', patterns, [])).toBe(false)
+    })
+
+    test('partial-label wildcards are invalid (spec: https://www-*.example.com)', () => {
+      const patterns = ['https://www-*.example.com']
+      expect(WcHelpersUtil.isOriginAllowed('https://www-sub.example.com', patterns, [])).toBe(false)
+      expect(WcHelpersUtil.isOriginAllowed('https://www.example.com', patterns, [])).toBe(false)
+    })
+
+    test('schemeless patterns allow http and https (spec: example.com)', () => {
+      const patterns = ['example.com']
+      expect(WcHelpersUtil.isOriginAllowed('https://example.com', patterns, [])).toBe(true)
+      expect(WcHelpersUtil.isOriginAllowed('http://example.com', patterns, [])).toBe(true)
+      expect(WcHelpersUtil.isOriginAllowed('https://www.example.com', patterns, [])).toBe(false)
+      expect(WcHelpersUtil.isOriginAllowed('http://www.example.com', patterns, [])).toBe(false)
+    })
+
+    test('scheme-specific patterns must match exactly (spec: https://example.com)', () => {
+      const patterns = ['https://example.com']
+      expect(WcHelpersUtil.isOriginAllowed('https://example.com', patterns, [])).toBe(true)
+      expect(WcHelpersUtil.isOriginAllowed('http://example.com', patterns, [])).toBe(false)
+    })
+
+    test('port-specific patterns must match exactly (spec: https://example.com:8080)', () => {
+      const patterns = ['https://example.com:8080']
+      expect(WcHelpersUtil.isOriginAllowed('https://example.com:8080', patterns, [])).toBe(true)
+      expect(WcHelpersUtil.isOriginAllowed('https://example.com', patterns, [])).toBe(false)
+      expect(WcHelpersUtil.isOriginAllowed('https://example.com:8443', patterns, [])).toBe(false)
+    })
+
+    test('localhost and 127.0.0.1 are always permitted regardless of allowlists', () => {
+      expect(WcHelpersUtil.isOriginAllowed('http://localhost:3000', [], [])).toBe(true)
+      expect(WcHelpersUtil.isOriginAllowed('https://localhost:8443', [], [])).toBe(true)
+      expect(WcHelpersUtil.isOriginAllowed('http://127.0.0.1:3000', [], [])).toBe(true)
+      expect(WcHelpersUtil.isOriginAllowed('https://127.0.0.1:8443', [], [])).toBe(true)
+      // No explicit port
+      expect(WcHelpersUtil.isOriginAllowed('http://localhost', [], [])).toBe(true)
+      expect(WcHelpersUtil.isOriginAllowed('http://127.0.0.1', [], [])).toBe(true)
     })
 
     test('should allow 127.0.0.1 IP address with HTTP', () => {
