@@ -1,21 +1,16 @@
-import type { Chain } from 'viem'
-
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { ApiController } from '../controllers/ApiController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
-import type { ConnectorWithProviders, WcWallet } from './TypeUtil.js'
+import type { WcWallet } from './TypeUtil.js'
 
-// -- Types --------------------------------------------- //
-
+// --- Utils --------------------------------------------- //
 function getImageCDN(imageId: string) {
   return `https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/${imageId}/md`
 }
 
-/**
- * Unified wallet item type that can be either a connector or a WalletConnect wallet
- */
-export type WalletItem2 = {
+// --- Types --------------------------------------------- //
+export type WalletItem = {
   id: string
   name: string
   imageUrl: string
@@ -42,48 +37,54 @@ export type WalletItem2 = {
   isRecent: boolean
 }
 
-export type WalletItem =
-  | {
-      type: 'connector'
-      connector: ConnectorWithProviders
-    }
-  | {
-      wallet: WcWallet
-      type: 'wallet'
-    }
-
-// -- Main Export --------------------------------------- //
-
 export const ConnectUtil = {
   /**
    * Transforms connectors and wallets into a unified list of wallet items
    */
-  getUnifiedWalletList(): WalletItem2[] {
+  getUnifiedWalletList(): WalletItem[] {
     const connectors = ConnectorController.state.connectors
     const wallets = ApiController.state.wallets
-    const items: WalletItem2[] = []
+    const items: WalletItem[] = []
 
-    const filteredConnectors = connectors.filter(c => c.type !== 'AUTH')
+    const wcConnector = connectors.find(c => c.id === 'walletConnect')
+    const filteredConnectors = connectors.filter(
+      c => c.type !== 'AUTH' && c.name !== 'Browser Wallet' && c.id !== wcConnector?.id
+    )
 
-    // Add WalletConnect connector (desktop only)
     filteredConnectors.map(connector => {
-      items.push({
-        id: connector.id,
-        connectors:
-          connector.connectors?.map(c => ({
+      const hasMultipleConnectors = connector.connectors?.length
+      const connectors = hasMultipleConnectors
+        ? connector.connectors?.map(c => ({
             id: c.id,
             rdns: c.info?.rdns,
             chain: c.chain
-          })) || [],
+          })) || []
+        : [connector]
+
+      items.push({
+        id: connector.id,
+        connectors,
         name: connector.name,
         imageUrl: connector.imageUrl || '',
         isInjected: true,
         isRecent: false,
         walletInfo: {
-          supportedNamespaces: connector.connectors?.map(c => c.chain) || []
+          supportedNamespaces: connectors?.map(c => c.chain) || []
         }
       })
     })
+
+    if (wcConnector) {
+      items.push({
+        id: wcConnector.id,
+        connectors: [],
+        name: wcConnector.name,
+        imageUrl: wcConnector.imageId ? getImageCDN(wcConnector.imageId) : '',
+        isInjected: false,
+        isRecent: false,
+        walletInfo: {}
+      })
+    }
 
     wallets.map(w => {
       items.push({

@@ -1,19 +1,22 @@
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react'
 
 import { type ChainNamespace } from '@reown/appkit-common'
-import { type WalletItem2, useAppKitConnect } from '@reown/appkit-controllers/react'
-import '@reown/appkit-ui/wui-icon'
+import { type WalletItem, useAppKitConnect } from '@reown/appkit/react'
 
 import { InjectedWalletItem } from './InjectedWalletItem'
 
 interface Props {
-  onConnect: (wallet: WalletItem2, namespace: ChainNamespace) => void
+  connectingWallet: WalletItem | undefined
+  onConnect: (wallet: WalletItem, namespace: ChainNamespace) => void
   onSeeAll: () => void
 }
 
-export function AppKitHeadlessInjectedWallets({ onConnect, onSeeAll }: Props) {
-  const { wallets } = useAppKitConnect()
-  const injectedWallets = wallets.filter(w => w.isInjected)
+export function AppKitHeadlessInjectedWallets({ connectingWallet, onConnect, onSeeAll }: Props) {
+  const { wcUri, data } = useAppKitConnect()
+
+  const injectedWallets = data.filter(w => w.isInjected)
+  const wcWallet = data.find(w => !w.isInjected && w.id === 'walletConnect')
+  const isFetchingWcUri = !wcUri && connectingWallet?.isInjected === false
 
   return (
     <Flex direction="column" gap={4} paddingTop={8}>
@@ -29,8 +32,20 @@ export function AppKitHeadlessInjectedWallets({ onConnect, onSeeAll }: Props) {
         </Box>
       ) : (
         <Flex direction="column" gap={2}>
+          {wcWallet ? (
+            <InjectedWalletItem
+              wallet={wcWallet}
+              onConnect={onConnect}
+              isConnecting={isFetchingWcUri && connectingWallet?.id === wcWallet.id}
+            />
+          ) : null}
           {injectedWallets.map(wallet => (
-            <InjectedWalletItem key={wallet.name} wallet={wallet} onConnect={onConnect} />
+            <InjectedWalletItem
+              key={wallet.name}
+              wallet={wallet}
+              onConnect={onConnect}
+              isConnecting={connectingWallet?.id === wallet.id}
+            />
           ))}
         </Flex>
       )}

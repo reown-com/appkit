@@ -12,7 +12,7 @@ import { ConnectionController } from '../src/controllers/ConnectionController.js
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { OptionsController } from '../src/controllers/OptionsController.js'
 import { ProviderController } from '../src/controllers/ProviderController.js'
-import { ConnectUtil, type WalletItem2 } from '../src/utils/ConnectUtil.js'
+import { ConnectUtil, type WalletItem } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
@@ -25,7 +25,6 @@ import { AssetUtil, StorageUtil } from './utils.js'
 
 // -- Types ------------------------------------------------------------
 export type { Connection } from '@reown/appkit-common'
-export type { WalletItem2 } from '../src/utils/ConnectUtil.js'
 
 interface DisconnectParams {
   id?: string
@@ -306,17 +305,28 @@ export interface UseAppKitConnectReturn {
    * Each wallet has type and chains values so developers can build UI with better UX.
    * For example, they can render wallets with `recent` badge, just like AppKit does.
    */
-  wallets: WalletItem2[]
-
-  /**
-   * Boolean that indicates if the user is currently connecting to a wallet.
-   */
-  isConnecting: boolean
+  data: WalletItem[]
 
   /**
    * Boolean that indicates if WalletConnect wallets are being fetched.
    */
-  isFetchingWcWallets: boolean
+  isFetchingWallets: boolean
+
+  /**
+   * The current WalletConnect URI for QR code display.
+   * This is set when connecting to a WalletConnect wallet.
+   */
+  wcUri?: string
+
+  /**
+   * The current page number.
+   */
+  page: number
+
+  /**
+   * The total number of available wallets.
+   */
+  count: number
 
   /**
    * Function to fetch WalletConnect wallets from the explorer API.
@@ -324,7 +334,7 @@ export interface UseAppKitConnectReturn {
    * @param options - Options for fetching wallets
    * @param options.page - Page number to fetch (default: 1)
    */
-  fetchWcWallets: (options?: { page?: number }) => Promise<void>
+  fetchWallets: (options?: { page?: number }) => Promise<void>
 
   /**
    * Function to connect to a wallet.
@@ -335,18 +345,7 @@ export interface UseAppKitConnectReturn {
    * @param callbacks - Success and error callbacks
    * @returns Promise that resolves when connection completes or rejects on error
    */
-  connect: (wallet: WalletItem2, namespace?: ChainNamespace) => Promise<void>
-
-  /**
-   * The current WalletConnect URI for QR code display.
-   * This is set when connecting to a WalletConnect wallet.
-   */
-  wcUri?: string
-
-  /**
-   * Function to clear the WalletConnect URI.
-   */
-  clearWcUri: () => void
+  connect: (wallet: WalletItem, namespace?: ChainNamespace) => Promise<void>
 }
 
 /**
@@ -354,9 +353,11 @@ export interface UseAppKitConnectReturn {
  * Provides all the data and functions needed to build a custom connect UI.
  */
 export function useAppKitConnect(options?: UseAppKitConnectOptions): UseAppKitConnectReturn {
-  const connectorState = useSnapshot(ConnectorController.state)
-  const apiState = useSnapshot(ApiController.state)
-  const { status, wcUri } = useSnapshot(ConnectionController.state)
+  const { wcUri } = useSnapshot(ConnectionController.state)
+  const { page, count } = useSnapshot(ApiController.state)
+  const [isFetchingWallets, setIsFetchingWallets] = useState(false)
+
+  const wallets = ConnectUtil.getUnifiedWalletList()
 
   useEffect(() => {
     if (wcUri) {
@@ -364,38 +365,19 @@ export function useAppKitConnect(options?: UseAppKitConnectOptions): UseAppKitCo
     }
   }, [wcUri])
 
-  const [isFetchingWcWallets, setIsFetchingWcWallets] = useState(false)
-
-  const wallets = ConnectUtil.getUnifiedWalletList()
-
-  void connectorState.connectors.length
-  void apiState.wallets.length
-
-  const isConnecting = status === 'connecting'
-
-  const clearWcUri = useCallback(() => {
-    ConnectionController.resetUri()
-  }, [])
-
-  /**
-   * Fetch WalletConnect wallets from the explorer API
-   */
-  const fetchWcWallets = useCallback(async (fetchOptions?: { page?: number }) => {
-    setIsFetchingWcWallets(true)
+  const fetchWallets = useCallback(async (fetchOptions?: { page?: number }) => {
+    setIsFetchingWallets(true)
     try {
       await ApiController.fetchWalletsByPage({ page: fetchOptions?.page ?? 1 })
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Failed to fetch WalletConnect wallets:', error)
     } finally {
-      setIsFetchingWcWallets(false)
+      setIsFetchingWallets(false)
     }
   }, [])
 
-  /**
-   * Connect to a wallet
-   */
-  async function connect(_wallet: WalletItem2, namespace?: ChainNamespace) {
+  const connect = useCallback(async (_wallet: WalletItem, namespace?: ChainNamespace) => {
     const wallet = wallets.find(w => w.name === _wallet.name)
     const connector = wallet?.connectors.find(c => c.chain === namespace)
 
@@ -410,15 +392,15 @@ export function useAppKitConnect(options?: UseAppKitConnectOptions): UseAppKitCo
     } else {
       await ConnectionController.connectWalletConnect({ cache: 'never' })
     }
-  }
+  }, [])
 
   return {
-    wallets,
-    isConnecting,
-    isFetchingWcWallets,
-    fetchWcWallets,
-    connect,
+    data: wallets,
+    isFetchingWallets,
     wcUri,
-    clearWcUri
+    page,
+    count,
+    connect,
+    fetchWallets
   }
 }

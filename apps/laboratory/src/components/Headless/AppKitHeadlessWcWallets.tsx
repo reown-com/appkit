@@ -14,32 +14,27 @@ import {
 } from '@chakra-ui/react'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { type WalletItem2, useAppKitConnect } from '@reown/appkit-controllers/react'
 import '@reown/appkit-ui/wui-icon'
+import { type WalletItem, useAppKitConnect } from '@reown/appkit/react'
 
 import { WcWalletItem } from './WcWalletItem'
 
 interface Props {
-  connectingWallet:
-    | {
-        name: string
-        imageUrl: string
-      }
-    | undefined
-  onConnect: (wallet: WalletItem2, namespace?: ChainNamespace) => void
+  connectingWallet: WalletItem | undefined
+  onConnect: (wallet: WalletItem, namespace?: ChainNamespace) => void
   onBack: () => void
-  onLoadMore?: () => void
 }
 
-export function AppKitHeadlessWcWallets({ onConnect, onBack, onLoadMore }: Props) {
-  const { wallets, isFetchingWcWallets } = useAppKitConnect()
+export function AppKitHeadlessWcWallets({ connectingWallet, onConnect, onBack }: Props) {
+  const { data, wcUri, isFetchingWallets, page, count, fetchWallets } = useAppKitConnect()
 
-  const wcWallets = wallets.filter(w => !w.isInjected)
+  const wcWallets = data.filter(w => !w.isInjected)
+  const isFetchingWcUri = !wcUri && connectingWallet?.isInjected === false
 
   const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
-    onLoadMore?.()
+    fetchWallets?.()
   }, [])
 
   return (
@@ -54,7 +49,7 @@ export function AppKitHeadlessWcWallets({ onConnect, onBack, onLoadMore }: Props
           size="sm"
         />
         <Text fontSize="lg" fontWeight="semibold">
-          Search Wallets
+          Search Wallets ({count})
         </Text>
       </Flex>
 
@@ -73,7 +68,7 @@ export function AppKitHeadlessWcWallets({ onConnect, onBack, onLoadMore }: Props
 
       {/* Wallets List */}
       <Box flex={1} overflowY="auto" pr={2}>
-        {isFetchingWcWallets && wcWallets.length === 0 ? (
+        {isFetchingWallets && wcWallets.length === 0 ? (
           <Flex justify="center" align="center" minH="200px">
             <Spinner size="lg" />
           </Flex>
@@ -87,24 +82,29 @@ export function AppKitHeadlessWcWallets({ onConnect, onBack, onLoadMore }: Props
         ) : (
           <Flex direction="column" gap="2">
             {wcWallets.map(item => (
-              <WcWalletItem key={item.name + item.id} item={item} onConnect={onConnect} />
+              <WcWalletItem
+                key={item.name + item.id}
+                item={item}
+                onConnect={onConnect}
+                isConnecting={isFetchingWcUri && connectingWallet?.id === item.id}
+              />
             ))}
           </Flex>
         )}
 
         {/* Load More Button */}
-        {onLoadMore && (
-          <Button
-            width="100%"
-            variant="outline"
-            onClick={onLoadMore}
-            isLoading={isFetchingWcWallets}
-            loadingText="Loading..."
-            mt={4}
-          >
-            Load More Wallets
-          </Button>
-        )}
+        <Button
+          width="100%"
+          variant="outline"
+          onClick={() => {
+            fetchWallets?.({ page: page + 1 })
+          }}
+          isLoading={isFetchingWallets}
+          loadingText="Loading..."
+          mt={4}
+        >
+          Load More Wallets
+        </Button>
       </Box>
     </Flex>
   )

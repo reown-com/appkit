@@ -7,7 +7,6 @@ import { appStoreSvg } from '../../assets/svg/app-store.js'
 import { appleSvg } from '../../assets/svg/apple.js'
 import { bitcoinSvg } from '../../assets/svg/bitcoin.js'
 import { chromeStoreSvg } from '../../assets/svg/chrome-store.js'
-import { cosmosSvg } from '../../assets/svg/cosmos.js'
 import { cursorSvg } from '../../assets/svg/cursor.js'
 import { discordSvg } from '../../assets/svg/discord.js'
 import { ethereumSvg } from '../../assets/svg/ethereum.js'
@@ -17,10 +16,8 @@ import { farcasterSvg } from '../../assets/svg/farcaster.js'
 import { githubSvg } from '../../assets/svg/github.js'
 import { googleSvg } from '../../assets/svg/google.js'
 import { playStoreSvg } from '../../assets/svg/play-store.js'
-import { polkadotSvg } from '../../assets/svg/polkadot.js'
 import { reownSvg } from '../../assets/svg/reown-logo.js'
 import { solanaSvg } from '../../assets/svg/solana.js'
-import { stellarSvg } from '../../assets/svg/stellar.js'
 import { telegramSvg } from '../../assets/svg/telegram.js'
 import { twitchSvg } from '../../assets/svg/twitch.js'
 import { twitterIconSvg } from '../../assets/svg/twitterIcon.js'
@@ -198,8 +195,6 @@ const svgOptions: Partial<Record<IconType, TemplateResult<2>>> = {
   cursor: cursorSvg,
   discord: discordSvg,
   ethereum: ethereumSvg,
-  cosmos: cosmosSvg,
-  polkadot: polkadotSvg,
   etherscan: etherscanSvg,
   facebook: facebookSvg,
   farcaster: farcasterSvg,
@@ -208,7 +203,6 @@ const svgOptions: Partial<Record<IconType, TemplateResult<2>>> = {
   playStore: playStoreSvg,
   reown: reownSvg,
   solana: solanaSvg,
-  stellar: stellarSvg,
   telegram: telegramSvg,
   twitch: twitchSvg,
   twitter: xSvg,

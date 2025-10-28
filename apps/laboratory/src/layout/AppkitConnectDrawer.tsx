@@ -11,11 +11,7 @@ import {
 } from '@chakra-ui/react'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import {
-  type WalletItem2,
-  useAppKitAccount,
-  useAppKitConnect
-} from '@reown/appkit-controllers/react'
+import { type WalletItem, useAppKitAccount, useAppKitConnect } from '@reown/appkit/react'
 
 import { AppKitHeadlessInjectedWallets } from '@/src/components/Headless/AppKitHeadlessInjectedWallets'
 import { AppKitHeadlessQRCode } from '@/src/components/Headless/AppKitHeadlessQRCode'
@@ -32,7 +28,7 @@ export function AppkitConnectDrawer({ controls }: Props) {
   const toast = useToast()
   const { isConnected } = useAppKitAccount()
   const [wcUri, setWcUri] = useState<string | undefined>(undefined)
-  const { wallets, connect, fetchWcWallets } = useAppKitConnect({
+  const { connect, fetchWallets } = useAppKitConnect({
     onHandleWcUri: uri => {
       setWcUri(uri)
       setCurrentView('qrcode')
@@ -41,28 +37,36 @@ export function AppkitConnectDrawer({ controls }: Props) {
 
   // View state management
   const [currentView, setCurrentView] = useState<ViewState>('connect')
-  const [connectingWallet, setConnectingWallet] = useState<WalletItem2 | undefined>(undefined)
+  const [connectingWallet, setConnectingWallet] = useState<WalletItem | undefined>(undefined)
 
   // Reset view when drawer closes
-  const handleClose = () => {
+  function handleClose() {
     setCurrentView('connect')
     setConnectingWallet(undefined)
     setWcUri(undefined)
     onClose()
   }
 
-  const handleConnect = async (wallet: WalletItem2, namespace?: ChainNamespace) => {
+  async function handleConnect(wallet: WalletItem, namespace?: ChainNamespace) {
     setConnectingWallet(wallet)
 
     await connect(wallet, namespace)
+      .then(() => {
+        toast({ title: 'Connected', status: 'success' })
+      })
+      .catch(() => {
+        toast({ title: 'Connection declined', status: 'error' })
+        setConnectingWallet(undefined)
+      })
   }
 
-  const handleSeeAll = () => {
+  function handleSeeAll() {
     setCurrentView('search')
   }
 
   function handleBack() {
     setWcUri(undefined)
+    setConnectingWallet(undefined)
 
     if (currentView === 'qrcode') {
       setCurrentView('search')
@@ -71,12 +75,7 @@ export function AppkitConnectDrawer({ controls }: Props) {
     }
   }
 
-  const handleLoadMore = async () => {
-    // Fetch more wallets (pagination will be handled by ApiController)
-    await fetchWcWallets()
-  }
-
-  const handleCopyUri = () => {
+  function handleCopyUri() {
     if (wcUri) {
       navigator.clipboard.writeText(wcUri)
       toast({
@@ -95,8 +94,6 @@ export function AppkitConnectDrawer({ controls }: Props) {
     }
   }, [isConnected, isOpen])
 
-  console.log('wallets', wallets)
-
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={handleClose} size="md">
       <DrawerOverlay />
@@ -105,7 +102,11 @@ export function AppkitConnectDrawer({ controls }: Props) {
         <DrawerBody pt={8}>
           {/* Render different views based on state */}
           {currentView === 'connect' && (
-            <AppKitHeadlessInjectedWallets onConnect={handleConnect} onSeeAll={handleSeeAll} />
+            <AppKitHeadlessInjectedWallets
+              connectingWallet={connectingWallet}
+              onConnect={handleConnect}
+              onSeeAll={handleSeeAll}
+            />
           )}
 
           {currentView === 'search' && (
@@ -113,7 +114,6 @@ export function AppkitConnectDrawer({ controls }: Props) {
               connectingWallet={connectingWallet}
               onConnect={handleConnect}
               onBack={handleBack}
-              onLoadMore={handleLoadMore}
             />
           )}
 

@@ -1,18 +1,20 @@
 import QRCode from 'react-qr-code'
 
 import { ArrowBackIcon, CopyIcon } from '@chakra-ui/icons'
-import { Box, Button, Flex, IconButton, Image, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Flex, IconButton, Image, Spinner, Text, VStack } from '@chakra-ui/react'
 
-import { type WalletItem2, useAppKitConnect } from '@reown/appkit/react'
+import { type WalletItem, useAppKitConnect } from '@reown/appkit/react'
 
 interface Props {
-  wallet: WalletItem2
+  wallet: WalletItem
   onBack: () => void
   onCopyUri?: () => void
 }
 
 export function AppKitHeadlessQRCode({ wallet, onBack, onCopyUri }: Props) {
   const { wcUri } = useAppKitConnect()
+
+  const isFetchingWcUri = !wcUri && wallet?.isInjected === false
 
   return (
     <Flex direction="column" gap={4} height="100%">
@@ -100,11 +102,15 @@ export function AppKitHeadlessQRCode({ wallet, onBack, onCopyUri }: Props) {
         >
           Copy
         </Button>
-        <QRCode
-          value={wcUri}
-          size={200}
-          style={{ height: 'auto', maxWidth: '100%', width: 'auto' }}
-        />
+        {isFetchingWcUri ? (
+          <Spinner />
+        ) : (
+          <QRCode
+            value={wcUri}
+            size={200}
+            style={{ height: 'auto', maxWidth: '100%', width: 'auto' }}
+          />
+        )}
       </Box>
 
       {/* Instructions */}

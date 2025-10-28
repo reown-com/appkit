@@ -1,15 +1,16 @@
-import { Box, Flex, Image, Text } from '@chakra-ui/react'
+import { ChevronRightIcon } from '@chakra-ui/icons'
+import { Box, Flex, Image, Spinner, Text } from '@chakra-ui/react'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { type WalletItem2 } from '@reown/appkit-controllers/react'
-import '@reown/appkit-ui/wui-icon'
+import { type WalletItem } from '@reown/appkit/react'
 
 interface Props {
-  item: WalletItem2
-  onConnect: (wallet: WalletItem2, namespace?: ChainNamespace) => void
+  item: WalletItem
+  onConnect: (wallet: WalletItem, namespace?: ChainNamespace) => void
+  isConnecting: boolean
 }
 
-export function WcWalletItem({ item, onConnect }: Props) {
+export function WcWalletItem({ item, onConnect, isConnecting }: Props) {
   return (
     <Box
       key={item.name}
@@ -65,7 +66,7 @@ export function WcWalletItem({ item, onConnect }: Props) {
           {item.name}
         </Text>
 
-        <wui-icon name="chevronRight" color="default"></wui-icon>
+        {isConnecting ? <Spinner /> : <ChevronRightIcon />}
       </Flex>
 
       {/* Wallet chains info */}
