@@ -78,8 +78,7 @@ export class W3mBuySelectTokenView extends LitElement {
   }
 
   private templateSearchInput() {
-    const placeholder =
-      this.onRampSelectType === 'fiat' ? 'Search fiat currency' : 'Search crypto currency'
+    const placeholder = this.onRampSelectType === 'fiat' ? 'Search currency' : 'Search token'
     const testId =
       this.onRampSelectType === 'fiat'
         ? 'swap-select-token-search-input'

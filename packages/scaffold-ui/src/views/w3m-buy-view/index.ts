@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { NumberUtil } from '@reown/appkit-common'
+import { NumberUtil, ParseUtil } from '@reown/appkit-common'
 import {
   ChainController,
   CoreHelperUtil,
@@ -77,7 +77,7 @@ export class W3mBuyView extends LitElement {
               .onSetAmount=${this.handleChangeFiatAmount.bind(this)}
               target="sourceToken"
               .currency=${this.fiatCurrency}
-              placeholderButtonLabel="Select fiat"
+              placeholderButtonLabel="Select currency"
             ></w3m-onramp-input>
             <w3m-onramp-input
               type="crypto"
@@ -85,7 +85,7 @@ export class W3mBuyView extends LitElement {
               .disabled=${true}
               target="targetToken"
               .currency=${this.cryptoCurrency}
-              placeholderButtonLabel="Select crypto"
+              placeholderButtonLabel="Select token"
               .readOnly=${true}
             ></w3m-onramp-input>
             ${this.quoteDetailsTemplate()} ${this.buyButtonTemplate()}
@@ -194,6 +194,12 @@ export class W3mBuyView extends LitElement {
       throw new Error('Fiat currency is not selected')
     }
 
+    if (!ChainController.state.activeCaipAddress) {
+      throw new Error('Wallet address is not available')
+    }
+
+    const { address } = ParseUtil.parseCaipAddress(ChainController.state.activeCaipAddress)
+    console.log('this.quote', this.fiatCurrency.symbol)
     const url = OnRampUtil.createTransakUrl({
       environment: 'staging',
       colorMode: 'DARK',
@@ -203,7 +209,7 @@ export class W3mBuyView extends LitElement {
       productsAvailed: 'BUY',
       widgetHeight: '800',
       widgetWidth: '500',
-      walletAddress: ChainController.state.activeCaipAddress as string,
+      walletAddress: address,
       exchangeScreenTitle: 'Buy Crypto',
       disableWalletAddressForm: 'false',
       cryptoCurrencyCode: this.cryptoCurrency.symbol,
