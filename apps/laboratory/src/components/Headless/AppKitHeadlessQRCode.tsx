@@ -12,9 +12,7 @@ interface Props {
 }
 
 export function AppKitHeadlessQRCode({ wallet, onBack, onCopyUri }: Props) {
-  const { wcUri } = useAppKitWallets()
-
-  const isFetchingWcUri = !wcUri && wallet?.isInjected === false
+  const { wcUri, isFetchingWcUri } = useAppKitWallets()
 
   return (
     <Flex direction="column" gap={4} height="100%">

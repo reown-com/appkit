@@ -51,7 +51,7 @@ export const ConnectUtil = {
       c => c.type !== 'AUTH' && c.name !== 'Browser Wallet' && c.id !== wcConnector?.id
     )
 
-    filteredConnectors.map(connector => {
+    filteredConnectors.forEach(connector => {
       const hasMultipleConnectors = connector.connectors?.length
       const connectors = hasMultipleConnectors
         ? connector.connectors?.map(c => ({ id: c.id, chain: c.chain })) || []
@@ -82,7 +82,7 @@ export const ConnectUtil = {
       })
     }
 
-    wallets.map(w => {
+    wallets.forEach(w => {
       items.push({
         id: w.id,
         connectors: [],

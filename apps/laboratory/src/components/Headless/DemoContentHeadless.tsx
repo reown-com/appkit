@@ -19,7 +19,7 @@ import { useAppKitAccount, useDisconnect } from '@reown/appkit/react'
 
 import { AppkitConnectDrawer } from '../../layout/AppkitConnectDrawer'
 
-export default function DemoContentHeadless({}: {}) {
+export default function DemoContentHeadless() {
   const { isConnected, address } = useAppKitAccount()
   const { disconnect } = useDisconnect()
   const controls = useDisclosure({ id: 'headless' })

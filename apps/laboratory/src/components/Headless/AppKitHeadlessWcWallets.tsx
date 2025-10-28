@@ -9,7 +9,6 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  Spinner,
   Text
 } from '@chakra-ui/react'
 
@@ -67,11 +66,7 @@ export function AppKitHeadlessWcWallets({ connectingWallet, onConnect, onBack }:
 
       {/* Wallets List */}
       <Box flex={1} overflowY="auto" pr={2}>
-        {isFetchingWallets && wcWallets.length === 0 ? (
-          <Flex justify="center" align="center" minH="200px">
-            <Spinner size="lg" />
-          </Flex>
-        ) : wcWallets.length === 0 ? (
+        {wcWallets.length === 0 ? (
           <Box p={8} textAlign="center">
             <Text color="gray.500">No wallets found</Text>
             <Text fontSize="sm" color="gray.400" mt={2}>
