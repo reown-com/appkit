@@ -104,7 +104,7 @@ export function AppKitHeadlessQRCode({ wallet, onBack, onCopyUri }: Props) {
           <Spinner />
         ) : (
           <QRCode
-            value={wcUri}
+            value={wcUri || ''}
             size={200}
             style={{ height: 'auto', maxWidth: '100%', width: 'auto' }}
           />

@@ -22,7 +22,7 @@ export default function Page() {
   const config = getAppKitConfigByName(searchParams.get('name') || '')
   const isHeadless = searchParams.get('name') === 'headless'
 
-  if (!config && !isHeadless) {
+  if (!config) {
     return (
       <Card p={4} mt={2}>
         <Heading size="xs" textTransform="uppercase" pb="2">

@@ -5,11 +5,11 @@ import { Box, Button, Flex, Image, Spinner, Text } from '@chakra-ui/react'
 
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import '@reown/appkit-ui/wui-icon'
-import { type WalletItem } from '@reown/appkit/react'
+import { type UseAppKitWalletsReturn } from '@reown/appkit/react'
 
 interface InjectedWalletItemProps {
-  wallet: WalletItem
-  onConnect: (wallet: WalletItem, namespace: ChainNamespace) => void
+  wallet: UseAppKitWalletsReturn['data'][number]
+  onConnect: (wallet: UseAppKitWalletsReturn['data'][number], namespace: ChainNamespace) => void
   isConnecting: boolean
 }
 
