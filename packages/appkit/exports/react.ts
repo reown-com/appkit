@@ -71,7 +71,8 @@ export function useAppKitBalance() {
   }
 }
 
-export { useAppKitAccount, useAppKitConnect } from '@reown/appkit-controllers/react'
+export { useAppKitAccount, useAppKitWallets } from '@reown/appkit-controllers/react'
+export type * from '@reown/appkit-controllers/react'
 
 export {
   AppKitButton,

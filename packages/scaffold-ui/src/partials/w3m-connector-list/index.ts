@@ -7,6 +7,7 @@ import {
   ApiController,
   AssetController,
   AssetUtil,
+  ChainController,
   ConnectionController,
   ConnectorController,
   type ConnectorWithProviders,
@@ -396,6 +397,8 @@ export class W3mConnectorList extends LitElement {
 
   private onClickWallet(item: WalletItem) {
     const redirectView = RouterController.state.data?.redirectView
+    const namespace = ChainController.state.activeChain
+
     if (item.subtype === 'featured') {
       ConnectorController.selectWalletConnector(item.wallet)
 
@@ -426,10 +429,9 @@ export class W3mConnectorList extends LitElement {
       return
     }
 
-    const connector = ConnectorController.getConnector({
-      id: item.wallet.id,
-      rdns: item.wallet.rdns
-    })
+    const connector = namespace
+      ? ConnectorController.getConnector({ id: item.wallet.id, namespace })
+      : undefined
 
     if (connector) {
       RouterController.push('ConnectingExternal', { connector, redirectView })

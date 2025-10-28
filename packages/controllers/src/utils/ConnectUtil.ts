@@ -54,11 +54,7 @@ export const ConnectUtil = {
     filteredConnectors.map(connector => {
       const hasMultipleConnectors = connector.connectors?.length
       const connectors = hasMultipleConnectors
-        ? connector.connectors?.map(c => ({
-            id: c.id,
-            rdns: c.info?.rdns,
-            chain: c.chain
-          })) || []
+        ? connector.connectors?.map(c => ({ id: c.id, chain: c.chain })) || []
         : [connector]
 
       items.push({

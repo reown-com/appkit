@@ -11,7 +11,11 @@ import {
 } from '@chakra-ui/react'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { type WalletItem, useAppKitAccount, useAppKitConnect } from '@reown/appkit/react'
+import {
+  type UseAppKitWalletsReturn,
+  useAppKitAccount,
+  useAppKitWallets
+} from '@reown/appkit/react'
 
 import { AppKitHeadlessInjectedWallets } from '@/src/components/Headless/AppKitHeadlessInjectedWallets'
 import { AppKitHeadlessQRCode } from '@/src/components/Headless/AppKitHeadlessQRCode'
@@ -28,7 +32,7 @@ export function AppkitConnectDrawer({ controls }: Props) {
   const toast = useToast()
   const { isConnected } = useAppKitAccount()
   const [wcUri, setWcUri] = useState<string | undefined>(undefined)
-  const { connect, fetchWallets } = useAppKitConnect({
+  const { connect } = useAppKitWallets({
     onHandleWcUri: uri => {
       setWcUri(uri)
       setCurrentView('qrcode')
@@ -37,7 +41,9 @@ export function AppkitConnectDrawer({ controls }: Props) {
 
   // View state management
   const [currentView, setCurrentView] = useState<ViewState>('connect')
-  const [connectingWallet, setConnectingWallet] = useState<WalletItem | undefined>(undefined)
+  const [connectingWallet, setConnectingWallet] = useState<
+    UseAppKitWalletsReturn['data'][number] | undefined
+  >(undefined)
 
   // Reset view when drawer closes
   function handleClose() {
@@ -47,7 +53,10 @@ export function AppkitConnectDrawer({ controls }: Props) {
     onClose()
   }
 
-  async function handleConnect(wallet: WalletItem, namespace?: ChainNamespace) {
+  async function handleConnect(
+    wallet: UseAppKitWalletsReturn['data'][number],
+    namespace?: ChainNamespace
+  ) {
     setConnectingWallet(wallet)
 
     await connect(wallet, namespace)

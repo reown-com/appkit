@@ -15,21 +15,20 @@ import {
 
 import type { ChainNamespace } from '@reown/appkit-common'
 import '@reown/appkit-ui/wui-icon'
-import { type WalletItem, useAppKitConnect } from '@reown/appkit/react'
+import { type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
 
 import { WcWalletItem } from './WcWalletItem'
 
 interface Props {
-  connectingWallet: WalletItem | undefined
-  onConnect: (wallet: WalletItem, namespace?: ChainNamespace) => void
+  connectingWallet: UseAppKitWalletsReturn['data'][number] | undefined
+  onConnect: (wallet: UseAppKitWalletsReturn['data'][number], namespace?: ChainNamespace) => void
   onBack: () => void
 }
 
 export function AppKitHeadlessWcWallets({ connectingWallet, onConnect, onBack }: Props) {
-  const { data, wcUri, isFetchingWallets, page, count, fetchWallets } = useAppKitConnect()
+  const { data, isFetchingWcUri, isFetchingWallets, page, count, fetchWallets } = useAppKitWallets()
 
   const wcWallets = data.filter(w => !w.isInjected)
-  const isFetchingWcUri = !wcUri && connectingWallet?.isInjected === false
 
   const [searchQuery, setSearchQuery] = useState('')
 

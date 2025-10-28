@@ -289,8 +289,7 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
   }
 }
 
-// -- Headless Connect Hook ---------------------------------
-interface UseAppKitConnectOptions {
+interface UseAppKitWalletsOptions {
   /**
    * Optional namespace to filter wallets by chain.
    * If not provided, all wallets across all chains will be returned.
@@ -299,11 +298,9 @@ interface UseAppKitConnectOptions {
   onHandleWcUri?: (uri: string) => void
 }
 
-export interface UseAppKitConnectReturn {
+export interface UseAppKitWalletsReturn {
   /**
-   * List of all wallets (injected connectors and WalletConnect wallets combined).
-   * Each wallet has type and chains values so developers can build UI with better UX.
-   * For example, they can render wallets with `recent` badge, just like AppKit does.
+   * List of all wallets (injected wallets and WalletConnect wallets combined)
    */
   data: WalletItem[]
 
@@ -311,6 +308,11 @@ export interface UseAppKitConnectReturn {
    * Boolean that indicates if WalletConnect wallets are being fetched.
    */
   isFetchingWallets: boolean
+
+  /**
+   * Boolean that indicates if a WalletConnect URI is being fetched.
+   */
+  isFetchingWcUri: boolean
 
   /**
    * The current WalletConnect URI for QR code display.
@@ -352,8 +354,8 @@ export interface UseAppKitConnectReturn {
  * Headless hook for wallet connection.
  * Provides all the data and functions needed to build a custom connect UI.
  */
-export function useAppKitConnect(options?: UseAppKitConnectOptions): UseAppKitConnectReturn {
-  const { wcUri } = useSnapshot(ConnectionController.state)
+export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWalletsReturn {
+  const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
   const { page, count } = useSnapshot(ApiController.state)
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
 
@@ -379,16 +381,15 @@ export function useAppKitConnect(options?: UseAppKitConnectOptions): UseAppKitCo
 
   const connect = useCallback(async (_wallet: WalletItem, namespace?: ChainNamespace) => {
     const wallet = wallets.find(w => w.name === _wallet.name)
-    const connector = wallet?.connectors.find(c => c.chain === namespace)
+    const walletConnector = wallet?.connectors.find(c => c.chain === namespace)
 
-    const getConnector = ConnectorController.getConnector({
-      id: connector?.id,
-      rdns: connector?.rdns,
-      namespace: namespace
-    })
+    const connector =
+      walletConnector && namespace
+        ? ConnectorController.getConnector({ id: walletConnector?.id, namespace })
+        : undefined
 
-    if (_wallet.isInjected && getConnector) {
-      await ConnectorControllerUtil.connectExternal(getConnector)
+    if (_wallet.isInjected && connector) {
+      await ConnectorControllerUtil.connectExternal(connector)
     } else {
       await ConnectionController.connectWalletConnect({ cache: 'never' })
     }
@@ -397,6 +398,7 @@ export function useAppKitConnect(options?: UseAppKitConnectOptions): UseAppKitCo
   return {
     data: wallets,
     isFetchingWallets,
+    isFetchingWcUri: wcFetchingUri,
     wcUri,
     page,
     count,

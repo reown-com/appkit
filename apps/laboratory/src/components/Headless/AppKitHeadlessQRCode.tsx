@@ -3,16 +3,16 @@ import QRCode from 'react-qr-code'
 import { ArrowBackIcon, CopyIcon } from '@chakra-ui/icons'
 import { Box, Button, Flex, IconButton, Image, Spinner, Text, VStack } from '@chakra-ui/react'
 
-import { type WalletItem, useAppKitConnect } from '@reown/appkit/react'
+import { type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
 
 interface Props {
-  wallet: WalletItem
+  wallet: UseAppKitWalletsReturn['data'][number]
   onBack: () => void
   onCopyUri?: () => void
 }
 
 export function AppKitHeadlessQRCode({ wallet, onBack, onCopyUri }: Props) {
-  const { wcUri } = useAppKitConnect()
+  const { wcUri } = useAppKitWallets()
 
   const isFetchingWcUri = !wcUri && wallet?.isInjected === false
 

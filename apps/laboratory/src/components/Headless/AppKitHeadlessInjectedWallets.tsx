@@ -1,22 +1,21 @@
 import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react'
 
 import { type ChainNamespace } from '@reown/appkit-common'
-import { type WalletItem, useAppKitConnect } from '@reown/appkit/react'
+import { type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
 
 import { InjectedWalletItem } from './InjectedWalletItem'
 
 interface Props {
-  connectingWallet: WalletItem | undefined
-  onConnect: (wallet: WalletItem, namespace: ChainNamespace) => void
+  connectingWallet: UseAppKitWalletsReturn['data'][number] | undefined
+  onConnect: (wallet: UseAppKitWalletsReturn['data'][number], namespace: ChainNamespace) => void
   onSeeAll: () => void
 }
 
 export function AppKitHeadlessInjectedWallets({ connectingWallet, onConnect, onSeeAll }: Props) {
-  const { wcUri, data } = useAppKitConnect()
+  const { data, isFetchingWcUri } = useAppKitWallets()
 
   const injectedWallets = data.filter(w => w.isInjected)
   const wcWallet = data.find(w => !w.isInjected && w.id === 'walletConnect')
-  const isFetchingWcUri = !wcUri && connectingWallet?.isInjected === false
 
   return (
     <Flex direction="column" gap={4} paddingTop={8}>
