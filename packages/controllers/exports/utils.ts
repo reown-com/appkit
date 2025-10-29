@@ -1,5 +1,6 @@
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from '../src/utils/AssetUtil.js'
+export { ErrorUtil } from '../src/utils/ErrorUtil.js'
 export { ConfigUtil } from '../src/utils/ConfigUtil.js'
 export { ConstantsUtil } from '../src/utils/ConstantsUtil.js'
 export { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'

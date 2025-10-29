@@ -6,6 +6,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
+  ApiController,
   ChainController,
   ConnectionController,
   type Connector,
@@ -21,6 +22,7 @@ import { MathUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-button'
 import '@reown/appkit-ui/wui-separator'
+import '@reown/appkit-ui/wui-shimmer'
 import '@reown/appkit-ui/wui-ux-by-reown'
 import { ConstantsUtil as AppKitConstantsUtil } from '@reown/appkit-utils'
 
@@ -68,6 +70,8 @@ export class W3mConnectView extends LitElement {
 
   @state() private isAuthEnabled = this.checkIfAuthEnabled(this.connectors)
 
+  @state() private loading = ApiController.state.validating
+
   private resizeObserver?: ResizeObserver
 
   public constructor() {
@@ -89,7 +93,8 @@ export class W3mConnectView extends LitElement {
       ChainController.subscribeKey('noAdapters', val =>
         this.setEmailAndSocialEnableCheck(val, this.remoteFeatures)
       ),
-      OptionsStateController.subscribeKey('isLegalCheckboxChecked', val => (this.checked = val))
+      OptionsStateController.subscribeKey('isLegalCheckboxChecked', val => (this.checked = val)),
+      ApiController.subscribeKey('validating', val => (this.loading = val))
     )
   }
 
@@ -116,6 +121,10 @@ export class W3mConnectView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    if (this.loading) {
+      return this.loadingTemplate()
+    }
+
     const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
 
     const isLegalCheckbox = OptionsController.state.features?.legalCheckbox
@@ -168,6 +177,15 @@ export class W3mConnectView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+
+  private loadingTemplate() {
+    return html`<wui-flex flexDirection="column" gap="2" .padding=${['0', '3', '3', '3'] as const}>
+      ${Array.from({ length: 5 }).map(
+        () => html`<wui-shimmer width="100%" height="56px" variant="light"></wui-shimmer>`
+      )}
+    </wui-flex> `
+  }
+
   private reownBrandingTemplate() {
     if (HelpersUtil.hasFooter()) {
       return null

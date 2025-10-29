@@ -15,12 +15,12 @@ import {
   OptionsController
 } from '@reown/appkit-controllers'
 import { EventsController, RouterController, SnackController } from '@reown/appkit-controllers'
+import { ErrorUtil } from '@reown/appkit-controllers/utils'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-email-input'
 import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-loading-spinner'
 import '@reown/appkit-ui/wui-text'
-import { ErrorUtil } from '@reown/appkit-utils'
 
 import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import styles from './styles.js'

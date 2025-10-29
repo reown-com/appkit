@@ -5,7 +5,9 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { AssetUtil } from '../utils/AssetUtil.js'
+import { ConfigUtil } from '../utils/ConfigUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { ErrorUtil } from '../utils/ErrorUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { CUSTOM_DEEPLINK_WALLETS } from '../utils/MobileWallet.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
@@ -20,10 +22,13 @@ import type {
   Tier,
   WcWallet
 } from '../utils/TypeUtil.js'
+import { WcHelpersUtil } from '../utils/WalletConnectUtil.js'
+import { AlertController } from './AlertController.js'
 import { AssetController } from './AssetController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
+import { OnRampController } from './OnRampController.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
@@ -59,6 +64,8 @@ export interface ApiControllerState {
     hasExceededUsageLimit: boolean
     limits: ProjectLimits
   }
+  validating: boolean
+  validatedConfig: boolean
 }
 
 interface PrefetchParameters {
@@ -95,7 +102,9 @@ const state = proxy<ApiControllerState>({
       isAboveRpcLimit: false,
       isAboveMauLimit: false
     }
-  }
+  },
+  validating: false,
+  validatedConfig: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -263,6 +272,85 @@ export const ApiController = {
 
   async fetchTokenImages(tokens: string[] = []) {
     await Promise.allSettled(tokens.map(token => ApiController._fetchTokenImage(token)))
+  },
+
+  checkAllowedOrigins(allowedOrigins: string[]) {
+    try {
+      if (!CoreHelperUtil.isClient()) {
+        return
+      }
+
+      const currentOrigin = window.location.origin
+      const isOriginAllowed = WcHelpersUtil.isOriginAllowed(
+        currentOrigin,
+        allowedOrigins,
+        ConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
+      )
+
+      if (!isOriginAllowed) {
+        AlertController.open(ErrorUtil.ALERT_ERRORS.ORIGIN_NOT_ALLOWED, 'error')
+      }
+    } catch (error) {
+      if (!(error instanceof Error)) {
+        return
+      }
+
+      switch (error.message) {
+        case 'RATE_LIMITED':
+          AlertController.open(ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION, 'error')
+          break
+        case 'SERVER_ERROR': {
+          const originalError = error.cause instanceof Error ? error.cause : error
+          AlertController.open(
+            {
+              displayMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.displayMessage,
+              debugMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.debugMessage(
+                originalError.message
+              )
+            },
+            'error'
+          )
+          break
+        }
+        default:
+          break
+      }
+    }
+  },
+
+  async validateProjectConfig() {
+    if (state.validatedConfig) {
+      return
+    }
+
+    state.validating = true
+    const [allowedOrigins, config] = await Promise.all([
+      ApiController.fetchAllowedOrigins(),
+      ConfigUtil.fetchRemoteFeatures(),
+      ApiController.fetchUsage(),
+      ApiController.prefetchAnalyticsConfig()
+    ])
+
+    this.checkAllowedOrigins(allowedOrigins)
+    OptionsController.setRemoteFeatures(config)
+
+    if (config.onramp) {
+      OnRampController.setOnrampProviders(config.onramp)
+    }
+    if (config.reownAuthentication) {
+      const { ReownAuthentication } = await import('@reown/appkit-controllers/features')
+      const currentSIWX = OptionsController.state.siwx
+      if (!(currentSIWX instanceof ReownAuthentication)) {
+        if (currentSIWX) {
+          console.warn(
+            'ReownAuthentication option is enabled, SIWX configuration will be overridden.'
+          )
+        }
+        OptionsController.setSIWX(new ReownAuthentication())
+      }
+    }
+    state.validating = false
+    state.validatedConfig = true
   },
 
   async fetchWallets(params: Omit<ApiGetWalletsRequest, 'chains'> & { chains?: string }) {

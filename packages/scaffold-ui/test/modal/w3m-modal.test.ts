@@ -14,7 +14,7 @@ import {
   SIWXUtil
 } from '@reown/appkit-controllers'
 import type { AccountState, SIWXConfig } from '@reown/appkit-controllers'
-import { ErrorUtil } from '@reown/appkit-utils'
+import { ErrorUtil } from '@reown/appkit-controllers/utils'
 
 import { W3mModal } from '../../src/modal/w3m-modal'
 import { HelpersUtil } from '../utils/HelpersUtil'

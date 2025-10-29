@@ -15,7 +15,7 @@ import {
   StorageUtil,
   WcHelpersUtil
 } from '@reown/appkit-controllers'
-import { ErrorUtil } from '@reown/appkit-utils'
+import { ErrorUtil } from '@reown/appkit-controllers/utils'
 import { HelpersUtil } from '@reown/appkit-utils'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'

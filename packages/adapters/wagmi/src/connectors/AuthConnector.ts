@@ -17,7 +17,7 @@ import {
   getActiveCaipNetwork,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
-import { ErrorUtil } from '@reown/appkit-utils'
+import { ErrorUtil } from '@reown/appkit-controllers/utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 

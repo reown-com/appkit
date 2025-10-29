@@ -41,7 +41,7 @@ export class WuiFlex extends LitElement {
 
   @property() public gap?: SpacingType
 
-  @property() public padding?: SpacingType | SpacingType[]
+  @property({ attribute: false }) public padding?: SpacingType | SpacingType[]
 
   @property() public margin?: SpacingType | SpacingType[]
 
