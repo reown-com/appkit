@@ -10,12 +10,6 @@ import type { SIWXSigner } from '../core/SIWXSigner.js'
 
 export default class DefaultSigner implements SIWXSigner {
   public async signMessage(message: string): Promise<string> {
-    const client = ConnectionController._getClient()
-
-    if (!client) {
-      throw new Error('No ConnectionController client found')
-    }
-
     const network = ChainController.getActiveCaipNetwork()
 
     if (!network) {
@@ -28,7 +22,7 @@ export default class DefaultSigner implements SIWXSigner {
       RouterController.pushTransactionStack({})
     }
 
-    const signature = await client.signMessage(message)
+    const signature = await ConnectionController.signMessage(message)
 
     return signature
   }
