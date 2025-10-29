@@ -96,15 +96,15 @@ export class EthersAdapter extends AdapterBlueprint {
       return provider
     }
 
-    async function getCoinbaseProvider() {
+    async function getBaseAccountProvider() {
       const caipNetworks = ChainController.getCaipNetworks()
       try {
-        const { createCoinbaseWalletSDK } = await import('@coinbase/wallet-sdk')
+        const { createBaseAccountSDK } = await import('@base-org/account')
         if (typeof window === 'undefined') {
           return undefined
         }
 
-        const coinbaseSdk = createCoinbaseWalletSDK({
+        const baseAccountSdk = createBaseAccountSDK({
           appName: metadata?.name,
           appLogoUrl: metadata?.icons[0],
           appChainIds: caipNetworks?.map(caipNetwork => caipNetwork.id as number) || [1, 84532],
@@ -113,7 +113,7 @@ export class EthersAdapter extends AdapterBlueprint {
           }
         })
 
-        return coinbaseSdk.getProvider()
+        return baseAccountSdk.getProvider()
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Failed to import Coinbase Wallet SDK:', error)
@@ -129,10 +129,10 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     if (enableCoinbase !== false) {
-      const coinbaseProvider = await getCoinbaseProvider()
+      const baseAccountProvider = await getBaseAccountProvider()
 
-      if (coinbaseProvider) {
-        providers.coinbase = coinbaseProvider
+      if (baseAccountProvider) {
+        providers[CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT] = baseAccountProvider
       }
     }
 
@@ -305,19 +305,17 @@ export class EthersAdapter extends AdapterBlueprint {
     )
 
     connectors.forEach(connector => {
-      const key = connector === 'coinbase' ? 'coinbaseWalletSDK' : connector
-
       const isInjectedConnector = connector === CommonConstantsUtil.CONNECTOR_ID.INJECTED
 
       if (this.namespace) {
         this.addConnector({
-          id: key,
-          explorerId: PresetsUtil.ConnectorExplorerIds[key],
-          imageUrl: AssetController.state.connectorImages?.[key],
-          name: PresetsUtil.ConnectorNamesMap[key] || 'Unknown',
-          imageId: PresetsUtil.ConnectorImageIds[key],
-          type: PresetsUtil.ConnectorTypesMap[key] ?? 'EXTERNAL',
-          info: isInjectedConnector ? undefined : { rdns: key },
+          id: connector,
+          explorerId: PresetsUtil.ConnectorExplorerIds[connector],
+          imageUrl: AssetController.state.connectorImages?.[connector],
+          name: PresetsUtil.ConnectorNamesMap[connector] || 'Unknown',
+          imageId: PresetsUtil.ConnectorImageIds[connector],
+          type: PresetsUtil.ConnectorTypesMap[connector] ?? 'EXTERNAL',
+          info: isInjectedConnector ? undefined : { rdns: connector },
           chain: this.namespace,
           chains: [],
           provider: this.ethersConfig?.[connector as keyof ProviderType] as Provider

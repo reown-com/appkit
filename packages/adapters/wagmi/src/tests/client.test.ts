@@ -38,9 +38,9 @@ import * as helpers from '../utils/helpers'
 import { mockAppKit } from './mocks/AppKit'
 
 // Define spies at the top-level for @wagmi/connectors
-const mockCoinbaseWallet = vi.fn(() => ({
-  id: 'coinbaseWallet',
-  name: 'Coinbase Wallet',
+const mockBaseAccountConnector = vi.fn(() => ({
+  id: 'baseAccount',
+  name: 'Base Account',
   type: 'injected',
   getProvider: vi.fn().mockResolvedValue({ connect: vi.fn(), request: vi.fn() })
 }))
@@ -149,12 +149,14 @@ describe('WagmiAdapter', () => {
       const actual = await vi.importActual('@wagmi/connectors')
       return {
         ...actual,
-        coinbaseWallet: mockCoinbaseWallet,
+        baseAccount: mockBaseAccountConnector,
         safe: mockSafe
       }
     })
 
-    vi.spyOn(helpers, 'getCoinbaseConnector').mockResolvedValue(mockCoinbaseWallet() as any)
+    vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(
+      mockBaseAccountConnector() as any
+    )
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state
     })
@@ -1582,8 +1584,8 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
 
   it('should add Coinbase connector if enableCoinbase is not false', async () => {
     const getCoinbaseConnectorSpy = vi
-      .spyOn(helpers, 'getCoinbaseConnector')
-      .mockResolvedValue(mockCoinbaseWallet() as any)
+      .spyOn(helpers, 'getBaseAccountConnector')
+      .mockResolvedValue(mockBaseAccountConnector() as any)
     await adapter['addThirdPartyConnectors']()
     expect(getCoinbaseConnectorSpy).toHaveBeenCalled()
     expect(adapter.wagmiConfig.connectors.length).toBe(1)
@@ -1595,7 +1597,7 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
       enableCoinbase: false
     })
     await adapter['addThirdPartyConnectors']()
-    expect(mockCoinbaseWallet).not.toHaveBeenCalled()
+    expect(mockBaseAccountConnector).not.toHaveBeenCalled()
     expect(adapter.wagmiConfig.connectors.length).toBe(0)
   })
 

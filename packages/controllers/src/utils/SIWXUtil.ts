@@ -122,13 +122,21 @@ export const SIWXUtil = {
       })
 
       const message = siwxMessage.toString()
-      const connectorId = ConnectorController.getConnectorId(network.chainNamespace)
 
-      if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
-        RouterController.pushTransactionStack({})
+      let signature = ''
+      if (siwx.signMessage) {
+        signature = await siwx.signMessage({
+          message,
+          chainId: network.caipNetworkId,
+          accountAddress: address
+        })
+      } else {
+        const connectorId = ConnectorController.getConnectorId(network.chainNamespace)
+        if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
+          RouterController.pushTransactionStack({})
+        }
+        signature = (await ConnectionController.signMessage(message)) || ''
       }
-
-      const signature = await ConnectionController.signMessage(message)
 
       await siwx.addSession({
         data: siwxMessage,
@@ -517,6 +525,28 @@ export interface SIWXConfig {
    * @returns SIWXMessage
    */
   createMessage: (input: SIWXMessage.Input) => Promise<SIWXMessage>
+
+  /**
+   * This method will be called to sign a message with the wallet using the signer handler.
+   * This behavior can be overriden by passing in a `signer` parameter to the `SIWXConfig` constructor.
+   * Constraints:
+   * - This method MUST forward the message to the wallet for a signature request.
+   * - If the signature process fails or is cancelled it MUST throw an error.
+   *
+   * @param message string
+   * @param chainId CaipNetworkId
+   * @param accountAddress string
+   * @returns string
+   */
+  signMessage?: ({
+    message,
+    chainId,
+    accountAddress
+  }: {
+    message: string
+    chainId: string
+    accountAddress: string
+  }) => Promise<string>
 
   /**
    * This method will be called to store a new single session.

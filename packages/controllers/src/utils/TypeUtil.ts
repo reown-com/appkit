@@ -209,6 +209,14 @@ export interface ThemeVariables {
   '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: number
   '--w3m-qr-color'?: string
+  '--apkt-font-family'?: string
+  '--apkt-accent'?: string
+  '--apkt-color-mix'?: string
+  '--apkt-color-mix-strength'?: number
+  '--apkt-font-size-master'?: string
+  '--apkt-border-radius-master'?: string
+  '--apkt-z-index'?: number
+  '--apkt-qr-color'?: string
 }
 
 // -- BlockchainApiController Types ---------------------------------------------
