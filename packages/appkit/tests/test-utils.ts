@@ -2,8 +2,8 @@ import { vi } from 'vitest'
 
 import type { Balance } from '@reown/appkit-common'
 import { BlockchainApiController, ChainController, StorageUtil } from '@reown/appkit-controllers'
+import { ConfigUtil } from '@reown/appkit-controllers/utils'
 
-import { ConfigUtil } from '../src/utils/ConfigUtil.js'
 import { mockLocalStorage } from './mocks/LocalStorage.js'
 import { mainnet } from './mocks/Networks.js'
 import { mockRemoteFeaturesConfig } from './mocks/Options.js'

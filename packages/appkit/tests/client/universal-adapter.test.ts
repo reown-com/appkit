@@ -55,14 +55,15 @@ describe('Universal Adapter', () => {
     expect(mockSolanaAdapter.syncConnectors).toHaveBeenCalled()
   })
 
-  it('should set universal provider and auth provider for each adapter', async () => {
+  it('should set universal provider for each adapter (auth provider is created after remote features on modal open)', async () => {
     const appKit = new AppKit(mockOptions)
 
     await appKit.ready()
 
     expect(mockEvmAdapter.setUniversalProvider).toHaveBeenCalled()
-    expect(mockEvmAdapter.setAuthProvider).toHaveBeenCalled()
+
+    expect(mockEvmAdapter.setAuthProvider).not.toHaveBeenCalled()
     expect(mockSolanaAdapter.setUniversalProvider).toHaveBeenCalled()
-    expect(mockSolanaAdapter.setAuthProvider).toHaveBeenCalled()
+    expect(mockSolanaAdapter.setAuthProvider).not.toHaveBeenCalled()
   })
 })

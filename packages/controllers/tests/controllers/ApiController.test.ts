@@ -3,6 +3,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 
 import {
+  AlertController,
   ApiController,
   AssetController,
   ChainController,
@@ -14,7 +15,9 @@ import {
 } from '../../exports/index.js'
 import { mockChainControllerState } from '../../exports/testing.js'
 import { api } from '../../src/controllers/ApiController.js'
+import { ErrorUtil } from '../../src/utils/ErrorUtil.js'
 import { CUSTOM_DEEPLINK_WALLETS } from '../../src/utils/MobileWallet.js'
+import { WcHelpersUtil } from '../../src/utils/WalletConnectUtil.js'
 
 // -- Constants ----------------------------------------------------------------
 const chain = ConstantsUtil.CHAIN.EVM
@@ -126,7 +129,107 @@ describe('ApiController', () => {
           isAboveRpcLimit: false,
           isAboveMauLimit: false
         }
-      }
+      },
+      validating: false,
+      validatedConfig: false
+    })
+  })
+
+  describe('checkAllowedOrigins', () => {
+    beforeEach(() => {
+      vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+    })
+
+    it('should show RATE_LIMITED_APP_CONFIGURATION alert for RATE_LIMITED error', async () => {
+      const alertSpy = vi.spyOn(AlertController, 'open').mockImplementation(() => {})
+      vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
+      vi.spyOn(WcHelpersUtil, 'isOriginAllowed').mockImplementation(() => {
+        throw new Error('RATE_LIMITED')
+      })
+
+      ApiController.checkAllowedOrigins(['https://example.com'])
+
+      expect(alertSpy).toHaveBeenCalledWith(
+        ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION,
+        'error'
+      )
+    })
+
+    it('should show SERVER_ERROR_APP_CONFIGURATION alert with error message for SERVER_ERROR', () => {
+      const alertSpy = vi.spyOn(AlertController, 'open').mockImplementation(() => {})
+      vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
+      const originalError = new Error('Internal Server Error')
+      const serverError = new Error('SERVER_ERROR') as Error & { cause?: unknown }
+      serverError.cause = originalError
+      vi.spyOn(WcHelpersUtil, 'isOriginAllowed').mockImplementation(() => {
+        throw serverError
+      })
+
+      ApiController.checkAllowedOrigins(['https://example.com'])
+
+      expect(alertSpy).toHaveBeenCalledWith(
+        {
+          displayMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.displayMessage,
+          debugMessage:
+            ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.debugMessage(
+              'Internal Server Error'
+            )
+        },
+        'error'
+      )
+    })
+
+    it('should show SERVER_ERROR_APP_CONFIGURATION alert with generic message when cause is not Error', () => {
+      const alertSpy = vi.spyOn(AlertController, 'open').mockImplementation(() => {})
+      vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
+      const serverError = new Error('SERVER_ERROR') as Error & { cause?: unknown }
+      serverError.cause = 'not an error object'
+      vi.spyOn(WcHelpersUtil, 'isOriginAllowed').mockImplementation(() => {
+        throw serverError
+      })
+
+      ApiController.checkAllowedOrigins(['https://example.com'])
+
+      expect(alertSpy).toHaveBeenCalledWith(
+        {
+          displayMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.displayMessage,
+          debugMessage:
+            ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.debugMessage('SERVER_ERROR')
+        },
+        'error'
+      )
+    })
+
+    it('should not show any alert for unknown errors', () => {
+      const alertSpy = vi.spyOn(AlertController, 'open').mockImplementation(() => {})
+      vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
+      vi.spyOn(WcHelpersUtil, 'isOriginAllowed').mockImplementation(() => {
+        throw new Error('UNKNOWN_ERROR')
+      })
+
+      ApiController.checkAllowedOrigins(['https://example.com'])
+
+      expect(alertSpy).not.toHaveBeenCalled()
+    })
+
+    it('should show ORIGIN_NOT_ALLOWED alert when origin is not allowed', () => {
+      const alertSpy = vi.spyOn(AlertController, 'open').mockImplementation(() => {})
+      vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
+      vi.spyOn(WcHelpersUtil, 'isOriginAllowed').mockReturnValueOnce(false as any)
+
+      ApiController.checkAllowedOrigins(['https://example.com'])
+
+      expect(alertSpy).toHaveBeenCalledWith(ErrorUtil.ALERT_ERRORS.ORIGIN_NOT_ALLOWED, 'error')
+    })
+
+    it('should not show any alert when origin is allowed', () => {
+      const alertSpy = vi.spyOn(AlertController, 'open').mockImplementation(() => {})
+      vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
+      vi.spyOn(WcHelpersUtil, 'isOriginAllowed').mockReturnValueOnce(true as any)
+
+      ApiController.checkAllowedOrigins(['https://example.com'])
+
+      expect(alertSpy).not.toHaveBeenCalled()
     })
   })
 
