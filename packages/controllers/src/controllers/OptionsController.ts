@@ -210,6 +210,8 @@ export interface OptionsControllerStateInternal {
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
   remoteFeatures?: RemoteFeatures
+  featureOverride: Set<string>
+  basic: boolean
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
@@ -226,7 +228,9 @@ const state = proxy<OptionsControllerState>({
   experimental_preferUniversalLinks: false,
   remoteFeatures: {},
   enableMobileFullScreen: false,
-  coinbasePreference: 'all'
+  coinbasePreference: 'all',
+  featureOverride: new Set(),
+  basic: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -259,6 +263,10 @@ export const OptionsController = {
       state.remoteFeatures.email = false
       state.remoteFeatures.socials = false
     }
+  },
+
+  resetFeatureOverride() {
+    state.featureOverride.clear()
   },
 
   setFeatures(features: OptionsControllerState['features'] | undefined) {

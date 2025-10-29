@@ -72,6 +72,7 @@ import {
   WcHelpersUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
+import { ConfigUtil } from '@reown/appkit-controllers/utils'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
@@ -84,7 +85,6 @@ import {
 } from '@reown/appkit-utils'
 
 import { UniversalAdapter } from '../universal-adapter/client.js'
-import { ConfigUtil } from '../utils/ConfigUtil.js'
 import type { AppKitOptions } from '../utils/index.js'
 
 export interface AppKitOptionsWithSdk extends AppKitOptions {
@@ -136,7 +136,7 @@ export abstract class AppKitBaseClient {
 
   public chainAdapters: Adapters
   public chainNamespaces: ChainNamespace[] = []
-  public options: AppKitOptions
+  public options: AppKitOptionsWithSdk
   public features: Features = {}
   public remoteFeatures: RemoteFeatures = {}
   public version: SdkVersion | AppKitSdkVersion
@@ -171,38 +171,20 @@ export abstract class AppKitBaseClient {
     return [...new Set(networkNamespaces)]
   }
 
-  protected async initialize(options: AppKitOptionsWithSdk) {
-    this.initializeProjectSettings(options)
-    this.initControllers(options)
-    await this.initChainAdapters()
-    this.sendInitializeEvent(options)
-    if (OptionsController.state.enableReconnect) {
-      await this.syncExistingConnection()
-      await this.syncAdapterConnections()
-    } else {
-      await this.unSyncExistingConnection()
-    }
-    if (!options.basic && !options.manualWCControl) {
-      this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
-    }
-    await ApiController.fetchUsage()
-    OptionsController.setRemoteFeatures(this.remoteFeatures)
-    if (this.remoteFeatures.onramp) {
-      OnRampController.setOnrampProviders(this.remoteFeatures.onramp)
-    }
-    // Check allowed origins only if email or social features are enabled
-    if (
-      OptionsController.state.remoteFeatures?.email ||
-      (Array.isArray(OptionsController.state.remoteFeatures?.socials) &&
-        OptionsController.state.remoteFeatures?.socials.length > 0)
-    ) {
-      await this.checkAllowedOrigins()
-    }
+  protected async validateProjectConfig() {
+    const [allowedOrigins, config] = await Promise.all([
+      ApiController.fetchAllowedOrigins(),
+      ConfigUtil.fetchRemoteFeatures(),
+      ApiController.fetchUsage()
+    ])
 
-    if (
-      OptionsController.state.features?.reownAuthentication ||
-      OptionsController.state.remoteFeatures?.reownAuthentication
-    ) {
+    this.checkAllowedOrigins(allowedOrigins)
+    OptionsController.setRemoteFeatures(config)
+
+    if (config.onramp) {
+      OnRampController.setOnrampProviders(config.onramp)
+    }
+    if (config.reownAuthentication) {
       const { ReownAuthentication } = await import('@reown/appkit-controllers/features')
       const currentSIWX = OptionsController.state.siwx
       if (!(currentSIWX instanceof ReownAuthentication)) {
@@ -213,7 +195,19 @@ export abstract class AppKitBaseClient {
         }
         OptionsController.setSIWX(new ReownAuthentication())
       }
-      // If siwx is already configured for ReownAuthentication we keep the current instance
+    }
+  }
+
+  protected async initialize(options: AppKitOptionsWithSdk) {
+    this.initializeProjectSettings(options)
+    this.initControllers(options)
+    await this.initChainAdapters()
+    this.sendInitializeEvent(options)
+    if (OptionsController.state.enableReconnect) {
+      await this.syncExistingConnection()
+      await this.syncAdapterConnections()
+    } else {
+      await this.unSyncExistingConnection()
     }
   }
 
@@ -287,10 +281,8 @@ export abstract class AppKitBaseClient {
     }
   }
 
-  private async checkAllowedOrigins() {
+  private checkAllowedOrigins(allowedOrigins: string[]) {
     try {
-      const allowedOrigins = await ApiController.fetchAllowedOrigins()
-
       if (!CoreHelperUtil.isClient()) {
         return
       }
