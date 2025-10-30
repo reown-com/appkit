@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -322,6 +323,66 @@ describe('WalletUtil', () => {
         { ...mockRainbowWallet, installed: true },
         { ...mockTrustWallet, installed: false }
       ])
+    })
+  })
+
+  describe('filterWalletsByWcSupport', () => {
+    const walletsWithWcSupport: WcWallet[] = [
+      { id: '1', name: 'Wallet 1', supports_wc: true },
+      { id: '2', name: 'Wallet 2', supports_wc: false },
+      { id: '3', name: 'Wallet 3', supports_wc: true },
+      { id: '4', name: 'Wallet 4' } // undefined supports_wc
+    ]
+
+    beforeEach(() => {
+      vi.restoreAllMocks()
+      OptionsController.state.manualWCControl = false
+      ConnectionController.state.wcBasic = false
+    })
+
+    it('should filter out wallets without WC support on mobile', () => {
+      vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+
+      const result = WalletUtil.filterWalletsByWcSupport(walletsWithWcSupport)
+
+      expect(result).toEqual([
+        { id: '1', name: 'Wallet 1', supports_wc: true },
+        { id: '3', name: 'Wallet 3', supports_wc: true }
+      ])
+    })
+
+    it('should filter out wallets without WC support when using Appkit Core (manualWCControl)', () => {
+      vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+      OptionsController.state.manualWCControl = true
+
+      const result = WalletUtil.filterWalletsByWcSupport(walletsWithWcSupport)
+
+      expect(result).toEqual([
+        { id: '1', name: 'Wallet 1', supports_wc: true },
+        { id: '3', name: 'Wallet 3', supports_wc: true }
+      ])
+    })
+
+    it('should filter out wallets without WC support when using Appkit Core (wcBasic)', () => {
+      vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+      ConnectionController.state.wcBasic = true
+
+      const result = WalletUtil.filterWalletsByWcSupport(walletsWithWcSupport)
+
+      expect(result).toEqual([
+        { id: '1', name: 'Wallet 1', supports_wc: true },
+        { id: '3', name: 'Wallet 3', supports_wc: true }
+      ])
+    })
+
+    it('should show all wallets on desktop with Appkit (not Appkit Core)', () => {
+      vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+      OptionsController.state.manualWCControl = false
+      ConnectionController.state.wcBasic = false
+
+      const result = WalletUtil.filterWalletsByWcSupport(walletsWithWcSupport)
+
+      expect(result).toEqual(walletsWithWcSupport)
     })
   })
 })

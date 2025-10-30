@@ -123,8 +123,9 @@ export class W3mAllWalletsList extends LitElement {
 
     const uniqueWallets = CoreHelperUtil.uniqueBy(wallets, 'id')
     const walletsWithInstalled = WalletUtil.markWalletsAsInstalled(uniqueWallets)
+    const walletsByWcSupport = WalletUtil.filterWalletsByWcSupport(walletsWithInstalled)
 
-    return WalletUtil.markWalletsWithDisplayIndex(walletsWithInstalled)
+    return WalletUtil.markWalletsWithDisplayIndex(walletsByWcSupport)
   }
 
   private walletsTemplate() {

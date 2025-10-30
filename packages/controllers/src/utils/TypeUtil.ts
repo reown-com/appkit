@@ -172,6 +172,7 @@ export interface WcWallet {
       }[]
     | null
   display_index?: number
+  supports_wc?: boolean
 }
 
 export interface ApiGetWalletsRequest {
