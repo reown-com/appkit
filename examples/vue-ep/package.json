@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.22.4",
+    "@walletconnect/ethereum-provider": "2.23.0",
     "vue": "3.4.3"
   },
   "devDependencies": {
