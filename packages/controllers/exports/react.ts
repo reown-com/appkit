@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
@@ -19,7 +19,8 @@ import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import type {
   NamespaceTypeMap,
   UseAppKitAccountReturn,
-  UseAppKitNetworkReturn
+  UseAppKitNetworkReturn,
+  WcWallet
 } from '../src/utils/TypeUtil.js'
 import { AssetUtil, StorageUtil } from './utils.js'
 
@@ -289,15 +290,6 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
   }
 }
 
-interface UseAppKitWalletsOptions {
-  /**
-   * Optional namespace to filter wallets by chain.
-   * If not provided, all wallets across all chains will be returned.
-   */
-  namespace?: ChainNamespace
-  onHandleWcUri?: (uri: string) => void
-}
-
 export interface UseAppKitWalletsReturn {
   /**
    * List of all wallets (injected wallets and WalletConnect wallets combined)
@@ -336,7 +328,7 @@ export interface UseAppKitWalletsReturn {
    * @param options - Options for fetching wallets
    * @param options.page - Page number to fetch (default: 1)
    */
-  fetchWallets: (options?: { page?: number }) => Promise<void>
+  fetchWallets: (options?: { page?: number; query?: string }) => Promise<void>
 
   /**
    * Function to connect to a wallet.
@@ -354,23 +346,24 @@ export interface UseAppKitWalletsReturn {
  * Headless hook for wallet connection.
  * Provides all the data and functions needed to build a custom connect UI.
  */
-export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWalletsReturn {
-  const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
-  const { page, count } = useSnapshot(ApiController.state)
+export function useAppKitWallets(): UseAppKitWalletsReturn {
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
+  const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
+  const { wallets: wcWallets, search, page, count } = useSnapshot(ApiController.state)
+  const wallets = ConnectUtil.getUnifiedWalletList({
+    wcWallets: wcWallets as WcWallet[],
+    search: search as WcWallet[]
+  })
 
-  const wallets = ConnectUtil.getUnifiedWalletList()
-
-  useEffect(() => {
-    if (wcUri) {
-      options?.onHandleWcUri?.(wcUri)
-    }
-  }, [wcUri])
-
-  const fetchWallets = useCallback(async (fetchOptions?: { page?: number }) => {
+  const fetchWallets = useCallback(async (fetchOptions?: { page?: number; query?: string }) => {
     setIsFetchingWallets(true)
     try {
-      await ApiController.fetchWalletsByPage({ page: fetchOptions?.page ?? 1 })
+      if (fetchOptions?.query) {
+        await ApiController.searchWallet({ search: fetchOptions?.query })
+      } else {
+        ApiController.state.search = []
+        await ApiController.fetchWalletsByPage({ page: fetchOptions?.page ?? 1 })
+      }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Failed to fetch WalletConnect wallets:', error)

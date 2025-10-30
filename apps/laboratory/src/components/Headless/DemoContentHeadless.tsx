@@ -44,11 +44,17 @@ export default function DemoContentHeadless() {
                   </Text>
                   <Text fontSize="sm">{currentAccount?.address}</Text>
                   {currentAccount?.isConnected ? (
-                    <Button width="auto" onClick={() => disconnect()}>
+                    <Button
+                      data-testid="headless-disconnect-button"
+                      width="auto"
+                      onClick={() => disconnect()}
+                    >
                       Disconnect
                     </Button>
                   ) : (
-                    <Button onClick={controls.onOpen}>Connect</Button>
+                    <Button data-testid="headless-connect-button" onClick={controls.onOpen}>
+                      Connect
+                    </Button>
                   )}
                 </Stack>
               </Stack>

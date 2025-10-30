@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { ChevronRightIcon } from '@chakra-ui/icons'
-import { Box, Button, Flex, Image, Spinner, Text } from '@chakra-ui/react'
+import { Badge, Box, Button, Flex, Image, Spinner, Text } from '@chakra-ui/react'
 
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import '@reown/appkit-ui/wui-icon'
@@ -37,6 +37,7 @@ export function InjectedWalletItem({ wallet, onConnect, isConnecting }: Injected
     <Flex direction="column" gap={2}>
       <Button
         key={wallet.name}
+        data-testid={`wallet-button-${wallet.name}`}
         variant="outline"
         height="auto"
         py={3}
@@ -92,22 +93,27 @@ export function InjectedWalletItem({ wallet, onConnect, isConnecting }: Injected
             <Text fontWeight="medium">{wallet.name}</Text>
           </Flex>
 
-          <Flex alignItems="center">
-            {connectorChains.map((chain, index) => (
-              <Image
-                key={chain}
-                src={chainImagesMap[chain as keyof typeof chainImagesMap]}
-                alt={chain}
-                boxSize="20px"
-                borderRadius="full"
-                zIndex={connectorChains.length * 2 - index}
-                marginLeft={index > 0 ? '-5px' : 0}
-                border="1px solid white"
-              />
-            ))}
+          <Flex gap={2} alignItems="center">
+            <Flex alignItems="center">
+              {connectorChains.map((chain, index) => (
+                <Image
+                  key={chain}
+                  src={chainImagesMap[chain as keyof typeof chainImagesMap]}
+                  alt={chain}
+                  boxSize="20px"
+                  borderRadius="full"
+                  zIndex={connectorChains.length * 2 - index}
+                  marginLeft={index > 0 ? '-5px' : 0}
+                  border="1px solid white"
+                />
+              ))}
+            </Flex>
+            <Badge bgColor="gray.100" color="gray.500">
+              Installed
+            </Badge>
           </Flex>
 
-          {isConnecting ? <Spinner /> : <ChevronRightIcon />}
+          {isConnecting ? <Spinner color="gray.300" /> : <ChevronRightIcon />}
         </Flex>
       </Button>
 

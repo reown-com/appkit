@@ -1,6 +1,5 @@
 import type { ChainNamespace } from '@reown/appkit-common'
 
-import { ApiController } from '../controllers/ApiController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import type { WcWallet } from './TypeUtil.js'
 
@@ -41,10 +40,10 @@ export const ConnectUtil = {
   /**
    * Transforms connectors and wallets into a unified list of wallet items
    */
-  getUnifiedWalletList(): WalletItem[] {
+  getUnifiedWalletList(params: { wcWallets: WcWallet[]; search: WcWallet[] }): WalletItem[] {
     const connectors = ConnectorController.state.connectors
-    const wallets = ApiController.state.wallets
     const items: WalletItem[] = []
+    const wallets = params.search?.length > 0 ? params.search : params.wcWallets
 
     const wcConnector = connectors.find(c => c.id === 'walletConnect')
     const filteredConnectors = connectors.filter(

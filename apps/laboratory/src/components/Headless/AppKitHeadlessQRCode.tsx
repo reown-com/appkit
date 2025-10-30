@@ -107,6 +107,8 @@ export function AppKitHeadlessQRCode({ wallet, onBack, onCopyUri }: Props) {
             value={wcUri || ''}
             size={200}
             style={{ height: 'auto', maxWidth: '100%', width: 'auto' }}
+            data-testid="qr-code"
+            data-value={wcUri || ''}
           />
         )}
       </Box>

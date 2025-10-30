@@ -14,6 +14,7 @@ export function WcWalletItem({ item, onConnect, isConnecting }: Props) {
   return (
     <Box
       key={item.name}
+      data-testid={`wc-wallet-item-${item.name.replace(/\s+/g, '')}`}
       p={3}
       border="1px"
       borderColor="gray.200"
@@ -29,7 +30,7 @@ export function WcWalletItem({ item, onConnect, isConnecting }: Props) {
           <Image
             src={item.imageUrl}
             alt={item.name}
-            boxSize="32px"
+            boxSize="40px"
             borderRadius="md"
             fallback={
               <Box
@@ -66,7 +67,7 @@ export function WcWalletItem({ item, onConnect, isConnecting }: Props) {
           {item.name}
         </Text>
 
-        {isConnecting ? <Spinner /> : <ChevronRightIcon />}
+        {isConnecting ? <Spinner color="gray.300" /> : <ChevronRightIcon color="gray.500" />}
       </Flex>
 
       {/* Wallet chains info */}

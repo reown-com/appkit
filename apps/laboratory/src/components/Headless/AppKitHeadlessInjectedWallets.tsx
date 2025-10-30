@@ -4,10 +4,11 @@ import { type ChainNamespace } from '@reown/appkit-common'
 import { type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
 
 import { InjectedWalletItem } from './InjectedWalletItem'
+import { WcWalletItem } from './WcWalletItem'
 
 interface Props {
   connectingWallet: UseAppKitWalletsReturn['data'][number] | undefined
-  onConnect: (wallet: UseAppKitWalletsReturn['data'][number], namespace: ChainNamespace) => void
+  onConnect: (wallet: UseAppKitWalletsReturn['data'][number], namespace?: ChainNamespace) => void
   onSeeAll: () => void
 }
 
@@ -32,8 +33,8 @@ export function AppKitHeadlessInjectedWallets({ connectingWallet, onConnect, onS
       ) : (
         <Flex direction="column" gap={2}>
           {wcWallet ? (
-            <InjectedWalletItem
-              wallet={wcWallet}
+            <WcWalletItem
+              item={wcWallet}
               onConnect={onConnect}
               isConnecting={isFetchingWcUri && connectingWallet?.id === wcWallet.id}
             />
@@ -53,6 +54,7 @@ export function AppKitHeadlessInjectedWallets({ connectingWallet, onConnect, onS
       <Button
         variant="outline"
         size="lg"
+        data-testid="see-all-button"
         onClick={onSeeAll}
         mt={2}
         borderStyle="dashed"

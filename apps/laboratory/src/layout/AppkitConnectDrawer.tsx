@@ -22,34 +22,41 @@ import { AppKitHeadlessQRCode } from '@/src/components/Headless/AppKitHeadlessQR
 import { AppKitHeadlessWcWallets } from '@/src/components/Headless/AppKitHeadlessWcWallets'
 
 type ViewState = 'connect' | 'search' | 'qrcode'
+type AppKitWallet = UseAppKitWalletsReturn['data'][number]
 
 interface Props {
   controls: ReturnType<typeof useDisclosure>
 }
 
+function useHistory() {
+  const [history, setHistory] = useState<ViewState[]>(['connect'])
+
+  function push(view: ViewState) {
+    setHistory(prev => [...prev, view])
+  }
+
+  function pop() {
+    setHistory(prev => prev.slice(0, -1))
+  }
+
+  return { history, push, pop }
+}
+
 export function AppkitConnectDrawer({ controls }: Props) {
   const { isOpen, onClose } = controls
   const toast = useToast()
+  const { history, push, pop } = useHistory()
+  const [connectingWallet, setConnectingWallet] = useState<AppKitWallet | undefined>(undefined)
+
+  // AppKit hooks
   const { isConnected } = useAppKitAccount()
-  const [wcUri, setWcUri] = useState<string | undefined>(undefined)
-  const { connect } = useAppKitWallets({
-    onHandleWcUri: uri => {
-      setWcUri(uri)
-      setCurrentView('qrcode')
-    }
-  })
+  const { wcUri, isFetchingWcUri, connect } = useAppKitWallets()
 
-  // View state management
-  const [currentView, setCurrentView] = useState<ViewState>('connect')
-  const [connectingWallet, setConnectingWallet] = useState<
-    UseAppKitWalletsReturn['data'][number] | undefined
-  >(undefined)
+  const currentView = history[history.length - 1]
 
-  // Reset view when drawer closes
   function handleClose() {
-    setCurrentView('connect')
+    push('connect')
     setConnectingWallet(undefined)
-    setWcUri(undefined)
     onClose()
   }
 
@@ -70,17 +77,14 @@ export function AppkitConnectDrawer({ controls }: Props) {
   }
 
   function handleSeeAll() {
-    setCurrentView('search')
+    push('search')
   }
 
   function handleBack() {
-    setWcUri(undefined)
     setConnectingWallet(undefined)
 
-    if (currentView === 'qrcode') {
-      setCurrentView('search')
-    } else if (currentView === 'search') {
-      setCurrentView('connect')
+    if (history.length > 1) {
+      pop()
     }
   }
 
@@ -103,13 +107,18 @@ export function AppkitConnectDrawer({ controls }: Props) {
     }
   }, [isConnected, isOpen])
 
+  useEffect(() => {
+    if (!isFetchingWcUri && wcUri) {
+      push('qrcode')
+    }
+  }, [isFetchingWcUri, wcUri])
+
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={handleClose} size="md">
       <DrawerOverlay />
-      <DrawerContent>
-        <DrawerCloseButton />
-        <DrawerBody pt={8}>
-          {/* Render different views based on state */}
+      <DrawerContent data-testid="headless-drawer">
+        <DrawerCloseButton data-testid="headless-drawer-close-button" />
+        <DrawerBody pt={8} pb={8}>
           {currentView === 'connect' && (
             <AppKitHeadlessInjectedWallets
               connectingWallet={connectingWallet}

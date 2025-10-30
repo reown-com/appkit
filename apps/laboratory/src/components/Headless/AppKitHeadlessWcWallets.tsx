@@ -16,6 +16,8 @@ import type { ChainNamespace } from '@reown/appkit-common'
 import '@reown/appkit-ui/wui-icon'
 import { type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
 
+import { useDebounceValue } from '@/src/hooks/useDebounceValue'
+
 import { WcWalletItem } from './WcWalletItem'
 
 interface Props {
@@ -26,14 +28,22 @@ interface Props {
 
 export function AppKitHeadlessWcWallets({ connectingWallet, onConnect, onBack }: Props) {
   const { data, isFetchingWcUri, isFetchingWallets, page, count, fetchWallets } = useAppKitWallets()
+  const [inputValue, setInputValue] = useState('')
+  const searchQuery = useDebounceValue(inputValue, 500)
 
-  const wcWallets = data.filter(w => !w.isInjected)
-
-  const [searchQuery, setSearchQuery] = useState('')
+  const wcWallets = data.filter(w => !w.isInjected && w.name !== 'WalletConnect')
 
   useEffect(() => {
     fetchWallets?.()
   }, [])
+
+  useEffect(() => {
+    if (searchQuery.length > 0) {
+      fetchWallets?.({ query: searchQuery })
+    } else {
+      fetchWallets?.()
+    }
+  }, [searchQuery])
 
   return (
     <Flex direction="column" gap={4} height="100%">
@@ -58,8 +68,8 @@ export function AppKitHeadlessWcWallets({ connectingWallet, onConnect, onBack }:
         </InputLeftElement>
         <Input
           placeholder="Search by name..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
+          value={inputValue}
+          onChange={e => setInputValue(e.target.value)}
           autoFocus
         />
       </InputGroup>
