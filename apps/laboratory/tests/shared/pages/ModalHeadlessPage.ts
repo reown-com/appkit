@@ -87,16 +87,17 @@ export class ModalHeadlessPage extends ModalPage {
   }
 
   async getWalletItemsCount(): Promise<number> {
-    const walletItems = this.page.getByTestId(/^wc-wallet-item-/)
+    const walletItems = this.page.getByTestId(/^wc-wallet-item-/u)
+
     return await walletItems.count()
   }
 
   async getWalletConnectURI(): Promise<string | null> {
     const qrCode = this.page.locator('svg[data-testid="qr-code"]')
     if (await qrCode.isVisible()) {
-      // QR code contains the URI as its value attribute
       return await qrCode.getAttribute('data-value')
     }
+
     return null
   }
 }

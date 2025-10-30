@@ -14,7 +14,7 @@ export function WcWalletItem({ item, onConnect, isConnecting }: Props) {
   return (
     <Box
       key={item.name}
-      data-testid={`wc-wallet-item-${item.name.replace(/\s+/g, '')}`}
+      data-testid={`wc-wallet-item-${item.name}`}
       p={3}
       border="1px"
       borderColor="gray.200"

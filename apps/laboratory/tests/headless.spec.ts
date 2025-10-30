@@ -1,16 +1,13 @@
-import { expect } from '@playwright/test'
-
-import { DEFAULT_SESSION_PARAMS, WalletPage, WalletValidator } from '@reown/appkit-testing'
+import { WalletPage } from '@reown/appkit-testing'
 
 import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalHeadlessPage } from './shared/pages/ModalHeadlessPage'
-import { ModalValidator } from './shared/validators/ModalValidator'
+import { ModalHeadlessValidator } from './shared/validators/ModalHeadlessValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalHeadlessPage
-let modalValidator: ModalValidator
+let modalValidator: ModalHeadlessValidator
 let walletPage: WalletPage
-let walletValidator: WalletValidator
 
 // -- Setup --------------------------------------------------------------------
 const headlessTest = extensionFixture.extend<{ library: string }>({
@@ -23,9 +20,8 @@ headlessTest.beforeAll(async ({ library, context }) => {
   const browserPage = await context.newPage()
 
   modalPage = new ModalHeadlessPage(browserPage, library, 'default')
-  modalValidator = new ModalValidator(browserPage)
+  modalValidator = new ModalHeadlessValidator(browserPage)
   walletPage = new WalletPage(await context.newPage())
-  walletValidator = new WalletValidator(walletPage.page)
 
   await modalPage.load()
 })
