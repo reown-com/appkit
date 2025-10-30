@@ -353,22 +353,24 @@ export class W3mAccountDefaultWidget extends LitElement {
     try {
       this.disconnecting = true
       const connectionsByNamespace = ConnectionController.getConnections(this.namespace)
-      const hasConnections = connectionsByNamespace.length > 0
-      const connectorId =
-        this.namespace && ConnectorController.state.activeConnectorIds[this.namespace]
+      const hasMultipleConnections = connectionsByNamespace.length > 1
       const filterByNamespace = ConnectorController.state.filterByNamespace
-      if (connectorId && this.namespace && filterByNamespace === this.namespace) {
+      const connectorId = ConnectorController.getConnectorId(this.namespace)
+      if (this.namespace && hasMultipleConnections && connectorId) {
+        console.log('>> Disconnecting connector', connectorId, this.namespace)
         await ConnectionController.disconnectConnector({
           id: connectorId,
           namespace: this.namespace
         })
-      } else {
-        await ConnectionController.disconnect()
-      }
-      const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
-      if (hasConnections && isMultiWalletEnabled) {
+
         RouterController.push('ProfileWallets')
         SnackController.showSuccess('Wallet deleted')
+      } else if (this.namespace && filterByNamespace === this.namespace) {
+        console.log('>> Disconnecting namespace', this.namespace)
+        await ConnectionController.disconnectNamespace(this.namespace, true)
+      } else {
+        console.log('>> Disconnecting all')
+        await ConnectionController.disconnect()
       }
     } catch (e) {
       EventsController.sendEvent({
