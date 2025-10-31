@@ -36,10 +36,7 @@ export type { ConnectExternalOptions } from '../src/controllers/ConnectionContro
 
 export { ConnectorController } from '../src/controllers/ConnectorController.js'
 export { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
-export type {
-  ConnectorControllerState,
-  ConnectorWithProviders
-} from '../src/controllers/ConnectorController.js'
+export type { ConnectorControllerState } from '../src/controllers/ConnectorController.js'
 
 export { SnackController } from '../src/controllers/SnackController.js'
 export type { SnackControllerState } from '../src/controllers/SnackController.js'

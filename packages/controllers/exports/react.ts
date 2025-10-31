@@ -1,22 +1,26 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
 import { type ChainNamespace, type Connection, ConstantsUtil } from '@reown/appkit-common'
 
 import { AlertController } from '../src/controllers/AlertController.js'
+import { ApiController } from '../src/controllers/ApiController.js'
 import { AssetController } from '../src/controllers/AssetController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { OptionsController } from '../src/controllers/OptionsController.js'
 import { ProviderController } from '../src/controllers/ProviderController.js'
+import { ConnectUtil, type WalletItem } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
+import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import type {
   NamespaceTypeMap,
   UseAppKitAccountReturn,
-  UseAppKitNetworkReturn
+  UseAppKitNetworkReturn,
+  WcWallet
 } from '../src/utils/TypeUtil.js'
 import { AssetUtil, StorageUtil } from './utils.js'
 
@@ -283,5 +287,115 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
     isPending: isSwitchingConnection,
     switchConnection,
     deleteConnection
+  }
+}
+
+export interface UseAppKitWalletsReturn {
+  /**
+   * List of all wallets (injected wallets and WalletConnect wallets combined)
+   */
+  data: WalletItem[]
+
+  /**
+   * Boolean that indicates if WalletConnect wallets are being fetched.
+   */
+  isFetchingWallets: boolean
+
+  /**
+   * Boolean that indicates if a WalletConnect URI is being fetched.
+   */
+  isFetchingWcUri: boolean
+
+  /**
+   * The current WalletConnect URI for QR code display.
+   * This is set when connecting to a WalletConnect wallet.
+   */
+  wcUri?: string
+
+  /**
+   * The current page number.
+   */
+  page: number
+
+  /**
+   * The total number of available wallets.
+   */
+  count: number
+
+  /**
+   * Function to fetch WalletConnect wallets from the explorer API.
+   * This is useful for pagination or initial load.
+   * @param options - Options for fetching wallets
+   * @param options.page - Page number to fetch (default: 1)
+   */
+  fetchWallets: (options?: { page?: number; query?: string }) => Promise<void>
+
+  /**
+   * Function to connect to a wallet.
+   * - For WalletConnect wallets: initiates WC connection and returns the URI in the onSuccess callback
+   * - For injected connectors: triggers the extension/wallet directly
+   *
+   * @param wallet - The wallet item to connect to
+   * @param callbacks - Success and error callbacks
+   * @returns Promise that resolves when connection completes or rejects on error
+   */
+  connect: (wallet: WalletItem, namespace?: ChainNamespace) => Promise<void>
+}
+
+/**
+ * Headless hook for wallet connection.
+ * Provides all the data and functions needed to build a custom connect UI.
+ */
+export function useAppKitWallets(): UseAppKitWalletsReturn {
+  const [isFetchingWallets, setIsFetchingWallets] = useState(false)
+  const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
+  const { wallets: wcWallets, search, page, count } = useSnapshot(ApiController.state)
+  const wallets = ConnectUtil.getUnifiedWalletList({
+    wcWallets: wcWallets as WcWallet[],
+    search: search as WcWallet[]
+  })
+
+  const fetchWallets = useCallback(async (fetchOptions?: { page?: number; query?: string }) => {
+    setIsFetchingWallets(true)
+    try {
+      if (fetchOptions?.query) {
+        await ApiController.searchWallet({ search: fetchOptions?.query })
+      } else {
+        ApiController.state.search = []
+        await ApiController.fetchWalletsByPage({ page: fetchOptions?.page ?? 1 })
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to fetch WalletConnect wallets:', error)
+    } finally {
+      setIsFetchingWallets(false)
+    }
+  }, [])
+
+  const connect = useCallback(async (_wallet: WalletItem, namespace?: ChainNamespace) => {
+    const wallet = wallets.find(w => w.name === _wallet.name)
+    const walletConnector = wallet?.connectors.find(c => c.chain === namespace)
+
+    const connector =
+      walletConnector && namespace
+        ? ConnectorController.getConnector({ id: walletConnector?.id, namespace })
+        : undefined
+
+    if (_wallet.isInjected && connector) {
+      await ConnectorControllerUtil.connectExternal(connector)
+    } else {
+      await ConnectionController.connectWalletConnect({ cache: 'never' })
+    }
+  }, [])
+
+  return {
+    data: wallets,
+    isFetchingWallets,
+    isFetchingWcUri: wcFetchingUri,
+    wcUri,
+    page,
+    count,
+    connect,
+    fetchWallets
   }
 }

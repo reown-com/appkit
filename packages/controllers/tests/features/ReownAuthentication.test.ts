@@ -63,7 +63,7 @@ describe.each([
   let mockJWT: string
 
   beforeAll(() => {
-    global.fetch = vi.fn()
+    global.fetch = vi.fn() as unknown as typeof fetch
 
     // Mock document.location properly
     Object.defineProperty(global, 'document', {

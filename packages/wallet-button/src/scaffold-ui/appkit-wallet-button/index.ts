@@ -94,6 +94,8 @@ export class AppKitWalletButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const namespace = this.namespace || ChainController.state.activeChain
+
     if (this.wallet === 'email') {
       return this.emailTemplate()
     }
@@ -104,13 +106,10 @@ export class AppKitWalletButton extends LitElement {
 
     const walletButton = WalletUtil.getWalletButton(this.wallet)
 
-    const connector = walletButton
-      ? ConnectorController.getConnector({
-          id: walletButton.id,
-          rdns: walletButton.rdns,
-          namespace: this.namespace
-        })
-      : undefined
+    const connector =
+      walletButton && namespace
+        ? ConnectorController.getConnector({ id: walletButton.id, namespace })
+        : undefined
 
     if (connector) {
       return this.externalTemplate(connector)
