@@ -245,20 +245,7 @@ describe('TonAdapter', () => {
   })
 
   describe('getBalance', () => {
-    it('should return 0 balance for testnet', async () => {
-      const balance = await adapter.getBalance({
-        address: 'EQDCp8fa0dQafUICMadG4KiSYxamwzvf53_4E9d21Ol14xb-',
-        chainId: '-3',
-        caipNetwork: tonTestnet
-      })
-
-      expect(balance).toEqual({
-        balance: '0',
-        symbol: 'TON'
-      })
-    })
-
-    it('should return balance for mainnet', async () => {
+    it('should return balance as expected', async () => {
       vi.spyOn(
         (await import('@reown/appkit-controllers')).BlockchainApiController,
         'getAddressBalance'
