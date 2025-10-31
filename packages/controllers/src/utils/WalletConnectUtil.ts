@@ -65,6 +65,11 @@ export const DEFAULT_METHODS = {
   bip122: ['sendTransfer', 'signMessage', 'signPsbt', 'getAccountAddresses']
 }
 
+/**
+ * Parses a string as a URL.
+ * @param value - The string to parse.
+ * @returns The parsed URL object or null if invalid.
+ */
 function parseUrl(value: string): URL | null {
   try {
     return new URL(value)
@@ -73,6 +78,11 @@ function parseUrl(value: string): URL | null {
   }
 }
 
+/**
+ * Parses a schemeless host:port pattern from a string.
+ * @param pattern - The input pattern string.
+ * @returns An object containing the host and optional port.
+ */
 function parseSchemelessHostPort(pattern: string): { host: string; port?: string } {
   const parts = pattern.split('/')
   const withoutPath = parts.length > 0 && parts[0] !== undefined ? parts[0] : ''
@@ -87,6 +97,12 @@ function parseSchemelessHostPort(pattern: string): { host: string; port?: string
   }
 }
 
+/**
+ * Checks if the current origin matches a non-wildcard pattern.
+ * @param currentOrigin - The current origin as a string.
+ * @param pattern - The pattern string to match.
+ * @returns True if the pattern matches, otherwise false.
+ */
 function matchNonWildcardPattern(currentOrigin: string, pattern: string): boolean {
   const url = parseUrl(pattern)
   if (url) {
@@ -109,6 +125,13 @@ function matchNonWildcardPattern(currentOrigin: string, pattern: string): boolea
   return false
 }
 
+/**
+ * Checks if the current origin matches a wildcard pattern.
+ * @param current - The current origin as a URL object.
+ * @param currentOrigin - The current origin as a string.
+ * @param pattern - The wildcard pattern string to use.
+ * @returns True if matches the wildcard pattern, otherwise false.
+ */
 function matchWildcardPattern(current: URL, currentOrigin: string, pattern: string): boolean {
   // Extract scheme if present and strip path
   let working = pattern
@@ -153,9 +176,9 @@ function matchWildcardPattern(current: URL, currentOrigin: string, pattern: stri
     }
   }
 
-  // Host must have the same number of labels; '*' matches exactly one label
-  /*
-   * Use raw host from the original origin to preserve case-sensitivity
+  /**
+   * Host must have the same number of labels; '*' matches exactly one label.
+   * Uses raw host from the original origin to preserve case-sensitivity.
    */
   const raw = parseOriginRaw(currentOrigin)
   const hostForCompare = raw ? raw.host : current.hostname
@@ -175,6 +198,11 @@ function matchWildcardPattern(current: URL, currentOrigin: string, pattern: stri
   return true
 }
 
+/**
+ * Parses an origin string into its scheme, host, and optional port.
+ * @param origin - The origin string to parse.
+ * @returns An object with scheme, host, and optional port, or null if invalid.
+ */
 function parseOriginRaw(origin: string): { scheme: string; host: string; port?: string } | null {
   const schemeIdx = origin.indexOf('://')
   if (schemeIdx === -1) {
@@ -409,11 +437,6 @@ export const WcHelpersUtil = {
     // Parse current origin up-front
     const current = parseUrl(currentOrigin)
     if (!current) {
-      // Always allow localhost and 127.0.0.1
-      if (currentOrigin.startsWith('localhost') || currentOrigin.startsWith('127.0.0.1')) {
-        return true
-      }
-
       // Legacy exact string equality when pattern has no wildcard
       return patterns.some(pattern => !pattern.includes('*') && pattern === currentOrigin)
     }
