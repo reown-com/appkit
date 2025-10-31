@@ -1,8 +1,9 @@
 import type { SessionTypes } from '@walletconnect/types'
-import { describe, expect, test } from 'vitest'
+import { describe, expect, test, vi } from 'vitest'
 
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 
+import { EnsController } from '../../src/controllers/EnsController.js'
 import { WcHelpersUtil } from '../../src/utils/WalletConnectUtil.js'
 
 const mockEthereumNetwork = {
@@ -731,6 +732,140 @@ describe('WcHelpersUtil', () => {
       expect(WcHelpersUtil.isUserRejectedRequestError(true)).toBe(false)
       expect(WcHelpersUtil.isUserRejectedRequestError(BigInt(0))).toBe(false)
       expect(WcHelpersUtil.isUserRejectedRequestError(new Error('test'))).toBe(false)
+    })
+  })
+
+  describe('resolveReownName', () => {
+    test('returns first resolved address when available', async () => {
+      vi.spyOn(EnsController, 'resolveName').mockResolvedValue({
+        addresses: {
+          eip155: { address: '0xabc' },
+          solana: { address: 'SoLAddRess' }
+        }
+      } as any)
+
+      await expect(WcHelpersUtil.resolveReownName('alice.reown')).resolves.toBe('0xabc')
+    })
+
+    test('returns false when no address is found', async () => {
+      vi.spyOn(EnsController, 'resolveName').mockResolvedValue({ addresses: {} } as any)
+      await expect(WcHelpersUtil.resolveReownName('bob.reown')).resolves.toBe(false)
+
+      vi.spyOn(EnsController, 'resolveName').mockResolvedValue(undefined as any)
+      await expect(WcHelpersUtil.resolveReownName('charlie.reown')).resolves.toBe(false)
+    })
+  })
+
+  describe('getWalletConnectAccounts', () => {
+    test('returns parsed unique accounts for namespace', () => {
+      const provider: any = {
+        session: {
+          namespaces: {
+            eip155: {
+              accounts: [
+                'eip155:1:0xABCDEF0000000000000000000000000000000001',
+                'eip155:137:0xabcdef0000000000000000000000000000000001', // duplicate address, different chain, different case
+                'eip155:1:0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'
+              ]
+            }
+          }
+        }
+      }
+
+      const result = WcHelpersUtil.getWalletConnectAccounts(provider, 'eip155')
+      expect(result).toEqual([
+        {
+          address: '0xABCDEF0000000000000000000000000000000001',
+          chainId: '1',
+          chainNamespace: 'eip155'
+        },
+        {
+          address: '0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+          chainId: '1',
+          chainNamespace: 'eip155'
+        }
+      ])
+    })
+
+    test('returns empty array when no accounts found', () => {
+      const provider: any = { session: { namespaces: { eip155: { accounts: [] } } } }
+      expect(WcHelpersUtil.getWalletConnectAccounts(provider, 'eip155')).toEqual([])
+    })
+  })
+
+  describe('listenWcProvider', () => {
+    function createMockProvider() {
+      const handlers: Record<string, Function[]> = {}
+      return {
+        on(event: string, handler: Function) {
+          handlers[event] = handlers[event] || []
+          handlers[event].push(handler)
+        },
+        emit(event: string, ...args: any[]) {
+          ;(handlers[event] || []).forEach(fn => fn(...args))
+        },
+        // minimal shapes used by listeners
+        session: { namespaces: { eip155: { accounts: ['eip155:1:0x111'] } } },
+        rpcProviders: { eip155: { getDefaultChain: () => '1' } }
+      } as any
+    }
+
+    test('wires connect/disconnect/chainChanged/display_uri events', () => {
+      const provider = createMockProvider()
+      const onConnect = vi.fn()
+      const onDisconnect = vi.fn()
+      const onChainChanged = vi.fn()
+      const onDisplayUri = vi.fn()
+
+      const spyAccounts = vi
+        .spyOn(WcHelpersUtil, 'getWalletConnectAccounts')
+        .mockReturnValue([{ address: '0x1', chainId: '1', chainNamespace: 'eip155' } as any])
+
+      WcHelpersUtil.listenWcProvider({
+        universalProvider: provider,
+        namespace: 'eip155',
+        onConnect,
+        onDisconnect,
+        onChainChanged,
+        onDisplayUri
+      })
+
+      provider.emit('connect')
+      expect(onConnect).toHaveBeenCalledWith([
+        { address: '0x1', chainId: '1', chainNamespace: 'eip155' }
+      ])
+      spyAccounts.mockRestore()
+
+      provider.emit('disconnect')
+      expect(onDisconnect).toHaveBeenCalled()
+
+      provider.emit('chainChanged', 1)
+      expect(onChainChanged).toHaveBeenCalledWith(1)
+
+      provider.emit('display_uri', 'wc:abc')
+      expect(onDisplayUri).toHaveBeenCalledWith('wc:abc')
+    })
+
+    test('accountsChanged emits only when parsed accounts exist', () => {
+      const provider = createMockProvider()
+      const onAccountsChanged = vi.fn()
+
+      WcHelpersUtil.listenWcProvider({
+        universalProvider: provider,
+        namespace: 'eip155',
+        onAccountsChanged
+      })
+
+      // matching account present
+      provider.emit('accountsChanged', ['0x111'])
+      expect(onAccountsChanged).toHaveBeenCalledWith([
+        { address: '0x111', chainId: '1', chainNamespace: 'eip155' }
+      ])
+
+      // non-matching should not emit
+      onAccountsChanged.mockClear()
+      provider.emit('accountsChanged', ['0x222'])
+      expect(onAccountsChanged).not.toHaveBeenCalled()
     })
   })
 })
