@@ -50,4 +50,26 @@ export default css`
     background-color: ${({ tokens }) => tokens.core.glass010};
     color: ${({ tokens }) => tokens.theme.foregroundTertiary};
   }
+
+  wui-flex.namespace-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: ${({ borderRadius }) => borderRadius.round};
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    box-shadow: 0 0 0 2px ${({ tokens }) => tokens.theme.backgroundPrimary};
+    transition: box-shadow var(--apkt-durations-lg) var(--apkt-easings-ease-out-power-2);
+  }
+
+  button:hover:enabled wui-flex.namespace-icon {
+    box-shadow: 0 0 0 2px ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
+  wui-flex.namespace-icon > wui-icon {
+    width: 10px;
+    height: 10px;
+  }
+
+  wui-flex.namespace-icon:not(:first-child) {
+    margin-left: -4px;
+  }
 `
