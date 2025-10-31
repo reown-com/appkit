@@ -1,5 +1,13 @@
 # @reown/appkit-wallet
 
+## 1.8.13
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @reown/appkit-common@1.8.13
+  - @reown/appkit-polyfills@1.8.13
+
 ## 1.8.12
 
 ### Patch Changes

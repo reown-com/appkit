@@ -1,5 +1,7 @@
 # @reown/appkit-cli
 
+## 1.8.13
+
 ## 1.8.12
 
 ### Patch Changes
