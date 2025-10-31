@@ -13,6 +13,8 @@ import {
   AlertController,
   ChainController,
   ConnectorController,
+  type Metadata,
+  OptionsController,
   SIWXUtil,
   getActiveCaipNetwork,
   getPreferredAccountType
@@ -85,6 +87,15 @@ export function authConnector(parameters: AuthParameters) {
         abortController: ErrorUtil.EmbeddedWalletAbortController,
         getActiveCaipNetwork: (namespace?: ChainNamespace) => getActiveCaipNetwork(namespace),
         getCaipNetworks: (namespace?: ChainNamespace) => ChainController.getCaipNetworks(namespace)
+      })
+
+      const config = OptionsController.getSnapshot()
+
+      socialProvider.syncDappData({
+        projectId: parameters.options.projectId,
+        metadata: config.metadata as Metadata,
+        sdkVersion: config.sdkVersion,
+        sdkType: config.sdkType
       })
     }
 

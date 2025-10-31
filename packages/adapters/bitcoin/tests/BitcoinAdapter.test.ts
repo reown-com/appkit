@@ -13,7 +13,6 @@ import {
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
-  type ConnectionControllerClient,
   ProviderController,
   StorageUtil,
   WcHelpersUtil
@@ -46,10 +45,12 @@ describe('BitcoinAdapter', () => {
   beforeEach(() => {
     api = mockBitcoinApi()
     adapter = new BitcoinAdapter({ api, networks: [bitcoin] })
-    ChainController.initialize([adapter], [bitcoin], {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
-    })
+    ChainController.initialize([adapter], [bitcoin])
     ChainController.setRequestedCaipNetworks([bitcoin], 'bip122')
+
+    // Mock ProviderController
+    vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('WALLET_CONNECT')
+    vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockUniversalProvider())
   })
 
   describe('constructor', () => {
@@ -401,11 +402,11 @@ describe('BitcoinAdapter', () => {
 
     it('should return the signature', async () => {
       vi.spyOn(connector, 'signMessage').mockResolvedValueOnce('mock_signature')
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(connector.provider)
 
       const result = await adapter.signMessage({
         message: 'mock_message',
-        address: 'mock_address',
-        provider: connector.provider
+        address: 'mock_address'
       })
 
       expect(result).toEqual({ signature: 'mock_signature' })
@@ -415,8 +416,7 @@ describe('BitcoinAdapter', () => {
       await expect(
         adapter.signMessage({
           address: 'mock_address',
-          message: 'mock_message',
-          provider: undefined
+          message: 'mock_message'
         })
       ).rejects.toThrow()
     })
@@ -424,10 +424,11 @@ describe('BitcoinAdapter', () => {
 
   describe('getWalletConnectProvider', () => {
     it('should return the wallet connect provider', () => {
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockUniversalProvider())
+
       const provider = adapter.getWalletConnectProvider({
         activeCaipNetwork: bitcoin,
-        caipNetworks: [bitcoin],
-        provider: undefined
+        caipNetworks: [bitcoin]
       })
 
       expect(provider).toBeInstanceOf(BitcoinWalletConnectConnector)
@@ -647,6 +648,15 @@ describe('BitcoinAdapter', () => {
 
       const switchNetworkSpy = vi.spyOn(provider, 'switchNetwork').mockResolvedValue(undefined)
 
+      // Mock ProviderController to return EXTERNAL provider type so it calls connector's switchNetwork
+      vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('EXTERNAL')
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(provider)
+
+      // Add the connector to the adapter
+      Object.defineProperty(adapter, 'connectors', {
+        value: [provider]
+      })
+
       await adapter.switchNetwork({
         caipNetwork: bitcoinTestnet
       })
@@ -674,6 +684,15 @@ describe('BitcoinAdapter', () => {
         .spyOn(xverseConnector, 'switchNetwork')
         .mockResolvedValue(undefined)
 
+      // Mock ProviderController to return EXTERNAL provider type so it calls connector's switchNetwork
+      vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('EXTERNAL')
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(xverseConnector)
+
+      // Add the connector to the adapter
+      Object.defineProperty(adapter, 'connectors', {
+        value: [xverseConnector]
+      })
+
       await adapter.switchNetwork({
         caipNetwork: bitcoinTestnet
       })
@@ -687,9 +706,8 @@ describe('BitcoinAdapter', () => {
         typeof provider.setDefaultChain
       >
 
-      // Set up provider in ProviderController
-      ProviderController.setProvider(bitcoinTestnet.chainNamespace, provider)
-      ProviderController.setProviderId(bitcoinTestnet.chainNamespace, 'WALLET_CONNECT')
+      // Mock ProviderController to return the provider
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(provider)
 
       await adapter.switchNetwork({
         caipNetwork: bitcoinTestnet
@@ -710,6 +728,15 @@ describe('BitcoinAdapter', () => {
 
       const error = new Error('Network switching failed')
       vi.spyOn(provider, 'switchNetwork').mockRejectedValue(error)
+
+      // Mock ProviderController to return EXTERNAL provider type so it calls connector's switchNetwork
+      vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('EXTERNAL')
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(provider)
+
+      // Add the connector to the adapter
+      Object.defineProperty(adapter, 'connectors', {
+        value: [provider]
+      })
 
       await expect(
         adapter.switchNetwork({

@@ -56,22 +56,6 @@ export class AppKit extends AppKitBaseClient {
     }
   }
 
-  public override async syncIdentity(
-    _request: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
-      chainNamespace: ChainNamespace
-    }
-  ) {
-    return Promise.resolve()
-  }
-
-  public override async syncBalance(_params: {
-    address: string
-    chainId: string | number | undefined
-    chainNamespace: ChainNamespace
-  }) {
-    return Promise.resolve()
-  }
-
   protected override async injectModalUi() {
     if (!isInitialized && CoreHelperUtil.isClient()) {
       await import('@reown/appkit-scaffold-ui/basic')

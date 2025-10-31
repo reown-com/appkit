@@ -22,7 +22,6 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 import { type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
-  type ConnectionControllerClient,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -142,6 +141,10 @@ describe('WagmiAdapter', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('WALLET_CONNECT')
+    vi.spyOn(ProviderController, 'getProvider').mockReturnValue({
+      setDefaultChain: vi.fn()
+    } as unknown as UniversalProvider)
     vi.mock('@wagmi/connectors', async () => {
       const actual = await vi.importActual('@wagmi/connectors')
       return {
@@ -161,10 +164,16 @@ describe('WagmiAdapter', () => {
       networks: mockNetworks,
       projectId: mockProjectId
     })
+    // Override the wagmiConfig with our mock
     adapter.wagmiConfig = mockWagmiConfig
-    ChainController.initialize([adapter], mockCaipNetworks, {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
+    adapter.construct({
+      namespace: 'eip155',
+      networks: mockCaipNetworks,
+      projectId: mockProjectId,
+      adapterType: ConstantsUtil.ADAPTER_TYPES.WAGMI
     })
+    // Call setupWatchers manually after setting the mock config
+    ChainController.initialize([adapter], mockCaipNetworks)
     ChainController.setRequestedCaipNetworks(mockCaipNetworks, 'eip155')
   })
 
@@ -191,7 +200,18 @@ describe('WagmiAdapter', () => {
     it('should emit switchNetwork in construct when chainId is returned from getAccount', () => {
       const emitSpy = vi.fn()
       adapter.on('switchNetwork', emitSpy)
-      adapter.construct({})
+      adapter.construct({
+        namespace: 'eip155',
+        networks: [
+          {
+            ...mainnet,
+            caipNetworkId: 'eip155:1',
+            chainNamespace: 'eip155',
+            id: 1,
+            name: 'Ethereum'
+          }
+        ]
+      })
       expect(emitSpy).toHaveBeenCalledWith({
         chainId: 1
       })
@@ -539,6 +559,13 @@ describe('WagmiAdapter', () => {
   })
 
   describe('WagmiAdapter - getBalance', () => {
+    beforeEach(() => {
+      adapter.construct({
+        namespace: 'eip155',
+        networks: mockCaipNetworks
+      })
+    })
+
     it('should get balance successfully', async () => {
       vi.mocked(getBalance).mockResolvedValue({
         formatted: '1.5',
@@ -675,7 +702,18 @@ describe('WagmiAdapter', () => {
         projectId: mockProjectId
       })
 
-      adapter.construct({})
+      adapter.construct({
+        namespace: 'eip155',
+        networks: [
+          {
+            ...mainnet,
+            caipNetworkId: 'eip155:1',
+            chainNamespace: 'eip155',
+            id: 1,
+            name: 'Ethereum'
+          }
+        ]
+      })
 
       await adapter.disconnect({})
 
@@ -720,7 +758,18 @@ describe('WagmiAdapter', () => {
         projectId: mockProjectId
       })
 
-      wagmiAdapter.construct({})
+      wagmiAdapter.construct({
+        namespace: 'eip155',
+        networks: [
+          {
+            ...mainnet,
+            caipNetworkId: 'eip155:1',
+            chainNamespace: 'eip155',
+            id: 1,
+            name: 'Ethereum'
+          }
+        ]
+      })
 
       await wagmiAdapter.disconnect({})
 
@@ -882,9 +931,9 @@ describe('WagmiAdapter', () => {
         preferredAccountType: 'smartAccount'
       })
 
-      // Set up provider in ProviderController for super.switchNetwork() call
-      ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, mockAuthProvider)
-      ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'AUTH')
+      // Mock ProviderController to return AUTH provider
+      vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('AUTH')
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockAuthProvider)
 
       // Mock ConnectorController.getAuthConnector to return our mock provider
       vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
@@ -1096,7 +1145,18 @@ describe('WagmiAdapter', () => {
         }
       })
 
-      adapter.construct({})
+      adapter.construct({
+        namespace: 'eip155',
+        networks: [
+          {
+            ...mainnet,
+            caipNetworkId: 'eip155:1',
+            chainNamespace: 'eip155',
+            id: 1,
+            name: 'Ethereum'
+          }
+        ]
+      })
 
       // Set state to maximum limit so we know once we reach the limit it'll unsubscribe the watchPendingTransactions
       LimitterUtil.state.pendingTransactions = ConstantsUtil.LIMITS.PENDING_TRANSACTIONS
@@ -1146,7 +1206,10 @@ describe('WagmiAdapter', () => {
       } as unknown as wagmiCore.GetAccountReturnType
 
       vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
-        expect(config).toBe(adapter.wagmiConfig)
+        expect(config).toHaveProperty('connectors')
+        expect(config.connectors).toEqual(
+          expect.arrayContaining([expect.objectContaining({ id: 'test-connector' })])
+        )
         onChange(currAccount, prevAccount)
         return vi.fn()
       })
@@ -1187,7 +1250,10 @@ describe('WagmiAdapter', () => {
       } as unknown as wagmiCore.GetAccountReturnType
 
       vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
-        expect(config).toBe(adapter.wagmiConfig)
+        expect(config).toHaveProperty('connectors')
+        expect(config.connectors).toEqual(
+          expect.arrayContaining([expect.objectContaining({ id: 'test-connector' })])
+        )
         onChange(currAccount, prevAccount)
         return vi.fn()
       })
@@ -1231,7 +1297,10 @@ describe('WagmiAdapter', () => {
       } as unknown as wagmiCore.GetAccountReturnType
 
       vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
-        expect(config).toBe(adapter.wagmiConfig)
+        expect(config).toHaveProperty('connectors')
+        expect(config.connectors).toEqual(
+          expect.arrayContaining([expect.objectContaining({ id: 'test-connector' })])
+        )
         onChange(currAccount, prevAccount)
         return vi.fn()
       })
@@ -1259,7 +1328,10 @@ describe('WagmiAdapter', () => {
       } as unknown as wagmiCore.GetAccountReturnType
 
       vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
-        expect(config).toBe(adapter.wagmiConfig)
+        expect(config).toHaveProperty('connectors')
+        expect(config.connectors).toEqual(
+          expect.arrayContaining([expect.objectContaining({ id: 'test-connector' })])
+        )
         onChange(currAccount, prevAccount)
         return vi.fn()
       })
@@ -1287,7 +1359,10 @@ describe('WagmiAdapter', () => {
       } as unknown as wagmiCore.GetAccountReturnType
 
       vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
-        expect(config).toBe(adapter.wagmiConfig)
+        expect(config).toHaveProperty('connectors')
+        expect(config.connectors).toEqual(
+          expect.arrayContaining([expect.objectContaining({ id: 'test-connector' })])
+        )
         onChange(currAccount, prevAccount)
         return vi.fn()
       })
@@ -1315,7 +1390,10 @@ describe('WagmiAdapter', () => {
       } as unknown as wagmiCore.GetAccountReturnType
 
       vi.mocked(watchAccount).mockImplementation((config, { onChange }) => {
-        expect(config).toBe(adapter.wagmiConfig)
+        expect(config).toHaveProperty('connectors')
+        expect(config.connectors).toEqual(
+          expect.arrayContaining([expect.objectContaining({ id: 'test-connector' })])
+        )
         onChange(currAccount, prevAccount)
         return vi.fn()
       })

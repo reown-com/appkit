@@ -73,7 +73,7 @@ export const SIWXUtil = {
       })
 
       // eslint-disable-next-line no-console
-      await ConnectionController._getClient()?.disconnect().catch(console.error)
+      await ConnectionController.disconnect().catch(console.error)
       RouterController.reset('Connect')
       SnackController.showError('A problem occurred while trying initialize authentication')
     }
