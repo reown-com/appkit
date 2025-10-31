@@ -177,11 +177,3 @@ export function matchWildcardPattern(
 
   return true
 }
-
-export const UrlUtils = {
-  parseUrl,
-  parseSchemelessHostPort,
-  parseOriginRaw,
-  matchNonWildcardPattern,
-  matchWildcardPattern
-}
