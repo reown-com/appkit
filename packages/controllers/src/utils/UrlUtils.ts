@@ -67,6 +67,7 @@ export function matchNonWildcardPattern(currentOrigin: string, pattern: string):
   // If pattern explicitly specifies a scheme, compare origins (ignore path)
   if (pattern.includes('://')) {
     const url = parseUrl(pattern)
+
     return url ? url.origin === currentOrigin : false
   }
 
@@ -86,6 +87,7 @@ export function matchNonWildcardPattern(currentOrigin: string, pattern: string):
     }
 
     const rawHostOnly = rawHostPort.split(':')[0]
+
     return host === rawHostOnly
   }
 
