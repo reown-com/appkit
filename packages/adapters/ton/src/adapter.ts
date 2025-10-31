@@ -226,27 +226,15 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   override async getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
-    const chain = params.chainId
+    const caipNetworkId = params.caipNetwork?.caipNetworkId
     const address = params.address
 
-    if (!address || !chain) {
-      return { balance: '0', symbol: 'TON' }
-    }
-
-    const chainToCaipNetworkIdMap = {
-      '-239': 'ton:mainnet',
-      '-3': 'ton:testnet'
-    }
-
-    const isTestnet = params.chainId === '-3'
-
-    if (isTestnet) {
+    if (!address || !caipNetworkId) {
       return { balance: '0', symbol: 'TON' }
     }
 
     const balance = await BlockchainApiController.getAddressBalance({
-      caipNetworkId:
-        chainToCaipNetworkIdMap[params.chainId as keyof typeof chainToCaipNetworkIdMap],
+      caipNetworkId,
       address
     })
 
