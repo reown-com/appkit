@@ -16,7 +16,7 @@ import type {
 
 // Mocking the global fetch function
 const mockFetch = vi.fn()
-global.fetch = mockFetch
+global.fetch = mockFetch as unknown as typeof fetch
 
 describe('CoSigner API Tests', () => {
   const projectId = 'test-project-id'

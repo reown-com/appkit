@@ -2,7 +2,7 @@ import { devices } from '@playwright/test'
 
 import { DESKTOP_DEVICES, MOBILE_DEVICES } from '@reown/appkit-testing'
 
-const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana', 'bitcoin'] as const
+const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana', 'bitcoin', 'ton'] as const
 const MULTICHAIN_LIBRARIES = [
   'multichain-no-adapters',
   'multichain-all',
@@ -112,6 +112,8 @@ const SINGLE_ADAPTER_BITCOIN_TESTS = [
   'siwx-extension.spec.ts'
 ]
 
+const SINGLE_ADAPTER_TON_TESTS = ['extension.spec.ts', 'wallet.spec.ts', 'basic-tests.spec.ts']
+
 function createRegex(tests: string[], isDesktop = true) {
   const desktopCheck = isDesktop ? '(?!.*/mobile-)' : ''
 
@@ -121,6 +123,7 @@ function createRegex(tests: string[], isDesktop = true) {
 const SINGLE_ADAPTER_EVM_TESTS_REGEX = createRegex(SINGLE_ADAPTER_EVM_TESTS)
 const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = createRegex(SINGLE_ADAPTER_SOLANA_TESTS)
 const SINGLE_ADAPTER_BITCOIN_TESTS_REGEX = createRegex(SINGLE_ADAPTER_BITCOIN_TESTS)
+const SINGLE_ADAPTER_TON_TESTS_REGEX = createRegex(SINGLE_ADAPTER_TON_TESTS)
 const SINGLE_ADAPTER_MOBILE_REGEX = createRegex(SINGLE_ADAPTER_MOBILE_TESTS, false)
 
 const CORE_TESTS_REGEX = createRegex(CORE_TESTS)
@@ -165,6 +168,16 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Firefox/bitcoin': {
     testMatch: SINGLE_ADAPTER_BITCOIN_TESTS_REGEX,
     testIgnore: /reown-authentication.*\.spec\.ts/u
+  },
+  'Desktop Chrome/ton': {
+    testMatch: SINGLE_ADAPTER_TON_TESTS_REGEX,
+    testIgnore:
+      /siwe-.*\.spec\.ts|siwx-.*\.spec\.ts|multichain-.*\.spec\.ts|reown-authentication.*\.spec\.ts/u
+  },
+  'Desktop Firefox/ton': {
+    testMatch: SINGLE_ADAPTER_TON_TESTS_REGEX,
+    testIgnore:
+      /siwe-.*\.spec\.ts|siwx-.*\.spec\.ts|multichain-.*\.spec\.ts|reown-authentication.*\.spec\.ts/u
   },
   'Desktop Chrome/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
@@ -258,6 +271,12 @@ const customProjectProperties: CustomProjectProperties = {
     testMatch: SINGLE_ADAPTER_MOBILE_REGEX
   },
   'Galaxy S5/solana': {
+    testMatch: SINGLE_ADAPTER_MOBILE_REGEX
+  },
+  'iPhone 12/ton': {
+    testMatch: SINGLE_ADAPTER_MOBILE_REGEX
+  },
+  'Galaxy S5/ton': {
     testMatch: SINGLE_ADAPTER_MOBILE_REGEX
   },
   'Desktop Chrome/reown-authentication': {

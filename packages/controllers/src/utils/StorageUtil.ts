@@ -39,7 +39,9 @@ export const StorageUtil = {
     transactionsHistory: 15000,
     tokenPrice: 15000,
     // 7 Days
-    latestAppKitVersion: 604_800_000
+    latestAppKitVersion: 604_800_000,
+    // 1 Day
+    tonWallets: 86_400_000
   },
   isCacheExpired(timestamp: number, cacheExpiry: number) {
     return Date.now() - timestamp > cacheExpiry
@@ -587,7 +589,39 @@ export const StorageUtil = {
       console.info('Unable to remove identity from cache', address)
     }
   },
+  getTonWalletsCache() {
+    try {
+      const cache = SafeLocalStorage.getItem(SafeLocalStorageKeys.TON_WALLETS_CACHE)
+      const parsedCache = cache ? JSON.parse(cache) : undefined
 
+      if (parsedCache && !this.isCacheExpired(parsedCache.timestamp, this.cacheExpiry.tonWallets)) {
+        return parsedCache
+      }
+
+      StorageUtil.removeTonWalletsCache()
+    } catch {
+      console.info('Unable to get ton wallets cache')
+    }
+
+    return undefined
+  },
+  updateTonWalletsCache(wallets: unknown[]) {
+    try {
+      const cache = StorageUtil.getTonWalletsCache() || { timestamp: 0, wallets: [] }
+      cache.timestamp = new Date().getTime()
+      cache.wallets = wallets
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.TON_WALLETS_CACHE, JSON.stringify(cache))
+    } catch {
+      console.info('Unable to update ton wallets cache', wallets)
+    }
+  },
+  removeTonWalletsCache() {
+    try {
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.TON_WALLETS_CACHE)
+    } catch {
+      console.info('Unable to remove ton wallets cache')
+    }
+  },
   clearAddressCache() {
     try {
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.PORTFOLIO_CACHE)

@@ -17,6 +17,14 @@ type SDKFramework = 'html' | 'react' | 'vue' | 'cdn' | 'unity'
 export type OpenTarget = '_blank' | '_self' | 'popupWindow' | '_top'
 
 export const CoreHelperUtil = {
+  getWindow(): Window | undefined {
+    if (typeof window === 'undefined') {
+      return undefined
+    }
+
+    return window
+  },
+
   isMobile() {
     if (this.isClient()) {
       return Boolean(
@@ -87,6 +95,7 @@ export const CoreHelperUtil = {
       return false
     }
   },
+
   isSafeApp() {
     if (CoreHelperUtil.isClient() && window.self !== window.top) {
       try {

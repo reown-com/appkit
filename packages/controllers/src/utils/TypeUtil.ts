@@ -265,6 +265,18 @@ export interface BlockchainApiSwapTokensRequest {
   chainId?: string
 }
 
+export interface BlockchainApiGetAddressBalanceRequest {
+  caipNetworkId: string
+  address: string
+}
+
+export interface BlockchainApiGetAddressBalanceResponse {
+  ok: boolean
+  result: string
+  jsonrpc: string
+  id: string
+}
+
 export interface BlockchainApiSwapTokensResponse {
   tokens: SwapToken[]
 }
@@ -1117,6 +1129,7 @@ export type NamespaceTypeMap = {
   cosmos: 'eoa'
   sui: 'eoa'
   stacks: 'eoa'
+  ton: 'eoa'
 }
 
 export type AccountTypeMap = {
