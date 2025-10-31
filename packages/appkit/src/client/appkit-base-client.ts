@@ -182,7 +182,9 @@ export abstract class AppKitBaseClient {
     } else {
       await this.unSyncExistingConnection()
     }
-    this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+    if (!options.basic && !options.manualWCControl) {
+      this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+    }
     await ApiController.fetchUsage()
     OptionsController.setRemoteFeatures(this.remoteFeatures)
     if (this.remoteFeatures.onramp) {
@@ -1789,7 +1791,27 @@ export abstract class AppKitBaseClient {
     OptionsController.setManualWCControl(Boolean(this.options?.manualWCControl))
     this.universalProvider =
       this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
-    // Clear the session if we don't want to reconnect on init
+
+    const originalDisconnect = this.universalProvider.disconnect.bind(this.universalProvider)
+
+    this.universalProvider.disconnect = async () => {
+      try {
+        return await originalDisconnect()
+      } catch (error) {
+        if (error instanceof Error) {
+          const isAlreadyDisconnected = error.message.includes(
+            'Missing or invalid. Record was recently deleted'
+          )
+
+          if (isAlreadyDisconnected) {
+            return undefined
+          }
+        }
+
+        throw error
+      }
+    }
+
     if (OptionsController.state.enableReconnect === false && this.universalProvider.session) {
       await this.universalProvider.disconnect()
     }

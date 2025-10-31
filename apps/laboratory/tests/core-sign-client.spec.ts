@@ -4,12 +4,14 @@ import { BASE_URL, WalletPage, WalletValidator } from '@reown/appkit-testing'
 
 import { expect } from './shared/fixtures/w3m-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
+import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
 let walletPage: WalletPage
 let walletValidator: WalletValidator
 let context: BrowserContext
+let validator: ModalWalletValidator
 /* eslint-enable init-declarations */
 
 // -- Setup --------------------------------------------------------------------
@@ -29,6 +31,7 @@ signClientTest.beforeAll(async ({ browser }) => {
   modalPage = new ModalPage(browserPage, 'library', 'core-sign-client')
   walletPage = new WalletPage(await context.newPage())
   walletValidator = new WalletValidator(walletPage.page)
+  validator = new ModalWalletValidator(browserPage)
 
   await walletPage.load()
 
@@ -68,7 +71,7 @@ signClientTest('it should sign message with sign client', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
   await walletPage.handleRequest({ accept: true })
-  await expect(modalPage.page.getByText('Signing Succeeded')).toBeVisible()
+  await validator.expectAcceptedSign()
 })
 
 signClientTest('it should switch networks with sign client', async () => {
@@ -83,7 +86,7 @@ signClientTest('it should sign message after network switch with sign client', a
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Polygon' })
   await walletPage.handleRequest({ accept: true })
-  await expect(modalPage.page.getByText('Signing Succeeded')).toBeVisible()
+  await validator.expectAcceptedSign()
 })
 
 signClientTest('it should stay connected after page refresh with sign client', async () => {
@@ -96,7 +99,7 @@ signClientTest('it should reject sign message with sign client', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
   await walletPage.handleRequest({ accept: false })
-  await expect(modalPage.page.getByText('Failed to sign')).toBeVisible()
+  await validator.expectRejectedSign()
 })
 
 signClientTest('it should switch between various networks with sign client', async () => {

@@ -50,7 +50,6 @@ export class W3mDepositFromExchangeView extends LitElement {
 
   public constructor() {
     super()
-    ExchangeController.reset()
     this.unsubscribe.push(
       ChainController.subscribeKey('activeCaipNetwork', val => {
         this.network = val

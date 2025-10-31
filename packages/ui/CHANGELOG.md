@@ -1,5 +1,20 @@
 # @reown/appkit-ui
 
+## 1.8.11
+
+### Patch Changes
+
+- [#5228](https://github.com/reown-com/appkit/pull/5228) [`6b543c3`](https://github.com/reown-com/appkit/commit/6b543c3c11d6839720d4bcbb7f93e19a065029c3) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixes an issue where the UI would show incorrect possibility to switch wallet in profile wallets view
+
+- [#5247](https://github.com/reown-com/appkit/pull/5247) [`99cc58b`](https://github.com/reown-com/appkit/commit/99cc58bb335a359b261eab18676fed13ea325bde) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes package version injecting when building packages
+
+- [#5225](https://github.com/reown-com/appkit/pull/5225) [`fda02dc`](https://github.com/reown-com/appkit/commit/fda02dc9ee173ff34f604dc6b022f421bae44539) Thanks [@magiziz](https://github.com/magiziz)! - Added usage limit UI in AppKit that displays when limits are exceeded
+
+- Updated dependencies [[`1a9f436`](https://github.com/reown-com/appkit/commit/1a9f4367f7b65f91dd4e75bd3d1d018e1be59718), [`99cc58b`](https://github.com/reown-com/appkit/commit/99cc58bb335a359b261eab18676fed13ea325bde), [`135b5c0`](https://github.com/reown-com/appkit/commit/135b5c0f6ab8e282861562ff11cf71b655d2f830), [`fda02dc`](https://github.com/reown-com/appkit/commit/fda02dc9ee173ff34f604dc6b022f421bae44539), [`2778f7d`](https://github.com/reown-com/appkit/commit/2778f7d5743789ceef4d95ba743f44d365626b75)]:
+  - @reown/appkit-controllers@1.8.11
+  - @reown/appkit-common@1.8.11
+  - @reown/appkit-wallet@1.8.11
+
 ## 1.8.10
 
 ### Patch Changes

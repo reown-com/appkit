@@ -5,7 +5,9 @@ import type {
   SIWXSession
 } from '@reown/appkit-controllers'
 
+import DefaultSigner from '../signers/DefaultSigner.js'
 import type { SIWXMessenger } from './SIWXMessenger.js'
+import type { SIWXSigner } from './SIWXSigner.js'
 import type { SIWXStorage } from './SIWXStorage.js'
 import type { SIWXVerifier } from './SIWXVerifier.js'
 
@@ -17,6 +19,7 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
   private messenger: SIWXMessenger
   private verifiers: SIWXVerifier[]
   private storage: SIWXStorage
+  public signer: SIWXSigner
 
   public required: boolean
 
@@ -25,6 +28,7 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
     this.verifiers = params.verifiers
     this.storage = params.storage
     this.required = params.required ?? true
+    this.signer = params.signer || new DefaultSigner()
   }
 
   /**
@@ -133,6 +137,16 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
   getRequired() {
     return this.required
   }
+
+  public signMessage({
+    message
+  }: {
+    message: string
+    chainId: string
+    accountAddress: string
+  }): Promise<string> {
+    return this.signer.signMessage(message)
+  }
 }
 
 export namespace SIWXConfig {
@@ -157,5 +171,10 @@ export namespace SIWXConfig {
      * @default true
      */
     required?: boolean
+
+    /**
+     * The signer handler to sign the message. If not provided, a signature request will be made to the wallet.
+     */
+    signer?: SIWXSigner
   }
 }
