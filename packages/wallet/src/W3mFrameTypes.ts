@@ -30,9 +30,9 @@ import {
   FrameSetPreferredAccountResponse,
   FrameSwitchNetworkResponse,
   FrameUpdateEmailResponse,
-  FrameUpdateEmailSecondaryOtpResponse,
-  RcpEthGetBlockTransactionCountByHash,
-  RcpEthGetBlockTransactionCountByNumber,
+  FrameUpdateEmailSecondaryOtpResponse,  
+  RpcEthGetBlockTransactionCountByHash,
+  RpcEthGetBlockTransactionCountByNumber,
   RpcEthAccountsRequest,
   RpcEthBlockNumber,
   RpcEthCall,
@@ -44,9 +44,9 @@ import {
   RpcEthGetBalance,
   RpcEthGetBlockByNumber,
   RpcEthGetBlockReceipts,
-  RpcEthGetBlockyByHash,
+  RpcEthGetBlockByHash,
   RpcEthGetCode,
-  RpcEthGetFilter,
+  RpcEthGetFilterChanges,
   RpcEthGetFilterLogs,
   RpcEthGetLogs,
   RpcEthGetProof,
@@ -72,19 +72,24 @@ import {
   RpcSolanaSignAndSendTransactionRequest,
   RpcSolanaSignMessageRequest,
   RpcSolanaSignTransactionRequest,
-  RpcUnistallFilter,
+  RpcEthUninstallFilter,
   W3mFrameSchema,
   WalletGetAssetsRequest,
-  WalletGetCallsReceiptRequest,
+  WalletGetCallsStatusRequest,
   WalletGetCapabilitiesRequest,
   WalletGrantPermissionsRequest,
   WalletRevokePermissionsRequest,
   WalletSendCallsRequest
 } from './W3mFrameSchema.js'
 
+
+const RpcEthGetBlockyByHash = RpcEthGetBlockByHash
+const RpcEthGetFilter = RpcEthGetFilterChanges
+const RpcUnistallFilter = RpcEthUninstallFilter
+const WalletGetCallsReceiptRequest = WalletGetCallsStatusRequest
+
 export namespace W3mFrameTypes {
   export type AppEvent = z.infer<typeof W3mFrameSchema.appEvent>
-
   export type FrameEvent = z.infer<typeof W3mFrameSchema.frameEvent>
 
   export interface Requests {
@@ -144,59 +149,70 @@ export namespace W3mFrameTypes {
     chainId: number | CaipNetworkId
   }
 
+  // Helper type para extrair infer types dos schemas RPC
+  type RpcRequestType<T> = z.infer<T>
+
   export type RPCRequest = (
-    | z.infer<typeof RpcEthAccountsRequest>
-    | z.infer<typeof RpcEthBlockNumber>
-    | z.infer<typeof RpcEthCall>
-    | z.infer<typeof RpcEthChainId>
-    | z.infer<typeof RpcEthEstimateGas>
-    | z.infer<typeof RpcEthFeeHistory>
-    | z.infer<typeof RpcEthGasPrice>
-    | z.infer<typeof RpcEthGetAccount>
-    | z.infer<typeof RpcEthGetBalance>
-    | z.infer<typeof RpcEthGetBlockyByHash>
-    | z.infer<typeof RpcEthGetBlockByNumber>
-    | z.infer<typeof RpcEthGetBlockReceipts>
-    | z.infer<typeof RcpEthGetBlockTransactionCountByHash>
-    | z.infer<typeof RcpEthGetBlockTransactionCountByNumber>
-    | z.infer<typeof RpcEthGetCode>
-    | z.infer<typeof RpcEthGetFilter>
-    | z.infer<typeof RpcEthGetFilterLogs>
-    | z.infer<typeof RpcEthGetLogs>
-    | z.infer<typeof RpcEthGetProof>
-    | z.infer<typeof RpcEthGetStorageAt>
-    | z.infer<typeof RpcEthGetTransactionByBlockHashAndIndex>
-    | z.infer<typeof RpcEthGetTransactionByBlockNumberAndIndex>
-    | z.infer<typeof RpcEthGetTransactionByHash>
-    | z.infer<typeof RpcEthGetTransactionCount>
-    | z.infer<typeof RpcEthGetTransactionReceipt>
-    | z.infer<typeof RpcEthGetUncleCountByBlockHash>
-    | z.infer<typeof RpcEthGetUncleCountByBlockNumber>
-    | z.infer<typeof RpcEthMaxPriorityFeePerGas>
-    | z.infer<typeof RpcEthNewBlockFilter>
-    | z.infer<typeof RpcEthNewFilter>
-    | z.infer<typeof RpcEthNewPendingTransactionFilter>
-    | z.infer<typeof RpcEthSendRawTransaction>
-    | z.infer<typeof RpcEthSyncing>
-    | z.infer<typeof RpcUnistallFilter>
-    | z.infer<typeof RpcPersonalSignRequest>
-    | z.infer<typeof RpcEthSignTypedDataV4>
-    | z.infer<typeof RpcEthSendTransactionRequest>
-    | z.infer<typeof RpcSolanaSignMessageRequest>
-    | z.infer<typeof RpcSolanaSignTransactionRequest>
-    | z.infer<typeof RpcSolanaSignAllTransactionsRequest>
-    | z.infer<typeof RpcSolanaSignAndSendTransactionRequest>
-    | z.infer<typeof WalletSendCallsRequest>
-    | z.infer<typeof WalletGetCallsReceiptRequest>
-    | z.infer<typeof WalletGetCapabilitiesRequest>
-    | z.infer<typeof WalletGrantPermissionsRequest>
-    | z.infer<typeof WalletRevokePermissionsRequest>
-    | z.infer<typeof WalletGetAssetsRequest>
-  ) & { chainNamespace?: ChainNamespace; chainId?: string | number; rpcUrl?: string }
+    | RpcRequestType<typeof RpcEthAccountsRequest>
+    | RpcRequestType<typeof RpcEthBlockNumber>
+    | RpcRequestType<typeof RpcEthCall>
+    | RpcRequestType<typeof RpcEthChainId>
+    | RpcRequestType<typeof RpcEthEstimateGas>
+    | RpcRequestType<typeof RpcEthFeeHistory>
+    | RpcRequestType<typeof RpcEthGasPrice>
+    | RpcRequestType<typeof RpcEthGetAccount>
+    | RpcRequestType<typeof RpcEthGetBalance>    
+    | RpcRequestType<typeof RpcEthGetBlockByHash>
+    | RpcRequestType<typeof RpcEthGetBlockyByHash>
+    | RpcRequestType<typeof RpcEthGetBlockByNumber>
+    | RpcRequestType<typeof RpcEthGetBlockReceipts>
+    | RpcRequestType<typeof RpcEthGetBlockTransactionCountByHash>
+    | RpcRequestType<typeof RpcEthGetBlockTransactionCountByNumber>
+    | RpcRequestType<typeof RpcEthGetCode>    
+    | RpcRequestType<typeof RpcEthGetFilterChanges>
+    | RpcRequestType<typeof RpcEthGetFilter>
+    | RpcRequestType<typeof RpcEthGetFilterLogs>
+    | RpcRequestType<typeof RpcEthGetLogs>
+    | RpcRequestType<typeof RpcEthGetProof>
+    | RpcRequestType<typeof RpcEthGetStorageAt>
+    | RpcRequestType<typeof RpcEthGetTransactionByBlockHashAndIndex>
+    | RpcRequestType<typeof RpcEthGetTransactionByBlockNumberAndIndex>
+    | RpcRequestType<typeof RpcEthGetTransactionByHash>
+    | RpcRequestType<typeof RpcEthGetTransactionCount>
+    | RpcRequestType<typeof RpcEthGetTransactionReceipt>
+    | RpcRequestType<typeof RpcEthGetUncleCountByBlockHash>
+    | RpcRequestType<typeof RpcEthGetUncleCountByBlockNumber>
+    | RpcRequestType<typeof RpcEthMaxPriorityFeePerGas>
+    | RpcRequestType<typeof RpcEthNewBlockFilter>
+    | RpcRequestType<typeof RpcEthNewFilter>
+    | RpcRequestType<typeof RpcEthNewPendingTransactionFilter>
+    | RpcRequestType<typeof RpcEthSendRawTransaction>
+    | RpcRequestType<typeof RpcEthSyncing>    
+    | RpcRequestType<typeof RpcEthUninstallFilter>
+    | RpcRequestType<typeof RpcUnistallFilter>
+    | RpcRequestType<typeof RpcPersonalSignRequest>
+    | RpcRequestType<typeof RpcEthSignTypedDataV4>
+    | RpcRequestType<typeof RpcEthSendTransactionRequest>
+    | RpcRequestType<typeof RpcSolanaSignMessageRequest>
+    | RpcRequestType<typeof RpcSolanaSignTransactionRequest>
+    | RpcRequestType<typeof RpcSolanaSignAllTransactionsRequest>
+    | RpcRequestType<typeof RpcSolanaSignAndSendTransactionRequest>
+    | RpcRequestType<typeof WalletSendCallsRequest>    
+    | RpcRequestType<typeof WalletGetCallsStatusRequest>
+    | RpcRequestType<typeof WalletGetCallsReceiptRequest>
+    | RpcRequestType<typeof WalletGetCapabilitiesRequest>
+    | RpcRequestType<typeof WalletGrantPermissionsRequest>
+    | RpcRequestType<typeof WalletRevokePermissionsRequest>
+    | RpcRequestType<typeof WalletGetAssetsRequest>
+  ) & {
+    chainNamespace?: ChainNamespace;
+    chainId?: string | number;
+    rpcUrl?: string
+  }
 
   export type RPCResponse = z.infer<typeof RpcResponse>
-
   export type FrameSessionType = z.infer<typeof FrameSession>
+
   export type AccountType =
     (typeof W3mFrameRpcConstants.ACCOUNT_TYPES)[keyof typeof W3mFrameRpcConstants.ACCOUNT_TYPES]
 
@@ -226,6 +242,12 @@ export namespace W3mFrameTypes {
     | 'Reload'
     | 'RpcAbort'
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export type WalletCapabilities = Record<string, any>
+  export type WalletCapabilities = Record<string, unknown>
+}
+
+export {
+  RpcEthGetBlockyByHash,
+  RpcEthGetFilter,
+  RpcUnistallFilter,
+  WalletGetCallsReceiptRequest
 }
