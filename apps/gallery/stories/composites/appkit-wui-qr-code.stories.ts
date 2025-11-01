@@ -11,6 +11,9 @@ type Component = Meta<WuiQrCode>
 
 export default {
   title: 'Composites/appkit-wui-qr-code',
+  parameters: {
+    chromatic: { disableSnapshot: true }
+  },
   args: {
     size: 318,
     theme: 'dark',

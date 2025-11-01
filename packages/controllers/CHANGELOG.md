@@ -1,5 +1,33 @@
 # @reown/appkit-core
 
+## 1.8.12
+
+### Patch Changes
+
+- [#5274](https://github.com/reown-com/appkit/pull/5274) [`100ee2b`](https://github.com/reown-com/appkit/commit/100ee2bf54f9036e72e5961300e0b3edb8089239) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where remote config endpoint was being called when using appkit core
+
+- [#5238](https://github.com/reown-com/appkit/pull/5238) [`c9ed02e`](https://github.com/reown-com/appkit/commit/c9ed02edd9149484e92407fa48219f7ac7e39568) Thanks [@tomiir](https://github.com/tomiir)! - Adds ability to configure custom SIWX signing behaviors by implementing a custom `SIWXSigner`
+
+- Updated dependencies [[`100ee2b`](https://github.com/reown-com/appkit/commit/100ee2bf54f9036e72e5961300e0b3edb8089239)]:
+  - @reown/appkit-common@1.8.12
+  - @reown/appkit-wallet@1.8.12
+
+## 1.8.11
+
+### Patch Changes
+
+- [#5224](https://github.com/reown-com/appkit/pull/5224) [`1a9f436`](https://github.com/reown-com/appkit/commit/1a9f4367f7b65f91dd4e75bd3d1d018e1be59718) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where declining a Discord connection would cause subsequent connections to fail.
+
+- [#5247](https://github.com/reown-com/appkit/pull/5247) [`99cc58b`](https://github.com/reown-com/appkit/commit/99cc58bb335a359b261eab18676fed13ea325bde) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes package version injecting when building packages
+
+- [#5225](https://github.com/reown-com/appkit/pull/5225) [`fda02dc`](https://github.com/reown-com/appkit/commit/fda02dc9ee173ff34f604dc6b022f421bae44539) Thanks [@magiziz](https://github.com/magiziz)! - Added usage limit UI in AppKit that displays when limits are exceeded
+
+- [#5229](https://github.com/reown-com/appkit/pull/5229) [`2778f7d`](https://github.com/reown-com/appkit/commit/2778f7d5743789ceef4d95ba743f44d365626b75) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixes an issue where we wouldn't send an event after SOL send transaction
+
+- Updated dependencies [[`99cc58b`](https://github.com/reown-com/appkit/commit/99cc58bb335a359b261eab18676fed13ea325bde), [`135b5c0`](https://github.com/reown-com/appkit/commit/135b5c0f6ab8e282861562ff11cf71b655d2f830), [`fda02dc`](https://github.com/reown-com/appkit/commit/fda02dc9ee173ff34f604dc6b022f421bae44539)]:
+  - @reown/appkit-common@1.8.11
+  - @reown/appkit-wallet@1.8.11
+
 ## 1.8.10
 
 ### Patch Changes

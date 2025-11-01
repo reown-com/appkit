@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
   AssetController,
@@ -253,6 +253,18 @@ export class W3mConnectorList extends LitElement {
     })
   }
 
+  private getConnectorNamespaces(item: ConnectorItem) {
+    if (item.subtype === 'walletConnect') {
+      return []
+    }
+
+    if (item.subtype === 'multiChain') {
+      return (item.connector.connectors?.map(c => c.chain) as ChainNamespace[]) || []
+    }
+
+    return [item.connector.chain] as ChainNamespace[]
+  }
+
   private renderConnector(item: ConnectorItem, index: number) {
     const connector = item.connector
     const imageSrc =
@@ -265,10 +277,7 @@ export class W3mConnectorList extends LitElement {
     let tagLabel: string | undefined = undefined
     let tagVariant: 'info' | 'success' | 'accent' | undefined = undefined
 
-    if (item.subtype === 'multiChain') {
-      tagLabel = 'multichain'
-      tagVariant = 'info'
-    } else if (item.subtype === 'walletConnect') {
+    if (item.subtype === 'walletConnect') {
       tagLabel = 'qr code'
       tagVariant = 'accent'
     } else if (item.subtype === 'injected' || item.subtype === 'announced') {
@@ -300,6 +309,7 @@ export class W3mConnectorList extends LitElement {
         ?disabled=${disabled}
         rdnsId=${ifDefined(connector.explorerWallet?.rdns || undefined)}
         walletRank=${ifDefined(connector.explorerWallet?.order)}
+        .namespaces=${this.getConnectorNamespaces(item)}
       >
       </w3m-list-wallet>
     `

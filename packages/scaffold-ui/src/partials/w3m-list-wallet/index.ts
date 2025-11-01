@@ -2,7 +2,8 @@ import { LitElement, type PropertyValues, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { EventsController, RouterController } from '@reown/appkit-controllers'
+import type { ChainNamespace } from '@reown/appkit-common'
+import { AdapterController, EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import type { IWalletImage, IconType, TagType } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-list-wallet'
@@ -48,6 +49,8 @@ export class W3mListWallet extends LitElement {
   @property() public displayIndex?: number = undefined
 
   @property() public walletRank?: number = undefined
+
+  @property({ type: Array }) public namespaces?: ChainNamespace[] = []
 
   // -- Lifecycle ------------------------------------------- //
   public override connectedCallback() {
@@ -119,6 +122,16 @@ export class W3mListWallet extends LitElement {
     }
   }
 
+  private handleGetWalletNamespaces() {
+    const isMultiChain = Object.keys(AdapterController.state.adapters).length > 1
+
+    if (isMultiChain) {
+      return this.namespaces
+    }
+
+    return []
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -135,6 +148,7 @@ export class W3mListWallet extends LitElement {
         .showAllWallets=${this.showAllWallets}
         .loading=${this.loading}
         loadingSpinnerColor=${this.loadingSpinnerColor}
+        .namespaces=${this.handleGetWalletNamespaces()}
       ></wui-list-wallet>
     `
   }
