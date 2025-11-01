@@ -111,6 +111,8 @@ const controller = {
       event: 'MODAL_OPEN',
       properties: { connected: Boolean(caipAddress) }
     })
+
+    await ApiController.validateProjectConfig()
   },
 
   close() {

@@ -34,7 +34,8 @@ import {
   ThemeController
 } from '@reown/appkit-controllers'
 import type { AdapterBlueprint } from '@reown/appkit-controllers'
-import { ErrorUtil, HelpersUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
+import { ErrorUtil } from '@reown/appkit-controllers/utils'
+import { HelpersUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 import { W3mFrameHelpers, W3mFrameProvider } from '@reown/appkit-wallet'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'

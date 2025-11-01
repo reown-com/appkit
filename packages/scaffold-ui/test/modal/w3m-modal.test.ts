@@ -14,7 +14,7 @@ import {
   SIWXUtil
 } from '@reown/appkit-controllers'
 import type { AccountState, SIWXConfig } from '@reown/appkit-controllers'
-import { ErrorUtil } from '@reown/appkit-utils'
+import { ErrorUtil } from '@reown/appkit-controllers/utils'
 
 import { W3mModal } from '../../src/modal/w3m-modal'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -238,11 +238,11 @@ describe('W3mModal', () => {
   })
 
   describe('Initialization', () => {
-    it('should prefetch analytics config on page load', async () => {
+    it('should not prefetch analytics config on page load', async () => {
       const prefetchSpy = vi.spyOn(ApiController, 'prefetchAnalyticsConfig')
       await fixture(html`<w3m-modal></w3m-modal>`)
 
-      expect(prefetchSpy).toHaveBeenCalled()
+      expect(prefetchSpy).not.toHaveBeenCalled()
     })
 
     it('should clean up subscriptions on disconnect', async () => {

@@ -56,7 +56,9 @@ const mockOptionsState: OptionsControllerState & OptionsControllerStateInternal 
   projectId: 'test-project-id',
   sdkVersion: '1.0.0' as SdkVersion,
   sdkType: 'appkit' as const,
-  defaultAccountTypes: {} as PreferredAccountTypes
+  defaultAccountTypes: {} as PreferredAccountTypes,
+  featureOverride: new Set(),
+  basic: false
 }
 
 const mockConnector: ConnectorWithProviders = {
@@ -99,7 +101,9 @@ const mockApiState: ApiControllerState = {
       isAboveRpcLimit: false,
       isAboveMauLimit: false
     }
-  }
+  },
+  validating: false,
+  validatedConfig: false
 }
 
 describe('W3mAllWalletsWidget', () => {

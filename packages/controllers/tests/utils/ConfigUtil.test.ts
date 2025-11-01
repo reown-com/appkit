@@ -4,7 +4,8 @@ import type { OnRampProvider, SwapProvider } from '@reown/appkit-common'
 import {
   ConstantsUtil as ActualConstantsUtil,
   AlertController,
-  ApiController
+  ApiController,
+  OptionsController
 } from '@reown/appkit-controllers'
 import type {
   Features as CtrlFeatures,
@@ -12,11 +13,11 @@ import type {
   TypedFeatureConfig
 } from '@reown/appkit-controllers'
 
-import type { AppKitOptionsWithSdk } from '../../src/client/appkit-base-client.js'
 import { ConfigUtil } from '../../src/utils/ConfigUtil.js'
-import { mockOptions as initialMockOptions } from '../mocks/Options.js'
 
-const getMockOptions = (): AppKitOptionsWithSdk => JSON.parse(JSON.stringify(initialMockOptions))
+// No adapter/network fixtures needed for this unit; all reads go through OptionsController.state
+
+// No local options object is used; OptionsController.state is the single source of truth
 
 vi.mock('@reown/appkit-controllers', async () => {
   const actualModule = (await vi.importActual(
@@ -24,6 +25,12 @@ vi.mock('@reown/appkit-controllers', async () => {
   )) as typeof import('@reown/appkit-controllers')
 
   return {
+    OptionsController: {
+      state: {
+        basic: false,
+        features: {}
+      }
+    },
     baseUSDC: actualModule.baseUSDC,
     baseSepoliaUSDC: actualModule.baseSepoliaUSDC,
     ApiController: {
@@ -40,26 +47,24 @@ const ConstantsUtil = ActualConstantsUtil
 
 describe('ConfigUtil', () => {
   describe('fetchRemoteFeatures', () => {
-    let mockOptions: AppKitOptionsWithSdk
-
     beforeEach(() => {
-      mockOptions = getMockOptions()
       vi.mocked(ApiController.fetchProjectConfig).mockReset()
       vi.mocked(AlertController.open).mockReset()
-      mockOptions.basic = false
+      OptionsController.state.basic = false
+      OptionsController.state.features = {}
     })
 
     // --- API Failure Scenarios (Fallback to Local/Defaults) ---
     it('should use local config if API call fails (throws error)', async () => {
       vi.mocked(ApiController.fetchProjectConfig).mockRejectedValue(new Error('API Error'))
-      mockOptions.features = {
+      OptionsController.state.features = {
         email: true,
         socials: ['google'],
         swaps: false,
         onramp: true,
         history: true
       } as CtrlFeatures
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features).toEqual({
         email: true,
         socials: ['google'],
@@ -79,12 +84,12 @@ describe('ConfigUtil', () => {
     it('should use local config if API returns null', async () => {
       // @ts-expect-error - Deliberately testing null response
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(null)
-      mockOptions.features = {
+      OptionsController.state.features = {
         email: false,
         socials: false,
         swaps: true
       } as CtrlFeatures
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features).toEqual({
         email: false,
         socials: false,
@@ -103,16 +108,18 @@ describe('ConfigUtil', () => {
 
     it('should use default remote features if API fails and no local config (empty features object)', async () => {
       vi.mocked(ApiController.fetchProjectConfig).mockRejectedValue(new Error('API Error'))
-      mockOptions.features = {}
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      OptionsController.state.features = {}
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES)
       expect(AlertController.open).not.toHaveBeenCalled()
     })
 
     it('should use default remote features if API fails and features is undefined', async () => {
       vi.mocked(ApiController.fetchProjectConfig).mockRejectedValue(new Error('API Error'))
-      delete mockOptions.features
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      // simulate undefined local features
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete (OptionsController.state as any).features
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES)
       expect(AlertController.open).not.toHaveBeenCalled()
     })
@@ -121,14 +128,14 @@ describe('ConfigUtil', () => {
     it('should use API config exclusively, all features off if API returns empty array', async () => {
       // @ts-expect-error - Deliberately testing null response
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(null)
-      mockOptions.features = {
+      OptionsController.state.features = {
         email: true,
         socials: ['google'],
         swaps: true,
         onramp: true,
         history: true
       } as CtrlFeatures
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features).toEqual({
         email: true,
         socials: ['google'],
@@ -149,8 +156,8 @@ describe('ConfigUtil', () => {
         { id: 'social_login', isEnabled: true, config: ['email'] }
       ]
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(apiResponse)
-      mockOptions.features = { swaps: true, history: true, socials: ['google'] }
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      OptionsController.state.features = { swaps: true, history: true, socials: ['google'] }
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features).toEqual<RemoteFeatures>({
         email: true,
         socials: [],
@@ -177,14 +184,14 @@ describe('ConfigUtil', () => {
 
     // --- Basic Mode Tests ---
     it('should force email and socials to false when basic mode is true, regardless of API response', async () => {
-      mockOptions.basic = true
+      OptionsController.state.basic = true
       const apiResponse: TypedFeatureConfig[] = [
         { id: 'social_login', isEnabled: true, config: ['email'] }
       ]
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValueOnce(apiResponse)
-      mockOptions.basic = true
-      mockOptions.features = { swaps: true, history: true, socials: ['google'] }
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      OptionsController.state.basic = true
+      OptionsController.state.features = { swaps: true, history: true, socials: ['google'] }
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features).toEqual<RemoteFeatures>({
         email: false,
         socials: false,
@@ -208,14 +215,14 @@ describe('ConfigUtil', () => {
         { id: 'activity', isEnabled: false, config: [] }
       ]
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(apiResponse)
-      mockOptions.features = {
+      OptionsController.state.features = {
         email: false,
         socials: ['google'],
         swaps: false,
         onramp: true,
         history: false
       } as CtrlFeatures
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features).toEqual<RemoteFeatures>({
         email: true,
         socials: ['discord'],
@@ -246,8 +253,8 @@ describe('ConfigUtil', () => {
         { id: 'swap', isEnabled: true, config: ['1inch'] as SwapProvider[] }
       ]
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(apiResponse)
-      mockOptions.features = {}
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      OptionsController.state.features = {}
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features).toEqual<RemoteFeatures>({
         email: true,
         socials: [],
@@ -269,8 +276,10 @@ describe('ConfigUtil', () => {
         { id: 'social_login', isEnabled: true, config: ['email'] }
       ]
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(apiResponse)
-      delete mockOptions.features
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      // simulate undefined local features
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete (OptionsController.state as any).features
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features).toEqual<RemoteFeatures>({
         email: true,
         socials: [],
@@ -295,8 +304,8 @@ describe('ConfigUtil', () => {
         { id: 'activity', isEnabled: false, config: [] }
       ]
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(apiResponse)
-      mockOptions.features = {}
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      OptionsController.state.features = {}
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features).toEqual<RemoteFeatures>({
         email: false,
         socials: false,
@@ -316,30 +325,30 @@ describe('ConfigUtil', () => {
     // --- Specific local fallback behaviors (only when API fails) ---
     it('should use default swap providers for local features.swaps=true on API failure', async () => {
       vi.mocked(ApiController.fetchProjectConfig).mockRejectedValue(new Error())
-      mockOptions.features = { swaps: true } as any
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      OptionsController.state.features = { swaps: true } as any
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features.swaps).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES.swaps)
       expect(features.email).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES.email)
     })
 
     it('should use default onramp providers for local features.onramp=true on API failure', async () => {
       vi.mocked(ApiController.fetchProjectConfig).mockRejectedValue(new Error())
-      mockOptions.features = { onramp: true } as any
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      OptionsController.state.features = { onramp: true } as any
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features.onramp).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES.onramp)
     })
 
     it('should use default social providers for local features.socials=true on API failure', async () => {
       vi.mocked(ApiController.fetchProjectConfig).mockRejectedValue(new Error())
-      mockOptions.features = { socials: true } as any
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      OptionsController.state.features = { socials: true } as any
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features.socials).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES.socials)
     })
 
     it('should correctly set socials to false for local features.socials=false on API failure', async () => {
       vi.mocked(ApiController.fetchProjectConfig).mockRejectedValue(new Error())
-      mockOptions.features = { socials: false } as any
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      OptionsController.state.features = { socials: false } as any
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features.socials).toBe(false)
     })
 
@@ -348,8 +357,8 @@ describe('ConfigUtil', () => {
         { id: 'swap', isEnabled: true, config: ['1inch'] as SwapProvider[] }
       ]
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(apiResponse)
-      mockOptions.features = {}
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      OptionsController.state.features = {}
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features.email).toBe(false)
       expect(features.socials).toBe(false)
       expect(features.swaps).toEqual(['1inch'])
@@ -360,8 +369,8 @@ describe('ConfigUtil', () => {
         { id: 'swap', isEnabled: true, config: ['1inch'] as SwapProvider[] }
       ]
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(apiResponse)
-      mockOptions.features = {}
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      OptionsController.state.features = {}
+      const features = await ConfigUtil.fetchRemoteFeatures()
       expect(features.activity).toBe(false)
       expect(features.swaps).toEqual(['1inch'])
     })
@@ -373,7 +382,7 @@ describe('ConfigUtil', () => {
 
       vi.mocked(ApiController.fetchProjectConfig).mockResolvedValue(malformedApiResponse)
 
-      const features = await ConfigUtil.fetchRemoteFeatures(mockOptions)
+      const features = await ConfigUtil.fetchRemoteFeatures()
 
       expect(features).toEqual(ConstantsUtil.DEFAULT_REMOTE_FEATURES)
 

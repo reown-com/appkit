@@ -68,7 +68,6 @@ export class W3mModalBase extends LitElement {
   public constructor() {
     super()
     this.initializeTheming()
-    ApiController.prefetchAnalyticsConfig()
     this.unsubscribe.push(
       ...[
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),

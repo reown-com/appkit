@@ -4,160 +4,22 @@ import type { MockInstance } from 'vitest'
 import { ConstantsUtil } from '@reown/appkit-common'
 import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import {
-  AlertController,
   ApiController,
   type ChainAdapter,
   ChainController,
   ConnectionController,
   CoreHelperUtil,
   ModalController,
+  OptionsController,
   type RemoteFeatures,
-  SendController,
-  WcHelpersUtil
+  SendController
 } from '@reown/appkit-controllers'
 import { mockChainControllerState } from '@reown/appkit-controllers/testing'
-import { ErrorUtil, TokenUtil } from '@reown/appkit-utils'
+import { ConfigUtil } from '@reown/appkit-controllers/utils'
+import { TokenUtil } from '@reown/appkit-utils'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client'
-import { ConfigUtil } from '../../src/utils/ConfigUtil'
 import { mainnet } from '../mocks/Networks'
-
-describe('AppKitBaseClient.checkAllowedOrigins', () => {
-  let baseClient: AppKitBaseClient
-  let alertSpy: any
-
-  beforeAll(() => {
-    // Mock document for getDefaultMetaData method
-    Object.defineProperty(globalThis, 'document', {
-      value: {
-        getElementsByTagName: vi.fn(),
-        querySelector: vi.fn()
-      },
-      writable: true
-    })
-
-    Object.defineProperty(globalThis, 'navigator', {
-      value: {
-        clipboard: {
-          readText: vi.fn(() => Promise.resolve(''))
-        }
-      },
-      writable: true
-    })
-
-    Object.defineProperty(globalThis, 'window', {
-      value: { location: { origin: 'https://appkit-lab.reown.com' } },
-      writable: true
-    })
-  })
-
-  beforeEach(() => {
-    vi.restoreAllMocks()
-    baseClient = new (class extends AppKitBaseClient {
-      constructor() {
-        super({
-          projectId: 'test-project-id',
-          networks: [mainnet],
-          adapters: [],
-          sdkVersion: 'html-wagmi-1'
-        })
-      }
-
-      async injectModalUi() {}
-      async syncIdentity() {}
-
-      override async syncAdapterConnections() {
-        return Promise.resolve()
-      }
-    })()
-    alertSpy = vi.spyOn(AlertController, 'open').mockImplementation(() => {})
-  })
-
-  it('should show RATE_LIMITED_APP_CONFIGURATION alert for RATE_LIMITED error', async () => {
-    const rateLimitedError = new Error('RATE_LIMITED')
-    vi.spyOn(ApiController, 'fetchAllowedOrigins').mockRejectedValueOnce(rateLimitedError)
-
-    await (baseClient as any)['checkAllowedOrigins']()
-
-    expect(alertSpy).toHaveBeenCalledWith(
-      ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION,
-      'error'
-    )
-  })
-
-  it('should show SERVER_ERROR_APP_CONFIGURATION alert with error message for SERVER_ERROR', async () => {
-    const originalError = new Error('Internal Server Error')
-    const serverError = new Error('SERVER_ERROR')
-    serverError.cause = originalError
-    vi.spyOn(ApiController, 'fetchAllowedOrigins').mockRejectedValueOnce(serverError)
-
-    await (baseClient as any)['checkAllowedOrigins']()
-
-    expect(alertSpy).toHaveBeenCalledWith(
-      {
-        displayMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.displayMessage,
-        debugMessage:
-          ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.debugMessage(
-            'Internal Server Error'
-          )
-      },
-      'error'
-    )
-  })
-
-  it('should show SERVER_ERROR_APP_CONFIGURATION alert with generic message when cause is not Error', async () => {
-    const serverError = new Error('SERVER_ERROR')
-    serverError.cause = 'not an error object'
-    vi.spyOn(ApiController, 'fetchAllowedOrigins').mockRejectedValueOnce(serverError)
-
-    await (baseClient as any)['checkAllowedOrigins']()
-
-    expect(alertSpy).toHaveBeenCalledWith(
-      {
-        displayMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.displayMessage,
-        debugMessage:
-          ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.debugMessage('SERVER_ERROR')
-      },
-      'error'
-    )
-  })
-
-  it('should not show any alert for unknown errors', async () => {
-    const unknownError = new Error('UNKNOWN_ERROR')
-    vi.spyOn(ApiController, 'fetchAllowedOrigins').mockRejectedValueOnce(unknownError)
-
-    await (baseClient as any)['checkAllowedOrigins']()
-
-    expect(alertSpy).not.toHaveBeenCalled()
-  })
-
-  it('should not show any alert for non-Error rejections', async () => {
-    vi.spyOn(ApiController, 'fetchAllowedOrigins').mockRejectedValueOnce('string error' as any)
-
-    await (baseClient as any)['checkAllowedOrigins']()
-
-    expect(alertSpy).not.toHaveBeenCalled()
-  })
-
-  it('should show ORIGIN_NOT_ALLOWED alert when origin is not allowed', async () => {
-    vi.spyOn(ApiController, 'fetchAllowedOrigins').mockResolvedValueOnce(['https://example.com'])
-    vi.spyOn(WcHelpersUtil, 'isOriginAllowed').mockReturnValueOnce(false as any)
-    vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValueOnce(true)
-
-    await (baseClient as any)['checkAllowedOrigins']()
-
-    expect(alertSpy).toHaveBeenCalledWith(ErrorUtil.ALERT_ERRORS.ORIGIN_NOT_ALLOWED, 'error')
-  })
-
-  it('should not show any alert when origin is allowed', async () => {
-    vi.spyOn(ApiController, 'fetchAllowedOrigins').mockResolvedValueOnce(['https://example.com'])
-    vi.spyOn(WcHelpersUtil, 'isOriginAllowed').mockReturnValueOnce(true as any)
-
-    await (baseClient as any)['checkAllowedOrigins']()
-
-    expect(alertSpy).not.toHaveBeenCalled()
-  })
-})
 
 describe('AppKitBaseClient.connectWalletConnect', () => {
   let baseClient: AppKitBaseClient
@@ -293,7 +155,7 @@ describe('AppKitBaseClient.open', () => {
   let modalSubscribeSpy: MockInstance
 
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
 
     baseClient = new (class extends AppKitBaseClient {
       constructor() {
@@ -312,7 +174,7 @@ describe('AppKitBaseClient.open', () => {
       }
     })()
 
-    vi.spyOn(ModalController, 'open').mockResolvedValue(undefined)
+    vi.spyOn(ModalController, 'open')
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
       chains: new Map([
@@ -573,6 +435,10 @@ describe('AppKitBaseClient initialization', () => {
     fetchRemoteFeaturesSpy = vi
       .spyOn(ConfigUtil, 'fetchRemoteFeatures')
       .mockResolvedValue({} as RemoteFeatures)
+    // Ensure each test revalidates config on modal open
+    ApiController.state.validatedConfig = false
+    ApiController.state.validating = false
+    OptionsController.state.remoteFeatures = {}
   })
 
   it('should not fetch remote config if using basic mode', async () => {
@@ -621,14 +487,16 @@ describe('AppKitBaseClient initialization', () => {
     await vi.waitFor(() => expect(fetchRemoteFeaturesSpy).not.toHaveBeenCalled())
   })
 
-  it('should fetch remote config if not using basic or manual WC control', async () => {
-    new (class extends AppKitBaseClient {
+  it('should fetch remote config on modal open when not using basic or manual WC control', async () => {
+    const baseClient = new (class extends AppKitBaseClient {
       constructor() {
         super({
           projectId: 'test-project-id',
           networks: [mainnet],
           adapters: [],
-          sdkVersion: 'html-wagmi-1'
+          sdkVersion: 'html-wagmi-1',
+          manualWCControl: false,
+          basic: false
         })
       }
 
@@ -639,6 +507,15 @@ describe('AppKitBaseClient initialization', () => {
         return Promise.resolve()
       }
     })()
+
+    // Should not be called during ready
+    await vi.waitFor(() => expect(fetchRemoteFeaturesSpy).not.toHaveBeenCalled())
+
+    // Avoid network in validateProjectConfig
+    vi.spyOn(ApiController, 'fetchAllowedOrigins').mockResolvedValue([])
+    vi.spyOn(ApiController, 'fetchAnalyticsConfig').mockResolvedValue()
+
+    await baseClient.open()
 
     await vi.waitFor(() => expect(fetchRemoteFeaturesSpy).toHaveBeenCalled())
   })

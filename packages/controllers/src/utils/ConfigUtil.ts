@@ -1,6 +1,11 @@
 /* eslint-disable max-params */
 import type { OnRampProvider, SocialProvider, SwapProvider } from '@reown/appkit-common'
-import { AlertController, ApiController, ConstantsUtil } from '@reown/appkit-controllers'
+import {
+  AlertController,
+  ApiController,
+  ConstantsUtil,
+  OptionsController
+} from '@reown/appkit-controllers'
 import type {
   EmailCaptureOptions,
   FeatureConfigMap,
@@ -8,10 +13,6 @@ import type {
   RemoteFeatures,
   TypedFeatureConfig
 } from '@reown/appkit-controllers'
-import type {} from '@reown/appkit-controllers'
-import { ErrorUtil } from '@reown/appkit-utils'
-
-import type { AppKitOptionsWithSdk } from '../client/appkit-base-client.js'
 
 type FeatureKey = keyof FeatureConfigMap
 
@@ -279,14 +280,14 @@ export const ConfigUtil = {
     return featureConfig[featureKey].processFallback(localValue)
   },
 
-  async fetchRemoteFeatures(config: AppKitOptionsWithSdk): Promise<RemoteFeatures> {
-    const isBasic = config.basic ?? false
-    const localFeatures = config.features || {}
-
-    this.localSettingsOverridden.clear()
+  async fetchRemoteFeatures(): Promise<RemoteFeatures> {
+    const isBasic = OptionsController.state.basic ?? false
+    const localFeatures = OptionsController.state.features || {}
 
     let apiProjectConfig: TypedFeatureConfig[] | null = null
     let shouldUseApiConfig = false
+
+    this.localSettingsOverridden.clear()
 
     try {
       apiProjectConfig = await ApiController.fetchProjectConfig()
@@ -327,8 +328,7 @@ export const ConfigUtil = {
       const warningMessage = `Your local configuration for ${Array.from(this.localSettingsOverridden).join(', ')} was ignored because a remote configuration was successfully fetched. Please manage these features via your project dashboard on dashboard.reown.com.`
       AlertController.open(
         {
-          debugMessage:
-            ErrorUtil.ALERT_WARNINGS.LOCAL_CONFIGURATION_IGNORED.debugMessage(warningMessage)
+          debugMessage: `[Reown Config Notice] ${warningMessage}`
         },
         'warning'
       )

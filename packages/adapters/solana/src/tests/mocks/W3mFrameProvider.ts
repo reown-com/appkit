@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
 
-import { ErrorUtil } from '@reown/appkit-utils'
+import { ErrorUtil } from '@reown/appkit-controllers/utils'
 import { type W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 

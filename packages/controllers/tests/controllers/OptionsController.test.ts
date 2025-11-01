@@ -35,7 +35,9 @@ describe('OptionsController', () => {
       enableNetworkSwitch: true,
       experimental_preferUniversalLinks: false,
       enableMobileFullScreen: false,
-      coinbasePreference: 'all'
+      coinbasePreference: 'all',
+      featureOverride: new Set(),
+      basic: false
     })
   })
 

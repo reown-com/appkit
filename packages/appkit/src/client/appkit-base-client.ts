@@ -58,7 +58,6 @@ import {
   EnsController,
   EventsController,
   ModalController,
-  OnRampController,
   OptionsController,
   ProviderController,
   type ProviderControllerState,
@@ -72,11 +71,11 @@ import {
   WcHelpersUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
+import { ErrorUtil } from '@reown/appkit-controllers/utils'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
   CaipNetworksUtil,
-  ErrorUtil,
   HelpersUtil,
   LoggerUtil,
   TokenUtil,
@@ -84,7 +83,6 @@ import {
 } from '@reown/appkit-utils'
 
 import { UniversalAdapter } from '../universal-adapter/client.js'
-import { ConfigUtil } from '../utils/ConfigUtil.js'
 import type { AppKitOptions } from '../utils/index.js'
 
 export interface AppKitOptionsWithSdk extends AppKitOptions {
@@ -136,7 +134,7 @@ export abstract class AppKitBaseClient {
 
   public chainAdapters: Adapters
   public chainNamespaces: ChainNamespace[] = []
-  public options: AppKitOptions
+  public options: AppKitOptionsWithSdk
   public features: Features = {}
   public remoteFeatures: RemoteFeatures = {}
   public version: SdkVersion | AppKitSdkVersion
@@ -181,39 +179,6 @@ export abstract class AppKitBaseClient {
       await this.syncAdapterConnections()
     } else {
       await this.unSyncExistingConnection()
-    }
-    if (!options.basic && !options.manualWCControl) {
-      this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
-    }
-    await ApiController.fetchUsage()
-    OptionsController.setRemoteFeatures(this.remoteFeatures)
-    if (this.remoteFeatures.onramp) {
-      OnRampController.setOnrampProviders(this.remoteFeatures.onramp)
-    }
-    // Check allowed origins only if email or social features are enabled
-    if (
-      OptionsController.state.remoteFeatures?.email ||
-      (Array.isArray(OptionsController.state.remoteFeatures?.socials) &&
-        OptionsController.state.remoteFeatures?.socials.length > 0)
-    ) {
-      await this.checkAllowedOrigins()
-    }
-
-    if (
-      OptionsController.state.features?.reownAuthentication ||
-      OptionsController.state.remoteFeatures?.reownAuthentication
-    ) {
-      const { ReownAuthentication } = await import('@reown/appkit-controllers/features')
-      const currentSIWX = OptionsController.state.siwx
-      if (!(currentSIWX instanceof ReownAuthentication)) {
-        if (currentSIWX) {
-          console.warn(
-            'ReownAuthentication option is enabled, SIWX configuration will be overridden.'
-          )
-        }
-        OptionsController.setSIWX(new ReownAuthentication())
-      }
-      // If siwx is already configured for ReownAuthentication we keep the current instance
     }
   }
 
@@ -284,52 +249,6 @@ export abstract class AppKitBaseClient {
     return {
       isSwap,
       isSend
-    }
-  }
-
-  private async checkAllowedOrigins() {
-    try {
-      const allowedOrigins = await ApiController.fetchAllowedOrigins()
-
-      if (!CoreHelperUtil.isClient()) {
-        return
-      }
-
-      const currentOrigin = window.location.origin
-      const isOriginAllowed = WcHelpersUtil.isOriginAllowed(
-        currentOrigin,
-        allowedOrigins,
-        ConstantsUtil.DEFAULT_ALLOWED_ANCESTORS
-      )
-
-      if (!isOriginAllowed) {
-        AlertController.open(ErrorUtil.ALERT_ERRORS.ORIGIN_NOT_ALLOWED, 'error')
-      }
-    } catch (error) {
-      if (!(error instanceof Error)) {
-        return
-      }
-
-      switch (error.message) {
-        case 'RATE_LIMITED':
-          AlertController.open(ErrorUtil.ALERT_ERRORS.RATE_LIMITED_APP_CONFIGURATION, 'error')
-          break
-        case 'SERVER_ERROR': {
-          const originalError = error.cause instanceof Error ? error.cause : error
-          AlertController.open(
-            {
-              displayMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.displayMessage,
-              debugMessage: ErrorUtil.ALERT_ERRORS.SERVER_ERROR_APP_CONFIGURATION.debugMessage(
-                originalError.message
-              )
-            },
-            'error'
-          )
-          break
-        }
-        default:
-          break
-      }
     }
   }
 

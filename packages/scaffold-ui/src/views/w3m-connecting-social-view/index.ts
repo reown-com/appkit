@@ -16,13 +16,13 @@ import {
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
+import { ErrorUtil } from '@reown/appkit-controllers/utils'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon-box'
 import '@reown/appkit-ui/wui-loading-thumbnail'
 import '@reown/appkit-ui/wui-logo'
 import '@reown/appkit-ui/wui-text'
-import { ErrorUtil } from '@reown/appkit-utils'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import styles from './styles.js'

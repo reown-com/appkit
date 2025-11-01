@@ -76,7 +76,9 @@ describe('W3mAllWalletsSearch', () => {
           isAboveRpcLimit: false,
           isAboveMauLimit: false
         }
-      }
+      },
+      validating: false,
+      validatedConfig: false
     }
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue(mockState)
     vi.spyOn(ApiController, 'searchWallet').mockResolvedValue()
@@ -116,7 +118,9 @@ describe('W3mAllWalletsSearch', () => {
           isAboveRpcLimit: false,
           isAboveMauLimit: false
         }
-      }
+      },
+      validating: false,
+      validatedConfig: false
     }
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue(mockState)
     vi.spyOn(ApiController, 'searchWallet').mockResolvedValue()
