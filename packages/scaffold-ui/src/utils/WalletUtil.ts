@@ -1,5 +1,6 @@
 import {
   ApiController,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -176,5 +177,26 @@ export const WalletUtil = {
   },
   markWalletsWithDisplayIndex(wallets: WcWallet[]) {
     return wallets.map((w, index) => ({ ...w, display_index: index }))
+  },
+
+  /**
+   * Filters wallets based on WalletConnect support and platform requirements.
+   *
+   * On mobile only wallets with WalletConnect support are shown.
+   * On desktop with Appkit Core only wallets with WalletConnect support are shown.
+   * On desktop with Appkit all wallets are shown.
+   *
+   * @param wallets - Array of wallets to filter
+   * @returns Filtered array of wallets based on WalletConnect support and platform
+   */
+  filterWalletsByWcSupport(wallets: WcWallet[]) {
+    const isUsingAppKitCore =
+      OptionsController.state.manualWCControl || ConnectionController.state.wcBasic
+
+    if (isUsingAppKitCore || CoreHelperUtil.isMobile()) {
+      return wallets.filter(wallet => wallet.supports_wc)
+    }
+
+    return wallets
   }
 }

@@ -6,7 +6,9 @@ import { html } from 'lit'
 import {
   ApiController,
   ChainController,
+  ConnectionController,
   ConnectorController,
+  CoreHelperUtil,
   OptionsController,
   RouterController
 } from '@reown/appkit-controllers'
@@ -247,5 +249,102 @@ describe('W3mAllWalletsList', () => {
 
     expect(disconnectSpy).toHaveBeenCalled()
     expect(unsubscribeSpy).toHaveBeenCalled()
+  })
+
+  it('filters wallets by WC support on mobile', async () => {
+    const walletsWithMixedSupport: WcWallet[] = [
+      { id: '1', name: 'Wallet 1', supports_wc: true },
+      { id: '2', name: 'Wallet 2', supports_wc: false },
+      { id: '3', name: 'Wallet 3', supports_wc: true }
+    ]
+
+    vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+      ...ApiController.state,
+      wallets: walletsWithMixedSupport,
+      recommended: [],
+      featured: [],
+      count: 3,
+      page: 1
+    })
+
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+    vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue([])
+
+    const element: W3mAllWalletsList = await fixture(
+      html`<w3m-all-wallets-list></w3m-all-wallets-list>`
+    )
+    await elementUpdated(element)
+
+    const walletItems = element.shadowRoot?.querySelectorAll('w3m-all-wallets-list-item')
+    expect(walletItems?.length).toBe(2)
+  })
+
+  it('filters wallets by WC support when using Appkit Core', async () => {
+    const walletsWithMixedSupport: WcWallet[] = [
+      { id: '1', name: 'Wallet 1', supports_wc: true },
+      { id: '2', name: 'Wallet 2', supports_wc: false },
+      { id: '3', name: 'Wallet 3', supports_wc: true }
+    ]
+
+    vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+      ...ApiController.state,
+      wallets: walletsWithMixedSupport,
+      recommended: [],
+      featured: [],
+      count: 3,
+      page: 1
+    })
+
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      manualWCControl: true
+    })
+
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+    vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue([])
+
+    const element: W3mAllWalletsList = await fixture(
+      html`<w3m-all-wallets-list></w3m-all-wallets-list>`
+    )
+    await elementUpdated(element)
+
+    const walletItems = element.shadowRoot?.querySelectorAll('w3m-all-wallets-list-item')
+    expect(walletItems?.length).toBe(2)
+  })
+
+  it('shows all wallets on desktop with Appkit', async () => {
+    const walletsWithMixedSupport: WcWallet[] = [
+      { id: '1', name: 'Wallet 1', supports_wc: true },
+      { id: '2', name: 'Wallet 2', supports_wc: false },
+      { id: '3', name: 'Wallet 3', supports_wc: true }
+    ]
+
+    vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+      ...ApiController.state,
+      wallets: walletsWithMixedSupport,
+      recommended: [],
+      featured: [],
+      count: 3,
+      page: 1
+    })
+
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      manualWCControl: false
+    })
+    vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
+      ...ConnectionController.state,
+      wcBasic: false
+    })
+    vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue([])
+
+    const element: W3mAllWalletsList = await fixture(
+      html`<w3m-all-wallets-list></w3m-all-wallets-list>`
+    )
+    await elementUpdated(element)
+
+    const walletItems = element.shadowRoot?.querySelectorAll('w3m-all-wallets-list-item')
+    expect(walletItems?.length).toBe(3)
   })
 })
