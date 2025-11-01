@@ -30,7 +30,7 @@ export type SIWEMessageArgs = {
 // Signed Cacao (CAIP-74)
 interface CacaoPayload {
   domain: string
-  aud: string
+  aud?: string
   nonce: string
   iss: string
   version?: string
