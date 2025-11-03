@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { BsFillMoonFill, BsFillSunFill } from 'react-icons/bs'
 
 import {
