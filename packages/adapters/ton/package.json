@@ -1,0 +1,72 @@
+{
+  "name": "@reown/appkit-adapter-ton",
+  "version": "1.8.7",
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
+  "files": [
+    "dist",
+    "!tsconfig.tsbuildinfo",
+    "README.md"
+  ],
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "tsc --build tsconfig.build.json",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "test": "vitest run --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./utils": {
+      "types": "./dist/types/exports/utils.d.ts",
+      "import": "./dist/esm/exports/utils.js",
+      "default": "./dist/esm/exports/utils.js"
+    }
+  },
+  "dependencies": {
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@walletconnect/universal-provider": "2.22.4",
+    "tweetnacl-util": "0.15.1"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "2.1.9",
+    "vitest": "2.1.9"
+  },
+  "author": "Reown (https://discord.gg/reown)",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://github.com/reown-com/appkit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reown-com/appkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/reown-com/appkit/issues"
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin",
+    "ton"
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
+}

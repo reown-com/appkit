@@ -52,6 +52,7 @@ export type InternalChainNamespace =
   | 'cosmos'
   | 'sui'
   | 'stacks'
+  | 'ton'
 
 export type ChainNamespace<T extends string = InternalChainNamespace> = T | InternalChainNamespace
 
@@ -63,6 +64,7 @@ export type AdapterType =
   | 'universal'
   | 'bip122'
   | 'polkadot'
+  | 'ton'
 
 export type TransactionStatus = 'confirmed' | 'failed' | 'pending'
 

@@ -167,6 +167,7 @@ export type IconType =
   | 'nftPlaceholder'
   | 'playStore'
   | 'plus'
+  | 'power'
   | 'qrCode'
   | 'questionMark'
   | 'recycleHorizontal'
@@ -179,6 +180,7 @@ export type IconType =
   | 'swapVertical'
   | 'telegram'
   | 'threeDots'
+  | 'ton'
   | 'twitch'
   | 'twitter'
   | 'twitterIcon'
@@ -220,6 +222,7 @@ export type VisualType =
   | 'pencil'
   | 'solana'
   | 'bitcoin'
+  | 'ton'
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 

@@ -35,6 +35,11 @@
       "types": "./dist/types/exports/bitcoin.d.ts",
       "import": "./dist/esm/exports/bitcoin.js",
       "default": "./dist/esm/exports/bitcoin.js"
+    },
+    "./ton": {
+      "types": "./dist/types/exports/ton.d.ts",
+      "import": "./dist/esm/exports/ton.js",
+      "default": "./dist/esm/exports/ton.js"
     }
   },
   "typesVersions": {
@@ -44,6 +49,9 @@
       ],
       "solana": [
         "./dist/types/exports/solana.d.ts"
+      ],
+      "ton": [
+        "./dist/types/exports/ton.d.ts"
       ]
     }
   },

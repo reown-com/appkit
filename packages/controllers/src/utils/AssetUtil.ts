@@ -25,7 +25,9 @@ const namespaceImageIds: Record<ChainNamespace, string> = {
   // Sui
   sui: '',
   // Stacks
-  stacks: ''
+  stacks: '',
+  // TON
+  ton: '20f673c0-095e-49b2-07cf-eb5049dcf600'
 }
 
 // -- State --------------------------------------------- //
