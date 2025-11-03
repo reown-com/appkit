@@ -36,7 +36,7 @@ function createSecureSiteSdkUrl({
   url.searchParams.set('version', SECURE_SITE_SDK_VERSION)
   url.searchParams.set('enableLogger', String(enableLogger))
   url.searchParams.set('rpcUrl', rpcUrl)
-  url.searchParams.set('smartAccountVersion', 'v6')
+  url.searchParams.set('smartAccountVersion', 'v7')
   if (enableCloudAuthAccount) {
     url.searchParams.set('enableCloudAuthAccount', 'true')
   }
