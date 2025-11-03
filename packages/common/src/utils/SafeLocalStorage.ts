@@ -34,7 +34,6 @@ export type SafeLocalStorageItems = {
    */
   WALLETCONNECT_DEEPLINK_CHOICE: string
   '@appkit/ton_wallets_cache': string
-  '@appkit/dapp_smart_account_version': string
 }
 
 export const SafeLocalStorageKeys = {
@@ -65,8 +64,7 @@ export const SafeLocalStorageKeys = {
   TOKEN_PRICE_CACHE: '@appkit/token_price_cache',
   RECENT_EMAILS: '@appkit/recent_emails',
   LATEST_APPKIT_VERSION: '@appkit/latest_version',
-  TON_WALLETS_CACHE: '@appkit/ton_wallets_cache',
-  DAPP_SMART_ACCOUNT_VERSION: '@appkit/dapp_smart_account_version'
+  TON_WALLETS_CACHE: '@appkit/ton_wallets_cache'
 } as const satisfies Record<string, keyof SafeLocalStorageItems>
 
 export type SafeLocalStorageKey = keyof SafeLocalStorageItems | NamespacedConnectorKey
