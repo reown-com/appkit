@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Flex, FormControl, FormLabel, HStack, Radio, RadioGroup, Switch } from '@chakra-ui/react'
 
-const SmartAccountVersionInput = () => {
+function SmartAccountVersionInput() {
   const [smartAccountVersion, setSmartAccountVersion] = useState<'v6' | 'v7'>('v7')
   const [isForced, setIsForced] = useState(false)
   useEffect(() => {
@@ -13,7 +13,7 @@ const SmartAccountVersionInput = () => {
         setIsForced(true)
       }
     } catch {
-      // no-op
+      // No-op
     }
   }, [])
 
@@ -25,9 +25,10 @@ const SmartAccountVersionInput = () => {
         localStorage.removeItem('@appkit-wallet/dapp_smart_account_version')
       }
     } catch {
-      // no-op
+      // No-op
     }
   }, [isForced, smartAccountVersion])
+
   return (
     <Flex gridGap="4" flexDirection="column">
       <FormControl>
