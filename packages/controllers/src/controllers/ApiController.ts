@@ -181,7 +181,16 @@ export const ApiController = {
       params: ApiController._getSdkProperties()
     })
 
-    return response.features
+    return response.features.map(f => {
+      if (f.id === 'headless') {
+        return {
+          ...f,
+          config: []
+        }
+      }
+
+      return f
+    })
   },
 
   async fetchUsage() {

@@ -234,7 +234,8 @@ export const ConstantsUtil = {
     emailCapture: false,
     payWithExchange: false,
     payments: false,
-    reownAuthentication: false
+    reownAuthentication: false,
+    headless: false
   },
   DEFAULT_REMOTE_FEATURES_DISABLED: {
     email: false,
@@ -244,7 +245,8 @@ export const ConstantsUtil = {
     activity: false,
     reownBranding: false,
     emailCapture: false,
-    reownAuthentication: false
+    reownAuthentication: false,
+    headless: false
   } as const satisfies RemoteFeatures,
   DEFAULT_FEATURES: {
     receive: true,
