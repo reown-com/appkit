@@ -425,7 +425,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   ): Promise<AdapterBlueprint.WriteContractResult> {
     const { caipNetwork, ...data } = params
     const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork.caipNetworkId))
-    const wagmiChain = this.wagmiChains?.find(chain => chain.id === chainId) as Chain | undefined
+    const wagmiChain = this.wagmiChains?.find(chain => chain.id === chainId)
 
     const tx = await wagmiWriteContract(this.wagmiConfig, {
       chain: wagmiChain,
