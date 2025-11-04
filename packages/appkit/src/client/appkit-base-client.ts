@@ -422,6 +422,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setEnableNetworkSwitch(options.enableNetworkSwitch !== false)
     OptionsController.setEnableReconnect(options.enableReconnect !== false)
     OptionsController.setEnableMobileFullScreen(options.enableMobileFullScreen === true)
+    OptionsController.setEnableHeadless(options.enableHeadless === true)
     OptionsController.setCoinbasePreference(options.coinbasePreference)
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
     OptionsController.setCustomRpcUrls(options.customRpcUrls)

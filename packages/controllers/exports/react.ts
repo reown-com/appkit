@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
@@ -347,26 +347,8 @@ export interface UseAppKitWalletsReturn {
  * Provides all the data and functions needed to build a custom connect UI.
  */
 export function useAppKitWallets(): UseAppKitWalletsReturn {
-  const { remoteFeatures } = useSnapshot(OptionsController.state)
-  const isHeadlessEnabled = Boolean(remoteFeatures?.headless)
-
-  if (!isHeadlessEnabled) {
-    AlertController.open(
-      ConstantsUtil.REMOTE_FEATURES_ALERTS.HEADLESS_NOT_ENABLED.WALLETS_HOOK,
-      'info'
-    )
-
-    return {
-      data: [],
-      isFetchingWallets: false,
-      isFetchingWcUri: false,
-      wcUri: undefined,
-      page: 0,
-      count: 0,
-      connect: () => Promise.resolve(),
-      fetchWallets: () => Promise.resolve()
-    }
-  }
+  const { enableHeadless, remoteFeatures } = useSnapshot(OptionsController.state)
+  const isHeadlessEnabled = Boolean(enableHeadless && remoteFeatures?.headless)
 
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
   const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
@@ -408,6 +390,28 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       await ConnectionController.connectWalletConnect({ cache: 'never' })
     }
   }, [])
+
+  useEffect(() => {
+    if (!isHeadlessEnabled || !remoteFeatures?.headless) {
+      AlertController.open(
+        ConstantsUtil.REMOTE_FEATURES_ALERTS.HEADLESS_NOT_ENABLED.WALLETS_HOOK,
+        'info'
+      )
+    }
+  }, [])
+
+  if (!isHeadlessEnabled || !remoteFeatures?.headless) {
+    return {
+      data: [],
+      isFetchingWallets: false,
+      isFetchingWcUri: false,
+      wcUri: undefined,
+      page: 0,
+      count: 0,
+      connect: () => Promise.resolve(),
+      fetchWallets: () => Promise.resolve()
+    }
+  }
 
   return {
     data: wallets,

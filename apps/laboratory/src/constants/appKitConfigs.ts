@@ -51,7 +51,8 @@ export const appKitConfigs = {
     ...commonAppKitConfig,
     wagmiConfig: commonWagmiConfig,
     adapters: ['wagmi', 'solana', 'bitcoin'],
-    networks: ConstantsUtil.AllNetworks
+    networks: ConstantsUtil.AllNetworks,
+    enableHeadless: true
   },
   // ----- Wagmi Variants ------------------------------
   wagmi: {

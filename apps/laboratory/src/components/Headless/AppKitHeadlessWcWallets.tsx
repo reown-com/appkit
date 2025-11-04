@@ -13,7 +13,6 @@ import {
 } from '@chakra-ui/react'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import '@reown/appkit-ui/wui-icon'
 import { type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
 
 import { useDebounceValue } from '@/src/hooks/useDebounceValue'
