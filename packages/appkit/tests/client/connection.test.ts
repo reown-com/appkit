@@ -248,7 +248,8 @@ describe('syncConnectedWalletInfo', () => {
             id: 'test-connector',
             name: 'Test Connector',
             chain: 'eip155',
-            type: 'INJECTED'
+            type: 'INJECTED',
+            explorerWallet: { order: 60, id: 'test-wallet', name: 'Test Wallet' }
           }
         ]
       })
@@ -273,7 +274,7 @@ describe('syncConnectedWalletInfo', () => {
           method: 'browser',
           name: 'Test Connector',
           view: 'Connect',
-          walletRank: undefined
+          walletRank: 60
         }
       })
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')

@@ -969,7 +969,7 @@ export abstract class AppKitBaseClient {
         method: connectSuccessEventMethod,
         name: connector?.name || 'Unknown',
         view: RouterController.state.view,
-        walletRank: RouterController.state.data?.wallet?.order
+        walletRank: connector?.explorerWallet?.order
       }
     })
     StorageUtil.addConnectedNamespace(namespace)
