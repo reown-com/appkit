@@ -1,5 +1,15 @@
 # @reown/appkit-wallet-button
 
+## 1.8.13
+
+### Patch Changes
+
+- Updated dependencies [[`90e476d`](https://github.com/reown-com/appkit/commit/90e476d49bdd6ad4cd2a2bbd9e18791c4855188b)]:
+  - @reown/appkit-controllers@1.8.13
+  - @reown/appkit-utils@1.8.13
+  - @reown/appkit-ui@1.8.13
+  - @reown/appkit-common@1.8.13
+
 ## 1.8.12
 
 ### Patch Changes

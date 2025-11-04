@@ -1,5 +1,13 @@
 # @reown/appkit-universal-connector
 
+## 1.8.13
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @reown/appkit@1.8.13
+  - @reown/appkit-common@1.8.13
+
 ## 1.8.12
 
 ### Patch Changes
