@@ -960,18 +960,6 @@ export abstract class AppKitBaseClient {
       return undefined
     }
 
-    const connector = ConnectorController.state.allConnectors.find(c => c.id === params.id)
-    const connectSuccessEventMethod = params.type === 'AUTH' ? 'email' : 'browser'
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'CONNECT_SUCCESS',
-      properties: {
-        method: connectSuccessEventMethod,
-        name: connector?.name || 'Unknown',
-        view: RouterController.state.view,
-        walletRank: connector?.explorerWallet?.order
-      }
-    })
     StorageUtil.addConnectedNamespace(namespace)
     this.syncProvider({ ...res, chainNamespace: namespace })
     this.setStatus('connected', namespace)
@@ -1450,7 +1438,7 @@ export abstract class AppKitBaseClient {
             name: connector.info?.name || connector.name || 'Unknown',
             reconnect: true,
             view: RouterController.state.view,
-            walletRank: undefined
+            walletRank: connector?.explorerWallet?.order
           }
         })
       } else {
