@@ -222,6 +222,7 @@ smartAccountTest('it should be able to switch after disconnecting', async ({ lib
 
   await page.openProfileWalletsView()
   await page.clickProfileWalletsMoreButton()
+  await page.clickSmartAccountSettingsButton()
   await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.goBack()
