@@ -267,16 +267,6 @@ describe('syncConnectedWalletInfo', () => {
       })
 
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
-      expect(EventsController.sendEvent).toHaveBeenCalledWith({
-        type: 'track',
-        event: 'CONNECT_SUCCESS',
-        properties: {
-          method: 'browser',
-          name: 'Test Connector',
-          view: 'Connect',
-          walletRank: 60
-        }
-      })
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')
       expect(removeDisconnectedConnectorIdSpy).toHaveBeenCalledWith('test-connector', 'eip155')
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith('eip155')

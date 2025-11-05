@@ -456,4 +456,161 @@ describe('ConnectorController', () => {
       wallet: { name: 'WalletConnect', id: 'wc' }
     })
   })
+
+  describe('extendConnectorsWithExplorerWallets', () => {
+    beforeEach(() => {
+      ConnectorController.state.allConnectors = []
+      ConnectorController.state.connectors = []
+    })
+
+    it('should extend connectors with explorer wallets matching by id', () => {
+      const connectorWithId = {
+        id: 'metamask',
+        explorerId: 'metamask-explorer-id',
+        type: 'INJECTED' as const,
+        chain: ConstantsUtil.CHAIN.EVM,
+        name: 'MetaMask'
+      }
+
+      const explorerWallet = {
+        id: 'metamask',
+        name: 'MetaMask',
+        order: 1,
+        image_url: 'https://example.com/metamask.png'
+      }
+
+      ConnectorController.addConnector(connectorWithId)
+      ConnectorController.extendConnectorsWithExplorerWallets([explorerWallet])
+
+      const connector = ConnectorController.getConnectorById('metamask')
+      expect(connector?.explorerWallet).toEqual(explorerWallet)
+    })
+
+    it('should extend connectors with explorer wallets matching by rdns', () => {
+      const connectorWithRdns = {
+        id: 'metamask',
+        type: 'INJECTED' as const,
+        chain: ConstantsUtil.CHAIN.EVM,
+        name: 'MetaMask',
+        info: { rdns: 'io.metamask' }
+      }
+
+      const explorerWallet = {
+        id: 'different-id',
+        name: 'MetaMask',
+        rdns: 'io.metamask',
+        order: 1
+      }
+
+      ConnectorController.addConnector(connectorWithRdns)
+      ConnectorController.extendConnectorsWithExplorerWallets([explorerWallet])
+
+      const connector = ConnectorController.getConnectorById('metamask')
+      expect(connector?.explorerWallet).toEqual(explorerWallet)
+    })
+
+    it('should not extend connectors when no match is found', () => {
+      const connector = {
+        id: 'metamask',
+        type: 'INJECTED' as const,
+        chain: ConstantsUtil.CHAIN.EVM,
+        name: 'MetaMask'
+      }
+
+      const explorerWallet = {
+        id: 'different-id',
+        name: 'Different Wallet',
+        rdns: 'io.different'
+      }
+
+      ConnectorController.addConnector(connector)
+      ConnectorController.extendConnectorsWithExplorerWallets([explorerWallet])
+
+      const foundConnector = ConnectorController.getConnectorById('metamask')
+      expect(foundConnector?.explorerWallet).toBeUndefined()
+    })
+
+    it('should handle empty explorer wallets array', () => {
+      const connector = {
+        id: 'metamask',
+        type: 'INJECTED' as const,
+        chain: ConstantsUtil.CHAIN.EVM,
+        name: 'MetaMask'
+      }
+
+      ConnectorController.addConnector(connector)
+      ConnectorController.extendConnectorsWithExplorerWallets([])
+
+      const foundConnector = ConnectorController.getConnectorById('metamask')
+      expect(foundConnector?.explorerWallet).toBeUndefined()
+    })
+
+    it('should extend multiple connectors with matching explorer wallets', () => {
+      const metamaskConnector = {
+        id: 'metamask',
+        type: 'INJECTED' as const,
+        chain: ConstantsUtil.CHAIN.EVM,
+        name: 'MetaMask',
+        info: { rdns: 'io.metamask' }
+      }
+
+      const coinbaseConnector = {
+        id: 'coinbase',
+        type: 'INJECTED' as const,
+        chain: ConstantsUtil.CHAIN.EVM,
+        name: 'Coinbase Wallet'
+      }
+
+      const explorerWallets = [
+        {
+          id: 'metamask',
+          name: 'MetaMask',
+          order: 1
+        },
+        {
+          id: 'coinbase',
+          name: 'Coinbase Wallet',
+          order: 2
+        }
+      ]
+
+      ConnectorController.addConnector(metamaskConnector)
+      ConnectorController.addConnector(coinbaseConnector)
+      ConnectorController.extendConnectorsWithExplorerWallets(explorerWallets)
+
+      const metamask = ConnectorController.getConnectorById('metamask')
+      const coinbase = ConnectorController.getConnectorById('coinbase')
+
+      expect(metamask?.explorerWallet).toEqual(explorerWallets[0])
+      expect(coinbase?.explorerWallet).toEqual(explorerWallets[1])
+    })
+
+    it('should update connectors state after extending', () => {
+      const connector = {
+        id: 'metamask',
+        type: 'INJECTED' as const,
+        chain: ConstantsUtil.CHAIN.EVM,
+        name: 'MetaMask'
+      }
+
+      const explorerWallet = {
+        id: 'metamask',
+        name: 'MetaMask',
+        order: 1
+      }
+
+      ConnectorController.state.allConnectors = []
+      ConnectorController.state.connectors = []
+
+      ConnectorController.addConnector(connector)
+      const connectorsBefore = JSON.parse(JSON.stringify(ConnectorController.getConnectors()))
+
+      ConnectorController.extendConnectorsWithExplorerWallets([explorerWallet])
+      const connectorsAfter = JSON.parse(JSON.stringify(ConnectorController.getConnectors()))
+
+      expect(connectorsAfter).not.toEqual(connectorsBefore)
+      expect(connectorsAfter[0]?.explorerWallet).toEqual(explorerWallet)
+      expect(connectorsBefore[0]?.explorerWallet).toBeUndefined()
+    })
+  })
 })
