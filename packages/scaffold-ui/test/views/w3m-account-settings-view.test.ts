@@ -19,7 +19,6 @@ import {
   CoreHelperUtil,
   OptionsController,
   RouterController,
-  SendController,
   SnackController
 } from '@reown/appkit-controllers'
 
@@ -142,7 +141,19 @@ describe('W3mAccountSettingsView', () => {
   it('should navigate to smart account settings view when smart account is enabled', async () => {
     vi.spyOn(ChainController, 'checkIfSmartAccountEnabled').mockReturnValue(true)
     const pushSpy = vi.spyOn(RouterController, 'push').mockImplementation(() => {})
-
+    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
+      provider: { getEmail: vi.fn().mockReturnValue('user@example.com') }
+    } as unknown as AuthConnector)
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(
+      CommonConstantsUtil.CONNECTOR_ID.AUTH
+    )
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: { eip155: 'AUTH' } as unknown as Record<
+        ChainNamespace,
+        string | undefined
+      >
+    })
     const element: W3mAccountSettingsView = await fixture(
       html`<w3m-account-settings-view></w3m-account-settings-view>`
     )
