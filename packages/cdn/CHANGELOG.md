@@ -1,5 +1,17 @@
 # @reown/appkit-cdn
 
+## 1.8.13
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @reown/appkit-adapter-ethers@1.8.13
+  - @reown/appkit-adapter-ethers5@1.8.13
+  - @reown/appkit-adapter-solana@1.8.13
+  - @reown/appkit-adapter-wagmi@1.8.13
+  - @reown/appkit@1.8.13
+  - @reown/appkit-polyfills@1.8.13
+
 ## 1.8.12
 
 ### Patch Changes
