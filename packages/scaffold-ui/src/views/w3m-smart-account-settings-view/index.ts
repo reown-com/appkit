@@ -40,7 +40,7 @@ export class W3mSmartAccountSettingsView extends LitElement {
         @click=${this.toggleSmartAccountVersion.bind(this)}
       >
         <wui-text variant="lg-regular" color="primary"
-          >Force smart account version to ${this.isV6() ? 'v7' : 'v6'}</wui-text
+          >Force Smart Account Version ${this.isV6() ? 'v7' : 'v6'}</wui-text
         >
       </wui-list-item>
     `
@@ -116,25 +116,3 @@ export class W3mSmartAccountSettingsView extends LitElement {
     this.requestUpdate()
   }
 }
-
-/*
-    if (!this.switched) {
-      this.text =
-        getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-          ? 'Switch to your EOA'
-          : 'Switch to your Smart Account'
-    }
-
-    return html`
-      <wui-list-item
-        icon="swapHorizontal"
-        ?rounded=${true}
-        ?chevron=${true}
-        ?loading=${this.loading}
-        @click=${this.changePreferredAccountType.bind(this)}
-        data-testid="account-toggle-preferred-account-type"
-      >
-        <wui-text variant="lg-regular" color="primary">${this.text}</wui-text>
-      </wui-list-item>
-    `
-    */
