@@ -436,17 +436,19 @@ export const SIWXUtil = {
           iss: cacao.p.iss
         })
 
+        const sessionData: SIWXMessage.Data = {
+          ...cacao.p,
+          accountAddress: cacao.p.iss.split(':').slice(-1).join(''),
+          chainId: cacao.p.iss.split(':').slice(2, 4).join(':') as CaipNetworkId,
+          uri: cacao.p.aud ?? '',
+          version: cacao.p.version || siwxMessage.version,
+          expirationTime: cacao.p.exp,
+          issuedAt: cacao.p.iat,
+          notBefore: cacao.p.nbf
+        }
+
         return {
-          data: {
-            ...cacao.p,
-            accountAddress: cacao.p.iss.split(':').slice(-1).join(''),
-            chainId: cacao.p.iss.split(':').slice(2, 4).join(':') as CaipNetworkId,
-            uri: cacao.p.aud,
-            version: cacao.p.version || siwxMessage.version,
-            expirationTime: cacao.p.exp,
-            issuedAt: cacao.p.iat,
-            notBefore: cacao.p.nbf
-          },
+          data: sessionData,
           message,
           signature: cacao.s.s,
           cacao
@@ -699,16 +701,17 @@ export namespace Cacao {
 
   export interface Payload {
     domain: string
-    aud: string
+    aud?: string
     nonce: string
-    iss: string
     version?: string
     iat?: string
     nbf?: string
     exp?: string
+    chainId?: string
     statement?: string
     requestId?: string
     resources?: string[]
+    expiry?: number
     type?: string
   }
 }
