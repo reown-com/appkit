@@ -42,7 +42,7 @@
     "@leather.io/rpc": "2.20.13",
     "@vitest/coverage-v8": "2.1.9",
     "@wallet-standard/features": "1.0.3",
-    "@walletconnect/types": "2.22.4",
+    "@walletconnect/types": "2.23.0",
     "vitest": "2.1.9"
   },
   "author": "Reown (https://discord.gg/reown)",
