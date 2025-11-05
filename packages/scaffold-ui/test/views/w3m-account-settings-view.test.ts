@@ -19,7 +19,6 @@ import {
   CoreHelperUtil,
   OptionsController,
   RouterController,
-  SendController,
   SnackController
 } from '@reown/appkit-controllers'
 
@@ -29,9 +28,9 @@ import { HelpersUtil } from '../utils/HelpersUtil'
 // -- Constants -------------------------------------------- //
 const ACCOUNT_SWITCH_NETWORK_BUTTON_TEST_ID = 'account-switch-network-button'
 const ACCOUNT_CHOOSE_NAME_BUTTON_TEST_ID = 'account-choose-name-button'
-const ACCOUNT_TOGGLE_PREFERRED_ACCOUNT_TYPE_TEST_ID = 'account-toggle-preferred-account-type'
 const DISCONNECT_BUTTON_TEST_ID = 'disconnect-button'
 const WALLET_UPGRADE_CARD_TEST_ID = 'w3m-wallet-upgrade-card'
+const ACCOUNT_SMART_ACCOUNT_SETTINGS_BUTTON_TEST_ID = 'account-smart-account-settings-button'
 
 describe('W3mAccountSettingsView', () => {
   beforeEach(() => {
@@ -139,27 +138,31 @@ describe('W3mAccountSettingsView', () => {
     expect(pushSpy).toHaveBeenCalledWith('UpgradeEmailWallet')
   })
 
-  it('should toggle preferred account type on click', async () => {
-    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
-      address: 'eip155:1:0x1234567890abcdef1234567890abcdef12345678',
-      preferredAccountType: 'smartAccount'
-    } as AccountState)
+  it('should navigate to smart account settings view when smart account is enabled', async () => {
     vi.spyOn(ChainController, 'checkIfSmartAccountEnabled').mockReturnValue(true)
+    const pushSpy = vi.spyOn(RouterController, 'push').mockImplementation(() => {})
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: { getEmail: vi.fn().mockReturnValue('user@example.com') }
     } as unknown as AuthConnector)
-    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('AUTH')
-    const setPrefSpy = vi
-      .spyOn(ConnectionController, 'setPreferredAccountType')
-      .mockResolvedValue(undefined)
-    vi.spyOn(SendController, 'resetSend').mockImplementation(vi.fn())
-
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(
+      CommonConstantsUtil.CONNECTOR_ID.AUTH
+    )
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: { eip155: 'AUTH' } as unknown as Record<
+        ChainNamespace,
+        string | undefined
+      >
+    })
     const element: W3mAccountSettingsView = await fixture(
       html`<w3m-account-settings-view></w3m-account-settings-view>`
     )
-    const toggle = HelpersUtil.getByTestId(element, ACCOUNT_TOGGLE_PREFERRED_ACCOUNT_TYPE_TEST_ID)
-    toggle.click()
-    expect(setPrefSpy).toHaveBeenCalled()
+    const smartAccountSettingsBtn = HelpersUtil.getByTestId(
+      element,
+      ACCOUNT_SMART_ACCOUNT_SETTINGS_BUTTON_TEST_ID
+    )
+    smartAccountSettingsBtn?.click()
+    expect(pushSpy).toHaveBeenCalledWith('SmartAccountSettings')
   })
 
   it('should disconnect and navigate to ProfileWallets for multi-wallet', async () => {
