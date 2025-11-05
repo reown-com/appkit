@@ -1,9 +1,8 @@
 version: 2
 updates:
   # Single root-level configuration that scans entire monorepo
-  # This ensures all dependencies are updated together in a single PR per group
-  # Each group updates dependencies across ALL package.json files, keeping them aligned
-  # With just 2 groups (production + development), you get at most 2 PRs per week
+  # Creates ONE PR per week that updates ALL dependencies (both production and dev)
+  # across ALL package.json files, keeping dependencies aligned across the monorepo
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
@@ -11,16 +10,9 @@ updates:
     labels:
       - 'chore: update dependencies'
     groups:
-      # All production dependencies grouped together
-      # This creates ONE PR that updates all production deps across ALL package.json files
-      'all-production':
-        dependency-type: 'production'
-        patterns:
-          - '*'
-      # All development dependencies grouped together
-      # This creates ONE PR that updates all dev deps across ALL package.json files
-      'all-development':
-        dependency-type: 'development'
+      # All dependencies grouped together - creates a single PR
+      # Updates both production and dev dependencies across all package.json files
+      'all-dependencies':
         patterns:
           - '*'
     ignore:
