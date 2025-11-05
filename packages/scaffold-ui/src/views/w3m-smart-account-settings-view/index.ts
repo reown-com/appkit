@@ -10,6 +10,7 @@ import {
 } from '@reown/appkit-controllers'
 import { ConnectorController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import { W3mFrameStorage } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 @customElement('w3m-smart-account-settings-view')
@@ -32,10 +33,29 @@ export class W3mSmartAccountSettingsView extends LitElement {
 
   private toggleSmartAccountVersionTemplate() {
     return html`
-      <wui-list-item icon="swapHorizontal" ?rounded=${true} ?chevron=${true}>
-        <wui-text variant="lg-regular" color="primary">Switch to your Smart Account</wui-text>
+      <wui-list-item
+        icon="swapHorizontal"
+        ?rounded=${true}
+        ?chevron=${true}
+        @click=${this.toggleSmartAccountVersion.bind(this)}
+      >
+        <wui-text variant="lg-regular" color="primary"
+          >Force smart account version to ${this.isV6() ? 'v7' : 'v6'}</wui-text
+        >
       </wui-list-item>
     `
+  }
+
+  private isV6() {
+    const currentVersion = W3mFrameStorage.get('dapp_smart_account_version') || 'v6'
+    return currentVersion === 'v6'
+  }
+
+  private toggleSmartAccountVersion() {
+    W3mFrameStorage.set('dapp_smart_account_version', this.isV6() ? 'v7' : 'v6')
+    if (typeof window !== 'undefined') {
+      window?.location?.reload()
+    }
   }
 
   private togglePreferredAccountTypeTemplate() {
