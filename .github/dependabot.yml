@@ -1,101 +1,37 @@
 version: 2
 updates:
+  # Single root-level configuration that scans entire monorepo
+  # This ensures all dependencies are updated together in a single PR per group
+  # Each group updates dependencies across ALL package.json files, keeping them aligned
+  # With just 2 groups (production + development), you get at most 2 PRs per week
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
       interval: 'weekly'
     labels:
-      - 'chore: update `@walletconnect/*`, `viem` and `@wagmi/*` dependencies'
-    groups:
-      # All @walletconnect/* that installed in any package.json in the repo
-      'walletconnect':
-        dependency-type: 'production'
-        patterns:
-          - '@walletconnect/*'
-      # All viem and @wagmi/* that installed in any package.json in the repo
-      'viem-wagmi':
-        dependency-type: 'production'
-        patterns:
-          - 'viem'
-          - '@wagmi/*'
-  - package-ecosystem: 'npm'
-    directory: '/apps/laboratory'
-    schedule:
-      interval: 'weekly'
-    labels:
-      - 'chore: update third party dependencies for AppKit Lab'
-    groups:
-      'lab-third-parties':
-        dependency-type: 'production'
-        patterns:
-          - '@bitcoinerlab/*'
-          - '@chakra-ui/*'
-          - '@coinbase/*'
-          - '@safe-global/*'
-          - '@tanstack/*'
-          - '@sentry/*'
-          - '@wallet-standard/*'
-          - 'bitcoinjs-lib'
-          - 'bs58'
-          - 'date-fns'
-          - 'framer-motion'
-          - 'next'
-          - 'next-auth'
-          - 'react-icons'
-          - 'rpc-websockets'
-          - 'webauthn-p256'
-    ignore:
-      - dependency-name: '*'
-        update-types: ['version-update:semver-major']
-  - package-ecosystem: 'npm'
-    directory: '/apps/demo'
-    schedule:
-      interval: 'weekly'
-    labels:
-      - 'chore: update third party dependencies for AppKit Demo'
-    groups:
-      'demo-third-parties':
-        dependency-type: 'production'
-        patterns:
-          - '@reown/*'
-          - '@radix-ui/*'
-          - '@dnd-kit/*'
-          - '@hookform/resolvers'
-          - '@next/third-parties'
-          - '@sentry/*'
-          - '@solana/web3.js'
-          - '@tanstack/react-query'
-          - 'autoprefixer'
-          - 'class-variance-authority'
-          - 'classnames'
-          - 'clsx'
-          - 'next'
-          - 'next-themes'
-          - 'react'
-          - 'react-dom'
-          - 'sonner'
-          - 'tailwind-merge'
-          - 'tailwindcss-animate'
-    ignore:
-      - dependency-name: '*'
-        update-types: ['version-update:semver-major']
-  - package-ecosystem: 'npm'
-    directory: '/packages/'
-    schedule:
-      interval: 'weekly'
-    labels:
       - 'chore: update dependencies'
     groups:
-      # All "dependencies" that `packages/*` depends on
-      'all-production-dependencies':
+      # All production dependencies grouped together
+      # This creates ONE PR that updates all production deps across ALL package.json files
+      'all-production':
         dependency-type: 'production'
         patterns:
           - '*'
-      # All "devDependencies" that `packages/*` depends on
-      'all-development-dependencies':
+      # All development dependencies grouped together
+      # This creates ONE PR that updates all dev deps across ALL package.json files
+      'all-development':
         dependency-type: 'development'
         patterns:
           - '*'
     ignore:
+      # Ignore major version updates (breaking changes)
       - dependency-name: '*'
         update-types: ['version-update:semver-major']
+      # Ignore workspace dependencies (handled internally via workspace:*)
+      - dependency-name: '@reown/*'
+        update-types:
+          [
+            'version-update:semver-major',
+            'version-update:semver-minor',
+            'version-update:semver-patch'
+          ]
