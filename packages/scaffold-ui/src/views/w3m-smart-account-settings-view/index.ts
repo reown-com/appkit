@@ -33,21 +33,25 @@ export class W3mSmartAccountSettingsView extends LitElement {
 
   private toggleSmartAccountVersionTemplate() {
     return html`
-      <wui-list-item
-        icon="swapHorizontal"
-        ?rounded=${true}
-        ?chevron=${true}
-        @click=${this.toggleSmartAccountVersion.bind(this)}
-      >
-        <wui-text variant="lg-regular" color="primary"
-          >Force Smart Account Version ${this.isV6() ? 'v7' : 'v6'}</wui-text
+      <w3m-tooltip-trigger text="Changing the smart account version will reload the page">
+        <wui-list-item
+          icon=${this.isV6() ? 'arrowTop' : 'arrowBottom'}
+          ?rounded=${true}
+          ?chevron=${true}
+          data-testid="account-toggle-smart-account-version"
+          @click=${this.toggleSmartAccountVersion.bind(this)}
         >
-      </wui-list-item>
+          <wui-text variant="lg-regular" color="primary"
+            >Force Smart Account Version ${this.isV6() ? '7' : '6'}</wui-text
+          >
+        </wui-list-item>
+      </w3m-tooltip-trigger>
     `
   }
 
   private isV6() {
     const currentVersion = W3mFrameStorage.get('dapp_smart_account_version') || 'v6'
+
     return currentVersion === 'v6'
   }
 
