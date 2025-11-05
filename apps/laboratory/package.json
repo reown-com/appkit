@@ -150,7 +150,7 @@
     "framer-motion": "10.18.0",
     "next": "15.6.0-canary.29",
     "next-auth": "5.0.0-beta.29",
-    "react": "19.1.1",
+    "react": "19.2.0",
     "react-dom": "19.1.1",
     "react-icons": "4.12.0",
     "rpc-websockets": "7.11.0",
@@ -165,7 +165,7 @@
     "@playwright/test": "1.48.2",
     "@reown/appkit-testing": "workspace:*",
     "@types/node": "22.13.4",
-    "@types/react": "19.1.15",
+    "@types/react": "19.2.2",
     "@types/react-dom": "19.1.9",
     "dotenv": "16.4.7"
   }
