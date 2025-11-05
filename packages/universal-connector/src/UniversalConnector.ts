@@ -69,7 +69,7 @@ export class UniversalConnector {
     return new UniversalConnector({ appKit, provider, config })
   }
 
-  async connect(params: Omit<ConnectParams, 'optionalNamespaces'>): Promise<{
+  async connect(params?: Omit<ConnectParams, 'optionalNamespaces'>): Promise<{
     session: SessionTypes.Struct
   }> {
     const namespaces: NamespaceConfig = this.config?.networks.reduce<NamespaceConfig>(
@@ -89,7 +89,7 @@ export class UniversalConnector {
     try {
       await this.appKit.open()
       const session = await this.provider.connect({
-        ...params,
+        ...(params || {}),
         optionalNamespaces: namespaces
       })
 
