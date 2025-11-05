@@ -1,3 +1,4 @@
+import type { AuthTypes } from '@walletconnect/types'
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
@@ -618,7 +619,7 @@ export interface SIWXSession {
   data: SIWXMessage.Data
   message: string
   signature: string
-  cacao?: Cacao
+  cacao?: AuthTypes.Cacao
 }
 
 /**
@@ -685,13 +686,9 @@ export namespace SIWXMessage {
  * https://chainagnostic.org/CAIPs/caip-74
  */
 export interface Cacao {
-  h: Cacao.Header
-  p: Cacao.Payload
-  s: {
-    t: 'eip191' | 'eip1271'
-    s: string
-    m?: string
-  }
+  h: AuthTypes.CacaoHeader
+  p: AuthTypes.BaseAuthRequestParams
+  s: AuthTypes.CacaoSignature
 }
 
 export namespace Cacao {
