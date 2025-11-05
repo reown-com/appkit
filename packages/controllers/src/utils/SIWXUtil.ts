@@ -437,19 +437,17 @@ export const SIWXUtil = {
           iss: cacao.p.iss
         })
 
-        const sessionData: SIWXMessage.Data = {
-          ...cacao.p,
-          accountAddress: cacao.p.iss.split(':').slice(-1).join(''),
-          chainId: cacao.p.iss.split(':').slice(2, 4).join(':') as CaipNetworkId,
-          uri: cacao.p.aud ?? '',
-          version: cacao.p.version || siwxMessage.version,
-          expirationTime: cacao.p.exp,
-          issuedAt: cacao.p.iat,
-          notBefore: cacao.p.nbf
-        }
-
         return {
-          data: sessionData,
+          data: {
+            ...cacao.p,
+            accountAddress: cacao.p.iss.split(':').slice(-1).join(''),
+            chainId: cacao.p.iss.split(':').slice(2, 4).join(':') as CaipNetworkId,
+            uri: cacao.p.aud ?? '',
+            version: cacao.p.version || siwxMessage.version,
+            expirationTime: cacao.p.exp,
+            issuedAt: cacao.p.iat,
+            notBefore: cacao.p.nbf
+          },
           message,
           signature: cacao.s.s,
           cacao
