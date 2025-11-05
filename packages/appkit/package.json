@@ -120,7 +120,7 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.22.4",
+    "@walletconnect/universal-provider": "2.23.0",
     "bs58": "6.0.0",
     "semver": "7.7.2",
     "valtio": "2.1.7",
