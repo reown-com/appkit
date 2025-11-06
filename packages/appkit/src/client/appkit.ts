@@ -521,6 +521,7 @@ export class AppKit extends AppKitBaseClient {
     this.chainNamespaces?.forEach(namespace => {
       this.createAuthProviderForAdapter(namespace)
     })
+    OptionsController.setEnableSmartAccountVersionSwitch(options.enableSmartAccountVersionSwitch)
     await this.injectModalUi()
     PublicStateController.set({ initialized: true })
   }

@@ -5,6 +5,7 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
+  OptionsController,
   SendController,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
@@ -32,6 +33,9 @@ export class W3mSmartAccountSettingsView extends LitElement {
   }
 
   private toggleSmartAccountVersionTemplate() {
+    if (!OptionsController.state.enableSmartAccountVersionSwitch) {
+      return null
+    }
     return html`
       <w3m-tooltip-trigger text="Changing the smart account version will reload the page">
         <wui-list-item
