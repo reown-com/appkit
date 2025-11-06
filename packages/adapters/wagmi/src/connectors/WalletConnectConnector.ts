@@ -6,7 +6,9 @@ import {
   ProviderNotFoundError,
   createConnector
 } from '@wagmi/core'
-import { type UniversalProvider as UniversalProviderType } from '@walletconnect/universal-provider'
+import UniversalProvider, {
+  type UniversalProvider as UniversalProviderType
+} from '@walletconnect/universal-provider'
 import {
   type AddEthereumChainParameter,
   type Address,
@@ -19,24 +21,27 @@ import {
   numberToHex
 } from 'viem'
 
-import { WcHelpersUtil } from '@reown/appkit'
-import type { AppKitOptions } from '@reown/appkit'
-import type { AppKit } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import { ChainController, OptionsController, StorageUtil } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  OptionsController,
+  StorageUtil,
+  WcHelpersUtil
+} from '@reown/appkit-controllers'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
   onSessionDelete(data: { topic: string }): void
 }
 
-export type AppKitOptionsParams = AppKitOptions & {
+export type AppKitOptionsParams = {
   isNewChainsStale?: boolean
+  universalProvider: UniversalProvider
 }
 
 walletConnect.type = 'walletConnect' as const
 
-export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
+export function walletConnect(parameters: AppKitOptionsParams) {
   const isNewChainsStale = parameters.isNewChainsStale ?? true
   type Provider = Awaited<ReturnType<(typeof UniversalProviderType)['init']>>
   type Properties = {
@@ -45,6 +50,16 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       accounts: readonly Address[]
       chainId: number
     }>
+    getProvider(parameters?: { chainId?: number }): Promise<Provider>
+    getAccounts(): Promise<readonly Address[]>
+    getChainId(): Promise<number>
+    switchChain(parameters: {
+      addEthereumChainParameter?: AddEthereumChainParameter
+      chainId: number
+    }): Promise<unknown>
+    onAccountsChanged(accounts: string[]): void
+    onChainChanged(chain: string | number): void
+    onDisconnect(error?: unknown): Promise<void>
     getNamespaceChainsIds(): number[]
     getRequestedChainsIds(): Promise<number[]>
     isChainsStale(): Promise<boolean>
@@ -71,6 +86,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     id: 'walletConnect',
     name: 'WalletConnect',
     type: walletConnect.type,
+    provider: parameters.universalProvider,
 
     async setup() {
       const provider = await this.getProvider().catch(() => null)
@@ -87,7 +103,17 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       }
     },
 
-    async connect({ ...rest } = {}) {
+    async connect<withCapabilities extends boolean = false>(
+      this: Properties,
+      {
+        ...rest
+      }: {
+        chainId?: number
+        isReconnecting?: boolean
+        withCapabilities?: withCapabilities | boolean
+        pairingTopic?: string
+      } = {}
+    ) {
       try {
         const caipNetworks = ChainController.getCaipNetworks()
         const provider = await this.getProvider()
@@ -166,7 +192,15 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         const defaultChain = universalProviderConfigOverride?.defaultChain
         provider.setDefaultChain(defaultChain ?? `eip155:${currentChainId}`)
 
-        return { accounts, chainId: currentChainId }
+        return {
+          accounts,
+          chainId: currentChainId
+        } as unknown as {
+          accounts: withCapabilities extends true
+            ? readonly { address: Address; capabilities: Record<string, unknown> }[]
+            : readonly Address[]
+          chainId: number
+        }
       } catch (error) {
         if (
           // eslint-disable-next-line prefer-named-capture-group, require-unicode-regexp
@@ -240,16 +274,18 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     },
     async getProvider({ chainId } = {}) {
       if (!provider_) {
-        provider_ = await appKit.getUniversalProvider()
+        provider_ = parameters.universalProvider
         provider_?.events.setMaxListeners(Number.POSITIVE_INFINITY)
       }
 
       const activeNamespace = StorageUtil.getActiveNamespace()
-      const currentChainId = appKit.getCaipNetwork()?.id
+      const currentChainId = ChainController.getActiveCaipNetwork()?.id
 
       if (chainId && currentChainId !== chainId && activeNamespace) {
         const storedCaipNetworkId = StorageUtil.getStoredActiveCaipNetworkId()
-        const appKitCaipNetworks = activeNamespace ? appKit.getCaipNetworks(activeNamespace) : []
+        const appKitCaipNetworks = activeNamespace
+          ? ChainController.getCaipNetworks(activeNamespace)
+          : []
         const storedCaipNetwork = appKitCaipNetworks?.find(n => n.id === storedCaipNetworkId)
 
         if (storedCaipNetwork && storedCaipNetwork.chainNamespace === ConstantsUtil.CHAIN.EVM) {
@@ -258,10 +294,10 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       }
 
       // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-      return provider_ as Provider
+      return provider_
     },
     async getChainId() {
-      const chainId = appKit.getCaipNetwork(ConstantsUtil.CHAIN.EVM)?.id
+      const chainId = ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.EVM)?.id
 
       if (chainId) {
         return chainId as number
@@ -464,9 +500,11 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
       return !connectorChains.every(id => requestedChains.includes(Number(id)))
     },
+
     async setRequestedChainsIds(chains) {
       await config.storage?.setItem(this.requestedChainsStorageKey, chains)
     },
+
     get requestedChainsStorageKey() {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       return `${this.id}.requestedChains` as Properties['requestedChainsStorageKey']

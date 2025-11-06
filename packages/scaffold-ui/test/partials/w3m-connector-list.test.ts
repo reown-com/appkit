@@ -5,9 +5,11 @@ import { html } from 'lit'
 
 import {
   ApiController,
+  ChainController,
   ConnectorController,
   type ConnectorTypeOrder,
-  CoreHelperUtil
+  CoreHelperUtil,
+  StorageUtil
 } from '@reown/appkit-controllers'
 
 import { W3mConnectorList } from '../../src/partials/w3m-connector-list'
@@ -16,7 +18,13 @@ import { ConnectorUtil } from '../../src/utils/ConnectorUtil'
 const MOCK_CONNECTORS = {
   custom: [{ id: 'custom1', name: 'Custom' }],
   recent: [{ id: 'recent1', name: 'Recent' }],
-  announced: [{ id: 'announced1', name: 'Announced' }],
+  announced: [
+    {
+      id: 'announced1',
+      name: 'Announced',
+      info: { rdns: 'com.announced.wallet' }
+    }
+  ],
   injected: [{ id: 'injected1', name: 'Injected' }],
   multiChain: [{ id: 'multiChain1', name: 'MultiChain' }],
   recommended: [{ id: 'recommended1', name: 'Recommended' }],
@@ -24,38 +32,34 @@ const MOCK_CONNECTORS = {
   external: [{ id: 'external1', name: 'External' }]
 } as ReturnType<typeof ConnectorUtil.getConnectorsByType>
 
-// Widgets
-const WALLET_CONNECT_WIDGET = 'w3m-connect-walletconnect-widget'
-const RECENT_WIDGET = 'w3m-connect-recent-widget'
-const MULTI_CHAIN_WIDGET = 'w3m-connect-multi-chain-widget'
-const ANNOUNCED_WIDGET = 'w3m-connect-announced-widget'
-const INJECTED_WIDGET = 'w3m-connect-injected-widget'
-const FEATURED_WIDGET = 'w3m-connect-featured-widget'
-const CUSTOM_WIDGET = 'w3m-connect-custom-widget'
-const EXTERNAL_WIDGET = 'w3m-connect-external-widget'
-const RECOMMENDED_WIDGET = 'w3m-connect-recommended-widget'
-
 describe('W3mConnectorList', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155'
+    })
 
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
       ...ApiController.state,
       excludedWallets: []
     })
+
+    vi.spyOn(ApiController, 'fetchWallets').mockResolvedValue({
+      data: [],
+      count: 0,
+      mobileFilteredOutWalletsLength: 0
+    })
+
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       ...ConnectorController.state,
       connectors: []
     })
-    vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
-      ...ApiController.state,
-      recommended: [],
-      featured: []
-    })
   })
 
-  it('should render all connector types in correct order', async () => {
+  it('renders flattened items in correct order', async () => {
     vi.spyOn(ConnectorUtil, 'getConnectorsByType').mockReturnValue(MOCK_CONNECTORS)
     vi.spyOn(ConnectorUtil, 'getConnectorTypeOrder').mockReturnValue([
       'walletConnect',
@@ -67,21 +71,73 @@ describe('W3mConnectorList', () => {
       'recommended'
     ])
 
-    const element: W3mConnectorList = await fixture(html`<w3m-connector-list></w3m-connector-list>`)
-    const flexChildren = element.shadowRoot?.querySelector('wui-flex')?.children
+    // Provide connectors including WalletConnect connector
+    const allConnectors = [
+      { id: 'walletConnect', name: 'WalletConnect', type: 'ANNOUNCED' },
+      ...(MOCK_CONNECTORS.announced as any),
+      ...(MOCK_CONNECTORS.injected as any),
+      ...(MOCK_CONNECTORS.multiChain as any),
+      ...(MOCK_CONNECTORS.external as any)
+    ]
 
-    expect(flexChildren?.[0]?.tagName.toLowerCase()).toBe(WALLET_CONNECT_WIDGET)
-    expect(flexChildren?.[1]?.tagName.toLowerCase()).toBe(RECENT_WIDGET)
-    expect(flexChildren?.[2]?.tagName.toLowerCase()).toBe(MULTI_CHAIN_WIDGET)
-    expect(flexChildren?.[3]?.tagName.toLowerCase()).toBe(ANNOUNCED_WIDGET)
-    expect(flexChildren?.[4]?.tagName.toLowerCase()).toBe(INJECTED_WIDGET)
-    expect(flexChildren?.[5]?.tagName.toLowerCase()).toBe(FEATURED_WIDGET)
-    expect(flexChildren?.[6]?.tagName.toLowerCase()).toBe(CUSTOM_WIDGET)
-    expect(flexChildren?.[7]?.tagName.toLowerCase()).toBe(EXTERNAL_WIDGET)
-    expect(flexChildren?.[8]?.tagName.toLowerCase()).toBe(RECOMMENDED_WIDGET)
+    const element: W3mConnectorList = await fixture(
+      html`<w3m-connector-list .connectors=${allConnectors}></w3m-connector-list>`
+    )
+
+    ;(element as any).explorerWallets = [{ id: 'MetaMask', name: 'MetaMask' }]
+    await element.updateComplete
+
+    const items = Array.from(
+      element.shadowRoot?.querySelectorAll('w3m-list-wallet') ?? []
+    ) as HTMLElement[]
+    const names = items.map(i => i.getAttribute('name'))
+
+    expect(names).toEqual([
+      // walletConnect
+      'WalletConnect',
+      // injected group expands as multiChain -> announced -> injected
+      'MultiChain',
+      'Announced',
+      'Injected',
+      // featured, custom, external, recommended
+      'Featured',
+      'Custom',
+      'External'
+    ])
+
+    // displayIndex increments across entire list
+    const indices = items.map(i => Number(i.getAttribute('displayindex')))
+    expect(indices).toEqual(indices.map((_, idx) => idx))
   })
 
-  it('should render only specified connector types in correct order', async () => {
+  it('should render recent wallets in correct order', async () => {
+    // Mock StorageUtil to provide a recent wallet
+    vi.spyOn(StorageUtil, 'getRecentWallets').mockReturnValue([
+      { id: 'recentX', name: 'Recent From Storage' } as any
+    ])
+
+    // Only render 'recent' slot
+    vi.spyOn(ConnectorUtil, 'getConnectorTypeOrder').mockReturnValue(['recent'])
+
+    const element: W3mConnectorList = await fixture(
+      html`<w3m-connector-list .connectors=${[]}></w3m-connector-list>`
+    )
+    ;(element as any).explorerWallets = []
+    await element.updateComplete
+
+    const items = Array.from(
+      element.shadowRoot?.querySelectorAll('w3m-list-wallet') ?? []
+    ) as HTMLElement[]
+
+    expect(items.length).toBe(1)
+    expect(items[0]?.getAttribute('name')).toBe('Recent From Storage')
+    // Tag label should be set to "recent"
+    expect(items[0]?.getAttribute('taglabel')).toBe('recent')
+    // Display index should start from 0
+    expect(items[0]?.getAttribute('displayindex')).toBe('0')
+  })
+
+  it('renders only specified types in order', async () => {
     vi.spyOn(ConnectorUtil, 'getConnectorsByType').mockReturnValue({
       ...MOCK_CONNECTORS,
       multiChain: [],
@@ -95,18 +151,26 @@ describe('W3mConnectorList', () => {
       'custom'
     ])
 
-    const element: W3mConnectorList = await fixture(html`<w3m-connector-list></w3m-connector-list>`)
-    const flexChildren = element.shadowRoot?.querySelector('wui-flex')?.children
+    const connectors = [
+      { id: 'walletConnect', name: 'WalletConnect', type: 'ANNOUNCED' },
+      ...(MOCK_CONNECTORS.injected as any),
+      ...(MOCK_CONNECTORS.external as any)
+    ]
 
-    expect(flexChildren?.[0]?.tagName.toLowerCase()).toBe(INJECTED_WIDGET)
-    expect(flexChildren?.[1]?.tagName.toLowerCase()).toBe(WALLET_CONNECT_WIDGET)
-    expect(flexChildren?.[2]?.tagName.toLowerCase()).toBe(EXTERNAL_WIDGET)
-    expect(flexChildren?.[3]?.tagName.toLowerCase()).toBe(CUSTOM_WIDGET)
+    const element: W3mConnectorList = await fixture(
+      html`<w3m-connector-list .connectors=${connectors}></w3m-connector-list>`
+    )
+    ;(element as any).explorerWallets = [{ id: 'MetaMask', name: 'MetaMask' }]
+    await element.updateComplete
 
-    expect(flexChildren?.length).toBe(4)
+    const names = Array.from(element.shadowRoot?.querySelectorAll('w3m-list-wallet') ?? []).map(i =>
+      i.getAttribute('name')
+    )
+
+    expect(names).toEqual(['Injected', 'WalletConnect', 'External', 'Custom'])
   })
 
-  it('should handle empty connector positions', async () => {
+  it('handles empty connector positions', async () => {
     vi.spyOn(ConnectorUtil, 'getConnectorsByType').mockReturnValue({
       custom: [],
       recent: [],
@@ -119,18 +183,26 @@ describe('W3mConnectorList', () => {
     })
     vi.spyOn(ConnectorUtil, 'getConnectorTypeOrder').mockReturnValue([])
 
-    const element: W3mConnectorList = await fixture(html`<w3m-connector-list></w3m-connector-list>`)
+    const element: W3mConnectorList = await fixture(
+      html`<w3m-connector-list .connectors=${[]}></w3m-connector-list>`
+    )
 
-    expect(element.shadowRoot?.querySelector('wui-flex')?.children.length).toBe(0)
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    expect(element.shadowRoot?.querySelectorAll('w3m-list-wallet').length).toBe(0)
   })
 
-  it('should handle non valid connector positions', async () => {
+  it('handles non valid connector positions', async () => {
     vi.spyOn(ConnectorUtil, 'getConnectorTypeOrder').mockReturnValue([
       'unknown'
     ] as unknown as ConnectorTypeOrder[])
 
-    const element: W3mConnectorList = await fixture(html`<w3m-connector-list></w3m-connector-list>`)
+    const element: W3mConnectorList = await fixture(
+      html`<w3m-connector-list .connectors=${[]}></w3m-connector-list>`
+    )
 
-    expect(element.shadowRoot?.querySelector('wui-flex')?.children.length).toBe(0)
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    expect(element.shadowRoot?.querySelectorAll('w3m-list-wallet').length).toBe(0)
   })
 })

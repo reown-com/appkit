@@ -8,17 +8,23 @@ export type {
 export { RouterController } from '../src/controllers/RouterController.js'
 export type { RouterControllerState } from '../src/controllers/RouterController.js'
 
-export { AccountController } from '../src/controllers/AccountController.js'
-export type { AccountControllerState } from '../src/controllers/AccountController.js'
-
 export { ChainController } from '../src/controllers/ChainController.js'
-export type { ChainControllerState } from '../src/controllers/ChainController.js'
+export type { ChainControllerState, AccountState } from '../src/controllers/ChainController.js'
 
 export { ProviderController } from '../src/controllers/ProviderController.js'
 export type { ProviderControllerState } from '../src/controllers/ProviderController.js'
 
 export { OnRampController } from '../src/controllers/OnRampController.js'
 export type { OnRampControllerState, OnRampProvider } from '../src/controllers/OnRampController.js'
+
+export { AdapterController } from '../src/controllers/AdapterController/index.js'
+export type {
+  AdapterControllerState,
+  Adapters
+} from '../src/controllers/AdapterController/index.js'
+export { AdapterBlueprint } from '../src/controllers/AdapterController/ChainAdapterBlueprint.js'
+export { WalletConnectConnector } from '../src/controllers/AdapterController/WalletConnectConnector.js'
+export type * from '../src/controllers/AdapterController/types.js'
 
 export { ConnectionController } from '../src/controllers/ConnectionController.js'
 export { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
@@ -124,3 +130,4 @@ export { FetchUtil } from '../src/utils/FetchUtil.js'
 export type * from '../src/utils/TypeUtil.js'
 export type * from '../src/utils/SIWXUtil.js'
 export * from '../src/utils/ChainControllerUtil.js'
+export * from '../src/utils/WalletConnectUtil.js'

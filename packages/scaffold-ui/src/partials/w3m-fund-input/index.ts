@@ -24,6 +24,7 @@ export class W3mFundInput extends LitElement {
       <wui-flex alignItems="center" gap="1">
         <wui-input-amount
           widthVariant="fit"
+          fontSize="h2"
           .maxDecimals=${ifDefined(this.maxDecimals)}
           .maxIntegers=${ifDefined(this.maxIntegers)}
           .value=${this.amount ? String(this.amount) : ''}

@@ -2,6 +2,8 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import type { ChainNamespace } from '@reown/appkit-common'
+
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import '../../composites/wui-icon-box/index.js'
@@ -12,6 +14,17 @@ import '../wui-all-wallets-image/index.js'
 import '../wui-tag/index.js'
 import '../wui-wallet-image/index.js'
 import styles from './styles.js'
+
+const NAMESPACE_ICONS = {
+  eip155: 'ethereum',
+  solana: 'solana',
+  bip122: 'bitcoin',
+  polkadot: undefined,
+  cosmos: undefined,
+  sui: undefined,
+  stacks: undefined,
+  ton: 'ton'
+} as const satisfies Record<ChainNamespace, IconType | undefined>
 
 @customElement('wui-list-wallet')
 export class WuiListWallet extends LitElement {
@@ -34,6 +47,8 @@ export class WuiListWallet extends LitElement {
 
   @property() public tabIdx?: number = undefined
 
+  @property({ type: Array }) public namespaces?: ChainNamespace[] = []
+
   @property({ type: Boolean }) public disabled = false
 
   @property({ type: Boolean }) public showAllWallets = false
@@ -53,13 +68,41 @@ export class WuiListWallet extends LitElement {
         tabindex=${ifDefined(this.tabIdx)}
       >
         ${this.templateAllWallets()} ${this.templateWalletImage()}
-        <wui-text variant="lg-regular" color="inherit">${this.name}</wui-text>
+        <wui-flex flexDirection="column" justifyContent="center" alignItems="flex-start" gap="1">
+          <wui-text variant="lg-regular" color="inherit">${this.name}</wui-text>
+          ${this.templateNamespaces()}
+        </wui-flex>
         ${this.templateStatus()}
+        <wui-icon name="chevronRight" size="lg" color="default"></wui-icon>
       </button>
     `
   }
 
   // -- Private ------------------------------------------- //
+  private templateNamespaces() {
+    if (this.namespaces?.length) {
+      return html`<wui-flex alignItems="center" gap="0">
+        ${this.namespaces.map(
+          (namespace, index) =>
+            html`<wui-flex
+              alignItems="center"
+              justifyContent="center"
+              zIndex=${(this.namespaces?.length ?? 0) * 2 - index}
+              class="namespace-icon"
+            >
+              <wui-icon
+                name=${ifDefined(NAMESPACE_ICONS[namespace])}
+                size="sm"
+                color="default"
+              ></wui-icon>
+            </wui-flex>`
+        )}
+      </wui-flex>`
+    }
+
+    return null
+  }
+
   private templateAllWallets() {
     if (this.showAllWallets && this.imageSrc) {
       return html` <wui-all-wallets-image .imageeSrc=${this.imageSrc}> </wui-all-wallets-image> `

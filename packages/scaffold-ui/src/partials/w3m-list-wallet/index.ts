@@ -2,7 +2,8 @@ import { LitElement, type PropertyValues, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { EventsController, RouterController } from '@reown/appkit-controllers'
+import type { ChainNamespace } from '@reown/appkit-common'
+import { AdapterController, EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import type { IWalletImage, IconType, TagType } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-list-wallet'
@@ -45,12 +46,15 @@ export class W3mListWallet extends LitElement {
 
   @property() public rdnsId?: string = ''
 
+  @property() public displayIndex?: number = undefined
+
   @property() public walletRank?: number = undefined
+
+  @property({ type: Array }) public namespaces?: ChainNamespace[] = []
 
   // -- Lifecycle ------------------------------------------- //
   public override connectedCallback() {
     super.connectedCallback()
-    this.setupIntersectionObserver()
   }
 
   public override disconnectedCallback() {
@@ -62,16 +66,19 @@ export class W3mListWallet extends LitElement {
     super.updated(changedProperties)
 
     // Reset impression tracking when wallet changes
-    if (changedProperties.has('name') || changedProperties.has('imageSrc')) {
+    if (
+      changedProperties.has('name') ||
+      changedProperties.has('imageSrc') ||
+      changedProperties.has('walletRank')
+    ) {
       this.hasImpressionSent = false
     }
 
+    const hasWalletRankChanged = changedProperties.has('walletRank') && this.walletRank
+
     // Check if loading state changed and we're visible
-    if (changedProperties.has('loading') && !this.loading && this.intersectionObserver) {
-      const entry = this.intersectionObserver.takeRecords().find(entry => entry.target === this)
-      if (entry && entry.isIntersecting && !this.hasImpressionSent) {
-        this.sendImpressionEvent()
-      }
+    if (hasWalletRankChanged && !this.intersectionObserver) {
+      this.setupIntersectionObserver()
     }
   }
 
@@ -99,23 +106,30 @@ export class W3mListWallet extends LitElement {
   }
 
   private sendImpressionEvent() {
-    if (!this.name || this.hasImpressionSent) {
+    if (!this.name || this.hasImpressionSent || !this.walletRank) {
       return
     }
 
     this.hasImpressionSent = true
-    if (this.rdnsId) {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'WALLET_IMPRESSION',
-        properties: {
-          name: this.name,
-          walletRank: this.walletRank,
-          rdnsId: this.rdnsId,
-          view: RouterController.state.view
-        }
+    if (this.rdnsId || this.name) {
+      EventsController.sendWalletImpressionEvent({
+        name: this.name,
+        walletRank: this.walletRank,
+        rdnsId: this.rdnsId,
+        view: RouterController.state.view,
+        displayIndex: this.displayIndex
       })
     }
+  }
+
+  private handleGetWalletNamespaces() {
+    const isMultiChain = Object.keys(AdapterController.state.adapters).length > 1
+
+    if (isMultiChain) {
+      return this.namespaces
+    }
+
+    return []
   }
 
   // -- Render -------------------------------------------- //
@@ -134,6 +148,7 @@ export class W3mListWallet extends LitElement {
         .showAllWallets=${this.showAllWallets}
         .loading=${this.loading}
         loadingSpinnerColor=${this.loadingSpinnerColor}
+        .namespaces=${this.handleGetWalletNamespaces()}
       ></wui-list-wallet>
     `
   }

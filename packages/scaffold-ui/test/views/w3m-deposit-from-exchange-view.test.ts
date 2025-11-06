@@ -4,7 +4,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import type { CaipNetwork } from '@reown/appkit-common'
-import { ChainController, ExchangeController, RouterController } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  ConnectionController,
+  ExchangeController,
+  RouterController,
+  SnackController
+} from '@reown/appkit-controllers'
+import type { WuiTokenButton } from '@reown/appkit-ui/wui-token-button'
 
 import { W3mDepositFromExchangeView } from '../../src/views/w3m-deposit-from-exchange-view'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -106,12 +113,6 @@ describe('W3mDepositFromExchangeView', () => {
     }
 
     // Seed controller state for exchanges and amount
-    ExchangeController.state.exchanges = [
-      { id: 'ex1', imageUrl: 'https://img1', name: 'Exchange One' },
-      { id: 'ex2', imageUrl: 'https://img2', name: 'Exchange Two' }
-    ] as any
-    ExchangeController.state.amount = 0
-    ExchangeController.state.paymentAsset = mockPaymentAsset
 
     // Avoid side effects on firstUpdated
     vi.spyOn(ExchangeController, 'getAssetsForNetwork').mockResolvedValue([mockPaymentAsset])
@@ -120,6 +121,12 @@ describe('W3mDepositFromExchangeView', () => {
     const element: W3mDepositFromExchangeView = await fixture(
       html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`
     )
+    ExchangeController.state.exchanges = [
+      { id: 'ex1', imageUrl: 'https://img1', name: 'Exchange One' },
+      { id: 'ex2', imageUrl: 'https://img2', name: 'Exchange Two' }
+    ] as any
+    ExchangeController.state.amount = 0
+    ExchangeController.state.paymentAsset = mockPaymentAsset
     await elementUpdated(element)
 
     // Asset token button should reflect payment asset symbol
@@ -138,7 +145,7 @@ describe('W3mDepositFromExchangeView', () => {
 
     // Clicking a preset amount should delegate to controller
     const setAmountSpy = vi.spyOn(ExchangeController, 'setAmount')
-    const presetButtons = HelpersUtil.querySelectAll(element, 'wui-button')
+    const presetButtons = HelpersUtil.querySelectAll(element, 'wui-chip-button')
     // Click the first preset ($10)
     presetButtons?.[0]?.click()
     await elementUpdated(element)
@@ -173,5 +180,90 @@ describe('W3mDepositFromExchangeView', () => {
     await elementUpdated(element)
 
     expect(ExchangeController.state.amount).toBe(10)
+  })
+
+  it('shows chainImageSrc on token button', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipNetwork: {
+        ...(mockMainnet as unknown as CaipNetwork),
+        assets: { imageUrl: 'https://chain.example/eth.png' }
+      } as unknown as CaipNetwork
+    })
+
+    vi.spyOn(ExchangeController, 'getAssetsForNetwork').mockResolvedValue([])
+    vi.spyOn(ExchangeController, 'fetchExchanges').mockResolvedValue()
+
+    const element: W3mDepositFromExchangeView = await fixture(
+      html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`
+    )
+    await elementUpdated(element)
+
+    const assetButton = HelpersUtil.getByTestId(
+      element,
+      'deposit-from-exchange-asset-button'
+    ) as WuiTokenButton
+
+    expect(assetButton).toBeTruthy()
+    expect(assetButton.chainImageSrc).toBe('https://chain.example/eth.png')
+  })
+
+  it('does not reset on disconnect while payment is in progress', async () => {
+    vi.spyOn(ExchangeController, 'getAssetsForNetwork').mockResolvedValue([] as any)
+    vi.spyOn(ExchangeController, 'fetchExchanges').mockResolvedValue()
+
+    const resetSpy = vi.spyOn(ExchangeController, 'reset').mockImplementation(() => {})
+
+    const element: W3mDepositFromExchangeView = await fixture(
+      html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`
+    )
+    await elementUpdated(element)
+
+    ExchangeController.state.isPaymentInProgress = true
+    ExchangeController.state.currentPayment = {
+      type: 'exchange',
+      exchangeId: 'coinbase',
+      sessionId: 'session',
+      status: 'IN_PROGRESS'
+    } as any
+
+    element.disconnectedCallback()
+
+    expect(resetSpy).not.toHaveBeenCalled()
+  })
+
+  it('resets when transaction succeeds', async () => {
+    vi.spyOn(ExchangeController, 'getAssetsForNetwork').mockResolvedValue([] as any)
+    vi.spyOn(ExchangeController, 'fetchExchanges').mockResolvedValue()
+    vi.spyOn(SnackController, 'showLoading').mockImplementation(() => {})
+    vi.spyOn(SnackController, 'showSuccess').mockImplementation(() => {})
+    vi.spyOn(RouterController, 'replace').mockImplementation(() => {})
+    vi.spyOn(ChainController, 'fetchTokenBalance').mockResolvedValue(undefined as any)
+    vi.spyOn(ConnectionController, 'updateBalance').mockResolvedValue(undefined as any)
+
+    const resetSpy = vi.spyOn(ExchangeController, 'reset').mockImplementation(() => {})
+    vi.spyOn(ExchangeController, 'waitUntilComplete').mockResolvedValue({
+      status: 'SUCCESS',
+      txHash: '0xabc'
+    } as any)
+
+    ExchangeController.state.isPaymentInProgress = true
+    ExchangeController.state.paymentId = 'payment-1'
+    ExchangeController.state.currentPayment = {
+      type: 'exchange',
+      exchangeId: 'coinbase',
+      sessionId: 'session-1',
+      status: 'IN_PROGRESS'
+    } as any
+
+    const element: W3mDepositFromExchangeView = await fixture(
+      html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`
+    )
+    await elementUpdated(element)
+    ;(element as any).handlePaymentInProgress()
+
+    await elementUpdated(element)
+
+    expect(resetSpy).toHaveBeenCalled()
   })
 })

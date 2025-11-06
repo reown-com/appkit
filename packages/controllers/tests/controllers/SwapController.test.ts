@@ -1,17 +1,16 @@
 import { parseUnits } from 'viem'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
-import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
+import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import {
-  AccountController,
+  type AccountState,
   BlockchainApiController,
   ChainController,
   ConnectionController,
   type ConnectionControllerClient,
   ConnectorController,
-  type NetworkControllerClient,
   RouterController,
   SwapController
 } from '../../exports/index.js'
@@ -43,12 +42,22 @@ const caipNetwork = {
     }
   }
 } as CaipNetwork
-const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
-const client: NetworkControllerClient = {
-  switchCaipNetwork: async _caipNetwork => Promise.resolve(),
-  getApprovedCaipNetworksData: async () =>
-    Promise.resolve({ approvedCaipNetworkIds, supportsAllNetworks: false })
-}
+const arbitrumNetwork = {
+  id: 42161,
+  caipNetworkId: 'eip155:42161',
+  name: 'Arbitrum One',
+  chainNamespace: ConstantsUtil.CHAIN.EVM,
+  nativeCurrency: {
+    name: 'Ether',
+    decimals: 18,
+    symbol: 'ETH'
+  },
+  rpcUrls: {
+    default: {
+      http: ['']
+    }
+  }
+} as CaipNetwork
 const chain = ConstantsUtil.CHAIN.EVM
 const caipAddress = 'eip155:1:0x123'
 // MATIC
@@ -62,16 +71,15 @@ const sourceTokenAmount = '1'
 beforeAll(async () => {
   const mockAdapter = {
     namespace: ConstantsUtil.CHAIN.EVM,
-    networkControllerClient: client,
     caipNetworks: [caipNetwork]
   }
   ChainController.initialize([mockAdapter], [caipNetwork], {
-    connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
-    networkControllerClient: client
+    connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
   })
 
   ChainController.setActiveCaipNetwork(caipNetwork)
-  AccountController.setCaipAddress(caipAddress, chain)
+  ChainController.setAccountProp('caipAddress', caipAddress, chain)
+  ChainController.setAccountProp('address', '0x123', chain)
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)
   vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue(balanceResponse)
   vi.spyOn(BlockchainApiController, 'fetchSwapQuote').mockResolvedValue(swapQuoteResponse)
@@ -149,7 +157,7 @@ describe('SwapController', () => {
     const connectionControllerClientSpy = vi
       .spyOn(ConnectionController, 'sendTransaction')
       .mockImplementationOnce(() => Promise.resolve(null))
-    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('AUTH')
     vi.spyOn(RouterController, 'pushTransactionStack').mockImplementationOnce(() =>
       Promise.resolve()
     )
@@ -170,11 +178,28 @@ describe('SwapController', () => {
     })
   })
 
+  it('should correctly swap source and destination token addresses', async () => {
+    // Set up initial state with distinct tokens
+    const initialSourceToken = SwapController.state.myTokensWithBalance?.[0]
+    const initialToToken = SwapController.state.myTokensWithBalance?.[1]
+
+    SwapController.setSourceToken(initialSourceToken)
+    SwapController.setToToken(initialToToken)
+
+    const originalSourceAddress = SwapController.state.sourceToken?.address
+    const originalToAddress = SwapController.state.toToken?.address
+
+    await SwapController.switchTokens()
+
+    expect(SwapController.state.sourceToken?.address).toEqual(originalToAddress)
+    expect(SwapController.state.toToken?.address).toEqual(originalSourceAddress)
+  })
+
   describe('getParams()', () => {
-    it('should use AccountController.getCaipAddress before falling back to activeCaipAddress', () => {
+    it('should use ChainController.getAccountData before falling back to activeCaipAddress', () => {
       const mockNamespace = ConstantsUtil.CHAIN.EVM
-      const mockCaipAddressFromAccount = 'eip155:1:0xAccountController'
-      const mockActiveCaipAddress = 'eip155:1:0xChainController'
+      const mockCaipAddressFromAccount = 'eip155:1:1'
+      const mockActiveCaipAddress = 'eip155:1:2'
 
       vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         ...ChainController.state,
@@ -183,9 +208,9 @@ describe('SwapController', () => {
         activeCaipNetwork: caipNetwork
       })
 
-      const getCaipAddressSpy = vi
-        .spyOn(AccountController, 'getCaipAddress')
-        .mockReturnValue(mockCaipAddressFromAccount)
+      const getCaipAddressSpy = vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        caipAddress: mockCaipAddressFromAccount
+      } as unknown as AccountState)
 
       const params = SwapController.getParams()
 
@@ -193,7 +218,7 @@ describe('SwapController', () => {
       expect(params.fromCaipAddress).toBe(mockCaipAddressFromAccount)
     })
 
-    it('should fallback to activeCaipAddress when AccountController.getCaipAddress returns undefined', () => {
+    it('should fallback to activeCaipAddress when ChainController.getAccountData returns undefined', () => {
       const mockNamespace = ConstantsUtil.CHAIN.EVM
       const mockActiveCaipAddress = 'eip155:1:0xFallback'
 
@@ -205,7 +230,7 @@ describe('SwapController', () => {
       })
 
       const getCaipAddressSpy = vi
-        .spyOn(AccountController, 'getCaipAddress')
+        .spyOn(ChainController, 'getAccountData')
         .mockReturnValue(undefined)
 
       const params = SwapController.getParams()
@@ -224,9 +249,69 @@ describe('SwapController', () => {
         activeCaipNetwork: caipNetwork
       })
 
-      vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(undefined)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
 
       expect(() => SwapController.getParams()).toThrow('No address found to swap the tokens from.')
     })
+  })
+
+  it('should show chain-specific suggested token first when active network is Arbitrum', async () => {
+    SwapController.state.tokens = undefined
+    ChainController.state.activeCaipNetwork = arbitrumNetwork
+
+    const mockTokens = [
+      {
+        address: 'eip155:42161:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' as CaipAddress,
+        symbol: 'ETH',
+        name: 'Ether',
+        decimals: 18,
+        logoUri: ''
+      },
+      {
+        address: 'eip155:42161:0x0000000000000000000000000000000000000000' as CaipAddress,
+        symbol: 'USD₮0',
+        name: 'Tether USD0',
+        decimals: 6,
+        logoUri: ''
+      }
+    ]
+
+    vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValueOnce({
+      tokens: mockTokens
+    })
+
+    await SwapController.getTokenList()
+
+    expect(SwapController.state.suggestedTokens?.[0]?.symbol).toBe('USD₮0')
+  })
+
+  it('should show chain-specific suggested token first when active network is Arbitrum', async () => {
+    SwapController.state.tokens = undefined
+    ChainController.state.activeCaipNetwork = arbitrumNetwork
+
+    const mockTokens = [
+      {
+        address: 'eip155:42161:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' as CaipAddress,
+        symbol: 'ETH',
+        name: 'Ether',
+        decimals: 18,
+        logoUri: ''
+      },
+      {
+        address: 'eip155:42161:0x0000000000000000000000000000000000000000' as CaipAddress,
+        symbol: 'USD₮0',
+        name: 'Tether USD0',
+        decimals: 6,
+        logoUri: ''
+      }
+    ]
+
+    vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValueOnce({
+      tokens: mockTokens
+    })
+
+    await SwapController.getTokenList()
+
+    expect(SwapController.state.suggestedTokens?.[0]?.symbol).toBe('USD₮0')
   })
 })

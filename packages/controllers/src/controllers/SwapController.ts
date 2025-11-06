@@ -16,7 +16,6 @@ import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AccountController } from './AccountController.js'
 import { AlertController } from './AlertController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
@@ -67,6 +66,9 @@ export interface SwapControllerState {
   loadingApprovalTransaction?: boolean
   loadingBuildTransaction?: boolean
   loadingTransaction?: boolean
+
+  // Control states
+  switchingTokens: boolean
 
   // Error states
   fetchError: boolean
@@ -134,6 +136,9 @@ const initialState: SwapControllerState = {
   loadingBuildTransaction: false,
   loadingTransaction: false,
 
+  // Control states
+  switchingTokens: false,
+
   // Error states
   fetchError: false,
 
@@ -190,7 +195,8 @@ const controller = {
   getParams() {
     const namespace = ChainController.state.activeChain
     const caipAddress =
-      AccountController.getCaipAddress(namespace) ?? ChainController.state.activeCaipAddress
+      ChainController.getAccountData(namespace)?.caipAddress ??
+      ChainController.state.activeCaipAddress
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
     const networkAddress = getActiveNetworkTokenAddress()
     const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
@@ -225,7 +231,7 @@ const controller = {
     }
   },
 
-  setSourceToken(sourceToken: SwapTokenWithBalance | undefined) {
+  async setSourceToken(sourceToken: SwapTokenWithBalance | undefined) {
     if (!sourceToken) {
       state.sourceToken = sourceToken
       state.sourceTokenAmount = ''
@@ -235,14 +241,14 @@ const controller = {
     }
 
     state.sourceToken = sourceToken
-    SwapController.setTokenPrice(sourceToken.address, 'sourceToken')
+    await SwapController.setTokenPrice(sourceToken.address, 'sourceToken')
   },
 
   setSourceTokenAmount(amount: string) {
     state.sourceTokenAmount = amount
   },
 
-  setToToken(toToken: SwapTokenWithBalance | undefined) {
+  async setToToken(toToken: SwapTokenWithBalance | undefined) {
     if (!toToken) {
       state.toToken = toToken
       state.toTokenAmount = ''
@@ -252,7 +258,7 @@ const controller = {
     }
 
     state.toToken = toToken
-    SwapController.setTokenPrice(toToken.address, 'toToken')
+    await SwapController.setTokenPrice(toToken.address, 'toToken')
   },
 
   setToTokenAmount(amount: string) {
@@ -277,27 +283,37 @@ const controller = {
       state.loadingPrices = false
     }
 
-    if (SwapController.getParams().availableToSwap) {
+    if (SwapController.getParams().availableToSwap && !state.switchingTokens) {
       SwapController.swapTokens()
     }
   },
 
-  switchTokens() {
-    if (state.initializing || !state.initialized) {
+  async switchTokens() {
+    if (state.initializing || !state.initialized || state.switchingTokens) {
       return
     }
 
-    const newSourceToken = state.toToken ? { ...state.toToken } : undefined
-    const newToToken = state.sourceToken ? { ...state.sourceToken } : undefined
-    const newSourceTokenAmount =
-      newSourceToken && state.toTokenAmount === '' ? '1' : state.toTokenAmount
+    state.switchingTokens = true
 
-    SwapController.setSourceToken(newSourceToken)
-    SwapController.setToToken(newToToken)
+    try {
+      const newSourceToken = state.toToken ? { ...state.toToken } : undefined
+      const newToToken = state.sourceToken ? { ...state.sourceToken } : undefined
+      const newSourceTokenAmount =
+        newSourceToken && state.toTokenAmount === '' ? '1' : state.toTokenAmount
 
-    SwapController.setSourceTokenAmount(newSourceTokenAmount)
-    SwapController.setToTokenAmount('')
-    SwapController.swapTokens()
+      SwapController.setSourceTokenAmount(newSourceTokenAmount)
+      SwapController.setToTokenAmount('')
+
+      await SwapController.setSourceToken(newSourceToken)
+      await SwapController.setToToken(newToToken)
+
+      state.switchingTokens = false
+
+      SwapController.swapTokens()
+    } catch (error) {
+      state.switchingTokens = false
+      throw error
+    }
   },
 
   resetState() {
@@ -305,6 +321,7 @@ const controller = {
     state.tokensPriceMap = initialState.tokensPriceMap
     state.initialized = initialState.initialized
     state.initializing = initialState.initializing
+    state.switchingTokens = initialState.switchingTokens
     state.sourceToken = initialState.sourceToken
     state.sourceTokenAmount = initialState.sourceTokenAmount
     state.sourceTokenPriceInUSD = initialState.sourceTokenPriceInUSD
@@ -390,13 +407,24 @@ const controller = {
 
         return 0
       })
-      state.suggestedTokens = tokens.filter(token => {
-        if (ConstantsUtil.SWAP_SUGGESTED_TOKENS.includes(token.symbol)) {
-          return true
-        }
 
-        return false
-      })
+      const suggestedTokensByChain =
+        (activeCaipNetworkId &&
+          (ConstantsUtil.SUGGESTED_TOKENS_BY_CHAIN as Record<string, string[]>)?.[
+            activeCaipNetworkId
+          ]) ||
+        []
+      const suggestedTokenObjects = suggestedTokensByChain
+        .map(symbol => tokens.find(t => t.symbol === symbol))
+        .filter((t): t is SwapTokenWithBalance => Boolean(t))
+
+      const allSuggestedTokens = ConstantsUtil.SWAP_SUGGESTED_TOKENS || []
+      const allSuggestedTokenObjects = allSuggestedTokens
+        .map(symbol => tokens.find(t => t.symbol === symbol))
+        .filter((t): t is SwapTokenWithBalance => Boolean(t))
+        .filter(t => !suggestedTokenObjects.some(ct => ct.address === t.address))
+
+      state.suggestedTokens = [...suggestedTokenObjects, ...allSuggestedTokenObjects]
     } catch (error) {
       state.tokens = []
       state.popularTokens = []
@@ -516,7 +544,7 @@ const controller = {
 
   // -- Swap -------------------------------------- //
   async swapTokens() {
-    const address = AccountController.state.address as `${string}:${string}:${string}`
+    const address = ChainController.getAccountData()?.address
     const sourceToken = state.sourceToken
     const toToken = state.toToken
     const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).gt(0)
@@ -525,7 +553,7 @@ const controller = {
       SwapController.setToTokenAmount('')
     }
 
-    if (!toToken || !sourceToken || state.loadingPrices || !haveSourceTokenAmount) {
+    if (!toToken || !sourceToken || state.loadingPrices || !haveSourceTokenAmount || !address) {
       return
     }
 

@@ -16,7 +16,7 @@ export * from '../src/utils/index.js'
 export type * from '@reown/appkit-controllers'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@reown/appkit-common'
 export type { AppKitBaseClient, OpenOptions, Views } from '../src/client/appkit-base-client.js'
-export { CoreHelperUtil, AccountController } from '@reown/appkit-controllers'
+export { CoreHelperUtil } from '@reown/appkit-controllers'
 
 export let modal: AppKit | undefined = undefined
 

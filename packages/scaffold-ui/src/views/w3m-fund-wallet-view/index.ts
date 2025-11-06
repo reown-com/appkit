@@ -115,7 +115,7 @@ export class W3mFundWalletView extends LitElement {
     return html`
       <wui-list-item
         @click=${this.onDepositFromExchange.bind(this)}
-        icon="download"
+        icon="arrowBottomCircle"
         data-testid="wallet-features-deposit-from-exchange-button"
         ?loading=${this.exchangesLoading}
         ?disabled=${this.exchangesLoading || !this.exchanges.length}
@@ -152,7 +152,10 @@ export class W3mFundWalletView extends LitElement {
   }
 
   private onDepositFromExchange() {
-    RouterController.push('PayWithExchange')
+    ExchangeController.reset()
+    RouterController.push('PayWithExchange', {
+      redirectView: RouterController.state.data?.redirectView
+    })
   }
 }
 

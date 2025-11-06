@@ -38,7 +38,8 @@ const mockConnectorState: ConnectorControllerState = {
     bip122: undefined,
     cosmos: undefined,
     sui: undefined,
-    stacks: undefined
+    stacks: undefined,
+    ton: undefined
   },
   filterByNamespaceMap: {
     eip155: true,
@@ -47,7 +48,8 @@ const mockConnectorState: ConnectorControllerState = {
     bip122: true,
     cosmos: true,
     sui: true,
-    stacks: true
+    stacks: true,
+    ton: true
   }
 }
 
@@ -89,7 +91,17 @@ const mockApiState: ApiControllerState = {
   isAnalyticsEnabled: false,
   excludedWallets: [],
   isFetchingRecommendedWallets: false,
-  filteredWallets: []
+  filteredWallets: [],
+  explorerWallets: [],
+  explorerFilteredWallets: [],
+  plan: {
+    tier: 'starter',
+    hasExceededUsageLimit: false,
+    limits: {
+      isAboveRpcLimit: false,
+      isAboveMauLimit: false
+    }
+  }
 }
 
 describe('W3mAllWalletsWidget', () => {
@@ -180,7 +192,7 @@ describe('W3mAllWalletsWidget', () => {
     walletList.click()
 
     expect(sendEventSpy).toHaveBeenCalledWith({ type: 'track', event: 'CLICK_ALL_WALLETS' })
-    expect(routerPushSpy).toHaveBeenCalledWith('AllWallets')
+    expect(routerPushSpy).toHaveBeenCalledWith('AllWallets', { redirectView: undefined })
   })
 
   it('should update wallet count when filteredWallets changes', async () => {

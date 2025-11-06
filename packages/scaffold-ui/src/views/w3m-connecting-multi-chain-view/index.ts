@@ -82,16 +82,17 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    return this.activeConnector?.connectors?.map(connector =>
+    return this.activeConnector?.connectors?.map((connector, index) =>
       connector.name
         ? html`
             <w3m-list-wallet
+              displayIndex=${index}
               imageSrc=${ifDefined(AssetUtil.getChainImage(connector.chain))}
               name=${ConstantsUtil.CHAIN_NAME_MAP[connector.chain]}
               @click=${() => this.onConnector(connector)}
               size="sm"
               data-testid="wui-list-chain-${connector.chain}"
-              rdnsId=${connector.id}
+              rdnsId=${connector.explorerWallet?.rdns}
             ></w3m-list-wallet>
           `
         : null
@@ -100,6 +101,7 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   private onConnector(provider: Connector) {
     const connector = this.activeConnector?.connectors?.find(p => p.chain === provider.chain)
+    const redirectView = RouterController.state.data?.redirectView
 
     if (!connector) {
       SnackController.showError('Failed to find connector')
@@ -111,11 +113,13 @@ export class W3mConnectingMultiChainView extends LitElement {
       if (CoreHelperUtil.isMobile()) {
         RouterController.push('AllWallets')
       } else {
-        RouterController.push('ConnectingWalletConnect')
+        RouterController.push('ConnectingWalletConnect', { redirectView })
       }
     } else {
       RouterController.push('ConnectingExternal', {
-        connector
+        connector,
+        redirectView,
+        wallet: this.activeConnector?.explorerWallet
       })
     }
   }

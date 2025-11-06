@@ -1,1 +1,1 @@
-export * from '../src/features/reown-authentication/index.js'
+export * from '../src/features/siwx/reown-authentication/index.js'

@@ -17,7 +17,6 @@ import {
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
   type Features,
-  type Metadata,
   PublicStateController,
   type RemoteFeatures,
   RouterController,
@@ -26,7 +25,6 @@ import {
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import {
-  AccountController,
   AlertController,
   ChainController,
   CoreHelperUtil,
@@ -35,12 +33,12 @@ import {
   StorageUtil,
   ThemeController
 } from '@reown/appkit-controllers'
+import type { AdapterBlueprint } from '@reown/appkit-controllers'
 import { ErrorUtil, HelpersUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 import { W3mFrameHelpers, W3mFrameProvider } from '@reown/appkit-wallet'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
-import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { W3mFrameProviderSingleton } from '../auth-provider/W3MFrameProviderSingleton.js'
 import { AppKitBaseClient, type AppKitOptionsWithSdk } from './appkit-base-client.js'
 
@@ -49,9 +47,6 @@ declare global {
     ethereum?: Record<string, unknown>
   }
 }
-
-// -- Export Controllers -------------------------------------------------------
-export { AccountController }
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -100,6 +95,7 @@ export class AppKit extends AppKitBaseClient {
 
     const defaultAccountType = OptionsController.state.defaultAccountTypes[namespace]
     const currentAccountType = getPreferredAccountType(namespace)
+
     const preferredAccountType =
       (user.preferredAccountType as W3mFrameTypes.AccountType) ||
       currentAccountType ||
@@ -108,9 +104,19 @@ export class AppKit extends AppKitBaseClient {
     this.setCaipAddress(caipAddress, namespace)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { signature, siwxMessage, message, ...userWithOutSiwxData } = user
-    this.setUser({ ...(AccountController.state.user || {}), ...userWithOutSiwxData }, namespace)
+    const accountData = ChainController.getAccountData(namespace)
+
+    this.setUser({ ...(accountData?.user || {}), ...userWithOutSiwxData }, namespace)
     this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
     this.setPreferredAccountType(preferredAccountType, namespace)
+    await Promise.all([
+      this.syncAuthConnectorTheme(this.authProvider),
+      this.syncAccount({
+        address: user.address,
+        chainId: user.chainId,
+        chainNamespace: namespace
+      })
+    ])
 
     this.setLoading(false, namespace)
   }
@@ -144,7 +150,7 @@ export class AppKit extends AppKitBaseClient {
     })
     provider.onRpcSuccess((_, request) => {
       const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
-      const address = AccountController.state.address
+      const address = this.getAddress()
       const caipNetwork = ChainController.state.activeCaipNetwork
 
       if (isSafeRequest) {
@@ -172,7 +178,7 @@ export class AppKit extends AppKitBaseClient {
       const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 
       if (isConnectedWithAuth) {
-        this.setCaipAddress(undefined, namespace)
+        this.setCaipAddress(null, namespace)
         this.setLoading(false, namespace)
       }
     })
@@ -199,21 +205,12 @@ export class AppKit extends AppKitBaseClient {
     }
 
     const theme = ThemeController.getSnapshot()
-    const options = OptionsController.getSnapshot()
 
-    await Promise.all([
-      provider.syncDappData({
-        metadata: options.metadata as Metadata,
-        sdkVersion: options.sdkVersion,
-        projectId: options.projectId,
-        sdkType: options.sdkType
-      }),
-      provider.syncTheme({
-        themeMode: theme.themeMode,
-        themeVariables: theme.themeVariables,
-        w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
-      })
-    ])
+    await provider.syncTheme({
+      themeMode: theme.themeMode,
+      themeVariables: theme.themeVariables,
+      w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
+    })
   }
 
   private async syncAuthConnector(provider: W3mFrameProvider, chainNamespace: ChainNamespace) {
@@ -225,6 +222,7 @@ export class AppKit extends AppKitBaseClient {
     }
 
     this.setLoading(true, chainNamespace)
+
     const isLoginEmailUsed = provider.getLoginEmailUsed()
     this.setLoading(isLoginEmailUsed, chainNamespace)
 
@@ -235,20 +233,16 @@ export class AppKit extends AppKitBaseClient {
     const email = provider.getEmail()
     const username = provider.getUsername()
 
-    this.setUser({ ...(AccountController.state?.user || {}), username, email }, chainNamespace)
+    const user = ChainController.getAccountData(chainNamespace)?.user || {}
+    this.setUser({ ...user, username, email }, chainNamespace)
     this.setupAuthConnectorListeners(provider)
 
     const { isConnected } = await provider.isConnected()
 
-    await this.syncAuthConnectorTheme(provider)
-
     if (chainNamespace && isAuthSupported && shouldSync) {
-      const enabledNetworks = await provider.getSmartAccountEnabledNetworks()
-      ChainController.setSmartAccountEnabledNetworks(
-        enabledNetworks?.smartAccountEnabledNetworks || [],
-        chainNamespace
-      )
       if (isConnected && this.connectionControllerClient?.connectExternal) {
+        await provider.init()
+        await this.syncAuthConnectorTheme(provider)
         await this.connectionControllerClient?.connectExternal({
           id: ConstantsUtil.CONNECTOR_ID.AUTH,
           info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },
@@ -263,7 +257,7 @@ export class AppKit extends AppKitBaseClient {
           EventsController.sendEvent({
             type: 'track',
             event: 'SOCIAL_LOGIN_SUCCESS',
-            address: AccountController.state.address,
+            address: this.getAddress(),
             properties: {
               provider: socialProvider as SocialProvider,
               reconnect: true
@@ -273,7 +267,7 @@ export class AppKit extends AppKitBaseClient {
           EventsController.sendEvent({
             type: 'track',
             event: 'CONNECT_SUCCESS',
-            address: AccountController.state.address,
+            address: this.getAddress(),
             properties: {
               method: 'email',
               name: this.universalProvider?.session?.peer?.metadata?.name || 'Unknown',
@@ -311,7 +305,9 @@ export class AppKit extends AppKitBaseClient {
       if (!resultUri) {
         return
       }
-      AccountController.setSocialProvider(socialProviderToConnect, chainNamespace)
+      if (socialProviderToConnect) {
+        ChainController.setAccountProp('socialProvider', socialProviderToConnect, chainNamespace)
+      }
       await this.authProvider?.init()
       const authConnector = ConnectorController.getAuthConnector()
       if (socialProviderToConnect && authConnector) {
@@ -432,12 +428,10 @@ export class AppKit extends AppKitBaseClient {
     const namespaceAddress = this.getAddressByChainNamespace(networkNamespace)
     const isSameNamespace = networkNamespace === currentNamespace
 
-    if (isSameNamespace && namespaceAddress) {
+    if (isSameNamespace && ChainController.getAccountData(networkNamespace)?.caipAddress) {
       const adapter = this.getAdapter(networkNamespace)
-      const provider = ProviderController.getProvider(networkNamespace)
-      const providerType = ProviderController.getProviderId(networkNamespace)
 
-      await adapter?.switchNetwork({ caipNetwork, provider, providerType })
+      await adapter?.switchNetwork({ caipNetwork })
       this.setCaipNetwork(caipNetwork)
     } else {
       const currentNamespaceProviderType = ProviderController.getProviderId(currentNamespace)
@@ -477,9 +471,7 @@ export class AppKit extends AppKitBaseClient {
           if (namespaceAddress) {
             const adapter = this.getAdapter(networkNamespace)
             await adapter?.switchNetwork({
-              caipNetwork,
-              provider: this.authProvider,
-              providerType: newNamespaceProviderType
+              caipNetwork
             })
           } else {
             await this.connectionControllerClient?.connectExternal?.({
@@ -495,9 +487,7 @@ export class AppKit extends AppKitBaseClient {
         } catch (error) {
           const adapter = this.getAdapter(networkNamespace)
           await adapter?.switchNetwork({
-            caipNetwork,
-            provider: this.authProvider,
-            providerType: newNamespaceProviderType
+            caipNetwork
           })
         }
       } else if (newNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
@@ -507,10 +497,8 @@ export class AppKit extends AppKitBaseClient {
          */
         if (!ChainController.state.noAdapters) {
           const adapter = this.getAdapter(networkNamespace)
-          const provider = ProviderController.getProvider(networkNamespace)
-          const providerType = ProviderController.getProviderId(networkNamespace)
 
-          await adapter?.switchNetwork({ caipNetwork, provider, providerType })
+          await adapter?.switchNetwork({ caipNetwork })
         }
         this.setCaipNetwork(caipNetwork)
         this.syncWalletConnectAccount()

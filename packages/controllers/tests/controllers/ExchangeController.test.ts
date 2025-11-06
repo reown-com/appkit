@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ChainController } from '../../exports'
-import { AccountController } from '../../src/controllers/AccountController'
+import { type AccountState } from '../../src/controllers/ChainController'
+import { ChainController } from '../../src/controllers/ChainController'
 import { EventsController } from '../../src/controllers/EventsController'
 import { ExchangeController } from '../../src/controllers/ExchangeController'
 import { DEFAULT_STATE } from '../../src/controllers/ExchangeController'
@@ -53,8 +53,7 @@ describe('ExchangeController', () => {
     beforeEach(() => {
       vi.restoreAllMocks()
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        remoteFeatures: { payWithExchange: true },
-        features: { pay: true }
+        remoteFeatures: { payWithExchange: true }
       } as any)
       ChainController.state.activeCaipNetwork = {
         caipNetworkId: 'eip155:1',
@@ -129,8 +128,7 @@ describe('ExchangeController', () => {
 
     it('does not fetch exchanges when pay with exchange is not enabled', async () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        remoteFeatures: { payWithExchange: false },
-        features: { pay: false }
+        remoteFeatures: { payWithExchange: false }
       } as any)
       vi.spyOn(ExchangeUtil, 'getExchanges')
       await ExchangeController.fetchExchanges()
@@ -139,8 +137,7 @@ describe('ExchangeController', () => {
 
     it('does not fetch exchanges when pay with exchange is not supported', async () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        remoteFeatures: { payWithExchange: true },
-        features: { pay: true }
+        remoteFeatures: { payWithExchange: true }
       } as any)
       vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         activeCaipNetwork: { chainNamespace: 'bip122' }
@@ -148,39 +145,6 @@ describe('ExchangeController', () => {
       vi.spyOn(ExchangeUtil, 'getExchanges')
       await ExchangeController.fetchExchanges()
       expect(ExchangeUtil.getExchanges).not.toHaveBeenCalled()
-    })
-    it('fetches exchanges when pay is enabled but pay with exchange is not', async () => {
-      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        remoteFeatures: { payWithExchange: false },
-        features: { pay: true }
-      } as any)
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-        activeCaipNetwork: { chainNamespace: 'eip155' }
-      } as any)
-      vi.spyOn(ExchangeUtil, 'getExchanges')
-      await ExchangeController.fetchExchanges()
-      expect(ExchangeUtil.getExchanges).toHaveBeenCalled()
-    })
-    it('fetches exchanges when pay with exchange is enabled but pay is not', async () => {
-      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        remoteFeatures: { payWithExchange: true },
-        features: { pay: false }
-      } as any)
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-        activeCaipNetwork: { chainNamespace: 'eip155' }
-      } as any)
-      vi.spyOn(ExchangeUtil, 'getExchanges')
-      await ExchangeController.fetchExchanges()
-      expect(ExchangeUtil.getExchanges).toHaveBeenCalled()
-    })
-    it('fetches exchanges when payments is enabled and pay with exchange is not', async () => {
-      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        remoteFeatures: { payWithExchange: false, payments: true },
-        features: { pay: false }
-      } as any)
-      vi.spyOn(ExchangeUtil, 'getExchanges')
-      await ExchangeController.fetchExchanges()
-      expect(ExchangeUtil.getExchanges).toHaveBeenCalled()
     })
   })
 
@@ -242,7 +206,9 @@ describe('ExchangeController', () => {
         location: { href: '' }
       }
 
-      AccountController.state.address = '0xabc'
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: '0xabc'
+      } as AccountState)
       ExchangeController.state.amount = 2
       ExchangeController.state.tokenAmount = 1.5
       ExchangeController.state.paymentAsset = {
@@ -277,7 +243,7 @@ describe('ExchangeController', () => {
     })
 
     it('shows error if no account connected', async () => {
-      AccountController.state.address = undefined
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
       await ExchangeController.handlePayWithExchange('ex1')
@@ -287,7 +253,6 @@ describe('ExchangeController', () => {
     })
 
     it('shows error if no payment asset selected', async () => {
-      AccountController.state.address = '0xabc'
       ExchangeController.state.paymentAsset = null
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
@@ -298,12 +263,14 @@ describe('ExchangeController', () => {
     })
 
     it('shows error if pay url cannot be obtained', async () => {
-      AccountController.state.address = '0xabc'
       ExchangeController.state.paymentAsset = {
         network: 'eip155:1',
         asset: 'native',
         metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
       }
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: '0xabc'
+      } as AccountState)
       vi.spyOn(ExchangeController, 'getPayUrl').mockResolvedValue(undefined as any)
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
@@ -316,6 +283,7 @@ describe('ExchangeController', () => {
 
   describe('getBuyStatus', () => {
     beforeEach(() => {
+      vi.restoreAllMocks()
       // Set up a current payment
       ExchangeController.state.currentPayment = {
         type: 'exchange',
@@ -329,7 +297,9 @@ describe('ExchangeController', () => {
         metadata: { name: 'Ethereum', symbol: 'ETH', decimals: 18 }
       }
       ExchangeController.state.amount = 100
-      AccountController.state.address = '0xabc123'
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        address: '0xabc123'
+      } as AccountState)
     })
 
     it('returns success status and updates state correctly', async () => {

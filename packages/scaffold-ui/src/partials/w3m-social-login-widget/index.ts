@@ -5,6 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AlertController,
+  ApiController,
   ChainController,
   ConnectionController,
   ConnectorController,
@@ -16,7 +17,7 @@ import {
 } from '@reown/appkit-controllers'
 import { executeSocialLogin } from '@reown/appkit-controllers/utils'
 import { CoreHelperUtil } from '@reown/appkit-controllers/utils'
-import { customElement } from '@reown/appkit-ui'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-social'
 import '@reown/appkit-ui/wui-logo-select'
@@ -47,6 +48,8 @@ export class W3mSocialLoginWidget extends LitElement {
 
   @state() private isPwaLoading = false
 
+  @state() private hasExceededUsageLimit = ApiController.state.plan.hasExceededUsageLimit
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -54,7 +57,11 @@ export class W3mSocialLoginWidget extends LitElement {
         this.connectors = val
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
       }),
-      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
+      OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val)),
+      ApiController.subscribeKey(
+        'plan',
+        val => (this.hasExceededUsageLimit = val.hasExceededUsageLimit)
+      )
     )
   }
 
@@ -124,7 +131,7 @@ export class W3mSocialLoginWidget extends LitElement {
       }}
       size="lg"
       icon=${ifDefined(socials[0])}
-      text=${`Continue with ${socials[0]}`}
+      text=${`Continue with ${UiHelperUtil.capitalize(socials[0])}`}
       tabIdx=${ifDefined(this.tabIdx)}
       ?disabled=${this.isPwaLoading || this.hasConnection()}
     ></wui-list-button>`
@@ -199,6 +206,12 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   async onSocialClick(socialProvider?: SocialProvider) {
+    if (this.hasExceededUsageLimit) {
+      RouterController.push('UsageExceeded')
+
+      return
+    }
+
     const isAvailableChain = CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(
       chain => chain === ChainController.state.activeChain
     )

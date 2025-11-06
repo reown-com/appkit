@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, it, vi, expect as vitestExpect } from 
 
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 import {
-  AccountController,
+  type AccountState,
   ChainController,
   type ChainControllerState,
   RouterController,
@@ -49,16 +49,13 @@ const mockChainState: ChainControllerState = {
   activeCaipAddress: 'eip155:1:0x123456789abcdef123456789abcdef123456789a',
   chains: new Map(),
   universalAdapter: {
-    networkControllerClient: {
-      switchCaipNetwork: vi.fn(),
-      getApprovedCaipNetworksData: vi.fn()
-    },
     connectionControllerClient: {
       connectWalletConnect: vi.fn(),
       connectExternal: vi.fn(),
       reconnectExternal: vi.fn(),
       checkInstalled: vi.fn(),
       disconnect: vi.fn(),
+      disconnectConnector: vi.fn(),
       signMessage: vi.fn(),
       sendTransaction: vi.fn(),
       estimateGas: vi.fn(),
@@ -88,6 +85,7 @@ describe('W3mSwapView', () => {
       loadingTransaction: false,
       loadingApprovalTransaction: false,
       loadingBuildTransaction: false,
+      switchingTokens: false,
       fetchError: false,
       approvalTransaction: undefined,
       swapTransaction: undefined,
@@ -125,18 +123,18 @@ describe('W3mSwapView', () => {
     vi.spyOn(SwapController, 'getNetworkTokenPrice').mockImplementation(async () => {})
     vi.spyOn(SwapController, 'getMyTokensWithBalance').mockImplementation(async () => {})
     vi.spyOn(SwapController, 'swapTokens').mockImplementation(async () => {})
-    vi.spyOn(SwapController, 'switchTokens').mockImplementation(() => {})
+    vi.spyOn(SwapController, 'switchTokens').mockImplementation(async () => {})
     vi.spyOn(SwapController, 'resetState').mockImplementation(() => {})
-    vi.spyOn(SwapController, 'setSourceToken').mockImplementation(() => {})
-    vi.spyOn(SwapController, 'setToToken').mockImplementation(() => {})
+    vi.spyOn(SwapController, 'setSourceToken').mockImplementation(async () => {})
+    vi.spyOn(SwapController, 'setToToken').mockImplementation(async () => {})
     vi.spyOn(SwapController, 'setSourceTokenAmount').mockImplementation(() => {})
     vi.spyOn(RouterController, 'push').mockImplementation(() => {})
 
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      ...ChainController.getAccountData(),
       caipAddress: 'eip155:1:0x123456789abcdef123456789abcdef123456789a',
       address: '0x123456789abcdef123456789abcdef123456789a'
-    })
+    } as unknown as AccountState)
   })
 
   afterEach(() => {
@@ -289,72 +287,45 @@ describe('W3mSwapView', () => {
     vi.mocked(SwapController.resetState).mockClear()
     vi.mocked(SwapController.initializeState).mockClear()
 
-    // Spy on AccountController.subscribeKey to capture subscription callbacks
-    const subscribeKeySpy = vi.spyOn(AccountController, 'subscribeKey')
+    const subscribeChainPropSpy = vi.spyOn(ChainController, 'subscribeChainProp')
 
-    // Create the component which will register subscriptions
     const element = await fixture<W3mSwapView>(html`<w3m-swap-view></w3m-swap-view>`)
     await element.updateComplete
 
-    // Verify AccountController.subscribeKey was called
-    expect(subscribeKeySpy.mock.calls.length).to.be.greaterThan(0)
+    expect(subscribeChainPropSpy.mock.calls.length).to.be.greaterThan(0)
 
-    // Verify one of the calls was for caipAddress
-    const hasCaipAddressCall = subscribeKeySpy.mock.calls.some(call => call[0] === 'caipAddress')
-    expect(hasCaipAddressCall).to.be.true
+    // Ensure we registered for 'accountState' updates
+    const accountStateCallback = subscribeChainPropSpy.mock.calls.find(
+      call => call[0] === 'accountState'
+    )?.[1] as ((val: Partial<AccountState>) => void) | undefined
 
-    // Get the callback function that was registered for caipAddress changes
-    const caipAddressCallArgs = subscribeKeySpy.mock.calls
-      .filter(call => call[0] === 'caipAddress')
-      .map(call => call[1])
-    const callbacks = caipAddressCallArgs.map((call: any) => call)
-
-    // Verify callback exists
-    expect(callbacks.length > 0).to.be.true
+    expect(Boolean(accountStateCallback)).to.be.true
 
     // Test 1: Same caipAddress should not trigger resets
     const currentCaipAddress = 'eip155:1:0x123456789abcdef123456789abcdef123456789a'
     vi.mocked(SwapController.resetState).mockClear()
     vi.mocked(SwapController.initializeState).mockClear()
 
-    for (const callback of callbacks) {
-      callback!(currentCaipAddress)
-    }
+    accountStateCallback?.({ caipAddress: currentCaipAddress })
 
-    // Verify methods were NOT called when address hasn't changed
     expect(vi.mocked(SwapController.resetState).mock.calls.length).to.equal(0)
     expect(vi.mocked(SwapController.initializeState).mock.calls.length).to.equal(0)
 
-    // Test 2: Different caipAddress should trigger resets
+    // Test 2: Different caipAddress should trigger reset
     vi.mocked(SwapController.resetState).mockClear()
     vi.mocked(SwapController.initializeState).mockClear()
 
     const newCaipAddress = 'eip155:1:0xabcdef123456789abcdef123456789abcdef1234'
+    accountStateCallback?.({ caipAddress: newCaipAddress })
 
-    // Call the first callback (from constructor) which should reset state
-    callbacks[0]!(newCaipAddress)
-
-    // Verify resetState was called
     expect(vi.mocked(SwapController.resetState).mock.calls.length).to.equal(1)
-    expect(vi.mocked(SwapController.initializeState).mock.calls.length).to.equal(0)
-
-    // Clear mocks for the second callback
-    vi.mocked(SwapController.resetState).mockClear()
-    vi.mocked(SwapController.initializeState).mockClear()
-
-    // Call the second callback (from unsubscribe array) which should NOT initialize state
-    // because the caipAddress property has already been updated by the first callback
-    callbacks[1]!(newCaipAddress)
-
-    // Verify initializeState was NOT called
-    expect(vi.mocked(SwapController.resetState).mock.calls.length).to.equal(0)
     expect(vi.mocked(SwapController.initializeState).mock.calls.length).to.equal(0)
   })
 
   it('should set initial state with preselected tokens', async () => {
     const element = await fixture<W3mSwapView>(
       html`<w3m-swap-view
-        initialParams='{"fromToken": "AAAA","toToken":"BBBB","amount":"321.123"}'
+        .initialParams=${{ fromToken: 'AAAA', toToken: 'BBBB', amount: '321.123' }}
       ></w3m-swap-view>`
     )
 
@@ -396,7 +367,7 @@ describe('W3mSwapView', () => {
     const initializeStateSpy = vi.spyOn(SwapController, 'initializeState')
 
     const subscribeKeySpy = vi.spyOn(ChainController, 'subscribeKey')
-    const accountSubscribeKeySpy = vi.spyOn(AccountController, 'subscribeKey')
+    const subscribeChainPropSpy = vi.spyOn(ChainController, 'subscribeChainProp')
 
     const element: W3mSwapView = await fixture(html`<w3m-swap-view></w3m-swap-view>`)
     await element.updateComplete
@@ -404,12 +375,12 @@ describe('W3mSwapView', () => {
     const chainCallbacks = subscribeKeySpy.mock.calls
       .filter(call => call[0] === 'activeCaipNetwork')
       .map(call => call[1])
-    const accountCallbacks = accountSubscribeKeySpy.mock.calls
-      .filter(call => call[0] === 'caipAddress')
+    const accountCallbacks = subscribeChainPropSpy.mock.calls
+      .filter(call => call[0] === 'accountState')
       .map(call => call[1])
 
-    vitestExpect(chainCallbacks.length).toBe(2)
-    vitestExpect(accountCallbacks.length).toBe(2)
+    vitestExpect(chainCallbacks.length).toBe(1)
+    vitestExpect(accountCallbacks.length).toBe(1)
 
     element.disconnectedCallback()
 
@@ -450,5 +421,21 @@ describe('W3mSwapView', () => {
 
     vitestExpect(swapTokensSpy).toHaveBeenCalledOnce()
     vi.useRealTimers()
+  })
+
+  it('should disable action button and show "Enter amount" when sourceTokenAmount is 0', async () => {
+    vi.spyOn(SwapController, 'state', 'get').mockReturnValue({
+      ...SwapController.state,
+      sourceToken: mockToken,
+      toToken: { ...mockToken, symbol: 'USDT' },
+      sourceTokenAmount: '0'
+    })
+
+    const element = await fixture<W3mSwapView>(html`<w3m-swap-view></w3m-swap-view>`)
+    await element.updateComplete
+
+    const actionButton = element.shadowRoot?.querySelector('[data-testid="swap-action-button"]')
+    expect(actionButton?.hasAttribute('disabled')).to.be.true
+    expect(actionButton?.textContent?.trim()).to.equal('Enter amount')
   })
 })

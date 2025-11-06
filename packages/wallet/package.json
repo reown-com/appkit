@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-wallet",
-  "version": "1.8.4",
+  "version": "1.8.13",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -33,7 +33,7 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
-    "@walletconnect/logger": "2.1.2",
+    "@walletconnect/logger": "3.0.0",
     "zod": "3.22.4"
   },
   "author": "Reown (https://discord.gg/reown)",

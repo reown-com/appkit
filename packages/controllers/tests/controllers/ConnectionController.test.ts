@@ -8,13 +8,14 @@ import {
   type ParsedCaipAddress
 } from '@reown/appkit-common'
 
+import type { AccountState } from '../../exports/index.js'
 import type {
   ChainAdapter,
   ConnectionControllerClient,
   Connector,
   ConnectorType,
   ModalControllerState,
-  NetworkControllerClient
+  RouterControllerState
 } from '../../exports/index.js'
 import {
   ChainController,
@@ -24,10 +25,10 @@ import {
   ConnectorControllerUtil,
   ConstantsUtil,
   CoreHelperUtil,
+  EventsController,
   ModalController,
   RouterController
 } from '../../exports/index.js'
-import { AccountController } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
 const chain = CommonConstantsUtil.CHAIN.EVM
@@ -41,6 +42,7 @@ const caipNetworks = [
 const client: ConnectionControllerClient = {
   connectWalletConnect: async () => {},
   disconnect: async () => Promise.resolve(),
+  disconnectConnector: async () => Promise.resolve(),
   signMessage: async (message: string) => Promise.resolve(message),
   estimateGas: async () => Promise.resolve(BigInt(0)),
   connectExternal: async _id => Promise.resolve({ address: '' }),
@@ -65,6 +67,7 @@ const clientCheckInstalledSpy = vi.spyOn(client, 'checkInstalled')
 const partialClient: ConnectionControllerClient = {
   connectWalletConnect: async () => Promise.resolve(),
   disconnect: async () => Promise.resolve(),
+  disconnectConnector: async () => Promise.resolve(),
   estimateGas: async () => Promise.resolve(BigInt(0)),
   signMessage: async (message: string) => Promise.resolve(message),
   parseUnits: value => BigInt(value),
@@ -100,8 +103,7 @@ const adapters = [evmAdapter, solanaAdapter, bip122Adapter] as ChainAdapter[]
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
   ChainController.initialize(adapters, [], {
-    connectionControllerClient: client,
-    networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    connectionControllerClient: client
   })
   ConnectionController.setClient(evmAdapter.connectionControllerClient)
 })
@@ -118,8 +120,7 @@ describe('ConnectionController', () => {
       ],
       caipNetworks,
       {
-        connectionControllerClient: client,
-        networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+        connectionControllerClient: client
       }
     )
 
@@ -170,8 +171,7 @@ describe('ConnectionController', () => {
       ],
       [],
       {
-        connectionControllerClient: partialClient,
-        networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+        connectionControllerClient: partialClient
       }
     )
     await ConnectionController.connectExternal({ id: externalId, type }, chain)
@@ -269,7 +269,9 @@ describe('ConnectionController', () => {
 
     it('should call parseCaipAddress when caipAddress is available', async () => {
       const mockCaipAddress = 'eip155:137:0x789'
-      vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(mockCaipAddress)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        caipAddress: mockCaipAddress
+      } as unknown as AccountState)
       vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
       const parseSpy = vi.spyOn(ParseUtil, 'parseCaipAddress')
 
@@ -278,12 +280,12 @@ describe('ConnectionController', () => {
         namespace: chain
       })
 
-      expect(AccountController.getCaipAddress).toHaveBeenCalledWith(chain)
+      expect(ChainController.getAccountData).toHaveBeenCalledWith(chain)
       expect(parseSpy).toHaveBeenCalledWith(mockCaipAddress)
     })
 
     it('should not call parseCaipAddress when caipAddress is not available', async () => {
-      vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(undefined)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
       vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
       const parseSpy = vi.spyOn(ParseUtil, 'parseCaipAddress')
 
@@ -292,7 +294,7 @@ describe('ConnectionController', () => {
         namespace: chain
       })
 
-      expect(AccountController.getCaipAddress).toHaveBeenCalledWith(chain)
+      expect(ChainController.getAccountData).toHaveBeenCalledWith(chain)
       expect(parseSpy).not.toHaveBeenCalled()
     })
 
@@ -321,7 +323,9 @@ describe('ConnectionController', () => {
       async ({ address, hasSwitchedAccount, hasSwitchedWallet, status }) => {
         vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue(status)
         vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
-        vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue('eip155:137:0x321')
+        vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+          caipAddress: 'eip155:137:0x321'
+        } as unknown as AccountState)
 
         const connectExternalSpy = vi
           .spyOn(ConnectionController, 'connectExternal')
@@ -362,7 +366,9 @@ describe('ConnectionController', () => {
       async status => {
         vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue(status)
         vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
-        vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue('eip155:137:0x321')
+        vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+          caipAddress: 'eip155:137:0x321'
+        } as unknown as AccountState)
 
         const onChange = vi.fn()
 
@@ -390,7 +396,9 @@ describe('ConnectionController', () => {
       const address = '0x321'
       vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue('disconnected')
       vi.spyOn(ConnectorController, 'getConnectorById').mockReturnValue(mockConnector)
-      vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(`eip155:137:${address}`)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        caipAddress: `eip155:137:${address}`
+      } as unknown as AccountState)
 
       const connectExternalSpy = vi
         .spyOn(ConnectionController, 'connectExternal')
@@ -577,7 +585,7 @@ describe('ConnectionController', () => {
     })
 
     it('should throw error if connection status is invalid', async () => {
-      vi.spyOn(AccountController, 'getCaipAddress').mockReturnValue(undefined)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
       vi.spyOn(ConnectionControllerUtil, 'getConnectionStatus').mockReturnValue('connecting' as any)
       vi.spyOn(ConnectionController, 'handleActiveConnection').mockResolvedValue('0x123')
 
@@ -592,5 +600,41 @@ describe('ConnectionController', () => {
           })
       ).rejects.toThrow('Invalid connection status: connecting')
     })
+  })
+})
+
+describe('finalizeWcConnection', () => {
+  it('should include event properties when address is provided', () => {
+    const sendEventSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+      ...RouterController.state,
+      view: 'TestView' as unknown as RouterControllerState['view'],
+      data: { wallet: { name: 'TestWallet', id: 'test' } }
+    })
+
+    vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
+      ...ConnectionController.state,
+      wcLinking: { href: 'wc://deeplink', name: 'TestWallet' },
+      recentWallet: { id: 'test', order: 5, name: 'TestWallet' }
+    })
+
+    const address = '0xabc'
+
+    ConnectionController.finalizeWcConnection(address)
+
+    expect(sendEventSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'track',
+        event: 'CONNECT_SUCCESS',
+        address,
+        properties: expect.objectContaining({
+          method: 'mobile',
+          name: 'TestWallet',
+          view: 'TestView',
+          walletRank: 5
+        })
+      })
+    )
   })
 })

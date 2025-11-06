@@ -10,7 +10,6 @@ import {
 } from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetUtil,
   ChainController,
   ConnectionController,
@@ -69,19 +68,22 @@ const UI_CONFIG = {
 const NAMESPACE_ICONS = {
   eip155: 'ethereum',
   solana: 'solana',
-  bip122: 'bitcoin'
+  bip122: 'bitcoin',
+  ton: 'ton'
 } as const
 
 const NAMESPACE_TABS = [
   { namespace: 'eip155', icon: NAMESPACE_ICONS.eip155, label: 'EVM' },
   { namespace: 'solana', icon: NAMESPACE_ICONS.solana, label: 'Solana' },
-  { namespace: 'bip122', icon: NAMESPACE_ICONS.bip122, label: 'Bitcoin' }
+  { namespace: 'bip122', icon: NAMESPACE_ICONS.bip122, label: 'Bitcoin' },
+  { namespace: 'ton', icon: NAMESPACE_ICONS.ton, label: 'Ton' }
 ] as const satisfies { namespace: ChainNamespace; icon: string; label: string }[]
 
 const CHAIN_LABELS = {
   eip155: { title: 'Add EVM Wallet', description: 'Add your first EVM wallet' },
   solana: { title: 'Add Solana Wallet', description: 'Add your first Solana wallet' },
-  bip122: { title: 'Add Bitcoin Wallet', description: 'Add your first Bitcoin wallet' }
+  bip122: { title: 'Add Bitcoin Wallet', description: 'Add your first Bitcoin wallet' },
+  ton: { title: 'Add TON Wallet', description: 'Add your first TON wallet' }
 } as const
 
 @customElement('w3m-profile-wallets-view')
@@ -104,7 +106,7 @@ export class W3mProfileWalletsView extends LitElement {
   @state() private lastSelectedConnectorId = ''
   @state() private isSwitching = false
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
-  @state() private user = AccountController.state.user
+  @state() private user = ChainController.getAccountData()?.user
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
   constructor() {
@@ -122,7 +124,9 @@ export class W3mProfileWalletsView extends LitElement {
           this.activeConnectorIds = ids
         }),
         ChainController.subscribeKey('activeCaipNetwork', val => (this.caipNetwork = val)),
-        AccountController.subscribeKey('user', val => (this.user = val)),
+        ChainController.subscribeChainProp('accountState', val => {
+          this.user = val?.user
+        }),
         OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
       ]
     )
@@ -313,7 +317,7 @@ export class W3mProfileWalletsView extends LitElement {
           imageSrc=${connectorImage}
           ?enableMoreButton=${authData.isAuth}
           @copy=${() => this.handleCopyAddress(plainAddress)}
-          @disconnect=${() => this.handleDisconnect(namespace, { id: connectorId })}
+          @disconnect=${() => this.handleDisconnect(namespace, connectorId)}
           @switch=${() => {
             if (isBitcoin && connection && account?.[0]) {
               this.handleSwitchWallet(connection, account[0].address, namespace)
@@ -512,6 +516,13 @@ export class W3mProfileWalletsView extends LitElement {
       this.lastSelectedConnectorId = connection.connectorId
       this.lastSelectedAddress = address
 
+      const isDifferentNamespace = this.caipNetwork?.chainNamespace !== namespace
+
+      if (isDifferentNamespace && connection?.caipNetwork) {
+        ConnectorController.setFilterByNamespace(namespace)
+        await ChainController.switchActiveNetwork(connection?.caipNetwork)
+      }
+
       await ConnectionController.switchConnection({
         connection,
         address,
@@ -544,11 +555,11 @@ export class W3mProfileWalletsView extends LitElement {
       ConnectionController.syncStorageConnections()
       SnackController.showSuccess('Wallet deleted')
     } else {
-      this.handleDisconnect(namespace, { id: connection.connectorId })
+      this.handleDisconnect(namespace, connection.connectorId)
     }
   }
 
-  private async handleDisconnect(namespace: ChainNamespace, { id }: { id?: string }) {
+  private async handleDisconnect(namespace: ChainNamespace, id: string) {
     try {
       await ConnectionController.disconnect({ id, namespace })
       SnackController.showSuccess('Wallet disconnected')

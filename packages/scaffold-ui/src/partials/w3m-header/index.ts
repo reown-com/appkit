@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   AssetController,
   AssetUtil,
   ChainController,
@@ -13,7 +12,7 @@ import {
   OptionsController,
   RouterController
 } from '@reown/appkit-controllers'
-import { customElement } from '@reown/appkit-ui'
+import { customElement, vars } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon-button'
 import '@reown/appkit-ui/wui-select'
@@ -25,6 +24,9 @@ import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //
 const BETA_SCREENS: string[] = ['SmartSessionList']
+const BACKGROUND_OVERRIDES: Record<string, string> = {
+  PayWithExchange: vars.tokens.theme.foregroundPrimary
+}
 
 // -- Helpers ------------------------------------------- //
 function headings() {
@@ -34,6 +36,10 @@ function headings() {
   const name = walletName ?? connectorName
   const connectors = ConnectorController.getConnectors()
   const isEmail = connectors.length === 1 && connectors[0]?.id === 'w3m-email'
+  const socialProvider = ChainController.getAccountData()?.socialProvider
+  const socialTitle = socialProvider
+    ? socialProvider.charAt(0).toUpperCase() + socialProvider.slice(1)
+    : 'Connect Social'
 
   return {
     Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
@@ -44,6 +50,7 @@ function headings() {
     AllWallets: 'All Wallets',
     ApproveTransaction: 'Approve Transaction',
     BuyInProgress: 'Buy',
+    UsageExceeded: 'Usage Exceeded',
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
     ConnectingWalletConnectBasic: 'WalletConnect',
@@ -86,10 +93,7 @@ function headings() {
     WhatIsAWallet: 'What is a Wallet?',
     ConnectWallets: 'Connect Wallet',
     ConnectSocials: 'All Socials',
-    ConnectingSocial: AccountController.state.socialProvider
-      ? AccountController.state.socialProvider.charAt(0).toUpperCase() +
-        AccountController.state.socialProvider.slice(1)
-      : 'Connect Social',
+    ConnectingSocial: socialTitle,
     ConnectingMultiChain: 'Select Chain',
     ConnectingFarcaster: 'Farcaster',
     SwitchActiveChain: 'Switch Chain',
@@ -101,7 +105,8 @@ function headings() {
     DataCaptureOtpConfirm: 'Confirm Email',
     FundWallet: 'Fund Wallet',
     PayWithExchange: 'Deposit from Exchange',
-    PayWithExchangeSelectAsset: 'Select Asset'
+    PayWithExchangeSelectAsset: 'Select Asset',
+    SmartAccountSettings: 'Smart Account Settings'
   }
 }
 
@@ -154,6 +159,11 @@ export class W3mHeader extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const backgroundColor =
+      BACKGROUND_OVERRIDES[RouterController.state.view] ?? vars.tokens.theme.backgroundPrimary
+
+    this.style.setProperty('--local-header-background-color', backgroundColor)
+
     return html`
       <wui-flex
         .padding=${['0', '4', '0', '4'] as const}
@@ -188,6 +198,7 @@ export class W3mHeader extends LitElement {
       <wui-icon-button
         icon="clock"
         size="lg"
+        iconSize="lg"
         type="neutral"
         variant="primary"
         @click=${() => RouterController.push('SmartSessionList')}
@@ -204,6 +215,7 @@ export class W3mHeader extends LitElement {
         size="lg"
         type="neutral"
         variant="primary"
+        iconSize="lg"
         @click=${this.onClose.bind(this)}
         data-testid="w3m-header-close"
       ></wui-icon-button>
@@ -220,7 +232,12 @@ export class W3mHeader extends LitElement {
         alignItems="center"
         gap="2"
       >
-        <wui-text variant="lg-regular" color="primary" data-testid="w3m-header-text">
+        <wui-text
+          display="inline"
+          variant="lg-regular"
+          color="primary"
+          data-testid="w3m-header-text"
+        >
           ${this.heading}
         </wui-text>
         ${isBeta ? html`<wui-tag variant="accent" size="md">Beta</wui-tag>` : null}
@@ -256,6 +273,7 @@ export class W3mHeader extends LitElement {
         id="dynamic"
         icon="chevronLeft"
         size="lg"
+        iconSize="lg"
         type="neutral"
         variant="primary"
         @click=${this.onGoBack.bind(this)}
@@ -267,6 +285,7 @@ export class W3mHeader extends LitElement {
       id="dynamic"
       icon="helpCircle"
       size="lg"
+      iconSize="lg"
       type="neutral"
       variant="primary"
       @click=${this.onWalletHelp.bind(this)}

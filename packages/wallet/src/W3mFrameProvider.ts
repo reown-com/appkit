@@ -3,12 +3,13 @@ import {
   type EmbeddedWalletTimeoutReason,
   ParseUtil
 } from '@reown/appkit-common'
-import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetwork, CaipNetworkId, SdkVersion } from '@reown/appkit-common'
 
 import { W3mFrame } from './W3mFrame.js'
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import { W3mFrameLogger } from './W3mFrameLogger.js'
+import type { SdkType } from './W3mFrameSchema.js'
 import { W3mFrameStorage } from './W3mFrameStorage.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
 
@@ -23,11 +24,18 @@ interface W3mFrameProviderConfig {
   enableCloudAuthAccount?: boolean
   getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
   getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
+  metadata: W3mFrameTypes.Requests['AppSyncDappDataRequest']['metadata']
+  sdkVersion: SdkVersion
+  sdkType: SdkType
 }
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
   public w3mLogger?: W3mFrameLogger
+  private projectId: string
+  private sdkVersion: SdkVersion
+  private sdkType: SdkType
+  private metadata: W3mFrameTypes.Requests['AppSyncDappDataRequest']['metadata']
   private w3mFrame: W3mFrame
   private abortController: AbortController
   private getActiveCaipNetwork: (namespace?: ChainNamespace) => CaipNetwork | undefined
@@ -57,7 +65,10 @@ export class W3mFrameProvider {
     abortController,
     getActiveCaipNetwork,
     getCaipNetworks,
-    enableCloudAuthAccount
+    enableCloudAuthAccount,
+    metadata,
+    sdkVersion,
+    sdkType
   }: W3mFrameProviderConfig) {
     if (enableLogger) {
       this.w3mLogger = new W3mFrameLogger(projectId)
@@ -66,6 +77,10 @@ export class W3mFrameProvider {
     this.getActiveCaipNetwork = getActiveCaipNetwork
     this.getCaipNetworks = getCaipNetworks
     const rpcUrl = this.getRpcUrl(chainId)
+    this.projectId = projectId
+    this.sdkVersion = sdkVersion
+    this.sdkType = sdkType
+    this.metadata = metadata
     this.w3mFrame = new W3mFrame({
       projectId,
       isAppClient: true,
@@ -93,6 +108,13 @@ export class W3mFrameProvider {
       })
     })
     await this.initPromise
+    await this.syncDappData({
+      metadata: this.metadata,
+      projectId: this.projectId,
+      sdkVersion: this.sdkVersion,
+      sdkType: this.sdkType
+    })
+    await this.getSmartAccountEnabledNetworks()
     this.isInitialized = true
     this.initPromise = undefined
   }
@@ -505,7 +527,10 @@ export class W3mFrameProvider {
       }
 
       /*
-       * If chainNamespace is provided in the request, use that namespace to get the chainId, otherwise fallback to 'eip155' namespace since Ethers and Wagmi RPC requests are limited to be modified to include the chainNamespace, so requests from Ethers and Wagmi will never include a chainNamespace
+       * If chainNamespace is provided in the request, use that namespace to get the chainId
+       * otherwise fallback to 'eip155' namespace since Ethers and Wagmi RPC requests are limited
+       * to be modified to include the chainNamespace, so requests from Ethers and Wagmi will never
+       * include a chainNamespace
        */
       const namespace = req.chainNamespace || 'eip155'
       const chainId = this.getActiveCaipNetwork(namespace)?.id

@@ -1,5 +1,6 @@
 import { SIWXConfig } from '../core/SIWXConfig.js'
 import { InformalMessenger } from '../messengers/index.js'
+import DefaultSigner from '../signers/DefaultSigner.js'
 import { LocalStorage } from '../storages/index.js'
 import { BIP122Verifier } from '../verifiers/BIP122Verifier.js'
 import { EIP155Verifier, SolanaVerifier } from '../verifiers/index.js'
@@ -19,7 +20,9 @@ const DEFAULTS = {
 
   getDefaultVerifiers: () => [new EIP155Verifier(), new SolanaVerifier(), new BIP122Verifier()],
 
-  getDefaultStorage: () => new LocalStorage({ key: '@appkit/siwx' })
+  getDefaultStorage: () => new LocalStorage({ key: '@appkit/siwx' }),
+
+  getDefaultSigner: () => new DefaultSigner()
 }
 
 /**
@@ -35,7 +38,8 @@ export class DefaultSIWX extends SIWXConfig {
       messenger: params.messenger || DEFAULTS.getDefaultMessenger(),
       verifiers: params.verifiers || DEFAULTS.getDefaultVerifiers(),
       storage: params.storage || DEFAULTS.getDefaultStorage(),
-      required: params.required
+      required: params.required,
+      signer: params.signer || DEFAULTS.getDefaultSigner()
     })
   }
 }

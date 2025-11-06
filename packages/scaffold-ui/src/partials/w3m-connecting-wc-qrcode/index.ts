@@ -30,7 +30,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
 
   public constructor() {
     super()
-    window.addEventListener('resize', this.forceUpdate)
   }
 
   public override firstUpdated() {
@@ -52,7 +51,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public override disconnectedCallback() {
     super.disconnectedCallback()
     this.unsubscribe?.forEach(unsub => unsub())
-    window.removeEventListener('resize', this.forceUpdate)
   }
 
   // -- Render -------------------------------------------- //
@@ -77,10 +75,7 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   // -- Private ------------------------------------------- //
   private onRenderProxy() {
     if (!this.ready && this.uri) {
-      // This setTimeout needed to avoid the beginning of the animation from not starting to resize immediately and some weird svg errors
-      this.timeout = setTimeout(() => {
-        this.ready = true
-      }, 200)
+      this.ready = true
     }
   }
 
@@ -89,17 +84,19 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
       return null
     }
 
-    const size = this.getBoundingClientRect().width - 40
     const alt = this.wallet ? this.wallet.name : undefined
     ConnectionController.setWcLinking(undefined)
     ConnectionController.setRecentWallet(this.wallet)
 
+    const qrColor =
+      ThemeController.state.themeVariables['--apkt-qr-color'] ??
+      ThemeController.state.themeVariables['--w3m-qr-color']
+
     return html` <wui-qr-code
-      size=${size}
       theme=${ThemeController.state.themeMode}
       uri=${this.uri}
       imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet))}
-      color=${ifDefined(ThemeController.state.themeVariables['--w3m-qr-color'])}
+      color=${ifDefined(qrColor)}
       alt=${ifDefined(alt)}
       data-testid="wui-qr-code"
     ></wui-qr-code>`
@@ -118,10 +115,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
       Copy link
       <wui-icon size="sm" color="inherit" name="copy" slot="iconRight"></wui-icon>
     </wui-button>`
-  }
-
-  private forceUpdate = () => {
-    this.requestUpdate()
   }
 }
 

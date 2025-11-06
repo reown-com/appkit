@@ -3,7 +3,7 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
-RUN apt update && apt install -y awscli
+RUN apt update && apt install -y awscli jq
 
 WORKDIR /src
 
@@ -18,6 +18,6 @@ RUN pnpm playwright:install
 ENV TIMING_LOGS=true
 ENV CI=true
 ENV SKIP_PLAYWRIGHT_WEBSERVER=true
-ENV BASE_URL=https://appkit-lab.reown.com/
+ENV BASE_URL=https://lab.reown.com/
 
 CMD ["timeout", "600", "./docker-canary.sh"]

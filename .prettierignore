@@ -6,3 +6,14 @@ pnpm-lock.yaml
 bundle-analysis.html
 .open-next
 /apps/pay-test-exchange/**.d.ts
+.output/
+node_modules/
+.coverage/
+test-results.json
+playwright-report/
+screenshots/
+blob-report/
+.cache-synpress/
+.parcel-cache/
+.turbo/
+next-env.d.ts

@@ -117,7 +117,6 @@ export const ConstantsUtil = {
     'ENS',
     'MATIC',
     'OP',
-
     'METAL',
     'DAI',
     'CHAMP',
@@ -149,6 +148,10 @@ export const ConstantsUtil = {
     'DE',
     'WNT'
   ],
+  SUGGESTED_TOKENS_BY_CHAIN: {
+    // Arbitrum One
+    'eip155:42161': ['USD₮0']
+  },
   BALANCE_SUPPORTED_CHAINS: [
     CommonConstantsUtil.CHAIN.EVM,
     CommonConstantsUtil.CHAIN.SOLANA
@@ -198,7 +201,8 @@ export const ConstantsUtil = {
     bip122: '0x',
     cosmos: '0x',
     sui: '0x',
-    stacks: '0x'
+    stacks: '0x',
+    ton: '0x'
   } as const satisfies Record<ChainNamespace, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1,
@@ -281,7 +285,8 @@ export const ConstantsUtil = {
     bip122: 'payment',
     eip155: 'smartAccount',
     polkadot: 'eoa',
-    solana: 'eoa'
+    solana: 'eoa',
+    ton: 'eoa'
   } as const satisfies PreferredAccountTypes,
   ADAPTER_TYPES: {
     UNIVERSAL: 'universal',

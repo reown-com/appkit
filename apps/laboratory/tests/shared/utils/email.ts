@@ -2,6 +2,8 @@ import { Mailsac } from '@mailsac/api'
 
 const EMAIL_CHECK_INTERVAL = 2500
 const MAX_EMAIL_CHECK = 96
+const EMAIL_BODY_CHECK_INTERVAL = 2500
+const MAX_EMAIL_BODY_CHECK = 3
 const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
 const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
@@ -27,6 +29,10 @@ export class Email {
   }
 
   async getLatestMessageId(email: string): Promise<string> {
+    const startTime = Date.now()
+    // eslint-disable-next-line no-console
+    console.log(`[getLatestMessageId] Starting to poll for email at ${email}`)
+
     let checks = 0
     /* eslint-disable no-await-in-loop */
     while (checks < MAX_EMAIL_CHECK) {
@@ -41,18 +47,87 @@ export class Email {
           throw new Error(`Message id not present for address ${email}`)
         }
 
+        const elapsedTime = Date.now() - startTime
+        // eslint-disable-next-line no-console
+        console.log(
+          `[getLatestMessageId] Found message after ${checks + 1} attempt(s) in ${elapsedTime}ms for ${email}`
+        )
+
         return id
       }
-      await this.timeout(EMAIL_CHECK_INTERVAL)
       checks += 1
+      // eslint-disable-next-line no-console
+      console.log(
+        `[getLatestMessageId] Attempt ${checks}/${MAX_EMAIL_CHECK}: No messages yet, waiting ${EMAIL_CHECK_INTERVAL}ms...`
+      )
+      await this.timeout(EMAIL_CHECK_INTERVAL)
     }
-    throw new Error(`No email found for address ${email}`)
+
+    const elapsedTime = Date.now() - startTime
+    throw new Error(
+      `No email found for address ${email} after ${MAX_EMAIL_CHECK} attempts (${elapsedTime}ms)`
+    )
   }
 
   async getEmailBody(email: string, messageId: string): Promise<string> {
-    const result = await this.mailsac.messages.getBodyPlainText(email, messageId)
+    const startTime = Date.now()
+    // eslint-disable-next-line no-console
+    console.log(`[getEmailBody] Fetching email body for ${email}, messageId: ${messageId}`)
 
-    return String(result.data)
+    let checks = 0
+    let lastError: unknown = null
+
+    /* eslint-disable no-await-in-loop */
+    while (checks < MAX_EMAIL_BODY_CHECK) {
+      try {
+        const result = await this.mailsac.messages.getBodyPlainText(email, messageId)
+        const elapsedTime = Date.now() - startTime
+        // eslint-disable-next-line no-console
+        console.log(
+          `[getEmailBody] Successfully fetched email body after ${checks + 1} attempt(s) in ${elapsedTime}ms`
+        )
+
+        return String(result.data)
+      } catch (error) {
+        lastError = error
+        checks += 1
+
+        // Extract error details for logging
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        const statusCode = (error as { response?: { status?: number } })?.response?.status
+        const responseData = (error as { response?: { data?: unknown } })?.response?.data
+
+        // eslint-disable-next-line no-console
+        console.log(
+          `[getEmailBody] Attempt ${checks}/${MAX_EMAIL_BODY_CHECK} failed for ${email}, messageId: ${messageId}`
+        )
+        // eslint-disable-next-line no-console
+        console.log(`[getEmailBody] Error: ${errorMessage}`)
+        if (statusCode) {
+          // eslint-disable-next-line no-console
+          console.log(`[getEmailBody] HTTP Status: ${statusCode}`)
+        }
+        if (responseData) {
+          // eslint-disable-next-line no-console
+          console.log(`[getEmailBody] Response data:`, responseData)
+        }
+
+        if (checks < MAX_EMAIL_BODY_CHECK) {
+          // eslint-disable-next-line no-console
+          console.log(`[getEmailBody] Retrying in ${EMAIL_BODY_CHECK_INTERVAL}ms...`)
+          await this.timeout(EMAIL_BODY_CHECK_INTERVAL)
+        }
+      }
+    }
+
+    // All retries exhausted
+    const errorMessage = lastError instanceof Error ? lastError.message : String(lastError)
+    const statusCode = (lastError as { response?: { status?: number } })?.response?.status
+    const statusPart = statusCode ? `, HTTP Status: ${statusCode}` : ''
+
+    throw new Error(
+      `Failed to fetch email body after ${MAX_EMAIL_BODY_CHECK} attempts. Email: ${email}, MessageId: ${messageId}, Last error: ${errorMessage}${statusPart}`
+    )
   }
 
   isApproveEmail(body: string): boolean {

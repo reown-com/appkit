@@ -1,5 +1,119 @@
 # @reown/appkit-universal-connector
 
+## 1.8.13
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @reown/appkit@1.8.13
+  - @reown/appkit-common@1.8.13
+
+## 1.8.12
+
+### Patch Changes
+
+- [#5274](https://github.com/reown-com/appkit/pull/5274) [`100ee2b`](https://github.com/reown-com/appkit/commit/100ee2bf54f9036e72e5961300e0b3edb8089239) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where remote config endpoint was being called when using appkit core
+
+- Updated dependencies [[`100ee2b`](https://github.com/reown-com/appkit/commit/100ee2bf54f9036e72e5961300e0b3edb8089239), [`c9ed02e`](https://github.com/reown-com/appkit/commit/c9ed02edd9149484e92407fa48219f7ac7e39568)]:
+  - @reown/appkit@1.8.12
+  - @reown/appkit-common@1.8.12
+
+## 1.8.11
+
+### Patch Changes
+
+- [#5247](https://github.com/reown-com/appkit/pull/5247) [`99cc58b`](https://github.com/reown-com/appkit/commit/99cc58bb335a359b261eab18676fed13ea325bde) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes package version injecting when building packages
+
+- [#5225](https://github.com/reown-com/appkit/pull/5225) [`fda02dc`](https://github.com/reown-com/appkit/commit/fda02dc9ee173ff34f604dc6b022f421bae44539) Thanks [@magiziz](https://github.com/magiziz)! - Added usage limit UI in AppKit that displays when limits are exceeded
+
+- Updated dependencies [[`15d9b6b`](https://github.com/reown-com/appkit/commit/15d9b6b7549590adffddb97a6c7e529d89b2b0df), [`1a9f436`](https://github.com/reown-com/appkit/commit/1a9f4367f7b65f91dd4e75bd3d1d018e1be59718), [`99cc58b`](https://github.com/reown-com/appkit/commit/99cc58bb335a359b261eab18676fed13ea325bde), [`fda02dc`](https://github.com/reown-com/appkit/commit/fda02dc9ee173ff34f604dc6b022f421bae44539)]:
+  - @reown/appkit@1.8.11
+  - @reown/appkit-common@1.8.11
+
+## 1.8.10
+
+### Patch Changes
+
+- [#5148](https://github.com/reown-com/appkit/pull/5148) [`bdce2c8`](https://github.com/reown-com/appkit/commit/bdce2c8dfa58bed7bd5f8114574c2db751e9bdd3) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where social login did not work with wallet button
+
+- Updated dependencies [[`bdce2c8`](https://github.com/reown-com/appkit/commit/bdce2c8dfa58bed7bd5f8114574c2db751e9bdd3), [`561a215`](https://github.com/reown-com/appkit/commit/561a215f4455a87a5993aa4850e553bc596d75e7), [`a492e24`](https://github.com/reown-com/appkit/commit/a492e24bf9e721b289d7a259303a72c65a0d7d7d), [`17ea7b3`](https://github.com/reown-com/appkit/commit/17ea7b32d4cbfca07cc74eac7ee98bf640fadec2)]:
+  - @reown/appkit@1.8.10
+  - @reown/appkit-common@1.8.10
+
+## 1.8.9
+
+### Patch Changes
+
+- [#5100](https://github.com/reown-com/appkit/pull/5100) [`6ba0dac`](https://github.com/reown-com/appkit/commit/6ba0dac506cbd4457034a13067207c5c6231e853) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrades Viem, Wagmi, WC, Solana and some other dependencies to latest
+
+- [#5098](https://github.com/reown-com/appkit/pull/5098) [`10cfb56`](https://github.com/reown-com/appkit/commit/10cfb56fc940e6d0371918ba8fb8f29692523fc0) Thanks [@magiziz](https://github.com/magiziz)! - Added `getDisabledCaipNetworks` to AppKit to get disabled caip networks
+
+- Updated dependencies [[`6ba0dac`](https://github.com/reown-com/appkit/commit/6ba0dac506cbd4457034a13067207c5c6231e853), [`a76c49d`](https://github.com/reown-com/appkit/commit/a76c49d82f831c5a2d112e4c7130bbd4f705b31a), [`10cfb56`](https://github.com/reown-com/appkit/commit/10cfb56fc940e6d0371918ba8fb8f29692523fc0)]:
+  - @reown/appkit@1.8.9
+  - @reown/appkit-common@1.8.9
+
+## 1.8.8
+
+### Patch Changes
+
+- [#5079](https://github.com/reown-com/appkit/pull/5079) [`511a735`](https://github.com/reown-com/appkit/commit/511a73590a834a6f81bda675d9a740a4d61924d7) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the universal provider threw a random object error when the wallet rejected connection request
+
+- [#5078](https://github.com/reown-com/appkit/pull/5078) [`a0a1589`](https://github.com/reown-com/appkit/commit/a0a1589acfe3e92030fd85589fab961e4ea85b1d) Thanks [@magiziz](https://github.com/magiziz)! - Added chain image to token button component for the deposit from exchange view
+
+- [#4959](https://github.com/reown-com/appkit/pull/4959) [`5725b51`](https://github.com/reown-com/appkit/commit/5725b5100ba71bba47173dc5f6318cb857afec9d) Thanks [@magiziz](https://github.com/magiziz)! - Improved the send flow with improved design and added top-up options for users with insufficient token balances
+
+- [#5074](https://github.com/reown-com/appkit/pull/5074) [`216596d`](https://github.com/reown-com/appkit/commit/216596d01128aca0629346b75ac256ea3db7a391) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where the wallets would show a small glitch when rendering the connectors
+
+- Updated dependencies [[`511a735`](https://github.com/reown-com/appkit/commit/511a73590a834a6f81bda675d9a740a4d61924d7), [`a07270d`](https://github.com/reown-com/appkit/commit/a07270d862717bb6b46f93b09bb073ffd7e15035), [`a0a1589`](https://github.com/reown-com/appkit/commit/a0a1589acfe3e92030fd85589fab961e4ea85b1d), [`5725b51`](https://github.com/reown-com/appkit/commit/5725b5100ba71bba47173dc5f6318cb857afec9d), [`216596d`](https://github.com/reown-com/appkit/commit/216596d01128aca0629346b75ac256ea3db7a391)]:
+  - @reown/appkit@1.8.8
+  - @reown/appkit-common@1.8.8
+
+## 1.8.7
+
+### Patch Changes
+
+- [#5043](https://github.com/reown-com/appkit/pull/5043) [`1fe278b`](https://github.com/reown-com/appkit/commit/1fe278b757e08660dffb1fc2fae64ad34be04db4) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the `useAppKitConnection` hook returned `null` when wallet is disconnected
+
+- [#5028](https://github.com/reown-com/appkit/pull/5028) [`090dbb5`](https://github.com/reown-com/appkit/commit/090dbb53dce58663f6a025d360156ab38c76f886) Thanks [@magiziz](https://github.com/magiziz)! - Removed NFTs tab from account modal view
+
+- [#5048](https://github.com/reown-com/appkit/pull/5048) [`9b2154c`](https://github.com/reown-com/appkit/commit/9b2154c069c554a45ed0f155bdda096f03d6649c) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the `publicKey` was returning `undefined` when connecting with the OKX Bitcoin wallet
+
+- [#5065](https://github.com/reown-com/appkit/pull/5065) [`fde8e5d`](https://github.com/reown-com/appkit/commit/fde8e5d6b0145b1729316ad03d9e9b18fdaf0b97) Thanks [@github-actions](https://github.com/apps/github-actions)! - Fix an issue where the wallets would show a small glitch when rendering the connectors
+
+- [#5021](https://github.com/reown-com/appkit/pull/5021) [`05ed5d2`](https://github.com/reown-com/appkit/commit/05ed5d231e53622dde33ecf66e694d85ad411e65) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where a `SEND_ERROR` event was logged when a user rejected a transaction. It now logs a `SEND_REJECTED` event instead
+
+- Updated dependencies [[`1fe278b`](https://github.com/reown-com/appkit/commit/1fe278b757e08660dffb1fc2fae64ad34be04db4), [`0bb4ee5`](https://github.com/reown-com/appkit/commit/0bb4ee5e94b8743b9102327e487d055197cb6040), [`0bb4ee5`](https://github.com/reown-com/appkit/commit/0bb4ee5e94b8743b9102327e487d055197cb6040), [`d7b0555`](https://github.com/reown-com/appkit/commit/d7b05552367a097ef28430ec67aab454fe7e914d), [`090dbb5`](https://github.com/reown-com/appkit/commit/090dbb53dce58663f6a025d360156ab38c76f886), [`d2644de`](https://github.com/reown-com/appkit/commit/d2644de2a58940ed392b826c72defb1f24551462), [`9b2154c`](https://github.com/reown-com/appkit/commit/9b2154c069c554a45ed0f155bdda096f03d6649c), [`fde8e5d`](https://github.com/reown-com/appkit/commit/fde8e5d6b0145b1729316ad03d9e9b18fdaf0b97), [`05ed5d2`](https://github.com/reown-com/appkit/commit/05ed5d231e53622dde33ecf66e694d85ad411e65)]:
+  - @reown/appkit@1.8.7
+  - @reown/appkit-common@1.8.7
+
+## 1.8.6
+
+### Patch Changes
+
+- [#5030](https://github.com/reown-com/appkit/pull/5030) [`a6779f5`](https://github.com/reown-com/appkit/commit/a6779f5143e1f788450814efcf5beadf8573214a) Thanks [@magiziz](https://github.com/magiziz)! - Added `walletRank` property to the `CONNECT_SUCCESS` event and created a new `@appkit/recent_wallet` local storage key to track the most recently connected wallet
+
+- [#4936](https://github.com/reown-com/appkit/pull/4936) [`0bf1921`](https://github.com/reown-com/appkit/commit/0bf192130f857d395135e5d740328fd1419412bd) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Enhanced connection UX by allowing scanning of QR code with main device camera and prompting the target wallet
+
+- Updated dependencies [[`a6779f5`](https://github.com/reown-com/appkit/commit/a6779f5143e1f788450814efcf5beadf8573214a), [`a3582c2`](https://github.com/reown-com/appkit/commit/a3582c22e5b761d0412bdc51322c070717ae77bb), [`a3582c2`](https://github.com/reown-com/appkit/commit/a3582c22e5b761d0412bdc51322c070717ae77bb), [`0bf1921`](https://github.com/reown-com/appkit/commit/0bf192130f857d395135e5d740328fd1419412bd)]:
+  - @reown/appkit@1.8.6
+  - @reown/appkit-common@1.8.6
+
+## 1.8.5
+
+### Patch Changes
+
+- [#4993](https://github.com/reown-com/appkit/pull/4993) [`7f75a53`](https://github.com/reown-com/appkit/commit/7f75a53702bf63c2f1bb21729dd6603112008056) Thanks [@tomiir](https://github.com/tomiir)! - Adds `modalConfig` and `providerConfig` to UniversalConnector
+
+- [#5004](https://github.com/reown-com/appkit/pull/5004) [`21f7512`](https://github.com/reown-com/appkit/commit/21f7512914f525f9a55b718cc7c2f4b08e7e7cfa) Thanks [@magiziz](https://github.com/magiziz)! - Added new functionality that allows users to manually edit the deposit amount on the deposit from exchange screen
+
+- [#4982](https://github.com/reown-com/appkit/pull/4982) [`f58c0b4`](https://github.com/reown-com/appkit/commit/f58c0b4d39883ff2bd04eefc6b3b9eb05a6b7bb6) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the question mark icon in the header was not displayed correctly
+
+- [#4992](https://github.com/reown-com/appkit/pull/4992) [`2d27d48`](https://github.com/reown-com/appkit/commit/2d27d480f761e697a14929ba0c687187fd624c3d) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where upon user connection rejection a `CONNECT_ERROR` event was logged. It now logs a new event error called `USER_REJECTED`
+
+- Updated dependencies [[`7f75a53`](https://github.com/reown-com/appkit/commit/7f75a53702bf63c2f1bb21729dd6603112008056), [`596c364`](https://github.com/reown-com/appkit/commit/596c3649766975683169e41337e7cd457f57da27), [`21f7512`](https://github.com/reown-com/appkit/commit/21f7512914f525f9a55b718cc7c2f4b08e7e7cfa), [`f58c0b4`](https://github.com/reown-com/appkit/commit/f58c0b4d39883ff2bd04eefc6b3b9eb05a6b7bb6), [`2d27d48`](https://github.com/reown-com/appkit/commit/2d27d480f761e697a14929ba0c687187fd624c3d)]:
+  - @reown/appkit@1.8.5
+  - @reown/appkit-common@1.8.5
+
 ## 1.8.4
 
 ### Patch Changes

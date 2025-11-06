@@ -1,7 +1,7 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type AppKitNetwork } from '@reown/appkit-common'
+import { type AppKitNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AlertController,
   ApiController,
@@ -13,9 +13,10 @@ import {
   StorageUtil
 } from '@reown/appkit-controllers'
 import { ReownAuthentication } from '@reown/appkit-controllers/features'
-import { ErrorUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
+import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter.js'
 import { mainnet, polygon, sepolia, solana } from '../mocks/Networks'
 import { mockOptions, mockRemoteFeaturesConfig } from '../mocks/Options'
 import { mockUniversalProvider } from '../mocks/Providers.js'
@@ -58,8 +59,35 @@ describe('Base', () => {
       expect(initialize).toHaveBeenCalledOnce()
 
       expect(initialize).toHaveBeenCalledWith(mockOptions.adapters, [mainnet, sepolia, solana], {
-        connectionControllerClient: expect.any(Object),
-        networkControllerClient: expect.any(Object)
+        connectionControllerClient: expect.any(Object)
+      })
+    })
+
+    it('should construct', async () => {
+      const solanaConstruct = vi.spyOn(mockSolanaAdapter, 'construct')
+      const evmConstruct = vi.spyOn(mockEvmAdapter, 'construct')
+
+      new AppKit(mockOptions)
+
+      await vi.waitFor(() => {
+        expect(solanaConstruct).toHaveBeenCalledWith({
+          networks: CaipNetworksUtil.extendCaipNetworks([solana], {
+            projectId: mockOptions.projectId,
+            customNetworkImageUrls: {},
+            customRpcUrls: {}
+          }),
+          projectId: mockOptions.projectId,
+          namespace: CommonConstantsUtil.CHAIN.SOLANA
+        })
+        expect(evmConstruct).toHaveBeenCalledWith({
+          networks: CaipNetworksUtil.extendCaipNetworks([mainnet, sepolia], {
+            projectId: mockOptions.projectId,
+            customNetworkImageUrls: {},
+            customRpcUrls: {}
+          }),
+          projectId: mockOptions.projectId,
+          namespace: CommonConstantsUtil.CHAIN.EVM
+        })
       })
     })
 

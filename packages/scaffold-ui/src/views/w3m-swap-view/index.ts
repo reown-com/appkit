@@ -3,7 +3,6 @@ import { property, state } from 'lit/decorators.js'
 
 import { type CaipAddress, type CaipNetwork, NumberUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   EventsController,
@@ -53,7 +52,7 @@ export class W3mSwapView extends LitElement {
 
   @state() private detailsOpen = false
 
-  @state() private caipAddress = AccountController.state.caipAddress
+  @state() private caipAddress = ChainController.getAccountData()?.caipAddress
 
   @state() private caipNetworkId = ChainController.state.activeCaipNetwork?.caipNetworkId
 
@@ -86,38 +85,36 @@ export class W3mSwapView extends LitElement {
   private minTokenPriceUpdateInterval = 10_000
 
   // -- Lifecycle ----------------------------------------- //
+  private subscribe({
+    resetSwapState,
+    initializeSwapState
+  }: {
+    resetSwapState: boolean
+    initializeSwapState: boolean
+  }) {
+    return () => {
+      ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
+        this.onCaipNetworkChange({
+          newCaipNetwork,
+          resetSwapState,
+          initializeSwapState
+        })
+      )
+      ChainController.subscribeChainProp('accountState', val => {
+        this.onCaipAddressChange({
+          newCaipAddress: val?.caipAddress,
+          resetSwapState,
+          initializeSwapState
+        })
+      })
+    }
+  }
   public constructor() {
     super()
-    ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
-      this.onCaipNetworkChange({
-        newCaipNetwork,
-        resetSwapState: true,
-        initializeSwapState: false
-      })
-    )
-    AccountController.subscribeKey('caipAddress', newCaipAddress =>
-      this.onCaipAddressChange({
-        newCaipAddress,
-        resetSwapState: true,
-        initializeSwapState: false
-      })
-    )
+    this.subscribe({ resetSwapState: true, initializeSwapState: false })()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork =>
-          this.onCaipNetworkChange({
-            newCaipNetwork,
-            resetSwapState: false,
-            initializeSwapState: true
-          })
-        ),
-        AccountController.subscribeKey('caipAddress', newCaipAddress =>
-          this.onCaipAddressChange({
-            newCaipAddress,
-            resetSwapState: false,
-            initializeSwapState: true
-          })
-        ),
+        this.subscribe({ resetSwapState: false, initializeSwapState: true }),
         ModalController.subscribeKey('open', isOpen => {
           if (!isOpen) {
             SwapController.resetState()
@@ -165,7 +162,7 @@ export class W3mSwapView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4']} gap="3">
+      <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const} gap="3">
         ${this.initialized ? this.templateSwap() : this.templateLoading()}
       </wui-flex>
     `
@@ -238,6 +235,7 @@ export class W3mSwapView extends LitElement {
   }
 
   private actionButtonLabel(): string {
+    const haveNoAmount = !this.sourceTokenAmount || this.sourceTokenAmount === '0'
     if (this.fetchError) {
       return 'Swap'
     }
@@ -246,7 +244,7 @@ export class W3mSwapView extends LitElement {
       return 'Select token'
     }
 
-    if (!this.sourceTokenAmount) {
+    if (haveNoAmount) {
       return 'Enter amount'
     }
 
@@ -329,7 +327,7 @@ export class W3mSwapView extends LitElement {
 
   private templateActionButton() {
     const haveNoTokenSelected = !this.toToken || !this.sourceToken
-    const haveNoAmount = !this.sourceTokenAmount
+    const haveNoAmount = !this.sourceTokenAmount || this.sourceTokenAmount === '0'
     const loading = this.loadingQuote || this.loadingPrices || this.loadingTransaction
     const disabled = loading || haveNoTokenSelected || haveNoAmount || this.inputError
 
@@ -354,8 +352,8 @@ export class W3mSwapView extends LitElement {
     await SwapController.swapTokens()
   }, 200)
 
-  private onSwitchTokens() {
-    SwapController.switchTokens()
+  private async onSwitchTokens() {
+    await SwapController.switchTokens()
   }
 
   private async onSwapPreview() {

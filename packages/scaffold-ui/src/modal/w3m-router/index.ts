@@ -176,6 +176,10 @@ export class W3mRouter extends LitElement {
         return html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`
       case 'PayWithExchangeSelectAsset':
         return html`<w3m-deposit-from-exchange-select-asset-view></w3m-deposit-from-exchange-select-asset-view>`
+      case 'UsageExceeded':
+        return html`<w3m-usage-exceeded-view></w3m-usage-exceeded-view>`
+      case 'SmartAccountSettings':
+        return html`<w3m-smart-account-settings-view></w3m-smart-account-settings-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

@@ -23,7 +23,6 @@ describe('Polkadot Client', () => {
 
   it('should initialize parameters undefined before construct', () => {
     expect(polkadotClient.options).toBeUndefined()
-    expect(polkadotClient.networkControllerClient).toBeUndefined()
     expect(polkadotClient.connectionControllerClient).toBeUndefined()
     expect(polkadotClient.defaultCaipNetwork).toBeUndefined()
   })

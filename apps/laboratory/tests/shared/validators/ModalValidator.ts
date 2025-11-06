@@ -40,6 +40,16 @@ export class ModalValidator {
     await this.page.waitForTimeout(500)
   }
 
+  async expectConnectionNotExist(alt: string) {
+    const connection = this.page
+      .getByTestId('active-connection')
+      .filter({ has: this.page.locator(`[alt="${alt}"]`) })
+
+    await expect(connection, `Connection with alt "${alt}" should not exist`).not.toBeVisible({
+      timeout: MAX_WAIT
+    })
+  }
+
   async expectLoading(namespace?: ChainNamespace) {
     const accountButton = namespace
       ? this.page.locator(`appkit-connect-button[namespace="${namespace}"]`)
@@ -55,7 +65,7 @@ export class ModalValidator {
     })
   }
 
-  async expectBalanceFetched(currency: 'SOL' | 'ETH' | 'BTC' | 'POL', namespace?: string) {
+  async expectBalanceFetched(currency: 'SOL' | 'ETH' | 'BTC' | 'POL' | 'TON', namespace?: string) {
     const accountButton = namespace
       ? this.page.getByTestId(`account-button-${namespace}`)
       : this.page.locator('appkit-account-button').first()
@@ -341,20 +351,18 @@ export class ModalValidator {
   }
 
   async expectExternalVisible() {
-    const externalConnector = this.page.getByTestId(
-      /^wallet-selector-external-externalTestConnector/u
-    )
+    const externalConnector = this.page.getByTestId(/^wallet-selector-externaltestconnector/u)
     await expect(externalConnector).toBeVisible()
   }
 
   async expectCoinbaseNotVisible() {
-    const coinbaseConnector = this.page.getByTestId(/^wallet-selector-external-coinbaseWalletSDK/u)
+    const coinbaseConnector = this.page.getByTestId(/^wallet-selector-coinbasewalletsdk/u)
     await expect(coinbaseConnector).not.toBeVisible()
   }
 
   async expectCoinbaseVisible() {
     const coinbaseConnector = this.page.getByTestId(
-      /^wallet-selector-featured-fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa/u
+      /^wallet-selector-fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa/u
     )
     await expect(coinbaseConnector).toBeVisible({ timeout: 10_000 })
   }
@@ -515,7 +523,7 @@ export class ModalValidator {
     await expect(initializeBoundary).toBeHidden()
     const accountButton = this.page.locator('appkit-account-button').first()
     await expect(accountButton, 'Account button should be present').toBeAttached({
-      timeout: 1000
+      timeout: 3_000
     })
   }
 

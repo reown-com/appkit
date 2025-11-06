@@ -3,7 +3,7 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
@@ -38,9 +38,9 @@ export class W3mConnectingFarcasterView extends LitElement {
   // -- State & Properties -------------------------------- //
   protected timeout?: ReturnType<typeof setTimeout> = undefined
 
-  @state() private socialProvider = AccountController.state.socialProvider
+  @state() private socialProvider = ChainController.getAccountData()?.socialProvider
 
-  @state() protected uri = AccountController.state.farcasterUrl
+  @state() protected uri = ChainController.getAccountData()?.farcasterUrl
 
   @state() protected ready = false
 
@@ -54,16 +54,10 @@ export class W3mConnectingFarcasterView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('farcasterUrl', val => {
-          if (val) {
-            this.uri = val
-            this.connectFarcaster()
-          }
-        }),
-        AccountController.subscribeKey('socialProvider', val => {
-          if (val) {
-            this.socialProvider = val
-          }
+        ChainController.subscribeChainProp('accountState', val => {
+          this.socialProvider = val?.socialProvider
+          this.uri = val?.farcasterUrl
+          this.connectFarcaster()
         }),
         OptionsController.subscribeKey('remoteFeatures', val => {
           this.remoteFeatures = val
@@ -78,6 +72,16 @@ export class W3mConnectingFarcasterView extends LitElement {
     super.disconnectedCallback()
     clearTimeout(this.timeout)
     window.removeEventListener('resize', this.forceUpdate)
+
+    // Track cancellation if user navigates away or closes modal without completing connection
+    const isConnected = ChainController.state.activeCaipAddress
+    if (!isConnected && this.socialProvider && (this.uri || this.loading)) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SOCIAL_LOGIN_CANCELED',
+        properties: { provider: this.socialProvider }
+      })
+    }
   }
 
   // -- Render -------------------------------------------- //
@@ -255,6 +259,9 @@ export class W3mConnectingFarcasterView extends LitElement {
     }
 
     const size = this.getBoundingClientRect().width - 40
+    const qrColor =
+      ThemeController.state.themeVariables['--apkt-qr-color'] ??
+      ThemeController.state.themeVariables['--w3m-qr-color']
 
     return html` <wui-qr-code
       size=${size}
@@ -262,7 +269,7 @@ export class W3mConnectingFarcasterView extends LitElement {
       uri=${this.uri}
       ?farcaster=${true}
       data-testid="wui-qr-code"
-      color=${ifDefined(ThemeController.state.themeVariables['--w3m-qr-color'])}
+      color=${ifDefined(qrColor)}
     ></wui-qr-code>`
   }
 

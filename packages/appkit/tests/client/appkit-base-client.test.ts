@@ -2,7 +2,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import {
   AlertController,
   ApiController,
@@ -11,13 +11,15 @@ import {
   ConnectionController,
   CoreHelperUtil,
   ModalController,
-  SendController
+  type RemoteFeatures,
+  SendController,
+  WcHelpersUtil
 } from '@reown/appkit-controllers'
 import { mockChainControllerState } from '@reown/appkit-controllers/testing'
 import { ErrorUtil, TokenUtil } from '@reown/appkit-utils'
 
 import { AppKitBaseClient } from '../../src/client/appkit-base-client'
-import { WcHelpersUtil } from '../../src/utils/index'
+import { ConfigUtil } from '../../src/utils/ConfigUtil'
 import { mainnet } from '../mocks/Networks'
 
 describe('AppKitBaseClient.checkAllowedOrigins', () => {
@@ -30,6 +32,15 @@ describe('AppKitBaseClient.checkAllowedOrigins', () => {
       value: {
         getElementsByTagName: vi.fn(),
         querySelector: vi.fn()
+      },
+      writable: true
+    })
+
+    Object.defineProperty(globalThis, 'navigator', {
+      value: {
+        clipboard: {
+          readText: vi.fn(() => Promise.resolve(''))
+        }
       },
       writable: true
     })
@@ -482,5 +493,153 @@ describe('AppKitBaseClient.open', () => {
     await expect(baseClient.open({ view: 'WalletSend', arguments: mockArgs })).rejects.toThrow(
       'Failed to switch'
     )
+  })
+})
+
+describe('AppKitBaseClient.getDisabledCaipNetworks', () => {
+  let baseClient: AppKitBaseClient
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    baseClient = new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1'
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+    })()
+  })
+
+  it('should return only disabled requested caipNetworks', () => {
+    const approvedIds = ['eip155:1', 'solana:101'] as CaipNetworkId[]
+    const requestedNetworks = [
+      { id: 1, chainNamespace: 'eip155', caipNetworkId: 'eip155:1' },
+      { id: 101, chainNamespace: 'solana', caipNetworkId: 'solana:101' },
+      { id: 56, chainNamespace: 'eip155', caipNetworkId: 'eip155:56' }
+    ] as unknown as CaipNetwork[]
+
+    vi.spyOn(ChainController, 'getAllApprovedCaipNetworkIds').mockReturnValue(approvedIds)
+    vi.spyOn(ChainController, 'getAllRequestedCaipNetworks').mockReturnValue(requestedNetworks)
+    vi.spyOn(CoreHelperUtil, 'sortRequestedNetworks').mockReturnValue(requestedNetworks)
+
+    const isDisabledMock = vi
+      .spyOn(ChainController, 'isCaipNetworkDisabled')
+      .mockImplementation(network => network.caipNetworkId === 'eip155:56')
+
+    const result = baseClient.getDisabledCaipNetworks()
+
+    expect(isDisabledMock).toHaveBeenCalled()
+    expect(result).toHaveLength(1)
+    expect(result[0]?.caipNetworkId).toBe('eip155:56')
+  })
+})
+
+describe('AppKitBaseClient initialization', () => {
+  let fetchRemoteFeaturesSpy: MockInstance
+
+  beforeAll(() => {
+    Object.defineProperty(globalThis, 'document', {
+      value: {
+        getElementsByTagName: vi.fn(),
+        querySelector: vi.fn()
+      },
+      writable: true
+    })
+
+    Object.defineProperty(globalThis, 'navigator', {
+      value: {
+        clipboard: {
+          readText: vi.fn(() => Promise.resolve(''))
+        }
+      },
+      writable: true
+    })
+
+    Object.defineProperty(globalThis, 'window', {
+      value: { location: { origin: '' } },
+      writable: true
+    })
+  })
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    fetchRemoteFeaturesSpy = vi
+      .spyOn(ConfigUtil, 'fetchRemoteFeatures')
+      .mockResolvedValue({} as RemoteFeatures)
+  })
+
+  it('should not fetch remote config if using basic mode', async () => {
+    new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1',
+          basic: true
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+
+      override async syncAdapterConnections() {
+        return Promise.resolve()
+      }
+    })()
+
+    await vi.waitFor(() => expect(fetchRemoteFeaturesSpy).not.toHaveBeenCalled())
+  })
+
+  it('should not fetch remote config if using manual WC control', async () => {
+    new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1',
+          manualWCControl: true
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+
+      override async syncAdapterConnections() {
+        return Promise.resolve()
+      }
+    })()
+
+    await vi.waitFor(() => expect(fetchRemoteFeaturesSpy).not.toHaveBeenCalled())
+  })
+
+  it('should fetch remote config if not using basic or manual WC control', async () => {
+    new (class extends AppKitBaseClient {
+      constructor() {
+        super({
+          projectId: 'test-project-id',
+          networks: [mainnet],
+          adapters: [],
+          sdkVersion: 'html-wagmi-1'
+        })
+      }
+
+      async injectModalUi() {}
+      async syncIdentity() {}
+
+      override async syncAdapterConnections() {
+        return Promise.resolve()
+      }
+    })()
+
+    await vi.waitFor(() => expect(fetchRemoteFeaturesSpy).toHaveBeenCalled())
   })
 })

@@ -9,8 +9,8 @@ export default css`
     aspect-ratio: 1 / 1;
     width: 100%;
     height: 100%;
-    background-color: ${({ tokens }) => tokens.theme.backgroundInvert};
-    color: ${({ tokens }) => tokens.theme.textInvert};
+    background-color: ${({ colors }) => colors.white};
+    border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
   }
 
   :host {
