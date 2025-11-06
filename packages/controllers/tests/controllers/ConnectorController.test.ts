@@ -169,10 +169,10 @@ describe('ConnectorController', () => {
 
     expect(
       ConnectorController.getConnector({ id: SOLANA_EXPLORER_ID, namespace: 'eip155' })
-    ).toEqual(solanaConnector)
-    expect(
-      ConnectorController.getConnector({ id: EVM_EXPLORER_ID, namespace: 'eip155' })
     ).toBeUndefined()
+    expect(ConnectorController.getConnector({ id: EVM_EXPLORER_ID, namespace: 'eip155' })).toEqual(
+      evmConnector
+    )
   })
 
   it('should update state correctly on setConnectors()', () => {

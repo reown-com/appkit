@@ -131,7 +131,8 @@ describe('ConnectionController', () => {
       buffering: false,
       isSwitchingConnection: false,
       status: 'disconnected',
-      _client: evmAdapter.connectionControllerClient
+      _client: evmAdapter.connectionControllerClient,
+      wcFetchingUri: false
     })
   })
   it('should update state correctly and set wcPromisae on connectWalletConnect()', async () => {
