@@ -20,6 +20,15 @@ const mockMetamaskConnector = {
   type: 'ANNOUNCED' as const
 }
 
+const mockMetamaskMultiChainConnector = {
+  info: { rdns: 'io.metamask' },
+  name: 'Metamask',
+  id: '1',
+  explorerId: '1',
+  chain: 'eip155' as const,
+  type: 'MULTI_CHAIN' as const
+}
+
 const mockRainbowConnector = {
   info: { rdns: 'io.rainbow' },
   name: 'Rainbow',
@@ -121,6 +130,22 @@ describe('WalletUtil', () => {
   describe('filterOutDuplicatesByIds', () => {
     it('should filter out wallets with IDs from connectors and recent wallets', () => {
       const mockConnectors = [mockMetamaskConnector, mockRainbowConnector, mockBitGetConnector]
+      const mockRecentWallets = [mockTrustWallet]
+
+      vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(mockConnectors)
+      vi.spyOn(StorageUtil, 'getRecentWallets').mockReturnValue(mockRecentWallets)
+
+      const filteredWallets = WalletUtil.filterOutDuplicatesByIds(mockWallets)
+
+      expect(filteredWallets).toEqual([]) // All IDs are filtered out. MM and Rainbow from connectors, TW from recent
+    })
+
+    it('should filter out wallets with IDs from multi-chain connectors', () => {
+      const mockConnectors = [
+        mockRainbowConnector,
+        mockBitGetConnector,
+        mockMetamaskMultiChainConnector // From previous test, remove MetaMask ANNOUNCED connector and replace with MULTI_CHAIN one.
+      ]
       const mockRecentWallets = [mockTrustWallet]
 
       vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(mockConnectors)
