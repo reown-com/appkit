@@ -1,12 +1,8 @@
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { ConnectorController } from '../controllers/ConnectorController.js'
+import { AssetUtil } from './AssetUtil.js'
 import type { WcWallet } from './TypeUtil.js'
-
-// --- Utils --------------------------------------------- //
-function getImageCDN(imageId: string) {
-  return `https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/${imageId}/md`
-}
 
 // --- Types --------------------------------------------- //
 export type WalletItem = {
@@ -74,7 +70,7 @@ export const ConnectUtil = {
         id: wcConnector.id,
         connectors: [],
         name: wcConnector.name,
-        imageUrl: wcConnector.imageId ? getImageCDN(wcConnector.imageId) : '',
+        imageUrl: AssetUtil.getAssetImageUrl(wcConnector.imageId),
         isInjected: false,
         isRecent: false,
         walletInfo: {}
@@ -86,7 +82,7 @@ export const ConnectUtil = {
         id: w.id,
         connectors: [],
         name: w.name,
-        imageUrl: w.image_id ? getImageCDN(w.image_id) : '',
+        imageUrl: AssetUtil.getWalletImageUrl(w.image_id),
         isInjected: false,
         isRecent: false,
         walletInfo: {

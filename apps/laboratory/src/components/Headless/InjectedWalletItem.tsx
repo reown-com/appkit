@@ -4,7 +4,6 @@ import { ChevronRightIcon } from '@chakra-ui/icons'
 import { Badge, Box, Button, Flex, Image, Spinner, Text } from '@chakra-ui/react'
 
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
-import '@reown/appkit-ui/wui-icon'
 import { type UseAppKitWalletsReturn } from '@reown/appkit/react'
 
 interface InjectedWalletItemProps {

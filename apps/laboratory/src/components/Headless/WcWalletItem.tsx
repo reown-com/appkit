@@ -26,41 +26,26 @@ export function WcWalletItem({ item, onConnect, isConnecting }: Props) {
     >
       <Flex align="center" gap={3}>
         {/* Wallet Icon */}
-        {item.imageUrl ? (
-          <Image
-            src={item.imageUrl}
-            alt={item.name}
-            boxSize="40px"
-            borderRadius="md"
-            fallback={
-              <Box
-                boxSize="32px"
-                bg="gray.200"
-                borderRadius="md"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Text fontSize="xs" fontWeight="bold">
-                  {item.name.charAt(0)}
-                </Text>
-              </Box>
-            }
-          />
-        ) : (
-          <Box
-            boxSize="32px"
-            bg="gray.200"
-            borderRadius="md"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Text fontSize="xs" fontWeight="bold">
-              {item.name.charAt(0)}
-            </Text>
-          </Box>
-        )}
+        <Image
+          src={item.imageUrl}
+          alt={item.name}
+          boxSize="40px"
+          borderRadius="md"
+          fallback={
+            <Box
+              boxSize="32px"
+              bg="gray.200"
+              borderRadius="md"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Text fontSize="xs" fontWeight="bold">
+                {item.name.charAt(0)}
+              </Text>
+            </Box>
+          }
+        />
 
         {/* Wallet Name */}
         <Text fontWeight="medium" flex={1}>

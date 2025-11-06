@@ -394,7 +394,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   useEffect(() => {
     if (!isHeadlessEnabled || !remoteFeatures?.headless) {
       AlertController.open(
-        ConstantsUtil.REMOTE_FEATURES_ALERTS.HEADLESS_NOT_ENABLED.WALLETS_HOOK,
+        ConstantsUtil.REMOTE_FEATURES_ALERTS.HEADLESS_NOT_ENABLED.DEFAULT,
         'info'
       )
     }
