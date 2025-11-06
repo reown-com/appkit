@@ -204,7 +204,7 @@ export interface OptionsControllerStatePublic {
   coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
   /**
    * Enable or disable changing the Smart Account Version in the modal.
-   * @default true
+   * @default false
    */
   enableSmartAccountVersionSwitch?: boolean
 }
@@ -232,7 +232,7 @@ const state = proxy<OptionsControllerState>({
   remoteFeatures: {},
   enableMobileFullScreen: false,
   coinbasePreference: 'all',
-  enableSmartAccountVersionSwitch: true
+  enableSmartAccountVersionSwitch: false
 })
 
 // -- Controller ---------------------------------------- //

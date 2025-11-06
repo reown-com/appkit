@@ -36,7 +36,8 @@ describe('OptionsController', () => {
       enableNetworkSwitch: true,
       experimental_preferUniversalLinks: false,
       enableMobileFullScreen: false,
-      coinbasePreference: 'all'
+      coinbasePreference: 'all',
+      enableSmartAccountVersionSwitch: false
     })
   })
 
