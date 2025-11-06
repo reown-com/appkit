@@ -201,7 +201,8 @@ export const ConstantsUtil = {
     bip122: '0x',
     cosmos: '0x',
     sui: '0x',
-    stacks: '0x'
+    stacks: '0x',
+    ton: '0x'
   } as const satisfies Record<ChainNamespace, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1,
@@ -284,7 +285,8 @@ export const ConstantsUtil = {
     bip122: 'payment',
     eip155: 'smartAccount',
     polkadot: 'eoa',
-    solana: 'eoa'
+    solana: 'eoa',
+    ton: 'eoa'
   } as const satisfies PreferredAccountTypes,
   ADAPTER_TYPES: {
     UNIVERSAL: 'universal',

@@ -1,5 +1,11 @@
 # pay-test-exchange
 
+## 0.1.17
+
+### Patch Changes
+
+- [#5274](https://github.com/reown-com/appkit/pull/5274) [`100ee2b`](https://github.com/reown-com/appkit/commit/100ee2bf54f9036e72e5961300e0b3edb8089239) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where remote config endpoint was being called when using appkit core
+
 ## 0.1.16
 
 ### Patch Changes

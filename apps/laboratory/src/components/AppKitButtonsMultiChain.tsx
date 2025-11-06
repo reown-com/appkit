@@ -19,7 +19,9 @@ import {
   mainnet,
   polygon,
   solana,
-  solanaTestnet
+  solanaTestnet,
+  ton,
+  tonTestnet
 } from '@reown/appkit/networks'
 import {
   AppKitButton,
@@ -45,6 +47,8 @@ function getNetworkToSwitch(activeNetwork: CaipNetwork | undefined) {
       return activeNetwork.id === bitcoin.id ? bitcoinTestnet : bitcoin
     case 'solana':
       return activeNetwork.id === solana.id ? solanaTestnet : solana
+    case 'ton':
+      return activeNetwork.id === ton.id ? tonTestnet : ton
     default:
       return activeNetwork.id === polygon.id ? mainnet : polygon
   }
@@ -57,9 +61,13 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
   const evmAccount = useAppKitAccount({ namespace: 'eip155' })
   const solanaAccount = useAppKitAccount({ namespace: 'solana' })
   const bitcoinAccount = useAppKitAccount({ namespace: 'bip122' })
+  const tonAccount = useAppKitAccount({ namespace: 'ton' })
   const toast = useChakraToast()
   const isAnyAccountConnected =
-    evmAccount.isConnected || solanaAccount.isConnected || bitcoinAccount.isConnected
+    evmAccount.isConnected ||
+    solanaAccount.isConnected ||
+    bitcoinAccount.isConnected ||
+    tonAccount.isConnected
 
   function handleConnectToEVM() {
     open({ namespace: 'eip155' })
@@ -73,10 +81,15 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
     open({ namespace: 'bip122' })
   }
 
+  function handleConnectToTon() {
+    open({ namespace: 'ton' })
+  }
+
   const hasEvmAdapter =
     adapters?.includes('wagmi') || adapters?.includes('ethers') || adapters?.includes('ethers5')
   const hasSolanaAdapter = adapters?.includes('solana')
   const hasBitcoinAdapter = adapters?.includes('bitcoin')
+  const hasTonAdapter = adapters?.includes('ton')
   const isMultipleAdapter = adapters?.length && adapters.length > 1
 
   function handleOpenSwapWithArguments() {
@@ -177,6 +190,16 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
                       </Stack>
                     </>
                   ) : null}
+                  {hasTonAdapter ? (
+                    <>
+                      <Stack pb="2">
+                        <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
+                          TON Button
+                        </Text>
+                        <AppKitButton namespace="ton" />
+                      </Stack>
+                    </>
+                  ) : null}
                 </>
               ) : null}
             </Stack>
@@ -209,6 +232,9 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
                   </Button>
                   <Button data-testid="bitcoin-connect-button" onClick={handleConnectToBitcoin}>
                     Open Bitcoin Modal
+                  </Button>
+                  <Button data-testid="ton-connect-button" onClick={handleConnectToTon}>
+                    Open TON Modal
                   </Button>
                   {isMultipleAdapter ? null : (
                     <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
@@ -263,6 +289,13 @@ export function AppKitButtonsMultiChain({ adapters }: { adapters: Adapter[] | un
                     onClick={() => disconnect({ namespace: 'bip122' })}
                   >
                     Disconnect Bitcoin
+                  </Button>
+                  <Button
+                    isDisabled={!tonAccount.isConnected}
+                    data-testid="ton-disconnect-button"
+                    onClick={() => disconnect({ namespace: 'ton' })}
+                  >
+                    Disconnect TON
                   </Button>
                 </Box>
               </Box>
