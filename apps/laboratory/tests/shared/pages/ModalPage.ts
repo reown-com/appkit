@@ -1124,4 +1124,8 @@ export class ModalPage {
       await chainSelector.click()
     }
   }
+  async goBack() {
+    await this.page.getByTestId('header-back').click()
+    await this.page.waitForTimeout(300)
+  }
 }

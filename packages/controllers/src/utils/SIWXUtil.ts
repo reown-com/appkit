@@ -1,3 +1,4 @@
+import type { AuthTypes } from '@walletconnect/types'
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
@@ -441,7 +442,7 @@ export const SIWXUtil = {
             ...cacao.p,
             accountAddress: cacao.p.iss.split(':').slice(-1).join(''),
             chainId: cacao.p.iss.split(':').slice(2, 4).join(':') as CaipNetworkId,
-            uri: cacao.p.aud,
+            uri: cacao.p.aud ?? '',
             version: cacao.p.version || siwxMessage.version,
             expirationTime: cacao.p.exp,
             issuedAt: cacao.p.iat,
@@ -616,7 +617,7 @@ export interface SIWXSession {
   data: SIWXMessage.Data
   message: string
   signature: string
-  cacao?: Cacao
+  cacao?: AuthTypes.Cacao
 }
 
 /**
@@ -683,13 +684,9 @@ export namespace SIWXMessage {
  * https://chainagnostic.org/CAIPs/caip-74
  */
 export interface Cacao {
-  h: Cacao.Header
-  p: Cacao.Payload
-  s: {
-    t: 'eip191' | 'eip1271'
-    s: string
-    m?: string
-  }
+  h: AuthTypes.CacaoHeader
+  p: AuthTypes.BaseAuthRequestParams
+  s: AuthTypes.CacaoSignature
 }
 
 export namespace Cacao {
@@ -699,16 +696,17 @@ export namespace Cacao {
 
   export interface Payload {
     domain: string
-    aud: string
+    aud?: string
     nonce: string
-    iss: string
     version?: string
     iat?: string
     nbf?: string
     exp?: string
+    chainId?: string
     statement?: string
     requestId?: string
     resources?: string[]
+    expiry?: number
     type?: string
   }
 }

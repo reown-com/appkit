@@ -57,6 +57,7 @@ smartAccountTest('it should use a smart account', async () => {
   await validator.expectConnected()
   await page.openProfileWalletsView()
   await page.clickProfileWalletsMoreButton()
+  await page.clickSmartAccountSettingsButton()
   await validator.expectChangePreferredAccountToShow(EOA)
   await page.closeModal()
 })
@@ -109,6 +110,7 @@ smartAccountTest('it should switch to smart account and sign', async ({ library 
 
   await page.openProfileWalletsView()
   await page.clickProfileWalletsMoreButton()
+  await page.clickSmartAccountSettingsButton()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(EOA)
@@ -131,6 +133,7 @@ smartAccountTest('it should switch to eoa and sign', async ({ library }) => {
 
   await page.openProfileWalletsView()
   await page.clickProfileWalletsMoreButton()
+  await page.clickSmartAccountSettingsButton()
   await validator.expectChangePreferredAccountToShow(EOA)
   await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
@@ -153,6 +156,7 @@ smartAccountTest(
 
     await page.openProfileWalletsView()
     await page.clickProfileWalletsMoreButton()
+    await page.clickSmartAccountSettingsButton()
     await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
     await page.closeModal()
 
@@ -162,6 +166,7 @@ smartAccountTest(
 
     await page.openProfileWalletsView()
     await page.clickProfileWalletsMoreButton()
+    await page.clickSmartAccountSettingsButton()
     await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
     await page.closeModal()
   }
@@ -178,6 +183,7 @@ smartAccountTest(
 
     await page.openProfileWalletsView()
     await page.clickProfileWalletsMoreButton()
+    await page.clickSmartAccountSettingsButton()
     await page.togglePreferredAccountType()
     await validator.expectChangePreferredAccountToShow(EOA)
 
@@ -186,6 +192,7 @@ smartAccountTest(
 
     await page.openProfileWalletsView()
     await page.clickProfileWalletsMoreButton()
+    await page.clickSmartAccountSettingsButton()
     await validator.expectChangePreferredAccountToShow(EOA)
     await page.closeModal()
   }
@@ -215,8 +222,10 @@ smartAccountTest('it should be able to switch after disconnecting', async ({ lib
 
   await page.openProfileWalletsView()
   await page.clickProfileWalletsMoreButton()
+  await page.clickSmartAccountSettingsButton()
   await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+  await page.goBack()
   await page.disconnect()
   await validator.expectDisconnected()
 })
