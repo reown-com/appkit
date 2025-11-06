@@ -7,6 +7,7 @@ import {
   ApiController,
   type ApiControllerState,
   type BadgeType,
+  ChainController,
   ConnectorController,
   type ConnectorWithProviders,
   OptionsController,
@@ -155,6 +156,10 @@ describe('W3mAllWalletsSearch', () => {
       provider: {} as any,
       chain: 'eip155'
     }
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155'
+    })
     vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(mockConnector)
     const routerPushSpy = vi.spyOn(RouterController, 'push')
 
@@ -165,7 +170,7 @@ describe('W3mAllWalletsSearch', () => {
 
     expect(ConnectorController.getConnector).toHaveBeenCalledWith({
       id: mockExternalWallet.id,
-      rdns: mockExternalWallet.rdns
+      namespace: 'eip155'
     })
     expect(routerPushSpy).toHaveBeenCalledWith('ConnectingExternal', {
       connector: mockConnector,
@@ -182,7 +187,7 @@ describe('W3mAllWalletsSearch', () => {
 
     expect(ConnectorController.getConnector).toHaveBeenCalledWith({
       id: mockWallet.id,
-      rdns: mockWallet.rdns
+      namespace: 'eip155'
     })
     expect(routerPushSpy).toHaveBeenCalledWith('ConnectingWalletConnect', { wallet: mockWallet })
   })
