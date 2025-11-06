@@ -206,7 +206,7 @@ describe('ConnectorController', () => {
     ).toStrictEqual(metamaskConnector)
     expect(
       ConnectorController.getConnector({ id: zerionConnector.id, namespace: 'eip155' })
-    ).toBeUndefined()
+    ).toStrictEqual(zerionConnector)
     expect(ConnectorController.getConnector({ id: 'unknown', namespace: 'eip155' })).toBeUndefined()
   })
 

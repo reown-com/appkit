@@ -193,19 +193,12 @@ describe('AppKitWalletButton', () => {
     vi.spyOn(ConnectorController, 'getConnector').mockReturnValue({
       id: 'metamask',
       explorerId: MetaMask.id,
-      type: 'ANNOUNCED',
-      chain: 'eip155',
-      name: 'MetaMask'
-    })
-
-    vi.spyOn(ConnectorController, 'getConnector').mockReturnValue({
-      id: 'metamask',
-      explorerId: MetaMask.id,
       name: 'MetaMask',
       imageUrl: 'data:image/png;base64,mocked...',
       type: 'ANNOUNCED',
       chain: 'eip155'
     })
+    ChainController.setActiveNamespace('eip155')
 
     const element: AppKitWalletButton = await fixture(
       html`<appkit-wallet-button wallet="metamask"></appkit-wallet-button>`
