@@ -19,6 +19,7 @@ import { playStoreSvg } from '../../assets/svg/play-store.js'
 import { reownSvg } from '../../assets/svg/reown-logo.js'
 import { solanaSvg } from '../../assets/svg/solana.js'
 import { telegramSvg } from '../../assets/svg/telegram.js'
+import { tonSvg } from '../../assets/svg/ton.js'
 import { twitchSvg } from '../../assets/svg/twitch.js'
 import { twitterIconSvg } from '../../assets/svg/twitterIcon.js'
 import { walletSvg } from '../../assets/svg/wallet.js'
@@ -119,6 +120,7 @@ const phosphorIconsMap: Record<string, string> = {
   reown: '',
   solana: '',
   stellar: '',
+  ton: '',
   telegram: '',
   twitch: '',
   twitterIcon: '',
@@ -203,6 +205,7 @@ const svgOptions: Partial<Record<IconType, TemplateResult<2>>> = {
   playStore: playStoreSvg,
   reown: reownSvg,
   solana: solanaSvg,
+  ton: tonSvg,
   telegram: telegramSvg,
   twitch: twitchSvg,
   twitter: xSvg,

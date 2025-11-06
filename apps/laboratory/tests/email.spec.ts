@@ -132,7 +132,7 @@ emailTest(
   'it should still be able to request transactions after aborting request',
   async ({ library }) => {
     // Only run on evm
-    if (['bitcoin', 'solana'].includes(library)) {
+    if (['bitcoin', 'solana', 'ton'].includes(library)) {
       test.skip()
     }
 
@@ -141,14 +141,14 @@ emailTest(
     await validator.expectRejectedSign()
 
     await page.sendCalls()
-    await validator.expectFrameTextToContain('AppKit Lab requests multiple transactions')
+    await validator.expectFrameTextToContain('AppKit requests multiple transactions')
     await page.closeModal()
   }
 )
 
 emailTest('it should switch account and network correctly', async ({ library }) => {
   // Only run on evm and solana
-  if (library === 'bitcoin') {
+  if (library === 'bitcoin' || library === 'ton') {
     test.skip()
   } else if (library === 'solana') {
     await page.switchNetwork('Solana Testnet')

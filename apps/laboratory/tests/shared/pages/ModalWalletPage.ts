@@ -74,4 +74,8 @@ export class ModalWalletPage extends ModalPage {
     await disconnectBtn.click()
     await this.page.getByTestId('connect-button').waitFor({ state: 'visible', timeout: 5000 })
   }
+
+  async clickSmartAccountSettingsButton() {
+    await this.page.getByTestId('account-smart-account-settings-button').click()
+  }
 }

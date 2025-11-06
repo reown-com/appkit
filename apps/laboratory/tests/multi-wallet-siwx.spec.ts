@@ -49,7 +49,7 @@ test.afterAll(async () => {
 
 // -- Tests --------------------------------------------------------------------
 test('should enable multi-wallet feature with a whitelisted project id', async ({ library }) => {
-  if (library === 'bitcoin') {
+  if (library === 'bitcoin' || library === 'ton') {
     return
   }
 
@@ -60,7 +60,7 @@ test('should enable multi-wallet feature with a whitelisted project id', async (
 })
 
 test('should connect multiple wallets with SIWX', async ({ library }) => {
-  if (library === 'bitcoin') {
+  if (library === 'bitcoin' || library === 'ton') {
     return
   }
 
@@ -85,7 +85,7 @@ test('should connect multiple wallets with SIWX', async ({ library }) => {
 test('should require SIWX signature when switching networks with multiple wallets', async ({
   library
 }) => {
-  if (library === 'bitcoin') {
+  if (library === 'bitcoin' || library === 'ton') {
     return
   }
 
@@ -123,7 +123,7 @@ test('should require SIWX signature when switching networks with multiple wallet
 })
 
 test('should maintain SIWX state after page refresh', async ({ library }) => {
-  if (library === 'bitcoin') {
+  if (library === 'bitcoin' || library === 'ton') {
     return
   }
 

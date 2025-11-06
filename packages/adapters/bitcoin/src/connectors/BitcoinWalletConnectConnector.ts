@@ -1,9 +1,12 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import { type RequestArguments } from '@reown/appkit'
-import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ChainController } from '@reown/appkit-controllers'
-import { WalletConnectConnector, WcHelpersUtil } from '@reown/appkit-controllers'
+import {
+  type CaipNetwork,
+  ConstantsUtil as CommonConstantsUtil,
+  ConstantsUtil
+} from '@reown/appkit-common'
+import { ChainController, WalletConnectConnector, WcHelpersUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 
@@ -28,7 +31,7 @@ export class BitcoinWalletConnectConnector
   public readonly removeListener = this.eventEmitter.removeListener.bind(this.eventEmitter)
 
   constructor({ provider, chains, getActiveChain }: WalletConnectProviderConfig) {
-    super({ provider, caipNetworks: chains, namespace: 'bip122' })
+    super({ provider, caipNetworks: chains, namespace: ConstantsUtil.CHAIN.BITCOIN })
     this.getActiveChain = getActiveChain
   }
 
