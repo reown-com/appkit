@@ -401,7 +401,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
         'info'
       )
     }
-  }, [])
+  }, [isHeadlessEnabled])
 
   if (!isHeadlessEnabled || !remoteFeatures?.headless) {
     return {
