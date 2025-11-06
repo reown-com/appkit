@@ -12,14 +12,6 @@ interface InjectedWalletItemProps {
   isConnecting: boolean
 }
 
-const chainImagesMap = {
-  eip155:
-    'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/ba0ba0cd-17c6-4806-ad93-f9d174f17900/md',
-  solana:
-    'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/a1b58899-f671-4276-6a5e-56ca5bd59700/md',
-  bip122: 'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/0b4838db-0161-4ffe-022d-532bf03dba00/md'
-}
-
 export function InjectedWalletItem({ wallet, onConnect, isConnecting }: InjectedWalletItemProps) {
   const [toggle, setToggle] = useState(false)
 
@@ -30,7 +22,10 @@ export function InjectedWalletItem({ wallet, onConnect, isConnecting }: Injected
     setToggle(v => !v)
   }
 
-  const connectorChains = wallet.connectors?.map(c => c.chain)
+  const connectorChains = wallet.connectors?.map(c => ({
+    chain: c.chain,
+    imageUrl: c.chainImageUrl
+  }))
 
   return (
     <Flex direction="column" gap={2}>
@@ -51,41 +46,26 @@ export function InjectedWalletItem({ wallet, onConnect, isConnecting }: Injected
       >
         <Flex align="center" gap={3} width="100%">
           {/* Wallet Icon */}
-          {wallet.imageUrl ? (
-            <Image
-              src={wallet.imageUrl}
-              alt={wallet.name}
-              boxSize="40px"
-              borderRadius="md"
-              fallback={
-                <Box
-                  boxSize="40px"
-                  bg="gray.200"
-                  borderRadius="md"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Text fontSize="sm" fontWeight="bold">
-                    {wallet.name.charAt(0)}
-                  </Text>
-                </Box>
-              }
-            />
-          ) : (
-            <Box
-              boxSize="40px"
-              bg="gray.200"
-              borderRadius="md"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Text fontSize="sm" fontWeight="bold">
-                {wallet.name.charAt(0)}
-              </Text>
-            </Box>
-          )}
+          <Image
+            src={wallet.imageUrl}
+            alt={wallet.name}
+            boxSize="40px"
+            borderRadius="md"
+            fallback={
+              <Box
+                boxSize="40px"
+                bg="gray.200"
+                borderRadius="md"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Text fontSize="sm" fontWeight="bold">
+                  {wallet.name.charAt(0)}
+                </Text>
+              </Box>
+            }
+          />
 
           {/* Wallet Info */}
           <Flex direction="column" align="flex-start" flex={1}>
@@ -96,9 +76,9 @@ export function InjectedWalletItem({ wallet, onConnect, isConnecting }: Injected
             <Flex alignItems="center">
               {connectorChains.map((chain, index) => (
                 <Image
-                  key={chain}
-                  src={chainImagesMap[chain as keyof typeof chainImagesMap]}
-                  alt={chain}
+                  key={chain.chain}
+                  src={chain.imageUrl}
+                  alt={chain.chain}
                   boxSize="20px"
                   borderRadius="full"
                   zIndex={connectorChains.length * 2 - index}

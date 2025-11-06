@@ -177,5 +177,14 @@ export const AssetUtil = {
     url.searchParams.set('sv', sdkVersion)
 
     return url.toString()
+  },
+
+  /**
+   * Get the image URL for the given chain namespace.
+   * @param chainNamespace - The chain namespace to get the image URL for.
+   * @returns The image URL for the chain namespace.
+   */
+  getChainNamespaceImageUrl(chainNamespace: ChainNamespace) {
+    return this.getAssetImageUrl(namespaceImageIds[chainNamespace])
   }
 }

@@ -13,6 +13,7 @@ export type WalletItem = {
     id: string
     rdns?: string
     chain: ChainNamespace
+    chainImageUrl?: string
   }[]
   walletInfo: {
     description?: WcWallet['description']
@@ -49,8 +50,18 @@ export const ConnectUtil = {
     filteredConnectors.forEach(connector => {
       const hasMultipleConnectors = connector.connectors?.length
       const connectors = hasMultipleConnectors
-        ? connector.connectors?.map(c => ({ id: c.id, chain: c.chain })) || []
-        : [connector]
+        ? connector.connectors?.map(c => ({
+            id: c.id,
+            chain: c.chain,
+            chainImageUrl: AssetUtil.getChainNamespaceImageUrl(c.chain)
+          })) || []
+        : [
+            {
+              id: connector.id,
+              chain: connector.chain,
+              chainImageUrl: AssetUtil.getChainNamespaceImageUrl(connector.chain)
+            }
+          ]
 
       items.push({
         id: connector.id,
