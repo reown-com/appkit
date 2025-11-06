@@ -523,7 +523,7 @@ export class ModalValidator {
     await expect(initializeBoundary).toBeHidden()
     const accountButton = this.page.locator('appkit-account-button').first()
     await expect(accountButton, 'Account button should be present').toBeAttached({
-      timeout: MAX_WAIT
+      timeout: 3_000
     })
   }
 
