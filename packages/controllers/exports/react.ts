@@ -375,21 +375,24 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     }
   }, [])
 
-  const connect = useCallback(async (_wallet: WalletItem, namespace?: ChainNamespace) => {
-    const wallet = wallets.find(w => w.name === _wallet.name)
-    const walletConnector = wallet?.connectors.find(c => c.chain === namespace)
+  const connect = useCallback(
+    async (_wallet: WalletItem, namespace?: ChainNamespace) => {
+      const wallet = wallets.find(w => w.id === _wallet.id)
+      const walletConnector = wallet?.connectors.find(c => c.chain === namespace)
 
-    const connector =
-      walletConnector && namespace
-        ? ConnectorController.getConnector({ id: walletConnector?.id, namespace })
-        : undefined
+      const connector =
+        walletConnector && namespace
+          ? ConnectorController.getConnector({ id: walletConnector?.id, namespace })
+          : undefined
 
-    if (_wallet.isInjected && connector) {
-      await ConnectorControllerUtil.connectExternal(connector)
-    } else {
-      await ConnectionController.connectWalletConnect({ cache: 'never' })
-    }
-  }, [])
+      if (wallet?.isInjected && connector) {
+        await ConnectorControllerUtil.connectExternal(connector)
+      } else {
+        await ConnectionController.connectWalletConnect({ cache: 'never' })
+      }
+    },
+    [wallets]
+  )
 
   useEffect(() => {
     if (!isHeadlessEnabled || !remoteFeatures?.headless) {
