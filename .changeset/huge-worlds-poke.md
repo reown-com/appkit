@@ -4,4 +4,4 @@
 '@reown/appkit': patch
 ---
 
-Adds enableSmartAccountVersionSwitch parameter to enable users to enable or disable the smart account version change flow'
+Adds enableSmartAccountVersionSwitch parameter to enable users to enable or disable the smart account version change flow
