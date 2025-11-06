@@ -36,6 +36,7 @@ export class W3mSmartAccountSettingsView extends LitElement {
     if (!OptionsController.state.enableSmartAccountVersionSwitch) {
       return null
     }
+
     return html`
       <w3m-tooltip-trigger text="Changing the smart account version will reload the page">
         <wui-list-item
