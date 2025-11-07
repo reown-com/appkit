@@ -351,18 +351,6 @@ describe('WalletUtil', () => {
       ])
     })
 
-    it('should filter out wallets without WC support when using Appkit Core (manualWCControl)', () => {
-      vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
-      OptionsController.state.manualWCControl = true
-
-      const result = WalletUtil.filterWalletsByWcSupport(walletsWithWcSupport)
-
-      expect(result).toEqual([
-        { id: '1', name: 'Wallet 1', supports_wc: true },
-        { id: '3', name: 'Wallet 3', supports_wc: true }
-      ])
-    })
-
     it('should filter out wallets without WC support when using Appkit Core (wcBasic)', () => {
       vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
       ConnectionController.state.wcBasic = true

@@ -201,10 +201,7 @@ export const WalletUtil = {
    * @returns Filtered array of wallets based on WalletConnect support and platform
    */
   filterWalletsByWcSupport(wallets: WcWallet[]) {
-    const isUsingAppKitCore =
-      OptionsController.state.manualWCControl || ConnectionController.state.wcBasic
-
-    if (isUsingAppKitCore) {
+    if (ConnectionController.state.wcBasic) {
       return wallets.filter(wallet => wallet.supports_wc)
     }
 
