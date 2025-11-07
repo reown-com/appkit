@@ -64,7 +64,7 @@ export const WalletUtil = {
     )
     const recent = StorageUtil.getRecentWallets()
 
-    const connectorIds = connectors.map(connector => connector.explorerId || connector.id)
+    const connectorIds = connectors.map(connector => connector.explorerId || connector.explorerWallet?.id || connector.id)
 
     const recentIds = recent.map(wallet => wallet.id)
 
