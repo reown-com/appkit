@@ -1,5 +1,7 @@
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -7,9 +9,19 @@ import {
 } from '@reown/appkit-controllers'
 import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
+import { ConstantsUtil as AppKitConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 
 import { ConnectorUtil } from './ConnectorUtil.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
+
+const MANDATORY_WALLET_IDS_ON_MOBILE = [
+  PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE],
+  PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK],
+  PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT],
+  PresetsUtil.ConnectorExplorerIds[AppKitConstantsUtil.SOLFLARE_CONNECTOR_NAME],
+  PresetsUtil.ConnectorExplorerIds[AppKitConstantsUtil.PHANTOM_CONNECTOR_NAME],
+  PresetsUtil.ConnectorExplorerIds[AppKitConstantsUtil.BINANCE_CONNECTOR_NAME]
+]
 
 interface AppKitWallet extends WcWallet {
   installed: boolean
@@ -181,5 +193,29 @@ export const WalletUtil = {
   },
   markWalletsWithDisplayIndex(wallets: WcWallet[]) {
     return wallets.map((w, index) => ({ ...w, display_index: index }))
+  },
+
+  /**
+   * Filters wallets based on WalletConnect support and platform requirements.
+   *
+   * On mobile only wallets with WalletConnect support and some mandatory wallets are shown.
+   * On desktop with Appkit Core only wallets with WalletConnect support are shown.
+   * On desktop with Appkit all wallets are shown.
+   *
+   * @param wallets - Array of wallets to filter
+   * @returns Filtered array of wallets based on WalletConnect support and platform
+   */
+  filterWalletsByWcSupport(wallets: WcWallet[]) {
+    if (ConnectionController.state.wcBasic) {
+      return wallets.filter(wallet => wallet.supports_wc)
+    }
+
+    if (CoreHelperUtil.isMobile()) {
+      return wallets.filter(
+        wallet => wallet.supports_wc || MANDATORY_WALLET_IDS_ON_MOBILE.includes(wallet.id)
+      )
+    }
+
+    return wallets
   }
 }

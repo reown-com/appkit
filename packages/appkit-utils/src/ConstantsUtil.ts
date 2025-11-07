@@ -14,6 +14,7 @@ export const ConstantsUtil = {
   XVERSE_CONNECTOR_NAME: 'Xverse Wallet',
   LEATHER_CONNECTOR_NAME: 'Leather',
   OKX_CONNECTOR_NAME: 'OKX Wallet',
+  BINANCE_CONNECTOR_NAME: 'Binance Wallet',
 
   EIP155: CommonConstantsUtil.CHAIN.EVM,
   ADD_CHAIN_METHOD: 'wallet_addEthereumChain',
