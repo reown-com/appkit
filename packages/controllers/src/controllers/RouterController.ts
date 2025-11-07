@@ -90,6 +90,7 @@ export interface RouterControllerState {
     | 'PayWithExchange'
     | 'PayWithExchangeSelectAsset'
     | 'UsageExceeded'
+    | 'SmartAccountSettings'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

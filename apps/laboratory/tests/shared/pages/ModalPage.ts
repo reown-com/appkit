@@ -1108,7 +1108,7 @@ export class ModalPage {
   }
 
   async connectToExtensionMultichain(
-    chainNamespace: 'eip155' | 'solana' | 'bip122',
+    chainNamespace: ChainNamespace,
     modalOpen?: boolean,
     isAnotherNamespaceConnected?: boolean
   ) {
@@ -1123,5 +1123,9 @@ export class ModalPage {
       const chainSelector = this.page.getByTestId(`wui-list-chain-${chainNamespace}`)
       await chainSelector.click()
     }
+  }
+  async goBack() {
+    await this.page.getByTestId('header-back').click()
+    await this.page.waitForTimeout(300)
   }
 }

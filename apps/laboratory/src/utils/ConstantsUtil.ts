@@ -21,6 +21,8 @@ import {
   solana,
   solanaDevnet,
   solanaTestnet,
+  ton,
+  tonTestnet,
   unichainSepolia,
   zkSync
 } from '@reown/appkit/networks'
@@ -109,6 +111,8 @@ const BitcoinNetworks = [bitcoin, bitcoinTestnet, bitcoinSignet] as [
   ...AppKitNetwork[]
 ]
 
+const TonNetworks = [ton, tonTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
+
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
   SigningFailedToastTitle: 'Signing Failed',
@@ -164,7 +168,8 @@ export const ConstantsUtil = {
   EvmNetworks,
   SolanaNetworks,
   BitcoinNetworks,
-  AllNetworks: [...EvmNetworks, ...SolanaNetworks, ...BitcoinNetworks] as [
+  TonNetworks,
+  AllNetworks: [...EvmNetworks, ...SolanaNetworks, ...BitcoinNetworks, ...TonNetworks] as [
     AppKitNetwork,
     ...AppKitNetwork[]
   ],

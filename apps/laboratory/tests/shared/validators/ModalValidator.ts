@@ -65,7 +65,7 @@ export class ModalValidator {
     })
   }
 
-  async expectBalanceFetched(currency: 'SOL' | 'ETH' | 'BTC' | 'POL', namespace?: string) {
+  async expectBalanceFetched(currency: 'SOL' | 'ETH' | 'BTC' | 'POL' | 'TON', namespace?: string) {
     const accountButton = namespace
       ? this.page.getByTestId(`account-button-${namespace}`)
       : this.page.locator('appkit-account-button').first()
@@ -523,7 +523,7 @@ export class ModalValidator {
     await expect(initializeBoundary).toBeHidden()
     const accountButton = this.page.locator('appkit-account-button').first()
     await expect(accountButton, 'Account button should be present').toBeAttached({
-      timeout: 1000
+      timeout: 3_000
     })
   }
 

@@ -105,7 +105,8 @@ function headings() {
     DataCaptureOtpConfirm: 'Confirm Email',
     FundWallet: 'Fund Wallet',
     PayWithExchange: 'Deposit from Exchange',
-    PayWithExchangeSelectAsset: 'Select Asset'
+    PayWithExchangeSelectAsset: 'Select Asset',
+    SmartAccountSettings: 'Smart Account Settings'
   }
 }
 

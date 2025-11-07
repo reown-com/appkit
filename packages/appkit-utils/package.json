@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-utils",
-  "version": "1.8.11",
+  "version": "1.8.13",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -35,6 +35,11 @@
       "types": "./dist/types/exports/bitcoin.d.ts",
       "import": "./dist/esm/exports/bitcoin.js",
       "default": "./dist/esm/exports/bitcoin.js"
+    },
+    "./ton": {
+      "types": "./dist/types/exports/ton.d.ts",
+      "import": "./dist/esm/exports/ton.js",
+      "default": "./dist/esm/exports/ton.js"
     }
   },
   "typesVersions": {
@@ -44,6 +49,9 @@
       ],
       "solana": [
         "./dist/types/exports/solana.d.ts"
+      ],
+      "ton": [
+        "./dist/types/exports/ton.d.ts"
       ]
     }
   },
@@ -61,13 +69,13 @@
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@wallet-standard/wallet": "1.1.0",
-    "@walletconnect/logger": "^3.0.0",
-    "@walletconnect/universal-provider": "2.22.4",
+    "@walletconnect/logger": "3.0.0",
+    "@walletconnect/universal-provider": "2.23.0",
     "valtio": "2.1.7",
     "viem": ">=2.37.9"
   },
   "devDependencies": {
-    "@walletconnect/types": "2.22.4",
+    "@walletconnect/types": "2.23.0",
     "bs58": "6.0.0",
     "@solana/web3.js": "1.98.4",
     "@wallet-standard/features": "1.1.0",
