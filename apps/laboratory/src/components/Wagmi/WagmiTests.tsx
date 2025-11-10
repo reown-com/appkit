@@ -20,6 +20,7 @@ import { WagmiGetCallsStatusTest } from './WagmiGetCallsStatusTest'
 import { WagmiSendCallsCustomAbiWithPaymasterServiceTest } from './WagmiSendCallsCustomAbiWithPaymasterServiceTest'
 import { WagmiSendCallsTest } from './WagmiSendCallsTest'
 import { WagmiSendCallsWithPaymasterServiceTest } from './WagmiSendCallsWithPaymasterServiceTest'
+import { WagmiSendCustomTransactionTest } from './WagmiSendCustomTransactionTest'
 import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
 import { WagmiSignMessageTest } from './WagmiSignMessageTest'
 import { WagmiSignTypedDataTest } from './WagmiSignTypedDataTest'
@@ -65,6 +66,13 @@ export function WagmiTests({ config }: IProps) {
               Sign Transaction
             </Heading>
             <WagmiTransactionTest />
+          </Box>
+
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Send Custom Transaction (JSON)
+            </Heading>
+            <WagmiSendCustomTransactionTest />
           </Box>
 
           <Box>
