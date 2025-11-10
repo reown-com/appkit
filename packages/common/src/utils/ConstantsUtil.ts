@@ -100,6 +100,13 @@ export const ConstantsUtil = {
         debugMessage:
           'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at cloud.reown.com to use the useAppKitConnection hook.'
       }
+    },
+    HEADLESS_NOT_ENABLED: {
+      DEFAULT: {
+        displayMessage: '',
+        debugMessage:
+          'Headless support is not enabled. Please enable it with the enableHeadless option in the AppKit configuration and make sure your current plan supports it.'
+      }
     }
   },
   IS_DEVELOPMENT: typeof process !== 'undefined' && process.env['NODE_ENV'] === 'development',
