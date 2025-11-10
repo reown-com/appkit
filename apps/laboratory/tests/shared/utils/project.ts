@@ -18,6 +18,8 @@ const CORE_LIRARIES = ['core'] as const
 
 const REOWN_AUTHENTICATION_LIBRARIES = ['reown-authentication'] as const
 
+const HEADLESS_LIBRARIES = ['headless'] as const
+
 const LIBRARY_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
 )
@@ -40,6 +42,10 @@ const REOWN_AUTHENTICATION_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
 
 const FLAG_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   FLAGS.map(library => ({ device, library }))
+)
+
+const HEADLESS_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  HEADLESS_LIBRARIES.map(library => ({ device, library }))
 )
 
 interface UseOptions {
@@ -100,6 +106,8 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
   'multi-wallet.spec.ts'
 ]
 
+const HEADLESS_TESTS = ['headless.spec.ts']
+
 const REOWN_AUTHENTICATION_TESTS = [
   'reown-authentication.spec.ts',
   'reown-authentication-email.spec.ts'
@@ -129,6 +137,7 @@ const SINGLE_ADAPTER_MOBILE_REGEX = createRegex(SINGLE_ADAPTER_MOBILE_TESTS, fal
 const CORE_TESTS_REGEX = createRegex(CORE_TESTS)
 const CORE_TESTS_MOBILE_REGEX = createRegex(CORE_TESTS, false)
 const REOWN_AUTHENTICATION_TESTS_REGEX = createRegex(REOWN_AUTHENTICATION_TESTS)
+const HEADLESS_TESTS_REGEX = createRegex(HEADLESS_TESTS)
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/core': {
@@ -284,6 +293,12 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Firefox/reown-authentication': {
     testMatch: REOWN_AUTHENTICATION_TESTS_REGEX
+  },
+  'Desktop Chrome/headless': {
+    testMatch: HEADLESS_TESTS_REGEX
+  },
+  'Desktop Firefox/headless': {
+    testMatch: HEADLESS_TESTS_REGEX
   }
 }
 
@@ -321,6 +336,7 @@ export function getProjects() {
   const coreProjects = CORE_PERMUTATIONS.map(createProject)
   const reownAuthenticationProjects = REOWN_AUTHENTICATION_PERMUTATIONS.map(createProject)
   const flagProjects = FLAG_PERMUTATIONS.map(createProject)
+  const headlessProjects = HEADLESS_PERMUTATIONS.map(createProject)
 
   const projects = [
     ...libraryDesktopProjects,
@@ -328,7 +344,8 @@ export function getProjects() {
     ...multichainProjects,
     ...coreProjects,
     ...reownAuthenticationProjects,
-    ...flagProjects
+    ...flagProjects,
+    ...headlessProjects
   ]
 
   return projects

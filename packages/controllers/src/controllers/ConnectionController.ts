@@ -142,6 +142,7 @@ export interface ConnectionControllerState {
   }
   wcBasic?: boolean
   wcError?: boolean
+  wcFetchingUri: boolean
   recentWallet?: WcWallet
   buffering: boolean
   status?: 'connecting' | 'connected' | 'disconnected'
@@ -156,6 +157,7 @@ const state = proxy<ConnectionControllerState>({
   recentConnections: new Map(),
   isSwitchingConnection: false,
   wcError: false,
+  wcFetchingUri: false,
   buffering: false,
   status: 'disconnected'
 })
@@ -221,6 +223,7 @@ const controller = {
   },
 
   async connectWalletConnect({ cache = 'auto' }: ConnectWalletConnectParameters = {}) {
+    state.wcFetchingUri = true
     const isInTelegramOrSafariIos =
       CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())
 
@@ -381,6 +384,7 @@ const controller = {
     state.wcPairingExpiry = undefined
     state.wcLinking = undefined
     state.recentWallet = undefined
+    state.wcFetchingUri = false
     state.status = 'disconnected'
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
@@ -391,6 +395,7 @@ const controller = {
     state.wcUri = undefined
     state.wcPairingExpiry = undefined
     wcConnectionPromise = undefined
+    state.wcFetchingUri = false
   },
 
   finalizeWcConnection(address?: string) {
@@ -425,6 +430,7 @@ const controller = {
 
   setUri(uri: string) {
     state.wcUri = uri
+    state.wcFetchingUri = false
     state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
   },
 
@@ -434,6 +440,7 @@ const controller = {
 
   setWcError(wcError: ConnectionControllerState['wcError']) {
     state.wcError = wcError
+    state.wcFetchingUri = false
     state.buffering = false
   },
 
