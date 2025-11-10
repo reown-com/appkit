@@ -165,6 +165,9 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
     throw new Error('No namespace found')
   }
 
+  const { connections, recentConnections } =
+    ConnectionControllerUtil.getConnectionsData(chainNamespace)
+
   if (!isMultiWalletEnabled) {
     AlertController.open(
       ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTIONS_HOOK,
@@ -176,9 +179,6 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
       recentConnections: []
     }
   }
-
-  const { connections, recentConnections } =
-    ConnectionControllerUtil.getConnectionsData(chainNamespace)
 
   const formatConnection = useCallback((connection: Connection) => {
     const connector = ConnectorController.getConnectorById(connection.connectorId)
