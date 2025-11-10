@@ -1,29 +1,17 @@
-import type { ProviderInterface } from '@base-org/account'
-import type { SafeAppProvider } from '@safe-global/safe-apps-provider'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
-import type { SocialProvider } from '../TypeUtil.js'
-
-export interface IEthersConfig {
-  providers: ProviderType
-  defaultChain?: number
-  SSR?: boolean
-}
+import type { BaseProvider } from './BaseProvider.js'
+import type { InjectedProvider } from './EthersProvider.js'
+import type { SafeProvider } from './SafeProvider.js'
 
 export type Address = `0x${string}`
 
 export type ProviderType = {
-  injected?: Provider
-  baseAccount?: ProviderInterface
-  safe?: SafeAppProvider
-  auth?: {
-    email?: boolean
-    socials?: SocialProvider[]
-    showWallets?: boolean
-    walletFeatures?: boolean
-  }
+  injected?: InjectedProvider
+  baseAccount?: BaseProvider
+  safe?: SafeProvider
   EIP6963?: boolean
   metadata: Metadata
 }
