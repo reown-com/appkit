@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 
 import type { WalletItem } from '@reown/appkit'
 import { type ChainNamespace } from '@reown/appkit/networks'
-import { useAppKitAccount, useAppKitWallets } from '@reown/appkit/react'
+import { useAppKitWallets } from '@reown/appkit/react'
 
 import { NamespaceSelectionDialog } from '@/components/NamespaceSelectionDialog'
 import { Card } from '@/components/ui/card'
@@ -18,7 +18,6 @@ import { WalletConnectWalletsContent } from './WalletConnectWalletsContent'
 
 export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>) {
   const { data, connect, wcUri, isFetchingWcUri } = useAppKitWallets()
-  const { isConnected } = useAppKitAccount()
   const [selectedWallet, setSelectedWallet] = useState<WalletItem | null>(null)
   const [showWalletSearch, setShowWalletSearch] = useState(false)
   const [connectingWallet, setConnectingWallet] = useState<WalletItem | undefined>(undefined)
@@ -54,13 +53,6 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
   function handleQRBack() {
     setConnectingWallet(undefined)
   }
-
-  // Reset connecting wallet when connected
-  useEffect(() => {
-    if (isConnected && connectingWallet) {
-      setConnectingWallet(undefined)
-    }
-  }, [isConnected, connectingWallet])
 
   const showQRCode = wcUri && connectingWallet && !connectingWallet.isInjected && !isFetchingWcUri
 

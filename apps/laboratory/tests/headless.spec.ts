@@ -24,6 +24,8 @@ headlessTest.beforeAll(async ({ library, context }) => {
   walletPage = new WalletPage(await context.newPage())
 
   await modalPage.load()
+  // Team: Enterprise Admin Team > Project: AppKit E2E Tests
+  await modalPage.setCustomProjectId('aa48883aeda3593a90eeba4a5a551e2b')
 })
 
 headlessTest.afterAll(async () => {
