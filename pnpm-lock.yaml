@@ -1131,8 +1131,8 @@ importers:
         specifier: 0.525.0
         version: 0.525.0(react@19.2.0)
       next:
-        specifier: 16.0.1
-        version: 16.0.1(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.55.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 15.6.0-canary.29
+        version: 15.6.0-canary.29(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.55.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       next-themes:
         specifier: 0.4.6
         version: 0.4.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1153,25 +1153,25 @@ importers:
         version: 3.3.1
     devDependencies:
       '@tailwindcss/postcss':
-        specifier: '4'
+        specifier: 4.1.17
         version: 4.1.17
       '@types/node':
-        specifier: '20'
-        version: 20.19.9
+        specifier: 22.13.4
+        version: 22.13.4
       '@types/react':
-        specifier: '19'
+        specifier: 19.1.15
         version: 19.1.15
       '@types/react-dom':
-        specifier: '19'
+        specifier: 19.1.9
         version: 19.1.9(@types/react@19.1.15)
       eslint:
-        specifier: '9'
+        specifier: 9.39.1
         version: 9.39.1(jiti@2.6.1)
       eslint-config-next:
         specifier: 16.0.1
         version: 16.0.1(@typescript-eslint/parser@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.2))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.2)
       tailwindcss:
-        specifier: '4'
+        specifier: 4.1.17
         version: 4.1.17
       tailwindcss-animate:
         specifier: 1.0.7
@@ -1180,7 +1180,7 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       typescript:
-        specifier: '5'
+        specifier: 5.9.2
         version: 5.9.2
 
   examples/next-bitcoin-app-router:
@@ -2377,7 +2377,7 @@ importers:
         version: link:../../wallet
       '@walletconnect/universal-provider':
         specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
       ethers:
         specifier: '>=6'
         version: 6.14.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -2387,13 +2387,13 @@ importers:
     optionalDependencies:
       '@base-org/account':
         specifier: 2.4.0
-        version: 2.4.0(@types/react@19.2.2)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react@19.2.0)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.2.0))(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@4.1.12)
+        version: 2.4.0(@types/react@19.2.2)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react@19.2.0)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.2.0))(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
       '@safe-global/safe-apps-provider':
         specifier: 0.18.6
-        version: 0.18.6(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+        version: 0.18.6(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@safe-global/safe-apps-sdk':
         specifier: 9.1.0
-        version: 9.1.0(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+        version: 9.1.0(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.9
@@ -2433,7 +2433,7 @@ importers:
         version: link:../../wallet
       '@walletconnect/universal-provider':
         specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
+        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       ethers:
         specifier: '>=4.1 <6.0.0'
         version: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -2443,13 +2443,13 @@ importers:
     optionalDependencies:
       '@base-org/account':
         specifier: 2.4.0
-        version: 2.4.0(@types/react@19.2.2)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react@19.2.0)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.2.0))(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@3.25.76)
+        version: 2.4.0(@types/react@19.2.2)(bufferutil@4.0.9)(fastestsmallesttextencoderdecoder@1.0.22)(react@19.2.0)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.2.0))(utf-8-validate@5.0.10)(ws@8.18.3(bufferutil@4.0.9)(utf-8-validate@5.0.10))(zod@4.1.12)
       '@safe-global/safe-apps-provider':
         specifier: 0.18.6
-        version: 0.18.6(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
+        version: 0.18.6(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       '@safe-global/safe-apps-sdk':
         specifier: 9.1.0
-        version: 9.1.0(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
+        version: 9.1.0(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.9
@@ -6085,9 +6085,6 @@ packages:
   '@next/env@15.6.0-canary.29':
     resolution: {integrity: sha512-VN45CKTIb/vD9bgCl1/2oeqSJgdzLmBre+bM7sX+XCuBYdM09yVLio3b7VOgwcYUTRg91glBRbQxgz/oEc7JcQ==}
 
-  '@next/env@16.0.1':
-    resolution: {integrity: sha512-LFvlK0TG2L3fEOX77OC35KowL8D7DlFF45C0OvKMC4hy8c/md1RC4UMNDlUGJqfCoCS2VWrZ4dSE6OjaX5+8mw==}
-
   '@next/eslint-plugin-next@14.1.0':
     resolution: {integrity: sha512-x4FavbNEeXx/baD/zC/SdrvkjSby8nBn8KcCREqk6UuwvwoAPZmaV8TFCAuo/cpovBRTIY67mHhe86MQQm/68Q==}
 
@@ -6115,12 +6112,6 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  '@next/swc-darwin-arm64@16.0.1':
-    resolution: {integrity: sha512-R0YxRp6/4W7yG1nKbfu41bp3d96a0EalonQXiMe+1H9GTHfKxGNCGFNWUho18avRBPsO8T3RmdWuzmfurlQPbg==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [darwin]
-
   '@next/swc-darwin-x64@14.2.32':
     resolution: {integrity: sha512-P9NpCAJuOiaHHpqtrCNncjqtSBi1f6QUdHK/+dNabBIXB2RUFWL19TY1Hkhu74OvyNQEYEzzMJCMQk5agjw1Qg==}
     engines: {node: '>= 10'}
@@ -6135,12 +6126,6 @@ packages:
 
   '@next/swc-darwin-x64@15.6.0-canary.29':
     resolution: {integrity: sha512-HdKenbmNy4ICgz5b0vA5jo3HcyRnRVwz9PMfRX2ApNMqu0OZJ5HaOwNptjjUHIdt+OlJ8CX014VV1YBokSoSLg==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [darwin]
-
-  '@next/swc-darwin-x64@16.0.1':
-    resolution: {integrity: sha512-kETZBocRux3xITiZtOtVoVvXyQLB7VBxN7L6EPqgI5paZiUlnsgYv4q8diTNYeHmF9EiehydOBo20lTttCbHAg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
@@ -6163,12 +6148,6 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@next/swc-linux-arm64-gnu@16.0.1':
-    resolution: {integrity: sha512-hWg3BtsxQuSKhfe0LunJoqxjO4NEpBmKkE+P2Sroos7yB//OOX3jD5ISP2wv8QdUwtRehMdwYz6VB50mY6hqAg==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-
   '@next/swc-linux-arm64-musl@14.2.32':
     resolution: {integrity: sha512-tA6sIKShXtSJBTH88i0DRd6I9n3ZTirmwpwAqH5zdJoQF7/wlJXR8DkPmKwYl5mFWhEKr5IIa3LfpMW9RRwKmQ==}
     engines: {node: '>= 10'}
@@ -6183,12 +6162,6 @@ packages:
 
   '@next/swc-linux-arm64-musl@15.6.0-canary.29':
     resolution: {integrity: sha512-hVqYFthOuHkIAGZE8/ZrJ8+g9rNVA9CH6ZqvelZPy0NXQoZkWfifwC3um2MikzJfTPQWfe3RjtX3DksfUki72g==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@next/swc-linux-arm64-musl@16.0.1':
-    resolution: {integrity: sha512-UPnOvYg+fjAhP3b1iQStcYPWeBFRLrugEyK/lDKGk7kLNua8t5/DvDbAEFotfV1YfcOY6bru76qN9qnjLoyHCQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -6211,12 +6184,6 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@next/swc-linux-x64-gnu@16.0.1':
-    resolution: {integrity: sha512-Et81SdWkcRqAJziIgFtsFyJizHoWne4fzJkvjd6V4wEkWTB4MX6J0uByUb0peiJQ4WeAt6GGmMszE5KrXK6WKg==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [linux]
-
   '@next/swc-linux-x64-musl@14.2.32':
     resolution: {integrity: sha512-OHHC81P4tirVa6Awk6eCQ6RBfWl8HpFsZtfEkMpJ5GjPsJ3nhPe6wKAJUZ/piC8sszUkAgv3fLflgzPStIwfWg==}
     engines: {node: '>= 10'}
@@ -6235,12 +6202,6 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@next/swc-linux-x64-musl@16.0.1':
-    resolution: {integrity: sha512-qBbgYEBRrC1egcG03FZaVfVxrJm8wBl7vr8UFKplnxNRprctdP26xEv9nJ07Ggq4y1adwa0nz2mz83CELY7N6Q==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [linux]
-
   '@next/swc-win32-arm64-msvc@14.2.32':
     resolution: {integrity: sha512-rORQjXsAFeX6TLYJrCG5yoIDj+NKq31Rqwn8Wpn/bkPNy5rTHvOXkW8mLFonItS7QC6M+1JIIcLe+vOCTOYpvg==}
     engines: {node: '>= 10'}
@@ -6255,12 +6216,6 @@ packages:
 
   '@next/swc-win32-arm64-msvc@15.6.0-canary.29':
     resolution: {integrity: sha512-qQksnEHqL8LRx3adg2H4nF10exrvBZe8P3YHdcjYuqGdgAfksix+NBCM/x6FIptR6NyCacFvq67KWxD1MvBGzA==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [win32]
-
-  '@next/swc-win32-arm64-msvc@16.0.1':
-    resolution: {integrity: sha512-cPuBjYP6I699/RdbHJonb3BiRNEDm5CKEBuJ6SD8k3oLam2fDRMKAvmrli4QMDgT2ixyRJ0+DTkiODbIQhRkeQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
@@ -6285,12 +6240,6 @@ packages:
 
   '@next/swc-win32-x64-msvc@15.6.0-canary.29':
     resolution: {integrity: sha512-Z8pfo2Jo8rhECGGC0xjzqBS/zdr/M6iuLmBmHfJf2eQRTezk4HmvtTgKkXy4RY7c6dATC3aNIMT8aFu4ZRuKEQ==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [win32]
-
-  '@next/swc-win32-x64-msvc@16.0.1':
-    resolution: {integrity: sha512-XeEUJsE4JYtfrXe/LaJn3z1pD19fK0Q6Er8Qoufi+HqvdO4LEPyCxLUt4rxA+4RfYo6S9gMlmzCMU2F+AatFqQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -15053,27 +15002,6 @@ packages:
       sass:
         optional: true
 
-  next@16.0.1:
-    resolution: {integrity: sha512-e9RLSssZwd35p7/vOa+hoDFggUZIUbZhIUSLZuETCwrCVvxOs87NamoUzT+vbcNAL8Ld9GobBnWOA6SbV/arOw==}
-    engines: {node: '>=20.9.0'}
-    hasBin: true
-    peerDependencies:
-      '@opentelemetry/api': ^1.1.0
-      '@playwright/test': ^1.51.1
-      babel-plugin-react-compiler: '*'
-      react: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
-      react-dom: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
-      sass: ^1.3.0
-    peerDependenciesMeta:
-      '@opentelemetry/api':
-        optional: true
-      '@playwright/test':
-        optional: true
-      babel-plugin-react-compiler:
-        optional: true
-      sass:
-        optional: true
-
   nitropack@2.12.7:
     resolution: {integrity: sha512-HWyzMBj2d8b14J6Cfnxv97ztnuHIgXNcrGiWCruLfb2ZfKsp6OCbZYJm5T9sv/ZKl8LedhatrMKG66HWJux9Rg==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -23732,8 +23660,6 @@ snapshots:
 
   '@next/env@15.6.0-canary.29': {}
 
-  '@next/env@16.0.1': {}
-
   '@next/eslint-plugin-next@14.1.0':
     dependencies:
       glob: 10.3.10
@@ -23755,9 +23681,6 @@ snapshots:
   '@next/swc-darwin-arm64@15.6.0-canary.29':
     optional: true
 
-  '@next/swc-darwin-arm64@16.0.1':
-    optional: true
-
   '@next/swc-darwin-x64@14.2.32':
     optional: true
 
@@ -23765,9 +23688,6 @@ snapshots:
     optional: true
 
   '@next/swc-darwin-x64@15.6.0-canary.29':
-    optional: true
-
-  '@next/swc-darwin-x64@16.0.1':
     optional: true
 
   '@next/swc-linux-arm64-gnu@14.2.32':
@@ -23779,9 +23699,6 @@ snapshots:
   '@next/swc-linux-arm64-gnu@15.6.0-canary.29':
     optional: true
 
-  '@next/swc-linux-arm64-gnu@16.0.1':
-    optional: true
-
   '@next/swc-linux-arm64-musl@14.2.32':
     optional: true
 
@@ -23789,9 +23706,6 @@ snapshots:
     optional: true
 
   '@next/swc-linux-arm64-musl@15.6.0-canary.29':
-    optional: true
-
-  '@next/swc-linux-arm64-musl@16.0.1':
     optional: true
 
   '@next/swc-linux-x64-gnu@14.2.32':
@@ -23803,9 +23717,6 @@ snapshots:
   '@next/swc-linux-x64-gnu@15.6.0-canary.29':
     optional: true
 
-  '@next/swc-linux-x64-gnu@16.0.1':
-    optional: true
-
   '@next/swc-linux-x64-musl@14.2.32':
     optional: true
 
@@ -23815,9 +23726,6 @@ snapshots:
   '@next/swc-linux-x64-musl@15.6.0-canary.29':
     optional: true
 
-  '@next/swc-linux-x64-musl@16.0.1':
-    optional: true
-
   '@next/swc-win32-arm64-msvc@14.2.32':
     optional: true
 
@@ -23825,9 +23733,6 @@ snapshots:
     optional: true
 
   '@next/swc-win32-arm64-msvc@15.6.0-canary.29':
-    optional: true
-
-  '@next/swc-win32-arm64-msvc@16.0.1':
     optional: true
 
   '@next/swc-win32-ia32-msvc@14.2.32':
@@ -23840,9 +23745,6 @@ snapshots:
     optional: true
 
   '@next/swc-win32-x64-msvc@15.6.0-canary.29':
-    optional: true
-
-  '@next/swc-win32-x64-msvc@16.0.1':
     optional: true
 
   '@next/third-parties@15.2.1(next@14.2.32(@opentelemetry/api@1.9.0)(@playwright/test@1.48.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)':
@@ -31000,7 +30902,7 @@ snapshots:
 
   '@types/accepts@1.3.7':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/aria-query@5.0.4': {}
 
@@ -31036,11 +30938,11 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/bonjour@3.5.13':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/chai-dom@1.11.3':
     dependencies:
@@ -31059,21 +30961,21 @@ snapshots:
 
   '@types/co-body@6.1.3':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
       '@types/qs': 6.14.0
 
   '@types/connect-history-api-fallback@1.5.4':
     dependencies:
       '@types/express-serve-static-core': 4.19.7
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/connect@3.4.36':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/content-disposition@0.5.9': {}
 
@@ -31086,7 +30988,7 @@ snapshots:
       '@types/connect': 3.4.38
       '@types/express': 5.0.3
       '@types/keygrip': 1.0.6
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/debounce@1.2.4': {}
 
@@ -31110,14 +31012,14 @@ snapshots:
 
   '@types/express-serve-static-core@4.19.7':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.5
 
   '@types/express-serve-static-core@5.1.0':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.5
@@ -31144,7 +31046,7 @@ snapshots:
   '@types/fs-extra@11.0.1':
     dependencies:
       '@types/jsonfile': 6.1.4
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/har-format@1.2.16': {}
 
@@ -31156,7 +31058,7 @@ snapshots:
 
   '@types/http-proxy@1.17.16':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/istanbul-lib-coverage@2.0.6': {}
 
@@ -31174,7 +31076,7 @@ snapshots:
 
   '@types/jsonfile@6.1.4':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/keygrip@1.0.6': {}
 
@@ -31191,7 +31093,7 @@ snapshots:
       '@types/http-errors': 2.0.5
       '@types/keygrip': 1.0.6
       '@types/koa-compose': 3.2.8
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/lodash.mergewith@4.6.9':
     dependencies:
@@ -31207,16 +31109,16 @@ snapshots:
 
   '@types/mysql@2.15.26':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/node-fetch@2.6.13':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
       form-data: 4.0.4
 
   '@types/node-forge@1.3.13':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/node@12.20.55': {}
 
@@ -31254,13 +31156,13 @@ snapshots:
 
   '@types/pg@8.6.1':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
       pg-protocol: 1.10.3
       pg-types: 2.2.0
 
   '@types/qrcode@1.5.5':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/qs@6.14.0': {}
 
@@ -31291,7 +31193,7 @@ snapshots:
   '@types/send@0.17.5':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/serve-index@1.9.4':
     dependencies:
@@ -31300,7 +31202,7 @@ snapshots:
   '@types/serve-static@1.15.8':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
       '@types/send': 0.17.5
 
   '@types/shimmer@1.2.0': {}
@@ -31318,11 +31220,11 @@ snapshots:
 
   '@types/sockjs@0.3.36':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/tedious@4.0.14':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/trusted-types@2.0.7': {}
 
@@ -31332,15 +31234,15 @@ snapshots:
 
   '@types/ws@7.4.7':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
     optional: true
 
   '@typescript-eslint/eslint-plugin@6.18.1(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.8.3))(eslint@8.56.0)(typescript@5.8.3)':
@@ -38380,7 +38282,7 @@ snapshots:
 
   eval@0.1.8:
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
       require-like: 0.1.2
 
   event-target-shim@5.0.1: {}
@@ -39767,7 +39669,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 20.19.9
+      '@types/node': 22.13.9
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -40705,6 +40607,31 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
+  next@15.6.0-canary.29(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.55.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+    dependencies:
+      '@next/env': 15.6.0-canary.29
+      '@swc/helpers': 0.5.15
+      caniuse-lite: 1.0.30001751
+      postcss: 8.4.31
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      styled-jsx: 5.1.6(@babel/core@7.28.4)(react@19.2.0)
+    optionalDependencies:
+      '@next/swc-darwin-arm64': 15.6.0-canary.29
+      '@next/swc-darwin-x64': 15.6.0-canary.29
+      '@next/swc-linux-arm64-gnu': 15.6.0-canary.29
+      '@next/swc-linux-arm64-musl': 15.6.0-canary.29
+      '@next/swc-linux-x64-gnu': 15.6.0-canary.29
+      '@next/swc-linux-x64-musl': 15.6.0-canary.29
+      '@next/swc-win32-arm64-msvc': 15.6.0-canary.29
+      '@next/swc-win32-x64-msvc': 15.6.0-canary.29
+      '@opentelemetry/api': 1.9.0
+      '@playwright/test': 1.55.1
+      sharp: 0.34.4
+    transitivePeerDependencies:
+      - '@babel/core'
+      - babel-plugin-macros
+
   next@15.6.0-canary.29(@opentelemetry/api@1.9.0)(@playwright/test@1.48.2)(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
     dependencies:
       '@next/env': 15.6.0-canary.29
@@ -40725,31 +40652,6 @@ snapshots:
       '@next/swc-win32-x64-msvc': 15.6.0-canary.29
       '@opentelemetry/api': 1.9.0
       '@playwright/test': 1.48.2
-      sharp: 0.34.4
-    transitivePeerDependencies:
-      - '@babel/core'
-      - babel-plugin-macros
-
-  next@16.0.1(@babel/core@7.28.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.55.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
-    dependencies:
-      '@next/env': 16.0.1
-      '@swc/helpers': 0.5.15
-      caniuse-lite: 1.0.30001751
-      postcss: 8.4.31
-      react: 19.2.0
-      react-dom: 19.2.0(react@19.2.0)
-      styled-jsx: 5.1.6(@babel/core@7.28.4)(react@19.2.0)
-    optionalDependencies:
-      '@next/swc-darwin-arm64': 16.0.1
-      '@next/swc-darwin-x64': 16.0.1
-      '@next/swc-linux-arm64-gnu': 16.0.1
-      '@next/swc-linux-arm64-musl': 16.0.1
-      '@next/swc-linux-x64-gnu': 16.0.1
-      '@next/swc-linux-x64-musl': 16.0.1
-      '@next/swc-win32-arm64-msvc': 16.0.1
-      '@next/swc-win32-x64-msvc': 16.0.1
-      '@opentelemetry/api': 1.9.0
-      '@playwright/test': 1.55.1
       sharp: 0.34.4
     transitivePeerDependencies:
       - '@babel/core'
