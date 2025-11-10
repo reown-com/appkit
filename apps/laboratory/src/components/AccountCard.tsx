@@ -13,28 +13,12 @@ import {
 import Image from 'next/image'
 
 import type { UseAppKitAccountReturn } from '@reown/appkit'
+import { ConstantsUtil } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
 import { useAppKitAccount, useWalletInfo } from '@reown/appkit/react'
 
 import { RelayClientInfo } from './RelayClientInfo'
-
-function namespaceToTitle(namespace: string | undefined) {
-  if (!namespace) {
-    return ''
-  }
-
-  switch (namespace) {
-    case 'eip155':
-      return 'EVM'
-    case 'solana':
-      return 'Solana'
-    case 'bip122':
-      return 'Bitcoin'
-    default:
-      return namespace
-  }
-}
 
 export function AccountCard({
   account,
@@ -65,7 +49,7 @@ export function AccountCard({
     <Card data-testid={`${namespace}-account-card`}>
       <CardHeader>
         <Heading size="md">
-          {namespace ? namespaceToTitle(namespace) : 'Current'} Account Info
+          {namespace ? ConstantsUtil.CHAIN_NAME_MAP[namespace] : 'Current'} Account Info
         </Heading>
       </CardHeader>
 
