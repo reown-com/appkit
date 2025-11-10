@@ -13,7 +13,8 @@ export class InjectedProvider extends EthersProvider<Provider> {
     }
 
     this.provider = window.ethereum
-
     this.initialized = true
+
+    return Promise.resolve()
   }
 }

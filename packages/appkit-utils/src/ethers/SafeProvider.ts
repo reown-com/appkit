@@ -1,8 +1,9 @@
+/* eslint-disable max-classes-per-file */
 import { SafeAppProvider } from '@safe-global/safe-apps-provider'
 
-import { EthersProvider } from './EthersProvider'
+import { EthersProvider } from './EthersProvider.js'
 
-export class _SafeProvider extends SafeAppProvider {
+class _SafeProvider extends SafeAppProvider {
   // Safe Provider doesn't support eth_requestAccounts, so we need to override the request method
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   override request(request: { method: string; params?: any[] }): Promise<any> {
