@@ -265,6 +265,19 @@ const controller = {
       ChainController.setActiveNamespace(chain)
     }
 
+    const connector = ConnectorController.state.allConnectors.find(c => c.id === options?.id)
+    const connectSuccessEventMethod = options.type === 'AUTH' ? 'email' : 'browser'
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CONNECT_SUCCESS',
+      properties: {
+        method: connectSuccessEventMethod,
+        name: connector?.name || 'Unknown',
+        view: RouterController.state.view,
+        walletRank: connector?.explorerWallet?.order
+      }
+    })
+
     return connectData
   },
 

@@ -417,6 +417,23 @@ const controller = {
 
   resetConnectorIds() {
     state.activeConnectorIds = { ...defaultActiveConnectors }
+  },
+
+  extendConnectorsWithExplorerWallets(explorerWallets: WcWallet[]) {
+    state.allConnectors.forEach(connector => {
+      const explorerWallet = explorerWallets.find(
+        wallet =>
+          wallet.id === connector.id || (wallet.rdns && wallet.rdns === connector.info?.rdns)
+      )
+
+      if (explorerWallet) {
+        connector.explorerWallet = explorerWallet
+      }
+    })
+
+    const enabledNamespaces = ConnectorController.getEnabledNamespaces()
+    const enabledConnectors = ConnectorController.getEnabledConnectors(enabledNamespaces)
+    state.connectors = ConnectorController.mergeMultiChainConnectors(enabledConnectors)
   }
 }
 

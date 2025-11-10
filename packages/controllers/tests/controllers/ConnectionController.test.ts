@@ -151,6 +151,84 @@ describe('ConnectionController', () => {
     expect(clientConnectExternalSpy).toHaveBeenCalledWith(options)
   })
 
+  it('connectExternal() should send CONNECT_SUCCESS event for regular connector', async () => {
+    const mockConnector = {
+      id: externalId,
+      type: 'INJECTED' as ConnectorType,
+      name: 'Test Wallet',
+      chain: chain,
+      explorerWallet: { order: 5 }
+    } as Connector
+
+    ConnectorController.state.allConnectors = [mockConnector]
+    RouterController.state.view = 'Connect' as RouterControllerState['view']
+
+    const sendEventSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    const options = { id: externalId, type: 'INJECTED' as ConnectorType }
+    await ConnectionController.connectExternal(options, chain)
+
+    expect(sendEventSpy).toHaveBeenCalledWith({
+      type: 'track',
+      event: 'CONNECT_SUCCESS',
+      properties: {
+        method: 'browser',
+        name: 'Test Wallet',
+        view: 'Connect',
+        walletRank: 5
+      }
+    })
+  })
+
+  it('connectExternal() should send CONNECT_SUCCESS event for AUTH connector with email method', async () => {
+    const mockAuthConnector = {
+      id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
+      type: 'AUTH' as ConnectorType,
+      name: 'Email',
+      chain: chain
+    } as Connector
+
+    ConnectorController.state.allConnectors = [mockAuthConnector]
+    RouterController.state.view = 'Connect' as RouterControllerState['view']
+
+    const sendEventSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    const options = { id: CommonConstantsUtil.CONNECTOR_ID.AUTH, type: 'AUTH' as ConnectorType }
+    await ConnectionController.connectExternal(options, chain)
+
+    expect(sendEventSpy).toHaveBeenCalledWith({
+      type: 'track',
+      event: 'CONNECT_SUCCESS',
+      properties: {
+        method: 'email',
+        name: 'Email',
+        view: 'Connect',
+        walletRank: undefined
+      }
+    })
+  })
+
+  it('connectExternal() should send CONNECT_SUCCESS event with Unknown name when connector not found', async () => {
+    ConnectorController.state.allConnectors = []
+    RouterController.state.view = 'Account' as RouterControllerState['view']
+
+    const sendEventSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    const options = { id: 'unknown-connector', type: 'INJECTED' as ConnectorType }
+    await ConnectionController.connectExternal(options, chain)
+
+    expect(sendEventSpy).toHaveBeenCalledWith({
+      type: 'track',
+      event: 'CONNECT_SUCCESS',
+      properties: {
+        method: 'browser',
+        name: 'Unknown',
+        view: 'Account',
+        walletRank: undefined
+      }
+    })
+  })
+
   it('checkInstalled() should trigger internal client call', () => {
     ConnectionController.checkInstalled([externalId])
     expect(clientCheckInstalledSpy).toHaveBeenCalledWith([externalId])
@@ -637,5 +715,59 @@ describe('finalizeWcConnection', () => {
         })
       })
     )
+  })
+
+  it('should use qrcode method when wcLinking is not provided', () => {
+    const sendEventSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+      ...RouterController.state,
+      view: 'Connect' as RouterControllerState['view'],
+      data: { wallet: { name: 'QRWallet', id: 'qr-test' } }
+    })
+
+    vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
+      ...ConnectionController.state,
+      wcLinking: undefined,
+      recentWallet: { id: 'qr-test', order: 10, name: 'QRWallet' }
+    })
+
+    const address = '0xdef'
+
+    ConnectionController.finalizeWcConnection(address)
+
+    expect(sendEventSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'track',
+        event: 'CONNECT_SUCCESS',
+        address,
+        properties: expect.objectContaining({
+          method: 'qrcode',
+          name: 'QRWallet',
+          view: 'Connect',
+          walletRank: 10
+        })
+      })
+    )
+  })
+
+  it('should not send CONNECT_SUCCESS event when address is not provided', () => {
+    const sendEventSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+      ...RouterController.state,
+      view: 'Connect' as RouterControllerState['view'],
+      data: { wallet: { name: 'TestWallet', id: 'test' } }
+    })
+
+    vi.spyOn(ConnectionController, 'state', 'get').mockReturnValue({
+      ...ConnectionController.state,
+      wcLinking: { href: 'wc://deeplink', name: 'TestWallet' },
+      recentWallet: { id: 'test', order: 5, name: 'TestWallet' }
+    })
+
+    ConnectionController.finalizeWcConnection(undefined)
+
+    expect(sendEventSpy).not.toHaveBeenCalled()
   })
 })

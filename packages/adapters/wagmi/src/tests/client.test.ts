@@ -16,11 +16,12 @@ import {
 import * as wagmiCore from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { checksumAddress } from 'viem'
+import { type Address, checksumAddress } from 'viem'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
 import {
+  AdapterBlueprint,
   ChainController,
   type ConnectionControllerClient,
   ConnectorController,
@@ -474,18 +475,34 @@ describe('WagmiAdapter', () => {
       const mockTxHash = '0xtxhash'
       vi.mocked(wagmiWriteContract).mockResolvedValue(mockTxHash)
 
-      const result = await adapter.writeContract({
+      const writeContractParams = {
         caipNetwork: mockCaipNetworks[0],
         caipAddress: 'eip155:1:0x123',
-        tokenAddress: '0x123',
-        fromAddress: '0x456',
+        tokenAddress: '0x123' as Address,
+        fromAddress: '0x456' as Address,
         args: ['0x789', BigInt(1000)],
         abi: [],
         method: 'transfer',
         chainNamespace: 'eip155'
-      })
+      }
+
+      const result = await adapter.writeContract(
+        writeContractParams as AdapterBlueprint.WriteContractParams
+      )
 
       expect(result.hash).toBe(mockTxHash)
+      expect(wagmiWriteContract).toHaveBeenCalledWith(
+        adapter.wagmiConfig,
+        expect.objectContaining({
+          chain: adapter.wagmiChains?.[0],
+          address: writeContractParams.tokenAddress,
+          account: writeContractParams.fromAddress,
+          abi: writeContractParams.abi,
+          functionName: writeContractParams.method,
+          args: writeContractParams.args,
+          __mode: 'prepared'
+        })
+      )
     })
   })
 

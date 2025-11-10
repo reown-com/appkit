@@ -58,9 +58,10 @@ export class W3mAllWalletsSearch extends LitElement {
 
   private walletsTemplate() {
     const { search } = ApiController.state
-    const wallets = WalletUtil.markWalletsAsInstalled(search)
+    const markedInstalledWallets = WalletUtil.markWalletsAsInstalled(search)
+    const walletsByWcSupport = WalletUtil.filterWalletsByWcSupport(markedInstalledWallets)
 
-    if (!search.length) {
+    if (!walletsByWcSupport.length) {
       return html`
         <wui-flex
           data-testid="no-wallet-found"
@@ -85,7 +86,7 @@ export class W3mAllWalletsSearch extends LitElement {
         columngap="2"
         justifyContent="space-between"
       >
-        ${wallets.map(
+        ${walletsByWcSupport.map(
           (wallet, index) => html`
             <w3m-all-wallets-list-item
               @click=${() => this.onConnectWallet(wallet)}

@@ -1439,7 +1439,7 @@ export abstract class AppKitBaseClient {
             name: connector.info?.name || connector.name || 'Unknown',
             reconnect: true,
             view: RouterController.state.view,
-            walletRank: undefined
+            walletRank: connector?.explorerWallet?.order
           }
         })
       } else {
