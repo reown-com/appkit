@@ -33,7 +33,6 @@ import {
   type Address,
   BaseProvider,
   EthersHelpersUtil,
-  EthersProvider,
   InjectedProvider,
   type ProviderType,
   SafeProvider

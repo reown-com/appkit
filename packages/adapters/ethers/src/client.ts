@@ -34,7 +34,6 @@ import {
   type Address,
   BaseProvider,
   EthersHelpersUtil,
-  EthersProvider,
   InjectedProvider,
   type ProviderType,
   SafeProvider
@@ -244,7 +243,7 @@ export class EthersAdapter extends AdapterBlueprint {
       key => key !== 'metadata' && key !== 'EIP6963'
     )
 
-    connectors.forEach(async connector => {
+    const connectorPromises = connectors.map(async connector => {
       const isInjectedConnector = connector === CommonConstantsUtil.CONNECTOR_ID.INJECTED
 
       if (this.namespace) {
@@ -264,6 +263,8 @@ export class EthersAdapter extends AdapterBlueprint {
         })
       }
     })
+
+    await Promise.all(connectorPromises)
   }
 
   private async disconnectAll() {
