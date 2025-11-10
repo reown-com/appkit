@@ -401,6 +401,8 @@ export class WagmiAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.SendTransactionParams
   ): Promise<AdapterBlueprint.SendTransactionResult> {
     const { chainId, address } = getAccount(this.wagmiConfig)
+    const wagmiChain = this.wagmiChains?.find(chain => chain.id === chainId)
+
     const txParams = {
       account: address,
       to: params.to as Hex,
@@ -408,7 +410,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       gas: params.gas ? BigInt(params.gas) : undefined,
       gasPrice: params.gasPrice ? BigInt(params.gasPrice) : undefined,
       data: params.data as Hex,
-      chainId,
+      chain: wagmiChain,
       type: 'legacy' as const,
       parameters: ['nonce'] as const
     }
