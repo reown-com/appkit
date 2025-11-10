@@ -6,7 +6,6 @@ import { EthersProvider } from './EthersProvider'
 
 export class BaseProvider extends EthersProvider<ProviderInterface> {
   async initialize(): Promise<void> {
-    console.log('BaseProvider:initialize')
     const caipNetworks = ChainController.getCaipNetworks()
     const { metadata, coinbasePreference } = OptionsController.state
     try {
