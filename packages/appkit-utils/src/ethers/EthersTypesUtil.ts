@@ -3,7 +3,7 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import type { BaseProvider } from './BaseProvider.js'
-import type { InjectedProvider } from './EthersProvider.js'
+import type { InjectedProvider } from './InjectedProvider.js'
 import type { SafeProvider } from './SafeProvider.js'
 
 export type Address = `0x${string}`
