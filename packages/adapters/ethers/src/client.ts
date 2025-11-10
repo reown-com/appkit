@@ -461,7 +461,7 @@ export class EthersAdapter extends AdapterBlueprint {
       let selectedProvider = connector?.provider as Provider | undefined
       const ethersProvider =
         this.ethersProviders[connector.id as keyof Omit<ProviderType, 'metadata' | 'EIP6963'>]
-      if (ethersProvider && ethersProvider instanceof EthersProvider) {
+      if (ethersProvider) {
         await ethersProvider.initialize()
         selectedProvider = (await ethersProvider.getProvider()) as Provider | undefined
       }
@@ -469,6 +469,8 @@ export class EthersAdapter extends AdapterBlueprint {
       if (!selectedProvider) {
         throw new Error('Provider not found')
       }
+
+      connector.provider = selectedProvider
 
       let accounts: string[] = []
 
