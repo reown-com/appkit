@@ -33,8 +33,12 @@ export function AddTransactionModal({ isOpen, onClose, onSubmit }: IAddTransacti
   const [mode, setMode] = useState<'simple' | 'advanced'>('simple')
 
   function isValidHex(value: string): boolean {
-    if (!value) return true // Empty is valid (optional field)
-    return /^0x[0-9a-fA-F]*$/.test(value)
+    // Empty is valid (optional field)
+    if (!value) {
+      return true
+    }
+
+    return /^0x[0-9a-fA-F]*$/u.test(value)
   }
 
   function onAddTransaction() {
