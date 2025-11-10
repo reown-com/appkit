@@ -356,6 +356,11 @@ describe('useAppKitConnections', () => {
   })
 
   it('should return empty state when multiWallet is disabled', () => {
+    vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
+      connections: [],
+      recentConnections: []
+    })
+
     useSnapshot
       .mockReturnValueOnce({})
       .mockReturnValueOnce({})
@@ -670,6 +675,11 @@ describe('useAppKitConnection', () => {
   })
 
   it('should return empty state when multiWallet is disabled', () => {
+    vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
+      connections: [],
+      recentConnections: []
+    })
+
     useSnapshot
       .mockReturnValueOnce({
         connections: new Map(),
