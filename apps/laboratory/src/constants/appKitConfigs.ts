@@ -156,13 +156,6 @@ export const appKitConfigs = {
     adapters: ['wagmi'],
     networks: ConstantsUtil.EvmNetworks
   },
-  'wagmi-no-custom-wallets': {
-    ...commonAppKitConfig,
-    adapters: ['wagmi'],
-    wagmiConfig: commonWagmiConfig,
-    networks: ConstantsUtil.EvmNetworks,
-    customWallets: []
-  },
 
   // ----- Ethers5 Variants ------------------------------
   ethers5: {
@@ -238,12 +231,6 @@ export const appKitConfigs = {
     adapters: ['ethers'],
     networks: ConstantsUtil.EvmNetworks,
     debug: true
-  },
-  'ethers-no-custom-wallets': {
-    ...commonAppKitConfig,
-    adapters: ['ethers'],
-    networks: ConstantsUtil.EvmNetworks,
-    customWallets: []
   },
 
   // ----- Ethers Custom Variants ------------------------------
@@ -322,12 +309,6 @@ export const appKitConfigs = {
     ...commonAppKitConfig,
     adapters: ['solana'],
     networks: ConstantsUtil.SolanaNetworks
-  },
-  'solana-no-custom-wallets': {
-    ...commonAppKitConfig,
-    adapters: ['solana'],
-    networks: ConstantsUtil.SolanaNetworks,
-    customWallets: []
   },
 
   // ----- Multichain Variants ------------------------------
