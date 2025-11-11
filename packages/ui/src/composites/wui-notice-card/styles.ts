@@ -21,7 +21,7 @@ export default css`
     color: ${({ tokens }) => tokens.theme.textInvert};
     background-color: ${({ tokens }) => tokens.core.backgroundAccentPrimary};
     border-radius: ${({ borderRadius }) => borderRadius[2]};
-    align-items: normal;
+    align-items: center;
   }
 
   @media (hover: hover) {
