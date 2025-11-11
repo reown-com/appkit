@@ -16,6 +16,12 @@ import type { InjectedWalletApi, TonConnectEvent, TonWalletFeature } from './Ton
 
 const TONCONNECT_MANIFEST_URL = 'https://api.reown.com/ton/v1/manifest'
 
+/*
+ * Map to store unsubscribe functions for each wallet's event listeners
+ * Key: jsBridgeKey, Value: unsubscribe function returned by wallet.listen()
+ */
+const listenerUnsubscribes = new Map<string, () => void>()
+
 export const TonConnectUtil = {
   getTonConnectManifestUrl(): string {
     const { metadata, projectId } = OptionsController.state
@@ -90,12 +96,7 @@ export const TonConnectUtil = {
            * This matches the SDK's makeSubscriptions() pattern
            */
           if (typeof wallet.listen === 'function') {
-            wallet.listen((evt: TonConnectEvent) => {
-              // Handle future events like disconnect if needed
-              if (evt?.event === 'disconnect') {
-                // Connection was closed by wallet
-              }
-            })
+            this.setupWalletListener(jsBridgeKey, wallet)
           }
 
           return addr
@@ -124,6 +125,17 @@ export const TonConnectUtil = {
   async disconnectInjected(jsBridgeKey: string): Promise<void> {
     if (!CoreHelperUtil.isClient()) {
       return Promise.resolve()
+    }
+
+    // Clean up event listener for this wallet
+    const unsubscribe = listenerUnsubscribes.get(jsBridgeKey)
+    if (unsubscribe) {
+      try {
+        unsubscribe()
+      } catch {
+        // Ignore cleanup errors
+      }
+      listenerUnsubscribes.delete(jsBridgeKey)
     }
 
     const wallet = this.getTonConnect(jsBridgeKey)
@@ -542,5 +554,37 @@ export const TonConnectUtil = {
     }
 
     return window[jsBridgeKey as keyof Window]?.tonconnect as InjectedWalletApi | undefined
+  },
+
+  /**
+   * Sets up event listener for a wallet and stores the unsubscribe function.
+   * Cleans up any existing listener before setting up a new one.
+   */
+  setupWalletListener(jsBridgeKey: string, wallet: InjectedWalletApi): void {
+    // Clean up any existing listener for this wallet before setting up a new one
+    const existingUnsubscribe = listenerUnsubscribes.get(jsBridgeKey)
+    if (existingUnsubscribe) {
+      try {
+        existingUnsubscribe()
+      } catch {
+        // Ignore cleanup errors
+      }
+      listenerUnsubscribes.delete(jsBridgeKey)
+    }
+
+    // Set up new listener and store the unsubscribe function
+    const unsubscribe = wallet.listen((evt: TonConnectEvent) => {
+      /*
+       * Handle future events like disconnect if needed
+       * Connection was closed by wallet - clean up the listener when disconnected
+       */
+      if (evt?.event === 'disconnect') {
+        listenerUnsubscribes.delete(jsBridgeKey)
+      }
+    })
+
+    if (typeof unsubscribe === 'function') {
+      listenerUnsubscribes.set(jsBridgeKey, unsubscribe)
+    }
   }
 }
