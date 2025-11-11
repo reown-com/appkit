@@ -694,7 +694,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         socialUri
       })
 
-      const resolvedProvider = provider ?? (await connector.getProvider().catch())
+      const resolvedProvider = provider ?? (await connector.getProvider())
       return {
         address: this.toChecksummedAddress(res.accounts[0]),
         chainId: res.chainId,
