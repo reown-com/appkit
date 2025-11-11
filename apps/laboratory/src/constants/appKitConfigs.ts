@@ -159,6 +159,7 @@ export const appKitConfigs = {
   'wagmi-no-custom-wallets': {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
+    wagmiConfig: commonWagmiConfig,
     networks: ConstantsUtil.EvmNetworks,
     customWallets: []
   },
@@ -385,6 +386,7 @@ export const appKitConfigs = {
   },
   'multichain-no-custom-wallets': {
     ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
     adapters: ['wagmi', 'solana', 'bitcoin', 'ton'],
     networks: ConstantsUtil.AllNetworks,
     customWallets: []
