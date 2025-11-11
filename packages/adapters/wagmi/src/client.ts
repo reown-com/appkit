@@ -537,7 +537,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     )
 
     // Add third party connectors (Base Account, Safe, etc.)
-    this.addThirdPartyConnectors()
+    await this.addThirdPartyConnectors()
   }
 
   // Wagmi already handles connections
