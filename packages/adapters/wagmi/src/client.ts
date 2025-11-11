@@ -494,7 +494,10 @@ export class WagmiAdapter extends AdapterBlueprint {
       return
     }
 
-    const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
+    let provider: Provider | undefined = undefined
+    if (connector.id !== CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT) {
+      provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
+    }
 
     const customConnectorImages = AssetController.state.connectorImages
     this.addConnector({
@@ -534,7 +537,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     )
 
     // Add third party connectors (Base Account, Safe, etc.)
-    this.addThirdPartyConnectors()
+    await this.addThirdPartyConnectors()
   }
 
   // Wagmi already handles connections
@@ -691,10 +694,12 @@ export class WagmiAdapter extends AdapterBlueprint {
         socialUri
       })
 
+      const resolvedProvider = provider ?? (await connector.getProvider())
+
       return {
         address: this.toChecksummedAddress(res.accounts[0]),
         chainId: res.chainId,
-        provider: provider as Provider,
+        provider: resolvedProvider as Provider,
         type: type as ConnectorType,
         id
       }
