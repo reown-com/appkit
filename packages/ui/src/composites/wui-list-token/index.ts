@@ -40,9 +40,9 @@ export class WuiListToken extends LitElement {
             gap="1"
             class="token-name-container"
           >
-            <wui-text variant="md-regular" color="primary" lineClamp="1" whiteSpace="nowrap"
-              >${this.tokenName}</wui-text
-            >
+            <wui-text variant="md-regular" color="primary" lineClamp="1">
+              ${this.tokenName}
+            </wui-text>
             <wui-text variant="sm-regular-mono" color="secondary">
               ${NumberUtil.formatNumberToLocalString(this.tokenAmount, 4)} ${this.tokenCurrency}
             </wui-text>
