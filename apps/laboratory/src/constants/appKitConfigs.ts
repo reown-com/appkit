@@ -358,6 +358,13 @@ export const appKitConfigs = {
     networks: [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks],
     siweConfig
   },
+  'multichain-no-custom-wallets': {
+    ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
+    adapters: ['wagmi', 'solana', 'bitcoin', 'ton'],
+    networks: ConstantsUtil.AllNetworks,
+    customWallets: []
+  },
 
   // ----- Custom Variants ------------------------------
   'siwx-default': {
