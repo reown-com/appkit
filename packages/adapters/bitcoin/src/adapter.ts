@@ -56,28 +56,31 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('The connector does not support any of the requested chains')
     }
 
-    // const connection = this.getConnection({
-    //   address: params.address,
-    //   connectorId: connector.id,
-    //   connections: this.connections,
-    //   connectors: this.connectors
-    // })
+    // If we are already connected to the address, return the connection to prevent extra interactions
+    if (params.address) {
+      const connection = this.getConnection({
+        address: params.address,
+        connectorId: connector.id,
+        connections: this.connections,
+        connectors: this.connectors
+      })
 
-    // if (connection?.account ) {
-    //   this.emit('accountChanged', {
-    //     address: connection.account.address,
-    //     chainId: connection.caipNetwork?.id,
-    //     connector
-    //   })
+      if (connection?.account) {
+        this.emit('accountChanged', {
+          address: connection.account.address,
+          chainId: connection.caipNetwork?.id,
+          connector
+        })
 
-    //   return {
-    //     id: connector.id,
-    //     type: connector.type,
-    //     address: connection.account.address,
-    //     chainId: chain.id,
-    //     provider: connector.provider
-    //   }
-    // }
+        return {
+          id: connector.id,
+          type: connector.type,
+          address: connection.account.address,
+          chainId: chain.id,
+          provider: connector.provider
+        }
+      }
+    }
 
     const address = await connector.connect({ caipNetworkId: chain.caipNetworkId }).catch(err => {
       throw new UserRejectedRequestError(err)
