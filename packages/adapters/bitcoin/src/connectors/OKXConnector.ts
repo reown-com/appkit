@@ -50,7 +50,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     super()
     this.requestedChains = requestedChains
     this.requestedCaipNetworkId = requestedCaipNetworkId
-    this.imageUrl = window.okxwallet?.cardano?.icon || ''
+    this.imageUrl = typeof window !== 'undefined' ? window.okxwallet?.cardano?.icon || '' : ''
   }
 
   public get chains() {
