@@ -189,7 +189,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
       }
       const chain = this.chains.find(c => c.caipNetworkId === _caipNetworkId)
       if (!chain) {
-        throw new Error('OKXConnector:switchNetwork - chain is undefined')
+        throw new Error(`Chain not found: ${_caipNetworkId}`)
       }
       this.emit('chainChanged', chain.id)
     } catch (error) {
