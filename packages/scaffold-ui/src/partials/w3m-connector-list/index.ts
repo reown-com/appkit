@@ -7,6 +7,7 @@ import {
   ApiController,
   AssetController,
   AssetUtil,
+  ChainController,
   ConnectionController,
   ConnectorController,
   type ConnectorWithProviders,
@@ -98,42 +99,6 @@ export class W3mConnectorList extends LitElement {
   }
 
   // -- Private ------------------------------------------ //
-  private mapConnectorsToExplorerWallets(
-    connectors: ConnectorWithProviders[],
-    explorerWallets: WcWallet[]
-  ): ConnectorWithProviders[] {
-    return connectors.map(connector => {
-      if (connector.type === 'MULTI_CHAIN' && connector.connectors) {
-        const connectorIds = connector.connectors.map(c => c.id)
-        const connectorNames = connector.connectors.map(c => c.name)
-        const connectorRdns = connector.connectors.map(c => c.info?.rdns)
-
-        const explorerWallet = explorerWallets?.find(
-          wallet =>
-            connectorIds.includes(wallet.id) ||
-            connectorNames.includes(wallet.name) ||
-            (wallet.rdns &&
-              (connectorRdns.includes(wallet.rdns) || connectorIds.includes(wallet.rdns)))
-        )
-
-        connector.explorerWallet = explorerWallet ?? connector.explorerWallet
-
-        return connector
-      }
-
-      const explorerWallet = explorerWallets?.find(
-        wallet =>
-          wallet.id === connector.id ||
-          wallet.rdns === connector.info?.rdns ||
-          wallet.name === connector.name
-      )
-
-      connector.explorerWallet = explorerWallet ?? connector.explorerWallet
-
-      return connector
-    })
-  }
-
   private processConnectorsByType(
     connectors: ConnectorWithProviders[],
     shouldFilter = true
@@ -144,13 +109,8 @@ export class W3mConnectorList extends LitElement {
   }
 
   private connectorListTemplate() {
-    const mappedConnectors: ConnectorWithProviders[] = this.mapConnectorsToExplorerWallets(
-      this.connectors,
-      this.explorerWallets ?? []
-    )
-
     const byType = ConnectorUtil.getConnectorsByType(
-      mappedConnectors,
+      this.connectors,
       this.recommended,
       this.featured
     )
@@ -406,6 +366,8 @@ export class W3mConnectorList extends LitElement {
 
   private onClickWallet(item: WalletItem) {
     const redirectView = RouterController.state.data?.redirectView
+    const namespace = ChainController.state.activeChain
+
     if (item.subtype === 'featured') {
       ConnectorController.selectWalletConnector(item.wallet)
 
@@ -436,10 +398,9 @@ export class W3mConnectorList extends LitElement {
       return
     }
 
-    const connector = ConnectorController.getConnector({
-      id: item.wallet.id,
-      rdns: item.wallet.rdns
-    })
+    const connector = namespace
+      ? ConnectorController.getConnector({ id: item.wallet.id, namespace })
+      : undefined
 
     if (connector) {
       RouterController.push('ConnectingExternal', { connector, redirectView })

@@ -294,7 +294,9 @@ export const ConnectorUtil = {
     const isEmailEnabled = OptionsUtil.isEmailEnabled()
     const isSocialsEnabled = OptionsUtil.isSocialsEnabled()
 
-    const injectedWallets = injectedConnectors.filter(i => i.name !== 'Browser Wallet')
+    const injectedWallets = injectedConnectors.filter(
+      i => i.name !== 'Browser Wallet' && i.name !== 'WalletConnect'
+    )
 
     const featuredWalletAmount = featuredWalletIds?.length || 0
     const customWalletAmount = customWallets?.length || 0

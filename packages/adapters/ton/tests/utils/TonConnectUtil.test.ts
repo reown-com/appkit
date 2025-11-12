@@ -267,52 +267,27 @@ describe('TonConnectUtil', () => {
 
     it('should handle connect via event listener', async () => {
       const mockAddress = TON_ADDRESS
-      let eventCallback: ((evt: any) => void) | undefined
 
       mockWallet.restoreConnection.mockResolvedValue({ event: 'disconnect' })
-      mockWallet.connect.mockImplementation(() => {
-        // Simulate event being fired asynchronously
-        setTimeout(() => {
-          if (eventCallback) {
-            eventCallback({
-              event: 'connect',
-              payload: {
-                items: [{ name: 'ton_addr', address: mockAddress }]
-              }
-            })
-          }
-        }, 0)
-        return Promise.resolve({ event: 'pending' })
+      mockWallet.connect.mockResolvedValue({
+        event: 'connect',
+        payload: {
+          items: [{ name: 'ton_addr', address: mockAddress }]
+        }
       })
-      mockWallet.listen.mockImplementation(callback => {
-        eventCallback = callback
-        return () => {}
-      })
+      mockWallet.listen.mockReturnValue(() => {})
 
       const result = await TonConnectUtil.connectInjected('tonkeeper')
       expect(result).toBe(mockAddress)
     })
 
     it('should handle connect_error event', async () => {
-      let eventCallback: ((evt: any) => void) | undefined
-
       mockWallet.restoreConnection.mockResolvedValue({ event: 'disconnect' })
-      mockWallet.connect.mockImplementation(() => {
-        // Simulate error event being fired asynchronously
-        setTimeout(() => {
-          if (eventCallback) {
-            eventCallback({
-              event: 'connect_error',
-              payload: { message: 'User rejected' }
-            })
-          }
-        }, 0)
-        return Promise.resolve({ event: 'pending' })
+      mockWallet.connect.mockResolvedValue({
+        event: 'connect_error',
+        payload: { message: 'User rejected' }
       })
-      mockWallet.listen.mockImplementation(callback => {
-        eventCallback = callback
-        return () => {}
-      })
+      mockWallet.listen.mockReturnValue(() => {})
 
       await expect(TonConnectUtil.connectInjected('tonkeeper')).rejects.toThrow('User rejected')
     })

@@ -55,6 +55,13 @@ const commonWagmiConfig = {
 } as WagmiConfig
 
 export const appKitConfigs = {
+  headless: {
+    ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
+    adapters: ['wagmi', 'solana', 'bitcoin', 'ton'],
+    networks: ConstantsUtil.AllNetworks,
+    enableHeadless: true
+  },
   // ----- Wagmi Variants ------------------------------
   wagmi: {
     ...commonAppKitConfig,
@@ -357,6 +364,13 @@ export const appKitConfigs = {
     adapters: ['ethers5', 'solana'],
     networks: [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks],
     siweConfig
+  },
+  'multichain-no-custom-wallets': {
+    ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
+    adapters: ['wagmi', 'solana', 'bitcoin', 'ton'],
+    networks: ConstantsUtil.AllNetworks,
+    customWallets: []
   },
 
   // ----- Custom Variants ------------------------------

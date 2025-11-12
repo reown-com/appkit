@@ -119,6 +119,10 @@ export type Connector = {
   explorerWallet?: WcWallet
 }
 
+export interface ConnectorWithProviders extends Connector {
+  connectors?: Connector[]
+}
+
 export interface AuthConnector extends Connector {
   provider: W3mFrameProvider
   socials?: SocialProvider[]
@@ -152,6 +156,7 @@ export interface WcWallet {
   id: string
   name: string
   badge_type?: BadgeType
+  description?: string
   chains?: CaipNetworkId[]
   homepage?: string
   image_id?: string
@@ -172,6 +177,7 @@ export interface WcWallet {
       }[]
     | null
   display_index?: number
+  supports_wc?: boolean
 }
 
 export interface ApiGetWalletsRequest {
@@ -1262,6 +1268,7 @@ export type RemoteFeatures = {
   payWithExchange?: boolean
   payments?: boolean
   onramp?: OnRampProvider[] | false
+  headless?: boolean
 }
 
 export type Features = {
@@ -1418,7 +1425,7 @@ export type FeatureID =
   | 'fund_from_exchange'
   | 'payments'
   | 'reown_authentication'
-
+  | 'headless'
 export interface BaseFeature<T extends FeatureID, C extends string[] | null> {
   id: T
   isEnabled: boolean
@@ -1433,6 +1440,7 @@ export type TypedFeatureConfig =
   | BaseFeature<'reown_branding', null | []>
   | BaseFeature<'multi_wallet', null | []>
   | BaseFeature<'email_capture', EmailCaptureOptions[]>
+  | BaseFeature<'headless', null | []>
 
 export type ApiGetProjectConfigResponse = {
   features: TypedFeatureConfig[]
@@ -1508,6 +1516,12 @@ export type FeatureConfigMap = {
   reownAuthentication: {
     apiFeatureName: 'reown_authentication'
     localFeatureName: 'reownAuthentication'
+    returnType: boolean
+    isLegacy: false
+  }
+  headless: {
+    apiFeatureName: 'headless'
+    localFeatureName: 'headless'
     returnType: boolean
     isLegacy: false
   }
