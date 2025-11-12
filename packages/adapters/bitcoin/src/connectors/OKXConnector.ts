@@ -307,7 +307,7 @@ export namespace OKXConnector {
     getPublicKey(): Promise<string>
   }
 
-  export type GetWalletParams = Omit<ConstructorParams, 'wallet' | 'imageUrl' | 'requestedChains'>
+  export type GetWalletParams = Omit<ConstructorParams, 'requestedChains'>
 
   export type SignPSBTParams = {
     toSignInputs: Omit<BitcoinConnector.SignPSBTParams['signInputs'][number], 'useTweakedSigner'>[]
