@@ -5,7 +5,7 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   ConstantsUtil
 } from '@reown/appkit-common'
-import { ChainController, CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
+import { ChainController, type RequestArguments } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
@@ -23,11 +23,11 @@ const OKX_NETWORK_KEYS = {
 
 declare global {
   interface Window {
-    okxwallet: {
-      bitcoin: OKXConnector.Wallet
-      bitcoinTestnet: OKXConnector.Wallet
-      bitcoinSignet: OKXConnector.Wallet
-      cardano: { icon: string }
+    okxwallet?: {
+      bitcoin?: OKXConnector.Wallet
+      bitcoinTestnet?: OKXConnector.Wallet
+      bitcoinSignet?: OKXConnector.Wallet
+      cardano?: { icon: string }
     }
   }
 }
@@ -72,10 +72,6 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     }
     const wallet = this.getWallet({ requestedCaipNetworkId: caipNetworkId })
 
-    if (!wallet) {
-      throw new Error('No wallet available')
-    }
-
     this.bindEvents({ wallet })
 
     const result = await wallet.connect()
@@ -85,9 +81,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
   public async disconnect(): Promise<void> {
     const wallet = this.getWallet()
-    if (!wallet) {
-      throw new Error('No wallet available')
-    }
+
     this.unbindEvents({ wallet })
     await wallet.disconnect()
   }
@@ -100,9 +94,6 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
       ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId
 
     const wallet = this.getWallet({ requestedCaipNetworkId: caipNetworkId })
-    if (!wallet) {
-      throw new Error('No wallet available')
-    }
 
     if (caipNetworkId === bitcoinSignet.caipNetworkId) {
       return [wallet.selectedAccount]
@@ -124,9 +115,6 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     const protocol = params.protocol === 'bip322' ? 'bip322-simple' : params.protocol
 
     const wallet = this.getWallet()
-    if (!wallet) {
-      throw new Error('No wallet available')
-    }
 
     return wallet.signMessage(params.message, protocol)
   }
@@ -140,9 +128,6 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
     const requestedCaipNetworkId = network.caipNetworkId ?? this.requestedCaipNetworkId
     const wallet = this.getWallet({ requestedCaipNetworkId })
-    if (!wallet) {
-      throw new Error('No wallet available')
-    }
 
     const from = (await wallet.getAccounts())[0]
 
@@ -179,9 +164,6 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     }
 
     const wallet = this.getWallet()
-    if (!wallet) {
-      throw new Error('No wallet available')
-    }
 
     const signedPsbtHex = await wallet.signPsbt(psbtHex, options)
 
@@ -236,15 +218,11 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     wallet.removeAllListeners()
   }
 
-  public getWallet(params?: OKXConnector.GetWalletParams): OKXConnector.Wallet | undefined {
+  public getWallet(params?: OKXConnector.GetWalletParams): OKXConnector.Wallet {
     const requestedCaipNetworkId =
       params?.requestedCaipNetworkId ??
       ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId ??
       this.requestedCaipNetworkId
-
-    if (!CoreHelperUtil.isClient()) {
-      return undefined
-    }
 
     const okxwallet = window.okxwallet
 
@@ -252,14 +230,15 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
     const wallet = okxwallet?.[networkKey] || okxwallet?.bitcoin
 
+    if (!wallet) {
+      throw new Error('No wallet available')
+    }
+
     return wallet
   }
 
   public async getPublicKey(): Promise<string> {
     const wallet = this.getWallet()
-    if (!wallet) {
-      throw new Error('No wallet available')
-    }
 
     return wallet.getPublicKey()
   }
