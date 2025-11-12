@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { toast } from 'sonner'
 
@@ -76,6 +76,7 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
         <div className={cn('flex-1', showQRCode && 'border-r border-border')}>
           {showWalletSearch ? (
             <WalletConnectWalletsContent
+              connectingWallet={connectingWallet}
               onBack={() => setShowWalletSearch(false)}
               onWalletClick={handleWalletConnectClick}
             />
