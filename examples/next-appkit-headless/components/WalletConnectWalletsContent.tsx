@@ -2,8 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { ArrowLeftIcon, ChevronRightIcon, Loader2Icon, SearchIcon } from 'lucide-react'
-import Image from 'next/image'
+import { ArrowLeftIcon, Loader2Icon, SearchIcon } from 'lucide-react'
 
 import type { WalletItem } from '@reown/appkit'
 import { useAppKitWallets } from '@reown/appkit/react'
@@ -11,10 +10,11 @@ import { useAppKitWallets } from '@reown/appkit/react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item'
-import { cn } from '@/lib/utils'
+
+import { WalletConnectWalletItem } from './WalletConnectWalletItem'
 
 type Props = {
+  connectingWallet: WalletItem | undefined
   onBack?: () => void
   onWalletClick?: (wallet: WalletItem) => void
 }
@@ -35,7 +35,7 @@ function useDebounceValue(value: string, delay: number) {
   return debouncedValue
 }
 
-export function WalletConnectWalletsContent({ onBack, onWalletClick }: Props) {
+export function WalletConnectWalletsContent({ connectingWallet, onBack, onWalletClick }: Props) {
   const { data, isFetchingWallets, page, count, fetchWallets } = useAppKitWallets()
   const [inputValue, setInputValue] = useState('')
   const searchQuery = useDebounceValue(inputValue, 500)
@@ -122,35 +122,14 @@ export function WalletConnectWalletsContent({ onBack, onWalletClick }: Props) {
             </div>
           ) : (
             <>
-              {wcWallets.map(item => {
-                return (
-                  <Item
-                    key={item.id}
-                    variant="outline"
-                    size="sm"
-                    className={cn('cursor-pointer transition-colors hover:bg-accent/50')}
-                    onClick={() => handleWalletClick(item)}
-                  >
-                    <div className="flex w-full items-center">
-                      <ItemMedia className="mr-2 size-6 shrink-0 overflow-hidden rounded-sm">
-                        <Image
-                          src={item.imageUrl}
-                          alt={item.name}
-                          width={24}
-                          height={24}
-                          className="size-full object-cover"
-                        />
-                      </ItemMedia>
-                      <ItemContent className="min-w-0 flex-1">
-                        <ItemTitle className="truncate">{item.name}</ItemTitle>
-                      </ItemContent>
-                      <ItemActions>
-                        <ChevronRightIcon className="size-4" />
-                      </ItemActions>
-                    </div>
-                  </Item>
-                )
-              })}
+              {wcWallets.map(item => (
+                <WalletConnectWalletItem
+                  key={item.id}
+                  connectingWallet={connectingWallet}
+                  wallet={item}
+                  onClick={handleWalletClick}
+                />
+              ))}
 
               {/* Intersection Observer Target */}
               {!isFetchingWallets && searchQuery.length === 0 && (

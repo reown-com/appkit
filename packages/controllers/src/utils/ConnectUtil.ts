@@ -44,7 +44,10 @@ export const ConnectUtil = {
 
     const wcConnector = connectors.find(c => c.id === 'walletConnect')
     const filteredConnectors = connectors.filter(
-      c => c.type !== 'AUTH' && c.name !== 'Browser Wallet' && c.id !== wcConnector?.id
+      c =>
+        (c.type === 'INJECTED' || c.type === 'ANNOUNCED' || c.type === 'MULTI_CHAIN') &&
+        c.name !== 'Browser Wallet' &&
+        c.name !== 'WalletConnect'
     )
 
     filteredConnectors.forEach(connector => {

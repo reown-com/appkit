@@ -6,12 +6,14 @@ import Image from 'next/image'
 import type { WalletItem } from '@reown/appkit'
 import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
 import type { ChainNamespace } from '@reown/appkit/networks'
+import { useAppKitWallets } from '@reown/appkit/react'
 
 import { Button } from '@/components/ui/button'
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldGroup, FieldSeparator } from '@/components/ui/field'
 import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item'
 
+import { WalletConnectWalletItem } from './WalletConnectWalletItem'
 import { Badge } from './ui/badge'
 
 type Props = {
@@ -29,7 +31,10 @@ export function InjectedWalletsCardContent({
   handleOpenNamespaceDialog,
   setShowWalletSearch
 }: Props) {
+  const { data } = useAppKitWallets()
   const { connect: connectWithWalletButton } = useAppKitWallet()
+
+  const wcWallet = data.find(w => !w.isInjected && w.name === 'WalletConnect')
 
   return (
     <div className="p-6">
@@ -44,6 +49,13 @@ export function InjectedWalletsCardContent({
           <FieldGroup className="flex flex-col">
             <FieldGroup className="flex flex-col gap-2">
               <Field className="max-h-[300px] overflow-y-auto">
+                {wcWallet ? (
+                  <WalletConnectWalletItem
+                    selectedWallet={connectingWallet}
+                    wallet={wcWallet}
+                    onClick={handleConnect}
+                  />
+                ) : null}
                 {wallets.map(item => {
                   const isMultiChain = item.connectors.length > 1
 
