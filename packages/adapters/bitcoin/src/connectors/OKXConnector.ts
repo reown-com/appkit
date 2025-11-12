@@ -5,7 +5,7 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   ConstantsUtil
 } from '@reown/appkit-common'
-import { ChainController, type RequestArguments } from '@reown/appkit-controllers'
+import { ChainController, CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
@@ -223,17 +223,18 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
       ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId ??
       this.requestedCaipNetworkId
 
-    const okxwallet = window.okxwallet
+    if (CoreHelperUtil.isClient()) {
+      const okxwallet = window.okxwallet
+      const networkKey = OKX_NETWORK_KEYS[requestedCaipNetworkId as keyof typeof OKX_NETWORK_KEYS]
 
-    const networkKey = OKX_NETWORK_KEYS[requestedCaipNetworkId as keyof typeof OKX_NETWORK_KEYS]
+      const wallet = okxwallet?.[networkKey] || okxwallet?.bitcoin
 
-    const wallet = okxwallet?.[networkKey] || okxwallet?.bitcoin
-
-    if (!wallet) {
-      throw new Error('No wallet available')
+      if (wallet) {
+        return wallet
+      }
     }
 
-    return wallet
+    throw new Error('No wallet available')
   }
 
   public async getPublicKey(): Promise<string> {
