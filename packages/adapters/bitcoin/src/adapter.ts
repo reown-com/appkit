@@ -192,7 +192,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         ?.caipNetworkId
     })
 
-    if (okxConnector) {
+    if (CoreHelperUtil.isClient()) {
       this.addConnector(okxConnector)
     }
 
