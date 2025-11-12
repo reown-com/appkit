@@ -50,13 +50,22 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     super()
     this.requestedChains = requestedChains
     this.requestedCaipNetworkId = requestedCaipNetworkId
-    this.imageUrl = typeof window !== 'undefined' ? window.okxwallet?.cardano?.icon || '' : ''
+    this.imageUrl = typeof window === 'undefined' ? '' : window.okxwallet?.cardano?.icon || ''
   }
 
   public get chains() {
     return this.requestedChains
   }
-  private async _connect(caipNetworkId: CaipNetwork['caipNetworkId']): Promise<string> {
+
+  public async connect(params?: { caipNetworkId?: CaipNetworkId }): Promise<string> {
+    const caipNetworkId =
+      params?.caipNetworkId ??
+      ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId
+
+    if (!caipNetworkId) {
+      throw new Error('No active network available')
+    }
+
     const currentWallet = this.getWallet()
     if (currentWallet) {
       this.unbindEvents({ wallet: currentWallet })
@@ -72,18 +81,6 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     const result = await wallet.connect()
 
     return result.address
-  }
-
-  public async connect(params?: { caipNetworkId?: CaipNetworkId }): Promise<string> {
-    const caipNetworkId =
-      params?.caipNetworkId ??
-      ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId
-
-    if (!caipNetworkId) {
-      throw new Error('No active network available')
-    }
-
-    return this._connect(caipNetworkId)
   }
 
   public async disconnect(): Promise<void> {
@@ -130,6 +127,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     if (!wallet) {
       throw new Error('No wallet available')
     }
+
     return wallet.signMessage(params.message, protocol)
   }
 
@@ -207,7 +205,6 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
       if (currentWallet) {
         this.unbindEvents({ wallet: currentWallet })
       }
-      // await this._connect(_caipNetworkId)
       const chain = this.chains.find(c => c.caipNetworkId === _caipNetworkId)
       if (!chain) {
         throw new Error('OKXConnector:switchNetwork - chain is undefined')
