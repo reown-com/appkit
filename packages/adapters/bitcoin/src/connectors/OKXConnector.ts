@@ -236,7 +236,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     wallet.removeAllListeners()
   }
 
-  private getWallet(params?: OKXConnector.GetWalletParams): OKXConnector.Wallet | undefined {
+  public getWallet(params?: OKXConnector.GetWalletParams): OKXConnector.Wallet | undefined {
     const requestedCaipNetworkId =
       params?.requestedCaipNetworkId ??
       ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId ??
