@@ -92,11 +92,11 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     await wallet.disconnect()
   }
 
-  public async getAccountAddresses(params: {
+  public async getAccountAddresses(params?: {
     caipNetworkId?: CaipNetwork['caipNetworkId']
   }): Promise<BitcoinConnector.AccountAddress[]> {
     const caipNetworkId =
-      params.caipNetworkId ??
+      params?.caipNetworkId ??
       ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId
 
     const wallet = this.getWallet({ requestedCaipNetworkId: caipNetworkId })
