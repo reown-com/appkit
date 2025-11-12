@@ -81,9 +81,8 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
   public async disconnect(): Promise<void> {
     const wallet = this.getWallet()
-
-    this.unbindEvents({ wallet })
     await wallet.disconnect()
+    this.unbindEvents({ wallet })
   }
 
   public async getAccountAddresses(params?: {
