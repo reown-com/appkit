@@ -51,7 +51,7 @@ export function InjectedWalletsCardContent({
               <Field className="max-h-[300px] overflow-y-auto">
                 {wcWallet ? (
                   <WalletConnectWalletItem
-                    selectedWallet={connectingWallet}
+                    connectingWallet={connectingWallet}
                     wallet={wcWallet}
                     onClick={handleConnect}
                   />
