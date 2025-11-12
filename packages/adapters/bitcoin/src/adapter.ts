@@ -509,7 +509,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('BitcoinAdapter:switchNetwork - provider is undefined')
     }
 
-    await provider.switchNetwork(params.caipNetwork.caipNetworkId)
+    return await provider.switchNetwork(params.caipNetwork.caipNetworkId)
   }
 
   // -- Unused => Refactor ------------------------------------------- //
