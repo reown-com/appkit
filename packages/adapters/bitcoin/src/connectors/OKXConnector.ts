@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/require-await */
 import {
   type CaipNetwork,
+  type CaipNetworkId,
   ConstantsUtil as CommonConstantsUtil,
   ConstantsUtil
 } from '@reown/appkit-common'
@@ -53,11 +54,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   }
 
   public get chains() {
-    return this.requestedChains.filter(
-      chain =>
-        chain.caipNetworkId ===
-        ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId
-    )
+    return this.requestedChains
   }
   private async _connect(caipNetworkId: CaipNetwork['caipNetworkId']): Promise<string> {
     const currentWallet = this.getWallet()
@@ -77,10 +74,10 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     return result.address
   }
 
-  public async connect(): Promise<string> {
-    const caipNetworkId = ChainController.getActiveCaipNetwork(
-      ConstantsUtil.CHAIN.BITCOIN
-    )?.caipNetworkId
+  public async connect(params?: { caipNetworkId?: CaipNetworkId }): Promise<string> {
+    const caipNetworkId =
+      params?.caipNetworkId ??
+      ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId
 
     if (!caipNetworkId) {
       throw new Error('No active network available')
@@ -105,23 +102,18 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
       params.caipNetworkId ??
       ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId
 
-    console.trace('>> Get account addresses', caipNetworkId)
     const wallet = this.getWallet({ requestedCaipNetworkId: caipNetworkId })
-    console.log('>> Wallet', wallet)
     if (!wallet) {
       throw new Error('No wallet available')
     }
 
     if (caipNetworkId === bitcoinSignet.caipNetworkId) {
-      console.log('>> Selected account', wallet.selectedAccount)
       return [wallet.selectedAccount]
     }
 
     const accounts = await wallet.getAccounts()
-    console.log('>> Get accounts', accounts)
     const publicKeyOfActiveAccount = await wallet.getPublicKey()
 
-    console.log('>> Accounts', accounts)
     const accountList = accounts.map(account => ({
       address: account,
       purpose: AddressPurpose.Payment,
@@ -215,8 +207,12 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
       if (currentWallet) {
         this.unbindEvents({ wallet: currentWallet })
       }
-      await this._connect(_caipNetworkId)
-      this.emit('chainChanged', _caipNetworkId)
+      // await this._connect(_caipNetworkId)
+      const chain = this.chains.find(c => c.caipNetworkId === _caipNetworkId)
+      if (!chain) {
+        throw new Error('OKXConnector:switchNetwork - chain is undefined')
+      }
+      this.emit('chainChanged', chain.id)
     } catch (error) {
       throw new Error(`${this.name} wallet does not support network switching`)
     }
@@ -231,7 +227,6 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
     wallet.on('accountChanged', account => {
       if (typeof account === 'object' && account && 'address' in account) {
-        console.log('>> Account changed', account)
         this.emit('accountsChanged', [account.address])
       }
     })

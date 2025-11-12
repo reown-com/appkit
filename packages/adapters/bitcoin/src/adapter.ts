@@ -1,12 +1,7 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 
 import { type AppKitOptions, CoreHelperUtil, type Provider } from '@reown/appkit'
-import {
-  type CaipNetworkId,
-  type ChainNamespace,
-  ConstantsUtil,
-  UserRejectedRequestError
-} from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AdapterBlueprint,
@@ -61,40 +56,30 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('The connector does not support any of the requested chains')
     }
 
-    console.log('>> Connect - wtf', {
-      address: params.address,
-      connectorId: connector.id,
-      connections: this.connections,
-      connectors: this.connectors
-    })
+    // const connection = this.getConnection({
+    //   address: params.address,
+    //   connectorId: connector.id,
+    //   connections: this.connections,
+    //   connectors: this.connectors
+    // })
 
-    const connection = this.getConnection({
-      address: params.address,
-      connectorId: connector.id,
-      connections: this.connections,
-      connectors: this.connectors
-    })
+    // if (connection?.account ) {
+    //   this.emit('accountChanged', {
+    //     address: connection.account.address,
+    //     chainId: connection.caipNetwork?.id,
+    //     connector
+    //   })
 
-    console.log('>> Connect - Connection', connection)
+    //   return {
+    //     id: connector.id,
+    //     type: connector.type,
+    //     address: connection.account.address,
+    //     chainId: chain.id,
+    //     provider: connector.provider
+    //   }
+    // }
 
-    if (connection?.account) {
-      this.emit('accountChanged', {
-        address: connection.account.address,
-        chainId: connection.caipNetwork?.id,
-        connector
-      })
-
-      return {
-        id: connector.id,
-        type: connector.type,
-        address: connection.account.address,
-        chainId: chain.id,
-        provider: connector.provider
-      }
-    }
-
-    const address = await connector.connect().catch(err => {
-      console.error('>> Error connecting to OKX', err)
+    const address = await connector.connect({ caipNetworkId: chain.caipNetworkId }).catch(err => {
       throw new UserRejectedRequestError(err)
     })
     const accounts = await this.getAccounts({
@@ -140,7 +125,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       ?.getAccountAddresses({ caipNetworkId: params.caipNetworkId })
       .catch(() => [])
 
-    console.log('>> Get accounts outer', addresses)
     let accounts = addresses?.map(a =>
       CoreHelperUtil.createAccount(
         ConstantsUtil.CHAIN.BITCOIN,
@@ -239,8 +223,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       const { address } = CoreHelperUtil.getAccount(accounts[0])
 
       const allAccounts = await this.getAccounts({ id: connectorId })
-      console.log('>> All accounts', allAccounts)
-      console.log('>> Address', address)
       const connection = this.getConnection({
         connectorId,
         connections: this.connections,
@@ -524,7 +506,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('BitcoinAdapter:switchNetwork - provider is undefined')
     }
 
-    return await provider.switchNetwork(params.caipNetwork.caipNetworkId)
+    await provider.switchNetwork(params.caipNetwork.caipNetworkId)
   }
 
   // -- Unused => Refactor ------------------------------------------- //
@@ -584,48 +566,28 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   }
 
   // -- Protected ------------------------------------------ //
-  protected override async onChainChanged(caipNetworkId: string, connectorId: string) {
-    console.log('>> On chain changed', caipNetworkId, connectorId)
+  protected override async onChainChanged(chainId: string, connectorId: string) {
     const connector = this.connectors.find(c => c.id === connectorId)
 
     if (!connector) {
       throw new Error('BitcoinAdapter:onChainChanged - connector is undefined')
     }
+    const chain = connector.chains.find(c => c.id === chainId) || connector.chains[0]
+
+    if (!chain) {
+      throw new Error('BitcoinAdapter:onChainChanged - chain is undefined')
+    }
 
     const { address } = await this.connect({
       id: connector.id,
-      chainId: caipNetworkId,
+      chainId,
       type: ''
     })
 
-    console.log('>> onChainChanged - Connect', address)
-
     const accounts = await this.getAccounts({
       id: connector.id,
-      caipNetworkId: caipNetworkId as CaipNetworkId
+      caipNetworkId: chain?.caipNetworkId
     })
-
-    console.log('>> onChainChanged - Accounts', accounts)
-
-    const chain = connector.chains.find(c => c.id === caipNetworkId) || connector.chains[0]
-
-    console.log('>> onChainChanged - Chain', chain)
-
-    if (
-      HelpersUtil.isLowerCaseMatch(
-        this.getConnectorId(CommonConstantsUtil.CHAIN.BITCOIN),
-        connector.id
-      )
-    ) {
-      this.emit('switchNetwork', { chainId: caipNetworkId, address })
-    }
-
-    // // In BIP122 accounts are different per network.
-    // this.emit('accountChanged', {
-    //   address,
-    //   chainId: caipNetworkId,
-    //   connector
-    // })
 
     this.addConnection({
       connectorId: connector.id,
@@ -637,6 +599,15 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       })),
       caipNetwork: chain
     })
+
+    if (
+      HelpersUtil.isLowerCaseMatch(
+        this.getConnectorId(CommonConstantsUtil.CHAIN.BITCOIN),
+        connector.id
+      )
+    ) {
+      this.emit('switchNetwork', { chainId: chain.id, address })
+    }
   }
 
   // -- Private ------------------------------------------ //
