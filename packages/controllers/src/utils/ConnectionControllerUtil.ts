@@ -1,15 +1,21 @@
 import { type ChainNamespace } from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 
+import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
+import { RouterController } from '../controllers/RouterController.js'
 
 // -- Types ------------------------------------------ //
 interface ExcludeConnectorAddressFromConnectionsParamters {
   connections: Connection[]
   connectorId?: string
   addresses?: string[]
+}
+
+interface ConnectParameters {
+  namespace: ChainNamespace
 }
 
 // -- Utils ------------------------------------------ //
@@ -96,5 +102,33 @@ export const ConnectionControllerUtil = {
       connections,
       recentConnections: dedupedRecentConnections
     }
+  },
+  async connect({ namespace }: ConnectParameters) {
+    ConnectorController.setFilterByNamespace(namespace)
+    RouterController.push('Connect', {
+      addWalletForNamespace: namespace
+    })
+
+    return new Promise(resolve => {
+      if (namespace) {
+        const unsubscribe = ChainController.subscribeChainProp(
+          'accountState',
+          val => {
+            if (val?.caipAddress) {
+              resolve(val?.caipAddress)
+              unsubscribe()
+            }
+          },
+          namespace
+        )
+      } else {
+        const unsubscribe = ChainController.subscribeKey('activeCaipAddress', val => {
+          if (val) {
+            resolve(val)
+            unsubscribe()
+          }
+        })
+      }
+    })
   }
 }

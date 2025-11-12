@@ -12,7 +12,8 @@ export const bitcoin = defineChain({
   },
   rpcUrls: {
     default: { http: ['https://rpc.walletconnect.org/v1'] }
-  }
+  },
+  blockExplorers: { default: { name: 'Mempool', url: 'https://mempool.space' } }
 })
 
 export const bitcoinTestnet = defineChain({
@@ -28,7 +29,8 @@ export const bitcoinTestnet = defineChain({
   rpcUrls: {
     default: { http: ['https://rpc.walletconnect.org/v1'] }
   },
-  testnet: true
+  testnet: true,
+  blockExplorers: { default: { name: 'Mempool', url: 'https://mempool.space' } }
 })
 
 export const bitcoinSignet = defineChain({
@@ -44,5 +46,6 @@ export const bitcoinSignet = defineChain({
   rpcUrls: {
     default: { http: ['https://rpc.walletconnect.org/v1'] }
   },
-  testnet: true
+  testnet: true,
+  blockExplorers: { default: { name: 'Mempool', url: 'https://mempool.space' } }
 })

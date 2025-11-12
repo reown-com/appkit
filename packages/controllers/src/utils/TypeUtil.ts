@@ -1175,6 +1175,7 @@ export type SendTransactionArgs =
       address: Address
     }
   | { chainNamespace: 'solana'; to: string; value: number; tokenMint?: string }
+  | { chainNamespace: 'bip122'; to: string; value: number }
 
 export type EstimateGasTransactionArgs =
   | {
@@ -1534,4 +1535,13 @@ export type Tier = 'none' | 'starter' | 'pro' | 'enteprise'
 export type ProjectLimits = {
   isAboveRpcLimit: boolean
   isAboveMauLimit: boolean
+}
+
+export type TransfersToken = {
+  name: string
+  symbol: string
+  address: string
+  decimals: number
+  logoUri: string
+  caipNetworkId: CaipNetworkId
 }

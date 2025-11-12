@@ -47,7 +47,7 @@ export default css`
     flex: 1;
   }
 
-  :host > wui-flex > wui-image,
+  wui-image.token-image,
   :host > wui-flex > .token-item-image-placeholder {
     width: 40px;
     max-width: 40px;
@@ -56,13 +56,23 @@ export default css`
     position: relative;
   }
 
+  wui-image.chain-image {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: ${({ borderRadius }) => borderRadius[32]};
+    bottom: -2px;
+    right: -6px;
+    border: 1px solid ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
   :host > wui-flex > .token-item-image-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  :host > wui-flex > wui-image::after,
+  wui-image.token-image::after,
   :host > wui-flex > .token-item-image-placeholder::after {
     position: absolute;
     content: '';
@@ -77,5 +87,12 @@ export default css`
     border: none;
     width: 36px;
     height: 36px;
+  }
+
+  .left-image-container {
+    position: relative;
+    justify-content: flex-start;
+    align-items: center;
+    max-width: fit-content;
   }
 `

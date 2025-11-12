@@ -1,7 +1,12 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 
 import { type AppKitOptions, CoreHelperUtil, type Provider } from '@reown/appkit'
-import { type ChainNamespace, ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
+import {
+  type ChainNamespace,
+  ConstantsUtil,
+  NumberUtil,
+  UserRejectedRequestError
+} from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AdapterBlueprint,
@@ -516,11 +521,27 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return Promise.resolve({} as unknown as AdapterBlueprint.EstimateGasTransactionResult)
   }
 
-  override sendTransaction(
+  override async sendTransaction(
     _params: AdapterBlueprint.SendTransactionParams
   ): Promise<AdapterBlueprint.SendTransactionResult> {
-    // Send transaction
-    return Promise.resolve({} as unknown as AdapterBlueprint.SendTransactionResult)
+    const connector = _params.provider as BitcoinConnector
+
+    if (!connector) {
+      throw new Error('BitcoinAdapter:sendTransaction - connector is undefined')
+    }
+
+    const SATOSHIS_DECIMALS = 8
+
+    const satoshis = NumberUtil.bigNumber(_params.value.toString())
+      .times(10 ** SATOSHIS_DECIMALS)
+      .toString()
+
+    const hash = await connector.sendTransfer({
+      recipient: _params.to,
+      amount: satoshis
+    })
+
+    return { hash }
   }
 
   override writeContract(

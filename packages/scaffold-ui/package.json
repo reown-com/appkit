@@ -50,6 +50,11 @@
       "import": "./dist/esm/exports/swaps.js",
       "default": "./dist/esm/exports/swaps.js"
     },
+    "./transfers": {
+      "types": "./dist/types/exports/transfers.d.ts",
+      "import": "./dist/esm/exports/transfers.js",
+      "default": "./dist/esm/exports/transfers.js"
+    },
     "./send": {
       "types": "./dist/types/exports/send.d.ts",
       "import": "./dist/esm/exports/send.js",

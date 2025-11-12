@@ -106,7 +106,10 @@ function headings() {
     FundWallet: 'Fund Wallet',
     PayWithExchange: 'Deposit from Exchange',
     PayWithExchangeSelectAsset: 'Select Asset',
-    SmartAccountSettings: 'Smart Account Settings'
+    SmartAccountSettings: 'Smart Account Settings',
+    Transfers: 'Transfers',
+    TransfersSelectToken: 'Select Token',
+    TransfersConfirmation: 'Confirmed'
   }
 }
 

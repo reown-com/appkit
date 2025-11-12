@@ -18,7 +18,8 @@ export default {
     symbol: 'ETH',
     price: '1740.72',
     amount: '0.867',
-    imageSrc: networkImageSrc
+    imageSrc: networkImageSrc,
+    chainImageSrc: ''
   }
 } as Component
 
@@ -31,6 +32,7 @@ export const Default: Component = {
         price=${ifDefined(args.price)}
         amount=${ifDefined(args.amount)}
         imageSrc=${ifDefined(args.imageSrc)}
+        chainImageSrc=${ifDefined(args.chainImageSrc)}
       ></wui-token-list-item>
     </gallery-container>`
 }

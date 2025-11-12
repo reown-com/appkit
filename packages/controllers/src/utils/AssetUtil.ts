@@ -1,10 +1,11 @@
 import { proxy } from 'valtio/vanilla'
 
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import { ApiController } from '../controllers/ApiController.js'
 import { AssetController } from '../controllers/AssetController.js'
+import { ChainController } from '../controllers/ChainController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
 import type { Connector, WcWallet } from './TypeUtil.js'
 
@@ -101,6 +102,16 @@ export const AssetUtil = {
     }
 
     return undefined
+  },
+
+  getNetworkImageByCaipNetworkId(caipNetworkId?: CaipNetworkId) {
+    if (!caipNetworkId) {
+      return undefined
+    }
+
+    const network = ChainController.getCaipNetworkById(caipNetworkId)
+
+    return AssetUtil.getNetworkImage(network)
   },
 
   getNetworkImageById(imageId?: string) {

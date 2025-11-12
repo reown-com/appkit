@@ -19,6 +19,8 @@ export class WuiTokenListItem extends LitElement {
 
   @property() public imageSrc?: string = undefined
 
+  @property() public chainImageSrc?: string
+
   @property() public name?: string = undefined
 
   @property() public symbol?: string = undefined
@@ -100,12 +102,26 @@ export class WuiTokenListItem extends LitElement {
       </wui-flex>`
     }
 
+    if (this.imageSrc && this.chainImageSrc) {
+      return html`<wui-flex class="left-image-container">
+        <wui-image
+          width="40"
+          height="40"
+          src=${this.imageSrc}
+          @onLoadError=${this.imageLoadError}
+          class="token-image"
+        ></wui-image>
+        <wui-image width="20" height="20" src=${this.chainImageSrc} class="chain-image"></wui-image>
+      </wui-flex>`
+    }
+
     if (this.imageSrc) {
       return html`<wui-image
         width="40"
         height="40"
         src=${this.imageSrc}
         @onLoadError=${this.imageLoadError}
+        class="token-image"
       ></wui-image>`
     }
 

@@ -1,3 +1,5 @@
+import type { ChainNamespace } from '@reown/appkit-common'
+
 import type { vars } from './ThemeHelperUtil.js'
 
 export type ColorType = string
@@ -415,4 +417,13 @@ export type MaskInputOptions = {
   value: string
   decimals?: number
   integers?: number
+}
+
+export type TransfersToken = {
+  name: string
+  symbol: string
+  address: string
+  decimals: number
+  logoUri: string
+  namespace: ChainNamespace
 }

@@ -672,7 +672,8 @@ export class AppKit extends AppKitBaseClient {
     await Promise.all([
       ...featureImportPromises,
       import('@reown/appkit-scaffold-ui'),
-      import('@reown/appkit-scaffold-ui/w3m-modal')
+      import('@reown/appkit-scaffold-ui/w3m-modal'),
+      import('@reown/appkit-scaffold-ui/transfers')
     ])
   }
 }

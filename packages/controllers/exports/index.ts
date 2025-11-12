@@ -70,6 +70,14 @@ export type { TransactionsControllerState } from '../src/controllers/Transaction
 export { SwapController } from '../src/controllers/SwapController.js'
 export type { SwapControllerState, SwapInputTarget } from '../src/controllers/SwapController.js'
 
+export { TransfersController, MOCK_TOKENS } from '../src/controllers/TransfersController.js'
+export type {
+  TransfersControllerState,
+  TransferQuote,
+  TransferStatus
+} from '../src/controllers/TransfersController.js'
+export type { TransfersToken } from '../src/utils/TypeUtil.js'
+
 export { SendController } from '../src/controllers/SendController.js'
 export type { SendControllerState } from '../src/controllers/SendController.js'
 

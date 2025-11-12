@@ -180,6 +180,12 @@ export class W3mRouter extends LitElement {
         return html`<w3m-usage-exceeded-view></w3m-usage-exceeded-view>`
       case 'SmartAccountSettings':
         return html`<w3m-smart-account-settings-view></w3m-smart-account-settings-view>`
+      case 'Transfers':
+        return html`<w3m-transfers-view></w3m-transfers-view>`
+      case 'TransfersSelectToken':
+        return html`<w3m-transfers-select-token-view></w3m-transfers-select-token-view>`
+      case 'TransfersConfirmation':
+        return html`<w3m-transfers-confirmation-view></w3m-transfers-confirmation-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

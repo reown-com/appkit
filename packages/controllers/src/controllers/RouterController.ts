@@ -91,6 +91,9 @@ export interface RouterControllerState {
     | 'PayWithExchangeSelectAsset'
     | 'UsageExceeded'
     | 'SmartAccountSettings'
+    | 'Transfers'
+    | 'TransfersSelectToken'
+    | 'TransfersConfirmation'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
