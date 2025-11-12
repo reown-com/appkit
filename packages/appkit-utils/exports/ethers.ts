@@ -1,3 +1,6 @@
 export * from '../src/ethers/EthersHelpersUtil.js'
-
+export * from '../src/ethers/BaseProvider.js'
+export * from '../src/ethers/SafeProvider.js'
+export * from '../src/ethers/InjectedProvider.js'
+export * from '../src/ethers/EthersProvider.js'
 export type * from '../src/ethers/EthersTypesUtil.js'

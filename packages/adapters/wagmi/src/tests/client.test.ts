@@ -202,6 +202,9 @@ describe('WagmiAdapter', () => {
       vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(vi.fn())
       vi.spyOn(wagmiCore, 'watchConnectors')
 
+      // Skip third-party connectors to assert only initial wagmi connectors
+      vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(undefined as any)
+
       await adapter.syncConnectors()
       expect(wagmiCore.watchConnectors).toHaveBeenCalledOnce()
       expect(adapter.connectors).toStrictEqual([
@@ -1597,5 +1600,66 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
     await adapter['addThirdPartyConnectors']()
     expect(mockSafe).not.toHaveBeenCalled()
     expect(adapter.wagmiConfig.connectors.some(c => c.id === 'safe')).toBe(false)
+  })
+})
+
+describe('WagmiAdapter - BaseAccount lazy initialization', () => {
+  let adapter: WagmiAdapter
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    // Ensure coinbase/base account is enabled by default
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state
+    })
+
+    adapter = new WagmiAdapter({
+      networks: [mainnet],
+      projectId: 'test-project-id'
+    })
+
+    // Use the standard mock wagmi config
+    adapter.wagmiConfig = mockWagmiConfig
+  })
+
+  it('should not initialize Base Account provider during syncConnectors', async () => {
+    vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(vi.fn())
+
+    const baseConnector = mockBaseAccountConnector() as unknown as wagmiCore.Connector
+    // Ensure we can observe provider initialization attempts
+    const getProviderSpy = vi
+      .spyOn(baseConnector, 'getProvider')
+      .mockResolvedValue({ connect: vi.fn(), request: vi.fn() })
+
+    vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(baseConnector as any)
+
+    await adapter.syncConnectors()
+
+    expect(getProviderSpy).not.toHaveBeenCalled()
+  })
+
+  it('should initialize Base Account provider when connecting', async () => {
+    vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(vi.fn())
+
+    const baseConnector = mockBaseAccountConnector() as unknown as wagmiCore.Connector
+    const providedProvider = { connect: vi.fn(), request: vi.fn() }
+    const getProviderSpy = vi
+      .spyOn(baseConnector, 'getProvider')
+      .mockResolvedValue(providedProvider)
+
+    // Ensure the base connector is available in wagmi config for connect()
+    adapter.wagmiConfig = {
+      ...adapter.wagmiConfig,
+      connectors: [...adapter.wagmiConfig.connectors, baseConnector as any]
+    } as unknown as wagmiCore.Config
+
+    const result = await adapter.connect({
+      id: 'baseAccount',
+      chainId: 1,
+      type: 'injected'
+    } as any)
+
+    expect(getProviderSpy).toHaveBeenCalled()
+    expect(result.provider).toBe(providedProvider as any)
   })
 })
