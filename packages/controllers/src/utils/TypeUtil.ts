@@ -1175,7 +1175,7 @@ export type SendTransactionArgs =
       address: Address
     }
   | { chainNamespace: 'solana'; to: string; value: number; tokenMint?: string }
-  | { chainNamespace: 'bip122'; to: string; value: number }
+  | { chainNamespace: 'bip122'; to: string; value: string }
 
 export type EstimateGasTransactionArgs =
   | {

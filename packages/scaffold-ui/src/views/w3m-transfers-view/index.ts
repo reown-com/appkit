@@ -7,8 +7,10 @@ import {
   ChainController,
   ConnectionControllerUtil,
   ModalController,
+  NetworkUtil,
   RouterController,
   SnackController,
+  type TransferStatus,
   TransfersController,
   type TransfersToken
 } from '@reown/appkit-controllers'
@@ -45,6 +47,12 @@ export class W3mTransfersView extends LitElement {
 
   @state() private quoteError = TransfersController.state.quoteError
 
+  @state() private polling = TransfersController.state.polling
+
+  @state() private pollingStatus: TransferStatus['status'] = 'waiting'
+
+  @state() private network = ChainController.state.activeCaipNetwork
+
   @state() private sourceToken: TransfersToken | undefined = TransfersController.state.sourceToken
 
   @state() private toToken: TransfersToken | undefined = TransfersController.state.toToken
@@ -59,20 +67,26 @@ export class W3mTransfersView extends LitElement {
     super()
 
     this.unsubscribe.push(
-      TransfersController.subscribe(newState => {
-        this.quoteLoading = newState.quoteLoading
-        this.quote = newState.quote
-        this.quoteError = newState.quoteError
-        this.sourceToken = newState.sourceToken
-        this.toToken = newState.toToken
-        this.toTokenAmount = newState.toTokenAmount
-        this.recipientAddress = newState.recipientAddress
+      ...[
+        TransfersController.subscribe(newState => {
+          this.quoteLoading = newState.quoteLoading
+          this.quote = newState.quote
+          this.quoteError = newState.quoteError
+          this.sourceToken = newState.sourceToken
+          this.toToken = newState.toToken
+          this.toTokenAmount = newState.toTokenAmount
+          this.recipientAddress = newState.recipientAddress
+          this.polling = newState.polling
 
-        if (newState.quoteError) {
-          console.log('Quote error:', newState.quoteError)
-          SnackController.showError(newState.quoteError)
-        }
-      })
+          if (newState.quoteError) {
+            console.log('Quote error:', newState.quoteError)
+            SnackController.showError(newState.quoteError)
+          }
+        }),
+        ChainController.subscribeKey('activeCaipNetwork', val => {
+          this.network = val
+        })
+      ]
     )
   }
 
@@ -279,8 +293,52 @@ export class W3mTransfersView extends LitElement {
     </wui-flex>`
   }
 
-  private onTransferPreview() {
-    if (this.quote?.requestId) {
+  private async onTransfer() {
+    try {
+      if (!this.quote?.requestId) {
+        throw new Error('No quote request ID')
+      }
+
+      if (!this.sourceToken) {
+        throw new Error('No source token')
+      }
+
+      const { chainNamespace: sourceChainNamespace } = ParseUtil.parseCaipNetworkId(
+        this.sourceToken.caipNetworkId
+      )
+
+      console.log('this.quote.destination.amountFormatted', {
+        namespace: sourceChainNamespace,
+        token: this.sourceToken,
+        recipient: this.quote.depositAddress,
+        amount: this.quote.destination.amountFormatted
+      })
+      await TransfersController.sendToken({
+        namespace: sourceChainNamespace,
+        token: this.sourceToken,
+        recipient: this.quote.depositAddress,
+        amount: this.quote.origin.amountFormatted
+      })
+
+      console.log('EXECUTED TX!')
+      await TransfersController.pollStatus(this.quote.requestId, {
+        expectedStatus: 'pending',
+        onStatusChange: this.onStatusChange.bind(this)
+      })
+
+      console.log('POLLING STATUS!')
+    } catch (err) {
+      const errMessage =
+        err instanceof Error ? err.message : 'Failed to send transaction. Please try again.'
+      SnackController.showError(errMessage)
+    }
+  }
+
+  private onStatusChange(status: TransferStatus['status']) {
+    this.pollingStatus = status
+
+    if (status === 'pending') {
+      console.log('PUSHING TO CONFIRMATION!')
       RouterController.push('TransfersConfirmation')
     }
   }
@@ -300,12 +358,54 @@ export class W3mTransfersView extends LitElement {
       }
     }
 
+    if (this.pollingStatus === 'timeout') {
+      return {
+        label: 'Transfer failed',
+        disabled: true,
+        loading: false,
+        onClick: this.noop
+      }
+    }
+
+    if (this.polling) {
+      return {
+        label: 'Waiting for confirmation...',
+        disabled: true,
+        loading: true,
+        onClick: this.noop
+      }
+    }
+
+    if (this.quoteLoading) {
+      return {
+        label: 'Loading quote...',
+        disabled: true,
+        loading: true,
+        onClick: this.noop
+      }
+    }
+
     if (!this.sourceToken) {
       return {
         label: 'Select token',
         disabled: true,
         loading: false,
         onClick: this.noop
+      }
+    }
+
+    if (this.network?.caipNetworkId !== this.sourceToken.caipNetworkId) {
+      const toNetwork = ChainController.getCaipNetworkById(this.sourceToken.caipNetworkId)
+
+      if (!toNetwork) {
+        throw new Error('Network not found')
+      }
+
+      return {
+        label: `Switch to ${toNetwork.name}`,
+        disabled: false,
+        loading: false,
+        onClick: () => NetworkUtil.onSwitchNetwork({ network: toNetwork })
       }
     }
 
@@ -329,20 +429,11 @@ export class W3mTransfersView extends LitElement {
       }
     }
 
-    if (this.quoteLoading) {
-      return {
-        label: 'Loading quote...',
-        disabled: true,
-        loading: true,
-        onClick: this.noop
-      }
-    }
-
     return {
       label: 'Confirm',
       disabled: false,
       loading: false,
-      onClick: () => this.onTransferPreview()
+      onClick: () => this.onTransfer()
     }
   }
 

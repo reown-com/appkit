@@ -16,6 +16,8 @@ const DEAD_ADDRESSES_BY_NAMESPACE: Partial<Record<ChainNamespace, string>> = {
   bip122: 'bc1q4vxn43l44h30nkluqfxd9eckf45vr2awz38lwa'
 }
 
+const RECIPIENT_ADDRESS = '0x8B271bedbf142EaB0819B113D9003Ee22BeE3871'
+
 export const MOCK_TOKENS = [
   // USDC tokens
   {
@@ -39,18 +41,10 @@ export const MOCK_TOKENS = [
   {
     name: 'Tether USD',
     symbol: 'USDT',
-    address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
     decimals: 6,
     logoUri: 'https://coin-images.coingecko.com/coins/images/39963/large/usdt.png',
     caipNetworkId: 'eip155:1'
-  },
-  {
-    name: 'Tether USD',
-    symbol: 'USDT',
-    address: '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2',
-    decimals: 6,
-    logoUri: 'https://coin-images.coingecko.com/coins/images/39963/large/usdt.png',
-    caipNetworkId: 'eip155:8453'
   },
   {
     name: 'Tether USD',
@@ -129,13 +123,13 @@ export interface TransferQuote {
     amountUsd: string
     currency: TransfersToken
   }>
-  requestId?: string
-  depositAddress?: string
-  timeEstimate?: number
+  requestId: string
+  depositAddress: string
+  timeEstimate: number
 }
 
 export interface TransferStatus {
-  status: string
+  status: 'waiting' | 'pending' | 'success' | 'failure' | 'refund' | 'timeout'
   requestId: string
   [key: string]: unknown
 }
@@ -145,6 +139,7 @@ export interface TransfersControllerState {
   sourceToken?: TransfersToken
   toToken?: TransfersToken
   sending: boolean
+  polling: boolean
 
   // Amounts
   toTokenAmount: string
@@ -180,15 +175,16 @@ type StateKey = keyof TransfersControllerState
 
 const initialState: TransfersControllerState = {
   sending: false,
-  toTokenAmount: '1',
+  toTokenAmount: '0.1',
   toToken: MOCK_TOKENS[0],
-  recipientAddress: '0x8B271bedbf142EaB0819B113D9003Ee22BeE3871',
+  recipientAddress: RECIPIENT_ADDRESS,
   quoteLoading: false,
   statusLoading: false,
   myTokensWithBalance: [],
   popularTokens: [],
   suggestedTokens: [],
-  tokensLoading: false
+  tokensLoading: false,
+  polling: false
 }
 
 const apiUrl = 'http://localhost:3000/api'
@@ -246,7 +242,9 @@ const controller = {
         params.toToken.caipNetworkId
       )
 
-      params.user = DEAD_ADDRESSES_BY_NAMESPACE[originChainNamespace]
+      if (!params.user) {
+        params.user = DEAD_ADDRESSES_BY_NAMESPACE[originChainNamespace]
+      }
 
       const response = await fetch(`${apiUrl}/quote`, {
         method: 'POST',
@@ -321,7 +319,7 @@ const controller = {
         case 'eip155': {
           await SendController.sendERC20Token({
             receiverAddress: recipient,
-            tokenAddress: token.address,
+            tokenAddress: `${token.caipNetworkId}:${token.address}`,
             sendTokenAmount: Number(amount),
             decimals: token.decimals.toString()
           })
@@ -356,7 +354,7 @@ const controller = {
           await ConnectionController.sendTransaction({
             chainNamespace: 'bip122',
             to: recipient,
-            value: Number(amount)
+            value: amount
           })
           break
         }
@@ -366,6 +364,64 @@ const controller = {
       }
     } finally {
       state.sending = false
+    }
+  },
+
+  async pollStatus(
+    requestId: string,
+    options: {
+      expectedStatus: string
+      onStatusChange: (status: TransferStatus['status']) => void
+      maxPollingAttempts?: number
+      pollingInterval?: number
+    }
+  ) {
+    try {
+      state.polling = true
+
+      const {
+        expectedStatus,
+        onStatusChange,
+        maxPollingAttempts = 60,
+        pollingInterval = 2000
+      } = options
+
+      let attempts = 0
+
+      const checkStatus = async (): Promise<void> => {
+        if (attempts >= maxPollingAttempts) {
+          console.warn('Max polling attempts reached, proceeding anyway')
+          onStatusChange('timeout')
+          return
+        }
+
+        attempts++
+
+        try {
+          const { status } = await TransfersController.fetchStatus(requestId)
+
+          if (!status) {
+            await new Promise(resolve => setTimeout(resolve, pollingInterval))
+            return checkStatus()
+          }
+
+          if (status === expectedStatus) {
+            onStatusChange(status)
+            return
+          }
+
+          await new Promise(resolve => setTimeout(resolve, pollingInterval))
+          return checkStatus()
+        } catch (err) {
+          console.error('Failed to fetch status:', err)
+          await new Promise(resolve => setTimeout(resolve, pollingInterval))
+          return checkStatus()
+        }
+      }
+
+      await checkStatus()
+    } finally {
+      state.polling = false
     }
   },
 

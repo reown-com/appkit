@@ -23,7 +23,6 @@ import styles from './styles.js'
 
 type TransferStatusType = 'pending' | 'success' | 'error'
 
- 
 @customElement('w3m-transfers-confirmation-view')
 export class W3mTransfersConfirmationView extends LitElement {
   public static override styles = styles
@@ -323,7 +322,6 @@ export class W3mTransfersConfirmationView extends LitElement {
     return `${hash.slice(0, 6)}...${hash.slice(-4)}`
   }
 
-  // @ts-ignore
   private async startPolling() {
     if (!this.quote?.requestId) {
       return
@@ -343,6 +341,12 @@ export class W3mTransfersConfirmationView extends LitElement {
       return
     }
 
+    if (this.transferStatus?.status === 'success') {
+      this.statusType = 'success'
+      this.stopPolling()
+      return
+    }
+
     // Check if max attempts reached
     if (this.pollingAttempts >= this.maxPollingAttempts) {
       this.statusType = 'error'
@@ -354,30 +358,28 @@ export class W3mTransfersConfirmationView extends LitElement {
     this.pollingAttempts++
 
     try {
-      const status = await TransfersController.fetchStatus(this.quote?.requestId)
+      const { status, requestId } = await TransfersController.fetchStatus(this.quote?.requestId)
       console.log('Transfer status:', status)
 
       if (!status) {
         return
       }
 
-      this.transferStatus = status
+      this.transferStatus = {
+        status,
+        requestId
+      }
 
-      // Check status type
-      const statusLower = status.status.toLowerCase()
-
-      if (statusLower === 'completed' || statusLower === 'success') {
+      if (status === 'success') {
         this.statusType = 'success'
         this.stopPolling()
-      } else if (statusLower === 'failed' || statusLower === 'error') {
+      } else if (status === 'failure') {
         this.statusType = 'error'
         this.errorMessage = 'Transfer failed. Please try again.'
         this.stopPolling()
       }
-      // Otherwise keep polling (status is still pending/processing)
     } catch (error) {
       console.error('Failed to fetch transfer status:', error)
-      // Don't fail immediately on error, keep trying
       if (this.pollingAttempts >= this.maxPollingAttempts) {
         this.statusType = 'error'
         this.errorMessage =
