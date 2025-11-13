@@ -8,8 +8,7 @@ import {
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   ErrorUtil,
-  NumberUtil,
-  UserRejectedRequestError
+  NumberUtil
 } from '@reown/appkit-common'
 import { ContractUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
@@ -169,8 +168,6 @@ const controller = {
           hash: state.hash ?? ''
         }
       })
-
-      return
     } catch (err) {
       const event: Event = {
         type: 'track',
@@ -197,8 +194,6 @@ const controller = {
     if (!activeChainNamespace) {
       throw new Error('SendController:sendEvmToken - activeChainNamespace is required')
     }
-
-    const activeAccountType = getPreferredAccountType(activeChainNamespace)
 
     if (!SendController.state.sendTokenAmount || !SendController.state.receiverAddress) {
       throw new Error('An amount and receiver address are required')

@@ -313,7 +313,7 @@ describe('SendController', () => {
       SendController.setTokenAmount(50)
       SendController.setReceiverAddress('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')
 
-      await SendController.sendSolanaToken()
+      await SendController.sendToken()
 
       expect(EventsController.sendEvent).toHaveBeenCalledWith({
         type: 'track',
