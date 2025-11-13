@@ -5,7 +5,6 @@ import { ConstantsUtil as CommonConstantsUtil, ErrorUtil } from '@reown/appkit-c
 import {
   AppKitError,
   ChainController,
-  EventsController,
   RouterController,
   SendController,
   SnackController

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type Balance } from '@reown/appkit-common'
+import { type Balance, UserRejectedRequestError } from '@reown/appkit-common'
 
 import {
   type AccountState,
@@ -338,6 +338,134 @@ describe('SendController', () => {
       SendController.state.hash = '0x123'
       SendController.resetSend()
       expect(SendController.state.hash).toEqual('0x123')
+    })
+  })
+
+  describe('sendToken events', () => {
+    beforeEach(() => {
+      mockChainControllerState({
+        activeCaipNetwork: extendedMainnet
+      })
+      vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+    })
+
+    it('should fire SEND_INITIATED then SEND_SUCCESS on successful send', async () => {
+      // Arrange
+      SendController.setToken(token as SendControllerState['token'])
+      SendController.setTokenAmount(sendTokenAmount)
+      SendController.setReceiverAddress(receiverAddress)
+      vi.spyOn(SendController, 'sendEvmToken').mockResolvedValue()
+
+      // Act
+      await SendController.sendToken()
+
+      // Assert
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(1, {
+        type: 'track',
+        event: 'SEND_INITIATED',
+        properties: {
+          isSmartAccount: false,
+          token: token.address,
+          amount: sendTokenAmount,
+          network: extendedMainnet.caipNetworkId
+        }
+      })
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(2, {
+        type: 'track',
+        event: 'SEND_SUCCESS',
+        properties: {
+          isSmartAccount: false,
+          token: token.symbol,
+          amount: sendTokenAmount,
+          network: extendedMainnet.caipNetworkId,
+          hash: ''
+        }
+      })
+    })
+
+    it('should fire SEND_INITIATED -> SEND_REJECTED -> SEND_ERROR when user rejects', async () => {
+      // Arrange
+      SendController.setToken(token as SendControllerState['token'])
+      SendController.setTokenAmount(sendTokenAmount)
+      SendController.setReceiverAddress(receiverAddress)
+      vi.spyOn(SendController, 'sendEvmToken').mockRejectedValue(new UserRejectedRequestError({}))
+
+      // Act
+      await expect(SendController.sendToken()).rejects.toBeTruthy()
+
+      // Assert
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(1, {
+        type: 'track',
+        event: 'SEND_INITIATED',
+        properties: {
+          isSmartAccount: false,
+          token: token.address,
+          amount: sendTokenAmount,
+          network: extendedMainnet.caipNetworkId
+        }
+      })
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          type: 'track',
+          event: 'SEND_REJECTED',
+          properties: expect.objectContaining({
+            isSmartAccount: false,
+            token: token.symbol,
+            amount: sendTokenAmount,
+            network: extendedMainnet.caipNetworkId
+          })
+        })
+      )
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(
+        3,
+        expect.objectContaining({
+          type: 'track',
+          event: 'SEND_ERROR',
+          properties: expect.objectContaining({
+            isSmartAccount: false,
+            token: token.symbol,
+            amount: sendTokenAmount,
+            network: extendedMainnet.caipNetworkId
+          })
+        })
+      )
+    })
+
+    it('should fire SEND_INITIATED -> SEND_ERROR when random error occurs', async () => {
+      // Arrange
+      SendController.setToken(token as SendControllerState['token'])
+      SendController.setTokenAmount(sendTokenAmount)
+      SendController.setReceiverAddress(receiverAddress)
+      vi.spyOn(SendController, 'sendEvmToken').mockRejectedValue(new Error('Random failure'))
+
+      // Act
+      await expect(SendController.sendToken()).rejects.toBeTruthy()
+
+      // Assert
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(1, {
+        type: 'track',
+        event: 'SEND_INITIATED',
+        properties: {
+          isSmartAccount: false,
+          token: token.address,
+          amount: sendTokenAmount,
+          network: extendedMainnet.caipNetworkId
+        }
+      })
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          type: 'track',
+          event: 'SEND_ERROR',
+          properties: expect.objectContaining({
+            isSmartAccount: false,
+            token: token.symbol,
+            amount: sendTokenAmount,
+            network: extendedMainnet.caipNetworkId
+          })
+        })
+      )
     })
   })
 })

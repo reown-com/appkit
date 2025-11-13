@@ -179,9 +179,10 @@ const controller = {
           ...event,
           event: 'SEND_REJECTED'
         })
+      } else {
+        EventsController.sendEvent(event)
       }
 
-      EventsController.sendEvent(event)
       throw err
     } finally {
       SendController.setLoading(false)
