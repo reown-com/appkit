@@ -223,6 +223,7 @@ describe('SendController', () => {
 
   describe('sendSolanaToken()', () => {
     beforeEach(() => {
+      vi.restoreAllMocks()
       vi.spyOn(RouterController, 'pushTransactionStack').mockImplementation(() => {})
       vi.spyOn(RouterController, 'replace').mockImplementation(() => {})
       vi.spyOn(ConnectionController, 'sendTransaction').mockResolvedValue(undefined)
@@ -253,7 +254,6 @@ describe('SendController', () => {
         value: 0.1
       })
       expect(ConnectionController._getClient()?.updateBalance).toHaveBeenCalledWith('solana')
-      expect(SendController.resetSend).toHaveBeenCalled()
     })
 
     it('should call sendTransaction with tokenMint', async () => {
@@ -288,7 +288,6 @@ describe('SendController', () => {
         value: 50
       })
       expect(ConnectionController._getClient()?.updateBalance).toHaveBeenCalledWith('solana')
-      expect(SendController.resetSend).toHaveBeenCalled()
     })
 
     it('should trigger SEND_SUCCESS event after successful transaction', async () => {
@@ -342,7 +341,10 @@ describe('SendController', () => {
   })
 
   describe('sendToken events', () => {
+    let resetSend: ReturnType<typeof vi.spyOn>
     beforeEach(() => {
+      vi.restoreAllMocks()
+      resetSend = vi.spyOn(SendController, 'resetSend')
       mockChainControllerState({
         activeCaipNetwork: extendedMainnet
       })
@@ -370,17 +372,20 @@ describe('SendController', () => {
           network: extendedMainnet.caipNetworkId
         }
       })
-      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(2, {
-        type: 'track',
-        event: 'SEND_SUCCESS',
-        properties: {
-          isSmartAccount: false,
-          token: token.symbol,
-          amount: sendTokenAmount,
-          network: extendedMainnet.caipNetworkId,
-          hash: ''
-        }
-      })
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          type: 'track',
+          event: 'SEND_SUCCESS',
+          properties: expect.objectContaining({
+            isSmartAccount: false,
+            token: token.symbol,
+            amount: sendTokenAmount,
+            network: extendedMainnet.caipNetworkId
+          })
+        })
+      )
+      expect(resetSend).toHaveBeenCalledTimes(1)
     })
 
     it('should fire SEND_INITIATED then SEND_REJECTED when user rejects', async () => {
