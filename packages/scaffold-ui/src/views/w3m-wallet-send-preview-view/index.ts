@@ -185,12 +185,6 @@ export class W3mWalletSendPreviewView extends LitElement {
         }
       }
 
-      EventsController.sendEvent({
-        type: 'track',
-        event: isUserRejectedRequestError ? 'SEND_REJECTED' : 'SEND_ERROR',
-        properties: SendController.getSdkEventProperties(error)
-      })
-
       SnackController.showError(errMessage)
     }
   }
