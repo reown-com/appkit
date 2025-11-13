@@ -122,6 +122,7 @@
     "@reown/appkit-adapter-ton": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-experimental": "workspace:*",
     "@reown/appkit-pay": "workspace:*",
     "@reown/appkit-siwe": "workspace:*",

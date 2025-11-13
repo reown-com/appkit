@@ -4,6 +4,7 @@ export type AssetMetadata = {
   name: string
   symbol: string
   decimals: number
+  logoUri?: string
 }
 
 export type PaymentAsset = {

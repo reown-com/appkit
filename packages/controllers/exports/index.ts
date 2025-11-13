@@ -74,7 +74,8 @@ export { TransfersController, MOCK_TOKENS } from '../src/controllers/TransfersCo
 export type {
   TransfersControllerState,
   TransferQuote,
-  TransferStatus
+  TransferStatus,
+  PaymentOptions
 } from '../src/controllers/TransfersController.js'
 export type { TransfersToken } from '../src/utils/TypeUtil.js'
 

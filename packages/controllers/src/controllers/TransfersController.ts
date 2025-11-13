@@ -1,14 +1,29 @@
+/* eslint-disable no-console */
+/* eslint-disable consistent-return */
+/* eslint-disable no-inner-declarations */
+/* eslint-disable newline-before-return */
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type ChainNamespace, NumberUtil, ParseUtil } from '@reown/appkit-common'
+import {
+  type CaipNetworkId,
+  type ChainNamespace,
+  NumberUtil,
+  ParseUtil
+} from '@reown/appkit-common'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import type { TransfersToken } from '../utils/TypeUtil.js'
+import { type Exchange, formatCaip19Asset, getExchanges } from '../utils/ExchangeUtil.js'
+import type { TransfersMethod, TransfersToken } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
+import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
+import { ExchangeController } from './ExchangeController.js'
+import { ModalController } from './ModalController.js'
+import { OptionsController } from './OptionsController.js'
 import { SendController } from './SendController.js'
+import { SnackController } from './SnackController.js'
 
 const DEAD_ADDRESSES_BY_NAMESPACE: Partial<Record<ChainNamespace, string>> = {
   eip155: '0x000000000000000000000000000000000000dead',
@@ -16,8 +31,7 @@ const DEAD_ADDRESSES_BY_NAMESPACE: Partial<Record<ChainNamespace, string>> = {
   bip122: 'bc1q4vxn43l44h30nkluqfxd9eckf45vr2awz38lwa'
 }
 
-const RECIPIENT_ADDRESS = '0x8B271bedbf142EaB0819B113D9003Ee22BeE3871'
-
+const DEFAULT_EXCHANGES_PAGE = 0
 export const MOCK_TOKENS = [
   // USDC tokens
   {
@@ -35,6 +49,22 @@ export const MOCK_TOKENS = [
     decimals: 6,
     logoUri: 'https://coin-images.coingecko.com/coins/images/6319/large/usdc.png',
     caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+  },
+  {
+    name: 'USD Coin',
+    symbol: 'USDC',
+    address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+    decimals: 6,
+    logoUri: 'https://coin-images.coingecko.com/coins/images/6319/large/usdc.png',
+    caipNetworkId: 'eip155:10'
+  },
+  {
+    name: 'USD Coin',
+    symbol: 'USDC',
+    address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    decimals: 6,
+    logoUri: 'https://coin-images.coingecko.com/coins/images/6319/large/usdc.png',
+    caipNetworkId: 'eip155:1'
   },
 
   // USDT tokens
@@ -129,12 +159,18 @@ export interface TransferQuote {
 }
 
 export interface TransferStatus {
-  status: 'waiting' | 'pending' | 'success' | 'failure' | 'refund' | 'timeout'
+  status: 'waiting' | 'pending' | 'success' | 'failure' | 'refund' | 'timeout' | 'submitted'
   requestId: string
   [key: string]: unknown
 }
 
 export interface TransfersControllerState {
+  methods: TransfersMethod[]
+
+  // Exchanges
+  exchanges: Exchange[]
+  exchangesLoading: boolean
+
   // Tokens
   sourceToken?: TransfersToken
   toToken?: TransfersToken
@@ -171,20 +207,56 @@ export interface SendTokenParameters {
   namespace: ChainNamespace
 }
 
+export interface FetchExchangesParameters {
+  asset: TransfersToken
+  amount: string
+}
+
 type StateKey = keyof TransfersControllerState
 
+export type AssetMetadata = {
+  name: string
+  symbol: string
+  decimals: number
+  logoUri?: string
+}
+
+export type PaymentAsset = {
+  network: CaipNetworkId
+  asset: string
+  metadata: AssetMetadata
+}
+
+export type PaymentOptions = {
+  paymentMethods?: TransfersMethod[]
+  paymentAsset: PaymentAsset
+  recipient: string
+  amount: number
+  openInNewTab?: boolean
+  redirectUrl?: {
+    success: string
+    failure: string
+  }
+  payWithExchange?: {
+    includeOnly?: string[]
+    exclude?: string[]
+  }
+}
+
 const initialState: TransfersControllerState = {
+  methods: ['wallet'],
   sending: false,
-  toTokenAmount: '0.1',
-  toToken: MOCK_TOKENS[0],
-  recipientAddress: RECIPIENT_ADDRESS,
+  toTokenAmount: '',
+  recipientAddress: '',
   quoteLoading: false,
   statusLoading: false,
   myTokensWithBalance: [],
   popularTokens: [],
   suggestedTokens: [],
   tokensLoading: false,
-  polling: false
+  polling: false,
+  exchanges: [],
+  exchangesLoading: false
 }
 
 const apiUrl = 'http://localhost:3000/api'
@@ -233,8 +305,6 @@ const controller = {
       const weiAmount = NumberUtil.bigNumber(params.amount)
         .times(10 ** params.toToken.decimals)
         .toString()
-
-      console.log('params', params)
 
       const { chainId: originChainId, chainNamespace: originChainNamespace } =
         ParseUtil.parseCaipNetworkId(params.sourceToken.caipNetworkId)
@@ -370,7 +440,7 @@ const controller = {
   async pollStatus(
     requestId: string,
     options: {
-      expectedStatus: string
+      expectedStatuses: TransferStatus['status'][]
       onStatusChange: (status: TransferStatus['status']) => void
       maxPollingAttempts?: number
       pollingInterval?: number
@@ -380,41 +450,43 @@ const controller = {
       state.polling = true
 
       const {
-        expectedStatus,
+        expectedStatuses,
         onStatusChange,
-        maxPollingAttempts = 60,
+        maxPollingAttempts = 20,
         pollingInterval = 2000
       } = options
 
       let attempts = 0
 
-      const checkStatus = async (): Promise<void> => {
+      async function checkStatus(): Promise<void> {
         if (attempts >= maxPollingAttempts) {
           console.warn('Max polling attempts reached, proceeding anyway')
           onStatusChange('timeout')
           return
         }
 
-        attempts++
+        attempts += 1
 
         try {
           const { status } = await TransfersController.fetchStatus(requestId)
 
-          if (!status) {
-            await new Promise(resolve => setTimeout(resolve, pollingInterval))
-            return checkStatus()
-          }
-
-          if (status === expectedStatus) {
+          if (expectedStatuses.includes(status)) {
             onStatusChange(status)
+
             return
           }
 
-          await new Promise(resolve => setTimeout(resolve, pollingInterval))
+          await new Promise(resolve => {
+            setTimeout(resolve, pollingInterval)
+          })
+
           return checkStatus()
         } catch (err) {
           console.error('Failed to fetch status:', err)
-          await new Promise(resolve => setTimeout(resolve, pollingInterval))
+          await new Promise(resolve => {
+            setTimeout(resolve, pollingInterval)
+          })
+
           return checkStatus()
         }
       }
@@ -423,6 +495,117 @@ const controller = {
     } finally {
       state.polling = false
     }
+  },
+
+  async fetchExchanges({ asset, amount }: FetchExchangesParameters) {
+    try {
+      state.exchangesLoading = true
+
+      // eslint-disable-next-line no-warning-comments
+      // TODO: Remove this once we have a proper way to enable pay with exchange
+      if (OptionsController.state.remoteFeatures) {
+        OptionsController.state.remoteFeatures.payWithExchange = true
+      }
+
+      const isPayWithExchangeSupported =
+        OptionsController.state.remoteFeatures?.payWithExchange &&
+        ChainController.state.activeCaipNetwork &&
+        ConstantsUtil.PAY_WITH_EXCHANGE_SUPPORTED_CHAIN_NAMESPACES.includes(
+          ChainController.state.activeCaipNetwork.chainNamespace
+        )
+
+      if (!isPayWithExchangeSupported) {
+        state.exchanges = []
+        state.exchangesLoading = false
+
+        SnackController.showError('Pay with exchange is not enabled')
+
+        return
+      }
+
+      const response = await getExchanges({
+        page: DEFAULT_EXCHANGES_PAGE,
+        asset: formatCaip19Asset(asset.caipNetworkId, asset.address),
+        amount
+      })
+      // Putting this here in order to maintain backawrds compatibility with the UI when we introduce more exchanges
+      state.exchanges = response.exchanges.slice(0, 2)
+    } catch (error) {
+      SnackController.showError('Unable to get exchanges')
+      throw new Error('Unable to get exchanges')
+    } finally {
+      state.exchangesLoading = false
+    }
+  },
+
+  async handlePayWithExchange({
+    recipient,
+    exchangeId,
+    asset,
+    amount
+  }: {
+    recipient: string
+    exchangeId: string
+    asset: TransfersToken
+    amount: string
+  }) {
+    try {
+      const popupWindow = CoreHelperUtil.returnOpenHref(
+        '',
+        'popupWindow',
+        'scrollbar=yes,width=480,height=720'
+      )
+
+      if (!popupWindow) {
+        throw new Error('Could not create popup window')
+      }
+
+      const { url } = await ExchangeController.getPayUrl(exchangeId, {
+        network: asset.caipNetworkId,
+        asset: asset.address,
+        amount,
+        recipient
+      })
+
+      if (!url) {
+        try {
+          popupWindow.close()
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error('Unable to close popup window', err)
+        }
+
+        throw new Error('Unable to initiate payment')
+      }
+
+      popupWindow.location.href = url
+
+      return {
+        popupWindow
+      }
+    } catch (err) {
+      console.log('Unable to initiate payment', err)
+      SnackController.showError('Unable to initiate payment')
+      throw new Error('Unable to initiate payment')
+    }
+  },
+
+  async handleTransfer(options: PaymentOptions) {
+    state.toToken = {
+      name: options.paymentAsset.metadata.name,
+      symbol: options.paymentAsset.metadata.symbol,
+      address: options.paymentAsset.asset,
+      decimals: options.paymentAsset.metadata.decimals,
+      caipNetworkId: options.paymentAsset.network,
+      logoUri: options.paymentAsset.metadata.logoUri ?? ''
+    }
+    state.recipientAddress = options.recipient
+    state.toTokenAmount = options.amount.toString()
+    state.methods = options.paymentMethods ?? ['wallet', 'cex']
+
+    await ModalController.open({
+      view: 'Transfers'
+    })
   },
 
   clearQuote() {

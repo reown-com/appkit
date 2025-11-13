@@ -904,7 +904,7 @@ export namespace AdapterBlueprint {
 
   export type SendTransactionParams = {
     to: string
-    value: bigint | number
+    value: bigint | number | string
     data?: string
     gasPrice?: bigint | number
     gas?: bigint | number

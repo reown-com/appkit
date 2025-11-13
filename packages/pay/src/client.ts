@@ -1,13 +1,15 @@
+import { type PaymentOptions, TransfersController } from '@reown/appkit-controllers'
+
 import { PayController, type PayControllerState } from './controllers/PayController.js'
 import { AppKitPayError, AppKitPayErrorCodes } from './types/errors.js'
-import type { GetExchangesParams, PayUrlParams, PaymentOptions } from './types/options.js'
+import type { GetExchangesParams, PayUrlParams } from './types/options.js'
 import type { PaymentResult } from './types/payment.js'
 
 // 5 minutes
 const PAYMENT_TIMEOUT_MS = 300000
 
-export async function openPay(options: PaymentOptions) {
-  return PayController.handleOpenPay(options)
+export function openPay(options: PaymentOptions) {
+  return TransfersController.handleTransfer(options)
 }
 
 export async function pay(

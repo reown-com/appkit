@@ -3,10 +3,13 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type ChainNamespace } from '@reown/appkit-common'
 
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { NetworkUtil } from '../utils/NetworkUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
+import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
@@ -53,11 +56,61 @@ const controller = {
     return subKey(state, key, callback)
   },
 
-  async open(_options?: ModalControllerArguments['open']) {
-    await ApiController.prefetch()
-    RouterController.push(_options?.view || 'Transfers')
+  async open(options?: ModalControllerArguments['open']) {
+    const namespace = options?.namespace
+    const currentNamespace = ChainController.state.activeChain
+    const isSwitchingNamespace = namespace && namespace !== currentNamespace
+    const caipAddress = ChainController.getAccountData(options?.namespace)?.caipAddress
+    const hasNoAdapters = ChainController.state.noAdapters
+
+    if (ConnectionController.state.wcBasic) {
+      // No need to add an await here if we are use basic
+      ApiController.prefetch({
+        fetchNetworkImages: false,
+        fetchConnectorImages: false,
+        fetchWalletRanks: false
+      })
+    } else {
+      await ApiController.prefetch()
+    }
+
+    ConnectorController.setFilterByNamespace(options?.namespace)
+    ModalController.setLoading(true, namespace)
+
+    if (namespace && isSwitchingNamespace) {
+      const namespaceNetwork =
+        ChainController.getNetworkData(namespace)?.caipNetwork ||
+        ChainController.getRequestedCaipNetworks(namespace)[0]
+
+      if (namespaceNetwork) {
+        if (hasNoAdapters) {
+          await ChainController.switchActiveNetwork(namespaceNetwork)
+          RouterController.push('ConnectingWalletConnectBasic')
+        } else {
+          NetworkUtil.onSwitchNetwork({ network: namespaceNetwork, ignoreSwitchConfirmation: true })
+        }
+      }
+    } else if (OptionsController.state.manualWCControl || (hasNoAdapters && !caipAddress)) {
+      if (CoreHelperUtil.isMobile()) {
+        RouterController.reset('AllWallets')
+      } else {
+        RouterController.reset('ConnectingWalletConnectBasic')
+      }
+    } else if (options?.view) {
+      RouterController.reset(options.view, options.data)
+    } else if (caipAddress) {
+      RouterController.reset('Account')
+    } else {
+      RouterController.reset('Connect')
+    }
+
     state.open = true
     PublicStateController.set({ open: true })
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'MODAL_OPEN',
+      properties: { connected: Boolean(caipAddress) }
+    })
   },
 
   close() {

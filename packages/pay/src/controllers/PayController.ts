@@ -1,3 +1,5 @@
+/* eslint-disable multiline-comment-style */
+/* eslint-disable capitalized-comments */
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
@@ -108,8 +110,8 @@ export const PayController = {
   async handleOpenPay(options: PaymentOptions) {
     this.resetState()
     this.setPaymentConfig(options)
-    this.subscribeEvents()
-    this.initializeAnalytics()
+    // this.subscribeEvents()
+    // this.initializeAnalytics()
     state.isConfigured = true
     EventsController.sendEvent({
       type: 'track',
@@ -125,7 +127,7 @@ export const PayController = {
       }
     })
     await ModalController.open({
-      view: 'Pay'
+      view: 'Transfers'
     })
   },
 

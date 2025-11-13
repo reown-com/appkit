@@ -1532,6 +1532,8 @@ export type FeatureKey = keyof FeatureConfigMap
 
 export type Tier = 'none' | 'starter' | 'pro' | 'enteprise'
 
+export type TransfersMethod = 'wallet' | 'cex'
+
 export type ProjectLimits = {
   isAboveRpcLimit: boolean
   isAboveMauLimit: boolean

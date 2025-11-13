@@ -1,11 +1,15 @@
+/* eslint-disable no-console */
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { type CaipAddress, type ChainNamespace, ParseUtil } from '@reown/appkit-common'
 import {
+  AssetUtil,
   ChainController,
   ConnectionControllerUtil,
+  ConnectorController,
+  type Exchange,
   ModalController,
   NetworkUtil,
   RouterController,
@@ -20,6 +24,7 @@ import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-image'
 import '@reown/appkit-ui/wui-input-text'
+import '@reown/appkit-ui/wui-list-item'
 import '@reown/appkit-ui/wui-text'
 
 import '../../partials/w3m-swap-input-skeleton/index.js'
@@ -34,13 +39,20 @@ const CHAIN_LABELS: Partial<Record<ChainNamespace, { label: string }>> = {
   ton: { label: 'Connect TON Wallet' }
 }
 
+const EXPECTED_STATUSES: TransferStatus['status'][] = ['pending', 'submitted', 'success']
+
 @customElement('w3m-transfers-view')
 export class W3mTransfersView extends LitElement {
   public static override styles = styles
 
   private unsubscribe: (() => void)[] = []
 
-  // Subscribe to TransfersController state
+  @state() private methods = TransfersController.state.methods
+
+  @state() private exchanges = TransfersController.state.exchanges
+
+  @state() private exchangesLoading = TransfersController.state.exchangesLoading
+
   @state() private quoteLoading = TransfersController.state.quoteLoading
 
   @state() private quote = TransfersController.state.quote
@@ -63,14 +75,17 @@ export class W3mTransfersView extends LitElement {
 
   @state() private caipAddress: CaipAddress | undefined
 
+  @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
+
   public constructor() {
     super()
-
     this.unsubscribe.push(
       ...[
         TransfersController.subscribe(newState => {
+          this.methods = newState.methods
           this.quoteLoading = newState.quoteLoading
-          this.quote = newState.quote
+          this.exchanges = newState.exchanges
+          this.exchangesLoading = newState.exchangesLoading
           this.quoteError = newState.quoteError
           this.sourceToken = newState.sourceToken
           this.toToken = newState.toToken
@@ -79,18 +94,24 @@ export class W3mTransfersView extends LitElement {
           this.polling = newState.polling
 
           if (newState.quoteError) {
-            console.log('Quote error:', newState.quoteError)
             SnackController.showError(newState.quoteError)
           }
         }),
+        TransfersController.subscribeKey('quote', val => {
+          this.quote = val
+          this.fetchExchanges()
+        }),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           this.network = val
+        }),
+        ConnectorController.subscribeKey('activeConnectorIds', ids => {
+          this.activeConnectorIds = ids
         })
       ]
     )
   }
 
-  public override async firstUpdated() {
+  public override firstUpdated() {
     if (this.sourceToken) {
       const { chainNamespace } = ParseUtil.parseCaipNetworkId(this.sourceToken.caipNetworkId)
       this.caipAddress = ChainController.getAccountData(chainNamespace)?.caipAddress
@@ -122,7 +143,7 @@ export class W3mTransfersView extends LitElement {
   }
 
   private async fetchQuote() {
-    let user: string | undefined
+    let user: string | undefined = undefined
 
     if (this.sourceToken && this.toToken && this.toTokenAmount && this.recipientAddress) {
       if (this.caipAddress) {
@@ -153,7 +174,8 @@ export class W3mTransfersView extends LitElement {
         >
           ${this.templateSourceToken()} ${this.templateToToken()}
         </wui-flex>
-        ${this.quote ? this.templateDetails() : null} ${this.templateActionButton()}
+        ${this.quote ? this.templateDetails() : null} ${this.templateExchanges()}
+        ${this.templateWallet()}
       </wui-flex>
     `
   }
@@ -165,7 +187,6 @@ export class W3mTransfersView extends LitElement {
           <w3m-swap-input-skeleton target="sourceToken"></w3m-swap-input-skeleton>
           <w3m-swap-input-skeleton target="toToken"></w3m-swap-input-skeleton>
         </wui-flex>
-        ${this.templateActionButton()}
       </wui-flex>
     `
   }
@@ -198,6 +219,106 @@ export class W3mTransfersView extends LitElement {
         ${this.templateTimeEstimate()} ${this.templateFees()}
       </wui-flex>
     `
+  }
+
+  private templateExchanges() {
+    if (!this.methods.includes('cex') || !this.sourceToken) {
+      return null
+    }
+
+    if (this.exchangesLoading) {
+      return html`<wui-flex flexDirection="column" alignItems="center" gap="4" padding="4">
+        <wui-text variant="lg-medium" align="center" color="primary">
+          Loading exchanges...
+        </wui-text>
+      </wui-flex>`
+    }
+
+    return this.exchanges.length > 0
+      ? this.exchanges.map(
+          exchange =>
+            html`<wui-list-item
+              @click=${() => this.onExchangeClick(exchange)}
+              chevron
+              variant="image"
+              imageSrc=${exchange.imageUrl}
+            >
+              <wui-text variant="md-regular" color="primary"> Pay with ${exchange.name} </wui-text>
+            </wui-list-item>`
+        )
+      : html`<wui-flex flexDirection="column" alignItems="center" gap="4" padding="4">
+          <wui-text variant="lg-medium" align="center" color="primary">
+            No exchanges support this asset on this network
+          </wui-text>
+        </wui-flex>`
+  }
+
+  private templateWallet() {
+    if (!this.sourceToken || !this.methods.includes('wallet')) {
+      return null
+    }
+
+    const { label, loading, disabled, onClick } = this.getActionState()
+
+    if (disabled) {
+      return null
+    }
+
+    const { chainNamespace } = ParseUtil.parseCaipNetworkId(this.sourceToken.caipNetworkId)
+
+    const connectorId = this.activeConnectorIds[chainNamespace] ?? ''
+    const connector = ConnectorController.getConnector({
+      id: connectorId,
+      namespace: chainNamespace
+    })
+    const connectorImage = AssetUtil.getConnectorImage(connector)
+
+    return html`<wui-list-item
+      variant="icon"
+      iconVariant="overlay"
+      ?rounded=${true}
+      @click=${onClick}
+      ?chevron=${true}
+      ?loading=${loading}
+      icon=${ifDefined(connectorImage ? undefined : 'wallet')}
+      imageSrc=${ifDefined(connectorImage)}
+      data-testid="transfers-wallet-payment-option"
+    >
+      <wui-text variant="md-regular" color="primary">${label}</wui-text>
+    </wui-list-item>`
+  }
+
+  private async onExchangeClick({ id: exchangeId }: Exchange) {
+    if (this.sourceToken && this.quote) {
+      const exchangeResult = await TransfersController.handlePayWithExchange({
+        exchangeId,
+        asset: this.sourceToken,
+        amount: this.quote.origin.amountFormatted,
+        recipient: this.quote.depositAddress
+      })
+
+      await TransfersController.pollStatus(this.quote.requestId, {
+        expectedStatuses: EXPECTED_STATUSES,
+        onStatusChange: status => {
+          if (status !== 'timeout') {
+            exchangeResult?.popupWindow.close()
+          }
+
+          this.onStatusChange(status)
+        },
+        maxPollingAttempts: 30,
+        pollingInterval: 6000
+      })
+    }
+  }
+
+  private async fetchExchanges() {
+    if (this.quote && this.sourceToken && this.methods.includes('cex')) {
+      await TransfersController.fetchExchanges({
+        asset: this.sourceToken,
+        amount: this.quote.origin.amountFormatted
+      })
+    }
   }
 
   private templateTimeEstimate() {
@@ -273,26 +394,6 @@ export class W3mTransfersView extends LitElement {
     `
   }
 
-  private templateActionButton() {
-    const { label, loading, disabled, onClick } = this.getActionState()
-
-    return html` <wui-flex gap="2">
-      <wui-button
-        data-testid="transfer-action-button"
-        class="action-button"
-        fullWidth
-        size="lg"
-        borderRadius="xs"
-        variant="accent-primary"
-        ?loading=${loading}
-        ?disabled=${disabled}
-        @click=${onClick}
-      >
-        ${label}
-      </wui-button>
-    </wui-flex>`
-  }
-
   private async onTransfer() {
     try {
       if (!this.quote?.requestId) {
@@ -322,7 +423,7 @@ export class W3mTransfersView extends LitElement {
 
       console.log('EXECUTED TX!')
       await TransfersController.pollStatus(this.quote.requestId, {
-        expectedStatus: 'pending',
+        expectedStatuses: EXPECTED_STATUSES,
         onStatusChange: this.onStatusChange.bind(this)
       })
 
@@ -336,8 +437,8 @@ export class W3mTransfersView extends LitElement {
 
   private onStatusChange(status: TransferStatus['status']) {
     this.pollingStatus = status
-
-    if (status === 'pending') {
+    console.log('ON STATUS CHANGE!', status)
+    if (EXPECTED_STATUSES.includes(status)) {
       console.log('PUSHING TO CONFIRMATION!')
       RouterController.push('TransfersConfirmation')
     }
@@ -369,8 +470,8 @@ export class W3mTransfersView extends LitElement {
 
     if (this.polling) {
       return {
-        label: 'Waiting for confirmation...',
-        disabled: true,
+        label: 'Confirming...',
+        disabled: false,
         loading: true,
         onClick: this.noop
       }
@@ -379,7 +480,7 @@ export class W3mTransfersView extends LitElement {
     if (this.quoteLoading) {
       return {
         label: 'Loading quote...',
-        disabled: true,
+        disabled: false,
         loading: true,
         onClick: this.noop
       }
@@ -391,6 +492,17 @@ export class W3mTransfersView extends LitElement {
         disabled: true,
         loading: false,
         onClick: this.noop
+      }
+    }
+
+    if (!this.caipAddress) {
+      const { chainNamespace } = ParseUtil.parseCaipNetworkId(this.sourceToken.caipNetworkId)
+
+      return {
+        label: CHAIN_LABELS[chainNamespace]?.label ?? 'Connect Wallet',
+        disabled: false,
+        loading: false,
+        onClick: () => this.onConnect(chainNamespace)
       }
     }
 
@@ -409,35 +521,26 @@ export class W3mTransfersView extends LitElement {
       }
     }
 
-    if (!this.caipAddress) {
-      const { chainNamespace } = ParseUtil.parseCaipNetworkId(this.sourceToken.caipNetworkId)
-
-      return {
-        label: CHAIN_LABELS[chainNamespace]?.label ?? 'Connect Wallet',
-        disabled: false,
-        loading: false,
-        onClick: () => this.onConnect(chainNamespace)
-      }
-    }
-
-    if (!this.recipientAddress) {
-      return {
-        label: 'Invalid recipient',
-        disabled: true,
-        loading: false,
-        onClick: this.noop
-      }
-    }
+    const { chainNamespace: sourceChainNamespace } = ParseUtil.parseCaipNetworkId(
+      this.sourceToken.caipNetworkId
+    )
+    const connectorId = this.activeConnectorIds[sourceChainNamespace] ?? ''
+    const connector = ConnectorController.getConnector({
+      id: connectorId,
+      namespace: sourceChainNamespace
+    })
 
     return {
-      label: 'Confirm',
+      label: `Pay with ${connector?.name ?? 'Wallet'}`,
       disabled: false,
       loading: false,
       onClick: () => this.onTransfer()
     }
   }
 
-  private noop() {}
+  private noop() {
+    return null
+  }
 }
 
 declare global {

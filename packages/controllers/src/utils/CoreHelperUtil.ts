@@ -537,5 +537,15 @@ export const CoreHelperUtil = {
     const newUrl = beforeKeyValue + newKeyValue + afterKeyValue
 
     return newUrl
+  },
+  waitUntilPopupWindowIsClosed(popupWindow: Window): Promise<{ closed: boolean }> {
+    return new Promise(resolve => {
+      const interval = setInterval(() => {
+        if (popupWindow.closed) {
+          clearInterval(interval)
+          resolve({ closed: true })
+        }
+      }, 1000)
+    })
   }
 }

@@ -30,15 +30,15 @@ import {
 import { Card } from '@chakra-ui/react'
 
 import type { CaipNetworkId } from '@reown/appkit-common'
+import { MOCK_TOKENS } from '@reown/appkit-controllers'
 import type { Exchange, PayUrlParams, PaymentAsset } from '@reown/appkit-pay'
-import { baseETH, baseSepoliaETH, baseUSDC, pay } from '@reown/appkit-pay'
+import { pay } from '@reown/appkit-pay'
 import {
   type ExchangeBuyStatus,
   useAvailableExchanges,
   useExchangeBuyStatus,
   usePayUrlActions
 } from '@reown/appkit-pay/react'
-import { solana, solanaDevnet } from '@reown/appkit/networks'
 
 import { useChakraToast } from './Toast'
 
@@ -48,48 +48,13 @@ interface AppKitPaymentAssetState {
   asset: PaymentAsset
 }
 
-type PresetKey = 'NATIVE_BASE' | 'NATIVE_BASE_SEPOLIA' | 'USDC_BASE' | 'USDC_SOLANA' | 'SOL_DEV'
-
-const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
-  NATIVE_BASE: {
-    asset: baseETH,
-    amount: 0.00001
-  },
-  NATIVE_BASE_SEPOLIA: {
-    asset: baseSepoliaETH,
-    amount: 0.00001
-  },
-  USDC_BASE: {
-    asset: baseUSDC,
-    amount: 12
-  },
-  USDC_SOLANA: {
-    asset: {
-      network: solana.caipNetworkId,
-      asset: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-      metadata: {
-        name: 'USD Coin',
-        symbol: 'USDC',
-        decimals: 6
-      }
-    },
-    amount: 1
-  },
-  SOL_DEV: {
-    asset: {
-      network: solanaDevnet.caipNetworkId,
-      asset: 'native',
-      metadata: { name: 'Solana', symbol: 'SOL', decimals: 9 }
-    },
-    amount: 0.00001
-  }
-}
-
 interface ActiveStatusCheck {
   exchangeId: string
   sessionId: string
   exchangeName: string
 }
+
+type PayMethods = 'wallet' | 'cex'
 
 export function AppKitPay() {
   const { isOpen, onToggle } = useDisclosure()
@@ -110,10 +75,22 @@ export function AppKitPay() {
       initialRecipient = localStorage.getItem('appkitPayRecipient') || ''
     }
 
+    // Use first MOCK_TOKEN as default
+    const firstToken = MOCK_TOKENS[0]
+
     return {
       recipient: initialRecipient,
-      asset: baseETH,
-      amount: 0.00001
+      asset: {
+        network: firstToken.caipNetworkId,
+        asset: firstToken.address,
+        metadata: {
+          name: firstToken.name,
+          symbol: firstToken.symbol,
+          decimals: firstToken.decimals,
+          logoUri: firstToken.logoUri
+        }
+      },
+      amount: 1
     }
   })
 
@@ -129,17 +106,19 @@ export function AppKitPay() {
 
   const [activeCheck, setActiveCheck] = useState<ActiveStatusCheck | null>(null)
 
-  function isPresetActive(preset: Omit<AppKitPaymentAssetState, 'recipient'>): boolean {
-    return paymentDetails.asset === preset.asset && paymentDetails.amount === preset.amount
+  function isPresetActive(presetAsset: PaymentAsset): boolean {
+    return (
+      paymentDetails.asset.network === presetAsset.network &&
+      paymentDetails.asset.asset === presetAsset.asset
+    )
   }
 
-  function handlePresetClick(preset: Omit<AppKitPaymentAssetState, 'recipient'>) {
+  const handlePresetClick = useCallback((asset: PaymentAsset) => {
     setPaymentDetails(prev => ({
-      ...preset,
-      recipient: prev.recipient
+      ...prev,
+      asset
     }))
-    setAmountDisplayValue(preset.amount.toString())
-  }
+  }, [])
 
   const handleSuccessStatus = useCallback(
     (status: ExchangeBuyStatus) => {
@@ -181,13 +160,14 @@ export function AppKitPay() {
     onError: handleErrorStatus
   })
 
-  async function handleOpenPay() {
+  async function handleOpenPay(paymentMethods?: PayMethods[]) {
     if (!paymentDetails.recipient) {
       toast({ title: 'Missing Recipient', description: 'Please enter a recipient address.' })
 
       return
     }
     const result = await pay({
+      paymentMethods,
       recipient: paymentDetails.recipient,
       amount: paymentDetails.amount,
       paymentAsset: paymentDetails.asset
@@ -347,6 +327,32 @@ export function AppKitPay() {
     setActiveCheck(null)
   }
 
+  function getNetworkName(caipNetworkId: string) {
+    const parts = caipNetworkId.split(':')
+
+    if (parts[0] === 'eip155') {
+      const chainIdMap: Record<string, string> = {
+        '1': 'Mainnet',
+        '8453': 'Base',
+        '10': 'Optimism'
+      }
+
+      return chainIdMap[parts[1] || ''] || `Chain ${parts[1]}`
+    }
+
+    if (parts[0] === 'solana') {
+      return 'Solana'
+    }
+
+    if (parts[0] === 'bip122') {
+      return 'Bitcoin'
+    }
+
+    return parts[0]
+  }
+
+  const toNetworkName = getNetworkName(paymentDetails.asset.network)
+
   return (
     <>
       <Card marginTop={10} marginBottom={10}>
@@ -356,7 +362,7 @@ export function AppKitPay() {
         <CardBody>
           <Stack spacing="4">
             <FormControl isRequired>
-              <FormLabel>Recipient Address</FormLabel>
+              <FormLabel>Recipient {toNetworkName} Address</FormLabel>
               <Input
                 placeholder="0x..."
                 name="recipient"
@@ -366,54 +372,63 @@ export function AppKitPay() {
             </FormControl>
 
             <FormControl>
-              <FormLabel>Presets</FormLabel>
-              <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 5 }} spacing="3" width="full">
-                <Button
-                  onClick={() => handlePresetClick(PRESETS['NATIVE_BASE'])}
-                  isActive={isPresetActive(PRESETS['NATIVE_BASE'])}
-                  variant={isPresetActive(PRESETS['NATIVE_BASE']) ? 'solid' : 'outline'}
-                  width="full"
-                  minH="44px"
-                >
-                  Native Base
-                </Button>
-                <Button
-                  onClick={() => handlePresetClick(PRESETS['NATIVE_BASE_SEPOLIA'])}
-                  isActive={isPresetActive(PRESETS['NATIVE_BASE_SEPOLIA'])}
-                  variant={isPresetActive(PRESETS['NATIVE_BASE_SEPOLIA']) ? 'solid' : 'outline'}
-                  width="full"
-                  minH="44px"
-                >
-                  Native Base Sepolia
-                </Button>
-                <Button
-                  onClick={() => handlePresetClick(PRESETS['USDC_BASE'])}
-                  isActive={isPresetActive(PRESETS['USDC_BASE'])}
-                  variant={isPresetActive(PRESETS['USDC_BASE']) ? 'solid' : 'outline'}
-                  width="full"
-                  minH="44px"
-                >
-                  USDC Base
-                </Button>
-                <Button
-                  onClick={() => handlePresetClick(PRESETS['USDC_SOLANA'])}
-                  isActive={isPresetActive(PRESETS['USDC_SOLANA'])}
-                  variant={isPresetActive(PRESETS['USDC_SOLANA']) ? 'solid' : 'outline'}
-                  width="full"
-                  minH="44px"
-                >
-                  USDC Solana
-                </Button>
-                <Button
-                  onClick={() => handlePresetClick(PRESETS['SOL_DEV'])}
-                  isActive={isPresetActive(PRESETS['SOL_DEV'])}
-                  variant={isPresetActive(PRESETS['SOL_DEV']) ? 'solid' : 'outline'}
-                  width="full"
-                  minH="44px"
-                >
-                  SOL Dev
-                </Button>
+              <FormLabel>Token Presets</FormLabel>
+              <SimpleGrid columns={{ base: 2, sm: 3, md: 4, lg: 5 }} spacing="3" width="full">
+                {MOCK_TOKENS.map(token => {
+                  const asset: PaymentAsset = {
+                    network: token.caipNetworkId,
+                    asset: token.address,
+                    metadata: {
+                      name: token.name,
+                      symbol: token.symbol,
+                      decimals: token.decimals,
+                      logoUri: token.logoUri
+                    }
+                  }
+
+                  return (
+                    <Button
+                      leftIcon={
+                        <Image
+                          src={token.logoUri}
+                          alt={token.symbol}
+                          boxSize="20px"
+                          borderRadius="full"
+                        />
+                      }
+                      key={`${token.address}-${token.caipNetworkId}`}
+                      onClick={() => handlePresetClick(asset)}
+                      isActive={isPresetActive(asset)}
+                      variant={isPresetActive(asset) ? 'solid' : 'outline'}
+                      width="full"
+                      minH="44px"
+                    >
+                      {token.symbol} ({getNetworkName(token.caipNetworkId)})
+                    </Button>
+                  )
+                })}
               </SimpleGrid>
+            </FormControl>
+
+            <FormControl isRequired>
+              <FormLabel>Amount</FormLabel>
+              <NumberInput
+                value={amountDisplayValue}
+                onChange={val => {
+                  setAmountDisplayValue(val)
+                  const num = parseFloat(val)
+                  if (!isNaN(num)) {
+                    setPaymentDetails(prev => ({ ...prev, amount: num }))
+                  }
+                }}
+                min={0}
+                step={0.01}
+              >
+                <NumberInputField placeholder="Enter amount" />
+              </NumberInput>
+              <FormHelperText>
+                Amount of {paymentDetails.asset.metadata.symbol} to receive
+              </FormHelperText>
             </FormControl>
 
             <Button onClick={onToggle} variant="outline" width="full">
@@ -499,13 +514,17 @@ export function AppKitPay() {
         </CardHeader>
         <CardBody>
           <Stack spacing="4">
-            <Button onClick={handleOpenPay} width="full">
-              Open Pay Modal
+            <Button onClick={() => handleOpenPay()} width="full">
+              Pay
             </Button>
 
-            <Text fontSize="sm" color="gray.500">
-              Uses the Recipient Address and Asset Configuration from the form above.
-            </Text>
+            <Button onClick={() => handleOpenPay(['wallet'])} width="full">
+              Pay with Wallet
+            </Button>
+
+            <Button onClick={() => handleOpenPay(['cex'])} width="full">
+              Pay with CEX
+            </Button>
           </Stack>
         </CardBody>
       </Card>

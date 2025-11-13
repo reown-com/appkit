@@ -1,3 +1,6 @@
+/* eslint-disable no-console */
+/* eslint-disable no-plusplus */
+/* eslint-disable newline-before-return */
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -54,7 +57,7 @@ export class W3mTransfersConfirmationView extends LitElement {
     )
   }
 
-  public override async firstUpdated() {
+  public override firstUpdated() {
     if (this.quote?.requestId) {
       this.startPolling()
     } else {
@@ -319,6 +322,7 @@ export class W3mTransfersConfirmationView extends LitElement {
     if (hash.length <= 16) {
       return hash
     }
+
     return `${hash.slice(0, 6)}...${hash.slice(-4)}`
   }
 
@@ -358,7 +362,9 @@ export class W3mTransfersConfirmationView extends LitElement {
     this.pollingAttempts++
 
     try {
-      const { status, requestId } = await TransfersController.fetchStatus(this.quote?.requestId)
+      const { status, requestId, ...rest } = await TransfersController.fetchStatus(
+        this.quote?.requestId
+      )
       console.log('Transfer status:', status)
 
       if (!status) {
@@ -367,7 +373,8 @@ export class W3mTransfersConfirmationView extends LitElement {
 
       this.transferStatus = {
         status,
-        requestId
+        requestId,
+        ...rest
       }
 
       if (status === 'success') {

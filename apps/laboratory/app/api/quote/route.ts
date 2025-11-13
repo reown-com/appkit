@@ -50,6 +50,10 @@ interface RelayQuoteRequest {
   topupGas?: boolean
   protocolVersion?: string
   explicitDeposit?: boolean
+  appFees?: Array<{
+    recipient: string
+    fee: string
+  }>
 }
 
 // ============================================================
@@ -326,12 +330,18 @@ function transformQuoteResponse(relayResponse: RelayQuoteResponse): SimplifiedQu
   // Add app fee
   if (fees.app && fees.app.amount !== '0') {
     feeArray.push({
-      label: 'App Fee',
+      label: 'Reown Fee',
       amount: fees.app.amount,
       amountFormatted: fees.app.amountFormatted,
       chainId: normalizeChainId(fees.app.currency.chainId),
       amountUsd: fees.app.amountUsd,
-      currency: transformCurrency(fees.app.currency)
+      currency: transformCurrency({
+        ...fees.app.currency,
+        metadata: {
+          ...fees.app.currency.metadata,
+          logoURI: 'https://pbs.twimg.com/profile_images/1832911695947223040/uStftanD_400x400.jpg'
+        }
+      })
     })
   }
 
@@ -410,10 +420,16 @@ export async function POST(request: NextRequest) {
       destinationCurrency: body.destinationCurrency,
       recipient: body.recipient,
       tradeType: 'EXPECTED_OUTPUT',
-      amount: body.amount as string,
+      amount: body.amount,
       referrer: 'relay.link',
       useExternalLiquidity: false,
-      useDepositAddress: true
+      useDepositAddress: true,
+      appFees: [
+        {
+          recipient: '0x8B271bedbf142EaB0819B113D9003Ee22BeE3871',
+          fee: '1000'
+        }
+      ]
     }
 
     console.log('Calling Relay.link API with:', relayRequest)
