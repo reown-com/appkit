@@ -383,7 +383,7 @@ describe('SendController', () => {
       })
     })
 
-    it('should fire SEND_INITIATED -> SEND_REJECTED -> SEND_ERROR when user rejects', async () => {
+    it('should fire SEND_INITIATED then SEND_REJECTED when user rejects', async () => {
       // Arrange
       SendController.setToken(token as SendControllerState['token'])
       SendController.setTokenAmount(sendTokenAmount)
@@ -418,18 +418,10 @@ describe('SendController', () => {
         })
       )
       expect(EventsController.sendEvent).toHaveBeenNthCalledWith(
-        3,
-        expect.objectContaining({
-          type: 'track',
-          event: 'SEND_ERROR',
-          properties: expect.objectContaining({
-            isSmartAccount: false,
-            token: token.symbol,
-            amount: sendTokenAmount,
-            network: extendedMainnet.caipNetworkId
-          })
-        })
+        2,
+        expect.objectContaining({ type: 'track', event: 'SEND_REJECTED' })
       )
+      expect(EventsController.sendEvent).toHaveBeenCalledTimes(2)
     })
 
     it('should fire SEND_INITIATED -> SEND_ERROR when random error occurs', async () => {
