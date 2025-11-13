@@ -168,6 +168,7 @@ const controller = {
           hash: state.hash ?? ''
         }
       })
+      SendController.resetSend()
     } catch (err) {
       const event: Event = {
         type: 'track',
@@ -185,7 +186,7 @@ const controller = {
 
       throw err
     } finally {
-      SendController.resetSend()
+      SendController.setLoading(false)
     }
   },
 
