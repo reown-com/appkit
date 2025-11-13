@@ -185,7 +185,7 @@ const controller = {
 
       throw err
     } finally {
-      SendController.setLoading(false)
+      SendController.resetSend()
     }
   },
 
@@ -310,7 +310,6 @@ const controller = {
     })
 
     ConnectionController._getClient()?.updateBalance('eip155')
-    SendController.resetSend()
 
     return { hash }
   },
@@ -343,8 +342,6 @@ const controller = {
         abi: ContractUtil.getERC20Abi(tokenAddress),
         chainNamespace: CommonConstantsUtil.CHAIN.EVM
       })
-
-      SendController.resetSend()
 
       return { hash }
     }
@@ -388,8 +385,6 @@ const controller = {
     }
 
     ConnectionController._getClient()?.updateBalance('solana')
-
-    SendController.resetSend()
   },
 
   resetSend() {
