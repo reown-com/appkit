@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils'
 
 import { InjectedWalletsCardContent } from './InjectedWalletsContent'
 import { WalletConnectQRContent } from './WalletConnectQRContent'
+import { WalletConnectWalletItem } from './WalletConnectWalletItem'
 import { WalletConnectWalletsContent } from './WalletConnectWalletsContent'
 
 export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>) {
@@ -23,9 +24,9 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
   const [connectingWallet, setConnectingWallet] = useState<WalletItem | undefined>(undefined)
   const [isNamespaceDialogOpen, setIsNamespaceDialogOpen] = useState(false)
 
-  const injectedWallets = data.filter(w => w.isInjected)
+  const showQRCode = wcUri && connectingWallet && !connectingWallet.isInjected && !isFetchingWcUri
 
-  function handleOpenNamespaceDialog(item: (typeof injectedWallets)[number]) {
+  function handleOpenNamespaceDialog(item: WalletItem) {
     setSelectedWallet(item)
     setIsNamespaceDialogOpen(true)
   }
@@ -54,8 +55,6 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
     setConnectingWallet(undefined)
   }
 
-  const showQRCode = wcUri && connectingWallet && !connectingWallet.isInjected && !isFetchingWcUri
-
   return (
     <div
       className={cn('flex w-full max-w-xl flex-col gap-6 p-6', className, {
@@ -82,7 +81,6 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
             />
           ) : (
             <InjectedWalletsCardContent
-              wallets={injectedWallets}
               connectingWallet={connectingWallet}
               handleConnect={handleConnect}
               handleOpenNamespaceDialog={handleOpenNamespaceDialog}

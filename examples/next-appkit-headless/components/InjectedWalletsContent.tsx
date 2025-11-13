@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect } from 'react'
+
 import { ArrowRight, ChevronRightIcon, Facebook, Github, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 
@@ -14,10 +16,10 @@ import { Field, FieldGroup, FieldSeparator } from '@/components/ui/field'
 import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item'
 
 import { WalletConnectWalletItem } from './WalletConnectWalletItem'
+import { WalletItemSkeleton } from './WalletItemSkeleton'
 import { Badge } from './ui/badge'
 
 type Props = {
-  wallets: WalletItem[]
   connectingWallet: WalletItem | undefined
   handleConnect: (wallet: WalletItem, namespace?: ChainNamespace) => void
   handleOpenNamespaceDialog: (wallet: WalletItem) => void
@@ -25,16 +27,26 @@ type Props = {
 }
 
 export function InjectedWalletsCardContent({
-  wallets,
   connectingWallet,
   handleConnect,
   handleOpenNamespaceDialog,
   setShowWalletSearch
 }: Props) {
-  const { data } = useAppKitWallets()
+  const { isInitialized, data, fetchWallets, isFetchingWallets } = useAppKitWallets()
   const { connect: connectWithWalletButton } = useAppKitWallet()
 
   const wcWallet = data.find(w => !w.isInjected && w.name === 'WalletConnect')
+  const injectedWallets = data.filter(w => w.isInjected)
+  const hasNoInjectedWallets = injectedWallets.length === 0
+  const firstFiveWcWallets = data
+    .filter(w => !w.isInjected && w.name !== 'WalletConnect')
+    .slice(0, 5)
+
+  useEffect(() => {
+    if (isInitialized) {
+      fetchWallets({ entries: 5 })
+    }
+  }, [isInitialized])
 
   return (
     <div className="p-6">
@@ -49,72 +61,106 @@ export function InjectedWalletsCardContent({
           <FieldGroup className="flex flex-col">
             <FieldGroup className="flex flex-col gap-2">
               <Field className="max-h-[300px] overflow-y-auto">
-                {wcWallet ? (
-                  <WalletConnectWalletItem
-                    connectingWallet={connectingWallet}
-                    wallet={wcWallet}
-                    onClick={handleConnect}
-                  />
-                ) : null}
-                {wallets.map(item => {
-                  const isMultiChain = item.connectors.length > 1
+                {isInitialized ? (
+                  <>
+                    {wcWallet ? (
+                      <WalletConnectWalletItem
+                        connectingWallet={connectingWallet}
+                        wallet={wcWallet}
+                        onClick={handleConnect}
+                      />
+                    ) : null}
+                    {hasNoInjectedWallets ? (
+                      isFetchingWallets ? (
+                        <>
+                          <WalletItemSkeleton />
+                          <WalletItemSkeleton />
+                          <WalletItemSkeleton />
+                        </>
+                      ) : (
+                        firstFiveWcWallets.map(w => (
+                          <WalletConnectWalletItem
+                            key={w.id}
+                            connectingWallet={connectingWallet}
+                            wallet={w}
+                            onClick={handleConnect}
+                          />
+                        ))
+                      )
+                    ) : (
+                      injectedWallets.map(item => {
+                        const isMultiChain = item.connectors.length > 1
 
-                  return (
-                    <div key={item.id}>
-                      <Item
-                        variant="outline"
-                        className="group"
-                        size="sm"
-                        onClick={() => {
-                          if (isMultiChain) {
-                            handleOpenNamespaceDialog(item)
-                          } else {
-                            handleConnect(item, item.connectors[0].chain)
-                          }
-                        }}
-                      >
-                        <ItemMedia className="rounded-sm mr-2 overflow-hidden w-6 h-6">
-                          {item.imageUrl ? (
-                            <Image src={item.imageUrl} alt={item.name} width={24} height={24} />
-                          ) : (
-                            <div className="w-6 h-6 flex items-center justify-center rounded-sm bg-muted font-semibold text-lg text-muted-foreground border">
-                              {item.name.charAt(0).toUpperCase()}
-                            </div>
-                          )}
-                        </ItemMedia>
-                        <ItemContent className="flex flex-row items-center justify-between">
-                          <ItemTitle>{item.name}</ItemTitle>
-                          <div className="flex flex-row items-center gap-2">
-                            <div className="relative flex flex-row items-center gap-2 group-hover:opacity-100 opacity-0 transition-opacity duration-100">
-                              {item.connectors.map((connector, index) => (
-                                <Image
-                                  key={connector.chain}
-                                  src={connector.chainImageUrl || ''}
-                                  alt={'Chain Image for ' + connector.chain}
-                                  width={18}
-                                  height={18}
-                                  className="rounded-full shadow-sm outline outline-muted/70"
-                                  style={{
-                                    zIndex: item.connectors.length * 2 - index,
-                                    marginLeft: index > 0 ? '-14px' : 0
-                                  }}
-                                />
-                              ))}
-                            </div>
-                            <Badge variant="outline">Installed</Badge>
+                        return (
+                          <div key={item.id}>
+                            <Item
+                              variant="outline"
+                              className="group"
+                              size="sm"
+                              onClick={() => {
+                                if (isMultiChain) {
+                                  handleOpenNamespaceDialog(item)
+                                } else {
+                                  handleConnect(item, item.connectors[0].chain)
+                                }
+                              }}
+                            >
+                              <ItemMedia className="rounded-sm mr-2 overflow-hidden w-6 h-6">
+                                {item.imageUrl ? (
+                                  <Image
+                                    src={item.imageUrl}
+                                    alt={item.name}
+                                    width={24}
+                                    height={24}
+                                  />
+                                ) : (
+                                  <div className="w-6 h-6 flex items-center justify-center rounded-sm bg-muted font-semibold text-lg text-muted-foreground border">
+                                    {item.name.charAt(0).toUpperCase()}
+                                  </div>
+                                )}
+                              </ItemMedia>
+                              <ItemContent className="flex flex-row items-center justify-between">
+                                <ItemTitle>{item.name}</ItemTitle>
+                                <div className="flex flex-row items-center gap-2">
+                                  <div className="relative flex flex-row items-center gap-2 group-hover:opacity-100 opacity-0 transition-opacity duration-100">
+                                    {item.connectors.map((connector, index) => (
+                                      <Image
+                                        key={connector.chain}
+                                        src={connector.chainImageUrl || ''}
+                                        alt={'Chain Image for ' + connector.chain}
+                                        width={18}
+                                        height={18}
+                                        className="rounded-full shadow-sm outline outline-muted/70"
+                                        style={{
+                                          zIndex: item.connectors.length * 2 - index,
+                                          marginLeft: index > 0 ? '-14px' : 0
+                                        }}
+                                      />
+                                    ))}
+                                  </div>
+                                  <Badge variant="outline">Installed</Badge>
+                                </div>
+                              </ItemContent>
+                              <ItemActions>
+                                {connectingWallet?.id === item.id ? (
+                                  <Loader2 className="size-4 animate-spin" />
+                                ) : (
+                                  <ChevronRightIcon className="size-4" />
+                                )}
+                              </ItemActions>
+                            </Item>
                           </div>
-                        </ItemContent>
-                        <ItemActions>
-                          {connectingWallet?.id === item.id ? (
-                            <Loader2 className="size-4 animate-spin" />
-                          ) : (
-                            <ChevronRightIcon className="size-4" />
-                          )}
-                        </ItemActions>
-                      </Item>
-                    </div>
-                  )
-                })}
+                        )
+                      })
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <WalletItemSkeleton />
+                    <WalletItemSkeleton />
+                    <WalletItemSkeleton />
+                  </>
+                )}
               </Field>
               <Field>
                 <Button

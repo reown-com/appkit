@@ -12,6 +12,7 @@ import { ConnectionController } from '../src/controllers/ConnectionController.js
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { OptionsController } from '../src/controllers/OptionsController.js'
 import { ProviderController } from '../src/controllers/ProviderController.js'
+import { PublicStateController } from '../src/controllers/PublicStateController.js'
 import { ConnectUtil, type WalletItem } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
@@ -307,6 +308,11 @@ export interface UseAppKitWalletsReturn {
   isFetchingWcUri: boolean
 
   /**
+   * Boolean that indicates if the AppKit is initialized.
+   */
+  isInitialized: boolean
+
+  /**
    * The current WalletConnect URI for QR code display.
    * This is set when connecting to a WalletConnect wallet.
    */
@@ -327,8 +333,10 @@ export interface UseAppKitWalletsReturn {
    * This is useful for pagination or initial load.
    * @param options - Options for fetching wallets
    * @param options.page - Page number to fetch (default: 1)
+   * @param options.query - Search query to filter wallets (default: '')
+   * @param options.entries - Number of entries to fetch (default: 40)
    */
-  fetchWallets: (options?: { page?: number; query?: string }) => Promise<void>
+  fetchWallets: (options?: { page?: number; query?: string; entries?: number }) => Promise<void>
 
   /**
    * Function to connect to a wallet.
@@ -353,19 +361,24 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
   const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
   const { wallets: wcWallets, search, page, count } = useSnapshot(ApiController.state)
+  const { initialized } = useSnapshot(PublicStateController.state)
+
   const wallets = ConnectUtil.getUnifiedWalletList({
     wcWallets: wcWallets as WcWallet[],
     search: search as WcWallet[]
   })
 
-  const fetchWallets = useCallback(async (fetchOptions?: { page?: number; query?: string }) => {
+  async function fetchWallets(fetchOptions?: { page?: number; query?: string; entries?: number }) {
     setIsFetchingWallets(true)
     try {
       if (fetchOptions?.query) {
         await ApiController.searchWallet({ search: fetchOptions?.query })
       } else {
         ApiController.state.search = []
-        await ApiController.fetchWalletsByPage({ page: fetchOptions?.page ?? 1 })
+        await ApiController.fetchWalletsByPage({
+          page: fetchOptions?.page ?? 1,
+          entries: fetchOptions?.entries
+        })
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -373,41 +386,42 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     } finally {
       setIsFetchingWallets(false)
     }
-  }, [])
+  }
 
-  const connect = useCallback(
-    async (_wallet: WalletItem, namespace?: ChainNamespace) => {
-      const wallet = wallets.find(w => w.id === _wallet.id)
-      const walletConnector = wallet?.connectors.find(c => c.chain === namespace)
+  async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
+    const wallet = wallets.find(w => w.id === _wallet.id)
+    const walletConnector = wallet?.connectors.find(c => c.chain === namespace)
 
-      const connector =
-        walletConnector && namespace
-          ? ConnectorController.getConnector({ id: walletConnector?.id, namespace })
-          : undefined
+    const connector =
+      walletConnector && namespace
+        ? ConnectorController.getConnector({ id: walletConnector?.id, namespace })
+        : undefined
 
-      if (wallet?.isInjected && connector) {
-        await ConnectorControllerUtil.connectExternal(connector)
-      } else {
-        await ConnectionController.connectWalletConnect({ cache: 'never' })
-      }
-    },
-    [wallets]
-  )
+    if (wallet?.isInjected && connector) {
+      await ConnectorControllerUtil.connectExternal(connector)
+    } else {
+      await ConnectionController.connectWalletConnect({ cache: 'never' })
+    }
+  }
 
   useEffect(() => {
-    if (!isHeadlessEnabled || !remoteFeatures?.headless) {
+    if (
+      remoteFeatures?.headless !== undefined &&
+      (!isHeadlessEnabled || !remoteFeatures?.headless)
+    ) {
       AlertController.open(
         ConstantsUtil.REMOTE_FEATURES_ALERTS.HEADLESS_NOT_ENABLED.DEFAULT,
         'info'
       )
     }
-  }, [isHeadlessEnabled])
+  }, [isHeadlessEnabled, remoteFeatures?.headless])
 
   if (!isHeadlessEnabled || !remoteFeatures?.headless) {
     return {
       data: [],
       isFetchingWallets: false,
       isFetchingWcUri: false,
+      isInitialized: false,
       wcUri: undefined,
       page: 0,
       count: 0,
@@ -420,6 +434,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     data: wallets,
     isFetchingWallets,
     isFetchingWcUri: wcFetchingUri,
+    isInitialized: initialized,
     wcUri,
     page,
     count,
