@@ -46,7 +46,7 @@ export function WalletConnectWalletsContent({ connectingWallet, onBack, onWallet
   // Initial fetch
   useEffect(() => {
     fetchWallets?.()
-  }, [fetchWallets])
+  }, [])
 
   // Search effect
   useEffect(() => {
@@ -55,7 +55,7 @@ export function WalletConnectWalletsContent({ connectingWallet, onBack, onWallet
     } else {
       fetchWallets?.()
     }
-  }, [searchQuery, fetchWallets])
+  }, [searchQuery])
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
