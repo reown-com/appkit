@@ -28,10 +28,7 @@ export type * from '../src/controllers/AdapterController/types.js'
 
 export { ConnectionController } from '../src/controllers/ConnectionController.js'
 export { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
-export type {
-  ConnectionControllerClient,
-  ConnectionControllerState
-} from '../src/controllers/ConnectionController.js'
+export type { ConnectionControllerState } from '../src/controllers/ConnectionController.js'
 export type { ConnectExternalOptions } from '../src/controllers/ConnectionController.js'
 
 export { ConnectorController } from '../src/controllers/ConnectorController.js'

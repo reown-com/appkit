@@ -15,12 +15,6 @@ import {
   type Views
 } from './appkit-base-client.js'
 
-declare global {
-  interface Window {
-    ethereum?: Record<string, unknown>
-  }
-}
-
 // -- Types --------------------------------------------------------------------
 export type OpenOptions<View extends Views> = Omit<BaseOpenOptions<View>, 'namespace'>
 
@@ -54,22 +48,6 @@ export class AppKit extends AppKitBaseClient {
       const address = ChainController.getAccountData(this.activeChainNamespace)?.address
       ConnectionController.finalizeWcConnection(address)
     }
-  }
-
-  public override async syncIdentity(
-    _request: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
-      chainNamespace: ChainNamespace
-    }
-  ) {
-    return Promise.resolve()
-  }
-
-  public override async syncBalance(_params: {
-    address: string
-    chainId: string | number | undefined
-    chainNamespace: ChainNamespace
-  }) {
-    return Promise.resolve()
   }
 
   protected override async injectModalUi() {

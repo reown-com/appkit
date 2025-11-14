@@ -12,9 +12,9 @@
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@tanstack/vue-query": "5.75.5",
     "@wagmi/connectors": "5.11.2",
-    "@wagmi/core": "2.21.2",
-    "@wagmi/vue": "0.2.11",
-    "viem": "2.37.9",
+    "@wagmi/core": "2.22.1",
+    "@wagmi/vue": "0.3.3",
+    "viem": "2.39.0",
     "vue": "3.4.3"
   },
   "devDependencies": {

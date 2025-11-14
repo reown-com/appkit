@@ -657,6 +657,28 @@ export const StorageUtil = {
 
     return {}
   },
+  deleteConnection(connectorId: string, chainNamespace: ChainNamespace) {
+    const existingConnections = StorageUtil.getConnections()
+    const existing = existingConnections[chainNamespace] ?? []
+    const updatedConnections = existing.filter(c => c.connectorId !== connectorId)
+    SafeLocalStorage.setItem(
+      SafeLocalStorageKeys.CONNECTIONS,
+      JSON.stringify({
+        ...existingConnections,
+        [chainNamespace]: updatedConnections
+      })
+    )
+  },
+  clearConnections(chainNamespace: ChainNamespace) {
+    const existingConnections = StorageUtil.getConnections()
+    SafeLocalStorage.setItem(
+      SafeLocalStorageKeys.CONNECTIONS,
+      JSON.stringify({
+        ...existingConnections,
+        [chainNamespace]: []
+      })
+    )
+  },
   setConnections(connections: Connection[], chainNamespace: ChainNamespace) {
     try {
       const existingConnections = StorageUtil.getConnections()

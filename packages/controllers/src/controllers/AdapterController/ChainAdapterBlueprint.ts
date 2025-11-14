@@ -15,6 +15,7 @@ import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { getPreferredAccountType } from '../../utils/ChainControllerUtil.js'
 import { CoreHelperUtil } from '../../utils/CoreHelperUtil.js'
+import { StorageUtil } from '../../utils/StorageUtil.js'
 import type {
   AccountType,
   Connector as AppKitConnector,
@@ -63,7 +64,6 @@ export abstract class AdapterBlueprint<
   public namespace: ChainNamespace | undefined
   public projectId?: string
   public adapterType: string | undefined
-  public getCaipNetworks: (namespace?: ChainNamespace) => CaipNetwork[]
   public getConnectorId: (namespace: ChainNamespace) => string | undefined
   protected availableConnectors: Connector[] = []
   protected availableConnections: Connection[] = []
@@ -79,14 +79,14 @@ export abstract class AdapterBlueprint<
     } | null
   > = {}
   private eventListeners = new Map<EventName, Set<EventCallback<EventName>>>()
+  protected networks: CaipNetwork[]
 
   /**
    * Creates an instance of AdapterBlueprint.
    * @param {AdapterBlueprint.Params} params - The parameters for initializing the adapter
    */
   constructor(params?: AdapterBlueprint.Params) {
-    this.getCaipNetworks = (namespace?: ChainNamespace) =>
-      ChainController.getCaipNetworks(namespace)
+    this.networks = []
     this.getConnectorId = (namespace: ChainNamespace) =>
       ConnectorController.getConnectorId(namespace)
 
@@ -103,6 +103,7 @@ export abstract class AdapterBlueprint<
     this.projectId = params.projectId
     this.namespace = params.namespace
     this.adapterType = params.adapterType
+    this.networks = params?.networks ?? []
   }
 
   /**
@@ -122,14 +123,6 @@ export abstract class AdapterBlueprint<
   }
 
   /**
-   * Gets the supported networks.
-   * @returns {CaipNetwork[]} An array of supported networks
-   */
-  public get networks(): CaipNetwork[] {
-    return this.getCaipNetworks(this.namespace)
-  }
-
-  /**
    * Sets the universal provider for WalletConnect.
    * @param {UniversalProvider} universalProvider - The universal provider instance
    */
@@ -140,9 +133,7 @@ export abstract class AdapterBlueprint<
    * @param {W3mFrameTypes.Responses['FrameGetUserResponse']} user - The user response
    */
   private onAuthConnected({ accounts, chainId }: W3mFrameTypes.Responses['FrameGetUserResponse']) {
-    const caipNetwork = this.getCaipNetworks()
-      .filter(n => n.chainNamespace === this.namespace)
-      .find(n => n.id.toString() === chainId?.toString())
+    const caipNetwork = this.networks.find(n => n.id.toString() === chainId?.toString())
 
     if (accounts && caipNetwork) {
       this.addConnection({
@@ -210,6 +201,7 @@ export abstract class AdapterBlueprint<
       }
     )
 
+    StorageUtil.setConnections(this.availableConnections, this.namespace as ChainNamespace)
     this.emit('connections', this.availableConnections)
   }
 
@@ -222,6 +214,7 @@ export abstract class AdapterBlueprint<
       c => c.connectorId.toLowerCase() !== connectorId.toLowerCase()
     )
 
+    StorageUtil.deleteConnection(connectorId, this.namespace as ChainNamespace)
     this.emit('connections', this.availableConnections)
   }
 
@@ -231,7 +224,7 @@ export abstract class AdapterBlueprint<
    */
   protected clearConnections(emit = false) {
     this.availableConnections = []
-
+    StorageUtil.clearConnections(this.namespace as ChainNamespace)
     if (emit) {
       this.emit('connections', this.availableConnections)
     }
@@ -514,9 +507,7 @@ export abstract class AdapterBlueprint<
     if (accounts.length > 0) {
       const { address, chainId } = CoreHelperUtil.getAccount(accounts[0])
 
-      const caipNetwork = this.getCaipNetworks()
-        .filter(n => n.chainNamespace === this.namespace)
-        .find(n => n.id.toString() === chainId?.toString())
+      const caipNetwork = this.networks.find(n => n.id.toString() === chainId?.toString())
 
       const connector = this.connectors.find(c => c.id === connectorId)
 
@@ -530,9 +521,9 @@ export abstract class AdapterBlueprint<
         this.addConnection({
           connectorId,
           accounts: accounts.map(_account => {
-            const { address } = CoreHelperUtil.getAccount(_account)
+            const { address: accountAddress } = CoreHelperUtil.getAccount(_account)
 
-            return { address: address as string }
+            return { address: accountAddress as string }
           }),
           caipNetwork
         })
@@ -622,9 +613,7 @@ export abstract class AdapterBlueprint<
       connectors: this.connectors
     })
 
-    const caipNetwork = this.getCaipNetworks()
-      .filter(n => n.chainNamespace === this.namespace)
-      .find(n => n.id.toString() === formattedChainId)
+    const caipNetwork = this.networks.find(n => n.id.toString() === formattedChainId)
 
     if (connection) {
       this.addConnection({
@@ -771,7 +760,7 @@ export abstract class AdapterBlueprint<
 
 export namespace AdapterBlueprint {
   export type Params = {
-    namespace?: ChainNamespace
+    namespace: ChainNamespace
     networks?: CaipNetwork[]
     projectId?: string
     adapterType?: string
@@ -821,7 +810,6 @@ export namespace AdapterBlueprint {
   export type SignMessageParams = {
     message: string
     address: string
-    provider?: AppKitConnector['provider']
   }
 
   export type SignMessageResult = {
@@ -833,7 +821,6 @@ export namespace AdapterBlueprint {
     to: string
     data: string
     caipNetwork: CaipNetwork
-    provider?: AppKitConnector['provider']
     value?: bigint | number
   }
 
@@ -843,7 +830,6 @@ export namespace AdapterBlueprint {
 
   export type WriteContractParams = WriteContractArgs & {
     caipNetwork: CaipNetwork
-    provider?: AppKitConnector['provider']
     caipAddress: CaipAddress
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }
@@ -867,7 +853,6 @@ export namespace AdapterBlueprint {
   export type FormatUnitsResult = string
 
   export type GetWalletConnectProviderParams = {
-    provider: AppKitConnector['provider']
     caipNetworks: CaipNetwork[]
     activeCaipNetwork: CaipNetwork
   }
@@ -909,7 +894,6 @@ export namespace AdapterBlueprint {
     gasPrice?: bigint | number
     gas?: bigint | number
     caipNetwork?: CaipNetwork
-    provider?: AppKitConnector['provider']
     tokenMint?: string
   }
 

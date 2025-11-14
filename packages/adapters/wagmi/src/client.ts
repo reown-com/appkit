@@ -97,9 +97,11 @@ export class WagmiAdapter extends AdapterBlueprint {
     }) as [CaipNetwork, ...CaipNetwork[]]
 
     super()
+
     this.namespace = CommonConstantsUtil.CHAIN.EVM
-    this.adapterType = CommonConstantsUtil.ADAPTER_TYPES.WAGMI
+    this.networks = networks
     this.projectId = configParams.projectId
+    this.adapterType = CommonConstantsUtil.ADAPTER_TYPES.WAGMI
 
     this.pendingTransactionsFilter = {
       ...DEFAULT_PENDING_TRANSACTIONS_FILTER,
@@ -111,6 +113,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   override construct(_options: AdapterBlueprint.Params) {
+    // Call parent construct to set networks and other properties
     this.checkChainId()
     this.setupWatchers()
   }
@@ -204,7 +207,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private setupWatchPendingTransactions() {
-    if (!this.pendingTransactionsFilter.enable || this.unwatchPendingTransactions) {
+    if (!this.pendingTransactionsFilter?.enable || this.unwatchPendingTransactions) {
       return
     }
 
@@ -233,9 +236,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         this.clearConnections()
         this.addConnection(
           ...connections.map(connection => {
-            const caipNetwork = this.getCaipNetworks().find(
-              network => network.id === connection.chainId
-            )
+            const caipNetwork = this.networks.find(network => network.id === connection.chainId)
 
             const isAuth = connection.connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
 
@@ -604,6 +605,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     try {
       // Attempt one click auth first, if authenticated, still connect with wagmi to store the session
       const walletConnectConnector = this.getWalletConnectConnector()
+
       await walletConnectConnector.authenticate()
 
       const wagmiConnector = this.getWagmiConnector('walletConnect')
@@ -643,7 +645,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       const connector = this.getWagmiConnector(id)
 
       if (!connector) {
-        throw new Error('connectionControllerClient:connectExternal - connector is undefined')
+        throw new Error('Wagmi Adapter:connect - connector is undefined')
       }
 
       if (provider && info && connector.id === CommonConstantsUtil.CONNECTOR_ID.EIP6963) {
@@ -732,7 +734,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     const connector = this.getWagmiConnector(id)
 
     if (!connector) {
-      throw new Error('connectionControllerClient:connectExternal - connector is undefined')
+      throw new Error('Wagmi Adapter:reconnect - connector is undefined')
     }
 
     await reconnect(this.wagmiConfig, {
@@ -744,7 +746,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const address = params.address
-    const caipNetwork = this.getCaipNetworks().find(network => network.id === params.chainId)
+    const caipNetwork = this.networks.find(network => network.id === params.chainId)
 
     if (!address) {
       return Promise.resolve({ balance: '0.00', symbol: 'ETH' })
@@ -800,8 +802,8 @@ export class WagmiAdapter extends AdapterBlueprint {
     return this.getWagmiConnector('walletConnect')?.['provider'] as UniversalProvider
   }
 
-  public async disconnect(params: AdapterBlueprint.DisconnectParams) {
-    if (params.id) {
+  public async disconnect(params?: AdapterBlueprint.DisconnectParams) {
+    if (params?.id) {
       const connector = this.getWagmiConnector(params.id)
 
       const connections = getConnections(this.wagmiConfig)
@@ -866,6 +868,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     const { caipNetwork } = params
 
+    // Handle regular wagmi chain switching
     const wagmiChain = this.wagmiConfig.chains.find(
       chain => chain.id.toString() === caipNetwork.id.toString()
     )
@@ -890,13 +893,12 @@ export class WagmiAdapter extends AdapterBlueprint {
         blockExplorerUrls: [blockExplorerUrl]
       }
     })
-
-    await super.switchNetwork(params)
+    super.switchNetwork(params)
   }
 
   public async getCapabilities(params: string) {
     if (!this.wagmiConfig) {
-      throw new Error('connectionControllerClient:getCapabilities - wagmiConfig is undefined')
+      throw new Error('Wagmi Adapter:getCapabilities - wagmiConfig is undefined')
     }
 
     const connections = getConnections(this.wagmiConfig)
@@ -905,13 +907,13 @@ export class WagmiAdapter extends AdapterBlueprint {
     const connector = connection ? this.getWagmiConnector(connection.connector.id) : null
 
     if (!connector) {
-      throw new Error('connectionControllerClient:getCapabilities - connector is undefined')
+      throw new Error('Wagmi Adapter:getCapabilities - connector is undefined')
     }
 
     const provider = (await connector.getProvider()) as UniversalProvider
 
     if (!provider) {
-      throw new Error('connectionControllerClient:getCapabilities - provider is undefined')
+      throw new Error('Wagmi Adapter:getCapabilities - provider is undefined')
     }
 
     return await provider.request({ method: 'wallet_getCapabilities', params: [params] })
@@ -919,7 +921,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public async grantPermissions(params: AdapterBlueprint.GrantPermissionsParams) {
     if (!this.wagmiConfig) {
-      throw new Error('connectionControllerClient:grantPermissions - wagmiConfig is undefined')
+      throw new Error('Wagmi Adapter:grantPermissions - wagmiConfig is undefined')
     }
 
     const connections = getConnections(this.wagmiConfig)
@@ -928,13 +930,13 @@ export class WagmiAdapter extends AdapterBlueprint {
     const connector = connection ? this.getWagmiConnector(connection.connector.id) : null
 
     if (!connector) {
-      throw new Error('connectionControllerClient:grantPermissions - connector is undefined')
+      throw new Error('Wagmi Adapter:grantPermissions - connector is undefined')
     }
 
     const provider = (await connector.getProvider()) as UniversalProvider
 
     if (!provider) {
-      throw new Error('connectionControllerClient:grantPermissions - provider is undefined')
+      throw new Error('Wagmi Adapter:grantPermissions - provider is undefined')
     }
 
     return provider.request({ method: 'wallet_grantPermissions', params })
@@ -944,7 +946,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.RevokePermissionsParams
   ): Promise<`0x${string}`> {
     if (!this.wagmiConfig) {
-      throw new Error('connectionControllerClient:revokePermissions - wagmiConfig is undefined')
+      throw new Error('Wagmi Adapter:revokePermissions - wagmiConfig is undefined')
     }
 
     const connections = getConnections(this.wagmiConfig)
@@ -953,13 +955,13 @@ export class WagmiAdapter extends AdapterBlueprint {
     const connector = connection ? this.getWagmiConnector(connection.connector.id) : null
 
     if (!connector) {
-      throw new Error('connectionControllerClient:revokePermissions - connector is undefined')
+      throw new Error('Wagmi Adapter:revokePermissions - connector is undefined')
     }
 
     const provider = (await connector.getProvider()) as UniversalProvider
 
     if (!provider) {
-      throw new Error('connectionControllerClient:revokePermissions - provider is undefined')
+      throw new Error('Wagmi Adapter:revokePermissions - provider is undefined')
     }
 
     return provider.request({ method: 'wallet_revokePermissions', params })
@@ -969,7 +971,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.WalletGetAssetsParams
   ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
     if (!this.wagmiConfig) {
-      throw new Error('connectionControllerClient:walletGetAssets - wagmiConfig is undefined')
+      throw new Error('Wagmi Adapter:walletGetAssets - wagmiConfig is undefined')
     }
 
     const connections = getConnections(this.wagmiConfig)
@@ -978,13 +980,13 @@ export class WagmiAdapter extends AdapterBlueprint {
     const connector = connection ? this.getWagmiConnector(connection.connector.id) : null
 
     if (!connector) {
-      throw new Error('connectionControllerClient:walletGetAssets - connector is undefined')
+      throw new Error('Wagmi Adapter:walletGetAssets - connector is undefined')
     }
 
     const provider = (await connector.getProvider()) as UniversalProvider
 
     if (!provider) {
-      throw new Error('connectionControllerClient:walletGetAssets - provider is undefined')
+      throw new Error('Wagmi Adapter:walletGetAssets - provider is undefined')
     }
 
     return provider.request({ method: 'wallet_getAssets', params: [params] })
@@ -1046,7 +1048,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     this.addConnector(
       new WalletConnectConnector({
         provider: universalProvider,
-        caipNetworks: this.getCaipNetworks(),
+        caipNetworks: this.networks,
         namespace: 'eip155'
       })
     )

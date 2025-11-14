@@ -19,7 +19,6 @@ import type {
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 import type { AccountState } from '../controllers/ChainController.js'
-import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 import type { RouterControllerState } from '../controllers/RouterController.js'
@@ -1208,7 +1207,6 @@ export type AdapterNetworkState = {
 }
 
 export type ChainAdapter = {
-  connectionControllerClient?: ConnectionControllerClient
   accountState?: AccountState
   networkState?: AdapterNetworkState
   namespace?: ChainNamespace
@@ -1402,8 +1400,13 @@ export type UseAppKitNetworkReturn = {
 
 export type BadgeType = 'none' | 'certified'
 
-export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 'reconnecting'
-
+export type ConnectionStatus =
+  | 'connected'
+  | 'disconnected'
+  | 'connecting'
+  | 'reconnecting'
+  | 'authenticating'
+  | 'authenticated'
 /**
  * @description The default account types for each namespace.
  * @default

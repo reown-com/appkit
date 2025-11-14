@@ -388,7 +388,13 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       if (wallet?.isInjected && connector) {
         await ConnectorControllerUtil.connectExternal(connector)
       } else {
-        await ConnectionController.connectWalletConnect({ cache: 'never' })
+        const universalProvider = ProviderController.getProvider(namespace)
+        if (!universalProvider) {
+          throw new Error('No universal provider found')
+        }
+        await ConnectionController.connectWalletConnect({
+          universalProvider
+        })
       }
     },
     [wallets]

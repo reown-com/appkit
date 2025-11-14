@@ -13,6 +13,6 @@ export abstract class EthersProvider<T> {
 
 declare global {
   interface Window {
-    ethereum: Provider
+    ethereum?: Provider
   }
 }
