@@ -1,6 +1,7 @@
 import {
   type MockedFunction,
   type MockedObject,
+  afterEach,
   beforeEach,
   describe,
   expect,
@@ -9,12 +10,7 @@ import {
 } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import {
-  ChainController,
-  type ConnectionControllerClient,
-  ProviderController,
-  WcHelpersUtil
-} from '@reown/appkit-controllers'
+import { ChainController, ProviderController, WcHelpersUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import { ton, tonTestnet } from '@reown/appkit/networks'
 
@@ -29,11 +25,13 @@ describe('TonAdapter', () => {
   let adapter: TonAdapter
 
   beforeEach(() => {
-    adapter = new TonAdapter({ networks: [tonTestnet] })
-    ChainController.initialize([adapter], [tonTestnet], {
-      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
-    })
+    adapter = new TonAdapter({ networks: [tonTestnet], namespace: ConstantsUtil.CHAIN.TON })
+    ChainController.initialize([adapter], [tonTestnet])
     ChainController.setRequestedCaipNetworks([tonTestnet], 'ton')
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
   })
 
   describe('constructor', () => {
@@ -66,7 +64,7 @@ describe('TonAdapter', () => {
     })
 
     it('should throw if caipNetworks is not defined', async () => {
-      adapter = new TonAdapter({})
+      adapter = new TonAdapter({ namespace: ConstantsUtil.CHAIN.TON })
       await expect(adapter.connectWalletConnect()).rejects.toThrow()
     })
 
@@ -306,10 +304,11 @@ describe('TonAdapter', () => {
 
   describe('getWalletConnectProvider', () => {
     it('should return the wallet connect provider', () => {
+      vi.spyOn(ProviderController, 'getProvider').mockReturnValue(mockUniversalProvider())
+
       const provider = adapter.getWalletConnectProvider({
         activeCaipNetwork: tonTestnet,
-        caipNetworks: [tonTestnet],
-        provider: mockUniversalProvider()
+        caipNetworks: [tonTestnet]
       })
 
       expect(provider).toBeInstanceOf(TonWalletConnectConnector)
