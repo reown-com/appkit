@@ -50,6 +50,18 @@ export const ConnectUtil = {
         c.name !== 'WalletConnect'
     )
 
+    if (wcConnector) {
+      items.push({
+        id: wcConnector.id,
+        connectors: [],
+        name: wcConnector.name,
+        imageUrl: AssetUtil.getAssetImageUrl(wcConnector.imageId),
+        isInjected: false,
+        isRecent: false,
+        walletInfo: {}
+      })
+    }
+
     filteredConnectors.forEach(connector => {
       const hasMultipleConnectors = connector.connectors?.length
       const connectors = hasMultipleConnectors
@@ -78,18 +90,6 @@ export const ConnectUtil = {
         }
       })
     })
-
-    if (wcConnector) {
-      items.push({
-        id: wcConnector.id,
-        connectors: [],
-        name: wcConnector.name,
-        imageUrl: AssetUtil.getAssetImageUrl(wcConnector.imageId),
-        isInjected: false,
-        isRecent: false,
-        walletInfo: {}
-      })
-    }
 
     wallets.forEach(w => {
       items.push({
