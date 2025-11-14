@@ -32,7 +32,7 @@ export const api = new FetchUtil({
   baseUrl,
   clientId: null
 })
-const defaultEntries = 40
+const entries = 40
 const recommendedEntries = 4
 const imageCountToFetch = 20
 
@@ -385,13 +385,7 @@ export const ApiController = {
     }
   },
 
-  async fetchWalletsByPage({
-    page,
-    entries = defaultEntries
-  }: {
-    page: ApiGetWalletsRequest['page']
-    entries?: ApiGetWalletsRequest['entries']
-  }) {
+  async fetchWalletsByPage({ page }: { page: ApiGetWalletsRequest['page'] }) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
     const chains = ChainController.getRequestedCaipNetworkIds().join(',')
     const exclude = [

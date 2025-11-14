@@ -388,10 +388,6 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
 
-  const isRemoveHeadlessEnabled = useMemo(() => {
-    return remoteFeatures?.headless
-  }, [remoteFeatures?.headless])
-
   async function fetchWallets(fetchOptions?: { page?: number; query?: string; entries?: number }) {
     setIsFetchingWallets(true)
     try {
@@ -441,15 +437,15 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   useEffect(() => {
     if (
       initialized &&
-      isRemoveHeadlessEnabled !== undefined &&
-      (!isHeadlessEnabled || !isRemoveHeadlessEnabled)
+      remoteFeatures?.headless !== undefined &&
+      (!isHeadlessEnabled || !remoteFeatures?.headless)
     ) {
       AlertController.open(
         ConstantsUtil.REMOTE_FEATURES_ALERTS.HEADLESS_NOT_ENABLED.DEFAULT,
         'info'
       )
     }
-  }, [initialized, isHeadlessEnabled, isRemoveHeadlessEnabled])
+  }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
 
   if (!isHeadlessEnabled || !remoteFeatures?.headless) {
     return {
