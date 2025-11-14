@@ -1,5 +1,3 @@
-import type { ConnectMethod } from '@reown/appkit-controllers'
-
 export const ConstantsUtil = {
   ACCOUNT_TABS: [{ label: 'Tokens' }, { label: 'Activity' }],
   SECURE_SITE_ORIGIN:
