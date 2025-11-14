@@ -13,9 +13,7 @@ import {
   EventsController,
   OptionsController,
   RouterController,
-  SendController,
-  SnackController,
-  getPreferredAccountType
+  SnackController
 } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-avatar'
@@ -24,7 +22,6 @@ import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-list-item'
 import '@reown/appkit-ui/wui-notice-card'
 import '@reown/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../partials/w3m-account-auth-button/index.js'
 
@@ -45,12 +42,6 @@ export class W3mAccountSettingsView extends LitElement {
   @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private disconnecting = false
-
-  @state() private loading = false
-
-  @state() private switched = false
-
-  @state() private text = ''
 
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
@@ -137,7 +128,7 @@ export class W3mAccountSettingsView extends LitElement {
               ${this.network?.name ?? 'Unknown'}
             </wui-text>
           </wui-list-item>
-          ${this.togglePreferredAccountBtnTemplate()} ${this.chooseNameButtonTemplate()}
+          ${this.smartAccountSettingsTemplate()} ${this.chooseNameButtonTemplate()}
           <wui-list-item
             ?rounded=${true}
             icon="power"
@@ -226,7 +217,7 @@ export class W3mAccountSettingsView extends LitElement {
     }
   }
 
-  private togglePreferredAccountBtnTemplate() {
+  private smartAccountSettingsTemplate() {
     const namespace = this.network?.chainNamespace
     const isNetworkEnabled = ChainController.checkIfSmartAccountEnabled()
     const connectorId = ConnectorController.getConnectorId(namespace)
@@ -240,57 +231,21 @@ export class W3mAccountSettingsView extends LitElement {
       return null
     }
 
-    if (!this.switched) {
-      this.text =
-        getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-          ? 'Switch to your EOA'
-          : 'Switch to your Smart Account'
-    }
-
     return html`
       <wui-list-item
-        icon="swapHorizontal"
+        icon="user"
         ?rounded=${true}
         ?chevron=${true}
-        ?loading=${this.loading}
-        @click=${this.changePreferredAccountType.bind(this)}
-        data-testid="account-toggle-preferred-account-type"
+        @click=${this.onSmartAccountSettings.bind(this)}
+        data-testid="account-smart-account-settings-button"
       >
-        <wui-text variant="lg-regular" color="primary">${this.text}</wui-text>
+        <wui-text variant="lg-regular" color="primary">Smart Account Settings</wui-text>
       </wui-list-item>
     `
   }
 
   private onChooseName() {
     RouterController.push('ChooseAccountName')
-  }
-
-  private async changePreferredAccountType() {
-    const namespace = this.network?.chainNamespace
-    const isSmartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
-    const accountTypeTarget =
-      getPreferredAccountType(namespace) === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
-      !isSmartAccountEnabled
-        ? W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
-        : W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-    const authConnector = ConnectorController.getAuthConnector()
-
-    if (!authConnector) {
-      return
-    }
-
-    this.loading = true
-    await ConnectionController.setPreferredAccountType(accountTypeTarget, namespace)
-
-    this.text =
-      accountTypeTarget === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-        ? 'Switch to your EOA'
-        : 'Switch to your Smart Account'
-    this.switched = true
-
-    SendController.resetSend()
-    this.loading = false
-    this.requestUpdate()
   }
 
   private onNetworks() {
@@ -331,6 +286,10 @@ export class W3mAccountSettingsView extends LitElement {
   private onGoToUpgradeView() {
     EventsController.sendEvent({ type: 'track', event: 'EMAIL_UPGRADE_FROM_MODAL' })
     RouterController.push('UpgradeEmailWallet')
+  }
+
+  private onSmartAccountSettings() {
+    RouterController.push('SmartAccountSettings')
   }
 }
 

@@ -56,7 +56,7 @@ extensionTest(
 extensionTest(
   'it should fallback to the last session when cancel siwe from AppKit',
   async ({ library }) => {
-    if (library === 'bitcoin') {
+    if (library === 'bitcoin' || library === 'ton') {
       return
     }
 

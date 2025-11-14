@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-ethers",
-  "version": "1.8.11",
+  "version": "1.8.13",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -26,13 +26,8 @@
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.22.4",
+    "@walletconnect/universal-provider": "2.23.0",
     "valtio": "2.1.7"
-  },
-  "optionalDependencies": {
-    "@base-org/account": "2.4.0",
-    "@safe-global/safe-apps-provider": "0.18.6",
-    "@safe-global/safe-apps-sdk": "9.1.0"
   },
   "peerDependencies": {
     "@ethersproject/sha2": "5.8.0",
@@ -40,7 +35,7 @@
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",
-    "@walletconnect/types": "2.22.4",
+    "@walletconnect/types": "2.23.0",
     "vitest": "2.1.9"
   },
   "author": "Reown (https://discord.gg/reown)",

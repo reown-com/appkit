@@ -389,6 +389,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setEnableNetworkSwitch(options.enableNetworkSwitch !== false)
     OptionsController.setEnableReconnect(options.enableReconnect !== false)
     OptionsController.setEnableMobileFullScreen(options.enableMobileFullScreen === true)
+    OptionsController.setEnableHeadless(options.enableHeadless === true)
     OptionsController.setCoinbasePreference(options.coinbasePreference)
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
     OptionsController.setCustomRpcUrls(options.customRpcUrls)
@@ -894,7 +895,7 @@ export abstract class AppKitBaseClient {
             name: connector.info?.name || connector.name || 'Unknown',
             reconnect: true,
             view: RouterController.state.view,
-            walletRank: undefined
+            walletRank: connector?.explorerWallet?.order
           }
         })
       } else {

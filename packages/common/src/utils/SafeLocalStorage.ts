@@ -33,6 +33,7 @@ export type SafeLocalStorageItems = {
    *  This value is a stringified version of { href: stiring; name: string }
    */
   WALLETCONNECT_DEEPLINK_CHOICE: string
+  '@appkit/ton_wallets_cache': string
 }
 
 export const SafeLocalStorageKeys = {
@@ -62,7 +63,8 @@ export const SafeLocalStorageKeys = {
   HISTORY_TRANSACTIONS_CACHE: '@appkit/history_transactions_cache',
   TOKEN_PRICE_CACHE: '@appkit/token_price_cache',
   RECENT_EMAILS: '@appkit/recent_emails',
-  LATEST_APPKIT_VERSION: '@appkit/latest_version'
+  LATEST_APPKIT_VERSION: '@appkit/latest_version',
+  TON_WALLETS_CACHE: '@appkit/ton_wallets_cache'
 } as const satisfies Record<string, keyof SafeLocalStorageItems>
 
 export type SafeLocalStorageKey = keyof SafeLocalStorageItems | NamespacedConnectorKey

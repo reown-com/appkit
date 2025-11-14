@@ -110,33 +110,6 @@ describe('EthersAdapter', () => {
         ancestorOrigins: ['https://app.safe.global']
       }
     })
-    vi.mock('@base-org/account', async () => {
-      const actual = await import('@base-org/account')
-      return {
-        ...actual,
-        createBaseAccountSDK: vi.fn(() => ({
-          getProvider: vi.fn(() => {
-            return {
-              request: vi.fn(),
-              connect: vi.fn()
-            }
-          })
-        }))
-      }
-    })
-    vi.mock('@safe-global/safe-apps-sdk', () => ({
-      default: vi.fn(() => ({
-        safe: {
-          getInfo: vi.fn(),
-          getProvider: vi.fn(() => {
-            return {
-              request: vi.fn(),
-              connect: vi.fn()
-            }
-          })
-        }
-      }))
-    }))
 
     // Mock ProviderController
     vi.spyOn(ProviderController, 'getProviderId').mockReturnValue('WALLET_CONNECT')
@@ -1287,7 +1260,28 @@ describe('EthersAdapter', () => {
         ...OptionsController.state,
         metadata: mockEthersConfig.metadata
       })
+
+      vi.mock('@reown/appkit-utils/ethers', async () => {
+        const actual = await import('@reown/appkit-utils/ethers')
+        return {
+          ...actual,
+          SafeProvider: vi.fn(() => ({
+            initialize: vi.fn()
+          })),
+          BaseProvider: vi.fn(() => ({
+            initialize: vi.fn()
+          })),
+          InjectedProvider: vi.fn(() => ({
+            initialize: vi.fn()
+          }))
+        }
+      })
     })
+
+    beforeEach(() => {
+      vi.clearAllMocks()
+    })
+
     it('should create Ethers config with coinbase provider if not disabled', async () => {
       const ethersAdapter = new EthersAdapter()
       const providers = await ethersAdapter['createEthersConfig']()

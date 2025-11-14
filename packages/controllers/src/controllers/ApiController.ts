@@ -323,6 +323,7 @@ export const ApiController = {
     const { data } = await ApiController.fetchWallets(params)
 
     state.explorerWallets = data
+    ConnectorController.extendConnectorsWithExplorerWallets(data)
 
     const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
     state.explorerFilteredWallets = data.filter(wallet =>

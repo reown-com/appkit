@@ -28,4 +28,4 @@ global.fetch = vi.fn(() =>
     json: () => Promise.resolve({ data: [] }),
     text: () => Promise.resolve('')
   } as Response)
-)
+) as unknown as typeof fetch

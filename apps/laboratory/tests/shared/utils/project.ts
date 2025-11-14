@@ -2,7 +2,7 @@ import { devices } from '@playwright/test'
 
 import { DESKTOP_DEVICES, MOBILE_DEVICES } from '@reown/appkit-testing'
 
-const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana', 'bitcoin'] as const
+const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana', 'bitcoin', 'ton'] as const
 const MULTICHAIN_LIBRARIES = [
   'multichain-no-adapters',
   'multichain-all',
@@ -17,6 +17,8 @@ const FLAGS = ['default-account-types'] as const
 const CORE_LIRARIES = ['core'] as const
 
 const REOWN_AUTHENTICATION_LIBRARIES = ['reown-authentication'] as const
+
+const HEADLESS_LIBRARIES = ['headless'] as const
 
 const LIBRARY_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
@@ -40,6 +42,10 @@ const REOWN_AUTHENTICATION_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
 
 const FLAG_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   FLAGS.map(library => ({ device, library }))
+)
+
+const HEADLESS_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  HEADLESS_LIBRARIES.map(library => ({ device, library }))
 )
 
 interface UseOptions {
@@ -100,6 +106,8 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
   'multi-wallet.spec.ts'
 ]
 
+const HEADLESS_TESTS = ['headless.spec.ts']
+
 const REOWN_AUTHENTICATION_TESTS = [
   'reown-authentication.spec.ts',
   'reown-authentication-email.spec.ts'
@@ -112,6 +120,8 @@ const SINGLE_ADAPTER_BITCOIN_TESTS = [
   'siwx-extension.spec.ts'
 ]
 
+const SINGLE_ADAPTER_TON_TESTS = ['extension.spec.ts', 'wallet.spec.ts', 'basic-tests.spec.ts']
+
 function createRegex(tests: string[], isDesktop = true) {
   const desktopCheck = isDesktop ? '(?!.*/mobile-)' : ''
 
@@ -121,11 +131,13 @@ function createRegex(tests: string[], isDesktop = true) {
 const SINGLE_ADAPTER_EVM_TESTS_REGEX = createRegex(SINGLE_ADAPTER_EVM_TESTS)
 const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = createRegex(SINGLE_ADAPTER_SOLANA_TESTS)
 const SINGLE_ADAPTER_BITCOIN_TESTS_REGEX = createRegex(SINGLE_ADAPTER_BITCOIN_TESTS)
+const SINGLE_ADAPTER_TON_TESTS_REGEX = createRegex(SINGLE_ADAPTER_TON_TESTS)
 const SINGLE_ADAPTER_MOBILE_REGEX = createRegex(SINGLE_ADAPTER_MOBILE_TESTS, false)
 
 const CORE_TESTS_REGEX = createRegex(CORE_TESTS)
 const CORE_TESTS_MOBILE_REGEX = createRegex(CORE_TESTS, false)
 const REOWN_AUTHENTICATION_TESTS_REGEX = createRegex(REOWN_AUTHENTICATION_TESTS)
+const HEADLESS_TESTS_REGEX = createRegex(HEADLESS_TESTS)
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/core': {
@@ -165,6 +177,16 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Firefox/bitcoin': {
     testMatch: SINGLE_ADAPTER_BITCOIN_TESTS_REGEX,
     testIgnore: /reown-authentication.*\.spec\.ts/u
+  },
+  'Desktop Chrome/ton': {
+    testMatch: SINGLE_ADAPTER_TON_TESTS_REGEX,
+    testIgnore:
+      /siwe-.*\.spec\.ts|siwx-.*\.spec\.ts|multichain-.*\.spec\.ts|reown-authentication.*\.spec\.ts/u
+  },
+  'Desktop Firefox/ton': {
+    testMatch: SINGLE_ADAPTER_TON_TESTS_REGEX,
+    testIgnore:
+      /siwe-.*\.spec\.ts|siwx-.*\.spec\.ts|multichain-.*\.spec\.ts|reown-authentication.*\.spec\.ts/u
   },
   'Desktop Chrome/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
@@ -260,11 +282,23 @@ const customProjectProperties: CustomProjectProperties = {
   'Galaxy S5/solana': {
     testMatch: SINGLE_ADAPTER_MOBILE_REGEX
   },
+  'iPhone 12/ton': {
+    testMatch: SINGLE_ADAPTER_MOBILE_REGEX
+  },
+  'Galaxy S5/ton': {
+    testMatch: SINGLE_ADAPTER_MOBILE_REGEX
+  },
   'Desktop Chrome/reown-authentication': {
     testMatch: REOWN_AUTHENTICATION_TESTS_REGEX
   },
   'Desktop Firefox/reown-authentication': {
     testMatch: REOWN_AUTHENTICATION_TESTS_REGEX
+  },
+  'Desktop Chrome/headless': {
+    testMatch: HEADLESS_TESTS_REGEX
+  },
+  'Desktop Firefox/headless': {
+    testMatch: HEADLESS_TESTS_REGEX
   }
 }
 
@@ -302,6 +336,7 @@ export function getProjects() {
   const coreProjects = CORE_PERMUTATIONS.map(createProject)
   const reownAuthenticationProjects = REOWN_AUTHENTICATION_PERMUTATIONS.map(createProject)
   const flagProjects = FLAG_PERMUTATIONS.map(createProject)
+  const headlessProjects = HEADLESS_PERMUTATIONS.map(createProject)
 
   const projects = [
     ...libraryDesktopProjects,
@@ -309,7 +344,8 @@ export function getProjects() {
     ...multichainProjects,
     ...coreProjects,
     ...reownAuthenticationProjects,
-    ...flagProjects
+    ...flagProjects,
+    ...headlessProjects
   ]
 
   return projects

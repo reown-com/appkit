@@ -32,7 +32,8 @@ export const ConstantsUtil = {
     EVM: 'eip155',
     SOLANA: 'solana',
     POLKADOT: 'polkadot',
-    BITCOIN: 'bip122'
+    BITCOIN: 'bip122',
+    TON: 'ton'
   } as const satisfies Record<string, ChainNamespace>,
   CHAIN_NAME_MAP: {
     eip155: 'EVM Networks',
@@ -41,14 +42,16 @@ export const ConstantsUtil = {
     bip122: 'Bitcoin',
     cosmos: 'Cosmos',
     sui: 'Sui',
-    stacks: 'Stacks'
+    stacks: 'Stacks',
+    ton: 'TON'
   } as const satisfies Record<ChainNamespace, string>,
   ADAPTER_TYPES: {
     BITCOIN: 'bitcoin',
     SOLANA: 'solana',
     WAGMI: 'wagmi',
     ETHERS: 'ethers',
-    ETHERS5: 'ethers5'
+    ETHERS5: 'ethers5',
+    TON: 'ton'
   } as const satisfies Record<string, string>,
   USDT_CONTRACT_ADDRESSES: [
     // Mainnet
@@ -96,6 +99,13 @@ export const ConstantsUtil = {
         displayMessage: 'Multi-Wallet Not Enabled',
         debugMessage:
           'Multi-wallet support is not enabled. Please enable it in your AppKit configuration at cloud.reown.com to use the useAppKitConnection hook.'
+      }
+    },
+    HEADLESS_NOT_ENABLED: {
+      DEFAULT: {
+        displayMessage: '',
+        debugMessage:
+          'Headless support is not enabled. Please enable it with the enableHeadless option in the AppKit configuration and make sure your current plan supports it.'
       }
     }
   },

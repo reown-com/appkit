@@ -107,6 +107,11 @@ export interface OptionsControllerStatePublic {
    */
   enableCoinbase?: boolean
   /**
+   * Enable or disable the AppKit Headless mode to build custom connect user interfaces.
+   * @default true
+   */
+  enableHeadless?: boolean
+  /**
    * Enable or disable the Injected wallet.
    * @default true
    */
@@ -165,7 +170,7 @@ export interface OptionsControllerStatePublic {
   allowUnsupportedChain?: boolean
   /**
    * Default account types for each namespace.
-   * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
+   * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa', ton: 'eoa' }"
    */
   defaultAccountTypes: PreferredAccountTypes
   /**
@@ -423,6 +428,10 @@ export const OptionsController = {
 
   setEnableNetworkSwitch(enableNetworkSwitch: OptionsControllerState['enableNetworkSwitch']) {
     state.enableNetworkSwitch = enableNetworkSwitch
+  },
+
+  setEnableHeadless(enableHeadless: OptionsControllerState['enableHeadless']) {
+    state.enableHeadless = enableHeadless
   },
 
   setEnableMobileFullScreen(

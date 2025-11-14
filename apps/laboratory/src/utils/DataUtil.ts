@@ -191,6 +191,11 @@ export const featuredSdkOptions: SdkOption[] = [
     title: 'Basic',
     link: '/appkit?name=multichain-no-adapters',
     description: 'Configuration with no adapters enabled for AppKit'
+  },
+  {
+    title: 'AppKit Headless',
+    link: '/appkit?name=headless',
+    description: 'Custom connect UI with AppKit Headless'
   }
 ]
 
@@ -199,6 +204,14 @@ export const bitcoinSdkOptions: SdkOption[] = [
     title: 'Default',
     link: '/appkit?name=bitcoin',
     description: 'Basic configuration using bitcoin as a driving library'
+  }
+]
+
+export const tonSdkOptions: SdkOption[] = [
+  {
+    title: 'Default',
+    link: '/appkit?name=ton',
+    description: 'Basic configuration using Ton as a driving library'
   }
 ]
 

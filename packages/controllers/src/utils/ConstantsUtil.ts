@@ -201,7 +201,8 @@ export const ConstantsUtil = {
     bip122: '0x',
     cosmos: '0x',
     sui: '0x',
-    stacks: '0x'
+    stacks: '0x',
+    ton: '0x'
   } as const satisfies Record<ChainNamespace, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1,
@@ -234,7 +235,8 @@ export const ConstantsUtil = {
     emailCapture: false,
     payWithExchange: false,
     payments: false,
-    reownAuthentication: false
+    reownAuthentication: false,
+    headless: false
   },
   DEFAULT_REMOTE_FEATURES_DISABLED: {
     email: false,
@@ -244,7 +246,8 @@ export const ConstantsUtil = {
     activity: false,
     reownBranding: false,
     emailCapture: false,
-    reownAuthentication: false
+    reownAuthentication: false,
+    headless: false
   } as const satisfies RemoteFeatures,
   DEFAULT_FEATURES: {
     receive: true,
@@ -284,7 +287,8 @@ export const ConstantsUtil = {
     bip122: 'payment',
     eip155: 'smartAccount',
     polkadot: 'eoa',
-    solana: 'eoa'
+    solana: 'eoa',
+    ton: 'eoa'
   } as const satisfies PreferredAccountTypes,
   ADAPTER_TYPES: {
     UNIVERSAL: 'universal',

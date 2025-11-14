@@ -1,10 +1,8 @@
+import type { AuthTypes } from '@walletconnect/types'
+
 export interface SIWESession {
   address: string
   chainId: number
-}
-
-interface CacaoHeader {
-  t: 'caip122'
 }
 
 export interface SIWECreateMessageArgs {
@@ -14,7 +12,7 @@ export interface SIWECreateMessageArgs {
   uri: string
   address: string
   version: '1'
-  type?: CacaoHeader['t']
+  type?: AuthTypes.CacaoHeader['t']
   nbf?: string
   exp?: string
   statement?: string
@@ -28,35 +26,11 @@ export type SIWEMessageArgs = {
   methods?: string[]
 } & Omit<SIWECreateMessageArgs, 'address' | 'chainId' | 'nonce' | 'version'>
 // Signed Cacao (CAIP-74)
-interface CacaoPayload {
-  domain: string
-  aud: string
-  nonce: string
-  iss: string
-  version?: string
-  iat?: string
-  nbf?: string
-  exp?: string
-  statement?: string
-  requestId?: string
-  resources?: string[]
-  type?: string
-}
-
-interface Cacao {
-  h: CacaoHeader
-  p: CacaoPayload
-  s: {
-    t: 'eip191' | 'eip1271'
-    s: string
-    m?: string
-  }
-}
 
 export interface SIWEVerifyMessageArgs {
   message: string
   signature: string
-  cacao?: Cacao
+  cacao?: AuthTypes.Cacao
 }
 
 export interface SIWEClientMethods {

@@ -5,13 +5,16 @@ import {
   ApiController,
   ConnectionController,
   type Connector,
+  ConnectorController,
   type ConnectorWithProviders,
   CoreHelperUtil,
   OptionsController,
+  OptionsUtil,
   type WcWallet
 } from '@reown/appkit-controllers'
 
 import { ConnectorUtil } from '../../src/utils/ConnectorUtil'
+import { WalletUtil } from '../../src/utils/WalletUtil'
 
 const INJECTED = { id: 'injected' } as WcWallet
 const RECENT = { id: 'recent' } as WcWallet
@@ -436,6 +439,176 @@ describe('ConnectorUtil', () => {
       expect(mockProvider.request).toHaveBeenCalledTimes(2)
       expect(mockProvider.request).toHaveBeenNthCalledWith(1, { method: 'eth_accounts' })
       expect(mockProvider.request).toHaveBeenNthCalledWith(2, { method: 'eth_chainId' })
+    })
+  })
+
+  describe('getCappedRecommendedWallets', () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+    })
+
+    it('should return empty when no wc connector, no injected connectors, and no custom wallets', () => {
+      vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+        ...ConnectorController.state,
+        connectors: []
+      })
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        customWallets: undefined,
+        featuredWalletIds: []
+      })
+
+      const recommended = [{ id: 'w1', name: 'Wallet 1' }] as unknown as WcWallet[]
+      const result = ConnectorUtil.getCappedRecommendedWallets(recommended)
+
+      expect(result).toEqual([])
+    })
+
+    it('should cap recommended to fill remaining slots up to 4', () => {
+      const WC = {
+        id: 'walletConnect',
+        type: 'EXTERNAL',
+        name: 'WalletConnect',
+        chain: { id: 'eip155:1' }
+      } as unknown as ConnectorWithProviders
+      vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+        ...ConnectorController.state,
+        connectors: [WC]
+      })
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        customWallets: [{ id: 'c1' }] as unknown as any[],
+        featuredWalletIds: ['f1']
+      })
+      vi.spyOn(OptionsUtil, 'isEmailEnabled').mockReturnValue(false)
+      vi.spyOn(OptionsUtil, 'isSocialsEnabled').mockReturnValue(false)
+      vi.spyOn(WalletUtil, 'filterOutDuplicateWallets').mockImplementation(w => w)
+
+      const recommended = [
+        { id: 'w1', name: 'Wallet 1' },
+        { id: 'w2', name: 'Wallet 2' },
+        { id: 'w3', name: 'Wallet 3' }
+      ] as unknown as WcWallet[]
+
+      // featured(1) + custom(1) + injected(0) + email(0) + social(0) = 2 => slice 2
+      const result = ConnectorUtil.getCappedRecommendedWallets(recommended)
+      expect(result.map(w => w.id)).toEqual(['w1', 'w2'])
+    })
+
+    it('should return empty when displayed wallets are already 4 or more', () => {
+      const WC = {
+        id: 'walletConnect',
+        type: 'EXTERNAL',
+        name: 'WalletConnect',
+        chain: { id: 'eip155:1' }
+      } as unknown as ConnectorWithProviders
+      const INJECTED_ONE = {
+        id: 'inj-1',
+        type: 'INJECTED',
+        name: 'Injected One',
+        chain: { id: 'eip155:1' }
+      } as unknown as ConnectorWithProviders
+      vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+        ...ConnectorController.state,
+        connectors: [WC, INJECTED_ONE]
+      })
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        customWallets: [{ id: 'c1' }] as unknown as any[],
+        featuredWalletIds: ['f1']
+      })
+      vi.spyOn(OptionsUtil, 'isEmailEnabled').mockReturnValue(true)
+      vi.spyOn(OptionsUtil, 'isSocialsEnabled').mockReturnValue(true)
+      const filterSpy = vi.spyOn(WalletUtil, 'filterOutDuplicateWallets')
+
+      const recommended = [
+        { id: 'w1', name: 'Wallet 1' },
+        { id: 'w2', name: 'Wallet 2' }
+      ] as unknown as WcWallet[]
+
+      // featured(1) + custom(1) + injected(1) + email(1) + social(1) = 5 => slice 0
+      const result = ConnectorUtil.getCappedRecommendedWallets(recommended)
+      expect(result).toEqual([])
+      expect(filterSpy).not.toHaveBeenCalled()
+    })
+
+    it('should ignore Browser Wallet and WalletConnect in injected count', () => {
+      const WC = {
+        id: 'walletConnect',
+        type: 'EXTERNAL',
+        name: 'WalletConnect',
+        chain: { id: 'eip155:1' }
+      } as unknown as ConnectorWithProviders
+      const BROWSER_WALLET = {
+        id: 'inj-browser',
+        type: 'INJECTED',
+        name: 'Browser Wallet',
+        chain: { id: 'eip155:1' }
+      } as unknown as ConnectorWithProviders
+      const WC_INJECTED = {
+        id: 'walletConnect',
+        type: 'INJECTED',
+        name: 'WalletConnect',
+        chain: { id: 'eip155:1' }
+      } as unknown as ConnectorWithProviders
+      vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+        ...ConnectorController.state,
+        connectors: [WC, BROWSER_WALLET, WC_INJECTED]
+      })
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        customWallets: [],
+        featuredWalletIds: []
+      })
+      vi.spyOn(OptionsUtil, 'isEmailEnabled').mockReturnValue(false)
+      vi.spyOn(OptionsUtil, 'isSocialsEnabled').mockReturnValue(false)
+      vi.spyOn(WalletUtil, 'filterOutDuplicateWallets').mockImplementation(w => w)
+
+      const recommended = [
+        { id: 'w1', name: 'Wallet 1' },
+        { id: 'w2', name: 'Wallet 2' },
+        { id: 'w3', name: 'Wallet 3' }
+      ] as unknown as WcWallet[]
+
+      // injected connectors include only Browser Wallet and WalletConnect => injected count = 0
+      // featured(0) + custom(0) + injected(0) + email(0) + social(0) = 0 => slice 4
+      const result = ConnectorUtil.getCappedRecommendedWallets(recommended)
+      expect(result.map(w => w.id)).toEqual(['w1', 'w2', 'w3'])
+    })
+
+    it('should slice after duplicate filtering', () => {
+      const WC = {
+        id: 'walletConnect',
+        type: 'EXTERNAL',
+        name: 'WalletConnect',
+        chain: { id: 'eip155:1' }
+      } as unknown as ConnectorWithProviders
+      vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+        ...ConnectorController.state,
+        connectors: [WC]
+      })
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        customWallets: [{ id: 'c1' }] as unknown as any[],
+        featuredWalletIds: []
+      })
+      vi.spyOn(OptionsUtil, 'isEmailEnabled').mockReturnValue(false)
+      vi.spyOn(OptionsUtil, 'isSocialsEnabled').mockReturnValue(false)
+      // Simulate duplicates being removed so only one remains before slice
+      vi.spyOn(WalletUtil, 'filterOutDuplicateWallets').mockReturnValue([
+        { id: 'w1', name: 'Wallet 1' }
+      ] as unknown as WcWallet[])
+
+      const recommended = [
+        { id: 'w1', name: 'Wallet 1' },
+        { id: 'w2', name: 'Wallet 2' },
+        { id: 'w3', name: 'Wallet 3' }
+      ] as unknown as WcWallet[]
+
+      // featured(0) + custom(1) + injected(0) + email(0) + social(0) = 1 => slice 3
+      // but filtered list has length 1, result should be that single wallet
+      const result = ConnectorUtil.getCappedRecommendedWallets(recommended)
+      expect(result.map(w => w.id)).toEqual(['w1'])
     })
   })
 })
