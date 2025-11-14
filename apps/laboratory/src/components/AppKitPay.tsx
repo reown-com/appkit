@@ -113,7 +113,13 @@ export function AppKitPay() {
 
     return {
       recipient: initialRecipient,
-      asset: baseETH,
+      asset: {
+        ...baseETH,
+        metadata: {
+          ...baseETH.metadata,
+          logoURI: DEFAULT_LOGO_URI
+        }
+      },
       amount: 0.00001
     }
   })

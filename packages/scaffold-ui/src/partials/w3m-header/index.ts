@@ -20,6 +20,7 @@ import '@reown/appkit-ui/wui-tag'
 import '@reown/appkit-ui/wui-text'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import '../w3m-pay-header/index.js'
 import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //
@@ -101,6 +102,7 @@ function headings() {
     SmartSessionList: 'Smart Sessions',
     SIWXSignMessage: 'Sign In',
     PayLoading: 'Payment in Progress',
+    PayQuote: 'Payment Quote',
     DataCapture: 'Profile',
     DataCaptureOtpConfirm: 'Confirm Email',
     FundWallet: 'Fund Wallet',
@@ -223,6 +225,10 @@ export class W3mHeader extends LitElement {
   }
 
   private titleTemplate() {
+    if (this.view === 'PayQuote') {
+      return html`<w3m-pay-header></w3m-pay-header>`
+    }
+
     const isBeta = BETA_SCREENS.includes(this.view)
 
     return html`

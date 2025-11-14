@@ -125,7 +125,7 @@ export const PayController = {
       }
     })
     await ModalController.open({
-      view: 'Pay'
+      view: 'PayQuote'
     })
   },
 

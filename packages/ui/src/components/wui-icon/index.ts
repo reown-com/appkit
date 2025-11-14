@@ -15,6 +15,7 @@ import { facebookSvg } from '../../assets/svg/facebook.js'
 import { farcasterSvg } from '../../assets/svg/farcaster.js'
 import { githubSvg } from '../../assets/svg/github.js'
 import { googleSvg } from '../../assets/svg/google.js'
+import { infoSealSvg } from '../../assets/svg/info.js'
 import { playStoreSvg } from '../../assets/svg/play-store.js'
 import { reownSvg } from '../../assets/svg/reown-logo.js'
 import { solanaSvg } from '../../assets/svg/solana.js'
@@ -125,7 +126,8 @@ const phosphorIconsMap: Record<string, string> = {
   walletConnect: '',
   walletConnectBrown: '',
   walletConnectLightBrown: '',
-  x: ''
+  x: '',
+  infoSeal: ''
 }
 
 // Dynamic imports for Phosphor components
@@ -211,7 +213,8 @@ const svgOptions: Partial<Record<IconType, TemplateResult<2>>> = {
   walletConnectInvert: walletConnectInvertSvg,
   walletConnectBrown: walletConnectBrownSvg,
   walletConnectLightBrown: walletConnectLightBrownSvg,
-  x: xSvg
+  x: xSvg,
+  infoSeal: infoSealSvg
 }
 
 // -- Constants ------------------------------------------ //

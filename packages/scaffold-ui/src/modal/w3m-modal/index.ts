@@ -36,7 +36,8 @@ const SCROLL_LOCK = 'scroll-lock'
 const PADDING_OVERRIDES: Record<string, string> = {
   PayWithExchange: '0',
   PayWithExchangeSelectAsset: '0',
-  Pay: '0'
+  Pay: '0',
+  PayQuote: '0'
 }
 
 export class W3mModalBase extends LitElement {

@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ChainController, TooltipController } from '@reown/appkit-controllers'
+import { ChainController } from '@reown/appkit-controllers'
 import { PayController } from '@reown/appkit-pay'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
@@ -10,8 +10,8 @@ import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 
-@customElement('w3m-transfers-badge')
-export class W3mTransfersBadge extends LitElement {
+@customElement('w3m-pay-header')
+export class W3mPayHeader extends LitElement {
   public static override styles = [styles]
 
   // -- Members ------------------------------------------- //
@@ -36,7 +36,6 @@ export class W3mTransfersBadge extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
-    TooltipController.hide()
   }
 
   // -- Render -------------------------------------------- //
@@ -61,6 +60,6 @@ export class W3mTransfersBadge extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-transfers-badge': W3mTransfersBadge
+    'w3m-pay-header': W3mPayHeader
   }
 }

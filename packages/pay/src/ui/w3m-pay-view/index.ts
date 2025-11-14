@@ -55,14 +55,7 @@ export class W3mPayView extends LitElement {
     this.unsubscribe.push(PayController.subscribeKey('isLoading', val => (this.isLoading = val)))
     this.unsubscribe.push(PayController.subscribeKey('amount', val => (this.amount = val)))
     this.unsubscribe.push(
-      ...[
-        ConnectorController.subscribeKey('activeConnectorIds', ids => {
-          this.activeConnectorIds = ids
-        }),
-        PayController.subscribeKey('paymentAsset', val => {
-          this.paymentAsset = val
-        })
-      ]
+      ConnectorController.subscribeKey('activeConnectorIds', ids => (this.activeConnectorIds = ids))
     )
 
     PayController.fetchExchanges()
