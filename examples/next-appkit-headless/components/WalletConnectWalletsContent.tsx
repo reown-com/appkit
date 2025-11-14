@@ -14,7 +14,6 @@ import { Input } from '@/components/ui/input'
 import { WalletListItem } from './WalletListItem'
 
 type Props = {
-  connectingWallet: WalletItem | undefined
   onBack: () => void
   onConnect: (wallet: WalletItem) => void
 }
@@ -35,13 +34,11 @@ function useDebounceValue(value: string, delay: number) {
   return debouncedValue
 }
 
-export function AllWalletsContent({ connectingWallet, onBack, onConnect }: Props) {
-  const { data, isFetchingWallets, page, count, fetchWallets } = useAppKitWallets()
+export function AllWalletsContent({ onBack, onConnect }: Props) {
+  const { wcWallets, isFetchingWallets, page, count, fetchWallets } = useAppKitWallets()
   const [inputValue, setInputValue] = useState('')
   const searchQuery = useDebounceValue(inputValue, 500)
   const loadMoreRef = useRef<HTMLDivElement>(null)
-
-  const wcWallets = data.filter(w => !w.isInjected && w.name !== 'WalletConnect')
 
   // Initial fetch
   useEffect(() => {
@@ -121,9 +118,9 @@ export function AllWalletsContent({ connectingWallet, onBack, onConnect }: Props
               {wcWallets.map(item => (
                 <WalletListItem
                   key={item.id}
-                  connectingWallet={connectingWallet}
                   wallet={item}
-                  onClick={onConnect}
+                  onConnect={onConnect}
+                  onOpenNamespaceDialog={() => {}}
                 />
               ))}
 

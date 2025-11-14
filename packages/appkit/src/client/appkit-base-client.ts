@@ -176,7 +176,9 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     this.sendInitializeEvent(options)
-    if (options.enableHeadless) {
+
+    const hasInjectedConnectors = ConnectorController.getInjectedConnectors().length
+    if (options.enableHeadless && !hasInjectedConnectors) {
       ApiController.fetchWalletsByPage({ page: 1, entries: 5 })
     }
     if (OptionsController.state.enableReconnect) {

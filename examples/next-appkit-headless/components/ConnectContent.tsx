@@ -14,7 +14,6 @@ import { WalletItemSkeleton } from './WalletItemSkeleton'
 import { WalletListItem } from './WalletListItem'
 
 type Props = {
-  connectingWallet: WalletItem | undefined
   onConnect: (wallet: WalletItem, namespace?: ChainNamespace) => void
   onOpenNamespaceDialog: (wallet: WalletItem) => void
   setShowWalletSearch: (show: boolean) => void
@@ -30,17 +29,9 @@ function WalletsSkeleton() {
   )
 }
 
-export function ConnectContent({
-  connectingWallet,
-  onConnect,
-  onOpenNamespaceDialog,
-  setShowWalletSearch
-}: Props) {
-  const { isInitialized, data } = useAppKitWallets()
+export function ConnectContent({ onConnect, onOpenNamespaceDialog, setShowWalletSearch }: Props) {
+  const { isInitialized, wallets } = useAppKitWallets()
   const { connect: connectWithWalletButton } = useAppKitWallet()
-
-  const hasNoInjectedWallets = data.filter(w => w.isInjected).length === 0
-  const wallets = hasNoInjectedWallets ? data.slice(0, 10) : data
 
   return (
     <div className="p-6">
@@ -60,10 +51,9 @@ export function ConnectContent({
                     {wallets.map(item => (
                       <WalletListItem
                         key={item.id}
-                        connectingWallet={connectingWallet}
-                        onOpenNamespaceDialog={onOpenNamespaceDialog}
                         wallet={item}
-                        onClick={onConnect}
+                        onConnect={onConnect}
+                        onOpenNamespaceDialog={onOpenNamespaceDialog}
                       />
                     ))}
                   </>

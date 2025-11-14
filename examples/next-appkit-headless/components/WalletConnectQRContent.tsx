@@ -6,19 +6,13 @@ import { CopyIcon, Loader2Icon, X } from 'lucide-react'
 import Image from 'next/image'
 import { toast } from 'sonner'
 
-import type { WalletItem } from '@reown/appkit'
 import { useAppKitWallets } from '@reown/appkit/react'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardTitle } from '@/components/ui/card'
+import { CardTitle } from '@/components/ui/card'
 
-interface WalletConnectQRContentProps {
-  wallet: WalletItem
-  onBack: () => void
-}
-
-export function WalletConnectQRContent({ wallet, onBack }: WalletConnectQRContentProps) {
-  const { wcUri, isFetchingWcUri } = useAppKitWallets()
+export function WalletConnectQRContent({ onClose }: { onClose: () => void }) {
+  const { connectingWallet, wcUri, isFetchingWcUri } = useAppKitWallets()
 
   function handleCopyUri() {
     if (wcUri) {
@@ -27,33 +21,37 @@ export function WalletConnectQRContent({ wallet, onBack }: WalletConnectQRConten
     }
   }
 
+  if (!connectingWallet) {
+    return null
+  }
+
   return (
     <div className="flex h-full flex-col gap-4">
       {/* Header with Back Button */}
       <div className="flex items-center gap-3">
         <CardTitle className="text-lg font-semibold w-full">Scan QR Code</CardTitle>
-        <Button variant="ghost" size="icon-sm" onClick={onBack} aria-label="Go back">
+        <Button variant="ghost" size="icon-sm" onClick={onClose}>
           <X className="size-4" />
         </Button>
       </div>
 
       {/* Wallet Info */}
       <div className="flex items-center gap-3 rounded-md bg-muted/50 p-3">
-        {wallet.imageUrl ? (
+        {connectingWallet.imageUrl ? (
           <Image
-            src={wallet.imageUrl}
-            alt={wallet.name}
+            src={connectingWallet.imageUrl}
+            alt={connectingWallet.name}
             width={40}
             height={40}
             className="rounded-md"
           />
         ) : (
           <div className="flex size-10 items-center justify-center rounded-md bg-muted">
-            <span className="text-sm font-bold">{wallet.name.charAt(0)}</span>
+            <span className="text-sm font-bold">{connectingWallet.name.charAt(0)}</span>
           </div>
         )}
         <div className="flex flex-1 flex-col items-start">
-          <span className="font-medium">{wallet.name}</span>
+          <span className="font-medium">{connectingWallet.name}</span>
           <span className="text-xs text-muted-foreground">Connecting via WalletConnect</span>
         </div>
       </div>
@@ -86,7 +84,7 @@ export function WalletConnectQRContent({ wallet, onBack }: WalletConnectQRConten
       <div className="rounded-md p-4 bg-foreground/5">
         <p className="mb-2 text-sm font-medium text-muted-foreground">Connection Instructions:</p>
         <p className="text-xs text-muted-foreground">
-          1. Open {wallet.name} on your phone
+          1. Open {connectingWallet.name} on your phone
           <br />
           2. Scan the QR code above
           <br />

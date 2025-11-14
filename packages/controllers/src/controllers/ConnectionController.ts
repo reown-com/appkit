@@ -33,6 +33,7 @@ import { ChainController, type ChainControllerState } from './ChainController.js
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
+import { PublicStateController } from './PublicStateController.js'
 import { RouterController } from './RouterController.js'
 import { TransactionsController } from './TransactionsController.js'
 
@@ -389,6 +390,7 @@ const controller = {
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
     StorageUtil.deleteRecentWallet()
+    PublicStateController.set({ connectingWallet: undefined })
   },
 
   resetUri() {
@@ -396,6 +398,7 @@ const controller = {
     state.wcPairingExpiry = undefined
     wcConnectionPromise = undefined
     state.wcFetchingUri = false
+    PublicStateController.set({ connectingWallet: undefined })
   },
 
   finalizeWcConnection(address?: string) {
@@ -442,6 +445,7 @@ const controller = {
     state.wcError = wcError
     state.wcFetchingUri = false
     state.buffering = false
+    PublicStateController.set({ connectingWallet: undefined })
   },
 
   setRecentWallet(wallet: ConnectionControllerState['recentWallet']) {

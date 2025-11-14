@@ -22,7 +22,7 @@ import { AppKitHeadlessQRCode } from '@/src/components/Headless/AppKitHeadlessQR
 import { AppKitHeadlessWcWallets } from '@/src/components/Headless/AppKitHeadlessWcWallets'
 
 type ViewState = 'connect' | 'search' | 'qrcode'
-type AppKitWallet = UseAppKitWalletsReturn['data'][number]
+type AppKitWallet = UseAppKitWalletsReturn['wallets'][number]
 
 interface Props {
   controls: ReturnType<typeof useDisclosure>
@@ -61,7 +61,7 @@ export function AppkitConnectDrawer({ controls }: Props) {
   }
 
   async function handleConnect(
-    wallet: UseAppKitWalletsReturn['data'][number],
+    wallet: UseAppKitWalletsReturn['wallets'][number] | UseAppKitWalletsReturn['wcWallets'][number],
     namespace?: ChainNamespace
   ) {
     setConnectingWallet(wallet)

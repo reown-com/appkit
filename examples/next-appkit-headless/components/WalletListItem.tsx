@@ -4,6 +4,7 @@ import { ChevronRightIcon, Loader2Icon } from 'lucide-react'
 import Image from 'next/image'
 
 import type { WalletItem } from '@reown/appkit'
+import type { ChainNamespace } from '@reown/appkit/networks'
 import { useAppKitWallets } from '@reown/appkit/react'
 
 import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item'
@@ -13,18 +14,12 @@ import { Badge } from './ui/badge'
 
 type Props = {
   wallet: WalletItem
-  connectingWallet: WalletItem | undefined
-  onClick: (wallet: WalletItem) => void
+  onConnect: (wallet: WalletItem, namespace?: ChainNamespace) => void
   onOpenNamespaceDialog: (wallet: WalletItem) => void
 }
 
-export function WalletListItem({
-  connectingWallet,
-  wallet,
-  onClick,
-  onOpenNamespaceDialog
-}: Props) {
-  const { isFetchingWcUri } = useAppKitWallets()
+export function WalletListItem({ wallet, onConnect, onOpenNamespaceDialog }: Props) {
+  const { connectingWallet } = useAppKitWallets()
 
   return (
     <Item
@@ -35,7 +30,7 @@ export function WalletListItem({
         if (wallet.connectors.length > 1) {
           onOpenNamespaceDialog(wallet)
         } else {
-          onClick(wallet)
+          onConnect(wallet, wallet.connectors[0]?.chain as ChainNamespace)
         }
       }}
     >
@@ -52,7 +47,7 @@ export function WalletListItem({
         <ItemContent className="flex flex-row items-center justify-between">
           <ItemTitle>{wallet.name}</ItemTitle>
           {wallet.isInjected ? (
-            <div className="flex flex-row items-center gap-2">
+            <div className="flex flex-row items-center gap-2 mr-2">
               <div className="relative flex flex-row items-center gap-2 group-hover:opacity-100 opacity-0 transition-opacity duration-100">
                 {wallet.connectors.map((connector, index) => (
                   <Image
@@ -74,7 +69,7 @@ export function WalletListItem({
           ) : null}
         </ItemContent>
         <ItemActions>
-          {isFetchingWcUri && connectingWallet?.id === wallet.id ? (
+          {connectingWallet?.id === wallet.id ? (
             <Loader2Icon className="size-4 animate-spin" />
           ) : (
             <ChevronRightIcon className="size-4" />

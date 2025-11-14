@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
@@ -20,8 +20,7 @@ import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import type {
   NamespaceTypeMap,
   UseAppKitAccountReturn,
-  UseAppKitNetworkReturn,
-  WcWallet
+  UseAppKitNetworkReturn
 } from '../src/utils/TypeUtil.js'
 import { AssetUtil, StorageUtil } from './utils.js'
 
@@ -293,9 +292,17 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
 
 export interface UseAppKitWalletsReturn {
   /**
-   * List of all wallets (injected wallets and WalletConnect wallets combined)
+   * List of wallets for the initial connect view.
+   * Contains: WalletConnect wallet and injected wallets. If user doesn't have any injected wallets, it'll fill the list with most ranked WalletConnect wallets.
    */
-  data: WalletItem[]
+  wallets: WalletItem[]
+
+  /**
+   * List of WalletConnect wallets from Wallet Guide API.
+   * @see https://walletguide.walletconnect.network/.
+   * Used for the "All Wallets" / search view.
+   */
+  wcWallets: WalletItem[]
 
   /**
    * Boolean that indicates if WalletConnect wallets are being fetched.
@@ -317,6 +324,13 @@ export interface UseAppKitWalletsReturn {
    * This is set when connecting to a WalletConnect wallet.
    */
   wcUri?: string
+
+  /**
+   * The wallet currently being connected to.
+   * This is set when a connection is initiated and cleared when it completes or fails.
+   * Works for both injected and WalletConnect wallets.
+   */
+  connectingWallet?: WalletItem
 
   /**
    * The current page number.
@@ -348,6 +362,11 @@ export interface UseAppKitWalletsReturn {
    * @returns Promise that resolves when connection completes or rejects on error
    */
   connect: (wallet: WalletItem, namespace?: ChainNamespace) => Promise<void>
+
+  /**
+   * Function to reset the WC URI. It's useful to keep connectingWallet state sync with the WC URI. Can be called when the QR code is closed.
+   */
+  resetWcUri: () => void
 }
 
 /**
@@ -360,13 +379,11 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
   const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
-  const { wallets: wcWallets, search, page, count } = useSnapshot(ApiController.state)
-  const { initialized } = useSnapshot(PublicStateController.state)
+  const { wallets: wcWalletsState, search, page, count } = useSnapshot(ApiController.state)
+  const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
 
-  const wallets = ConnectUtil.getUnifiedWalletList({
-    wcWallets: wcWallets as WcWallet[],
-    search: search as WcWallet[]
-  })
+  const wcWallets = useMemo(() => ConnectUtil.getWalletConnectWallets(), [wcWalletsState, search])
+  const wallets = useMemo(() => ConnectUtil.getInitialWallets(), [initialized])
 
   async function fetchWallets(fetchOptions?: { page?: number; query?: string; entries?: number }) {
     setIsFetchingWallets(true)
@@ -389,23 +406,35 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }
 
   async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
-    const wallet = wallets.find(w => w.id === _wallet.id)
-    const walletConnector = wallet?.connectors.find(c => c.chain === namespace)
+    // Set connecting wallet when connection starts
+    PublicStateController.set({ connectingWallet: _wallet })
 
-    const connector =
-      walletConnector && namespace
-        ? ConnectorController.getConnector({ id: walletConnector?.id, namespace })
-        : undefined
+    try {
+      const walletConnector = _wallet?.connectors.find(c => c.chain === namespace)
 
-    if (wallet?.isInjected && connector) {
-      await ConnectorControllerUtil.connectExternal(connector)
-    } else {
-      await ConnectionController.connectWalletConnect({ cache: 'never' })
+      const connector =
+        walletConnector && namespace
+          ? ConnectorController.getConnector({ id: walletConnector?.id, namespace })
+          : undefined
+
+      if (_wallet?.isInjected && connector) {
+        await ConnectorControllerUtil.connectExternal(connector)
+      } else {
+        await ConnectionController.connectWalletConnect({ cache: 'never' })
+      }
+    } catch (error) {
+      PublicStateController.set({ connectingWallet: undefined })
+      throw error
     }
+  }
+
+  function resetWcUri() {
+    ConnectionController.resetUri()
   }
 
   useEffect(() => {
     if (
+      initialized &&
       remoteFeatures?.headless !== undefined &&
       (!isHeadlessEnabled || !remoteFeatures?.headless)
     ) {
@@ -414,31 +443,37 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
         'info'
       )
     }
-  }, [isHeadlessEnabled, remoteFeatures?.headless])
+  }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
 
   if (!isHeadlessEnabled || !remoteFeatures?.headless) {
     return {
-      data: [],
+      wallets: [],
+      wcWallets: [],
       isFetchingWallets: false,
       isFetchingWcUri: false,
       isInitialized: false,
       wcUri: undefined,
+      connectingWallet: undefined,
       page: 0,
       count: 0,
       connect: () => Promise.resolve(),
-      fetchWallets: () => Promise.resolve()
+      fetchWallets: () => Promise.resolve(),
+      resetWcUri: () => {}
     }
   }
 
   return {
-    data: wallets,
+    wallets,
+    wcWallets,
     isFetchingWallets,
     isFetchingWcUri: wcFetchingUri,
     isInitialized: initialized,
     wcUri,
+    connectingWallet: connectingWallet as WalletItem | undefined,
     page,
     count,
     connect,
-    fetchWallets
+    fetchWallets,
+    resetWcUri
   }
 }
