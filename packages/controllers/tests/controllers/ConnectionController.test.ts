@@ -95,7 +95,6 @@ describe('ConnectionController', () => {
       buffering: false,
       isSwitchingConnection: false,
       status: 'disconnected',
-      _client: evmAdapter.connectionControllerClient,
       wcFetchingUri: false
     })
   })
@@ -200,13 +199,15 @@ describe('ConnectionController', () => {
   })
 
   it('checkInstalled() should trigger internal client call', () => {
+    const checkInstalledSpy = vi.spyOn(ConnectorController, 'checkInstalled')
     ConnectionController.checkInstalled([externalId])
-    expect(clientCheckInstalledSpy).toHaveBeenCalledWith([externalId])
+    expect(checkInstalledSpy).toHaveBeenCalledWith([externalId])
   })
 
   it('should not throw on checkInstalled() without ids', () => {
+    const checkInstalledSpy = vi.spyOn(ConnectorController, 'checkInstalled')
     ConnectionController.checkInstalled()
-    expect(clientCheckInstalledSpy).toHaveBeenCalledWith(undefined)
+    expect(checkInstalledSpy).toHaveBeenCalledWith(undefined)
   })
 
   it('should not throw when optional methods are undefined', async () => {
