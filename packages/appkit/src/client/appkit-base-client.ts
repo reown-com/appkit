@@ -53,7 +53,6 @@ import {
   ConnectionController,
   ConnectionControllerUtil,
   ConnectorController,
-  ConnectorUtil,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
   EnsController,
