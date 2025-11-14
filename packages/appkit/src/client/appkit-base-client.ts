@@ -176,6 +176,9 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     this.sendInitializeEvent(options)
+    if (options.enableHeadless) {
+      ApiController.fetchWalletsByPage({ page: 1, entries: 5 })
+    }
     if (OptionsController.state.enableReconnect) {
       await this.syncExistingConnection()
       await this.syncAdapterConnections()

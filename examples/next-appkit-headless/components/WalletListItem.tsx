@@ -15,9 +15,15 @@ type Props = {
   wallet: WalletItem
   connectingWallet: WalletItem | undefined
   onClick: (wallet: WalletItem) => void
+  onOpenNamespaceDialog: (wallet: WalletItem) => void
 }
 
-export function WalletListItem({ connectingWallet, wallet, onClick }: Props) {
+export function WalletListItem({
+  connectingWallet,
+  wallet,
+  onClick,
+  onOpenNamespaceDialog
+}: Props) {
   const { isFetchingWcUri } = useAppKitWallets()
 
   return (
@@ -25,7 +31,13 @@ export function WalletListItem({ connectingWallet, wallet, onClick }: Props) {
       variant="outline"
       size="sm"
       className={cn('cursor-pointer transition-colors hover:bg-accent/50 group')}
-      onClick={() => onClick(wallet)}
+      onClick={() => {
+        if (wallet.connectors.length > 1) {
+          onOpenNamespaceDialog(wallet)
+        } else {
+          onClick(wallet)
+        }
+      }}
     >
       <div className="flex w-full items-center">
         <ItemMedia className="mr-2 size-6 shrink-0 overflow-hidden rounded-sm">
