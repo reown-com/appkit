@@ -57,15 +57,12 @@ export const ConnectUtil = {
    * Maps the WalletGuide explorer wallets to WalletItems including search results.
    * @returns The WalletItems for the WalletGuide explorer wallets.
    */
-  getWalletConnectWallets() {
-    const search = ApiController.state.search
-    const wcWallets = ApiController.state.wallets
-
-    if (search.length > 0) {
-      return search.map(ConnectUtil.mapExplorerWalletToWalletItem)
+  getWalletConnectWallets(wcAllWallets: WcWallet[], wcSearchWallets: WcWallet[]) {
+    if (wcSearchWallets.length > 0) {
+      return wcSearchWallets.map(ConnectUtil.mapExplorerWalletToWalletItem)
     }
 
-    return wcWallets.map(ConnectUtil.mapExplorerWalletToWalletItem)
+    return wcAllWallets.map(ConnectUtil.mapExplorerWalletToWalletItem)
   },
 
   /**

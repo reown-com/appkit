@@ -20,7 +20,8 @@ import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import type {
   NamespaceTypeMap,
   UseAppKitAccountReturn,
-  UseAppKitNetworkReturn
+  UseAppKitNetworkReturn,
+  WcWallet
 } from '../src/utils/TypeUtil.js'
 import { AssetUtil, StorageUtil } from './utils.js'
 
@@ -379,11 +380,13 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
   const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
-  const { wallets: wcWalletsState, search, page, count } = useSnapshot(ApiController.state)
+  const {
+    wallets: wcAllWallets,
+    search: wcSearchWallets,
+    page,
+    count
+  } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
-
-  const wcWallets = useMemo(() => ConnectUtil.getWalletConnectWallets(), [wcWalletsState, search])
-  const wallets = useMemo(() => ConnectUtil.getInitialWallets(), [initialized])
 
   async function fetchWallets(fetchOptions?: { page?: number; query?: string; entries?: number }) {
     setIsFetchingWallets(true)
@@ -463,8 +466,11 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }
 
   return {
-    wallets,
-    wcWallets,
+    wallets: ConnectUtil.getInitialWallets(),
+    wcWallets: ConnectUtil.getWalletConnectWallets(
+      wcAllWallets as WcWallet[],
+      wcSearchWallets as WcWallet[]
+    ),
     isFetchingWallets,
     isFetchingWcUri: wcFetchingUri,
     isInitialized: initialized,
