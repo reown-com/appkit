@@ -97,7 +97,9 @@ export type { ExchangeControllerState } from '../src/controllers/ExchangeControl
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from '../src/utils/AssetUtil.js'
 export { ConstantsUtil } from '../src/utils/ConstantsUtil.js'
+export { WalletUtil } from '../src/utils/WalletUtil.js'
 export { CoreHelperUtil, type OpenTarget } from '../src/utils/CoreHelperUtil.js'
+export { ConnectorUtil } from '../src/utils/ConnectorUtil.js'
 export { StorageUtil } from '../src/utils/StorageUtil.js'
 export { RouterUtil } from '../src/utils/RouterUtil.js'
 export { OptionsUtil } from '../src/utils/OptionsUtil.js'

@@ -2,9 +2,8 @@ import type { Connector, CreateConnectorFn } from '@wagmi/core'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { type Hex } from 'viem'
 
-import { type CaipNetworkId } from '@reown/appkit-common'
+import { type CaipNetworkId, ConstantsUtil, PresetsUtil } from '@reown/appkit-common'
 import { CoreHelperUtil, WcHelpersUtil } from '@reown/appkit-controllers'
-import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 
 export async function getWalletConnectCaipNetworks(connector?: Connector) {
   if (!connector) {

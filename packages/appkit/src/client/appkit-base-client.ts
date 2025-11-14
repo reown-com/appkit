@@ -69,10 +69,10 @@ import {
   SnackController,
   StorageUtil,
   ThemeController,
+  WalletUtil,
   WcHelpersUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
-import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
   CaipNetworksUtil,

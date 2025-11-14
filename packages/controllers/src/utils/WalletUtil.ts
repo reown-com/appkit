@@ -1,27 +1,14 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import {
-  ApiController,
-  ConnectionController,
-  ConnectorController,
-  CoreHelperUtil,
-  OptionsController,
-  StorageUtil
-} from '@reown/appkit-controllers'
-import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-controllers'
-import { HelpersUtil } from '@reown/appkit-utils'
-import { ConstantsUtil as AppKitConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { HelpersUtil } from '@reown/appkit-common'
 
+import { ApiController } from '../controllers/ApiController.js'
+import { ConnectionController } from '../controllers/ConnectionController.js'
+import { ConnectorController } from '../controllers/ConnectorController.js'
+import { OptionsController } from '../controllers/OptionsController.js'
 import { ConnectorUtil } from './ConnectorUtil.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
-
-const MANDATORY_WALLET_IDS_ON_MOBILE = [
-  PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE],
-  PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK],
-  PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT],
-  PresetsUtil.ConnectorExplorerIds[AppKitConstantsUtil.SOLFLARE_CONNECTOR_NAME],
-  PresetsUtil.ConnectorExplorerIds[AppKitConstantsUtil.PHANTOM_CONNECTOR_NAME],
-  PresetsUtil.ConnectorExplorerIds[AppKitConstantsUtil.BINANCE_CONNECTOR_NAME]
-]
+import { CoreHelperUtil } from './CoreHelperUtil.js'
+import { StorageUtil } from './StorageUtil.js'
+import type { ConnectMethod, Connector, Features, WcWallet } from './TypeUtil.js'
 
 interface AppKitWallet extends WcWallet {
   installed: boolean
@@ -212,7 +199,8 @@ export const WalletUtil = {
 
     if (CoreHelperUtil.isMobile()) {
       return wallets.filter(
-        wallet => wallet.supports_wc || MANDATORY_WALLET_IDS_ON_MOBILE.includes(wallet.id)
+        wallet =>
+          wallet.supports_wc || ConstantsUtil.MANDATORY_WALLET_IDS_ON_MOBILE.includes(wallet.id)
       )
     }
 
