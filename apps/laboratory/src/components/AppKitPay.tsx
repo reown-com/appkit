@@ -50,6 +50,7 @@ interface AppKitPaymentAssetState {
 
 type PresetKey = 'NATIVE_BASE' | 'NATIVE_BASE_SEPOLIA' | 'USDC_BASE' | 'USDC_SOLANA' | 'SOL_DEV'
 
+const DEFAULT_LOGO_URI = 'https://assets.coingecko.com/coins/images/6319/large/usdc.png?1696506694'
 const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   NATIVE_BASE: {
     asset: baseETH,
@@ -136,6 +137,13 @@ export function AppKitPay() {
   function handlePresetClick(preset: Omit<AppKitPaymentAssetState, 'recipient'>) {
     setPaymentDetails(prev => ({
       ...preset,
+      asset: {
+        ...preset.asset,
+        metadata: {
+          ...preset.asset.metadata,
+          logoURI: DEFAULT_LOGO_URI
+        }
+      },
       recipient: prev.recipient
     }))
     setAmountDisplayValue(preset.amount.toString())

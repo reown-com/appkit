@@ -1,6 +1,7 @@
 import type { CaipNetworkId } from '@reown/appkit-common'
 
 export type AssetMetadata = {
+  logoURI?: string
   name: string
   symbol: string
   decimals: number

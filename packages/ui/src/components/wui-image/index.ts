@@ -3,7 +3,13 @@ import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconColorType, IconType, LogoType, SizeType } from '../../utils/TypeUtil.js'
+import type {
+  BackgroundColorType,
+  IconColorType,
+  IconType,
+  LogoType,
+  SizeType
+} from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -25,6 +31,8 @@ export class WuiImage extends LitElement {
   @property() public size?: SizeType = undefined
 
   @property({ type: Boolean }) public boxed?: boolean = false
+
+  @property() public boxColor?: BackgroundColorType
 
   @property({ type: Boolean }) public rounded?: boolean = false
 
@@ -51,11 +59,14 @@ export class WuiImage extends LitElement {
       --local-width: ${this.size ? `var(--apkt-spacing-${getSize[this.size]});` : '100%'};
       --local-height: ${this.size ? `var(--apkt-spacing-${getSize[this.size]});` : '100%'};
       `
-
     this.dataset['boxed'] = this.boxed ? 'true' : 'false'
     this.dataset['rounded'] = this.rounded ? 'true' : 'false'
     this.dataset['full'] = this.fullSize ? 'true' : 'false'
     this.dataset['icon'] = this.iconColor || 'inherit'
+
+    if (this.boxColor) {
+      this.dataset['boxcolor'] = this.boxColor
+    }
 
     if (this.icon) {
       return html`<wui-icon

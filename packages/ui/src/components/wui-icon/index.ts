@@ -218,6 +218,7 @@ const svgOptions: Partial<Record<IconType, TemplateResult<2>>> = {
 export const ICON_COLOR = {
   'accent-primary': vars.tokens.core.iconAccentPrimary,
   'accent-certified': vars.tokens.core.iconAccentCertified,
+  'foreground-secondary': vars.tokens.theme.foregroundSecondary,
   default: vars.tokens.theme.iconDefault,
   success: vars.tokens.core.iconSuccess,
   error: vars.tokens.core.iconError,

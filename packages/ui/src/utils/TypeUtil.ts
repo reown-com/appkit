@@ -2,7 +2,10 @@ import type { vars } from './ThemeHelperUtil.js'
 
 export type ColorType = string
 
-export type BackgroundColorType = 'foregroundSecondary' | 'foregroundAccent010'
+export type BackgroundColorType =
+  | 'foregroundSecondary'
+  | 'foregroundAccent010'
+  | 'foregroundPrimary'
 
 export type AlertType = 'success' | 'error' | 'warning' | 'info'
 

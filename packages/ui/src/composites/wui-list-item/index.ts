@@ -5,7 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconColorType, IconType } from '../../utils/TypeUtil.js'
+import type { BackgroundColorType, IconColorType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -14,6 +14,8 @@ export class WuiListItem extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
+  @property() public type?: 'primary' | 'secondary' = 'primary'
+
   @property() public imageSrc = 'google'
 
   @property() public icon?: IconType
@@ -23,6 +25,8 @@ export class WuiListItem extends LitElement {
   @property({ type: Boolean }) public loading = false
 
   @property() public tabIdx?: boolean
+
+  @property() public boxColor?: BackgroundColorType = 'foregroundPrimary'
 
   @property({ type: Boolean }) public disabled = false
 
@@ -35,6 +39,7 @@ export class WuiListItem extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     this.dataset['rounded'] = this.rounded ? 'true' : 'false'
+    this.dataset['type'] = this.type
 
     return html`
       <button
@@ -61,6 +66,7 @@ export class WuiListItem extends LitElement {
         iconColor=${ifDefined(this.iconColor)}
         ?boxed=${true}
         ?rounded=${this.rounded}
+        boxColor=${this.boxColor}
       ></wui-image>`
     }
 
@@ -69,6 +75,7 @@ export class WuiListItem extends LitElement {
       ?rounded=${this.rounded}
       ?fullSize=${this.fullSize}
       src=${this.imageSrc}
+      boxColor=${this.boxColor}
     ></wui-image>`
   }
 
