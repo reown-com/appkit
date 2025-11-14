@@ -5,6 +5,7 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { AssetUtil } from '../utils/AssetUtil.js'
+import { ConstantsUtil as ControllersConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { CUSTOM_DEEPLINK_WALLETS } from '../utils/MobileWallet.js'
@@ -35,6 +36,32 @@ export const api = new FetchUtil({
 const entries = 40
 const recommendedEntries = 4
 const imageCountToFetch = 20
+
+function withRetries<T>(fn: () => Promise<T>, intervalMs: number, maxRetries = 0): Promise<T> {
+  return new Promise((resolve, reject) => {
+    let attempts = 0
+    let timeout: NodeJS.Timeout | null = null
+    async function check() {
+      try {
+        const result = await fn()
+        if (timeout) {
+          clearTimeout(timeout)
+        }
+        resolve(result)
+      } catch (error) {
+        if (attempts >= maxRetries) {
+          if (timeout) {
+            clearTimeout(timeout)
+          }
+          reject(error)
+        }
+        attempts += 1
+        timeout = setTimeout(check, intervalMs)
+      }
+    }
+    check()
+  })
+}
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
@@ -176,20 +203,30 @@ export const ApiController = {
   },
 
   async fetchProjectConfig() {
-    const response = await api.get<ApiGetProjectConfigResponse>({
-      path: '/appkit/v1/config',
-      params: ApiController._getSdkProperties()
-    })
+    const response = await withRetries(
+      () =>
+        api.get<ApiGetProjectConfigResponse>({
+          path: '/appkit/v1/config',
+          params: ApiController._getSdkProperties()
+        }),
+      ControllersConstantsUtil.FIVE_SEC_MS,
+      3
+    )
 
     return response.features
   },
 
   async fetchUsage() {
     try {
-      const response = await api.get<ApiGetUsageResponse>({
-        path: '/appkit/v1/project-limits',
-        params: ApiController._getSdkProperties()
-      })
+      const response = await withRetries(
+        () =>
+          api.get<ApiGetUsageResponse>({
+            path: '/appkit/v1/project-limits',
+            params: ApiController._getSdkProperties()
+          }),
+        ControllersConstantsUtil.FIVE_SEC_MS,
+        3
+      )
 
       const { tier, isAboveMauLimit, isAboveRpcLimit } = response.planLimits
 
@@ -211,10 +248,16 @@ export const ApiController = {
 
   async fetchAllowedOrigins() {
     try {
-      const { allowedOrigins } = await api.get<ApiGetAllowedOriginsResponse>({
-        path: '/projects/v1/origins',
-        params: ApiController._getSdkProperties()
-      })
+      const { allowedOrigins } = await withRetries(
+        () =>
+          api.get<ApiGetAllowedOriginsResponse>({
+            path: '/projects/v1/origins',
+            params: ApiController._getSdkProperties()
+          }),
+        // 3 retries with 5 seconds interval
+        ControllersConstantsUtil.FIVE_SEC_MS,
+        3
+      )
 
       return allowedOrigins
     } catch (error) {
