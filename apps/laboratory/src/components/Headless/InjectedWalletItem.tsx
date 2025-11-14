@@ -7,8 +7,8 @@ import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import { type UseAppKitWalletsReturn } from '@reown/appkit/react'
 
 interface InjectedWalletItemProps {
-  wallet: UseAppKitWalletsReturn['data'][number]
-  onConnect: (wallet: UseAppKitWalletsReturn['data'][number], namespace: ChainNamespace) => void
+  wallet: UseAppKitWalletsReturn['wallets'][number]
+  onConnect: (wallet: UseAppKitWalletsReturn['wallets'][number], namespace: ChainNamespace) => void
   isConnecting: boolean
 }
 
@@ -16,6 +16,7 @@ export function InjectedWalletItem({ wallet, onConnect, isConnecting }: Injected
   const [toggle, setToggle] = useState(false)
 
   const shouldToggleNamespaceDialog = wallet.connectors.length > 1 && wallet.isInjected
+  const isMultiChain = wallet.connectors.length > 1 && wallet.isInjected
 
   function toggleConnectors() {
     setToggle(v => !v)

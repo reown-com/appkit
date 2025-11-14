@@ -43,7 +43,7 @@ export const ConnectUtil = {
   getInitialWallets() {
     return ConnectorUtil.connectorList()
       .map(connector => {
-        if (connector.kind === 'connector' && connector.subtype !== 'walletConnect') {
+        if (connector.kind === 'connector') {
           return this.mapConnectorToWalletItem(connector.connector, connector.subtype)
         } else if (connector.kind === 'wallet') {
           return this.mapWalletToWalletItem(connector.wallet)
