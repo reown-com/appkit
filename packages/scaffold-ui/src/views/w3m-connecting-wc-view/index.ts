@@ -1,12 +1,13 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { ErrorUtil } from '@reown/appkit-common'
+import { type ChainNamespace, ErrorUtil } from '@reown/appkit-common'
 import type { BaseError, Platform } from '@reown/appkit-controllers'
 import {
   AppKitError,
   ChainController,
   ConnectionController,
+  ConnectorController,
   CoreHelperUtil,
   EventsController,
   ModalController,
@@ -15,7 +16,7 @@ import {
   SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, type UniversalProviderType } from '@reown/appkit-utils'
 
 import '../../partials/w3m-connecting-header/index.js'
 import '../../partials/w3m-connecting-wc-browser/index.js'
@@ -110,7 +111,16 @@ export class W3mConnectingWcView extends LitElement {
         )
         const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
         const hasConnections = connectionsByNamespace.length > 0
-        await ConnectionController.connectWalletConnect()
+
+        const connector = ConnectorController.getConnector({
+          id: 'walletConnect',
+          namespace: ChainController.state.activeChain as ChainNamespace
+        })
+        const universalProvider = connector?.provider as UniversalProviderType
+        if (!universalProvider) {
+          throw new Error('Provider not found')
+        }
+        await ConnectionController.connectWalletConnect({ universalProvider })
 
         if (!this.isSiwxEnabled) {
           if (hasConnections && isMultiWalletEnabled) {

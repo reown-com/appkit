@@ -22,7 +22,10 @@ import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-button'
 import '@reown/appkit-ui/wui-separator'
 import '@reown/appkit-ui/wui-ux-by-reown'
-import { ConstantsUtil as AppKitConstantsUtil } from '@reown/appkit-utils'
+import {
+  ConstantsUtil as AppKitConstantsUtil,
+  type UniversalProviderType
+} from '@reown/appkit-utils'
 
 import '../../partials/w3m-email-login-widget/index.js'
 import '../../partials/w3m-legal-checkbox/index.js'
@@ -308,13 +311,24 @@ export class W3mConnectView extends LitElement {
     const isCollapseWalletsOldProp = this.features?.emailShowWallets === false
     const isCollapseWallets = this.features?.collapseWallets
     const shouldCollapseWallets = isCollapseWalletsOldProp || isCollapseWallets
+    const activeNamespace = ChainController.state.activeChain
 
-    if (!isEnableWallets) {
+    if (!isEnableWallets || !activeNamespace) {
       return null
     }
     // In tg ios context, we have to preload the connection uri so we can use it to deeplink on user click
     if (CoreHelperUtil.isTelegram() && (CoreHelperUtil.isSafari() || CoreHelperUtil.isIos())) {
-      ConnectionController.connectWalletConnect().catch(_e => ({}))
+      const connector = ConnectorController.getConnector({
+        id: 'walletConnect',
+        namespace: activeNamespace
+      })
+      const provider = connector?.provider as UniversalProviderType
+      if (!provider) {
+        throw new Error('Provider not found')
+      }
+      ConnectionController.connectWalletConnect({
+        universalProvider: provider
+      }).catch(_e => ({}))
     }
 
     if (this.walletGuide === 'explore') {

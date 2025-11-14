@@ -993,7 +993,9 @@ describe('Base Public methods', () => {
       ])
     })
 
-    await ConnectionController.syncWalletConnectAccount()
+    await ConnectionController.syncWalletConnectAccount({
+      universalProvider: appKit['universalProvider']
+    })
 
     expect(setStatusSpy).toHaveBeenCalledWith('connected', 'eip155')
   })
@@ -1040,7 +1042,9 @@ describe('Base Public methods', () => {
       ])
     })
 
-    await ConnectionController.syncWalletConnectAccount()
+    await ConnectionController.syncWalletConnectAccount({
+      universalProvider: appKit['universalProvider']
+    })
 
     expect(setStatusSpy).toHaveBeenCalledWith('disconnected', 'eip155')
   })
@@ -1090,7 +1094,9 @@ describe('Base Public methods', () => {
       ])
     })
 
-    await ConnectionController.syncWalletConnectAccount()
+    await ConnectionController.syncWalletConnectAccount({
+      universalProvider: appKit['universalProvider']
+    })
 
     expect(setStatusSpy).not.toHaveBeenCalledWith('disconnected', 'bitcoin')
   })

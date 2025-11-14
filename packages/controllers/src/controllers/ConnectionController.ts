@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import type { UniversalProvider } from '@walletconnect/universal-provider'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
@@ -193,7 +194,11 @@ const controller = {
       .some(({ connectorId: _connectorId }) => _connectorId === connectorId)
   },
 
-  async connectWalletConnect() {
+  async connectWalletConnect({
+    universalProvider
+  }: {
+    universalProvider: Awaited<ReturnType<typeof UniversalProvider.init>>
+  }) {
     if (!CoreHelperUtil.isPairingExpired(state?.wcPairingExpiry)) {
       const link = state.wcUri
       state.wcUri = link
@@ -218,7 +223,7 @@ const controller = {
 
       BlockchainApiController.setClientId(result?.clientId || null)
       StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
-      await ConnectionController.syncWalletConnectAccount()
+      await ConnectionController.syncWalletConnectAccount({ universalProvider })
       await SIWXUtil.initializeIfEnabled()
     } catch {
       return
@@ -1133,66 +1138,77 @@ const controller = {
       }
     }
   },
-  async syncWalletConnectAccount() {
-    const universalProvider = ProviderController.getProvider(ChainController.state.activeChain)
 
+  async syncWalletConnectAccountByNamespace(
+    chainNamespace: ChainNamespace,
+    universalProvider: Awaited<ReturnType<typeof UniversalProvider.init>>
+  ) {
+    const sessionNamespaces = Object.keys(universalProvider.session?.namespaces || {})
+    const adapter = AdapterController.get(chainNamespace)
+
+    const namespaceAccounts =
+      universalProvider.session?.namespaces?.[chainNamespace]?.accounts || []
+
+    // We try and find the address for this network in the session object.
+    const activeChainId = ChainController.getCaipNetwork(chainNamespace)?.id
+    const sessionAddress =
+      namespaceAccounts.find(account => {
+        const { chainId } = ParseUtil.parseCaipAddress(account as CaipAddress)
+
+        return chainId === activeChainId?.toString()
+      }) || namespaceAccounts[0]
+
+    if (sessionAddress) {
+      ProviderController.setProviderId(chainNamespace, 'WALLET_CONNECT')
+      const caipNetworks = ChainController.getCaipNetworks(chainNamespace)
+      if (
+        caipNetworks &&
+        ChainController.state.activeCaipNetwork &&
+        adapter?.namespace !== CommonConstantsUtil.CHAIN.EVM
+      ) {
+        const provider = adapter?.getWalletConnectProvider({
+          caipNetworks,
+          activeCaipNetwork: ChainController.state.activeCaipNetwork
+        })
+        ProviderController.setProvider(chainNamespace, provider)
+      } else {
+        ProviderController.setProvider(chainNamespace, universalProvider)
+      }
+
+      ConnectorController.setConnectorId('walletConnect', chainNamespace)
+      StorageUtil.addConnectedNamespace(chainNamespace)
+
+      const { address } = ParseUtil.parseCaipAddress(sessionAddress as CaipAddress)
+      await ConnectionController.syncAccount({
+        address,
+        caipNetworkId: `${chainNamespace}:${activeChainId}` as CaipNetworkId
+      })
+    } else if (sessionNamespaces.includes(chainNamespace)) {
+      ConnectionController.setStatus('disconnected', chainNamespace)
+    }
+
+    const data = ChainController.getApprovedCaipNetworksData()
+    ConnectionController.syncConnectedWalletInfo(chainNamespace)
+    ChainController.setApprovedCaipNetworksData(chainNamespace, {
+      approvedCaipNetworkIds: data.approvedCaipNetworkIds,
+      supportsAllNetworks: data.supportsAllNetworks
+    })
+  },
+  async syncWalletConnectAccount({
+    universalProvider,
+    namespace
+  }: {
+    universalProvider: Awaited<ReturnType<typeof UniversalProvider.init>>
+    namespace?: ChainNamespace
+  }) {
+    const namespacesToSync = namespace ? [namespace] : ChainController.state.chains.keys()
     if (!universalProvider?.session) {
       return
     }
 
-    const sessionNamespaces = Object.keys(universalProvider.session?.namespaces || {})
-    const syncTasks = ChainController.state.chains.keys().map(async chainNamespace => {
-      const adapter = AdapterController.get(chainNamespace)
-
-      const namespaceAccounts =
-        universalProvider.session?.namespaces?.[chainNamespace]?.accounts || []
-
-      // We try and find the address for this network in the session object.
-      const activeChainId = ChainController.state.activeCaipNetwork?.id
-
-      const sessionAddress =
-        namespaceAccounts.find(account => {
-          const { chainId } = ParseUtil.parseCaipAddress(account as CaipAddress)
-
-          return chainId === activeChainId?.toString()
-        }) || namespaceAccounts[0]
-
-      if (sessionAddress) {
-        ProviderController.setProviderId(chainNamespace, 'WALLET_CONNECT')
-        const caipNetworks = ChainController.getCaipNetworks(chainNamespace)
-        if (
-          caipNetworks &&
-          ChainController.state.activeCaipNetwork &&
-          adapter?.namespace !== CommonConstantsUtil.CHAIN.EVM
-        ) {
-          const provider = adapter?.getWalletConnectProvider({
-            caipNetworks,
-            activeCaipNetwork: ChainController.state.activeCaipNetwork
-          })
-          ProviderController.setProvider(chainNamespace, provider)
-        } else {
-          ProviderController.setProvider(chainNamespace, universalProvider)
-        }
-
-        ConnectorController.setConnectorId('walletConnect', chainNamespace)
-        StorageUtil.addConnectedNamespace(chainNamespace)
-
-        const { address } = ParseUtil.parseCaipAddress(sessionAddress as CaipAddress)
-        await ConnectionController.syncAccount({
-          address,
-          caipNetworkId: `${chainNamespace}:${activeChainId}` as CaipNetworkId
-        })
-      } else if (sessionNamespaces.includes(chainNamespace)) {
-        ConnectionController.setStatus('disconnected', chainNamespace)
-      }
-
-      const data = ChainController.getApprovedCaipNetworksData()
-      ConnectionController.syncConnectedWalletInfo(chainNamespace)
-      ChainController.setApprovedCaipNetworksData(chainNamespace, {
-        approvedCaipNetworkIds: data.approvedCaipNetworkIds,
-        supportsAllNetworks: data.supportsAllNetworks
-      })
-    })
+    const syncTasks = namespacesToSync.map(namespace =>
+      ConnectionController.syncWalletConnectAccountByNamespace(namespace, universalProvider)
+    )
 
     await Promise.all(syncTasks)
   },

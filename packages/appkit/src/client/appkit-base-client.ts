@@ -145,8 +145,8 @@ export abstract class AppKitBaseClient {
     await this.initControllers(options)
     this.sendInitializeEvent(options)
     if (OptionsController.state.enableReconnect) {
-      await this.syncExistingConnection()
       await this.syncAdapterConnections()
+      await this.syncExistingConnection()
     } else {
       await this.unSyncExistingConnection()
     }
@@ -762,8 +762,15 @@ export abstract class AppKitBaseClient {
     }
   }
 
-  protected async reconnectWalletConnect() {
-    await ConnectionController.syncWalletConnectAccount()
+  protected async reconnectWalletConnect({ namespace }: { namespace: ChainNamespace }) {
+    if (!this.universalProvider) {
+      throw new Error('No universal provider found')
+    }
+    ProviderController.setProvider(namespace, this.universalProvider)
+    await ConnectionController.syncWalletConnectAccount({
+      universalProvider: this.universalProvider,
+      namespace
+    })
     const address = this.getAddress()
 
     if (!this.getCaipAddress()) {
@@ -798,7 +805,7 @@ export abstract class AppKitBaseClient {
 
       switch (connectorId) {
         case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
-          await this.reconnectWalletConnect()
+          await this.reconnectWalletConnect({ namespace })
           break
         case ConstantsUtil.CONNECTOR_ID.AUTH:
           // Handled during initialization of adapters' auth provider

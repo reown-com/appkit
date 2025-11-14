@@ -1,3 +1,4 @@
+import type { UniversalProvider } from '@walletconnect/universal-provider'
 import { polygon } from 'viem/chains'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -32,6 +33,13 @@ import {
 // -- Setup --------------------------------------------------------------------
 const chain = CommonConstantsUtil.CHAIN.EVM
 const walletConnectUri = 'wc://uri?=123'
+const universalProvider = {
+  client: vi.fn(),
+  events: vi.fn(),
+  rpcProviders: vi.fn(),
+  providerOpts: vi.fn(),
+  session: vi.fn()
+} as unknown as Awaited<ReturnType<typeof UniversalProvider.init>>
 const externalId = 'coinbaseWallet'
 const type = 'WALLET_CONNECT' as ConnectorType
 const caipNetworks = [
@@ -126,8 +134,9 @@ describe('ConnectionController', () => {
   })
   it('should update state correctly and set wcPromisae on connectWalletConnect()', async () => {
     const setConnectorIdSpy = vi.spyOn(ConnectorController, 'setConnectorId')
+
     // Await on set promise and check results
-    await ConnectionController.connectWalletConnect()
+    await ConnectionController.connectWalletConnect({ universalProvider })
     expect(evmAdapter.connectWalletConnect).toHaveBeenCalled()
     expect(setConnectorIdSpy).not.toBeCalled()
     // Just in case
@@ -163,7 +172,6 @@ describe('ConnectionController', () => {
     const options = { id: externalId, type: 'INJECTED' as ConnectorType }
     await ConnectionController.connectExternal(options, chain)
 
-    console.log('>> Should be sending event')
     expect(sendEventSpy).toHaveBeenCalledWith({
       type: 'track',
       event: 'CONNECT_SUCCESS',
@@ -320,7 +328,8 @@ describe('ConnectionController', () => {
     vi.spyOn(CoreHelperUtil, 'isIos').mockReturnValue(true)
 
     expect(ConnectionController.state.status).toEqual('disconnected')
-    await ConnectionController.connectWalletConnect()
+
+    await ConnectionController.connectWalletConnect({ universalProvider })
     expect(connectWalletConnectSpy).toHaveBeenCalledTimes(1)
     expect(ConnectionController.state.status).toEqual('connected')
   })
@@ -332,7 +341,7 @@ describe('ConnectionController', () => {
 
     const connectWalletConnectSpy = vi.spyOn(evmAdapter, 'connectWalletConnect')
 
-    await ConnectionController.connectWalletConnect()
+    await ConnectionController.connectWalletConnect({ universalProvider })
 
     expect(connectWalletConnectSpy).toHaveBeenCalledTimes(1)
   })
