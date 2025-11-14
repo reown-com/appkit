@@ -40,26 +40,20 @@ const imageCountToFetch = 20
 function withRetries<T>(fn: () => Promise<T>, intervalMs: number, maxRetries = 0): Promise<T> {
   return new Promise((resolve, reject) => {
     let attempts = 0
-    let timeout: NodeJS.Timeout | null = null
     async function check(): Promise<void> {
       try {
         const result = await fn()
-        if (timeout) {
-          clearTimeout(timeout)
-        }
+
         resolve(result)
       } catch (error) {
         if (attempts >= maxRetries) {
-          if (timeout) {
-            clearTimeout(timeout)
-          }
           // Stop retrying after exhausting attempts
           reject(error)
 
           return
         }
         attempts += 1
-        timeout = setTimeout(check, intervalMs)
+        setTimeout(check, intervalMs)
       }
     }
     check()
