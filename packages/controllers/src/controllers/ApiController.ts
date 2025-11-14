@@ -41,7 +41,7 @@ function withRetries<T>(fn: () => Promise<T>, intervalMs: number, maxRetries = 0
   return new Promise((resolve, reject) => {
     let attempts = 0
     let timeout: NodeJS.Timeout | null = null
-    async function check() {
+    async function check(): Promise<void> {
       try {
         const result = await fn()
         if (timeout) {
@@ -53,7 +53,10 @@ function withRetries<T>(fn: () => Promise<T>, intervalMs: number, maxRetries = 0
           if (timeout) {
             clearTimeout(timeout)
           }
+          // Stop retrying after exhausting attempts
           reject(error)
+
+          return
         }
         attempts += 1
         timeout = setTimeout(check, intervalMs)
