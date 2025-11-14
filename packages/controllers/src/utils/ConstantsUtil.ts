@@ -7,7 +7,7 @@ import {
 } from '@reown/appkit-common'
 
 import type { SIWXConfig } from './SIWXUtil.js'
-import type { Features, PreferredAccountTypes, RemoteFeatures } from './TypeUtil.js'
+import type { ConnectMethod, Features, PreferredAccountTypes, RemoteFeatures } from './TypeUtil.js'
 
 const SECURE_SITE =
   // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
@@ -310,5 +310,7 @@ export const ConstantsUtil = {
     PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.SOLFLARE_CONNECTOR_NAME],
     PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.PHANTOM_CONNECTOR_NAME],
     PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.BINANCE_CONNECTOR_NAME]
-  ]
+  ],
+
+  DEFAULT_CONNECT_METHOD_ORDER: ['email', 'social', 'wallet'] as ConnectMethod[]
 }

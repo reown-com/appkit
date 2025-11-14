@@ -11,7 +11,6 @@ export const ConstantsUtil = {
     Next: 'next',
     Prev: 'prev'
   },
-  DEFAULT_CONNECT_METHOD_ORDER: ['email', 'social', 'wallet'] as ConnectMethod[],
   ANIMATION_DURATIONS: {
     HeaderText: 120,
     ModalHeight: 150,

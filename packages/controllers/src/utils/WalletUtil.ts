@@ -168,7 +168,7 @@ export const WalletUtil = {
       return ['wallet', 'email', 'social'] as ConnectMethod[]
     }
 
-    return ['email', 'social', 'wallet']
+    return ConstantsUtil.DEFAULT_CONNECT_METHOD_ORDER
   },
   isExcluded(wallet: WcWallet) {
     const isRDNSExcluded =
