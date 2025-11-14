@@ -16,7 +16,6 @@ import { PublicStateController } from '../src/controllers/PublicStateController.
 import { ConnectUtil, type WalletItem } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
-import { ConnectorUtil } from '../src/utils/ConnectorUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import type {
   NamespaceTypeMap,
@@ -414,7 +413,6 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }
 
   async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
-    // Set connecting wallet when connection starts
     PublicStateController.set({ connectingWallet: _wallet })
 
     try {

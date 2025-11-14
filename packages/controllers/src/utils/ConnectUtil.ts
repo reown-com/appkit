@@ -3,7 +3,7 @@ import type { ChainNamespace } from '@reown/appkit-common'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { AssetUtil } from './AssetUtil.js'
 import { ConnectorUtil } from './ConnectorUtil.js'
-import type { WcWallet } from './TypeUtil.js'
+import type { ConnectorItemWithKind, ConnectorWithProviders, WcWallet } from './TypeUtil.js'
 import { WalletUtil } from './WalletUtil.js'
 
 // --- Types --------------------------------------------- //
@@ -43,18 +43,10 @@ export const ConnectUtil = {
   getInitialWallets() {
     return ConnectorUtil.connectorList()
       .map(connector => {
-        if (connector.kind === 'connector') {
-          return {
-            id: connector.connector.id,
-            connectors: [],
-            name: connector.connector.name,
-            imageUrl: AssetUtil.getAssetImageUrl(connector.connector.imageId),
-            isInjected: false,
-            isRecent: false,
-            walletInfo: {}
-          }
+        if (connector.kind === 'connector' && connector.subtype !== 'walletConnect') {
+          return this.mapConnectorToWalletItem(connector.connector, connector.subtype)
         } else if (connector.kind === 'wallet') {
-          return this.mapExplorerWalletToWalletItem(connector.wallet)
+          return this.mapWalletToWalletItem(connector.wallet)
         }
 
         return null
@@ -68,35 +60,10 @@ export const ConnectUtil = {
    */
   getWalletConnectWallets(wcAllWallets: WcWallet[], wcSearchWallets: WcWallet[]) {
     if (wcSearchWallets.length > 0) {
-      return wcSearchWallets.map(ConnectUtil.mapExplorerWalletToWalletItem)
+      return wcSearchWallets.map(ConnectUtil.mapWalletToWalletItem)
     }
 
-    return WalletUtil.getWalletConnectWallets(wcAllWallets).map(
-      ConnectUtil.mapExplorerWalletToWalletItem
-    )
-  },
-
-  /**
-   * Maps the WalletConnect connector to a WalletItem.
-   * @returns The WalletItem for the WalletConnect connector.
-   */
-  getWalletConnectWallet() {
-    const connectors = ConnectorController.state.connectors
-    const wcConnector = connectors.find(c => c.id === 'walletConnect')
-
-    if (!wcConnector) {
-      return null
-    }
-
-    return {
-      id: wcConnector.id,
-      connectors: [],
-      name: wcConnector.name,
-      imageUrl: AssetUtil.getAssetImageUrl(wcConnector.imageId),
-      isInjected: false,
-      isRecent: false,
-      walletInfo: {}
-    }
+    return WalletUtil.getWalletConnectWallets(wcAllWallets).map(ConnectUtil.mapWalletToWalletItem)
   },
 
   /**
@@ -146,11 +113,47 @@ export const ConnectUtil = {
   },
 
   /**
+   * Maps the connector to a WalletItem.
+   * @param connector - The connector to map to a WalletItem.
+   * @param subType - The subtype of the connector.
+   * @returns The WalletItem for the connector.
+   */
+  mapConnectorToWalletItem(
+    connector: ConnectorWithProviders,
+    subType: ConnectorItemWithKind['subtype']
+  ): WalletItem {
+    const hasMultipleConnectors = connector.connectors?.length
+    const connectors = hasMultipleConnectors
+      ? connector.connectors?.map(c => ({
+          id: c.id,
+          chain: c.chain,
+          chainImageUrl: AssetUtil.getChainNamespaceImageUrl(c.chain)
+        })) || []
+      : [
+          {
+            id: connector.id,
+            chain: connector.chain,
+            chainImageUrl: AssetUtil.getChainNamespaceImageUrl(connector.chain)
+          }
+        ]
+
+    return {
+      id: connector.id,
+      connectors: subType === 'walletConnect' ? [] : connectors,
+      name: connector.name,
+      imageUrl: connector.imageUrl || AssetUtil.getAssetImageUrl(connector.imageId),
+      isInjected: subType === 'walletConnect' ? false : true,
+      isRecent: false,
+      walletInfo: {}
+    }
+  },
+
+  /**
    * Maps the WalletGuide explorer wallet to a WalletItem.
    * @param w - The WalletGuide explorer wallet.
    * @returns The WalletItem for the WalletGuide explorer wallet.
    */
-  mapExplorerWalletToWalletItem(w: WcWallet): WalletItem {
+  mapWalletToWalletItem(w: WcWallet): WalletItem {
     return {
       id: w.id,
       connectors: [],
