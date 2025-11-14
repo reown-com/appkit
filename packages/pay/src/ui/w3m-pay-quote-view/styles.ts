@@ -12,4 +12,11 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[5]};
     padding: ${({ spacing }) => spacing[1]};
   }
+
+  w3m-tooltip-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: fit-content;
+  }
 `

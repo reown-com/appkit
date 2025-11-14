@@ -15,6 +15,7 @@ import '@reown/appkit-ui/wui-text'
 import '@reown/appkit-ui/wui-wallet-switch'
 
 import { PayController } from '../../controllers/PayController.js'
+import '../../partials/w3m-pay-fees/index.js'
 import '../../partials/w3m-pay-options/index.js'
 import { PAYMENT_OPTIONS } from './mocks.js'
 import styles from './styles.js'
@@ -126,7 +127,7 @@ export class W3mPayQuoteView extends LitElement {
           address=${ifDefined(address)}
           icon=${ifDefined(chainIcon)}
           iconSize="xs"
-          ?enableGreenCircle=${false}
+          .enableGreenCircle=${false}
           alt=${ifDefined(chainLabel)}
           data-testid="wui-wallet-switch"
         ></wui-wallet-switch>
@@ -218,7 +219,9 @@ export class W3mPayQuoteView extends LitElement {
 
           <wui-flex alignItems="center" gap="2">
             <wui-text variant="md-regular" color="primary">0.30 USDC</wui-text>
-            <wui-icon name="infoSeal" size="sm" color="default"></wui-icon>
+            <w3m-tooltip-trigger .text=${html`<w3m-pay-fees></w3m-pay-fees>`} variant="fill">
+              <wui-icon name="infoSeal" size="sm" color="default"></wui-icon>
+            </w3m-tooltip-trigger>
           </wui-flex>
         </wui-flex>
       </wui-flex>
