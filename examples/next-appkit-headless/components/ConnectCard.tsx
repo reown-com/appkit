@@ -12,7 +12,7 @@ import { NamespaceSelectionDialog } from '@/components/NamespaceSelectionDialog'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
-import { ConnectContent } from './InjectedWalletsContent'
+import { ConnectContent } from './ConnectContent'
 import { WalletConnectQRContent } from './WalletConnectQRContent'
 import { AllWalletsContent } from './WalletConnectWalletsContent'
 
