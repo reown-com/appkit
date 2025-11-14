@@ -1,6 +1,12 @@
 import type { Connection, PublicKey, SendOptions } from '@solana/web3.js'
 
-import { type CaipNetwork, ConstantsUtil, ConstantsUtil as CommonConstantsUtil, PresetsUtil, UserRejectedRequestError } from '@reown/appkit-common'
+import {
+  type CaipNetwork,
+  ConstantsUtil as CommonConstantsUtil,
+  ConstantsUtil,
+  PresetsUtil,
+  UserRejectedRequestError
+} from '@reown/appkit-common'
 import type { RequestArguments } from '@reown/appkit-controllers'
 import type { Provider as CoreProvider } from '@reown/appkit-controllers'
 import { type AnyTransaction, type Provider as SolanaProvider } from '@reown/appkit-utils/solana'

@@ -44,6 +44,7 @@ import type {
   CustomRpcUrlMap
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@reown/appkit-common'
+import { PresetsUtil } from '@reown/appkit-common'
 import {
   AdapterBlueprint,
   AssetController,
@@ -54,7 +55,6 @@ import {
   WalletConnectConnector
 } from '@reown/appkit-controllers'
 import { type ConnectorType, type Provider } from '@reown/appkit-controllers'
-import { PresetsUtil } from '@reown/appkit-common'
 import { CaipNetworksUtil, HelpersUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 

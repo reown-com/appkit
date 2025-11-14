@@ -1,6 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil, PresetsUtil } from '@reown/appkit-common'
+import {
+  type CaipNetwork,
+  ConstantsUtil as CommonConstantsUtil,
+  PresetsUtil
+} from '@reown/appkit-common'
 import { mainnet } from '@reown/appkit/networks'
 
 import {
