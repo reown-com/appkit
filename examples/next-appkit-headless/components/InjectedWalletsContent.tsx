@@ -2,34 +2,40 @@
 
 import { useEffect } from 'react'
 
-import { ArrowRight, ChevronRightIcon, Facebook, Github, Loader2 } from 'lucide-react'
-import Image from 'next/image'
+import { ArrowRight, Facebook, Github } from 'lucide-react'
 
-import type { WalletItem } from '@reown/appkit'
 import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
 import type { ChainNamespace } from '@reown/appkit/networks'
-import { useAppKitWallets } from '@reown/appkit/react'
+import { WalletItem, useAppKitWallets } from '@reown/appkit/react'
 
 import { Button } from '@/components/ui/button'
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldGroup, FieldSeparator } from '@/components/ui/field'
-import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item'
 
-import { WalletConnectWalletItem } from './WalletConnectWalletItem'
 import { WalletItemSkeleton } from './WalletItemSkeleton'
-import { Badge } from './ui/badge'
+import { WalletListItem } from './WalletListItem'
 
 type Props = {
   connectingWallet: WalletItem | undefined
-  handleConnect: (wallet: WalletItem, namespace?: ChainNamespace) => void
-  handleOpenNamespaceDialog: (wallet: WalletItem) => void
+  onConnect: (wallet: WalletItem, namespace?: ChainNamespace) => void
+  onOpenNamespaceDialog: (wallet: WalletItem) => void
   setShowWalletSearch: (show: boolean) => void
 }
 
-export function InjectedWalletsCardContent({
+function WalletsSkeleton() {
+  return (
+    <>
+      <WalletItemSkeleton />
+      <WalletItemSkeleton />
+      <WalletItemSkeleton />
+    </>
+  )
+}
+
+export function ConnectContent({
   connectingWallet,
-  handleConnect,
-  handleOpenNamespaceDialog,
+  onConnect,
+  onOpenNamespaceDialog,
   setShowWalletSearch
 }: Props) {
   const { isInitialized, data, fetchWallets, isFetchingWallets } = useAppKitWallets()
@@ -43,7 +49,7 @@ export function InjectedWalletsCardContent({
     .slice(0, 5)
 
   useEffect(() => {
-    if (isInitialized) {
+    if (isInitialized && hasNoInjectedWallets && firstFiveWcWallets.length === 0) {
       fetchWallets({ entries: 5 })
     }
   }, [isInitialized])
@@ -64,26 +70,22 @@ export function InjectedWalletsCardContent({
                 {isInitialized ? (
                   <>
                     {wcWallet ? (
-                      <WalletConnectWalletItem
+                      <WalletListItem
                         connectingWallet={connectingWallet}
                         wallet={wcWallet}
-                        onClick={handleConnect}
+                        onClick={onConnect}
                       />
                     ) : null}
                     {hasNoInjectedWallets ? (
                       isFetchingWallets ? (
-                        <>
-                          <WalletItemSkeleton />
-                          <WalletItemSkeleton />
-                          <WalletItemSkeleton />
-                        </>
+                        <WalletsSkeleton />
                       ) : (
                         firstFiveWcWallets.map(w => (
-                          <WalletConnectWalletItem
+                          <WalletListItem
                             key={w.id}
                             connectingWallet={connectingWallet}
                             wallet={w}
-                            onClick={handleConnect}
+                            onClick={onConnect}
                           />
                         ))
                       )
@@ -92,74 +94,24 @@ export function InjectedWalletsCardContent({
                         const isMultiChain = item.connectors.length > 1
 
                         return (
-                          <div key={item.id}>
-                            <Item
-                              variant="outline"
-                              className="group"
-                              size="sm"
-                              onClick={() => {
-                                if (isMultiChain) {
-                                  handleOpenNamespaceDialog(item)
-                                } else {
-                                  handleConnect(item, item.connectors[0].chain)
-                                }
-                              }}
-                            >
-                              <ItemMedia className="rounded-sm mr-2 overflow-hidden w-6 h-6">
-                                {item.imageUrl ? (
-                                  <Image
-                                    src={item.imageUrl}
-                                    alt={item.name}
-                                    width={24}
-                                    height={24}
-                                  />
-                                ) : (
-                                  <div className="w-6 h-6 flex items-center justify-center rounded-sm bg-muted font-semibold text-lg text-muted-foreground border">
-                                    {item.name.charAt(0).toUpperCase()}
-                                  </div>
-                                )}
-                              </ItemMedia>
-                              <ItemContent className="flex flex-row items-center justify-between">
-                                <ItemTitle>{item.name}</ItemTitle>
-                                <div className="flex flex-row items-center gap-2">
-                                  <div className="relative flex flex-row items-center gap-2 group-hover:opacity-100 opacity-0 transition-opacity duration-100">
-                                    {item.connectors.map((connector, index) => (
-                                      <Image
-                                        key={connector.chain}
-                                        src={connector.chainImageUrl || ''}
-                                        alt={'Chain Image for ' + connector.chain}
-                                        width={18}
-                                        height={18}
-                                        className="rounded-full shadow-sm outline outline-muted/70"
-                                        style={{
-                                          zIndex: item.connectors.length * 2 - index,
-                                          marginLeft: index > 0 ? '-14px' : 0
-                                        }}
-                                      />
-                                    ))}
-                                  </div>
-                                  <Badge variant="outline">Installed</Badge>
-                                </div>
-                              </ItemContent>
-                              <ItemActions>
-                                {connectingWallet?.id === item.id ? (
-                                  <Loader2 className="size-4 animate-spin" />
-                                ) : (
-                                  <ChevronRightIcon className="size-4" />
-                                )}
-                              </ItemActions>
-                            </Item>
-                          </div>
+                          <WalletListItem
+                            key={item.id}
+                            connectingWallet={connectingWallet}
+                            wallet={item}
+                            onClick={() => {
+                              if (isMultiChain) {
+                                onOpenNamespaceDialog(item)
+                              } else {
+                                onConnect(item, item.connectors[0].chain)
+                              }
+                            }}
+                          />
                         )
                       })
                     )}
                   </>
                 ) : (
-                  <>
-                    <WalletItemSkeleton />
-                    <WalletItemSkeleton />
-                    <WalletItemSkeleton />
-                  </>
+                  <WalletsSkeleton />
                 )}
               </Field>
               <Field>
