@@ -427,5 +427,14 @@ export const ConnectorUtil = {
     }
 
     return items
+  },
+
+  hasInjectedConnectors() {
+    return ConnectorController.state.connectors.filter(
+      c =>
+        (c.type === 'INJECTED' || c.type === 'ANNOUNCED' || c.type === 'MULTI_CHAIN') &&
+        c.name !== 'Browser Wallet' &&
+        c.name !== 'WalletConnect'
+    ).length
   }
 }

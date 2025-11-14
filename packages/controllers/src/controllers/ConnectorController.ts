@@ -434,15 +434,6 @@ const controller = {
     const enabledNamespaces = ConnectorController.getEnabledNamespaces()
     const enabledConnectors = ConnectorController.getEnabledConnectors(enabledNamespaces)
     state.connectors = ConnectorController.mergeMultiChainConnectors(enabledConnectors)
-  },
-
-  getInjectedConnectors() {
-    return state.connectors.filter(
-      c =>
-        (c.type === 'INJECTED' || c.type === 'ANNOUNCED' || c.type === 'MULTI_CHAIN') &&
-        c.name !== 'Browser Wallet' &&
-        c.name !== 'WalletConnect'
-    )
   }
 }
 

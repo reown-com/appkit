@@ -53,6 +53,7 @@ import {
   ConnectionController,
   ConnectionControllerUtil,
   ConnectorController,
+  ConnectorUtil,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
   EnsController,
@@ -177,8 +178,7 @@ export abstract class AppKitBaseClient {
     await this.initChainAdapters()
     this.sendInitializeEvent(options)
 
-    const hasInjectedConnectors = ConnectorController.getInjectedConnectors().length
-    if (options.enableHeadless && !hasInjectedConnectors) {
+    if (options.enableHeadless && !ConnectorUtil.hasInjectedConnectors()) {
       ApiController.prefetch({
         fetchNetworkImages: false,
         fetchConnectorImages: false,
