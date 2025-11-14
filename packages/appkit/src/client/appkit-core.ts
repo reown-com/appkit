@@ -15,12 +15,6 @@ import {
   type Views
 } from './appkit-base-client.js'
 
-declare global {
-  interface Window {
-    ethereum?: Record<string, unknown>
-  }
-}
-
 // -- Types --------------------------------------------------------------------
 export type OpenOptions<View extends Views> = Omit<BaseOpenOptions<View>, 'namespace'>
 

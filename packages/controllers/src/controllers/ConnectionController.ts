@@ -48,7 +48,7 @@ import { TransactionsController } from './TransactionsController.js'
 
 declare global {
   interface Window {
-    ethereum?: Record<string, unknown>
+    ethereum?: Provider
   }
 }
 
@@ -583,7 +583,9 @@ const controller = {
       return Boolean(window.ethereum)
     }
 
-    return ids.some(id => Boolean(window.ethereum?.[String(id)]))
+    return ids.some(id =>
+      Boolean((window.ethereum as unknown as Record<string, unknown>)?.[String(id)])
+    )
   },
 
   resetWcConnection() {

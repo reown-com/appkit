@@ -12,7 +12,7 @@ export class InjectedProvider extends EthersProvider<Provider> {
       return undefined
     }
 
-    this.provider = window.ethereum
+    this.provider = window.ethereum as unknown as Provider
     this.initialized = true
 
     return Promise.resolve()

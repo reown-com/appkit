@@ -362,8 +362,14 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
   public getWalletConnectProvider(
     params: AdapterBlueprint.GetWalletConnectProviderParams
   ): AdapterBlueprint.GetWalletConnectProviderResult {
+    const provider = ProviderController.getProvider(this.namespace)
+
+    if (!provider) {
+      throw new Error('TonAdapter:getWalletConnectProvider - provider is undefined')
+    }
+
     const walletConnectProvider = new TonWalletConnectConnector({
-      provider: params.provider as UniversalProvider,
+      provider,
       chains: params.caipNetworks
     })
 

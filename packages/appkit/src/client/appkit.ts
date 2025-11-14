@@ -38,12 +38,6 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 import { W3mFrameProviderSingleton } from '../auth-provider/W3MFrameProviderSingleton.js'
 import { AppKitBaseClient, type AppKitOptionsWithSdk } from './appkit-base-client.js'
 
-declare global {
-  interface Window {
-    ethereum?: Record<string, unknown>
-  }
-}
-
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
 
