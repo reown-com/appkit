@@ -11,12 +11,12 @@ import {
   ChainController,
   type ConnectionControllerClient,
   ConnectorController,
+  ConnectorUtil,
   type Provider,
   ProviderController,
   SIWXUtil,
   WcHelpersUtil
 } from '@reown/appkit-controllers'
-import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
 import { CaipNetworksUtil, HelpersUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { mainnet, polygon } from '@reown/appkit/networks'
