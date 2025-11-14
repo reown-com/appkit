@@ -16,6 +16,7 @@ import { PublicStateController } from '../src/controllers/PublicStateController.
 import { ConnectUtil, type WalletItem } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
+import { ConnectorUtil } from '../src/utils/ConnectorUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import type {
   NamespaceTypeMap,
@@ -388,6 +389,10 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
 
+  const isRemoveHeadlessEnabled = useMemo(() => {
+    return remoteFeatures?.headless
+  }, [remoteFeatures?.headless])
+
   async function fetchWallets(fetchOptions?: { page?: number; query?: string; entries?: number }) {
     setIsFetchingWallets(true)
     try {
@@ -438,15 +443,15 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   useEffect(() => {
     if (
       initialized &&
-      remoteFeatures?.headless !== undefined &&
-      (!isHeadlessEnabled || !remoteFeatures?.headless)
+      isRemoveHeadlessEnabled !== undefined &&
+      (!isHeadlessEnabled || !isRemoveHeadlessEnabled)
     ) {
       AlertController.open(
         ConstantsUtil.REMOTE_FEATURES_ALERTS.HEADLESS_NOT_ENABLED.DEFAULT,
         'info'
       )
     }
-  }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
+  }, [initialized, isHeadlessEnabled, isRemoveHeadlessEnabled])
 
   if (!isHeadlessEnabled || !remoteFeatures?.headless) {
     return {

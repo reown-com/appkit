@@ -1,9 +1,10 @@
 import type { ChainNamespace } from '@reown/appkit-common'
 
-import { ApiController } from '../controllers/ApiController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { AssetUtil } from './AssetUtil.js'
+import { ConnectorUtil } from './ConnectorUtil.js'
 import type { WcWallet } from './TypeUtil.js'
+import { WalletUtil } from './WalletUtil.js'
 
 // --- Types --------------------------------------------- //
 export type WalletItem = {
@@ -40,17 +41,25 @@ export const ConnectUtil = {
    * @returns The WalletItems for the initial connect view.
    */
   getInitialWallets() {
-    const walletConnectWallet = ConnectUtil.getWalletConnectWallet()
-    const injectedWallets = ConnectUtil.getInjectedWallets()
-    const recommendedWallets = ApiController.state.wallets
-      .slice(0, 5)
-      .map(ConnectUtil.mapExplorerWalletToWalletItem)
+    return ConnectorUtil.connectorList()
+      .map(connector => {
+        if (connector.kind === 'connector') {
+          return {
+            id: connector.connector.id,
+            connectors: [],
+            name: connector.connector.name,
+            imageUrl: AssetUtil.getAssetImageUrl(connector.connector.imageId),
+            isInjected: false,
+            isRecent: false,
+            walletInfo: {}
+          }
+        } else if (connector.kind === 'wallet') {
+          return this.mapExplorerWalletToWalletItem(connector.wallet)
+        }
 
-    return [
-      ...(walletConnectWallet ? [walletConnectWallet] : []),
-      ...injectedWallets,
-      ...(injectedWallets.length === 0 ? recommendedWallets : [])
-    ]
+        return null
+      })
+      .filter(Boolean) as WalletItem[]
   },
 
   /**
@@ -62,7 +71,9 @@ export const ConnectUtil = {
       return wcSearchWallets.map(ConnectUtil.mapExplorerWalletToWalletItem)
     }
 
-    return wcAllWallets.map(ConnectUtil.mapExplorerWalletToWalletItem)
+    return WalletUtil.getWalletConnectWallets(wcAllWallets).map(
+      ConnectUtil.mapExplorerWalletToWalletItem
+    )
   },
 
   /**
