@@ -357,7 +357,6 @@ export class W3mAccountDefaultWidget extends LitElement {
       const filterByNamespace = ConnectorController.state.filterByNamespace
       const connectorId = ConnectorController.getConnectorId(this.namespace)
       if (this.namespace && hasMultipleConnections && connectorId) {
-        console.log('>> Disconnecting connector', connectorId, this.namespace)
         await ConnectionController.disconnectConnector({
           id: connectorId,
           namespace: this.namespace
@@ -366,10 +365,8 @@ export class W3mAccountDefaultWidget extends LitElement {
         RouterController.push('ProfileWallets')
         SnackController.showSuccess('Wallet deleted')
       } else if (this.namespace && filterByNamespace === this.namespace) {
-        console.log('>> Disconnecting namespace', this.namespace)
         await ConnectionController.disconnectNamespace(this.namespace, true)
       } else {
-        console.log('>> Disconnecting all')
         await ConnectionController.disconnect()
       }
     } catch (e) {

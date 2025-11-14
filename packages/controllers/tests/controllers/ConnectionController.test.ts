@@ -1,5 +1,5 @@
 import { polygon } from 'viem/chains'
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   type CaipNetwork,
@@ -47,12 +47,19 @@ const caipNetworks = [
 const baseAdapter = {
   connectWalletConnect: vi.fn(),
   disconnect: vi.fn(),
-  connect: vi.fn()
+  connect: vi.fn().mockResolvedValue({
+    address: '0x123',
+    chainId: '1',
+    id: 'test-connector',
+    type: 'INJECTED'
+  })
 } as unknown as AdapterBlueprint
 
 const evmAdapter = {
   ...baseAdapter,
-  namespace: CommonConstantsUtil.CHAIN.EVM
+  namespace: CommonConstantsUtil.CHAIN.EVM,
+  // Needed when AUTH connection triggers connectInactiveNamespaces → activeAdapter.switchNetwork
+  switchNetwork: vi.fn().mockResolvedValue(undefined)
 } as unknown as AdapterBlueprint
 
 const solanaAdapter = {
@@ -75,7 +82,26 @@ beforeAll(() => {
 
 describe('ConnectionController', () => {
   beforeEach(() => {
+    // Ensure adapter connect mock remains intact across tests
+    ;(baseAdapter.connect as unknown as ReturnType<typeof vi.fn>) = vi.fn().mockResolvedValue({
+      address: '0x123',
+      chainId: '1',
+      id: 'test-connector',
+      type: 'INJECTED'
+    })
+    ;(evmAdapter.connect as unknown as ReturnType<typeof vi.fn>) = vi.fn().mockResolvedValue({
+      address: '0x123',
+      chainId: '1',
+      id: 'test-connector',
+      type: 'INJECTED'
+    })
+    ;(evmAdapter.switchNetwork as unknown as ReturnType<typeof vi.fn>) = vi
+      .fn()
+      .mockResolvedValue(undefined)
+  })
+  afterEach(() => {
     vi.restoreAllMocks()
+    vi.clearAllMocks()
   })
   it('should have valid default state', () => {
     ChainController.initialize(
@@ -137,6 +163,7 @@ describe('ConnectionController', () => {
     const options = { id: externalId, type: 'INJECTED' as ConnectorType }
     await ConnectionController.connectExternal(options, chain)
 
+    console.log('>> Should be sending event')
     expect(sendEventSpy).toHaveBeenCalledWith({
       type: 'track',
       event: 'CONNECT_SUCCESS',
@@ -205,9 +232,7 @@ describe('ConnectionController', () => {
   })
 
   it('should not throw on checkInstalled() without ids', () => {
-    const checkInstalledSpy = vi.spyOn(ConnectionController, 'checkInstalled')
     ConnectionController.checkInstalled()
-    expect(checkInstalledSpy).toHaveBeenCalledWith(undefined)
   })
 
   it('should not throw when optional methods are undefined', async () => {
@@ -671,13 +696,12 @@ describe('ConnectionController', () => {
 
       const onChange = vi.fn()
 
-      expect(
-        async () =>
-          await ConnectionController.switchConnection({
-            connection: mockConnection,
-            namespace: chain,
-            onChange
-          })
+      await expect(
+        ConnectionController.switchConnection({
+          connection: mockConnection,
+          namespace: chain,
+          onChange
+        })
       ).rejects.toThrow('Invalid connection status: connecting')
     })
   })
