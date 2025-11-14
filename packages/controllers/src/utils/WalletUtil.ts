@@ -1,18 +1,14 @@
 import { HelpersUtil } from '@reown/appkit-common'
-import {
-  ApiController,
-  type ConnectMethod,
-  ConnectionController,
-  type Connector,
-  ConnectorController,
-  ConnectorUtil,
-  ConstantsUtil,
-  CoreHelperUtil,
-  type Features,
-  OptionsController,
-  StorageUtil,
-  type WcWallet
-} from '@reown/appkit-controllers'
+
+import { ApiController } from '../controllers/ApiController.js'
+import { ConnectionController } from '../controllers/ConnectionController.js'
+import { ConnectorController } from '../controllers/ConnectorController.js'
+import { OptionsController } from '../controllers/OptionsController.js'
+import { ConnectorUtil } from './ConnectorUtil.js'
+import { ConstantsUtil } from './ConstantsUtil.js'
+import { CoreHelperUtil } from './CoreHelperUtil.js'
+import { StorageUtil } from './StorageUtil.js'
+import type { ConnectMethod, Connector, Features, WcWallet } from './TypeUtil.js'
 
 interface AppKitWallet extends WcWallet {
   installed: boolean

@@ -1,22 +1,22 @@
 import { ConstantsUtil as CommonConstantsUtil, HelpersUtil } from '@reown/appkit-common'
-import {
-  ApiController,
-  ChainController,
-  ConnectionController,
-  type Connector,
-  ConnectorController,
-  type ConnectorOrWalletItem,
-  type ConnectorTypeOrder,
-  type ConnectorWithProviders,
-  CoreHelperUtil,
-  type CustomWallet,
-  OptionsController,
-  OptionsUtil,
-  type SocialProvider,
-  StorageUtil,
-  type WcWallet
-} from '@reown/appkit-controllers'
 
+import { ApiController } from '../controllers/ApiController.js'
+import { ChainController } from '../controllers/ChainController.js'
+import { ConnectionController } from '../controllers/ConnectionController.js'
+import { ConnectorController } from '../controllers/ConnectorController.js'
+import { OptionsController } from '../controllers/OptionsController.js'
+import { CoreHelperUtil } from './CoreHelperUtil.js'
+import { OptionsUtil } from './OptionsUtil.js'
+import { StorageUtil } from './StorageUtil.js'
+import type {
+  Connector,
+  ConnectorOrWalletItem,
+  ConnectorTypeOrder,
+  ConnectorWithProviders,
+  CustomWallet,
+  SocialProvider,
+  WcWallet
+} from './TypeUtil.js'
 import { WalletUtil } from './WalletUtil.js'
 
 // -- Types ------------------------------------------ //
