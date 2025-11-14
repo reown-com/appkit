@@ -426,8 +426,6 @@ export const ConnectorUtil = {
       }
     }
 
-    console.log('>>> items', items)
-
     return items
   }
 }
