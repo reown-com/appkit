@@ -8,12 +8,12 @@ import {
   ChainController,
   ConnectorController,
   type ConnectorTypeOrder,
+  ConnectorUtil,
   CoreHelperUtil,
   StorageUtil
 } from '@reown/appkit-controllers'
 
 import { W3mConnectorList } from '../../src/partials/w3m-connector-list'
-import { ConnectorUtil } from '../../src/utils/ConnectorUtil'
 
 const MOCK_CONNECTORS = {
   custom: [{ id: 'custom1', name: 'Custom' }],

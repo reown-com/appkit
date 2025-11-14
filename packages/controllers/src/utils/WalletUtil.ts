@@ -1,27 +1,18 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { HelpersUtil } from '@reown/appkit-common'
 import {
   ApiController,
+  type ConnectMethod,
   ConnectionController,
+  type Connector,
   ConnectorController,
+  ConnectorUtil,
+  ConstantsUtil,
   CoreHelperUtil,
+  type Features,
   OptionsController,
-  StorageUtil
+  StorageUtil,
+  type WcWallet
 } from '@reown/appkit-controllers'
-import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-controllers'
-import { HelpersUtil } from '@reown/appkit-utils'
-import { ConstantsUtil as AppKitConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
-
-import { ConnectorUtil } from './ConnectorUtil.js'
-import { ConstantsUtil } from './ConstantsUtil.js'
-
-const MANDATORY_WALLET_IDS_ON_MOBILE = [
-  PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE],
-  PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK],
-  PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT],
-  PresetsUtil.ConnectorExplorerIds[AppKitConstantsUtil.SOLFLARE_CONNECTOR_NAME],
-  PresetsUtil.ConnectorExplorerIds[AppKitConstantsUtil.PHANTOM_CONNECTOR_NAME],
-  PresetsUtil.ConnectorExplorerIds[AppKitConstantsUtil.BINANCE_CONNECTOR_NAME]
-]
 
 interface AppKitWallet extends WcWallet {
   installed: boolean
@@ -177,7 +168,7 @@ export const WalletUtil = {
       return ['wallet', 'email', 'social'] as ConnectMethod[]
     }
 
-    return ConstantsUtil.DEFAULT_CONNECT_METHOD_ORDER
+    return ['email', 'social', 'wallet']
   },
   isExcluded(wallet: WcWallet) {
     const isRDNSExcluded =
@@ -212,7 +203,8 @@ export const WalletUtil = {
 
     if (CoreHelperUtil.isMobile()) {
       return wallets.filter(
-        wallet => wallet.supports_wc || MANDATORY_WALLET_IDS_ON_MOBILE.includes(wallet.id)
+        wallet =>
+          wallet.supports_wc || ConstantsUtil.MANDATORY_WALLET_IDS_ON_MOBILE.includes(wallet.id)
       )
     }
 

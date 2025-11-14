@@ -9,12 +9,14 @@ import {
   ParseUtil,
   UserRejectedRequestError
 } from '@reown/appkit-common'
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-common'
 import {
   AssetController,
   ChainController,
   type CombinedProvider,
   type Connector,
   type ConnectorType,
+  ConnectorUtil,
   CoreHelperUtil,
   OptionsController,
   type Provider,
@@ -28,8 +30,7 @@ import {
   ProviderController,
   WalletConnectConnector
 } from '@reown/appkit-controllers'
-import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
+import { HelpersUtil } from '@reown/appkit-utils'
 import {
   type Address,
   BaseProvider,

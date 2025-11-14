@@ -1,4 +1,4 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, PresetsUtil } from '@reown/appkit-common'
 import {
   type ChainNamespace,
   type OnRampProvider,
@@ -301,5 +301,14 @@ export const ConstantsUtil = {
 
   SIWX_DEFAULTS: {
     signOutOnDisconnect: true
-  } as const satisfies Pick<SIWXConfig, 'signOutOnDisconnect'>
+  } as const satisfies Pick<SIWXConfig, 'signOutOnDisconnect'>,
+
+  MANDATORY_WALLET_IDS_ON_MOBILE: [
+    PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE],
+    PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK],
+    PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT],
+    PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.SOLFLARE_CONNECTOR_NAME],
+    PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.PHANTOM_CONNECTOR_NAME],
+    PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.BINANCE_CONNECTOR_NAME]
+  ]
 }

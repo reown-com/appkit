@@ -1535,3 +1535,17 @@ export type ProjectLimits = {
   isAboveRpcLimit: boolean
   isAboveMauLimit: boolean
 }
+
+export type ConnectorItemWithKind = {
+  kind: 'connector'
+  subtype: 'injected' | 'announced' | 'multiChain' | 'external' | 'walletConnect'
+  connector: ConnectorWithProviders
+}
+
+export type WalletItemWithKind = {
+  kind: 'wallet'
+  subtype: 'featured' | 'recommended' | 'custom' | 'recent'
+  wallet: WcWallet
+}
+
+export type ConnectorOrWalletItem = ConnectorItemWithKind | WalletItemWithKind
