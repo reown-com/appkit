@@ -12,6 +12,8 @@ export type ConnectionStatus =
   | 'connected'
   | 'disconnecting'
   | 'disconnected'
+  | 'authenticating'
+  | 'authenticated'
 
 export type ConnectionControllerState = {
   isSwitchingConnection: boolean

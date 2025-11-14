@@ -58,8 +58,11 @@ export const SIWXUtil = {
 
       const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
       if (sessions.length) {
+        ConnectionController.setStatus('authenticated', namespace)
         return
       }
+
+      ConnectionController.setStatus('authenticating', namespace)
       await ModalController.open({
         view: 'SIWXSignMessage'
       })
@@ -295,6 +298,7 @@ export const SIWXUtil = {
       }
     }
 
+    ConnectionController.setStatus('authenticating', chainNamespace)
     const caipNetwork = `${chainNamespace}:${chainId}` as CaipNetworkId
 
     const siwxMessage = await siwx.createMessage({
@@ -339,6 +343,7 @@ export const SIWXUtil = {
       await promise
     }
 
+    ConnectionController.setStatus('authenticated', chainNamespace)
     ChainController.setLastConnectedSIWECaipNetwork(network)
 
     return {
@@ -424,11 +429,10 @@ export const SIWXUtil = {
       type: 'WALLET_CONNECT'
     }
 
-    ChainController.setAccountProp(
-      'connectedWalletInfo',
-      walletInfo,
-      Array.from(namespaces)[0] as ChainNamespace
-    )
+    namespaces.forEach(namespace => {
+      ConnectionController.setStatus('authenticating', namespace)
+      ChainController.setAccountProp('connectedWalletInfo', walletInfo, namespace)
+    })
 
     if (result?.auths?.length) {
       const sessions = result.auths.map<SIWXSession>(cacao => {
@@ -456,6 +460,7 @@ export const SIWXUtil = {
 
       try {
         await siwx.setSessions(sessions)
+        ConnectionController.setStatus('authenticated')
 
         if (network) {
           ChainController.setLastConnectedSIWECaipNetwork(network)
@@ -467,6 +472,7 @@ export const SIWXUtil = {
           properties: SIWXUtil.getSIWXEventProperties()
         })
       } catch (error) {
+        ConnectionController.setStatus('disconnected')
         // eslint-disable-next-line no-console
         console.error('SIWX:universalProviderAuth - failed to set sessions', error)
 

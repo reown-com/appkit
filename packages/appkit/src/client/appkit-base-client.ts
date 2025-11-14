@@ -589,7 +589,7 @@ export abstract class AppKitBaseClient {
       StorageUtil.clearAddressCache()
       ConnectionController.setStatus(connectionStatus, chainNamespace)
     } else {
-      ConnectionController.setStatus(connectionStatus, chainNamespace)
+      ConnectionController.setStatus(connectionStatus || 'disconnected', chainNamespace)
     }
 
     adapter.on('switchNetwork', ({ address, chainId }) => {

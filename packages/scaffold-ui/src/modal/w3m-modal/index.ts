@@ -11,7 +11,6 @@ import {
   ModalUtil,
   OptionsController,
   RouterController,
-  SIWXUtil,
   SnackController,
   SwapController,
   ThemeController
@@ -251,7 +250,6 @@ export class W3mModalBase extends LitElement {
       ModalController.close()
     }
 
-    await SIWXUtil.initializeIfEnabled(caipAddress)
     this.caipAddress = caipAddress
     ChainController.setIsSwitchingNamespace(false)
   }

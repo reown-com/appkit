@@ -1400,8 +1400,13 @@ export type UseAppKitNetworkReturn = {
 
 export type BadgeType = 'none' | 'certified'
 
-export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 'reconnecting'
-
+export type ConnectionStatus =
+  | 'connected'
+  | 'disconnected'
+  | 'connecting'
+  | 'reconnecting'
+  | 'authenticating'
+  | 'authenticated'
 /**
  * @description The default account types for each namespace.
  * @default

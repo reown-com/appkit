@@ -25,6 +25,7 @@ import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   ChainAdapter,
   ConnectedWalletInfo,
+  ConnectionStatus,
   Connector,
   EstimateGasTransactionArgs,
   Provider,
@@ -129,7 +130,7 @@ export interface ConnectionControllerState {
   wcFetchingUri: boolean
   recentWallet?: WcWallet
   buffering: boolean
-  status?: 'connecting' | 'connected' | 'disconnected' | 'reconnecting'
+  status: ConnectionStatus
 }
 
 type StateKey = keyof ConnectionControllerState
@@ -199,6 +200,7 @@ const controller = {
   }: {
     universalProvider: Awaited<ReturnType<typeof UniversalProvider.init>>
   }) {
+    ConnectionController.setStatus('connecting')
     if (!CoreHelperUtil.isPairingExpired(state?.wcPairingExpiry)) {
       const link = state.wcUri
       state.wcUri = link
@@ -206,7 +208,6 @@ const controller = {
       return
     }
     try {
-      ConnectionController.state.status = 'connecting'
       const activeChain = ChainController.state.activeChain
       if (!activeChain) {
         throw new Error('activeChain not found')
@@ -229,7 +230,6 @@ const controller = {
       return
     }
     state.wcPairingExpiry = undefined
-    ConnectionController.state.status = 'connected'
   },
 
   async connectExternal(
@@ -237,6 +237,7 @@ const controller = {
     chain: ChainControllerState['activeChain'],
     setChain = true
   ) {
+    ConnectionController.setStatus('connecting')
     const activeChain = ChainController.state.activeChain
     const namespace = options.chain || activeChain
 
@@ -310,6 +311,7 @@ const controller = {
 
     const connector = ConnectorController.state.allConnectors.find(c => c.id === options?.id)
     const connectSuccessEventMethod = options.type === 'AUTH' ? 'email' : 'browser'
+    await SIWXUtil.initializeIfEnabled()
     EventsController.sendEvent({
       type: 'track',
       event: 'CONNECT_SUCCESS',
@@ -346,6 +348,7 @@ const controller = {
     if (namespace) {
       ConnectorController.setConnectorId(options.id, namespace)
     }
+    await SIWXUtil.initializeIfEnabled()
   },
 
   async setPreferredAccountType(
@@ -1017,7 +1020,6 @@ const controller = {
       chainNamespace
     )
 
-    ConnectionController.setStatus('connected', chainNamespace)
     if (isUnsupportedNetwork && !shouldSupportAllNetworks) {
       return
     }
@@ -1073,6 +1075,8 @@ const controller = {
         const caipAddress = ChainController.getAccountData(chainNamespace)?.caipAddress
         const newChainId = chainIdToUse || caipAddress?.split(':')[1]
         if (!newChainId) {
+          ConnectionController.setStatus('disconnected', chainNamespace)
+
           return
         }
 
@@ -1099,6 +1103,8 @@ const controller = {
         chainId: chainIdToUse,
         chainNamespace
       })
+
+      ConnectionController.setStatus('connected', chainNamespace)
     }
   },
   async syncIdentity(params: {
@@ -1303,9 +1309,12 @@ const controller = {
     ChainController.setAccountProp('connectedWalletInfo', walletInfo, chainNamespace)
   },
 
-  setStatus(status: ConnectionControllerState['status'], namespace: ChainNamespace) {
+  setStatus(status: ConnectionControllerState['status'], namespace?: ChainNamespace) {
     state.status = status
-    ChainController.setAccountProp('status', status, namespace)
+    const namespacesToUpdate = namespace ? [namespace] : ChainController.state.chains.keys()
+    namespacesToUpdate.forEach(ns => {
+      ChainController.setAccountProp('status', status, ns)
+    })
 
     // If at least one namespace is connected, set the connection status
     if (ConnectorController.isConnected()) {
