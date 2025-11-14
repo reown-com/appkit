@@ -388,7 +388,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       if (wallet?.isInjected && connector) {
         await ConnectorControllerUtil.connectExternal(connector)
       } else {
-        await ConnectionController.connectWalletConnect({ cache: 'never' })
+        await ConnectionController.connectWalletConnect()
       }
     },
     [wallets]

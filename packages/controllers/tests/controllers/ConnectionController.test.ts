@@ -199,13 +199,13 @@ describe('ConnectionController', () => {
   })
 
   it('checkInstalled() should trigger internal client call', () => {
-    const checkInstalledSpy = vi.spyOn(ConnectorController, 'checkInstalled')
+    const checkInstalledSpy = vi.spyOn(ConnectionController, 'checkInstalled')
     ConnectionController.checkInstalled([externalId])
     expect(checkInstalledSpy).toHaveBeenCalledWith([externalId])
   })
 
   it('should not throw on checkInstalled() without ids', () => {
-    const checkInstalledSpy = vi.spyOn(ConnectorController, 'checkInstalled')
+    const checkInstalledSpy = vi.spyOn(ConnectionController, 'checkInstalled')
     ConnectionController.checkInstalled()
     expect(checkInstalledSpy).toHaveBeenCalledWith(undefined)
   })
