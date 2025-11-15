@@ -95,7 +95,7 @@ export const ConnectUtil = {
       connectors: subType === 'walletConnect' ? [] : connectors,
       name: connector.name,
       imageUrl: connector.imageUrl || AssetUtil.getAssetImageUrl(connector.imageId),
-      isInjected: subType === 'walletConnect',
+      isInjected: subType !== 'walletConnect',
       isRecent: false,
       walletInfo: {}
     }
