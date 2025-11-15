@@ -6,13 +6,12 @@ import { type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/rea
 import { InjectedWalletItem } from './InjectedWalletItem'
 
 interface Props {
-  connectingWallet: UseAppKitWalletsReturn['wallets'][number] | undefined
   onConnect: (wallet: UseAppKitWalletsReturn['wallets'][number], namespace?: ChainNamespace) => void
   onSeeAll: () => void
 }
 
-export function AppKitHeadlessInjectedWallets({ connectingWallet, onConnect, onSeeAll }: Props) {
-  const { wallets } = useAppKitWallets()
+export function AppKitHeadlessInjectedWallets({ onConnect, onSeeAll }: Props) {
+  const { wallets, connectingWallet } = useAppKitWallets()
 
   return (
     <Flex direction="column" gap={4} paddingTop={8}>

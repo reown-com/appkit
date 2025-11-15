@@ -12,9 +12,9 @@ import { NamespaceSelectionDialog } from '@/components/NamespaceSelectionDialog'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
+import { AllWalletsContent } from './AllWalletsContent'
 import { ConnectContent } from './ConnectContent'
 import { WalletConnectQRContent } from './WalletConnectQRContent'
-import { AllWalletsContent } from './WalletConnectWalletsContent'
 
 export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>) {
   const { connect, wcUri, connectingWallet, resetWcUri } = useAppKitWallets()

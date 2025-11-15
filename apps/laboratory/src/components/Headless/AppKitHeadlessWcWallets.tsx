@@ -20,7 +20,6 @@ import { useDebounceValue } from '@/src/hooks/useDebounceValue'
 import { WcWalletItem } from './WcWalletItem'
 
 interface Props {
-  connectingWallet: UseAppKitWalletsReturn['wcWallets'][number] | undefined
   onConnect: (
     wallet: UseAppKitWalletsReturn['wcWallets'][number],
     namespace?: ChainNamespace
@@ -28,9 +27,16 @@ interface Props {
   onBack: () => void
 }
 
-export function AppKitHeadlessWcWallets({ connectingWallet, onConnect, onBack }: Props) {
-  const { wcWallets, isFetchingWcUri, isFetchingWallets, page, count, fetchWallets } =
-    useAppKitWallets()
+export function AppKitHeadlessWcWallets({ onConnect, onBack }: Props) {
+  const {
+    wcWallets,
+    isFetchingWcUri,
+    isFetchingWallets,
+    page,
+    count,
+    connectingWallet,
+    fetchWallets
+  } = useAppKitWallets()
   const [inputValue, setInputValue] = useState('')
   const searchQuery = useDebounceValue(inputValue, 500)
 
