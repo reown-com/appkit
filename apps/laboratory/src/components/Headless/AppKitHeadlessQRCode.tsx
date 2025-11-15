@@ -13,6 +13,10 @@ interface Props {
 export function AppKitHeadlessQRCode({ onBack, onCopyUri }: Props) {
   const { wcUri, isFetchingWcUri, connectingWallet } = useAppKitWallets()
 
+  if (!connectingWallet) {
+    return null
+  }
+
   return (
     <Flex direction="column" gap={4} height="100%">
       {/* Header with Back Button */}
