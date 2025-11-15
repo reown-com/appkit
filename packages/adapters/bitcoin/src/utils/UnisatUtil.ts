@@ -17,7 +17,7 @@ export const UNISAT_CONNECTORS: Omit<
     id: 'bitget',
     name: 'Bitget Wallet',
     imageUrl:
-      // Bitget Sui has an appropiate icon, so we use the window object to get it
+      // Bitget Sui has an appropriate icon, so we use the window object to get it
       CoreHelperUtil.isClient()
         ? ((window as UnisatConnector.UnisatWindow)?.bitkeep?.suiWallet?.icon ?? '')
         : ''
