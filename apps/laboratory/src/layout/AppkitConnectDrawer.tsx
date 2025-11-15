@@ -11,11 +11,7 @@ import {
 } from '@chakra-ui/react'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import {
-  type UseAppKitWalletsReturn,
-  useAppKitAccount,
-  useAppKitWallets
-} from '@reown/appkit/react'
+import { type WalletItem, useAppKitAccount, useAppKitWallets } from '@reown/appkit/react'
 
 import { AppKitHeadlessInjectedWallets } from '@/src/components/Headless/AppKitHeadlessInjectedWallets'
 import { AppKitHeadlessQRCode } from '@/src/components/Headless/AppKitHeadlessQRCode'
@@ -57,10 +53,7 @@ export function AppkitConnectDrawer({ controls }: Props) {
     onClose()
   }
 
-  async function handleConnect(
-    wallet: UseAppKitWalletsReturn['wallets'][number] | UseAppKitWalletsReturn['wcWallets'][number],
-    namespace?: ChainNamespace
-  ) {
+  async function handleConnect(wallet: WalletItem, namespace?: ChainNamespace) {
     await connect(wallet, namespace)
       .then(() => {
         toast({ title: 'Connected', status: 'success' })
