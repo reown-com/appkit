@@ -61,8 +61,8 @@ const initializeAppKit = async () => {
     metadata: {
       name: 'AppKit Headless Example',
       description: 'AppKit Example with custom connect user interface.',
-      url: 'https://reown.com/appkit',
-      icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
+      url: 'https://appkit-headless.vercel.app',
+      icons: ['https://appkit-headless.vercel.app/favicon-dark.png']
     },
     projectId,
     themeMode: 'light',

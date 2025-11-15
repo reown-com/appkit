@@ -47,7 +47,7 @@ export class ModalHeadlessPage extends ModalPage {
   }
 
   async clickWalletConnectInHeadless() {
-    const walletConnectItem = this.page.getByTestId('wc-wallet-item-WalletConnect')
+    const walletConnectItem = this.page.getByTestId('wallet-button-WalletConnect')
     await expect(walletConnectItem, 'WalletConnect item should be visible').toBeVisible()
     await walletConnectItem.click()
   }
@@ -87,7 +87,7 @@ export class ModalHeadlessPage extends ModalPage {
   }
 
   async getWalletItemsCount(): Promise<number> {
-    const walletItems = this.page.getByTestId(/^wc-wallet-item-/u)
+    const walletItems = this.page.getByTestId(/^wallet-button-/u)
 
     return await walletItems.count()
   }

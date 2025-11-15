@@ -166,6 +166,7 @@ export const WalletUtil = {
 
     return ConstantsUtil.DEFAULT_CONNECT_METHOD_ORDER
   },
+
   isExcluded(wallet: WcWallet) {
     const isRDNSExcluded =
       Boolean(wallet.rdns) && ApiController.state.excludedWallets.some(w => w.rdns === wallet.rdns)
@@ -178,6 +179,7 @@ export const WalletUtil = {
 
     return isRDNSExcluded || isNameExcluded
   },
+
   markWalletsWithDisplayIndex(wallets: WcWallet[]) {
     return wallets.map((w, index) => ({ ...w, display_index: index }))
   },
@@ -205,5 +207,20 @@ export const WalletUtil = {
     }
 
     return wallets
+  },
+
+  getWalletConnectWallets(allWallets: WcWallet[]) {
+    const wallets = [...ApiController.state.featured, ...ApiController.state.recommended]
+    if (ApiController.state.filteredWallets?.length > 0) {
+      wallets.push(...ApiController.state.filteredWallets)
+    } else {
+      wallets.push(...allWallets)
+    }
+
+    const uniqueWallets = CoreHelperUtil.uniqueBy(wallets, 'id')
+    const walletsWithInstalled = WalletUtil.markWalletsAsInstalled(uniqueWallets)
+    const walletsByWcSupport = WalletUtil.filterWalletsByWcSupport(walletsWithInstalled)
+
+    return WalletUtil.markWalletsWithDisplayIndex(walletsByWcSupport)
   }
 }

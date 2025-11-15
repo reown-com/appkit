@@ -53,6 +53,7 @@ import {
   ConnectionController,
   ConnectionControllerUtil,
   ConnectorController,
+  ConnectorUtil,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
   EnsController,
@@ -176,6 +177,16 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     this.sendInitializeEvent(options)
+
+    if (options.enableHeadless && !ConnectorUtil.hasInjectedConnectors()) {
+      ApiController.prefetch({
+        fetchNetworkImages: false,
+        fetchConnectorImages: false,
+        fetchWalletRanks: false,
+        fetchRecommendedWallets: true
+      })
+    }
+
     if (OptionsController.state.enableReconnect) {
       await this.syncExistingConnection()
       await this.syncAdapterConnections()

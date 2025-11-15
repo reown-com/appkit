@@ -5,7 +5,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import {
   ApiController,
   ConnectorController,
-  CoreHelperUtil,
   OptionsController,
   WalletUtil,
   type WcWallet
@@ -34,26 +33,13 @@ export class W3mAllWalletsList extends LitElement {
 
   @state() private wallets = ApiController.state.wallets
 
-  @state() private recommended = ApiController.state.recommended
-
-  @state() private featured = ApiController.state.featured
-
-  @state() private filteredWallets = ApiController.state.filteredWallets
-
   @state() private badge?: 'certified' | undefined
 
   @state() private mobileFullScreen = OptionsController.state.enableMobileFullScreen
 
   public constructor() {
     super()
-    this.unsubscribe.push(
-      ...[
-        ApiController.subscribeKey('wallets', val => (this.wallets = val)),
-        ApiController.subscribeKey('recommended', val => (this.recommended = val)),
-        ApiController.subscribeKey('featured', val => (this.featured = val)),
-        ApiController.subscribeKey('filteredWallets', val => (this.filteredWallets = val))
-      ]
-    )
+    this.unsubscribe.push(...[ApiController.subscribeKey('wallets', val => (this.wallets = val))])
   }
 
   public override firstUpdated() {
@@ -113,25 +99,8 @@ export class W3mAllWalletsList extends LitElement {
     )
   }
 
-  private getWallets() {
-    const wallets = [...this.featured, ...this.recommended]
-    if (this.filteredWallets?.length > 0) {
-      wallets.push(...this.filteredWallets)
-    } else {
-      wallets.push(...this.wallets)
-    }
-
-    const uniqueWallets = CoreHelperUtil.uniqueBy(wallets, 'id')
-    const walletsWithInstalled = WalletUtil.markWalletsAsInstalled(uniqueWallets)
-    const walletsByWcSupport = WalletUtil.filterWalletsByWcSupport(walletsWithInstalled)
-
-    return WalletUtil.markWalletsWithDisplayIndex(walletsByWcSupport)
-  }
-
   private walletsTemplate() {
-    const wallets = this.getWallets()
-
-    return wallets.map(
+    return WalletUtil.getWalletConnectWallets(this.wallets).map(
       (wallet, index) => html`
         <w3m-all-wallets-list-item
           data-testid="wallet-search-item-${wallet.id}"
