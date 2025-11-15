@@ -452,7 +452,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       count: 0,
       connect: () => Promise.resolve(),
       fetchWallets: () => Promise.resolve(),
-      resetWcUri: () => {}
+      resetWcUri
     }
   }
 
