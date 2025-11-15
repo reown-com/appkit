@@ -298,9 +298,8 @@ export interface UseAppKitWalletsReturn {
   wallets: WalletItem[]
 
   /**
-   * List of WalletConnect wallets from Wallet Guide API.
+   * List of WalletConnect wallets from Wallet Guide API. Useful to display all available WalletConnect wallets in a separate Search Wallets view.
    * @see https://walletguide.walletconnect.network/.
-   * Useful to display all available WalletConnect wallets in a separate Search Wallets view.
    */
   wcWallets: WalletItem[]
 
@@ -340,8 +339,7 @@ export interface UseAppKitWalletsReturn {
   count: number
 
   /**
-   * Function to fetch WalletConnect wallets from the explorer API.
-   * This is useful for pagination or initial load.
+   * Function to fetch WalletConnect wallets from the explorer API. Allows to list, search and paginate through the wallets.
    * @param options - Options for fetching wallets
    * @param options.page - Page number to fetch (default: 1)
    * @param options.query - Search query to filter wallets (default: '')
@@ -350,8 +348,8 @@ export interface UseAppKitWalletsReturn {
 
   /**
    * Function to connect to a wallet.
-   * - For WalletConnect wallets: initiates WC connection and returns the URI in the onSuccess callback
-   * - For injected connectors: triggers the extension/wallet directly
+   * - For WalletConnect wallets: initiates WC connection and returns the URI with the `wcUri` state.
+   * - For injected connectors: triggers the extension/wallet directly.
    *
    * @param wallet - The wallet item to connect to
    * @param callbacks - Success and error callbacks
@@ -360,7 +358,7 @@ export interface UseAppKitWalletsReturn {
   connect: (wallet: WalletItem, namespace?: ChainNamespace) => Promise<void>
 
   /**
-   * Function to reset the WC URI. It's useful to keep connectingWallet state sync with the WC URI. Can be called when the QR code is closed.
+   * Function to reset the WC URI. Useful to keep `connectingWallet` state sync with the WC URI. Can be called when the QR code is closed.
    */
   resetWcUri: () => void
 }
