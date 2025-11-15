@@ -766,7 +766,8 @@ describe('useAppKitWallets', () => {
       page: 0,
       count: 0,
       connect: expect.any(Function),
-      fetchWallets: expect.any(Function)
+      fetchWallets: expect.any(Function),
+      resetWcUri: expect.any(Function)
     })
   })
 
