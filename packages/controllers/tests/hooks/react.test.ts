@@ -974,9 +974,9 @@ describe('useAppKitWallets', () => {
 
     const result = useAppKitWallets()
 
-    await result.fetchWallets({ page: 3, entries: 20 })
+    await result.fetchWallets({ page: 3 })
 
-    expect(fetchWalletsByPageSpy).toHaveBeenCalledWith({ page: 3, entries: 20 })
+    expect(fetchWalletsByPageSpy).toHaveBeenCalledWith({ page: 3 })
   })
 
   it('should handle fetchWallets error gracefully', async () => {

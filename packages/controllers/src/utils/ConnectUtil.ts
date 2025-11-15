@@ -1,6 +1,5 @@
 import type { ChainNamespace } from '@reown/appkit-common'
 
-import { ConnectorController } from '../controllers/ConnectorController.js'
 import { AssetUtil } from './AssetUtil.js'
 import { ConnectorUtil } from './ConnectorUtil.js'
 import type { ConnectorItemWithKind, ConnectorWithProviders, WcWallet } from './TypeUtil.js'

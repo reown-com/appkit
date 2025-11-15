@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
@@ -293,15 +293,14 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
 
 export interface UseAppKitWalletsReturn {
   /**
-   * List of wallets for the initial connect view.
-   * Contains: WalletConnect wallet and injected wallets. If user doesn't have any injected wallets, it'll fill the list with most ranked WalletConnect wallets.
+   * List of wallets for the initial connect view including WalletConnect wallet and injected wallets together. If user doesn't have any injected wallets, it'll fill the list with most ranked WalletConnect wallets.
    */
   wallets: WalletItem[]
 
   /**
    * List of WalletConnect wallets from Wallet Guide API.
    * @see https://walletguide.walletconnect.network/.
-   * Used for the "All Wallets" / search view.
+   * Useful to display all available WalletConnect wallets in a separate Search Wallets view.
    */
   wcWallets: WalletItem[]
 
@@ -316,30 +315,27 @@ export interface UseAppKitWalletsReturn {
   isFetchingWcUri: boolean
 
   /**
-   * Boolean that indicates if the AppKit is initialized.
+   * Boolean that indicates if the AppKit is initialized. It's useful to render a fallback UI when the AppKit initializes and detects all injected wallets.
    */
   isInitialized: boolean
 
   /**
-   * The current WalletConnect URI for QR code display.
-   * This is set when connecting to a WalletConnect wallet.
+   * The current WalletConnect URI for QR code display. This is set when connecting to a WalletConnect wallet. Reset with resetWcUri().
    */
   wcUri?: string
 
   /**
-   * The wallet currently being connected to.
-   * This is set when a connection is initiated and cleared when it completes or fails.
-   * Works for both injected and WalletConnect wallets.
+   * The wallet currently being connected to. This is set when a connection is initiated and cleared when it completes or fails. For WalletConnect wallets, resetWcUri() should be called to clear the state.
    */
   connectingWallet?: WalletItem
 
   /**
-   * The current page number.
+   * The current page number of WalletConnect wallets.
    */
   page: number
 
   /**
-   * The total number of available wallets.
+   * The total number of available WalletConnect wallets based on the AppKit configurations and given parameters.
    */
   count: number
 
@@ -349,9 +345,8 @@ export interface UseAppKitWalletsReturn {
    * @param options - Options for fetching wallets
    * @param options.page - Page number to fetch (default: 1)
    * @param options.query - Search query to filter wallets (default: '')
-   * @param options.entries - Number of entries to fetch (default: 40)
    */
-  fetchWallets: (options?: { page?: number; query?: string; entries?: number }) => Promise<void>
+  fetchWallets: (options?: { page?: number; query?: string }) => Promise<void>
 
   /**
    * Function to connect to a wallet.
@@ -388,7 +383,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
 
-  async function fetchWallets(fetchOptions?: { page?: number; query?: string; entries?: number }) {
+  async function fetchWallets(fetchOptions?: { page?: number; query?: string }) {
     setIsFetchingWallets(true)
     try {
       if (fetchOptions?.query) {
@@ -396,8 +391,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       } else {
         ApiController.state.search = []
         await ApiController.fetchWalletsByPage({
-          page: fetchOptions?.page ?? 1,
-          entries: fetchOptions?.entries
+          page: fetchOptions?.page ?? 1
         })
       }
     } catch (error) {
