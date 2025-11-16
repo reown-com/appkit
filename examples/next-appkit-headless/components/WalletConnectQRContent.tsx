@@ -122,7 +122,7 @@ export function WalletConnectQRContent({ onClose }: { onClose: () => void }) {
       {/* Download Links */}
       {isMobile && installationLinks && (
         <div className="rounded-md p-4 bg-muted/50">
-          <p className="mb-2 text-sm font-medium text-muted-foreground">Don't have the app?</p>
+          <p className="mb-2 text-sm font-medium text-muted-foreground">Don&apos;t have the app?</p>
           <div className="flex gap-2 flex-wrap">
             {installationLinks.appStore && (
               <Button
