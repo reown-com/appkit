@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
@@ -426,14 +426,30 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     ConnectionController.resetUri()
   }
 
+  const lastHandledUriRef = useRef<string | undefined>(undefined)
+
   useEffect(() => {
-    const unsubscribe = ConnectionController.subscribeKey('wcUri', () => {
+    lastHandledUriRef.current = undefined
+  }, [connectingWallet?.id])
+
+  useEffect(() => {
+    const unsubscribe = ConnectionController.subscribeKey('wcUri', wcUri => {
+      if (!wcUri) {
+        lastHandledUriRef.current = undefined
+        return
+      }
+
+      if (wcUri === lastHandledUriRef.current || ConnectionController.state.wcLinking) {
+        return
+      }
+
       const isMobile = CoreHelperUtil.isMobile()
       const wcWallet = ApiController.state.wallets.find(
         w => w.id === PublicStateController.state.connectingWallet?.id
       )
 
       if (isMobile && wcWallet?.mobile_link) {
+        lastHandledUriRef.current = wcUri
         ConnectionControllerUtil.onConnectMobile(wcWallet)
       }
     })
