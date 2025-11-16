@@ -427,6 +427,21 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }
 
   useEffect(() => {
+    const unsubscribe = ConnectionController.subscribeKey('wcUri', () => {
+      const isMobile = CoreHelperUtil.isMobile()
+      const wcWallet = ApiController.state.wallets.find(
+        w => w.id === PublicStateController.state.connectingWallet?.id
+      )
+
+      if (isMobile && wcWallet?.mobile_link) {
+        ConnectionControllerUtil.onConnectMobile(wcWallet)
+      }
+    })
+
+    return () => unsubscribe()
+  }, [])
+
+  useEffect(() => {
     if (
       initialized &&
       remoteFeatures?.headless !== undefined &&

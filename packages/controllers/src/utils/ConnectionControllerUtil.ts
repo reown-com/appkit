@@ -3,7 +3,10 @@ import type { Connection } from '@reown/appkit-common'
 
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
+import { EventsController } from '../controllers/EventsController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
+import { CoreHelperUtil } from './CoreHelperUtil.js'
+import type { WcWallet } from './TypeUtil.js'
 
 // -- Types ------------------------------------------ //
 interface ExcludeConnectorAddressFromConnectionsParamters {
@@ -95,6 +98,46 @@ export const ConnectionControllerUtil = {
     return {
       connections,
       recentConnections: dedupedRecentConnections
+    }
+  },
+  onConnectMobile(wallet: WcWallet | undefined) {
+    const wcUri = ConnectionController.state.wcUri
+
+    if (wallet?.mobile_link && wcUri) {
+      try {
+        ConnectionController.state.wcError = false
+        const { mobile_link, link_mode, name } = wallet
+        const { redirect, redirectUniversalLink, href } = CoreHelperUtil.formatNativeUrl(
+          mobile_link,
+          wcUri,
+          link_mode
+        )
+
+        const deepLink = redirect
+        const universalLink = redirectUniversalLink
+        const target = CoreHelperUtil.isIframe() ? '_top' : '_self'
+
+        ConnectionController.setWcLinking({ name, href })
+        ConnectionController.setRecentWallet(wallet)
+
+        if (OptionsController.state.experimental_preferUniversalLinks && universalLink) {
+          CoreHelperUtil.openHref(universalLink, target)
+        } else {
+          CoreHelperUtil.openHref(deepLink, target)
+        }
+      } catch (e) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_PROXY_ERROR',
+          properties: {
+            message: e instanceof Error ? e.message : 'Error parsing the deep link',
+            uri: wcUri,
+            mobile_link: wallet.mobile_link,
+            name: wallet.name
+          }
+        })
+        ConnectionController.state.wcError = true
+      }
     }
   }
 }
