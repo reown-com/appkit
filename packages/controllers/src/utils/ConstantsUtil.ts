@@ -270,7 +270,8 @@ export const ConstantsUtil = {
     walletFeaturesOrder: ['onramp', 'swaps', 'receive', 'send'],
     connectMethodsOrder: undefined,
     pay: false,
-    reownAuthentication: false
+    reownAuthentication: false,
+    headless: false
   } satisfies Features,
 
   DEFAULT_SOCIALS: [

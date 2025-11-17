@@ -1370,6 +1370,12 @@ export type Features = {
    * @type {boolean}
    */
   reownAuthentication?: boolean
+  /**
+   * @description Enable or disable the AppKit Headless mode to build custom connect user interfaces.
+   * @default false
+   * @type {boolean}
+   */
+  headless?: boolean
 }
 
 export type FeaturesKeys = Exclude<

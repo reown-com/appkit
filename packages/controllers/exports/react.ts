@@ -369,8 +369,8 @@ export interface UseAppKitWalletsReturn {
  * Provides all the data and functions needed to build a custom connect UI.
  */
 export function useAppKitWallets(): UseAppKitWalletsReturn {
-  const { enableHeadless, remoteFeatures } = useSnapshot(OptionsController.state)
-  const isHeadlessEnabled = Boolean(enableHeadless && remoteFeatures?.headless)
+  const { features, remoteFeatures } = useSnapshot(OptionsController.state)
+  const isHeadlessEnabled = Boolean(features?.headless && remoteFeatures?.headless)
 
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
   const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
