@@ -105,7 +105,7 @@ export const ConnectionControllerUtil = {
 
     if (wallet?.mobile_link && wcUri) {
       try {
-        ConnectionController.state.wcError = false
+        ConnectionController.setWcError(false)
         const { mobile_link, link_mode, name } = wallet
         const { redirect, redirectUniversalLink, href } = CoreHelperUtil.formatNativeUrl(
           mobile_link,
@@ -136,7 +136,7 @@ export const ConnectionControllerUtil = {
             name: wallet.name
           }
         })
-        ConnectionController.state.wcError = true
+        ConnectionController.setWcError(true)
       }
     }
   }
