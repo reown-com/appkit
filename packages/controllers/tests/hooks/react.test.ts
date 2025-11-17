@@ -36,7 +36,8 @@ vi.mock('react', () => ({
   useCallback: vi.fn(fn => fn),
   useState: vi.fn(() => [0, vi.fn()]),
   useMemo: vi.fn(fn => fn()),
-  useEffect: vi.fn()
+  useEffect: vi.fn(),
+  useRef: vi.fn(initialValue => ({ current: initialValue }))
 }))
 
 const { useSnapshot } = vi.mocked(await import('valtio'), true)

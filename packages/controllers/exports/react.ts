@@ -436,6 +436,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     const unsubscribe = ConnectionController.subscribeKey('wcUri', wcUri => {
       if (!wcUri) {
         lastHandledUriRef.current = undefined
+
         return
       }
 
