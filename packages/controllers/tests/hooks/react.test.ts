@@ -33,24 +33,27 @@ vi.mock('valtio', () => ({
 }))
 
 // Store refs to persist across renders and mock resets
-// Track call count separately to ensure same ref is returned for same hook call
 let useRefCallCount = 0
 const refStore: Array<{ current: any }> = []
 
-vi.mock('react', () => ({
-  useCallback: vi.fn(fn => fn),
-  useState: vi.fn(() => [0, vi.fn()]),
-  useMemo: vi.fn(fn => fn()),
-  useEffect: vi.fn(),
-  useRef: vi.fn((initialValue: any) => {
-    // Track call order to return the same ref for the same hook call
+// Factory function that creates a useRef mock implementation
+function createUseRefMock() {
+  return (initialValue: any) => {
     // This simulates React's behavior where useRef returns the same ref across renders
     const callIndex = useRefCallCount++
     if (!refStore[callIndex]) {
       refStore[callIndex] = { current: initialValue }
     }
     return refStore[callIndex]
-  })
+  }
+}
+
+vi.mock('react', () => ({
+  useCallback: vi.fn(fn => fn),
+  useState: vi.fn(() => [0, vi.fn()]),
+  useMemo: vi.fn(fn => fn()),
+  useEffect: vi.fn(),
+  useRef: vi.fn(createUseRefMock())
 }))
 
 const { useSnapshot } = vi.mocked(await import('valtio'), true)
@@ -747,10 +750,22 @@ describe('useAppKitWallets', () => {
   }
 
   beforeEach(() => {
-    vi.resetAllMocks()
     // Reset ref tracking to start fresh for each test
     useRefCallCount = 0
     refStore.length = 0
+
+    vi.resetAllMocks()
+
+    // Re-implement useRef mock after reset to ensure it always returns valid refs
+    // This must be done after resetAllMocks because reset clears the mock implementation
+    mockedReact.useRef.mockImplementation((initialValue: any) => {
+      const callIndex = useRefCallCount++
+      if (!refStore[callIndex]) {
+        refStore[callIndex] = { current: initialValue }
+      }
+      return refStore[callIndex]
+    })
+
     mockedReact.useState.mockReturnValue([false, vi.fn()])
     mockedReact.useMemo.mockImplementation(fn => fn())
     mockedReact.useEffect.mockImplementation(fn => fn())
