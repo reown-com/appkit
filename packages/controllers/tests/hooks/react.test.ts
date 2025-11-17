@@ -32,11 +32,28 @@ vi.mock('valtio', () => ({
   useSnapshot: vi.fn()
 }))
 
+// Store refs to persist across renders and mock resets
+let useRefCallCount = 0
+const refStore: Array<{ current: any }> = []
+
+// Factory function that creates a useRef mock implementation
+function createUseRefMock() {
+  return (initialValue: any) => {
+    // This simulates React's behavior where useRef returns the same ref across renders
+    const callIndex = useRefCallCount++
+    if (!refStore[callIndex]) {
+      refStore[callIndex] = { current: initialValue }
+    }
+    return refStore[callIndex]
+  }
+}
+
 vi.mock('react', () => ({
   useCallback: vi.fn(fn => fn),
   useState: vi.fn(() => [0, vi.fn()]),
   useMemo: vi.fn(fn => fn()),
-  useEffect: vi.fn()
+  useEffect: vi.fn(),
+  useRef: vi.fn(createUseRefMock())
 }))
 
 const { useSnapshot } = vi.mocked(await import('valtio'), true)
@@ -733,7 +750,22 @@ describe('useAppKitWallets', () => {
   }
 
   beforeEach(() => {
+    // Reset ref tracking to start fresh for each test
+    useRefCallCount = 0
+    refStore.length = 0
+
     vi.resetAllMocks()
+
+    // Re-implement useRef mock after reset to ensure it always returns valid refs
+    // This must be done after resetAllMocks because reset clears the mock implementation
+    mockedReact.useRef.mockImplementation((initialValue: any) => {
+      const callIndex = useRefCallCount++
+      if (!refStore[callIndex]) {
+        refStore[callIndex] = { current: initialValue }
+      }
+      return refStore[callIndex]
+    })
+
     mockedReact.useState.mockReturnValue([false, vi.fn()])
     mockedReact.useMemo.mockImplementation(fn => fn())
     mockedReact.useEffect.mockImplementation(fn => fn())
@@ -741,7 +773,7 @@ describe('useAppKitWallets', () => {
 
   it('should return empty state when headless is not enabled', () => {
     useSnapshot.mockReturnValue({
-      enableHeadless: false,
+      features: { headless: false },
       remoteFeatures: { headless: false }
     })
 
@@ -773,7 +805,7 @@ describe('useAppKitWallets', () => {
 
   it('should return empty state when remoteFeatures.headless is false', () => {
     useSnapshot.mockReturnValue({
-      enableHeadless: true,
+      features: { headless: true },
       remoteFeatures: { headless: false }
     })
 
@@ -798,7 +830,7 @@ describe('useAppKitWallets', () => {
 
     useSnapshot
       .mockReturnValueOnce({
-        enableHeadless: true,
+        features: { headless: true },
         remoteFeatures: { headless: true }
       })
       .mockReturnValueOnce({
@@ -835,7 +867,7 @@ describe('useAppKitWallets', () => {
 
     useSnapshot
       .mockReturnValueOnce({
-        enableHeadless: true,
+        features: { headless: true },
         remoteFeatures: { headless: true }
       })
       .mockReturnValueOnce({
@@ -872,7 +904,7 @@ describe('useAppKitWallets', () => {
 
     useSnapshot
       .mockReturnValueOnce({
-        enableHeadless: true,
+        features: { headless: true },
         remoteFeatures: { headless: true }
       })
       .mockReturnValueOnce({
@@ -912,7 +944,7 @@ describe('useAppKitWallets', () => {
 
     useSnapshot
       .mockReturnValueOnce({
-        enableHeadless: true,
+        features: { headless: true },
         remoteFeatures: { headless: true }
       })
       .mockReturnValueOnce({
@@ -949,7 +981,7 @@ describe('useAppKitWallets', () => {
 
     useSnapshot
       .mockReturnValueOnce({
-        enableHeadless: true,
+        features: { headless: true },
         remoteFeatures: { headless: true }
       })
       .mockReturnValueOnce({
@@ -987,7 +1019,7 @@ describe('useAppKitWallets', () => {
 
     useSnapshot
       .mockReturnValueOnce({
-        enableHeadless: true,
+        features: { headless: true },
         remoteFeatures: { headless: true }
       })
       .mockReturnValueOnce({
@@ -1031,7 +1063,7 @@ describe('useAppKitWallets', () => {
 
     useSnapshot
       .mockReturnValueOnce({
-        enableHeadless: true,
+        features: { headless: true },
         remoteFeatures: { headless: true }
       })
       .mockReturnValueOnce({
@@ -1074,7 +1106,7 @@ describe('useAppKitWallets', () => {
   it('should connect to WalletConnect wallet', async () => {
     useSnapshot
       .mockReturnValueOnce({
-        enableHeadless: true,
+        features: { headless: true },
         remoteFeatures: { headless: true }
       })
       .mockReturnValueOnce({
@@ -1110,7 +1142,7 @@ describe('useAppKitWallets', () => {
   it('should connect to WalletConnect wallet when connector is not found', async () => {
     useSnapshot
       .mockReturnValueOnce({
-        enableHeadless: true,
+        features: { headless: true },
         remoteFeatures: { headless: true }
       })
       .mockReturnValueOnce({
@@ -1149,7 +1181,7 @@ describe('useAppKitWallets', () => {
 
     useSnapshot
       .mockReturnValueOnce({
-        enableHeadless: true,
+        features: { headless: true },
         remoteFeatures: { headless: true }
       })
       .mockReturnValueOnce({
@@ -1182,7 +1214,7 @@ describe('useAppKitWallets', () => {
   it('should show alert when headless is not enabled after initialization', () => {
     useSnapshot
       .mockReturnValueOnce({
-        enableHeadless: false,
+        features: { headless: false },
         remoteFeatures: { headless: false }
       })
       .mockReturnValueOnce({
@@ -1217,7 +1249,7 @@ describe('useAppKitWallets', () => {
 
     useSnapshot
       .mockReturnValueOnce({
-        enableHeadless: true,
+        features: { headless: true },
         remoteFeatures: { headless: true }
       })
       .mockReturnValueOnce({

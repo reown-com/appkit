@@ -105,7 +105,7 @@ export const ConstantsUtil = {
       DEFAULT: {
         displayMessage: '',
         debugMessage:
-          'Headless support is not enabled. Please enable it with the enableHeadless option in the AppKit configuration and make sure your current plan supports it.'
+          'Headless support is not enabled. Please enable it with the features.headless option in the AppKit configuration and make sure your current plan supports it.'
       }
     }
   },

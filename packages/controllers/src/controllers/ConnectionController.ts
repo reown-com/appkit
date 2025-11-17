@@ -445,7 +445,6 @@ const controller = {
     state.wcError = wcError
     state.wcFetchingUri = false
     state.buffering = false
-    PublicStateController.set({ connectingWallet: undefined })
   },
 
   setRecentWallet(wallet: ConnectionControllerState['recentWallet']) {

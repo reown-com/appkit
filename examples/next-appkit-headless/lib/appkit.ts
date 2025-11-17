@@ -67,9 +67,9 @@ const initializeAppKit = async () => {
     projectId,
     themeMode: 'light',
     features: {
-      analytics: true
-    },
-    enableHeadless: true
+      analytics: true,
+      headless: true
+    }
   })
 }
 

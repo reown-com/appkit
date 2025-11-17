@@ -1,7 +1,12 @@
 import { fixture, html } from '@open-wc/testing'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConnectionController, CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
+import {
+  ConnectionController,
+  CoreHelperUtil,
+  OptionsController,
+  RouterController
+} from '@reown/appkit-controllers'
 
 import { W3mConnectingWcMobile } from '../../src/partials/w3m-connecting-wc-mobile'
 
@@ -93,12 +98,15 @@ describe('W3mConnectingWcMobile', () => {
       }
     })
 
+    // Mock enableUniversalLinks to true
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      experimental_preferUniversalLinks: true
+    })
+
     const el: W3mConnectingWcMobile = await fixture(
       html`<w3m-connecting-wc-mobile></w3m-connecting-wc-mobile>`
     )
-
-    // Mock enableUniversalLinks to true
-    el['preferUniversalLinks'] = true
 
     const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
     el['onConnect']()
@@ -121,12 +129,15 @@ describe('W3mConnectingWcMobile', () => {
       }
     })
 
+    // Mock enableUniversalLinks to true
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      experimental_preferUniversalLinks: true
+    })
+
     const el: W3mConnectingWcMobile = await fixture(
       html`<w3m-connecting-wc-mobile></w3m-connecting-wc-mobile>`
     )
-
-    // Mock enableUniversalLinks to true
-    el['preferUniversalLinks'] = true
 
     const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
     el['onConnect']()

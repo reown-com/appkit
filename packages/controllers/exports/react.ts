@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
@@ -13,6 +13,7 @@ import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { OptionsController } from '../src/controllers/OptionsController.js'
 import { ProviderController } from '../src/controllers/ProviderController.js'
 import { PublicStateController } from '../src/controllers/PublicStateController.js'
+import { ApiControllerUtil } from '../src/utils/ApiControllerUtil.js'
 import { ConnectUtil, type WalletItem } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
@@ -368,8 +369,8 @@ export interface UseAppKitWalletsReturn {
  * Provides all the data and functions needed to build a custom connect UI.
  */
 export function useAppKitWallets(): UseAppKitWalletsReturn {
-  const { enableHeadless, remoteFeatures } = useSnapshot(OptionsController.state)
-  const isHeadlessEnabled = Boolean(enableHeadless && remoteFeatures?.headless)
+  const { features, remoteFeatures } = useSnapshot(OptionsController.state)
+  const isHeadlessEnabled = Boolean(features?.headless && remoteFeatures?.headless)
 
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
   const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
@@ -425,6 +426,38 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   function resetWcUri() {
     ConnectionController.resetUri()
   }
+
+  const lastHandledUriRef = useRef<string | undefined>(undefined)
+
+  useEffect(() => {
+    lastHandledUriRef.current = undefined
+  }, [connectingWallet?.id])
+
+  useEffect(() => {
+    const unsubscribe = ConnectionController.subscribeKey('wcUri', wcUri => {
+      if (!wcUri) {
+        lastHandledUriRef.current = undefined
+
+        return
+      }
+
+      if (wcUri === lastHandledUriRef.current || ConnectionController.state.wcLinking) {
+        return
+      }
+
+      const isMobile = CoreHelperUtil.isMobile()
+      const wcWallet = ApiControllerUtil.getWalletById(
+        PublicStateController.state.connectingWallet?.id
+      )
+
+      if (isMobile && wcWallet?.mobile_link) {
+        lastHandledUriRef.current = wcUri
+        ConnectionControllerUtil.onConnectMobile(wcWallet)
+      }
+    })
+
+    return () => unsubscribe()
+  }, [])
 
   useEffect(() => {
     if (

@@ -2,11 +2,11 @@
 
 import QRCode from 'react-qr-code'
 
-import { CopyIcon, Loader2Icon, X } from 'lucide-react'
+import { CopyIcon, ExternalLinkIcon, Loader2Icon, X } from 'lucide-react'
 import Image from 'next/image'
 import { toast } from 'sonner'
 
-import { useAppKitWallets } from '@reown/appkit/react'
+import { CoreHelperUtil, useAppKitWallets } from '@reown/appkit/react'
 
 import { Button } from '@/components/ui/button'
 import { CardTitle } from '@/components/ui/card'
@@ -23,6 +23,33 @@ export function WalletConnectQRContent({ onClose }: { onClose: () => void }) {
 
   if (!connectingWallet) {
     return null
+  }
+
+  const isMobile = CoreHelperUtil.isMobile()
+  const installationLinks = connectingWallet.walletInfo?.installationLinks
+
+  function handleAppStoreClick() {
+    if (installationLinks?.appStore) {
+      window.open(installationLinks.appStore, '_blank', 'noopener,noreferrer')
+    }
+  }
+
+  function handlePlayStoreClick() {
+    if (installationLinks?.playStore) {
+      window.open(installationLinks.playStore, '_blank', 'noopener,noreferrer')
+    }
+  }
+
+  function handleChromeStoreClick() {
+    if (installationLinks?.chromeStore) {
+      window.open(installationLinks.chromeStore, '_blank', 'noopener,noreferrer')
+    }
+  }
+
+  function handleDesktopLinkClick() {
+    if (installationLinks?.desktopLink) {
+      window.open(installationLinks.desktopLink, '_blank', 'noopener,noreferrer')
+    }
   }
 
   return (
@@ -91,6 +118,59 @@ export function WalletConnectQRContent({ onClose }: { onClose: () => void }) {
           3. Approve the connection request
         </p>
       </div>
+
+      {/* Download Links */}
+      {isMobile && installationLinks && (
+        <div className="rounded-md p-4 bg-muted/50">
+          <p className="mb-2 text-sm font-medium text-muted-foreground">Don&apos;t have the app?</p>
+          <div className="flex gap-2 flex-wrap">
+            {installationLinks.appStore && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleAppStoreClick}
+                className="flex-1 min-w-[120px]"
+              >
+                <ExternalLinkIcon className="size-4" />
+                App Store
+              </Button>
+            )}
+            {installationLinks.playStore && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePlayStoreClick}
+                className="flex-1 min-w-[120px]"
+              >
+                <ExternalLinkIcon className="size-4" />
+                Play Store
+              </Button>
+            )}
+            {installationLinks.chromeStore && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleChromeStoreClick}
+                className="flex-1 min-w-[120px]"
+              >
+                <ExternalLinkIcon className="size-4" />
+                Chrome Store
+              </Button>
+            )}
+            {installationLinks.desktopLink && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDesktopLinkClick}
+                className="flex-1 min-w-[120px]"
+              >
+                <ExternalLinkIcon className="size-4" />
+                Desktop
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
