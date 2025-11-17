@@ -101,7 +101,7 @@ function headings() {
     SmartSessionCreated: undefined,
     SmartSessionList: 'Smart Sessions',
     SIWXSignMessage: 'Sign In',
-    PayLoading: 'Payment in Progress',
+    PayLoading: 'Processing payment...',
     PayQuote: 'Payment Quote',
     DataCapture: 'Profile',
     DataCaptureOtpConfirm: 'Confirm Email',

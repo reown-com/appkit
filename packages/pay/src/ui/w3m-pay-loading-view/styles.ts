@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host {
@@ -7,11 +7,68 @@ export default css`
     width: 100%;
   }
 
-  wui-flex:first-child:not(:only-child) {
+  wui-image {
+    border-radius: ${({ borderRadius }) => borderRadius.round};
+  }
+
+  .token-badge-container {
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    border: 3px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    z-index: 3;
+    min-width: 105px;
+  }
+
+  .token-image-container {
     position: relative;
   }
 
-  wui-loading-thumbnail {
+  .token-image {
+    width: 64px;
+    height: 64px;
+  }
+
+  .token-badge {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border: 1px solid ${({ tokens }) => tokens.theme.foregroundSecondary};
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+  }
+
+  .payment-lifecycle-container {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-top-right-radius: ${({ borderRadius }) => borderRadius[6]};
+    border-top-left-radius: ${({ borderRadius }) => borderRadius[6]};
+  }
+
+  .payment-step-badge {
+    padding: ${({ spacing }) => spacing[1]} ${({ spacing }) => spacing[2]};
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    border-radius: ${({ borderRadius }) => borderRadius[1]};
+  }
+
+  .step-icon-container {
+    position: relative;
+    height: 40px;
+    width: 40px;
+    border-radius: ${({ borderRadius }) => borderRadius.round};
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+  }
+
+  .step-icon-box {
     position: absolute;
+    right: -4px;
+    bottom: -1px;
+    padding: 2px;
+    border-radius: ${({ borderRadius }) => borderRadius.round};
+    border: 2px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
+  .step-icon-box.success {
+    background-color: ${({ tokens }) => tokens.core.backgroundSuccess};
   }
 `

@@ -38,7 +38,8 @@ const PADDING_OVERRIDES: Record<string, string> = {
   PayWithExchange: '0',
   PayWithExchangeSelectAsset: '0',
   Pay: '0',
-  PayQuote: '0'
+  PayQuote: '0',
+  PayLoading: '0'
 }
 
 export class W3mModalBase extends LitElement {

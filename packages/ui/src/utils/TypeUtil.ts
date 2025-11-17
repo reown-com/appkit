@@ -420,3 +420,5 @@ export type MaskInputOptions = {
   decimals?: number
   integers?: number
 }
+
+export type PulseVariant = 'accent-primary'

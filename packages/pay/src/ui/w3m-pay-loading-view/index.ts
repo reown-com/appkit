@@ -1,225 +1,176 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
+import { classMap } from 'lit/directives/class-map.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
-import {
-  AssetUtil,
-  ChainController,
-  ConnectionController,
-  ConnectorController,
-  ModalController,
-  ThemeController
-} from '@reown/appkit-controllers'
+import { AssetUtil, ChainController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-icon'
-import '@reown/appkit-ui/wui-loading-thumbnail'
+import '@reown/appkit-ui/wui-image'
+import '@reown/appkit-ui/wui-loading-spinner'
+import '@reown/appkit-ui/wui-pulse'
+import '@reown/appkit-ui/wui-separator'
 import '@reown/appkit-ui/wui-text'
-import '@reown/appkit-ui/wui-wallet-image'
 
 import { PayController } from '../../controllers/PayController.js'
+import { STEPS, type Step } from './mocks.js'
 import styles from './styles.js'
 
-// Define payment states
-type PaymentState = 'in-progress' | 'completed' | 'error'
-
-const EXCHANGE_STATUS_CHECK_INTERVAL = 4000
+interface StepV2 extends Step {
+  status: 'completed' | 'pending' | 'unknown'
+}
 
 @customElement('w3m-pay-loading-view')
 export class W3mPayLoadingView extends LitElement {
   public static override styles = styles
+  // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private loadingMessage = ''
-  @state() private subMessage = ''
-  @state() private paymentState: PaymentState = 'in-progress'
-  private exchangeSubscription?: ReturnType<typeof setInterval>
+  @state() private paymentAsset = PayController.state.paymentAsset
 
   constructor() {
     super()
-    this.paymentState = PayController.state.isPaymentInProgress ? 'in-progress' : 'completed'
-    this.updateMessages()
-    this.setupSubscription()
-    this.setupExchangeSubscription()
+    this.unsubscribe.push(() => null)
   }
 
   public override disconnectedCallback() {
-    clearInterval(this.exchangeSubscription)
+    super.disconnectedCallback()
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex
-        flexDirection="column"
-        alignItems="center"
-        .padding=${['7', '5', '5', '5'] as const}
-        gap="9"
-      >
-        <wui-flex justifyContent="center" alignItems="center"> ${this.getStateIcon()} </wui-flex>
-        <wui-flex flexDirection="column" alignItems="center" gap="2">
-          <wui-text align="center" variant="lg-medium" color="primary">
-            ${this.loadingMessage}
-          </wui-text>
-          <wui-text align="center" variant="lg-regular" color="secondary">
-            ${this.subMessage}
-          </wui-text>
-        </wui-flex>
+      <wui-flex flexDirection="column" .padding=${['2', '0', '0', '0'] as const} gap="2">
+        ${this.tokenTemplate()} ${this.paymentTemplate()} ${this.paymentLifecycleTemplate()}
       </wui-flex>
     `
   }
 
   // -- Private Methods ----------------------------------- //
-  private updateMessages() {
-    switch (this.paymentState) {
-      case 'completed':
-        this.loadingMessage = 'Payment completed'
-        this.subMessage = 'Your transaction has been successfully processed'
-        break
-      case 'error':
-        this.loadingMessage = 'Payment failed'
-        this.subMessage = 'There was an error processing your transaction'
-        break
-      case 'in-progress':
-      default:
-        if (PayController.state.currentPayment?.type === 'exchange') {
-          this.loadingMessage = 'Payment initiated'
-          this.subMessage = `Please complete the payment on the exchange`
-        } else {
-          this.loadingMessage = 'Awaiting payment confirmation'
-          this.subMessage = 'Please confirm the payment transaction in your wallet'
-        }
-        break
-    }
-  }
-
-  private getStateIcon() {
-    switch (this.paymentState) {
-      case 'completed':
-        return this.successTemplate()
-      case 'error':
-        return this.errorTemplate()
-      case 'in-progress':
-      default:
-        return this.loaderTemplate()
-    }
-  }
-
-  private setupExchangeSubscription() {
-    if (PayController.state.currentPayment?.type !== 'exchange') {
-      return
-    }
-
-    this.exchangeSubscription = setInterval(async () => {
-      const exchangeId = PayController.state.currentPayment?.exchangeId
-      const sessionId = PayController.state.currentPayment?.sessionId
-      if (exchangeId && sessionId) {
-        await PayController.updateBuyStatus(exchangeId, sessionId)
-        if (PayController.state.currentPayment?.status === 'SUCCESS') {
-          clearInterval(this.exchangeSubscription)
-        }
-      }
-    }, EXCHANGE_STATUS_CHECK_INTERVAL)
-  }
-
-  private setupSubscription() {
-    PayController.subscribeKey('isPaymentInProgress', (inProgress: boolean) => {
-      if (!inProgress && this.paymentState === 'in-progress') {
-        // Check for error state
-        if (PayController.state.error || !PayController.state.currentPayment?.result) {
-          this.paymentState = 'error'
-        } else {
-          this.paymentState = 'completed'
-        }
-
-        this.updateMessages()
-
-        // Close the modal after 3 seconds for both completed and error states
-        setTimeout(() => {
-          if (ConnectionController.state.status === 'disconnected') {
-            return
-          }
-          ModalController.close()
-        }, 3000)
-      }
-    })
-
-    // Subscribe to error state
-    PayController.subscribeKey('error', (error: string | null) => {
-      if (error && this.paymentState === 'in-progress') {
-        this.paymentState = 'error'
-        this.updateMessages()
-      }
-    })
-  }
-
-  private loaderTemplate() {
-    const borderRadiusMaster = ThemeController.state.themeVariables['--w3m-border-radius-master']
-    const radius = borderRadiusMaster ? parseInt(borderRadiusMaster.replace('px', ''), 10) : 4
-
-    const iconSrc = this.getPaymentIcon()
+  private tokenTemplate() {
+    const allNetworks = ChainController.getAllRequestedCaipNetworks()
+    const targetNetwork = allNetworks.find(net => net.caipNetworkId === this.paymentAsset.network)
 
     return html`
-      <wui-flex justifyContent="center" alignItems="center" style="position: relative;">
-        ${iconSrc
-          ? html`<wui-wallet-image size="lg" imageSrc=${iconSrc}></wui-wallet-image>`
-          : null}
-        <wui-loading-thumbnail radius=${radius * 9}></wui-loading-thumbnail>
+      <wui-flex alignItems="center" justifyContent="center">
+        <wui-flex class="token-image-container">
+          <wui-pulse size="100px" rings="3" duration="4" opacity="0.5" variant="accent-primary">
+            <wui-image
+              src=${ifDefined(this.paymentAsset.metadata.logoURI)}
+              class="token-image"
+            ></wui-image>
+          </wui-pulse>
+
+          <wui-flex justifyContent="center" alignItems="center" class="token-badge-container">
+            <wui-flex
+              alignItems="center"
+              justifyContent="center"
+              gap="01"
+              padding="1"
+              class="token-badge"
+            >
+              <wui-image
+                src=${ifDefined(AssetUtil.getNetworkImage(targetNetwork))}
+                class="chain-image"
+                size="mdl"
+              ></wui-image>
+
+              <wui-text variant="lg-regular" color="primary">20 USDC</wui-text>
+            </wui-flex>
+          </wui-flex>
+        </wui-flex>
       </wui-flex>
     `
   }
 
-  private getPaymentIcon(): string | undefined {
-    const currentPayment = PayController.state.currentPayment
+  private paymentTemplate() {
+    return html`
+      <wui-flex flexDirection="column" gap="2" .padding=${['0', '6', '0', '6'] as const}>
+        ${this.renderPayment()}
 
-    if (!currentPayment) {
-      return undefined
-    }
+        <wui-separator></wui-separator>
 
-    if (currentPayment.type === 'exchange') {
-      const exchangeId = currentPayment.exchangeId
-      if (exchangeId) {
-        const exchange = PayController.getExchangeById(exchangeId)
-
-        return exchange?.imageUrl
-      }
-    }
-
-    if (currentPayment.type === 'wallet') {
-      const walletIcon = ChainController.getAccountData()?.connectedWalletInfo?.icon
-      if (walletIcon) {
-        return walletIcon
-      }
-
-      // Fallback
-      const chainNamespace = ChainController.state.activeChain
-      if (!chainNamespace) {
-        return undefined
-      }
-
-      const connectorId = ConnectorController.getConnectorId(chainNamespace)
-      if (!connectorId) {
-        return undefined
-      }
-
-      const connector = ConnectorController.getConnectorById(connectorId)
-      if (!connector) {
-        return undefined
-      }
-
-      return AssetUtil.getConnectorImage(connector)
-    }
-
-    return undefined
+        ${this.renderPayment()}
+      </wui-flex>
+    `
   }
 
-  private successTemplate() {
-    return html`<wui-icon size="xl" color="success" name="checkmark"></wui-icon>`
+  private paymentLifecycleTemplate() {
+    return html`
+      <wui-flex flexDirection="column" padding="4" gap="2" class="payment-lifecycle-container">
+        <wui-flex alignItems="center" justifyContent="space-between">
+          <wui-text variant="md-regular" color="secondary">PAYMENT CYCLE</wui-text>
+
+          <wui-flex justifyContent="center" alignItems="center" class="payment-step-badge">
+            <wui-text variant="sm-regular" color="primary">1/3</wui-text>
+          </wui-flex>
+        </wui-flex>
+
+        <wui-flex flexDirection="column" gap="5" .padding=${['2', '0', '2', '0'] as const}>
+          ${STEPS.map(step => this.renderStep({ ...step, status: 'pending' }))}
+        </wui-flex>
+
+        <wui-button size="lg" variant="neutral-secondary" fullWidth>Close</wui-button>
+      </wui-flex>
+    `
   }
 
-  private errorTemplate() {
-    return html`<wui-icon size="xl" color="error" name="close"></wui-icon>`
+  private renderPayment() {
+    const allNetworks = ChainController.getAllRequestedCaipNetworks()
+    const targetNetwork = allNetworks.find(net => net.caipNetworkId === this.paymentAsset.network)
+
+    return html`
+      <wui-flex
+        alignItems="flex-start"
+        justifyContent="space-between"
+        .padding=${['3', '0', '3', '0'] as const}
+      >
+        <wui-text variant="lg-regular" color="secondary">Paying</wui-text>
+
+        <wui-flex flexDirection="column" alignItems="flex-end" gap="1">
+          <wui-flex alignItems="center" gap="01">
+            <wui-text variant="lg-regular" color="primary">20</wui-text>
+            <wui-text variant="lg-regular" color="secondary">USDC</wui-text>
+          </wui-flex>
+
+          <wui-flex alignItems="center" gap="1">
+            <wui-text variant="md-regular" color="secondary">on</wui-text>
+            <wui-image
+              src=${ifDefined(AssetUtil.getNetworkImage(targetNetwork))}
+              size="xs"
+            ></wui-image>
+            <wui-text variant="md-regular" color="secondary">${targetNetwork?.name}</wui-text>
+          </wui-flex>
+        </wui-flex>
+      </wui-flex>
+    `
+  }
+
+  private renderStep({ title, icon, status }: StepV2) {
+    const classes = {
+      'step-icon-box': true,
+      success: status === 'completed'
+    }
+
+    return html`
+      <wui-flex alignItems="center" gap="3">
+        <wui-flex justifyContent="center" alignItems="center" class="step-icon-container">
+          <wui-icon name=${icon} color="default" size="mdl"></wui-icon>
+
+          <wui-flex alignItems="center" justifyContent="center" class=${classMap(classes)}>
+            <wui-loading-spinner color="accent-primary" size="sm"></wui-loading-spinner>
+          </wui-flex>
+        </wui-flex>
+
+        <wui-text variant="md-regular" color="primary">${title}</wui-text>
+      </wui-flex>
+    `
   }
 }
+
+//  <wui-icon size="xs" color="success" name=${icon}></wui-icon>
 
 declare global {
   interface HTMLElementTagNameMap {
