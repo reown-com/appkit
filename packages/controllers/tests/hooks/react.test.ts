@@ -32,12 +32,25 @@ vi.mock('valtio', () => ({
   useSnapshot: vi.fn()
 }))
 
+// Store refs to persist across renders and mock resets
+// Track call count separately to ensure same ref is returned for same hook call
+let useRefCallCount = 0
+const refStore: Array<{ current: any }> = []
+
 vi.mock('react', () => ({
   useCallback: vi.fn(fn => fn),
   useState: vi.fn(() => [0, vi.fn()]),
   useMemo: vi.fn(fn => fn()),
   useEffect: vi.fn(),
-  useRef: vi.fn(initialValue => ({ current: initialValue }))
+  useRef: vi.fn((initialValue: any) => {
+    // Track call order to return the same ref for the same hook call
+    // This simulates React's behavior where useRef returns the same ref across renders
+    const callIndex = useRefCallCount++
+    if (!refStore[callIndex]) {
+      refStore[callIndex] = { current: initialValue }
+    }
+    return refStore[callIndex]
+  })
 }))
 
 const { useSnapshot } = vi.mocked(await import('valtio'), true)
@@ -735,6 +748,9 @@ describe('useAppKitWallets', () => {
 
   beforeEach(() => {
     vi.resetAllMocks()
+    // Reset ref tracking to start fresh for each test
+    useRefCallCount = 0
+    refStore.length = 0
     mockedReact.useState.mockReturnValue([false, vi.fn()])
     mockedReact.useMemo.mockImplementation(fn => fn())
     mockedReact.useEffect.mockImplementation(fn => fn())

@@ -13,6 +13,7 @@ import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { OptionsController } from '../src/controllers/OptionsController.js'
 import { ProviderController } from '../src/controllers/ProviderController.js'
 import { PublicStateController } from '../src/controllers/PublicStateController.js'
+import { ApiControllerUtil } from '../src/utils/ApiControllerUtil.js'
 import { ConnectUtil, type WalletItem } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
@@ -445,8 +446,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       }
 
       const isMobile = CoreHelperUtil.isMobile()
-      const wcWallet = ApiController.state.wallets.find(
-        w => w.id === PublicStateController.state.connectingWallet?.id
+      const wcWallet = ApiControllerUtil.getWalletById(
+        PublicStateController.state.connectingWallet?.id
       )
 
       if (isMobile && wcWallet?.mobile_link) {
