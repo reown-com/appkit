@@ -47,7 +47,7 @@ export class W3mPayLoadingView extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private paymentAsset = PayController.state.paymentAsset
-  @state() private paymentStatus: PaymentStatus = 'success'
+  @state() private paymentStatus: PaymentStatus = 'failure'
 
   constructor() {
     super()
@@ -62,7 +62,7 @@ export class W3mPayLoadingView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['2', '0', '0', '0'] as const} gap="2">
+      <wui-flex flexDirection="column" .padding=${['3', '0', '0', '0'] as const} gap="2">
         ${this.tokenTemplate()} ${this.paymentTemplate()} ${this.paymentLifecycleTemplate()}
       </wui-flex>
     `
@@ -137,8 +137,6 @@ export class W3mPayLoadingView extends LitElement {
         <wui-flex flexDirection="column" gap="5" .padding=${['2', '0', '2', '0'] as const}>
           ${stepsWithStatus.map(step => this.renderStep(step))}
         </wui-flex>
-
-        <wui-button size="lg" variant="neutral-secondary" fullWidth>Close</wui-button>
       </wui-flex>
     `
   }
