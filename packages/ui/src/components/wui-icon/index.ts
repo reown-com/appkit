@@ -17,6 +17,7 @@ import { farcasterSvg } from '../../assets/svg/farcaster.js'
 import { githubSvg } from '../../assets/svg/github.js'
 import { googleSvg } from '../../assets/svg/google.js'
 import { infoSealSvg } from '../../assets/svg/info.js'
+import { paperPlaneTitleSvg } from '../../assets/svg/paper-plane-titl.js'
 import { playStoreSvg } from '../../assets/svg/play-store.js'
 import { reownSvg } from '../../assets/svg/reown-logo.js'
 import { solanaSvg } from '../../assets/svg/solana.js'
@@ -118,6 +119,7 @@ const phosphorIconsMap: Record<string, string> = {
   github: '',
   google: '',
   playStore: '',
+  paperPlaneTitle: '',
   reown: '',
   solana: '',
   ton: '',
@@ -205,6 +207,7 @@ const svgOptions: Partial<Record<IconType, TemplateResult<2>>> = {
   github: githubSvg,
   google: googleSvg,
   playStore: playStoreSvg,
+  paperPlaneTitle: paperPlaneTitleSvg,
   reown: reownSvg,
   solana: solanaSvg,
   ton: tonSvg,

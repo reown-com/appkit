@@ -16,8 +16,27 @@ import { PayController } from '../../controllers/PayController.js'
 import { STEPS, type Step } from './mocks.js'
 import styles from './styles.js'
 
+// -- Types ------------------------------------------------- /
+type PaymentStatus =
+  | 'waiting'
+  | 'pending'
+  | 'success'
+  | 'failure'
+  | 'refund'
+  | 'timeout'
+  | 'submitted'
+
+type StepStatus = 'completed' | 'pending' | 'failed'
+
 interface StepV2 extends Step {
-  status: 'completed' | 'pending' | 'unknown'
+  status: StepStatus
+}
+
+// -- Constants --------------------------------------------- //
+const STEP_COMPLETED_STATUSES: Record<string, PaymentStatus[]> = {
+  received: ['pending', 'success', 'submitted'],
+  processing: ['success', 'submitted'],
+  sending: ['success', 'submitted']
 }
 
 @customElement('w3m-pay-loading-view')
@@ -28,6 +47,7 @@ export class W3mPayLoadingView extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private paymentAsset = PayController.state.paymentAsset
+  @state() private paymentStatus: PaymentStatus = 'success'
 
   constructor() {
     super()
@@ -56,11 +76,10 @@ export class W3mPayLoadingView extends LitElement {
     return html`
       <wui-flex alignItems="center" justifyContent="center">
         <wui-flex class="token-image-container">
-          <wui-pulse size="100px" rings="3" duration="4" opacity="0.5" variant="accent-primary">
-            <wui-image
-              src=${ifDefined(this.paymentAsset.metadata.logoURI)}
-              class="token-image"
-            ></wui-image>
+          <wui-pulse size="125px" rings="3" duration="4" opacity="0.5" variant="accent-primary">
+            <wui-flex justifyContent="center" alignItems="center" class="token-image">
+              <wui-icon name="paperPlaneTitle" color="accent-primary" size="inherit"></wui-icon>
+            </wui-flex>
           </wui-pulse>
 
           <wui-flex justifyContent="center" alignItems="center" class="token-badge-container">
@@ -98,18 +117,25 @@ export class W3mPayLoadingView extends LitElement {
   }
 
   private paymentLifecycleTemplate() {
+    const stepsWithStatus = this.getStepsWithStatus()
+    const completedCount = stepsWithStatus.filter(({ status }) => status === 'completed').length
+
+    const totalSteps = STEPS.length
+
     return html`
       <wui-flex flexDirection="column" padding="4" gap="2" class="payment-lifecycle-container">
         <wui-flex alignItems="center" justifyContent="space-between">
           <wui-text variant="md-regular" color="secondary">PAYMENT CYCLE</wui-text>
 
           <wui-flex justifyContent="center" alignItems="center" class="payment-step-badge">
-            <wui-text variant="sm-regular" color="primary">1/3</wui-text>
+            <wui-text variant="sm-regular" color="primary">
+              ${completedCount}/${totalSteps}
+            </wui-text>
           </wui-flex>
         </wui-flex>
 
         <wui-flex flexDirection="column" gap="5" .padding=${['2', '0', '2', '0'] as const}>
-          ${STEPS.map(step => this.renderStep({ ...step, status: 'pending' }))}
+          ${stepsWithStatus.map(step => this.renderStep(step))}
         </wui-flex>
 
         <wui-button size="lg" variant="neutral-secondary" fullWidth>Close</wui-button>
@@ -148,6 +174,24 @@ export class W3mPayLoadingView extends LitElement {
     `
   }
 
+  private getStepsWithStatus(): StepV2[] {
+    const isError =
+      this.paymentStatus === 'failure' ||
+      this.paymentStatus === 'timeout' ||
+      this.paymentStatus === 'refund'
+
+    if (isError) {
+      return STEPS.map(step => ({ ...step, status: 'failed' }))
+    }
+
+    return STEPS.map(step => {
+      const completedStatuses = STEP_COMPLETED_STATUSES[step.id] ?? []
+      const status = completedStatuses.includes(this.paymentStatus) ? 'completed' : 'pending'
+
+      return { ...step, status }
+    })
+  }
+
   private renderStep({ title, icon, status }: StepV2) {
     const classes = {
       'step-icon-box': true,
@@ -160,7 +204,7 @@ export class W3mPayLoadingView extends LitElement {
           <wui-icon name=${icon} color="default" size="mdl"></wui-icon>
 
           <wui-flex alignItems="center" justifyContent="center" class=${classMap(classes)}>
-            <wui-loading-spinner color="accent-primary" size="sm"></wui-loading-spinner>
+            ${this.renderStatusIndicator(status)}
           </wui-flex>
         </wui-flex>
 
@@ -168,9 +212,23 @@ export class W3mPayLoadingView extends LitElement {
       </wui-flex>
     `
   }
-}
 
-//  <wui-icon size="xs" color="success" name=${icon}></wui-icon>
+  private renderStatusIndicator(status: StepStatus) {
+    if (status === 'completed') {
+      return html`<wui-icon size="sm" color="success" name="checkmark"></wui-icon>`
+    }
+
+    if (status === 'failed') {
+      return html`<wui-icon size="sm" color="error" name="close"></wui-icon>`
+    }
+
+    if (status === 'pending') {
+      return html`<wui-loading-spinner color="accent-primary" size="sm"></wui-loading-spinner>`
+    }
+
+    return null
+  }
+}
 
 declare global {
   interface HTMLElementTagNameMap {

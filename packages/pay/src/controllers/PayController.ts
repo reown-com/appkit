@@ -54,6 +54,8 @@ export interface PayControllerState extends PaymentOptions {
   isConfigured: boolean
   error: AppKitPayErrorMessage | null
   isPaymentInProgress: boolean
+  // eslint-disable-next-line no-warning-comments
+  // TODO: remove
   isLoading: boolean
   exchanges: Exchange[]
   currentPayment?: CurrentPayment
@@ -125,7 +127,7 @@ export const PayController = {
       }
     })
     await ModalController.open({
-      view: 'PayQuote'
+      view: 'PayLoading'
     })
   },
 

@@ -203,6 +203,7 @@ export type IconType =
   | 'bitcoin'
   | 'infoSeal'
   | 'coins'
+  | 'paperPlaneTitle'
 
 export type IconWeightType = 'regular' | 'bold' | 'fill'
 

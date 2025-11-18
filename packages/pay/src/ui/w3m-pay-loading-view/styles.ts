@@ -13,7 +13,7 @@ export default css`
 
   .token-badge-container {
     position: absolute;
-    bottom: -2px;
+    bottom: 6px;
     left: 50%;
     transform: translateX(-50%);
     background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
@@ -28,8 +28,15 @@ export default css`
   }
 
   .token-image {
+    border-radius: ${({ borderRadius }) => borderRadius.round};
+    background: ${({ colors }) => colors.accent010};
     width: 64px;
     height: 64px;
+  }
+
+  .token-image wui-icon {
+    width: 32px;
+    height: 32px;
   }
 
   .token-badge {
