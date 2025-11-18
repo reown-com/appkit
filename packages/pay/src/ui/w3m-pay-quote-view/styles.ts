@@ -19,4 +19,8 @@ export default css`
     justify-content: center;
     max-width: fit-content;
   }
+
+  wui-image {
+    border-radius: ${({ borderRadius }) => borderRadius.round};
+  }
 `

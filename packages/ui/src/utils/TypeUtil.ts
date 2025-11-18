@@ -202,6 +202,7 @@ export type IconType =
   | 'solana'
   | 'bitcoin'
   | 'infoSeal'
+  | 'coins'
 
 export type IconWeightType = 'regular' | 'bold' | 'fill'
 

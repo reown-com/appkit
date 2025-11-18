@@ -7,7 +7,7 @@ export default css`
   }
 
   .pay-options-container {
-    max-height: 300px;
+    max-height: 196px;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
@@ -36,14 +36,14 @@ export default css`
 
   .token-image {
     border-radius: ${({ borderRadius }) => borderRadius.round};
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
   }
 
   .chain-image {
     position: absolute;
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     bottom: -3px;
     right: -5px;
     border-radius: ${({ borderRadius }) => borderRadius.round};

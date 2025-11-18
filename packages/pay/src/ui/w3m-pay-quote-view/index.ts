@@ -7,7 +7,8 @@ import {
   AssetUtil,
   ChainController,
   ConnectorController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  ModalController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
@@ -15,7 +16,10 @@ import '@reown/appkit-ui/wui-text'
 import '@reown/appkit-ui/wui-wallet-switch'
 
 import { PayController } from '../../controllers/PayController.js'
+import '../../partials/w3m-pay-fees-skeleton/index.js'
 import '../../partials/w3m-pay-fees/index.js'
+import '../../partials/w3m-pay-options-disabled/index.js'
+import '../../partials/w3m-pay-options-skeleton/index.js'
 import '../../partials/w3m-pay-options/index.js'
 import { PAYMENT_OPTIONS } from './mocks.js'
 import styles from './styles.js'
@@ -48,6 +52,8 @@ export class W3mPayQuoteView extends LitElement {
   @state() private caipAddress: CaipAddress | undefined = undefined
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
   @state() private selectedPaymentAsset?: CaipAddress
+  @state() private isQuoteLoading = false
+  @state() private isTokensLoading = true
 
   public constructor() {
     super()
@@ -119,6 +125,7 @@ export class W3mPayQuoteView extends LitElement {
           address=${ifDefined(address)}
           imageSrc=${ifDefined(image)}
           alt=${ifDefined(name)}
+          @click=${this.onConnectOtherWallet.bind(this)}
           data-testid="wui-wallet-switch"
         ></wui-wallet-switch>
 
@@ -196,11 +203,15 @@ export class W3mPayQuoteView extends LitElement {
         <wui-text variant="sm-regular" color="secondary">CHOOSE PAYMENT OPTION</wui-text>
 
         <wui-flex class="pay-options-container">
-          <w3m-pay-options
-            .options=${PAYMENT_OPTIONS}
-            .selectedPaymentAsset=${ifDefined(this.selectedPaymentAsset)}
-            .onSelect=${this.onSelectPaymentOption.bind(this)}
-          ></w3m-pay-options>
+          ${this.isTokensLoading
+            ? html`<w3m-pay-options-disabled
+                @click=${this.onConnectOtherWallet.bind(this)}
+              ></w3m-pay-options-disabled>`
+            : html`<w3m-pay-options
+                .options=${PAYMENT_OPTIONS.slice(0, 2)}
+                .selectedPaymentAsset=${ifDefined(this.selectedPaymentAsset)}
+                .onSelect=${this.onSelectPaymentOption.bind(this)}
+              ></w3m-pay-options>`}
         </wui-flex>
       </wui-flex>
     `
@@ -208,41 +219,44 @@ export class W3mPayQuoteView extends LitElement {
 
   private amountWithFeeTemplate() {
     return html`
-      <wui-flex flexDirection="column" gap="4">
-        <wui-flex alignItems="center" justifyContent="space-between">
-          <wui-text variant="md-regular" color="secondary">Pay</wui-text>
-          <wui-text variant="md-regular" color="primary">20 USDC</wui-text>
-        </wui-flex>
-
-        <wui-flex alignItems="center" justifyContent="space-between">
-          <wui-text variant="md-regular" color="secondary">Fees</wui-text>
-
-          <wui-flex alignItems="center" gap="2">
-            <wui-text variant="md-regular" color="primary">0.30 USDC</wui-text>
-            <w3m-tooltip-trigger .text=${html`<w3m-pay-fees></w3m-pay-fees>`} variant="fill">
-              <wui-icon name="infoSeal" size="sm" color="default"></wui-icon>
-            </w3m-tooltip-trigger>
-          </wui-flex>
-        </wui-flex>
-      </wui-flex>
+      ${this.isQuoteLoading
+        ? html`<w3m-pay-fees-skeleton></w3m-pay-fees-skeleton>`
+        : html`<w3m-pay-fees></w3m-pay-fees>`}
     `
   }
 
   private paymentActionsTemplate() {
+    const isLoading = this.isQuoteLoading || this.isTokensLoading
+
     return html`
       <wui-flex alignItems="center" justifyContent="space-between">
         <wui-flex flexDirection="column" gap="1">
-          <wui-text variant="md-regular" color="secondary">Total Cost</wui-text>
+          <wui-text variant="md-regular" color="secondary">Order Total</wui-text>
 
-          <wui-flex alignItems="center" gap="01">
-            <wui-text variant="h4-regular" color="primary">20.30</wui-text>
-            <wui-text variant="lg-regular" color="secondary">USDC</wui-text>
-          </wui-flex>
+          ${isLoading
+            ? html`<wui-shimmer width="58px" height="32px" variant="light"></wui-shimmer>`
+            : html`<wui-flex alignItems="center" gap="01">
+                <wui-text variant="h4-regular" color="primary">20.30</wui-text>
+                <wui-text variant="lg-regular" color="secondary">USDC</wui-text>
+              </wui-flex>`}
         </wui-flex>
 
-        <wui-button size="lg" variant="accent-primary">
+        <wui-button
+          size="lg"
+          variant="accent-primary"
+          ?loading=${isLoading}
+          ?disabled=${isLoading}
+          @click=${this.onPay.bind(this)}
+        >
           Pay
-          <wui-icon name="arrowRight" color="inherit" size="sm" slot="iconRight"></wui-icon>
+          ${isLoading
+            ? null
+            : html`<wui-icon
+                name="arrowRight"
+                color="inherit"
+                size="sm"
+                slot="iconRight"
+              ></wui-icon>`}
         </wui-button>
       </wui-flex>
     `
@@ -250,6 +264,15 @@ export class W3mPayQuoteView extends LitElement {
 
   private onSelectPaymentOption(selectedPaymentAsset: CaipAddress) {
     this.selectedPaymentAsset = selectedPaymentAsset
+  }
+
+  private async onConnectOtherWallet() {
+    await ConnectorController.connect({ namespace: this.namespace })
+    await ModalController.open({ view: 'PayQuote' })
+  }
+
+  private onPay() {
+    return null
   }
 }
 

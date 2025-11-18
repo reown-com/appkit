@@ -7,6 +7,7 @@ import { appStoreSvg } from '../../assets/svg/app-store.js'
 import { appleSvg } from '../../assets/svg/apple.js'
 import { bitcoinSvg } from '../../assets/svg/bitcoin.js'
 import { chromeStoreSvg } from '../../assets/svg/chrome-store.js'
+import { coinsSvg } from '../../assets/svg/coins.js'
 import { cursorSvg } from '../../assets/svg/cursor.js'
 import { discordSvg } from '../../assets/svg/discord.js'
 import { ethereumSvg } from '../../assets/svg/ethereum.js'
@@ -106,6 +107,7 @@ const phosphorIconsMap: Record<string, string> = {
   appStore: '',
   apple: '',
   bitcoin: '',
+  coins: '',
   chromeStore: '',
   cursor: '',
   discord: '',
@@ -192,6 +194,7 @@ const svgOptions: Partial<Record<IconType, TemplateResult<2>>> = {
   appStore: appStoreSvg,
   apple: appleSvg,
   bitcoin: bitcoinSvg,
+  coins: coinsSvg,
   chromeStore: chromeStoreSvg,
   cursor: cursorSvg,
   discord: discordSvg,
