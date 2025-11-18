@@ -13,9 +13,9 @@ import {
   type ChainAdapter,
   ChainController,
   type ConnectionControllerClient,
-  EventsController,
   RouterController,
-  SendController
+  SendController,
+  SnackController
 } from '@reown/appkit-controllers'
 import type { WuiButton } from '@reown/appkit-ui/wui-button'
 
@@ -277,12 +277,12 @@ describe('W3mWalletSendPreviewView', () => {
     expect(button?.loading).to.equal(true)
   })
 
-  it('should send SEND_REJECTED event when user rejects request', async () => {
+  it('should show error when user rejects request', async () => {
     const original = new UserRejectedRequestError({})
     const appKitErr = new AppKitError('Rejected', 'INTERNAL_SDK_ERROR', original)
 
     vi.spyOn(SendController, 'sendToken').mockRejectedValueOnce(appKitErr)
-    const eventsSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+    const snackSpy = vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
     const element = await fixture<W3mWalletSendPreviewView>(
       html`<w3m-wallet-send-preview-view></w3m-wallet-send-preview-view>`
@@ -295,17 +295,15 @@ describe('W3mWalletSendPreviewView', () => {
 
     await element.updateComplete
 
-    viExpect(eventsSpy).toHaveBeenCalledWith(
-      viExpect.objectContaining({ type: 'track', event: 'SEND_REJECTED' })
-    )
+    viExpect(snackSpy).toHaveBeenCalledWith('Rejected')
   })
 
-  it('should send SEND_ERROR event when random error is thrown', async () => {
+  it('should show generic error when random error is thrown', async () => {
     const nonUserError = new Error('Some random error')
     const appKitErr = new AppKitError('Failed', 'INTERNAL_SDK_ERROR', nonUserError)
 
     vi.spyOn(SendController, 'sendToken').mockRejectedValueOnce(appKitErr)
-    const eventsSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+    const snackSpy = vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
 
     const element = await fixture<W3mWalletSendPreviewView>(
       html`<w3m-wallet-send-preview-view></w3m-wallet-send-preview-view>`
@@ -318,8 +316,6 @@ describe('W3mWalletSendPreviewView', () => {
 
     await element.updateComplete
 
-    viExpect(eventsSpy).toHaveBeenCalledWith(
-      viExpect.objectContaining({ type: 'track', event: 'SEND_ERROR' })
-    )
+    viExpect(snackSpy).toHaveBeenCalledWith('Failed to send transaction. Please try again.')
   })
 })
