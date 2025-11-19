@@ -1,5 +1,9 @@
-import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
-import { ParseUtil } from '@reown/appkit-common'
+import type { Balance, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
+import { NumberUtil, ParseUtil } from '@reown/appkit-common'
+import { ChainController, CoreHelperUtil } from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
+
+import type { PaymentAssetWithAmount } from '../types/options.js'
 
 const SUPPORT_PAY_WITH_WALLET_CHAIN_NAMESPACES = ['eip155', 'solana']
 
@@ -47,4 +51,40 @@ export function isPayWithWalletSupported(networkId: CaipNetworkId): boolean {
   const { chainNamespace } = ParseUtil.parseCaipNetworkId(networkId)
 
   return SUPPORT_PAY_WITH_WALLET_CHAIN_NAMESPACES.includes(chainNamespace)
+}
+
+export function formatBalanceToPaymentAsset(balance: Balance): PaymentAssetWithAmount {
+  const allNetworks = ChainController.getAllRequestedCaipNetworks()
+  const targetNetwork = allNetworks.find(net => net.caipNetworkId === balance.chainId)
+
+  let asset = balance.address
+
+  if (!targetNetwork) {
+    throw new Error(`Target network not found for balance chainId "${balance.chainId}"`)
+  }
+
+  if (!asset) {
+    if (!HelpersUtil.isLowerCaseMatch(balance.symbol, targetNetwork.nativeCurrency.symbol)) {
+      throw new Error(`Balance address not found for balance symbol "${balance.symbol}"`)
+    }
+
+    asset = 'native'
+  }
+
+  if (CoreHelperUtil.isCaipAddress(asset)) {
+    const { address } = ParseUtil.parseCaipAddress(asset)
+    asset = address
+  }
+
+  return {
+    network: targetNetwork.caipNetworkId,
+    asset,
+    metadata: {
+      name: balance.name,
+      symbol: balance.symbol,
+      decimals: parseInt(balance.quantity.decimals, 10),
+      logoURI: balance.iconUrl
+    },
+    amount: NumberUtil.formatNumberToLocalString(balance.quantity.numeric, 5)
+  }
 }

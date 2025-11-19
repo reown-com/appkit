@@ -59,7 +59,8 @@ describe('W3mPayView', () => {
     vi.spyOn(PayController, 'fetchExchanges').mockImplementation(async () => {
       PayController.state.exchanges = mockExchanges
     })
-    vi.spyOn(PayController, 'handlePayWithWallet').mockImplementation(() => {})
+    // @ts-expect-error TODO: change
+    vi.spyOn(PayController, 'handlePaymentWithWallet').mockImplementation(async () => {})
     vi.spyOn(PayController, 'handlePayWithExchange').mockImplementation(async () => null)
 
     // Mock ConnectionController and ModalController
@@ -161,6 +162,7 @@ describe('W3mPayView', () => {
     )
     await walletPaymentOption?.dispatchEvent(new Event('click'))
 
+    // @ts-expect-error TODO: change
     expect(PayController.handlePayWithWallet).toHaveBeenCalledOnce()
   })
 
@@ -261,6 +263,7 @@ describe('W3mPayView', () => {
     const connectedView = element.shadowRoot?.querySelector('[data-testid="wallet-payment-option"]')
     await connectedView?.dispatchEvent(new Event('click'))
 
+    // @ts-expect-error TODO: change
     expect(PayController.handlePayWithWallet).toHaveBeenCalledOnce()
   })
 

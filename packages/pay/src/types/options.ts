@@ -13,6 +13,10 @@ export type PaymentAsset = {
   metadata: AssetMetadata
 }
 
+export type PaymentAssetWithAmount = PaymentAsset & {
+  amount: string
+}
+
 export type PaymentOptions = {
   paymentAsset: PaymentAsset
   recipient: string

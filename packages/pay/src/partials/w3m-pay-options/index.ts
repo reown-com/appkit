@@ -2,21 +2,16 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { CaipAddress } from '@reown/appkit-common'
 import { AssetUtil, ChainController } from '@reown/appkit-controllers'
 import { MathUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-text'
 
-import type { PaymentAsset } from '../../types/options.js'
+import type { PaymentAssetWithAmount } from '../../types/options.js'
 import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //
 const SCROLL_THRESHOLD = 300
-
-interface PayOptions extends PaymentAsset {
-  amount: number
-}
 
 @customElement('w3m-pay-options')
 export class W3mPayOptions extends LitElement {
@@ -27,9 +22,9 @@ export class W3mPayOptions extends LitElement {
   private resizeObserver?: ResizeObserver
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Array }) public options: PayOptions[] = []
-  @property() public selectedPaymentAsset?: CaipAddress
-  @property() public onSelect?: (selectedPaymentAsset: CaipAddress) => void
+  @property({ type: Array }) public options: PaymentAssetWithAmount[] = []
+  @property() public selectedPaymentAsset: PaymentAssetWithAmount | null = null
+  @property() public onSelect?: (selectedPaymentAsset: PaymentAssetWithAmount) => void
 
   public constructor() {
     super()
@@ -61,17 +56,21 @@ export class W3mPayOptions extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" gap="2" class="pay-options-container">
-        ${this.options.map((option, idx) => this.payOptionTemplate({ ...option, idx }))}
+        ${this.options.map(option => this.payOptionTemplate(option))}
       </wui-flex>
     `
   }
 
-  private payOptionTemplate({ network, metadata, asset, amount }: PayOptions & { idx: number }) {
+  private payOptionTemplate(paymentAsset: PaymentAssetWithAmount) {
+    const { network, metadata, asset, amount = '0.00' } = paymentAsset
+
     const allNetworks = ChainController.getAllRequestedCaipNetworks()
     const targetNetwork = allNetworks.find(net => net.caipNetworkId === network)
 
-    const paymentAsset: CaipAddress = `${network}:${asset}`
-    const isSelected = this.selectedPaymentAsset === paymentAsset
+    const paymentCaipAddress = `${network}:${asset}`
+    const selectedPaymentCaipAddress = `${this.selectedPaymentAsset?.network}:${this.selectedPaymentAsset?.asset}`
+
+    const isSelected = paymentCaipAddress === selectedPaymentCaipAddress
 
     return html`
       <wui-flex

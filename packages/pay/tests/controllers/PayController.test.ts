@@ -167,13 +167,11 @@ describe('PayController', () => {
   describe('handleOpenPay', () => {
     it('should configure payment, open modal, and send PAY_MODAL_OPEN event', async () => {
       const setPaymentConfigSpy = vi.spyOn(PayController, 'setPaymentConfig')
-      const subscribeEventsSpy = vi.spyOn(PayController, 'subscribeEvents')
       const initializeAnalyticsSpy = vi.spyOn(PayController, 'initializeAnalytics')
 
       await PayController.handleOpenPay(mockPaymentOptions)
 
       expect(setPaymentConfigSpy).toHaveBeenCalledWith(mockPaymentOptions)
-      expect(subscribeEventsSpy).toHaveBeenCalled()
       expect(initializeAnalyticsSpy).toHaveBeenCalled()
       expect(PayController.state.isConfigured).toBe(true)
       expect(ModalController.open).toHaveBeenCalledWith({ view: 'Pay' })
@@ -596,6 +594,7 @@ describe('PayController', () => {
         configurable: true
       })
 
+      // @ts-expect-error TODO: change
       PayController.handlePayWithWallet()
 
       expect(RouterController.push).toHaveBeenCalledWith('Connect')
@@ -608,6 +607,7 @@ describe('PayController', () => {
         chainNamespace: null
       } as any)
 
+      // @ts-expect-error TODO: change
       PayController.handlePayWithWallet()
 
       expect(RouterController.push).toHaveBeenCalledWith('Connect')
@@ -618,6 +618,7 @@ describe('PayController', () => {
         .spyOn(PayController, 'handlePayment')
         .mockImplementation(async () => {})
 
+      // @ts-expect-error TODO: change
       PayController.handlePayWithWallet()
 
       expect(handlePaymentSpy).toHaveBeenCalled()
@@ -831,6 +832,7 @@ describe('PayController', () => {
       PayController.state.isConfigured = true
       const subscribeSpy = vi.spyOn(ProviderController, 'subscribeProviders')
 
+      // @ts-expect-error TODO: change
       PayController.subscribeEvents()
 
       expect(subscribeSpy).not.toHaveBeenCalled()

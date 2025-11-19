@@ -1,17 +1,24 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type Address, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
+import {
+  type Address,
+  type Balance,
+  type CaipAddress,
+  type CaipNetwork,
+  type ChainNamespace,
+  ConstantsUtil,
+  ParseUtil
+} from '@reown/appkit-common'
 import {
   ChainController,
-  ConnectionController,
   CoreHelperUtil,
   EventsController,
   ModalController,
   ProviderController,
-  RouterController,
   SnackController
 } from '@reown/appkit-controllers'
+import { BalanceUtil } from '@reown/appkit-controllers/utils'
 
 import {
   AppKitPayErrorCodes,
@@ -20,7 +27,12 @@ import {
 } from '../types/errors.js'
 import { AppKitPayError } from '../types/errors.js'
 import type { Exchange } from '../types/exchange.js'
-import type { GetExchangesParams, PayUrlParams, PaymentOptions } from '../types/options.js'
+import type {
+  GetExchangesParams,
+  PayUrlParams,
+  PaymentAsset,
+  PaymentOptions
+} from '../types/options.js'
 import { getBuyStatus, getExchanges, getPayUrl } from '../utils/ApiUtil.js'
 import { formatCaip19Asset } from '../utils/AssetUtil.js'
 import {
@@ -61,6 +73,17 @@ export interface PayControllerState extends PaymentOptions {
   currentPayment?: CurrentPayment
   analyticsSet: boolean
   paymentId?: string
+
+  // NEW ONES
+  tokenBalances: Partial<Record<ChainNamespace, Balance[]>>
+  isLoadingTokenBalances: boolean
+  selectedPaymentAsset: PaymentAsset | null
+}
+
+interface FetchTokensParams {
+  caipAddress: CaipAddress
+  caipNetwork?: CaipNetwork
+  namespace: ChainNamespace
 }
 
 // Define a type for the parameters passed to getPayUrl
@@ -91,7 +114,15 @@ const state = proxy<PayControllerState>({
   payWithExchange: undefined,
   currentPayment: undefined,
   analyticsSet: false,
-  paymentId: undefined
+  paymentId: undefined,
+
+  // NEW ONES
+  tokenBalances: {
+    [ConstantsUtil.CHAIN.EVM]: [],
+    [ConstantsUtil.CHAIN.SOLANA]: []
+  },
+  isLoadingTokenBalances: false,
+  selectedPaymentAsset: null
 })
 
 // -- Controller ---------------------------------------- //
@@ -110,7 +141,6 @@ export const PayController = {
   async handleOpenPay(options: PaymentOptions) {
     this.resetState()
     this.setPaymentConfig(options)
-    this.subscribeEvents()
     this.initializeAnalytics()
     state.isConfigured = true
     EventsController.sendEvent({
@@ -127,7 +157,7 @@ export const PayController = {
       }
     })
     await ModalController.open({
-      view: 'PayLoading'
+      view: 'PayQuote'
     })
   },
 
@@ -163,6 +193,10 @@ export const PayController = {
     } catch (error) {
       throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG, (error as Error).message)
     }
+  },
+
+  setSelectedPaymentAsset(paymentAsset: PaymentAsset | null) {
+    state.selectedPaymentAsset = paymentAsset
   },
 
   // -- Getters ----------------------------------------- //
@@ -296,33 +330,8 @@ export const PayController = {
     }
   },
 
-  subscribeEvents() {
-    if (state.isConfigured) {
-      return
-    }
-
-    ConnectionController.subscribeKey('connections', connections => {
-      if (connections.size > 0) {
-        this.handlePayment()
-      }
-    })
-
-    ChainController.subscribeChainProp('accountState', accountState => {
-      const hasWcConnection = ConnectionController.hasAnyConnection(
-        ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
-      )
-      if (accountState?.caipAddress) {
-        // WalletConnect connections sometimes fail down the line due to state not being updated atomically
-        if (hasWcConnection) {
-          setTimeout(() => {
-            this.handlePayment()
-          }, 100)
-        } else {
-          this.handlePayment()
-        }
-      }
-    })
-  },
+  // eslint-disable-next-line no-warning-comments
+  // TODO: change
   async handlePayment() {
     state.currentPayment = {
       type: 'wallet',
@@ -373,6 +382,8 @@ export const PayController = {
         view: 'PayLoading'
       })
 
+      // eslint-disable-next-line no-warning-comments
+      // TODO: add bitcoin here as well
       switch (chainNamespace) {
         case ConstantsUtil.CHAIN.EVM:
           if (state.paymentAsset.asset === 'native') {
@@ -443,23 +454,6 @@ export const PayController = {
     if (amount === undefined || amount === null || amount <= 0) {
       throw new AppKitPayError(AppKitPayErrorCodes.INVALID_AMOUNT)
     }
-  },
-
-  handlePayWithWallet() {
-    const caipAddress = ChainController.getActiveCaipAddress()
-    if (!caipAddress) {
-      RouterController.push('Connect')
-
-      return
-    }
-    const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
-    const chainNamespace = ChainController.state.activeChain
-    if (!address || !chainId || !chainNamespace) {
-      RouterController.push('Connect')
-
-      return
-    }
-    this.handlePayment()
   },
 
   async handlePayWithExchange(exchangeId: string) {
@@ -550,6 +544,36 @@ export const PayController = {
       }
     } catch (error) {
       throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_BUY_STATUS)
+    }
+  },
+
+  async fetchTokens({ caipAddress, caipNetwork, namespace }: FetchTokensParams) {
+    try {
+      state.isLoadingTokenBalances = true
+
+      // eslint-disable-next-line no-promise-executor-return
+      await new Promise(resolve => setTimeout(resolve, 2000))
+
+      const { address } = ParseUtil.parseCaipAddress(caipAddress)
+
+      let overideCaipNetwork = caipNetwork
+
+      if (namespace === ConstantsUtil.CHAIN.EVM) {
+        overideCaipNetwork = undefined
+      }
+
+      const balances = await BalanceUtil.getMyTokensWithBalance({
+        address,
+        caipNetwork: overideCaipNetwork
+      })
+
+      // Convert into a new object to trigger a re-render
+      state.tokenBalances = { ...state.tokenBalances, [namespace]: balances }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unable to get token balances'
+      SnackController.showError(message)
+    } finally {
+      state.isLoadingTokenBalances = false
     }
   },
 

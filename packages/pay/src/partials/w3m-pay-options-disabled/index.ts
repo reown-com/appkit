@@ -28,9 +28,24 @@ export class W3mPayOptionsDisabled extends LitElement {
           You don't have enough funds to complete this transaction
         </wui-text>
 
-        <wui-button size="md" variant="neutral-secondary">Connect other wallet</wui-button>
+        <wui-button
+          size="md"
+          variant="neutral-secondary"
+          @click=${this.dispatchConnectOtherWalletEvent.bind(this)}
+          >Connect other wallet</wui-button
+        >
       </wui-flex>
     `
+  }
+
+  private dispatchConnectOtherWalletEvent() {
+    this.dispatchEvent(
+      new CustomEvent('connectOtherWallet', {
+        detail: true,
+        bubbles: true,
+        composed: true
+      })
+    )
   }
 }
 

@@ -11,6 +11,7 @@ import {
   ConnectorController,
   CoreHelperUtil,
   ModalController,
+  RouterController,
   SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -161,10 +162,13 @@ export class W3mPayView extends LitElement {
           type="secondary"
           boxColor="foregroundSecondary"
           @click=${this.onWalletPayment}
+          .boxed=${false}
           ?chevron=${true}
-          ?fullSize=${true}
+          ?fullSize=${false}
+          ?rounded=${false}
           data-testid="wallet-payment-option"
           imageSrc=${ifDefined(image)}
+          imageSize="3xl"
         >
           <wui-text variant="lg-regular" color="primary">Pay with ${name}</wui-text>
         </wui-list-item>
@@ -237,8 +241,17 @@ export class W3mPayView extends LitElement {
     return html`<wui-separator text="or" bgColor="secondary"></wui-separator>`
   }
 
-  private onWalletPayment() {
-    PayController.handlePayWithWallet()
+  private async onWalletPayment() {
+    if (!this.namespace) {
+      throw new Error('Namespace not found')
+    }
+
+    if (this.caipAddress) {
+      RouterController.push('PayQuote')
+    } else {
+      await ConnectorController.connect({ namespace: this.namespace })
+      await ModalController.open({ view: 'PayQuote' })
+    }
   }
 
   private async onExchangePayment(exchangeId: string) {
@@ -262,6 +275,7 @@ export class W3mPayView extends LitElement {
   private async onDisconnect() {
     try {
       await ConnectionController.disconnect()
+      await ModalController.open({ view: 'Pay' })
     } catch {
       console.error('Failed to disconnect')
       SnackController.showError('Failed to disconnect')
