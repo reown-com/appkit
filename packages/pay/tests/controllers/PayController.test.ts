@@ -323,6 +323,7 @@ describe('PayController', () => {
       PayController.initializeAnalytics()
       PayController.state.currentPayment = { type: 'wallet', status: 'UNKNOWN' }
 
+      // @ts-expect-error TODO: change
       await PayController.handlePayment()
 
       expect(PaymentUtil.processEvmNativePayment).toHaveBeenCalledWith(
@@ -396,6 +397,7 @@ describe('PayController', () => {
       PayController.initializeAnalytics()
       PayController.state.currentPayment = { type: 'wallet', status: 'UNKNOWN' }
 
+      // @ts-expect-error TODO: change
       await PayController.handlePayment()
 
       expect(PaymentUtil.processEvmErc20Payment).toHaveBeenCalledWith(
@@ -457,6 +459,7 @@ describe('PayController', () => {
       PayController.initializeAnalytics()
       PayController.state.currentPayment = { type: 'wallet', status: 'UNKNOWN' }
 
+      // @ts-expect-error TODO: change
       await PayController.handlePayment()
 
       expect(PayController.state.error).toBe(AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR)
@@ -512,6 +515,7 @@ describe('PayController', () => {
         configurable: true
       })
 
+      // @ts-expect-error TODO: change
       await PayController.handlePayment()
 
       expect(PayController.state.error).toBe(AppKitPayErrorMessages.INVALID_CHAIN_NAMESPACE)
@@ -615,7 +619,9 @@ describe('PayController', () => {
 
     it('should call handlePayment if user is connected', () => {
       const handlePaymentSpy = vi
+        // @ts-expect-error TODO: change
         .spyOn(PayController, 'handlePayment')
+        // @ts-expect-error TODO: change
         .mockImplementation(async () => {})
 
       // @ts-expect-error TODO: change

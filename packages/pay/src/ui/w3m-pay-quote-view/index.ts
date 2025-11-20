@@ -1,11 +1,13 @@
-import { LitElement, html } from 'lit'
+import { LitElement, type PropertyValues, html } from 'lit'
 import { state } from 'lit/decorators.js'
+import { classMap } from 'lit/directives/class-map.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
   type Balance,
   type CaipAddress,
   type ChainNamespace,
+  NumberUtil,
   ParseUtil
 } from '@reown/appkit-common'
 import {
@@ -14,7 +16,9 @@ import {
   ChainController,
   ConnectorController,
   CoreHelperUtil,
-  ModalController
+  ModalController,
+  RouterController,
+  SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
@@ -25,11 +29,11 @@ import { HelpersUtil } from '@reown/appkit-utils'
 import { PayController } from '../../controllers/PayController.js'
 import '../../partials/w3m-pay-fees-skeleton/index.js'
 import '../../partials/w3m-pay-fees/index.js'
-import '../../partials/w3m-pay-options-disabled/index.js'
+import '../../partials/w3m-pay-options-empty/index.js'
 import '../../partials/w3m-pay-options-skeleton/index.js'
 import '../../partials/w3m-pay-options/index.js'
 import type { PaymentAssetWithAmount } from '../../types/options.js'
-import { formatBalanceToPaymentAsset } from '../../utils/AssetUtil.js'
+import { formatAmount, formatBalanceToPaymentAsset } from '../../utils/AssetUtil.js'
 import styles from './styles.js'
 
 const NAMESPACE_ICONS = {
@@ -54,15 +58,22 @@ export class W3mPayQuoteView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private profileName = ChainController.getAccountData()?.profileName
+  @state() private profileName: string | null = null
   @state() private paymentAsset = PayController.state.paymentAsset
   @state() private namespace: ChainNamespace | undefined = undefined
   @state() private caipAddress: CaipAddress | undefined = undefined
+  @state() private amount = PayController.state.amount
+  @state() private recipient = PayController.state.recipient
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
   @state() private selectedPaymentAsset = PayController.state.selectedPaymentAsset
-  @state() private isQuoteLoading = false
-  @state() private isTokensLoading = PayController.state.isLoadingTokenBalances
+  @state() private selectedExchange = PayController.state.selectedExchange
+  @state() private isFetchingQuote = PayController.state.isFetchingQuote
+  @state() private quoteError = PayController.state.quoteError
+  @state() private quote = PayController.state.quote
+  @state() private isFetchingTokenBalances = PayController.state.isFetchingTokenBalances
   @state() private tokenBalances = PayController.state.tokenBalances
+  @state() private isPaymentInProgress = PayController.state.isPaymentInProgress
+  @state() private exchangeUrlForQuote = PayController.state.exchangeUrlForQuote
 
   public constructor() {
     super()
@@ -73,7 +84,10 @@ export class W3mPayQuoteView extends LitElement {
       PayController.subscribeKey('tokenBalances', val => this.onTokenBalancesChanged(val))
     )
     this.unsubscribe.push(
-      PayController.subscribeKey('isLoadingTokenBalances', val => (this.isTokensLoading = val))
+      PayController.subscribeKey(
+        'isFetchingTokenBalances',
+        val => (this.isFetchingTokenBalances = val)
+      )
     )
     this.unsubscribe.push(
       ConnectorController.subscribeKey(
@@ -84,14 +98,44 @@ export class W3mPayQuoteView extends LitElement {
     this.unsubscribe.push(
       PayController.subscribeKey('selectedPaymentAsset', val => (this.selectedPaymentAsset = val))
     )
+    this.unsubscribe.push(
+      PayController.subscribeKey('isFetchingQuote', val => (this.isFetchingQuote = val))
+    )
+    this.unsubscribe.push(PayController.subscribeKey('quoteError', val => (this.quoteError = val)))
+    this.unsubscribe.push(PayController.subscribeKey('quote', val => (this.quote = val)))
+    this.unsubscribe.push(PayController.subscribeKey('amount', val => (this.amount = val)))
+    this.unsubscribe.push(PayController.subscribeKey('recipient', val => (this.recipient = val)))
+    this.unsubscribe.push(
+      PayController.subscribeKey('isPaymentInProgress', val => (this.isPaymentInProgress = val))
+    )
+    this.unsubscribe.push(
+      PayController.subscribeKey('selectedExchange', val => (this.selectedExchange = val))
+    )
+    this.unsubscribe.push(
+      PayController.subscribeKey('selectedExchange', val => (this.selectedExchange = val))
+    )
+    this.unsubscribe.push(
+      PayController.subscribeKey('exchangeUrlForQuote', val => (this.exchangeUrlForQuote = val))
+    )
+    this.resetQuoteState()
     this.initializeNamespace()
     this.fetchTokens()
   }
 
   public override disconnectedCallback() {
     super.disconnectedCallback()
-    this.resetState()
+    this.resetAssetsState()
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
+
+  public override updated(changedProperties: PropertyValues) {
+    super.updated(changedProperties)
+
+    const shouldFetchQuote = changedProperties.has('selectedPaymentAsset')
+
+    if (shouldFetchQuote) {
+      this.fetchQuote()
+    }
   }
 
   // -- Render -------------------------------------------- //
@@ -124,7 +168,29 @@ export class W3mPayQuoteView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private profileTemplate() {
-    const address = CoreHelperUtil.getPlainAddress(this.caipAddress)
+    if (this.selectedExchange) {
+      const amount = this.quote?.origin.amountFormatted ?? '0'
+
+      return html`
+        <wui-flex
+          .padding=${['4', '3', '4', '3'] as const}
+          alignItems="center"
+          justifyContent="space-between"
+          gap="2"
+        >
+          <wui-text variant="lg-regular" color="secondary">Paying with</wui-text>
+
+          ${this.quote
+            ? html`<wui-text variant="lg-regular" color="primary">
+                ${NumberUtil.bigNumber(amount, { safe: true }).round(6).toString()}
+                ${this.quote.origin.symbol}
+              </wui-text>`
+            : html`<wui-shimmer width="58px" height="32px" variant="light"></wui-shimmer>`}
+        </wui-flex>
+      `
+    }
+
+    const address = CoreHelperUtil.getPlainAddress(this.caipAddress) ?? ''
 
     const { name, image } = this.getWalletProperties({ namespace: this.namespace })
 
@@ -139,7 +205,7 @@ export class W3mPayQuoteView extends LitElement {
         gap="2"
       >
         <wui-wallet-switch
-          profileName=${this.profileName}
+          profileName=${ifDefined(this.profileName)}
           address=${ifDefined(address)}
           imageSrc=${ifDefined(image)}
           alt=${ifDefined(name)}
@@ -161,21 +227,18 @@ export class W3mPayQuoteView extends LitElement {
   }
 
   private initializeNamespace() {
-    const paymentAsset = this.paymentAsset
+    const namespace = ChainController.state.activeChain as ChainNamespace
 
-    if (paymentAsset) {
-      const { chainNamespace } = ParseUtil.parseCaipNetworkId(paymentAsset.network)
-
-      this.namespace = chainNamespace
-      this.caipAddress = ChainController.getAccountData(chainNamespace)?.caipAddress
-      this.unsubscribe.push(
-        ChainController.subscribeChainProp(
-          'accountState',
-          accountState => this.onAccountStateChanged(accountState),
-          this.namespace
-        )
+    this.namespace = namespace
+    this.caipAddress = ChainController.getAccountData(namespace)?.caipAddress
+    this.profileName = ChainController.getAccountData(namespace)?.profileName ?? null
+    this.unsubscribe.push(
+      ChainController.subscribeChainProp(
+        'accountState',
+        accountState => this.onAccountStateChanged(accountState),
+        namespace
       )
-    }
+    )
   }
 
   private async fetchTokens() {
@@ -191,6 +254,26 @@ export class W3mPayQuoteView extends LitElement {
 
       // eslint-disable-next-line no-console
       console.log('FETCHED TOKENS >>', PayController.state.tokenBalances)
+    }
+  }
+
+  private fetchQuote() {
+    if (
+      this.caipAddress &&
+      this.amount &&
+      this.recipient &&
+      this.selectedPaymentAsset &&
+      this.paymentAsset
+    ) {
+      const { address } = ParseUtil.parseCaipAddress(this.caipAddress)
+
+      PayController.fetchQuote({
+        amount: this.amount.toString(),
+        address,
+        sourceToken: this.selectedPaymentAsset,
+        toToken: this.paymentAsset,
+        recipient: this.recipient
+      })
     }
   }
 
@@ -240,26 +323,31 @@ export class W3mPayQuoteView extends LitElement {
   private paymentOptionsTemplate() {
     const paymentAssets = this.getPaymentAssetFromTokenBalances()
 
-    if (this.isTokensLoading) {
+    // eslint-disable-next-line no-console
+    if (this.isFetchingTokenBalances) {
       return html`<w3m-pay-options-skeleton></w3m-pay-options-skeleton>`
     }
 
     if (paymentAssets.length === 0) {
-      return html`<w3m-pay-options-disabled
+      return html`<w3m-pay-options-empty
         @connectOtherWallet=${this.onConnectOtherWallet.bind(this)}
-      ></w3m-pay-options-disabled>`
+      ></w3m-pay-options-empty>`
+    }
+
+    const classes = {
+      disabled: this.isFetchingQuote
     }
 
     return html`<w3m-pay-options
+      class=${classMap(classes)}
       .options=${paymentAssets}
       .selectedPaymentAsset=${ifDefined(this.selectedPaymentAsset)}
-      .onSelect=${(paymentAsset: PaymentAssetWithAmount) =>
-        PayController.setSelectedPaymentAsset(paymentAsset)}
+      .onSelect=${this.onSelectedPaymentAssetChanged.bind(this)}
     ></w3m-pay-options>`
   }
 
   private amountWithFeeTemplate() {
-    if (this.isQuoteLoading || !this.selectedPaymentAsset) {
+    if (this.isFetchingQuote || !this.selectedPaymentAsset || this.quoteError) {
       return html`<w3m-pay-fees-skeleton></w3m-pay-fees-skeleton>`
     }
 
@@ -267,8 +355,27 @@ export class W3mPayQuoteView extends LitElement {
   }
 
   private paymentActionsTemplate() {
-    const isLoading = this.isQuoteLoading || this.isTokensLoading
-    const isDisabled = this.isQuoteLoading || this.isTokensLoading || !this.selectedPaymentAsset
+    if (this.selectedExchange) {
+      return html`<wui-button
+        size="lg"
+        fullWidth
+        variant="accent-secondary"
+        @click=${this.onPayWithExchange.bind(this)}
+      >
+        ${`Continue in ${this.selectedExchange.name}`}
+
+        <wui-icon name="arrowRight" color="inherit" size="sm" slot="iconRight"></wui-icon>
+      </wui-button>`
+    }
+
+    const isLoading = this.isFetchingQuote || this.isFetchingTokenBalances
+    const isDisabled =
+      this.isFetchingQuote ||
+      this.isFetchingTokenBalances ||
+      !this.selectedPaymentAsset ||
+      Boolean(this.quoteError)
+
+    const amount = this.quote?.origin.amountFormatted ?? '0'
 
     return html`
       <wui-flex alignItems="center" justifyContent="space-between">
@@ -278,17 +385,20 @@ export class W3mPayQuoteView extends LitElement {
           ${isLoading || isDisabled
             ? html`<wui-shimmer width="58px" height="32px" variant="light"></wui-shimmer>`
             : html`<wui-flex alignItems="center" gap="01">
-                <wui-text variant="h4-regular" color="primary">20.30</wui-text>
-                <wui-text variant="lg-regular" color="secondary">USDC</wui-text>
+                <wui-text variant="h4-regular" color="primary">${formatAmount(amount)}</wui-text>
+
+                <wui-text variant="lg-regular" color="secondary">
+                  ${this.quote?.origin.symbol || 'Unknown'}
+                </wui-text>
               </wui-flex>`}
         </wui-flex>
 
         <wui-button
           size="lg"
           variant="accent-primary"
-          ?loading=${isLoading}
-          ?disabled=${isDisabled}
-          @click=${this.onPay.bind(this)}
+          ?loading=${isLoading || this.isPaymentInProgress}
+          ?disabled=${isDisabled || this.isPaymentInProgress}
+          @click=${this.onPayWithWallet.bind(this)}
         >
           Pay
           ${isLoading
@@ -310,6 +420,17 @@ export class W3mPayQuoteView extends LitElement {
     }
 
     const balances = this.tokenBalances[this.namespace] ?? []
+    // eslint-disable-next-line no-console
+    console.log(
+      'initial',
+      balances.map(balance => {
+        try {
+          return formatBalanceToPaymentAsset(balance)
+        } catch (err) {
+          return null
+        }
+      })
+    )
     const paymentOptions = balances
       .map(balance => {
         try {
@@ -319,6 +440,23 @@ export class W3mPayQuoteView extends LitElement {
         }
       })
       .filter((option): option is PaymentAssetWithAmount => Boolean(option))
+      .filter(option => {
+        const { chainId: optionChainId } = ParseUtil.parseCaipNetworkId(option.network)
+        const { chainId: paymentAssetChainId } = ParseUtil.parseCaipNetworkId(
+          this.paymentAsset.network
+        )
+
+        if (HelpersUtil.isLowerCaseMatch(option.asset, this.paymentAsset.asset)) {
+          return true
+        }
+
+        // eslint-disable-next-line no-warning-comments
+        // TODO: Find a way to support same-chain deposit address with relay
+        return !HelpersUtil.isLowerCaseMatch(
+          optionChainId.toString(),
+          paymentAssetChainId.toString()
+        )
+      })
 
     return paymentOptions
   }
@@ -336,7 +474,9 @@ export class W3mPayQuoteView extends LitElement {
   }
 
   private async onConnectOtherWallet() {
-    await ConnectorController.connect({ namespace: this.namespace })
+    // eslint-disable-next-line no-warning-comments
+    // TODO: Refactor so we don't need to pass the namespace
+    await ConnectorController.connect()
     await ModalController.open({ view: 'PayQuote' })
   }
 
@@ -346,7 +486,7 @@ export class W3mPayQuoteView extends LitElement {
       : {}
 
     this.caipAddress = accountState?.caipAddress
-    this.profileName = accountState?.profileName
+    this.profileName = accountState?.profileName ?? null
 
     if (oldAddress) {
       const { address: newAddress } = this.caipAddress
@@ -356,27 +496,78 @@ export class W3mPayQuoteView extends LitElement {
       if (!newAddress) {
         ModalController.close()
       } else if (!HelpersUtil.isLowerCaseMatch(newAddress, oldAddress)) {
-        this.resetState()
+        this.resetAssetsState()
+        this.resetQuoteState()
         this.fetchTokens()
       }
     }
   }
 
-  private async onPay() {
-    const allNetworks = ChainController.getAllRequestedCaipNetworks()
-    const targetNetwork = allNetworks.find(
-      net => net.caipNetworkId === this.selectedPaymentAsset?.network
-    )
-
-    if (!targetNetwork) {
-      throw new Error('Target network not found')
+  private onSelectedPaymentAssetChanged(paymentAsset: PaymentAssetWithAmount | null) {
+    if (!this.isFetchingQuote) {
+      PayController.setSelectedPaymentAsset(paymentAsset)
     }
-
-    await ChainController.switchActiveNetwork(targetNetwork)
   }
 
-  private resetState() {
+  private async onPayWithWallet() {
+    const selectedPaymentAssetAmount = this.selectedPaymentAsset?.amount ?? '0'
+    const originAmountToPay = this.quote?.origin.amountFormatted ?? '0'
+
+    const hasEnoughFunds = NumberUtil.bigNumber(selectedPaymentAssetAmount).gte(originAmountToPay)
+
+    if (!hasEnoughFunds) {
+      SnackController.showError('Insufficient funds')
+
+      return
+    }
+
+    if (this.quote && this.selectedPaymentAsset && this.caipAddress && this.namespace) {
+      const { address: fromAddress } = ParseUtil.parseCaipAddress(this.caipAddress)
+
+      // eslint-disable-next-line no-console
+      console.log({
+        chainNamespace: this.namespace,
+        fromAddress,
+        toAddress: this.quote.depositAddress,
+        amount: this.quote.origin.amountFormatted,
+        paymentAsset: this.selectedPaymentAsset
+      })
+
+      await PayController.onPayment({
+        chainNamespace: this.namespace,
+        fromAddress,
+        toAddress: this.quote.depositAddress,
+        amount: this.quote.origin.amountFormatted,
+        paymentAsset: this.selectedPaymentAsset
+      })
+
+      RouterController.push('PayLoading')
+    }
+  }
+
+  private onPayWithExchange() {
+    if (this.exchangeUrlForQuote) {
+      const popupWindow = CoreHelperUtil.returnOpenHref(
+        '',
+        'popupWindow',
+        'scrollbar=yes,width=480,height=720'
+      )
+
+      if (!popupWindow) {
+        throw new Error('Could not create popup window')
+      }
+
+      popupWindow.location.href = this.exchangeUrlForQuote
+      RouterController.push('PayLoading')
+    }
+  }
+
+  private resetAssetsState() {
     PayController.setSelectedPaymentAsset(null)
+  }
+
+  private resetQuoteState() {
+    PayController.resetQuoteState()
   }
 }
 

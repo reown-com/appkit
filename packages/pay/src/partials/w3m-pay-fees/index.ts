@@ -1,14 +1,18 @@
 import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { NumberUtil } from '@reown/appkit-common'
+import { AssetUtil, ChainController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-image'
 import '@reown/appkit-ui/wui-text'
+import { HelpersUtil } from '@reown/appkit-utils'
 
+import { PayController } from '../../controllers/PayController.js'
+import type { QuoteFee } from '../../types/quote.js'
 import styles from './styles.js'
-
-const BASE_LOGO_URL =
-  'https://pbs.twimg.com/profile_images/1945608199500910592/rnk6ixxH_400x400.jpg'
 
 @customElement('w3m-pay-fees')
 export class W3mPayFees extends LitElement {
@@ -18,8 +22,11 @@ export class W3mPayFees extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
+  @state() private quote = PayController.state.quote
+
   public constructor() {
     super()
+    this.unsubscribe.push(PayController.subscribeKey('quote', val => (this.quote = val)))
   }
 
   // -- Lifecycle ----------------------------------------- //
@@ -29,30 +36,66 @@ export class W3mPayFees extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const amount = this.quote?.origin.amountFormatted ?? '0'
+
     return html`
       <wui-flex flexDirection="column" gap="4">
         <wui-flex alignItems="center" justifyContent="space-between">
           <wui-text variant="md-regular" color="secondary">Pay</wui-text>
-          <wui-text variant="md-regular" color="primary">20 USDC</wui-text>
+          <wui-text variant="md-regular" color="primary">
+            ${NumberUtil.bigNumber(amount, { safe: true }).round(6).toString()}
+            ${this.quote?.origin.symbol || 'Unknown'}
+          </wui-text>
         </wui-flex>
 
+        ${this.quote && this.quote.fees.length > 0
+          ? this.quote.fees.map(fee => this.renderFee(fee))
+          : null}
+      </wui-flex>
+    `
+  }
+
+  // -- Private ------------------------------------------- //
+  private renderFee(fee: QuoteFee) {
+    const isNetworkFee = fee.id === 'network'
+
+    if (isNetworkFee) {
+      const allNetworks = ChainController.getAllRequestedCaipNetworks()
+      const targetNetwork = allNetworks.find(net =>
+        HelpersUtil.isLowerCaseMatch(net.caipNetworkId, fee.currency.network)
+      )
+
+      return html`
         <wui-flex alignItems="center" justifyContent="space-between">
-          <wui-text variant="md-regular" color="secondary">Network Fee</wui-text>
+          <wui-text variant="md-regular" color="secondary">${fee.label}</wui-text>
 
           <wui-flex flexDirection="column" alignItems="flex-end" gap="2">
-            <wui-text variant="md-regular" color="primary">0.30 USDC</wui-text>
+            <wui-text variant="md-regular" color="primary">
+              ${NumberUtil.bigNumber(fee.amountFormatted, { safe: true }).round(6).toString()}
+              ${fee.currency.metadata.symbol}
+            </wui-text>
 
             <wui-flex alignItems="center" gap="01">
-              <wui-image src=${BASE_LOGO_URL} size="xs"></wui-image>
-              <wui-text variant="sm-regular" color="secondary">Base</wui-text>
+              <wui-image
+                src=${ifDefined(AssetUtil.getNetworkImage(targetNetwork))}
+                size="xs"
+              ></wui-image>
+              <wui-text variant="sm-regular" color="secondary">
+                ${targetNetwork?.name || 'Unknown'}
+              </wui-text>
             </wui-flex>
           </wui-flex>
         </wui-flex>
+      `
+    }
 
-        <wui-flex alignItems="center" justifyContent="space-between">
-          <wui-text variant="md-regular" color="secondary">Service Fee</wui-text>
-          <wui-text variant="md-regular" color="primary">0.05 USDC</wui-text>
-        </wui-flex>
+    return html`
+      <wui-flex alignItems="center" justifyContent="space-between">
+        <wui-text variant="md-regular" color="secondary">${fee.label}</wui-text>
+        <wui-text variant="md-regular" color="primary">
+          ${NumberUtil.bigNumber(fee.amountFormatted, { safe: true }).round(6).toString()}
+          ${fee.currency.metadata.symbol || 'Unknown'}
+        </wui-text>
       </wui-flex>
     `
   }

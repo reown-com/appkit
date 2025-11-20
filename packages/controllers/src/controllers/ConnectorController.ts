@@ -442,7 +442,9 @@ const controller = {
     state.connectors = ConnectorController.mergeMultiChainConnectors(enabledConnectors)
   },
 
-  async connect({ namespace }: ConnectParameters): Promise<{ caipAddress: CaipAddress }> {
+  async connect(params: ConnectParameters = {}): Promise<{ caipAddress: CaipAddress }> {
+    const { namespace } = params
+
     ConnectorController.setFilterByNamespace(namespace)
     RouterController.push('Connect', {
       addWalletForNamespace: namespace

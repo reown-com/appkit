@@ -44,7 +44,7 @@ export class W3mPayFeesSkeleton extends LitElement {
         </wui-flex>
 
         <wui-flex alignItems="center" justifyContent="space-between">
-          <wui-text variant="md-regular" color="secondary">Service Fees</wui-text>
+          <wui-text variant="md-regular" color="secondary">Service Fee</wui-text>
           <wui-shimmer width="75px" height="16px" borderRadius="4xs" variant="light"></wui-shimmer>
         </wui-flex>
       </wui-flex>

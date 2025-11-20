@@ -23,4 +23,9 @@ export default css`
   wui-image {
     border-radius: ${({ borderRadius }) => borderRadius.round};
   }
+
+  w3m-pay-options.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 `

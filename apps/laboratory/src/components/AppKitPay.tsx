@@ -40,6 +40,7 @@ import {
 } from '@reown/appkit-pay/react'
 import { solana, solanaDevnet } from '@reown/appkit/networks'
 
+import { ErrorUtil } from '../utils/ErrorUtil'
 import { useChakraToast } from './Toast'
 
 interface AppKitPaymentAssetState {
@@ -48,9 +49,14 @@ interface AppKitPaymentAssetState {
   asset: PaymentAsset
 }
 
-type PresetKey = 'NATIVE_BASE' | 'NATIVE_BASE_SEPOLIA' | 'USDC_BASE' | 'USDC_SOLANA' | 'SOL_DEV'
+type PresetKey =
+  | 'NATIVE_BASE'
+  | 'NATIVE_BASE_SEPOLIA'
+  | 'USDC_BASE'
+  | 'USDC_SOLANA'
+  | 'SOL_DEV'
+  | 'SOL_MAINNET'
 
-const DEFAULT_LOGO_URI = 'https://assets.coingecko.com/coins/images/6319/large/usdc.png?1696506694'
 const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   NATIVE_BASE: {
     asset: baseETH,
@@ -79,6 +85,14 @@ const PRESETS: Record<PresetKey, Omit<AppKitPaymentAssetState, 'recipient'>> = {
   SOL_DEV: {
     asset: {
       network: solanaDevnet.caipNetworkId,
+      asset: 'native',
+      metadata: { name: 'Solana', symbol: 'SOL', decimals: 9 }
+    },
+    amount: 0.00001
+  },
+  SOL_MAINNET: {
+    asset: {
+      network: solana.caipNetworkId,
       asset: 'native',
       metadata: { name: 'Solana', symbol: 'SOL', decimals: 9 }
     },
@@ -113,13 +127,7 @@ export function AppKitPay() {
 
     return {
       recipient: initialRecipient,
-      asset: {
-        ...baseETH,
-        metadata: {
-          ...baseETH.metadata,
-          logoURI: DEFAULT_LOGO_URI
-        }
-      },
+      asset: baseETH,
       amount: 0.00001
     }
   })
@@ -143,13 +151,7 @@ export function AppKitPay() {
   function handlePresetClick(preset: Omit<AppKitPaymentAssetState, 'recipient'>) {
     setPaymentDetails(prev => ({
       ...preset,
-      asset: {
-        ...preset.asset,
-        metadata: {
-          ...preset.asset.metadata,
-          logoURI: DEFAULT_LOGO_URI
-        }
-      },
+      asset: preset.asset,
       recipient: prev.recipient
     }))
     setAmountDisplayValue(preset.amount.toString())
@@ -201,18 +203,26 @@ export function AppKitPay() {
 
       return
     }
-    const result = await pay({
-      recipient: paymentDetails.recipient,
-      amount: paymentDetails.amount,
-      paymentAsset: paymentDetails.asset
-    })
+    try {
+      const result = await pay({
+        recipient: paymentDetails.recipient,
+        amount: paymentDetails.amount,
+        paymentAsset: paymentDetails.asset
+      })
 
-    if (result.success) {
-      toast({ title: 'Payment Succeeded', description: `Tx: ${result.result}`, type: 'success' })
-    } else {
+      if (result.success) {
+        toast({ title: 'Payment Succeeded', description: `Tx: ${result.result}`, type: 'success' })
+      } else {
+        toast({
+          title: 'Payment Failed',
+          description: result.error ?? 'Unknown error',
+          type: 'error'
+        })
+      }
+    } catch (err) {
       toast({
         title: 'Payment Failed',
-        description: result.error ?? 'Unknown error',
+        description: ErrorUtil.getErrorMessage(err),
         type: 'error'
       })
     }
@@ -426,6 +436,16 @@ export function AppKitPay() {
                   minH="44px"
                 >
                   SOL Dev
+                </Button>
+
+                <Button
+                  onClick={() => handlePresetClick(PRESETS['SOL_MAINNET'])}
+                  isActive={isPresetActive(PRESETS['SOL_MAINNET'])}
+                  variant={isPresetActive(PRESETS['SOL_MAINNET']) ? 'solid' : 'outline'}
+                  width="full"
+                  minH="44px"
+                >
+                  SOL Mainnet
                 </Button>
               </SimpleGrid>
             </FormControl>

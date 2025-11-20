@@ -1,42 +1,43 @@
-import type { TemplateResult } from 'lit'
-import { LitElement } from 'lit'
-import { property } from 'lit/decorators.js'
-import { html, unsafeStatic } from 'lit/static-html.js'
+import type { TemplateResult } from 'lit';
+import { LitElement } from 'lit';
+import { property } from 'lit/decorators.js';
+import { html, unsafeStatic } from 'lit/static-html.js';
 
-import { appStoreSvg } from '../../assets/svg/app-store.js'
-import { appleSvg } from '../../assets/svg/apple.js'
-import { bitcoinSvg } from '../../assets/svg/bitcoin.js'
-import { chromeStoreSvg } from '../../assets/svg/chrome-store.js'
-import { coinsSvg } from '../../assets/svg/coins.js'
-import { cursorSvg } from '../../assets/svg/cursor.js'
-import { discordSvg } from '../../assets/svg/discord.js'
-import { ethereumSvg } from '../../assets/svg/ethereum.js'
-import { etherscanSvg } from '../../assets/svg/etherscan.js'
-import { facebookSvg } from '../../assets/svg/facebook.js'
-import { farcasterSvg } from '../../assets/svg/farcaster.js'
-import { githubSvg } from '../../assets/svg/github.js'
-import { googleSvg } from '../../assets/svg/google.js'
-import { infoSealSvg } from '../../assets/svg/info.js'
-import { paperPlaneTitleSvg } from '../../assets/svg/paper-plane-titl.js'
-import { playStoreSvg } from '../../assets/svg/play-store.js'
-import { reownSvg } from '../../assets/svg/reown-logo.js'
-import { solanaSvg } from '../../assets/svg/solana.js'
-import { telegramSvg } from '../../assets/svg/telegram.js'
-import { tonSvg } from '../../assets/svg/ton.js'
-import { twitchSvg } from '../../assets/svg/twitch.js'
-import { twitterIconSvg } from '../../assets/svg/twitterIcon.js'
-import {
-  walletConnectBrownSvg,
-  walletConnectInvertSvg,
-  walletConnectLightBrownSvg,
-  walletConnectSvg
-} from '../../assets/svg/walletconnect.js'
-import { xSvg } from '../../assets/svg/x.js'
-import { vars } from '../../utils/ThemeHelperUtil.js'
-import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconColorType, IconSizeType, IconType, IconWeightType } from '../../utils/TypeUtil.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import styles from './styles.js'
+
+
+import { appStoreSvg } from '../../assets/svg/app-store.js';
+import { appleSvg } from '../../assets/svg/apple.js';
+import { bitcoinSvg } from '../../assets/svg/bitcoin.js';
+import { chromeStoreSvg } from '../../assets/svg/chrome-store.js';
+import { coinsSvg } from '../../assets/svg/coins.js';
+import { cursorSvg } from '../../assets/svg/cursor.js';
+import { discordSvg } from '../../assets/svg/discord.js';
+import { ethereumSvg } from '../../assets/svg/ethereum.js';
+import { etherscanSvg } from '../../assets/svg/etherscan.js';
+import { facebookSvg } from '../../assets/svg/facebook.js';
+import { farcasterSvg } from '../../assets/svg/farcaster.js';
+import { githubSvg } from '../../assets/svg/github.js';
+import { googleSvg } from '../../assets/svg/google.js';
+import { infoSealSvg } from '../../assets/svg/info.js';
+import { paperPlaneTitleSvg } from '../../assets/svg/paper-plane-titl.js';
+import { playStoreSvg } from '../../assets/svg/play-store.js';
+import { reownSvg } from '../../assets/svg/reown-logo.js';
+import { solanaSvg } from '../../assets/svg/solana.js';
+import { telegramSvg } from '../../assets/svg/telegram.js';
+import { tonSvg } from '../../assets/svg/ton.js';
+import { twitchSvg } from '../../assets/svg/twitch.js';
+import { twitterIconSvg } from '../../assets/svg/twitterIcon.js';
+import { walletConnectBrownSvg, walletConnectInvertSvg, walletConnectLightBrownSvg, walletConnectSvg } from '../../assets/svg/walletconnect.js';
+import { xSvg } from '../../assets/svg/x.js';
+import { vars } from '../../utils/ThemeHelperUtil.js';
+import { resetStyles } from '../../utils/ThemeUtil.js';
+import type { IconColorType, IconSizeType, IconType, IconWeightType } from '../../utils/TypeUtil.js';
+import { customElement } from '../../utils/WebComponentsUtil.js';
+import styles from './styles.js';
+
+
+
+
 
 // -- Phosphor Icons Mapping -------------------------------- //
 const phosphorIconsMap: Record<string, string> = {

@@ -16,11 +16,19 @@ export default css`
     bottom: 6px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
-    border: 3px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
     border-radius: ${({ borderRadius }) => borderRadius[4]};
     z-index: 3;
     min-width: 105px;
+  }
+
+  .token-badge-container.loading {
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    border: 3px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
+  }
+
+  .token-badge-container.success {
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    border: 3px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
   }
 
   .token-image-container {
@@ -29,9 +37,20 @@ export default css`
 
   .token-image {
     border-radius: ${({ borderRadius }) => borderRadius.round};
-    background: ${({ colors }) => colors.accent010};
     width: 64px;
     height: 64px;
+  }
+
+  .token-image.success {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
+  .token-image.error {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
+  .token-image.loading {
+    background: ${({ colors }) => colors.accent010};
   }
 
   .token-image wui-icon {
@@ -45,6 +64,10 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[4]};
   }
 
+  .token-badge wui-text {
+    white-space: nowrap;
+  }
+
   .payment-lifecycle-container {
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
     border-top-right-radius: ${({ borderRadius }) => borderRadius[6]};
@@ -53,8 +76,19 @@ export default css`
 
   .payment-step-badge {
     padding: ${({ spacing }) => spacing[1]} ${({ spacing }) => spacing[2]};
-    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
     border-radius: ${({ borderRadius }) => borderRadius[1]};
+  }
+
+  .payment-step-badge.loading {
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+  }
+
+  .payment-step-badge.error {
+    background-color: ${({ tokens }) => tokens.core.backgroundError};
+  }
+
+  .payment-step-badge.success {
+    background-color: ${({ tokens }) => tokens.core.backgroundSuccess};
   }
 
   .step-icon-container {

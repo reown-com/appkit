@@ -1,13 +1,34 @@
 import Big from 'big.js'
 
+// -- Types --------------------------------------------- //
+type BigNumberParams = {
+  safe?: boolean
+}
+
 export const NumberUtil = {
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  bigNumber(value: Big | string | number | undefined) {
-    if (!value) {
-      return new Big(0)
+  bigNumber(
+    value: Big | string | number | undefined,
+    params: BigNumberParams = {
+      safe: false
     }
+  ) {
+    try {
+      if (!value) {
+        return new Big(0)
+      }
 
-    return new Big(value)
+      return new Big(value)
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log('failed to parse number', value)
+
+      if (params.safe) {
+        return new Big(0)
+      }
+
+      throw err
+    }
   },
 
   /**

@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { NumberUtil } from '@reown/appkit-common'
 import { AssetUtil, ChainController } from '@reown/appkit-controllers'
 import { MathUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
@@ -62,7 +63,7 @@ export class W3mPayOptions extends LitElement {
   }
 
   private payOptionTemplate(paymentAsset: PaymentAssetWithAmount) {
-    const { network, metadata, asset, amount = '0.00' } = paymentAsset
+    const { network, metadata, asset, amount = '0' } = paymentAsset
 
     const allNetworks = ChainController.getAllRequestedCaipNetworks()
     const targetNetwork = allNetworks.find(net => net.caipNetworkId === network)
@@ -71,6 +72,9 @@ export class W3mPayOptions extends LitElement {
     const selectedPaymentCaipAddress = `${this.selectedPaymentAsset?.network}:${this.selectedPaymentAsset?.asset}`
 
     const isSelected = paymentCaipAddress === selectedPaymentCaipAddress
+
+    const bigAmount = NumberUtil.bigNumber(amount, { safe: true })
+    const hasEnoughBalance = bigAmount.gt(0)
 
     return html`
       <wui-flex
@@ -96,7 +100,11 @@ export class W3mPayOptions extends LitElement {
 
           <wui-flex flexDirection="column" gap="1">
             <wui-text variant="lg-regular" color="primary">${metadata.symbol}</wui-text>
-            <wui-text variant="sm-regular" color="secondary">${amount} ${metadata.symbol}</wui-text>
+            ${hasEnoughBalance
+              ? html`<wui-text variant="sm-regular" color="secondary">
+                  ${bigAmount.round(6).toString()} ${metadata.symbol}
+                </wui-text>`
+              : null}
           </wui-flex>
         </wui-flex>
 

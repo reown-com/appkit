@@ -3,13 +3,12 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type CaipAddress, type ChainNamespace, ParseUtil } from '@reown/appkit-common'
+import { type CaipAddress, type ChainNamespace } from '@reown/appkit-common'
 import {
   AssetUtil,
   ChainController,
   ConnectionController,
   ConnectorController,
-  CoreHelperUtil,
   ModalController,
   RouterController,
   SnackController
@@ -29,8 +28,18 @@ import '@reown/appkit-ui/wui-text'
 import '@reown/appkit-ui/wui-wallet-image'
 
 import { PayController } from '../../controllers/PayController.js'
-import { isPayWithWalletSupported } from '../../utils/AssetUtil.js'
+import type { Exchange } from '../../types/exchange.js'
+import { formatAmount, isPayWithWalletSupported } from '../../utils/AssetUtil.js'
 import styles from './styles.js'
+
+// -- Constants ----------------------------------------- //
+const EXCHANGES = [
+  {
+    id: 'binance',
+    imageUrl: 'https://pay-assets.reown.com/binance_128_128.webp',
+    name: 'Binance'
+  }
+] as Exchange[]
 
 @customElement('w3m-pay-view')
 export class W3mPayView extends LitElement {
@@ -43,17 +52,12 @@ export class W3mPayView extends LitElement {
   @state() private amount = PayController.state.amount
   @state() private namespace: ChainNamespace | undefined = undefined
   @state() private paymentAsset = PayController.state.paymentAsset
-  @state() private exchanges = PayController.state.exchanges
-  @state() private isLoading = PayController.state.isLoading
-  @state() private loadingExchangeId: string | null = null
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
   @state() private caipAddress: CaipAddress | undefined = undefined
 
   public constructor() {
     super()
     this.initializeNamespace()
-    this.unsubscribe.push(PayController.subscribeKey('exchanges', val => (this.exchanges = val)))
-    this.unsubscribe.push(PayController.subscribeKey('isLoading', val => (this.isLoading = val)))
     this.unsubscribe.push(PayController.subscribeKey('amount', val => (this.amount = val)))
     this.unsubscribe.push(
       ConnectorController.subscribeKey('activeConnectorIds', ids => (this.activeConnectorIds = ids))
@@ -86,23 +90,19 @@ export class W3mPayView extends LitElement {
   }
 
   private initializeNamespace() {
-    const paymentAsset = this.paymentAsset
+    const namespace = ChainController.state.activeChain as ChainNamespace
 
-    if (paymentAsset) {
-      const { chainNamespace } = ParseUtil.parseCaipNetworkId(paymentAsset.network)
-
-      this.namespace = chainNamespace
-      this.caipAddress = ChainController.getAccountData(chainNamespace)?.caipAddress
-      this.unsubscribe.push(
-        ChainController.subscribeChainProp(
-          'accountState',
-          accountState => {
-            this.caipAddress = accountState?.caipAddress
-          },
-          this.namespace
-        )
+    this.namespace = namespace
+    this.caipAddress = ChainController.getAccountData(namespace)?.caipAddress
+    this.unsubscribe.push(
+      ChainController.subscribeChainProp(
+        'accountState',
+        accountState => {
+          this.caipAddress = accountState?.caipAddress
+        },
+        namespace
       )
-    }
+    )
   }
 
   private paymentDetailsTemplate() {
@@ -117,7 +117,9 @@ export class W3mPayView extends LitElement {
         gap="2"
       >
         <wui-flex alignItems="center" gap="1">
-          <wui-text variant="h1-regular" color="primary">${this.amount || '0.00'}</wui-text>
+          <wui-text variant="h1-regular" color="primary">
+            ${formatAmount(this.amount || '0')}
+          </wui-text>
 
           <wui-flex flexDirection="column">
             <wui-text variant="h6-regular" color="secondary">
@@ -165,7 +167,7 @@ export class W3mPayView extends LitElement {
           .boxed=${false}
           ?chevron=${true}
           ?fullSize=${false}
-          ?rounded=${false}
+          ?rounded=${true}
           data-testid="wallet-payment-option"
           imageSrc=${ifDefined(image)}
           imageSize="3xl"
@@ -205,24 +207,14 @@ export class W3mPayView extends LitElement {
   }
 
   private templateExchangeOptions() {
-    if (this.isLoading) {
-      return null
-    }
-
-    if (this.exchanges.length === 0) {
-      return null
-    }
-
-    return this.exchanges.map(
+    return EXCHANGES.map(
       exchange => html`
         <wui-list-item
           type="secondary"
           boxColor="foregroundSecondary"
-          @click=${() => this.onExchangePayment(exchange.id)}
+          @click=${() => this.onExchangePayment(exchange)}
           data-testid="exchange-option-${exchange.id}"
           ?chevron=${true}
-          ?disabled=${this.loadingExchangeId !== null}
-          ?loading=${this.loadingExchangeId === exchange.id}
           imageSrc=${ifDefined(exchange.imageUrl)}
         >
           <wui-text flexGrow="1" variant="lg-regular" color="primary">
@@ -234,10 +226,6 @@ export class W3mPayView extends LitElement {
   }
 
   private templateSeparator() {
-    if (this.exchanges.length === 0 || this.isLoading) {
-      return null
-    }
-
     return html`<wui-separator text="or" bgColor="secondary"></wui-separator>`
   }
 
@@ -249,27 +237,14 @@ export class W3mPayView extends LitElement {
     if (this.caipAddress) {
       RouterController.push('PayQuote')
     } else {
-      await ConnectorController.connect({ namespace: this.namespace })
+      await ConnectorController.connect()
       await ModalController.open({ view: 'PayQuote' })
     }
   }
 
-  private async onExchangePayment(exchangeId: string) {
-    try {
-      this.loadingExchangeId = exchangeId
-      const result = await PayController.handlePayWithExchange(exchangeId)
-      if (result) {
-        await ModalController.open({
-          view: 'PayLoading'
-        })
-        CoreHelperUtil.openHref(result.url, result.openInNewTab ? '_blank' : '_self')
-      }
-    } catch (error) {
-      console.error('Failed to pay with exchange', error)
-      SnackController.showError('Failed to pay with exchange')
-    } finally {
-      this.loadingExchangeId = null
-    }
+  private onExchangePayment(exchange: Exchange) {
+    PayController.setSelectedExchange(exchange)
+    RouterController.push('PayQuote')
   }
 
   private async onDisconnect() {

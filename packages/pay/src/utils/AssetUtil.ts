@@ -3,7 +3,7 @@ import { NumberUtil, ParseUtil } from '@reown/appkit-common'
 import { ChainController, CoreHelperUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 
-import type { PaymentAssetWithAmount } from '../types/options.js'
+import type { PaymentAsset, PaymentAssetWithAmount } from '../types/options.js'
 
 const SUPPORT_PAY_WITH_WALLET_CHAIN_NAMESPACES = ['eip155', 'solana']
 
@@ -68,11 +68,19 @@ export function formatBalanceToPaymentAsset(balance: Balance): PaymentAssetWithA
       throw new Error(`Balance address not found for balance symbol "${balance.symbol}"`)
     }
 
+    // eslint-disable-next-line no-console
+    console.log(
+      'Balance address not found for balance symbol',
+      balance.symbol,
+      targetNetwork.nativeCurrency.symbol
+    )
+
     asset = 'native'
   }
 
   if (CoreHelperUtil.isCaipAddress(asset)) {
     const { address } = ParseUtil.parseCaipAddress(asset)
+
     asset = address
   }
 
@@ -85,6 +93,31 @@ export function formatBalanceToPaymentAsset(balance: Balance): PaymentAssetWithA
       decimals: parseInt(balance.quantity.decimals, 10),
       logoURI: balance.iconUrl
     },
-    amount: NumberUtil.formatNumberToLocalString(balance.quantity.numeric, 5)
+    amount: balance.quantity.numeric
   }
+}
+
+export function formatPaymentAssetToBalance(paymentAsset: PaymentAsset): Balance {
+  return {
+    chainId: paymentAsset.network,
+    address: paymentAsset.asset,
+    symbol: paymentAsset.metadata.symbol,
+    name: paymentAsset.metadata.name,
+    iconUrl: paymentAsset.metadata.logoURI || '',
+    price: 0,
+    quantity: {
+      numeric: '0',
+      decimals: paymentAsset.metadata.decimals.toString()
+    }
+  }
+}
+
+export function formatAmount(amount: string | number): string {
+  const num = NumberUtil.bigNumber(amount, { safe: true })
+
+  if (num.lt(0.001)) {
+    return '<0.001'
+  }
+
+  return num.round(4).toString()
 }

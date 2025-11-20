@@ -18,7 +18,7 @@ export { PayController } from '../src/controllers/PayController.js'
 export type { PayControllerState } from '../src/controllers/PayController.js'
 
 // -- Types ----------------------------------------- //
-
+export type { Quote, QuoteFee, QuoteCurrency, QuoteStatus } from '../src/types/quote.js'
 export type { PayResult, CurrentPayment } from '../src/controllers/PayController.js'
 export type { PaymentAsset } from '../src/types/options.js'
 export type { AppKitPayErrorMessage } from '../src/types/errors.js'

@@ -11,6 +11,7 @@ import type { Connector, WcWallet } from './TypeUtil.js'
 // -- Types --------------------------------------------- //
 export interface AssetUtilState {
   networkImagePromises: Record<string, Promise<void>>
+  tokenImagePromises: Record<string, Promise<void>>
 }
 
 const namespaceImageIds: Record<ChainNamespace, string> = {
@@ -34,7 +35,8 @@ const namespaceImageIds: Record<ChainNamespace, string> = {
 
 // -- State --------------------------------------------- //
 const state = proxy<AssetUtilState>({
-  networkImagePromises: {}
+  networkImagePromises: {},
+  tokenImagePromises: {}
 })
 
 // -- Util ---------------------------------------- //
@@ -69,6 +71,20 @@ export const AssetUtil = {
     await state.networkImagePromises[imageId]
 
     return this.getNetworkImageById(imageId)
+  },
+
+  async fetchTokenImage(imageId?: string) {
+    if (!imageId) {
+      return undefined
+    }
+
+    if (!state.tokenImagePromises[imageId]) {
+      state.tokenImagePromises[imageId] = ApiController._fetchTokenImage(imageId)
+    }
+
+    await state.tokenImagePromises[imageId]
+
+    return this.getTokenImage(imageId)
   },
 
   getWalletImageById(imageId?: string) {
@@ -186,5 +202,29 @@ export const AssetUtil = {
    */
   getChainNamespaceImageUrl(chainNamespace: ChainNamespace) {
     return this.getAssetImageUrl(namespaceImageIds[chainNamespace])
+  },
+
+  /**
+   * Get the image id for the given token and namespace.
+   * @param token - The token address or 'native' to get the image id for.
+   * @param namespace - The namespace to get the image id for.
+   * @returns The image URL for the token.
+   */
+  getImageByToken(token: string, namespace: ChainNamespace) {
+    if (token === 'native') {
+      const imageId =
+        ConstantsUtil.NATIVE_IMAGE_IDS_BY_NAMESPACE[
+          namespace as keyof typeof ConstantsUtil.NATIVE_IMAGE_IDS_BY_NAMESPACE
+        ] ?? null
+
+      return AssetUtil.fetchNetworkImage(imageId)
+    }
+
+    const symbol =
+      ConstantsUtil.TOKEN_SYMBOLS_BY_ADDRESS[
+        token as keyof typeof ConstantsUtil.TOKEN_SYMBOLS_BY_ADDRESS
+      ] ?? null
+
+    return AssetUtil.fetchTokenImage(symbol)
   }
 }

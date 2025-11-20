@@ -4,24 +4,42 @@ import {
   type CaipNetworkId,
   type ChainNamespace,
   ConstantsUtil,
-  ContractUtil
+  ContractUtil,
+  ParseUtil
 } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
   CoreHelperUtil,
+  type PaymentAsset,
   ProviderController
 } from '@reown/appkit-controllers'
 
+import { PayController } from '../controllers/PayController.js'
 import { AppKitPayError } from '../types/errors.js'
 import { AppKitPayErrorCodes } from '../types/errors.js'
 import type { PaymentOptions } from '../types/options.js'
+import type { Quote } from '../types/quote.js'
+
+interface EvmPaymentParams {
+  recipient: Address
+  amount: number | string
+  fromAddress?: Address
+}
 
 interface EnsureNetworkOptions {
   paymentAssetNetwork: string
   activeCaipNetwork: CaipNetwork
   approvedCaipNetworkIds: string[] | undefined
   requestedCaipNetworks: CaipNetwork[] | undefined
+}
+
+interface GetSameChainQuoteParams {
+  address: string
+  sourceToken: PaymentAsset
+  toToken: PaymentAsset
+  recipient: string
+  amount: string
 }
 
 export async function ensureCorrectNetwork(options: EnsureNetworkOptions): Promise<void> {
@@ -64,10 +82,17 @@ export async function ensureCorrectNetwork(options: EnsureNetworkOptions): Promi
   }
 }
 
-interface EvmPaymentParams {
-  recipient: Address
-  amount: number | string
-  fromAddress?: Address
+export function ensureCorrectAddress() {
+  const { chainNamespace } = ParseUtil.parseCaipNetworkId(PayController.state.paymentAsset.network)
+
+  const isAddress = CoreHelperUtil.isAddress(PayController.state.recipient, chainNamespace)
+
+  if (!isAddress) {
+    throw new AppKitPayError(
+      AppKitPayErrorCodes.INVALID_RECIPIENT_ADDRESS_FOR_ASSET,
+      `Provide valid recipient address for namespace "${chainNamespace}"`
+    )
+  }
 }
 
 export async function processEvmNativePayment(
@@ -127,6 +152,15 @@ export async function processEvmErc20Payment(
     throw new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR)
   }
 
+  // eslint-disable-next-line no-console
+  console.log({
+    fromAddress: params.fromAddress,
+    tokenAddress,
+    args: [recipientAddress, amountBigInt],
+    method: 'transfer',
+    abi: ContractUtil.getERC20Abi(tokenAddress),
+    chainNamespace: ConstantsUtil.CHAIN.EVM
+  })
   const txResponse = await ConnectionController.writeContract({
     fromAddress: params.fromAddress,
     tokenAddress,
@@ -195,4 +229,43 @@ export async function processSolanaPayment(
       `Solana payment failed: ${error}`
     )
   }
+}
+
+export async function getSameChainQuote({
+  sourceToken,
+  toToken,
+  amount,
+  recipient
+}: GetSameChainQuoteParams): Promise<Quote> {
+  const { chainId: toChainId } = ParseUtil.parseCaipNetworkId(toToken.network)
+
+  return Promise.resolve({
+    type: 'same-chain',
+    origin: {
+      amount,
+      amountFormatted: amount,
+      chainId: sourceToken.network,
+      symbol: sourceToken.metadata.symbol
+    },
+    destination: {
+      amount,
+      amountFormatted: amount,
+      chainId: toToken.network,
+      symbol: toToken.metadata.symbol
+    },
+    fees: [
+      {
+        id: 'service',
+        label: 'Service Fee',
+        amount: '0',
+        amountFormatted: '0',
+        chainId: toChainId.toString(),
+        amountUsd: '0',
+        currency: toToken
+      }
+    ],
+    requestId: 'same-chain',
+    depositAddress: recipient ?? '',
+    timeEstimate: 1000
+  })
 }
