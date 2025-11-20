@@ -140,7 +140,7 @@ export const solanaSOL: PaymentAsset = {
   }
 }
 
-export const ALL_TOKENS: PaymentAsset[] = [
+export const ALL_TOKENS = [
   baseETH,
   baseUSDC,
   ethereumUSDC,
@@ -154,4 +154,4 @@ export const ALL_TOKENS: PaymentAsset[] = [
   polygonUSDT,
   solanaUSDT,
   solanaSOL
-]
+] as const

@@ -636,6 +636,9 @@ export const PayController = {
   },
 
   async fetchTokensFromExchange() {
+    // eslint-disable-next-line no-console
+    console.log('ALL_TOKENS', ALL_TOKENS)
+
     const balanceWithImages = await Promise.all(
       ALL_TOKENS.map(async token => {
         const balance = formatPaymentAssetToBalance(token)
