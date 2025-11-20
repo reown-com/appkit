@@ -436,6 +436,9 @@ export class W3mPayQuoteView extends LitElement {
         try {
           return formatBalanceToPaymentAsset(balance)
         } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error('Error formatting balance to payment asset', err)
+
           return null
         }
       })
