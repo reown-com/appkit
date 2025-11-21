@@ -229,6 +229,9 @@ export class W3mPayQuoteView extends LitElement {
   private initializeNamespace() {
     const namespace = ChainController.state.activeChain as ChainNamespace
 
+    // eslint-disable-next-line no-console
+    console.log('initializeNamespace', namespace)
+
     this.namespace = namespace
     this.caipAddress = ChainController.getAccountData(namespace)?.caipAddress
     this.profileName = ChainController.getAccountData(namespace)?.profileName ?? null
@@ -242,6 +245,11 @@ export class W3mPayQuoteView extends LitElement {
   }
 
   private async fetchTokens() {
+    // eslint-disable-next-line no-console
+    console.log({
+      caipAddress: this.caipAddress,
+      namespace: this.namespace
+    })
     if (this.caipAddress && this.namespace) {
       const allNetworks = ChainController.getAllRequestedCaipNetworks()
       const targetNetwork = allNetworks.find(net => net.caipNetworkId === this.paymentAsset.network)
