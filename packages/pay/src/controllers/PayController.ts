@@ -649,9 +649,16 @@ export const PayController = {
 
         const { chainNamespace } = ParseUtil.parseCaipNetworkId(balance.chainId as CaipNetworkId)
 
+        let address = balance.address
+
+        if (CoreHelperUtil.isCaipAddress(address)) {
+          const { address: parsedAddress } = ParseUtil.parseCaipAddress(address)
+          address = parsedAddress
+        }
+
         // eslint-disable-next-line no-warning-comments
         // TODO: Crete an API
-        const image = await AssetUtil.getImageByToken(balance.address ?? '', chainNamespace).catch(
+        const image = await AssetUtil.getImageByToken(address ?? '', chainNamespace).catch(
           () => undefined
         )
 

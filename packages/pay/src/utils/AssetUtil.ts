@@ -89,7 +89,7 @@ export function formatBalanceToPaymentAsset(balance: Balance): PaymentAssetWithA
 export function formatPaymentAssetToBalance(paymentAsset: PaymentAsset): Balance {
   return {
     chainId: paymentAsset.network,
-    address: paymentAsset.asset,
+    address: `${paymentAsset.network}:${paymentAsset.asset}`,
     symbol: paymentAsset.metadata.symbol,
     name: paymentAsset.metadata.name,
     iconUrl: paymentAsset.metadata.logoURI || '',
