@@ -266,14 +266,8 @@ export class W3mPayQuoteView extends LitElement {
   }
 
   private fetchQuote() {
-    if (
-      this.caipAddress &&
-      this.amount &&
-      this.recipient &&
-      this.selectedPaymentAsset &&
-      this.paymentAsset
-    ) {
-      const { address } = ParseUtil.parseCaipAddress(this.caipAddress)
+    if (this.amount && this.recipient && this.selectedPaymentAsset && this.paymentAsset) {
+      const { address } = this.caipAddress ? ParseUtil.parseCaipAddress(this.caipAddress) : {}
 
       PayController.fetchQuote({
         amount: this.amount.toString(),
@@ -456,6 +450,8 @@ export class W3mPayQuoteView extends LitElement {
         const { chainId: paymentAssetChainId } = ParseUtil.parseCaipNetworkId(
           this.paymentAsset.network
         )
+        // eslint-disable-next-line no-console
+        console.log('option', option)
 
         if (HelpersUtil.isLowerCaseMatch(option.asset, this.paymentAsset.asset)) {
           return true

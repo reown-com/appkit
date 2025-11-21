@@ -63,25 +63,14 @@ export function formatBalanceToPaymentAsset(balance: Balance): PaymentAssetWithA
     throw new Error(`Target network not found for balance chainId "${balance.chainId}"`)
   }
 
-  if (!asset) {
-    if (!HelpersUtil.isLowerCaseMatch(balance.symbol, targetNetwork.nativeCurrency.symbol)) {
-      throw new Error(`Balance address not found for balance symbol "${balance.symbol}"`)
-    }
-
-    // eslint-disable-next-line no-console
-    console.log(
-      'Balance address not found for balance symbol',
-      balance.symbol,
-      targetNetwork.nativeCurrency.symbol
-    )
-
+  if (HelpersUtil.isLowerCaseMatch(balance.symbol, targetNetwork.nativeCurrency.symbol)) {
     asset = 'native'
-  }
-
-  if (CoreHelperUtil.isCaipAddress(asset)) {
+  } else if (CoreHelperUtil.isCaipAddress(asset)) {
     const { address } = ParseUtil.parseCaipAddress(asset)
 
     asset = address
+  } else {
+    throw new Error(`Balance address not found for balance symbol "${balance.symbol}"`)
   }
 
   return {

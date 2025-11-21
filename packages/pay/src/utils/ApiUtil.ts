@@ -86,7 +86,7 @@ type GetCrossChainQuoteParams = {
 }
 
 type GetQuoteParams = {
-  address: string
+  address?: string
   sourceToken: PaymentAsset
   toToken: PaymentAsset
   recipient: string
@@ -207,7 +207,11 @@ export async function getQuote(params: GetQuoteParams) {
       throw new Error('Source and destination assets must be the same')
     }
 
-    return getSameChainQuote(params)
+    if (!params.address) {
+      throw new Error('Address is required')
+    }
+
+    return getSameChainQuote({ ...params, address: params.address })
   }
 
   return getCrossChainQuote(params)

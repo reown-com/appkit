@@ -107,7 +107,7 @@ interface FetchTokensParams {
 }
 
 interface FetchQuoteParams {
-  address: string
+  address?: string
   sourceToken: PaymentAsset
   toToken: PaymentAsset
   recipient: string
