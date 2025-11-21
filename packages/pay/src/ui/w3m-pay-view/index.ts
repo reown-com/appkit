@@ -62,8 +62,6 @@ export class W3mPayView extends LitElement {
     this.unsubscribe.push(
       ConnectorController.subscribeKey('activeConnectorIds', ids => (this.activeConnectorIds = ids))
     )
-
-    PayController.fetchExchanges()
   }
 
   public override disconnectedCallback() {

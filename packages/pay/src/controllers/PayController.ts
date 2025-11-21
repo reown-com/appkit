@@ -664,7 +664,9 @@ export const PayController = {
     try {
       state.isFetchingTokenBalances = true
 
-      const isUsingExchange = Boolean(PayController.state.selectedExchange)
+      const isUsingExchange = Boolean(state.selectedExchange)
+      // eslint-disable-next-line no-console
+      console.log('isUsingExchange', isUsingExchange)
 
       const balancesFn = isUsingExchange
         ? this.fetchTokensFromExchange()
