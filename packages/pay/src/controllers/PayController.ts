@@ -101,7 +101,7 @@ export interface PayControllerState extends PaymentOptions {
 }
 
 interface FetchTokensParams {
-  caipAddress: CaipAddress
+  caipAddress?: CaipAddress
   caipNetwork?: CaipNetwork
   namespace: ChainNamespace
 }
@@ -134,7 +134,7 @@ interface GenerateExchangeUrlForQuoteParams {
 }
 
 interface FetchTokensFromEOAParams {
-  caipAddress: CaipAddress
+  caipAddress?: CaipAddress
   caipNetwork?: CaipNetwork
   namespace: ChainNamespace
 }
@@ -619,6 +619,10 @@ export const PayController = {
   },
 
   async fetchTokensFromEOA({ caipAddress, caipNetwork, namespace }: FetchTokensFromEOAParams) {
+    if (!caipAddress) {
+      return []
+    }
+
     const { address } = ParseUtil.parseCaipAddress(caipAddress)
 
     let overideCaipNetwork = caipNetwork

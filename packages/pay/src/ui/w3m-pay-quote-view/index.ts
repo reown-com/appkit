@@ -250,7 +250,7 @@ export class W3mPayQuoteView extends LitElement {
       caipAddress: this.caipAddress,
       namespace: this.namespace
     })
-    if (this.caipAddress && this.namespace) {
+    if (this.namespace) {
       const allNetworks = ChainController.getAllRequestedCaipNetworks()
       const targetNetwork = allNetworks.find(net => net.caipNetworkId === this.paymentAsset.network)
 
