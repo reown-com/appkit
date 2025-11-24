@@ -6,6 +6,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import {
   type Balance,
   type CaipAddress,
+  type CaipNetworkId,
   type ChainNamespace,
   NumberUtil,
   ParseUtil
@@ -250,9 +251,11 @@ export class W3mPayQuoteView extends LitElement {
       caipAddress: this.caipAddress,
       namespace: this.namespace
     })
-    if (this.namespace) {
+    if (this.namespace && this.caipAddress) {
+      const { chainId, chainNamespace } = ParseUtil.parseCaipAddress(this.caipAddress)
+      const caipNetworkId = `${chainNamespace}:${chainId}` as CaipNetworkId
       const allNetworks = ChainController.getAllRequestedCaipNetworks()
-      const targetNetwork = allNetworks.find(net => net.caipNetworkId === this.paymentAsset.network)
+      const targetNetwork = allNetworks.find(net => net.caipNetworkId === caipNetworkId)
 
       await PayController.fetchTokens({
         caipAddress: this.caipAddress,
@@ -451,7 +454,10 @@ export class W3mPayQuoteView extends LitElement {
           this.paymentAsset.network
         )
         // eslint-disable-next-line no-console
-        console.log('option', option)
+        console.log('option', {
+          optionChainId,
+          paymentAssetChainId
+        })
 
         if (HelpersUtil.isLowerCaseMatch(option.asset, this.paymentAsset.asset)) {
           return true
