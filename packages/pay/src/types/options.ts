@@ -18,6 +18,7 @@ export type PaymentAssetWithAmount = PaymentAsset & {
 }
 
 export type PaymentOptions = {
+  choice?: PaymentChoice
   paymentAsset: PaymentAsset
   recipient: string
   amount: number
@@ -50,3 +51,5 @@ export type PayUrlResponse = {
   url: string
   sessionId: string
 }
+
+export type PaymentChoice = 'pay' | 'deposit'

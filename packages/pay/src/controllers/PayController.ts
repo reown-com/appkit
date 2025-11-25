@@ -35,6 +35,7 @@ import type {
   PayUrlParams,
   PaymentAsset,
   PaymentAssetWithAmount,
+  PaymentChoice,
   PaymentOptions
 } from '../types/options.js'
 import type { Quote, QuoteStatus } from '../types/quote.js'
@@ -86,6 +87,8 @@ export interface PayControllerState extends PaymentOptions {
   paymentId?: string
 
   // NEW ONES
+  choice: PaymentChoice
+
   tokenBalances: Partial<Record<ChainNamespace, Balance[]>>
   isFetchingTokenBalances: boolean
 
@@ -170,6 +173,7 @@ const state = proxy<PayControllerState>({
   paymentId: undefined,
 
   // NEW ONES
+  choice: 'pay',
   tokenBalances: {
     [ConstantsUtil.CHAIN.EVM]: [],
     [ConstantsUtil.CHAIN.SOLANA]: []
@@ -253,6 +257,7 @@ export const PayController = {
     }
 
     try {
+      state.choice = config.choice ?? 'pay'
       state.paymentAsset = config.paymentAsset
       state.recipient = config.recipient
       state.amount = config.amount
