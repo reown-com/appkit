@@ -442,6 +442,11 @@ const controller = {
     state.connectors = ConnectorController.mergeMultiChainConnectors(enabledConnectors)
   },
 
+  /**
+   * Opens the connect modal and waits until the user connects their wallet.
+   * @param params - Connection parameters.
+   * @returns Promise resolving to the connected wallet's CAIP address.
+   */
   async connect(params: ConnectParameters = {}): Promise<{ caipAddress: CaipAddress }> {
     const { namespace } = params
 

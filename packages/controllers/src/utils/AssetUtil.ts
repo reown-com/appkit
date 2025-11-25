@@ -73,6 +73,11 @@ export const AssetUtil = {
     return this.getNetworkImageById(imageId)
   },
 
+  /**
+   * Fetches the token image for the given image ID.
+   * @param imageId - The image id of the token.
+   * @returns The token image.
+   */
   async fetchTokenImage(imageId?: string) {
     if (!imageId) {
       return undefined
