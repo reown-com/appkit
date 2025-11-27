@@ -503,7 +503,9 @@ export class WagmiAdapter extends AdapterBlueprint {
     const customConnectorImages = AssetController.state.connectorImages
     this.addConnector({
       id: connector.id,
-      explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
+      explorerId:
+        PresetsUtil.ConnectorExplorerIds[connector.id] ??
+        PresetsUtil.ConnectorExplorerIds[connector.name],
       imageUrl: customConnectorImages?.[connector.id] ?? connector.icon,
       name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
       imageId: PresetsUtil.ConnectorImageIds[connector.id],

@@ -390,6 +390,9 @@ export class Ethers5Adapter extends AdapterBlueprint {
           this.addConnector({
             id,
             type,
+            explorerId:
+              PresetsUtil.ConnectorExplorerIds[info.rdns || ''] ??
+              PresetsUtil.ConnectorExplorerIds[info.name || ''],
             imageUrl: info?.icon,
             name: info?.name || 'Unknown',
             provider,
