@@ -7,6 +7,7 @@ import {
   ApiController,
   ChainController,
   ConnectorController,
+  CoreHelperUtil,
   ModalController,
   ModalUtil,
   OptionsController,
@@ -246,8 +247,13 @@ export class W3mModalBase extends LitElement {
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
     const isInProfileView = RouterController.state.view === 'ProfileWallets'
 
-    const shouldClose = !caipAddress && !isSwitchingNamespace && !isInProfileView
-    if (shouldClose) {
+    const shouldCloseModal = !caipAddress && !isSwitchingNamespace && !isInProfileView
+
+    const hasPreviouslyDisconnected = !CoreHelperUtil.getPlainAddress(this.caipAddress)
+    const shouldCloseEmbeddedModal =
+      this.enableEmbedded && Boolean(caipAddress) && hasPreviouslyDisconnected
+
+    if (shouldCloseModal || shouldCloseEmbeddedModal) {
       ModalController.close()
     }
 
