@@ -2,4 +2,4 @@
 '@reown/appkit-adapter-bitcoin': patch
 ---
 
-Removes unused bicoinjs-lib dependency
+Removes unused bitcoinjs-lib dependency
