@@ -114,7 +114,7 @@ This document orients Cursor to the structure, relationships, and common pattern
 ### State, Data, and External SDKs
 
 - State management is uniform with `valtio`. Controllers own reactive state; UI subscribes.
-- EVM stack uses `viem` and `wagmi` (in adapters). Solana uses `@solana/web3.js` and wallet-standard libs. Bitcoin uses `bitcoinjs-lib`, `sats-connect`.
+- EVM stack uses `viem` and `wagmi` (in adapters). Solana uses `@solana/web3.js` and wallet-standard libs. Bitcoin uses `wallet-standard` and `sats-connect`.
 - WalletConnect v2 is integrated via `@walletconnect/universal-provider`. Keep provider interactions isolated in `controllers`/`utils`/adapters.
 
 ### Testing Conventions
