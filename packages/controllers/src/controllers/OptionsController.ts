@@ -1,7 +1,7 @@
 import { proxy, snapshot } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import type { CaipNetworkId, CustomRpcUrl } from '@reown/appkit-common'
+import type { CaipNetwork, CaipNetworkId, CustomRpcUrl } from '@reown/appkit-common'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
@@ -168,6 +168,11 @@ export interface OptionsControllerStatePublic {
    * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa', ton: 'eoa' }"
    */
   defaultAccountTypes: PreferredAccountTypes
+  /**
+   * Desired network for the initial connection as default
+   * @default undefined
+   */
+  defaultNetwork?: CaipNetwork
   /**
    * Allows users to indicate if they want to handle the WC connection themselves.
    * @default false
@@ -437,6 +442,10 @@ export const OptionsController = {
 
   setCoinbasePreference(coinbasePreference: OptionsControllerState['coinbasePreference']) {
     state.coinbasePreference = coinbasePreference
+  },
+
+  setDefaultNetwork(defaultNetwork: OptionsControllerState['defaultNetwork']) {
+    state.defaultNetwork = defaultNetwork
   },
 
   setDefaultAccountTypes(

@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import type { CaipNetwork } from '@reown/appkit-common'
+
 import { OptionsController } from '../../exports/index.js'
 import { ConstantsUtil } from '../../src/utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil.js'
@@ -125,5 +127,32 @@ describe('OptionsController', () => {
     OptionsController.setEnableMobileFullScreen(true)
     expect(OptionsController.state.enableMobileFullScreen).toBe(true)
     spy.mockRestore()
+  })
+
+  it('should update state correctly on setDefaultNetwork()', () => {
+    const mockNetwork = {
+      chainNamespace: 'eip155',
+      caipNetworkId: 'eip155:1',
+      name: 'Ethereum',
+      id: 1,
+      currency: 'ETH'
+    } as unknown as CaipNetwork
+
+    OptionsController.setDefaultNetwork(mockNetwork)
+    expect(OptionsController.state.defaultNetwork).toEqual(mockNetwork)
+  })
+
+  it('should set defaultNetwork to undefined', () => {
+    const mockNetwork = {
+      chainNamespace: 'eip155',
+      caipNetworkId: 'eip155:1'
+    } as unknown as CaipNetwork
+
+    OptionsController.setDefaultNetwork(mockNetwork)
+    expect(OptionsController.state.defaultNetwork).toEqual(mockNetwork)
+
+    // Then set it to undefined
+    OptionsController.setDefaultNetwork(undefined)
+    expect(OptionsController.state.defaultNetwork).toBeUndefined()
   })
 })
