@@ -513,7 +513,6 @@ export abstract class AppKitBaseClient {
   }
 
   /**
-   *
    * @returns The last active network from storage or the `defaultNetwork` set by the user.
    */
   protected getLastActiveOrDefaultNetwork() {
