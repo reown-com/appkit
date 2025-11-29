@@ -695,13 +695,13 @@ export class WagmiAdapter extends AdapterBlueprint {
       const defaultNetwork = OptionsController.state.defaultNetwork
 
       if (defaultNetwork && defaultNetwork.chainNamespace === 'eip155') {
-        const defaultChainId = Number(defaultNetwork?.caipNetworkId.split(':')[1])
+        const defaultChainId = Number(defaultNetwork.caipNetworkId.split(':')[1])
         chainId = Number.isFinite(defaultChainId) ? defaultChainId : undefined
       }
 
       const res = await connect(this.wagmiConfig, {
         connector,
-        chainId: chainId ? Number(chainId) : undefined,
+        chainId,
         // @ts-expect-error socialUri is needed for auth connector but not in wagmi types
         socialUri
       })
