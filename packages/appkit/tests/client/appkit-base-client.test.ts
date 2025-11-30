@@ -2,7 +2,6 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import {
   AlertController,
@@ -650,7 +649,7 @@ describe('AppKitBaseClient initialization', () => {
 
   describe('AppKitBaseClient.onDisconnectNamespace execution order', () => {
     it('should call getConnectorId before resetAccount to avoid undefined connectorId', () => {
-      const namespace = CommonConstantsUtil.CHAIN.SOLANA
+      const namespace = ConstantsUtil.CHAIN.SOLANA
       const connectorId = 'phantom'
 
       // Mock getConnectorId to return a value initially
@@ -730,7 +729,7 @@ describe('AppKitBaseClient initialization', () => {
     })
 
     it('should call removeConnectorId only once via resetAccount', () => {
-      const namespace = CommonConstantsUtil.CHAIN.SOLANA
+      const namespace = ConstantsUtil.CHAIN.SOLANA
       const connectorId = 'phantom'
 
       vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(connectorId)
