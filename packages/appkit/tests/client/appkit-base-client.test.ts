@@ -2,6 +2,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import {
   AlertController,
@@ -9,18 +10,22 @@ import {
   type ChainAdapter,
   ChainController,
   ConnectionController,
+  ConnectorController,
   CoreHelperUtil,
   ModalController,
+  ProviderController,
   type RemoteFeatures,
   SendController,
+  StorageUtil,
   WcHelpersUtil
 } from '@reown/appkit-controllers'
 import { mockChainControllerState } from '@reown/appkit-controllers/testing'
 import { ErrorUtil, TokenUtil } from '@reown/appkit-utils'
 
+import { solanaCaipNetwork } from '../../exports/testing.js'
 import { AppKitBaseClient } from '../../src/client/appkit-base-client'
 import { ConfigUtil } from '../../src/utils/ConfigUtil'
-import { mainnet } from '../mocks/Networks'
+import { mainnet, solana } from '../mocks/Networks'
 
 describe('AppKitBaseClient.checkAllowedOrigins', () => {
   let baseClient: AppKitBaseClient
@@ -641,5 +646,146 @@ describe('AppKitBaseClient initialization', () => {
     })()
 
     await vi.waitFor(() => expect(fetchRemoteFeaturesSpy).toHaveBeenCalled())
+  })
+
+  describe('AppKitBaseClient.onDisconnectNamespace execution order', () => {
+    it('should call getConnectorId before resetAccount to avoid undefined connectorId', () => {
+      const namespace = CommonConstantsUtil.CHAIN.SOLANA
+      const connectorId = 'phantom'
+
+      // Mock getConnectorId to return a value initially
+      const getConnectorIdSpy = vi
+        .spyOn(ConnectorController, 'getConnectorId')
+        .mockReturnValue(connectorId)
+
+      // Mock resetAccount to call removeConnectorId
+      const resetAccountSpy = vi.spyOn(ChainController, 'resetAccount').mockImplementation(ns => {
+        // Simulate what resetAccount does - it calls removeConnectorId
+        if (ns) {
+          ConnectorController.removeConnectorId(ns)
+        }
+      })
+
+      const addDisconnectedConnectorIdSpy = vi
+        .spyOn(StorageUtil, 'addDisconnectedConnectorId')
+        .mockImplementation(() => {})
+
+      // Mock removeConnectorId to simulate its side effect
+      vi.spyOn(ConnectorController, 'removeConnectorId').mockImplementation(() => {
+        // After removeConnectorId is called, getConnectorId should return undefined
+        getConnectorIdSpy.mockReturnValue(undefined)
+      })
+
+      vi.spyOn(ChainController, 'resetNetwork').mockImplementation(() => {})
+      vi.spyOn(StorageUtil, 'removeConnectedNamespace').mockImplementation(() => {})
+      vi.spyOn(ProviderController, 'resetChain').mockImplementation(() => {})
+
+      mockChainControllerState({
+        activeChain: namespace,
+        chains: new Map([
+          [
+            namespace,
+            { caipNetwork: solanaCaipNetwork, accountState: { caipAddress: 'solana:1:0x123' } }
+          ]
+        ])
+      })
+
+      const baseClient = new (class extends AppKitBaseClient {
+        constructor() {
+          super({
+            projectId: 'test-project-id',
+            networks: [solana],
+            adapters: [],
+            sdkVersion: 'html-wagmi-1'
+          })
+        }
+        async injectModalUi() {}
+        async syncIdentity() {}
+        override async syncAdapterConnections() {
+          return Promise.resolve()
+        }
+      })()
+
+      // Call onDisconnectNamespace
+      ;(baseClient as any).onDisconnectNamespace({
+        chainNamespace: namespace,
+        closeModal: false
+      })
+
+      // Verify that getConnectorId was called BEFORE resetAccount
+      // This ensures connectorId is captured before it's removed
+      const getConnectorIdCallOrder = getConnectorIdSpy.mock.invocationCallOrder[0]
+      const resetAccountCallOrder = resetAccountSpy.mock.invocationCallOrder[0]
+
+      expect(getConnectorIdCallOrder).toBeDefined()
+      expect(resetAccountCallOrder).toBeDefined()
+      expect(getConnectorIdCallOrder).toBeLessThan(resetAccountCallOrder!)
+
+      // Verify that addDisconnectedConnectorId was called with the correct connectorId
+      expect(addDisconnectedConnectorIdSpy).toHaveBeenCalledWith(connectorId, namespace)
+      // Verify it was NOT called with invalid values that indicate getConnectorId returned undefined
+      expect(addDisconnectedConnectorIdSpy).not.toHaveBeenCalledWith('', namespace)
+      expect(addDisconnectedConnectorIdSpy).not.toHaveBeenCalledWith(undefined, namespace)
+      expect(addDisconnectedConnectorIdSpy).not.toHaveBeenCalledWith(null, namespace)
+    })
+
+    it('should call removeConnectorId only once via resetAccount', () => {
+      const namespace = CommonConstantsUtil.CHAIN.SOLANA
+      const connectorId = 'phantom'
+
+      vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(connectorId)
+
+      const removeConnectorIdSpy = vi
+        .spyOn(ConnectorController, 'removeConnectorId')
+        .mockImplementation(() => {})
+
+      // Mock resetAccount to call removeConnectorId (simulating real behavior)
+      vi.spyOn(ChainController, 'resetAccount').mockImplementation(ns => {
+        if (ns) {
+          ConnectorController.removeConnectorId(ns)
+        }
+      })
+
+      vi.spyOn(ChainController, 'resetNetwork').mockImplementation(() => {})
+      vi.spyOn(StorageUtil, 'addDisconnectedConnectorId').mockImplementation(() => {})
+      vi.spyOn(StorageUtil, 'removeConnectedNamespace').mockImplementation(() => {})
+      vi.spyOn(ProviderController, 'resetChain').mockImplementation(() => {})
+
+      mockChainControllerState({
+        activeChain: namespace,
+        chains: new Map([
+          [
+            namespace,
+            { caipNetwork: solanaCaipNetwork, accountState: { caipAddress: 'solana:1:0x123' } }
+          ]
+        ])
+      })
+
+      const baseClient = new (class extends AppKitBaseClient {
+        constructor() {
+          super({
+            projectId: 'test-project-id',
+            networks: [solana],
+            adapters: [],
+            sdkVersion: 'html-wagmi-1'
+          })
+        }
+        async injectModalUi() {}
+        async syncIdentity() {}
+        override async syncAdapterConnections() {
+          return Promise.resolve()
+        }
+      })()
+
+      // Call onDisconnectNamespace
+      ;(baseClient as any).onDisconnectNamespace({
+        chainNamespace: namespace,
+        closeModal: false
+      })
+
+      // Verify removeConnectorId was called exactly once (via resetAccount)
+      expect(removeConnectorIdSpy).toHaveBeenCalledTimes(1)
+      expect(removeConnectorIdSpy).toHaveBeenCalledWith(namespace)
+    })
   })
 })
