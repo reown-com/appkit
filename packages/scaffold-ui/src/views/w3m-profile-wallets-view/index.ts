@@ -182,7 +182,9 @@ export class W3mProfileWalletsView extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private renderTabs() {
-    const availableTabs = NAMESPACE_TABS.filter(tab => this.namespaces.includes(tab.namespace))
+    const availableTabs = this.namespaces
+      .map(namespace => NAMESPACE_TABS.find(tab => tab.namespace === namespace))
+      .filter(Boolean) as typeof NAMESPACE_TABS
 
     const tabCount = availableTabs.length
     if (tabCount > 1) {
