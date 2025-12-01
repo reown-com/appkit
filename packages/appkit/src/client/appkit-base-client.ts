@@ -2415,6 +2415,7 @@ export abstract class AppKitBaseClient {
     callback: (newState: UseAppKitAccountReturn) => void,
     namespace?: ChainNamespace
   ) {
+    const unsubArr: (() => void)[] = []
     const updateVal = () => {
       const account = this.getAccount(namespace)
 
@@ -2426,11 +2427,18 @@ export abstract class AppKitBaseClient {
     }
 
     if (namespace) {
-      ChainController.subscribeChainProp('accountState', updateVal, namespace)
+      const unsub = ChainController.subscribeChainProp('accountState', updateVal, namespace)
+      unsubArr.push(unsub)
     } else {
-      ChainController.subscribe(updateVal)
+      const unsub = ChainController.subscribe(updateVal)
+      unsubArr.push(unsub)
     }
-    ConnectorController.subscribe(updateVal)
+    const unsub = ConnectorController.subscribe(updateVal)
+    unsubArr.push(unsub)
+
+    return () => {
+      unsubArr.forEach(fn => fn())
+    }
   }
 
   public subscribeNetwork(
@@ -2463,13 +2471,13 @@ export abstract class AppKitBaseClient {
   }
 
   public subscribeShouldUpdateToAddress(callback: (newState?: string) => void) {
-    ChainController.subscribeChainProp('accountState', accountState =>
+    return ChainController.subscribeChainProp('accountState', accountState =>
       callback(accountState?.shouldUpdateToAddress)
     )
   }
 
   public subscribeCaipNetworkChange(callback: (newState?: CaipNetwork) => void) {
-    ChainController.subscribeKey('activeCaipNetwork', callback)
+    return ChainController.subscribeKey('activeCaipNetwork', callback)
   }
 
   public getState() {
