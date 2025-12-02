@@ -1,13 +1,12 @@
 import type { ProviderInterface } from '@base-org/account'
 
-import { ChainController, OptionsController } from '@reown/appkit-controllers'
+import { OptionsController } from '@reown/appkit-controllers'
 
 import { EthersProvider } from './EthersProvider.js'
 
 export class BaseProvider extends EthersProvider<ProviderInterface> {
   async initialize(): Promise<void> {
-    const caipNetworks = ChainController.getCaipNetworks()
-    const { metadata, coinbasePreference } = OptionsController.state
+    const { metadata } = OptionsController.state
     try {
       const { createBaseAccountSDK } = await import('@base-org/account')
       if (typeof window === 'undefined') {
@@ -16,11 +15,7 @@ export class BaseProvider extends EthersProvider<ProviderInterface> {
 
       const baseAccountSdk = createBaseAccountSDK({
         appName: metadata?.name,
-        appLogoUrl: metadata?.icons[0],
-        appChainIds: caipNetworks?.map(caipNetwork => caipNetwork.id as number) || [1, 84532],
-        preference: {
-          options: coinbasePreference ?? 'all'
-        }
+        appLogoUrl: metadata?.icons[0]
       })
 
       this.provider = baseAccountSdk.getProvider()
@@ -29,7 +24,7 @@ export class BaseProvider extends EthersProvider<ProviderInterface> {
       return Promise.resolve()
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error('Failed to import Coinbase Wallet SDK:', error)
+      console.error('Failed to import Base Account SDK:', error)
 
       return Promise.resolve()
     }
