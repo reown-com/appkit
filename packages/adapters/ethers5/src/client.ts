@@ -509,6 +509,55 @@ export class Ethers5Adapter extends AdapterBlueprint {
           chainId: Number(chainId),
           connector
         })
+      } else if (id === CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT) {
+        /*
+         * Use the new Base Account SDK wallet_connect RPC method.
+         * This uses SIWE (Sign-In With Ethereum) capabilities for authentication.
+         * @see https://docs.base.org/base-account/quickstart/web
+         */
+        const nonce = CoreHelperUtil.getUUID().replace(/-/gu, '')
+        const resolvedChainId = chainId ? Number(chainId) : 8453
+        const hexChainId = EthersHelpersUtil.numberToHexString(resolvedChainId)
+
+        const result = await selectedProvider.request({
+          method: 'wallet_connect',
+          params: [
+            {
+              version: '1',
+              capabilities: {
+                signInWithEthereum: {
+                  nonce,
+                  chainId: hexChainId
+                }
+              }
+            }
+          ]
+        })
+
+        const baseAccounts = (result as { accounts: Array<{ address: string }> })?.accounts
+        if (!baseAccounts?.[0]) {
+          throw new Error('Base Account connection failed: No accounts returned')
+        }
+
+        accounts = [baseAccounts[0].address]
+
+        const caipNetwork = this.getCaipNetworks().find(
+          n => n.id.toString() === chainId?.toString()
+        )
+
+        this.emit('accountChanged', {
+          address: this.toChecksummedAddress(accounts[0] as Address),
+          chainId: Number(chainId),
+          connector
+        })
+
+        this.addConnection({
+          connectorId: id,
+          accounts: accounts.map(account => ({ address: account })),
+          caipNetwork
+        })
+
+        this.listenProviderEvents(id, selectedProvider)
       } else {
         accounts = await selectedProvider.request({
           method: 'eth_requestAccounts'
