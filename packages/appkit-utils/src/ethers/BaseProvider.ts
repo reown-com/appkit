@@ -1,12 +1,13 @@
 import type { ProviderInterface } from '@base-org/account'
 
-import { OptionsController } from '@reown/appkit-controllers'
+import { ChainController, OptionsController } from '@reown/appkit-controllers'
 
 import { EthersProvider } from './EthersProvider.js'
 
 export class BaseProvider extends EthersProvider<ProviderInterface> {
   async initialize(): Promise<void> {
-    const { metadata } = OptionsController.state
+    const caipNetworks = ChainController.getCaipNetworks()
+    const { metadata, coinbasePreference } = OptionsController.state
     try {
       const { createBaseAccountSDK } = await import('@base-org/account')
       if (typeof window === 'undefined') {
@@ -15,7 +16,11 @@ export class BaseProvider extends EthersProvider<ProviderInterface> {
 
       const baseAccountSdk = createBaseAccountSDK({
         appName: metadata?.name,
-        appLogoUrl: metadata?.icons[0]
+        appLogoUrl: metadata?.icons[0],
+        appChainIds: caipNetworks?.map(caipNetwork => caipNetwork.id as number) || [1, 84532],
+        preference: {
+          options: coinbasePreference ?? 'all'
+        }
       })
 
       this.provider = baseAccountSdk.getProvider()
