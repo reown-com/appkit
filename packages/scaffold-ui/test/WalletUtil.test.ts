@@ -5,11 +5,10 @@ import {
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
-  StorageUtil
+  StorageUtil,
+  WalletUtil
 } from '@reown/appkit-controllers'
 import type { WcWallet } from '@reown/appkit-controllers'
-
-import { WalletUtil } from '../src/utils/WalletUtil'
 
 // Connectors
 const mockMetamaskConnector = {

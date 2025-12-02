@@ -15,10 +15,10 @@ import {
 } from 'sats-connect'
 
 import type { CaipNetwork } from '@reown/appkit-common'
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-common'
 import { ChainController, CoreHelperUtil } from '@reown/appkit-controllers'
 import type { RequestArguments } from '@reown/appkit-controllers'
-import { HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
+import { HelpersUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 
 import { mapSatsConnectAddressPurpose } from '../utils/BitcoinConnector.js'

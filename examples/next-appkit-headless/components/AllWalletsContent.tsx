@@ -2,21 +2,20 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { ArrowLeftIcon, ChevronRightIcon, Loader2Icon, SearchIcon } from 'lucide-react'
-import Image from 'next/image'
+import { ArrowLeftIcon, Loader2Icon, SearchIcon } from 'lucide-react'
 
 import type { WalletItem } from '@reown/appkit'
 import { useAppKitWallets } from '@reown/appkit/react'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item'
-import { cn } from '@/lib/utils'
+
+import { WalletListItem } from './WalletListItem'
 
 type Props = {
-  onBack?: () => void
-  onWalletClick?: (wallet: WalletItem) => void
+  onBack: () => void
+  onConnect: (wallet: WalletItem) => void
 }
 
 function useDebounceValue(value: string, delay: number) {
@@ -35,18 +34,16 @@ function useDebounceValue(value: string, delay: number) {
   return debouncedValue
 }
 
-export function WalletConnectWalletsContent({ onBack, onWalletClick }: Props) {
-  const { data, isFetchingWallets, page, count, fetchWallets } = useAppKitWallets()
+export function AllWalletsContent({ onBack, onConnect }: Props) {
+  const { wcWallets, isFetchingWallets, page, count, fetchWallets } = useAppKitWallets()
   const [inputValue, setInputValue] = useState('')
   const searchQuery = useDebounceValue(inputValue, 500)
   const loadMoreRef = useRef<HTMLDivElement>(null)
 
-  const wcWallets = data.filter(w => !w.isInjected && w.name !== 'WalletConnect')
-
   // Initial fetch
   useEffect(() => {
     fetchWallets?.()
-  }, [fetchWallets])
+  }, [])
 
   // Search effect
   useEffect(() => {
@@ -55,7 +52,7 @@ export function WalletConnectWalletsContent({ onBack, onWalletClick }: Props) {
     } else {
       fetchWallets?.()
     }
-  }, [searchQuery, fetchWallets])
+  }, [searchQuery])
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -77,10 +74,6 @@ export function WalletConnectWalletsContent({ onBack, onWalletClick }: Props) {
       intersectionObserver.disconnect()
     }
   }, [page, isFetchingWallets, searchQuery, fetchWallets])
-
-  async function handleWalletClick(item: WalletItem) {
-    onWalletClick?.(item)
-  }
 
   return (
     <div className="flex flex-col gap-4 p-6">
@@ -122,35 +115,14 @@ export function WalletConnectWalletsContent({ onBack, onWalletClick }: Props) {
             </div>
           ) : (
             <>
-              {wcWallets.map(item => {
-                return (
-                  <Item
-                    key={item.id}
-                    variant="outline"
-                    size="sm"
-                    className={cn('cursor-pointer transition-colors hover:bg-accent/50')}
-                    onClick={() => handleWalletClick(item)}
-                  >
-                    <div className="flex w-full items-center">
-                      <ItemMedia className="mr-2 size-6 shrink-0 overflow-hidden rounded-sm">
-                        <Image
-                          src={item.imageUrl}
-                          alt={item.name}
-                          width={24}
-                          height={24}
-                          className="size-full object-cover"
-                        />
-                      </ItemMedia>
-                      <ItemContent className="min-w-0 flex-1">
-                        <ItemTitle className="truncate">{item.name}</ItemTitle>
-                      </ItemContent>
-                      <ItemActions>
-                        <ChevronRightIcon className="size-4" />
-                      </ItemActions>
-                    </div>
-                  </Item>
-                )
-              })}
+              {wcWallets.map(item => (
+                <WalletListItem
+                  key={item.id}
+                  wallet={item}
+                  onConnect={onConnect}
+                  onOpenNamespaceDialog={() => {}}
+                />
+              ))}
 
               {/* Intersection Observer Target */}
               {!isFetchingWallets && searchQuery.length === 0 && (

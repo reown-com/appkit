@@ -419,6 +419,30 @@ describe('WagmiAdapter', () => {
         }
       ])
     })
+
+    it('should set explorerId from PresetsUtil based on connector.id or connector.name', async () => {
+      const mockConnector = {
+        id: 'MetaMask',
+        name: 'MetaMask',
+        type: 'injected',
+        icon: 'data:image/png;base64,mock',
+        getProvider() {
+          return Promise.resolve({ connect: vi.fn(), request: vi.fn() })
+        }
+      } as unknown as wagmiCore.Connector
+
+      const addConnectorSpy = vi.spyOn(adapter as any, 'addConnector')
+
+      await (adapter as any).addWagmiConnector(mockConnector, {
+        enableEIP6963: false
+      })
+
+      expect(addConnectorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          explorerId: expect.any(String)
+        })
+      )
+    })
   })
 
   describe('WagmiAdapter - signMessage', () => {

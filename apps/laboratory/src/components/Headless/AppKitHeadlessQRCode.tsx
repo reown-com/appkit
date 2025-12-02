@@ -1,18 +1,48 @@
 import QRCode from 'react-qr-code'
 
-import { ArrowBackIcon, CopyIcon } from '@chakra-ui/icons'
+import { ArrowBackIcon, CopyIcon, ExternalLinkIcon } from '@chakra-ui/icons'
 import { Box, Button, Flex, IconButton, Image, Spinner, Text, VStack } from '@chakra-ui/react'
 
-import { type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
+import { CoreHelperUtil, useAppKitWallets } from '@reown/appkit/react'
 
 interface Props {
-  wallet: UseAppKitWalletsReturn['data'][number]
   onBack: () => void
   onCopyUri?: () => void
 }
 
-export function AppKitHeadlessQRCode({ wallet, onBack, onCopyUri }: Props) {
-  const { wcUri, isFetchingWcUri } = useAppKitWallets()
+export function AppKitHeadlessQRCode({ onBack, onCopyUri }: Props) {
+  const { wcUri, isFetchingWcUri, connectingWallet } = useAppKitWallets()
+
+  if (!connectingWallet) {
+    return null
+  }
+
+  const isMobile = CoreHelperUtil.isMobile()
+  const installationLinks = connectingWallet.walletInfo?.installationLinks
+
+  function handleAppStoreClick() {
+    if (installationLinks?.appStore) {
+      window.open(installationLinks.appStore, '_blank', 'noopener,noreferrer')
+    }
+  }
+
+  function handlePlayStoreClick() {
+    if (installationLinks?.playStore) {
+      window.open(installationLinks.playStore, '_blank', 'noopener,noreferrer')
+    }
+  }
+
+  function handleChromeStoreClick() {
+    if (installationLinks?.chromeStore) {
+      window.open(installationLinks.chromeStore, '_blank', 'noopener,noreferrer')
+    }
+  }
+
+  function handleDesktopLinkClick() {
+    if (installationLinks?.desktopLink) {
+      window.open(installationLinks.desktopLink, '_blank', 'noopener,noreferrer')
+    }
+  }
 
   return (
     <Flex direction="column" gap={4} height="100%">
@@ -32,10 +62,10 @@ export function AppKitHeadlessQRCode({ wallet, onBack, onCopyUri }: Props) {
 
       {/* Wallet Info */}
       <Flex align="center" gap={3} p={3} bg="gray.50" _dark={{ bg: 'gray.700' }} borderRadius="md">
-        {wallet.imageUrl ? (
+        {connectingWallet.imageUrl ? (
           <Image
-            src={wallet.imageUrl}
-            alt={wallet.name}
+            src={connectingWallet.imageUrl}
+            alt={connectingWallet.name}
             boxSize="40px"
             borderRadius="md"
             fallback={
@@ -48,7 +78,7 @@ export function AppKitHeadlessQRCode({ wallet, onBack, onCopyUri }: Props) {
                 justifyContent="center"
               >
                 <Text fontSize="sm" fontWeight="bold">
-                  {wallet.name.charAt(0)}
+                  {connectingWallet.name.charAt(0)}
                 </Text>
               </Box>
             }
@@ -63,12 +93,12 @@ export function AppKitHeadlessQRCode({ wallet, onBack, onCopyUri }: Props) {
             justifyContent="center"
           >
             <Text fontSize="sm" fontWeight="bold">
-              {wallet.name.charAt(0)}
+              {connectingWallet.name.charAt(0)}
             </Text>
           </Box>
         )}
         <VStack align="flex-start" spacing={0} flex={1}>
-          <Text fontWeight="medium">{wallet.name}</Text>
+          <Text fontWeight="medium">{connectingWallet.name}</Text>
           <Text fontSize="xs" color="gray.500">
             Connecting via WalletConnect
           </Text>
@@ -119,13 +149,72 @@ export function AppKitHeadlessQRCode({ wallet, onBack, onCopyUri }: Props) {
           Connection Instructions:
         </Text>
         <Text fontSize="xs" color="blue.700" _dark={{ color: 'blue.200' }} textAlign="center">
-          1. Open {wallet.name} on your phone
+          1. Open {connectingWallet.name} on your phone
           <br />
           2. Scan the QR code above
           <br />
           3. Approve the connection request
         </Text>
       </VStack>
+
+      {/* Download Links */}
+      {isMobile && installationLinks && (
+        <VStack spacing={2} p={4} bg="gray.50" _dark={{ bg: 'gray.800' }} borderRadius="md">
+          <Text fontSize="sm" fontWeight="medium" color="gray.700" _dark={{ color: 'gray.300' }}>
+            Don't have the app?
+          </Text>
+          <Flex gap={2} width="100%" flexWrap="wrap">
+            {installationLinks.appStore && (
+              <Button
+                size="sm"
+                leftIcon={<ExternalLinkIcon />}
+                onClick={handleAppStoreClick}
+                variant="outline"
+                flex={1}
+                minW="120px"
+              >
+                App Store
+              </Button>
+            )}
+            {installationLinks.playStore && (
+              <Button
+                size="sm"
+                leftIcon={<ExternalLinkIcon />}
+                onClick={handlePlayStoreClick}
+                variant="outline"
+                flex={1}
+                minW="120px"
+              >
+                Play Store
+              </Button>
+            )}
+            {installationLinks.chromeStore && (
+              <Button
+                size="sm"
+                leftIcon={<ExternalLinkIcon />}
+                onClick={handleChromeStoreClick}
+                variant="outline"
+                flex={1}
+                minW="120px"
+              >
+                Chrome Store
+              </Button>
+            )}
+            {installationLinks.desktopLink && (
+              <Button
+                size="sm"
+                leftIcon={<ExternalLinkIcon />}
+                onClick={handleDesktopLinkClick}
+                variant="outline"
+                flex={1}
+                minW="120px"
+              >
+                Desktop
+              </Button>
+            )}
+          </Flex>
+        </VStack>
+      )}
     </Flex>
   )
 }

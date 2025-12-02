@@ -7,16 +7,16 @@ import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import { type UseAppKitWalletsReturn } from '@reown/appkit/react'
 
 interface InjectedWalletItemProps {
-  wallet: UseAppKitWalletsReturn['data'][number]
-  onConnect: (wallet: UseAppKitWalletsReturn['data'][number], namespace: ChainNamespace) => void
+  wallet: UseAppKitWalletsReturn['wallets'][number]
+  onConnect: (wallet: UseAppKitWalletsReturn['wallets'][number], namespace: ChainNamespace) => void
   isConnecting: boolean
 }
 
 export function InjectedWalletItem({ wallet, onConnect, isConnecting }: InjectedWalletItemProps) {
   const [toggle, setToggle] = useState(false)
 
-  const isMultiChain = wallet.connectors.length > 1
-  const firstConnector = wallet.connectors[0]
+  const shouldToggleNamespaceDialog = wallet.connectors.length > 1 && wallet.isInjected
+  const isMultiChain = wallet.connectors.length > 1 && wallet.isInjected
 
   function toggleConnectors() {
     setToggle(v => !v)
@@ -38,9 +38,9 @@ export function InjectedWalletItem({ wallet, onConnect, isConnecting }: Injected
         px={4}
         justifyContent="flex-start"
         onClick={
-          isMultiChain
+          shouldToggleNamespaceDialog
             ? () => toggleConnectors()
-            : () => onConnect(wallet, firstConnector?.chain as ChainNamespace)
+            : () => onConnect(wallet, wallet.connectors[0]?.chain as ChainNamespace)
         }
         _hover={{ bg: 'gray.50', _dark: { bg: 'gray.700' } }}
       >
@@ -72,25 +72,27 @@ export function InjectedWalletItem({ wallet, onConnect, isConnecting }: Injected
             <Text fontWeight="medium">{wallet.name}</Text>
           </Flex>
 
-          <Flex gap={2} alignItems="center">
-            <Flex alignItems="center">
-              {connectorChains.map((chain, index) => (
-                <Image
-                  key={chain.chain}
-                  src={chain.imageUrl}
-                  alt={chain.chain}
-                  boxSize="20px"
-                  borderRadius="full"
-                  zIndex={connectorChains.length * 2 - index}
-                  marginLeft={index > 0 ? '-5px' : 0}
-                  border="1px solid white"
-                />
-              ))}
+          {wallet.isInjected ? (
+            <Flex gap={2} alignItems="center">
+              <Flex alignItems="center">
+                {connectorChains.map((chain, index) => (
+                  <Image
+                    key={chain.chain}
+                    src={chain.imageUrl}
+                    alt={chain.chain}
+                    boxSize="20px"
+                    borderRadius="full"
+                    zIndex={connectorChains.length * 2 - index}
+                    marginLeft={index > 0 ? '-5px' : 0}
+                    border="1px solid white"
+                  />
+                ))}
+              </Flex>
+              <Badge bgColor="gray.100" color="gray.500">
+                Installed
+              </Badge>
             </Flex>
-            <Badge bgColor="gray.100" color="gray.500">
-              Installed
-            </Badge>
-          </Flex>
+          ) : null}
 
           {isConnecting ? <Spinner color="gray.300" /> : <ChevronRightIcon />}
         </Flex>

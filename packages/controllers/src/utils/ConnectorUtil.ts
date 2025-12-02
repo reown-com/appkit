@@ -1,22 +1,22 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import {
-  ApiController,
-  ChainController,
-  ConnectionController,
-  type Connector,
-  ConnectorController,
-  type ConnectorTypeOrder,
-  type ConnectorWithProviders,
-  CoreHelperUtil,
-  type CustomWallet,
-  OptionsController,
-  OptionsUtil,
-  type SocialProvider,
-  StorageUtil,
-  type WcWallet
-} from '@reown/appkit-controllers'
-import { HelpersUtil } from '@reown/appkit-utils'
+import { ConstantsUtil as CommonConstantsUtil, HelpersUtil } from '@reown/appkit-common'
 
+import { ApiController } from '../controllers/ApiController.js'
+import { ChainController } from '../controllers/ChainController.js'
+import { ConnectionController } from '../controllers/ConnectionController.js'
+import { ConnectorController } from '../controllers/ConnectorController.js'
+import { OptionsController } from '../controllers/OptionsController.js'
+import { CoreHelperUtil } from './CoreHelperUtil.js'
+import { OptionsUtil } from './OptionsUtil.js'
+import { StorageUtil } from './StorageUtil.js'
+import type {
+  Connector,
+  ConnectorOrWalletItem,
+  ConnectorTypeOrder,
+  ConnectorWithProviders,
+  CustomWallet,
+  SocialProvider,
+  WcWallet
+} from './TypeUtil.js'
 import { WalletUtil } from './WalletUtil.js'
 
 // -- Types ------------------------------------------ //
@@ -319,5 +319,122 @@ export const ConnectorUtil = {
     const filtered = WalletUtil.filterOutDuplicateWallets(wallets)
 
     return filtered.slice(0, sliceAmount)
+  },
+
+  processConnectorsByType(
+    connectors: ConnectorWithProviders[],
+    shouldFilter = true
+  ): ConnectorWithProviders[] {
+    const sorted = ConnectorUtil.sortConnectorsByExplorerWallet([...connectors])
+
+    return shouldFilter ? sorted.filter(ConnectorUtil.showConnector) : sorted
+  },
+
+  connectorList() {
+    const byType = ConnectorUtil.getConnectorsByType(
+      ConnectorController.state.connectors,
+      ApiController.state.recommended,
+      ApiController.state.featured
+    )
+
+    // Build per-type lists with existing filtering/sorting rules
+    const announced = this.processConnectorsByType(
+      byType.announced.filter(c => c.id !== 'walletConnect')
+    )
+    const injected = this.processConnectorsByType(byType.injected)
+    const multiChain = this.processConnectorsByType(
+      byType.multiChain.filter(c => c.name !== 'WalletConnect'),
+      false
+    )
+    const custom = byType.custom
+    const recent = byType.recent
+    const external = this.processConnectorsByType(
+      byType.external.filter(
+        c =>
+          c.id !== CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK &&
+          c.id !== CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT
+      )
+    )
+    const recommended = byType.recommended
+    const featured = byType.featured
+
+    const connectorTypeOrder = ConnectorUtil.getConnectorTypeOrder({
+      custom,
+      recent,
+      announced,
+      injected,
+      multiChain,
+      recommended,
+      featured,
+      external
+    })
+
+    const wcConnector = ConnectorController.state.connectors.find(c => c.id === 'walletConnect')
+    const isMobile = CoreHelperUtil.isMobile()
+    const items: Array<ConnectorOrWalletItem> = []
+
+    for (const type of connectorTypeOrder) {
+      switch (type) {
+        case 'walletConnect': {
+          if (!isMobile && wcConnector) {
+            items.push({ kind: 'connector', subtype: 'walletConnect', connector: wcConnector })
+          }
+          break
+        }
+        case 'recent': {
+          const filteredRecent = ConnectorUtil.getFilteredRecentWallets()
+          filteredRecent.forEach(w => items.push({ kind: 'wallet', subtype: 'recent', wallet: w }))
+          break
+        }
+        case 'injected': {
+          multiChain.forEach(c =>
+            items.push({ kind: 'connector', subtype: 'multiChain', connector: c })
+          )
+          announced.forEach(c =>
+            items.push({ kind: 'connector', subtype: 'announced', connector: c })
+          )
+          injected.forEach(c =>
+            items.push({ kind: 'connector', subtype: 'injected', connector: c })
+          )
+          break
+        }
+        case 'featured': {
+          featured.forEach(w => items.push({ kind: 'wallet', subtype: 'featured', wallet: w }))
+          break
+        }
+        case 'custom': {
+          const filteredCustom = ConnectorUtil.getFilteredCustomWallets(custom ?? [])
+          filteredCustom.forEach(w => items.push({ kind: 'wallet', subtype: 'custom', wallet: w }))
+          break
+        }
+        case 'external': {
+          external.forEach(c =>
+            items.push({ kind: 'connector', subtype: 'external', connector: c })
+          )
+          break
+        }
+        case 'recommended': {
+          const cappedRecommended = ConnectorUtil.getCappedRecommendedWallets(recommended)
+          cappedRecommended.forEach(w =>
+            items.push({ kind: 'wallet', subtype: 'recommended', wallet: w })
+          )
+          break
+        }
+        default:
+          // eslint-disable-next-line no-console
+          console.warn(`Unknown connector type: ${type}`)
+      }
+    }
+
+    return items
+  },
+
+  hasInjectedConnectors() {
+    return ConnectorController.state.connectors.filter(
+      c =>
+        (c.type === 'INJECTED' || c.type === 'ANNOUNCED' || c.type === 'MULTI_CHAIN') &&
+        c.name !== 'Browser Wallet' &&
+        c.name !== 'WalletConnect'
+    ).length
   }
 }
