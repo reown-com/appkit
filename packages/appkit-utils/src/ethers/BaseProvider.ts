@@ -29,7 +29,7 @@ export class BaseProvider extends EthersProvider<ProviderInterface> {
       return Promise.resolve()
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error('Failed to import Coinbase Wallet SDK:', error)
+      console.error('Failed to import Base Account SDK:', error)
 
       return Promise.resolve()
     }
