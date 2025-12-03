@@ -42,7 +42,9 @@ export const PresetsUtil = {
     [ConstantsUtil.LEATHER_CONNECTOR_NAME]:
       '483afe1df1df63daf313109971ff3ef8356ddf1cc4e45877d205eee0b7893a13',
     [ConstantsUtil.OKX_CONNECTOR_NAME]:
-      '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709'
+      '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709',
+    [ConstantsUtil.BINANCE_CONNECTOR_NAME]:
+      '2fafea35bb471d22889ccb49c08d99dd0a18a37982602c33f696a5723934ba25'
   } as Record<string, string>,
   NetworkImageIds: {
     // Ethereum
@@ -114,7 +116,11 @@ export const PresetsUtil = {
     // Bitcoin Testnet
     '000000000933ea01ad0ee984209779ba': '39354064-d79b-420b-065d-f980c4b78200',
     // Bitcoin Signet
-    '00000008819873e925422c1ff0f99f7c': 'b3406e4a-bbfc-44fb-e3a6-89673c78b700'
+    '00000008819873e925422c1ff0f99f7c': 'b3406e4a-bbfc-44fb-e3a6-89673c78b700',
+    // TON
+    '-239': '20f673c0-095e-49b2-07cf-eb5049dcf600',
+    // TON Testnet
+    '-3': '20f673c0-095e-49b2-07cf-eb5049dcf600'
   } as Record<string, string>,
 
   ConnectorImageIds: {

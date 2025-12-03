@@ -2,7 +2,12 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
 import type { BadgeType, WcWallet } from '@reown/appkit-controllers'
-import { ApiController, ConnectorController, OptionsController } from '@reown/appkit-controllers'
+import {
+  ApiController,
+  ConnectorController,
+  OptionsController,
+  WalletUtil
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-grid'
@@ -10,7 +15,6 @@ import '@reown/appkit-ui/wui-icon-box'
 import '@reown/appkit-ui/wui-loading-spinner'
 import '@reown/appkit-ui/wui-text'
 
-import { WalletUtil } from '../../utils/WalletUtil.js'
 import '../w3m-all-wallets-list-item/index.js'
 import styles from './styles.js'
 
@@ -58,9 +62,10 @@ export class W3mAllWalletsSearch extends LitElement {
 
   private walletsTemplate() {
     const { search } = ApiController.state
-    const wallets = WalletUtil.markWalletsAsInstalled(search)
+    const markedInstalledWallets = WalletUtil.markWalletsAsInstalled(search)
+    const walletsByWcSupport = WalletUtil.filterWalletsByWcSupport(markedInstalledWallets)
 
-    if (!search.length) {
+    if (!walletsByWcSupport.length) {
       return html`
         <wui-flex
           data-testid="no-wallet-found"
@@ -85,7 +90,7 @@ export class W3mAllWalletsSearch extends LitElement {
         columngap="2"
         justifyContent="space-between"
       >
-        ${wallets.map(
+        ${walletsByWcSupport.map(
           (wallet, index) => html`
             <w3m-all-wallets-list-item
               @click=${() => this.onConnectWallet(wallet)}

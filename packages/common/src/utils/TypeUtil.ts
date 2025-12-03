@@ -30,6 +30,14 @@ export type CustomCaipNetwork<T extends string = InternalChainNamespace> = CaipN
 
 export type CustomRpcUrlMap = Record<CaipNetworkId, CustomRpcUrl[]>
 
+export type ConnectorType =
+  | 'EXTERNAL'
+  | 'WALLET_CONNECT'
+  | 'INJECTED'
+  | 'ANNOUNCED'
+  | 'AUTH'
+  | 'MULTI_CHAIN'
+
 export type CustomRpcUrl = {
   url: string
   config?: HttpTransportConfig
@@ -52,6 +60,7 @@ export type InternalChainNamespace =
   | 'cosmos'
   | 'sui'
   | 'stacks'
+  | 'ton'
 
 export type ChainNamespace<T extends string = InternalChainNamespace> = T | InternalChainNamespace
 
@@ -63,6 +72,7 @@ export type AdapterType =
   | 'universal'
   | 'bip122'
   | 'polkadot'
+  | 'ton'
 
 export type TransactionStatus = 'confirmed' | 'failed' | 'pending'
 

@@ -3,6 +3,7 @@ import type { Namespace, NamespaceConfig } from '@walletconnect/universal-provid
 import type { CaipNetwork } from '@reown/appkit-common'
 
 export const DEFAULT_METHODS = {
+  ton: ['ton_sendMessage', 'ton_signData'],
   solana: [
     'solana_signMessage',
     'solana_signTransaction',

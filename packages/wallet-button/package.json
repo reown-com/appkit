@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-wallet-button",
-  "version": "1.8.10",
+  "version": "1.8.13",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -41,6 +41,7 @@
     "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
+    "@walletconnect/universal-provider": "2.23.0",
     "lit": "3.3.0",
     "valtio": "2.1.7"
   },

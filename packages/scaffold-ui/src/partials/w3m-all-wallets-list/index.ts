@@ -5,15 +5,14 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import {
   ApiController,
   ConnectorController,
-  CoreHelperUtil,
   OptionsController,
+  WalletUtil,
   type WcWallet
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-card-select-loader'
 import '@reown/appkit-ui/wui-grid'
 
-import { WalletUtil } from '../../utils/WalletUtil.js'
 import '../w3m-all-wallets-list-item/index.js'
 import styles from './styles.js'
 
@@ -34,26 +33,13 @@ export class W3mAllWalletsList extends LitElement {
 
   @state() private wallets = ApiController.state.wallets
 
-  @state() private recommended = ApiController.state.recommended
-
-  @state() private featured = ApiController.state.featured
-
-  @state() private filteredWallets = ApiController.state.filteredWallets
-
   @state() private badge?: 'certified' | undefined
 
   @state() private mobileFullScreen = OptionsController.state.enableMobileFullScreen
 
   public constructor() {
     super()
-    this.unsubscribe.push(
-      ...[
-        ApiController.subscribeKey('wallets', val => (this.wallets = val)),
-        ApiController.subscribeKey('recommended', val => (this.recommended = val)),
-        ApiController.subscribeKey('featured', val => (this.featured = val)),
-        ApiController.subscribeKey('filteredWallets', val => (this.filteredWallets = val))
-      ]
-    )
+    this.unsubscribe.push(...[ApiController.subscribeKey('wallets', val => (this.wallets = val))])
   }
 
   public override firstUpdated() {
@@ -113,24 +99,8 @@ export class W3mAllWalletsList extends LitElement {
     )
   }
 
-  private getWallets() {
-    const wallets = [...this.featured, ...this.recommended]
-    if (this.filteredWallets?.length > 0) {
-      wallets.push(...this.filteredWallets)
-    } else {
-      wallets.push(...this.wallets)
-    }
-
-    const uniqueWallets = CoreHelperUtil.uniqueBy(wallets, 'id')
-    const walletsWithInstalled = WalletUtil.markWalletsAsInstalled(uniqueWallets)
-
-    return WalletUtil.markWalletsWithDisplayIndex(walletsWithInstalled)
-  }
-
   private walletsTemplate() {
-    const wallets = this.getWallets()
-
-    return wallets.map(
+    return WalletUtil.getWalletConnectWallets(this.wallets).map(
       (wallet, index) => html`
         <w3m-all-wallets-list-item
           data-testid="wallet-search-item-${wallet.id}"

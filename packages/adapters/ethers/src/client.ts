@@ -9,12 +9,14 @@ import {
   ParseUtil,
   UserRejectedRequestError
 } from '@reown/appkit-common'
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-common'
 import {
   AssetController,
   ChainController,
   type CombinedProvider,
   type Connector,
   type ConnectorType,
+  ConnectorUtil,
   CoreHelperUtil,
   OptionsController,
   type Provider,
@@ -28,9 +30,15 @@ import {
   ProviderController,
   WalletConnectConnector
 } from '@reown/appkit-controllers'
-import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
-import { type Address, EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
+import { HelpersUtil } from '@reown/appkit-utils'
+import {
+  type Address,
+  BaseProvider,
+  EthersHelpersUtil,
+  InjectedProvider,
+  type ProviderType,
+  SafeProvider
+} from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { EthersMethods } from './utils/EthersMethods.js'
@@ -44,6 +52,7 @@ export class EthersAdapter extends AdapterBlueprint {
   private ethersConfig?: ProviderType
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
   private universalProvider?: UniversalProvider
+  private ethersProviders: Omit<ProviderType, 'metadata' | 'EIP6963'> = {}
 
   constructor() {
     super({
@@ -53,99 +62,35 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   private async createEthersConfig() {
-    const { metadata, coinbasePreference, enableCoinbase, enableInjected, enableEIP6963 } =
-      OptionsController.state
+    const { metadata, enableCoinbase, enableInjected, enableEIP6963 } = OptionsController.state
 
     if (!metadata) {
       return undefined
     }
 
-    let injectedProvider: Provider | undefined = undefined
-
-    function getInjectedProvider() {
-      if (injectedProvider) {
-        return injectedProvider
-      }
-
-      if (typeof window === 'undefined') {
-        return undefined
-      }
-
-      if (!window.ethereum) {
-        return undefined
-      }
-
-      //  @ts-expect-error window.ethereum satisfies Provider
-      injectedProvider = window.ethereum
-
-      return injectedProvider
-    }
-
-    async function getSafeProvider() {
-      const { SafeProvider } = await import('./utils/SafeProvider.js')
-      const { default: SafeAppsSDK } = await import('@safe-global/safe-apps-sdk')
-      const appsSdk = new SafeAppsSDK()
-      const info = await appsSdk.safe.getInfo()
-
-      const provider = new SafeProvider(info, appsSdk)
-      await provider.connect().catch(error => {
-        // eslint-disable-next-line no-console
-        console.info('Failed to auto-connect to Safe:', error)
-      })
-
-      return provider
-    }
-
-    async function getBaseAccountProvider() {
-      const caipNetworks = ChainController.getCaipNetworks()
-      try {
-        const { createBaseAccountSDK } = await import('@base-org/account')
-        if (typeof window === 'undefined') {
-          return undefined
-        }
-
-        const baseAccountSdk = createBaseAccountSDK({
-          appName: metadata?.name,
-          appLogoUrl: metadata?.icons[0],
-          appChainIds: caipNetworks?.map(caipNetwork => caipNetwork.id as number) || [1, 84532],
-          preference: {
-            options: coinbasePreference ?? 'all'
-          }
-        })
-
-        return baseAccountSdk.getProvider()
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to import Coinbase Wallet SDK:', error)
-
-        return undefined
-      }
-    }
-
-    const providers: ProviderType = { metadata: metadata ?? {} }
-
     if (enableInjected !== false) {
-      providers.injected = getInjectedProvider()
+      const injectedProvider = new InjectedProvider()
+      await injectedProvider.initialize()
+      this.ethersProviders.injected = injectedProvider
     }
 
     if (enableCoinbase !== false) {
-      const baseAccountProvider = await getBaseAccountProvider()
-
-      if (baseAccountProvider) {
-        providers[CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT] = baseAccountProvider
-      }
+      // Do not initialize provider to prevent unnecessary api calls- lazy load
+      this.ethersProviders.baseAccount = new BaseProvider()
     }
 
     if (CoreHelperUtil.isSafeApp()) {
-      const safeProvider = await getSafeProvider()
-      if (safeProvider) {
-        providers.safe = safeProvider
-      }
+      const safeProvider = new SafeProvider()
+      // Initialize the safe provider during intialization
+      await safeProvider.initialize()
+      this.ethersProviders.safe = safeProvider
     }
 
-    providers.EIP6963 = enableEIP6963 !== false
-
-    return providers
+    return {
+      ...this.ethersProviders,
+      EIP6963: enableEIP6963 !== false,
+      metadata
+    }
   }
 
   public async signMessage(
@@ -299,10 +244,12 @@ export class EthersAdapter extends AdapterBlueprint {
       key => key !== 'metadata' && key !== 'EIP6963'
     )
 
-    connectors.forEach(connector => {
+    const connectorPromises = connectors.map(async connector => {
       const isInjectedConnector = connector === CommonConstantsUtil.CONNECTOR_ID.INJECTED
 
       if (this.namespace) {
+        const provider =
+          this.ethersProviders[connector as keyof Omit<ProviderType, 'metadata' | 'EIP6963'>]
         this.addConnector({
           id: connector,
           explorerId: PresetsUtil.ConnectorExplorerIds[connector],
@@ -313,10 +260,12 @@ export class EthersAdapter extends AdapterBlueprint {
           info: isInjectedConnector ? undefined : { rdns: connector },
           chain: this.namespace,
           chains: [],
-          provider: this.ethersConfig?.[connector as keyof ProviderType] as Provider
+          provider: (await provider?.getProvider()) as Provider
         })
       }
     })
+
+    await Promise.all(connectorPromises)
   }
 
   private async disconnectAll() {
@@ -446,6 +395,9 @@ export class EthersAdapter extends AdapterBlueprint {
           this.addConnector({
             id,
             type,
+            explorerId:
+              PresetsUtil.ConnectorExplorerIds[info.rdns || ''] ??
+              PresetsUtil.ConnectorExplorerIds[info.name || ''],
             imageUrl: info?.icon,
             name: info?.name || 'Unknown',
             provider,
@@ -511,11 +463,19 @@ export class EthersAdapter extends AdapterBlueprint {
         }
       }
 
-      const selectedProvider = connector?.provider as Provider
+      let selectedProvider = connector?.provider as Provider | undefined
+      const ethersProvider =
+        this.ethersProviders[connector.id as keyof Omit<ProviderType, 'metadata' | 'EIP6963'>]
+      if (ethersProvider) {
+        await ethersProvider.initialize()
+        selectedProvider = (await ethersProvider.getProvider()) as Provider | undefined
+      }
 
       if (!selectedProvider) {
         throw new Error('Provider not found')
       }
+
+      connector.provider = selectedProvider
 
       let accounts: string[] = []
 

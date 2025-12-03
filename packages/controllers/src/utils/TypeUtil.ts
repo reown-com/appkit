@@ -119,6 +119,10 @@ export type Connector = {
   explorerWallet?: WcWallet
 }
 
+export interface ConnectorWithProviders extends Connector {
+  connectors?: Connector[]
+}
+
 export interface AuthConnector extends Connector {
   provider: W3mFrameProvider
   socials?: SocialProvider[]
@@ -152,6 +156,7 @@ export interface WcWallet {
   id: string
   name: string
   badge_type?: BadgeType
+  description?: string
   chains?: CaipNetworkId[]
   homepage?: string
   image_id?: string
@@ -172,6 +177,7 @@ export interface WcWallet {
       }[]
     | null
   display_index?: number
+  supports_wc?: boolean
 }
 
 export interface ApiGetWalletsRequest {
@@ -210,6 +216,14 @@ export interface ThemeVariables {
   '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: number
   '--w3m-qr-color'?: string
+  '--apkt-font-family'?: string
+  '--apkt-accent'?: string
+  '--apkt-color-mix'?: string
+  '--apkt-color-mix-strength'?: number
+  '--apkt-font-size-master'?: string
+  '--apkt-border-radius-master'?: string
+  '--apkt-z-index'?: number
+  '--apkt-qr-color'?: string
 }
 
 // -- BlockchainApiController Types ---------------------------------------------
@@ -255,6 +269,18 @@ export type SwapTokenWithBalance = SwapToken & {
 
 export interface BlockchainApiSwapTokensRequest {
   chainId?: string
+}
+
+export interface BlockchainApiGetAddressBalanceRequest {
+  caipNetworkId: string
+  address: string
+}
+
+export interface BlockchainApiGetAddressBalanceResponse {
+  ok: boolean
+  result: string
+  jsonrpc: string
+  id: string
 }
 
 export interface BlockchainApiSwapTokensResponse {
@@ -1109,6 +1135,7 @@ export type NamespaceTypeMap = {
   cosmos: 'eoa'
   sui: 'eoa'
   stacks: 'eoa'
+  ton: 'eoa'
 }
 
 export type AccountTypeMap = {
@@ -1241,6 +1268,7 @@ export type RemoteFeatures = {
   payWithExchange?: boolean
   payments?: boolean
   onramp?: OnRampProvider[] | false
+  headless?: boolean
 }
 
 export type Features = {
@@ -1342,6 +1370,12 @@ export type Features = {
    * @type {boolean}
    */
   reownAuthentication?: boolean
+  /**
+   * @description Enable or disable the AppKit Headless mode to build custom connect user interfaces.
+   * @default false
+   * @type {boolean}
+   */
+  headless?: boolean
 }
 
 export type FeaturesKeys = Exclude<
@@ -1397,7 +1431,7 @@ export type FeatureID =
   | 'fund_from_exchange'
   | 'payments'
   | 'reown_authentication'
-
+  | 'headless'
 export interface BaseFeature<T extends FeatureID, C extends string[] | null> {
   id: T
   isEnabled: boolean
@@ -1412,6 +1446,7 @@ export type TypedFeatureConfig =
   | BaseFeature<'reown_branding', null | []>
   | BaseFeature<'multi_wallet', null | []>
   | BaseFeature<'email_capture', EmailCaptureOptions[]>
+  | BaseFeature<'headless', null | []>
 
 export type ApiGetProjectConfigResponse = {
   features: TypedFeatureConfig[]
@@ -1490,6 +1525,12 @@ export type FeatureConfigMap = {
     returnType: boolean
     isLegacy: false
   }
+  headless: {
+    apiFeatureName: 'headless'
+    localFeatureName: 'headless'
+    returnType: boolean
+    isLegacy: false
+  }
 }
 
 export type FeatureKey = keyof FeatureConfigMap
@@ -1500,3 +1541,17 @@ export type ProjectLimits = {
   isAboveRpcLimit: boolean
   isAboveMauLimit: boolean
 }
+
+export type ConnectorItemWithKind = {
+  kind: 'connector'
+  subtype: 'injected' | 'announced' | 'multiChain' | 'external' | 'walletConnect'
+  connector: ConnectorWithProviders
+}
+
+export type WalletItemWithKind = {
+  kind: 'wallet'
+  subtype: 'featured' | 'recommended' | 'custom' | 'recent'
+  wallet: WcWallet
+}
+
+export type ConnectorOrWalletItem = ConnectorItemWithKind | WalletItemWithKind

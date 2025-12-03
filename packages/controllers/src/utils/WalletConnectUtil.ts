@@ -13,6 +13,7 @@ import {
 
 import { EnsController } from '../controllers/EnsController.js'
 import type { OptionsControllerState } from '../controllers/OptionsController.js'
+import { matchNonWildcardPattern, matchWildcardPattern, parseUrl } from './UrlUtils.js'
 
 interface ListenWcProviderParams {
   universalProvider: UniversalProvider
@@ -25,6 +26,7 @@ interface ListenWcProviderParams {
 }
 
 export const DEFAULT_METHODS = {
+  ton: ['ton_sendMessage', 'ton_signData'],
   solana: [
     'solana_signMessage',
     'solana_signTransaction',
@@ -70,9 +72,21 @@ export const WcHelpersUtil = {
     USER_REJECTED: 5000,
     USER_REJECTED_METHODS: 5002
   },
+
+  /**
+   * Retrieves the array of supported methods for a given chain namespace.
+   * @param chainNamespace - The chain namespace.
+   * @returns An array of method strings.
+   */
   getMethodsByChainNamespace(chainNamespace: ChainNamespace): string[] {
     return DEFAULT_METHODS[chainNamespace as keyof typeof DEFAULT_METHODS] || []
   },
+
+  /**
+   * Creates a default WalletConnect namespace configuration for the given chain namespace.
+   * @param chainNamespace - The chain namespace.
+   * @returns The default Namespace object.
+   */
   createDefaultNamespace(chainNamespace: ChainNamespace): Namespace {
     return {
       methods: this.getMethodsByChainNamespace(chainNamespace),
@@ -82,6 +96,12 @@ export const WcHelpersUtil = {
     }
   },
 
+  /**
+   * Applies overrides to the base WalletConnect NamespaceConfig.
+   * @param baseNamespaces - The base namespace configuration.
+   * @param overrides - Optional overrides for methods, chains, events, rpcMap.
+   * @returns The resulting NamespaceConfig with overrides applied.
+   */
   applyNamespaceOverrides(
     baseNamespaces: NamespaceConfig,
     overrides?: OptionsControllerState['universalProviderConfigOverride']
@@ -170,6 +190,13 @@ export const WcHelpersUtil = {
     return result
   },
 
+  /**
+   * Creates WalletConnect namespaces based on CAIP network definitions,
+   * optionally applying custom overrides.
+   * @param caipNetworks - Array of CaipNetwork definitions.
+   * @param configOverride - Optional overrides for namespaces.
+   * @returns The resulting NamespaceConfig.
+   */
   createNamespaces(
     caipNetworks: CaipNetwork[],
     configOverride?: OptionsControllerState['universalProviderConfigOverride']
@@ -210,13 +237,25 @@ export const WcHelpersUtil = {
     return this.applyNamespaceOverrides(defaultNamespaces, configOverride)
   },
 
+  /**
+   * Resolves a Reown/ENS name to its first matching address across configured networks.
+   * @param name - The ENS or Reown name to resolve.
+   * @returns The resolved address as a string, or false if not found.
+   */
   resolveReownName: async (name: string) => {
     const wcNameAddress = await EnsController.resolveName(name)
-    const networkNameAddresses = Object.values(wcNameAddress?.addresses) || []
+    const networkNameAddresses = wcNameAddress?.addresses
+      ? Object.values(wcNameAddress.addresses)
+      : []
 
     return networkNameAddresses[0]?.address || false
   },
 
+  /**
+   * Extracts all CAIP network IDs used in given WalletConnect namespaces.
+   * @param namespaces - WalletConnect Namespaces object.
+   * @returns Array of CAIP network IDs (chainNamespace:chainId).
+   */
   getChainsFromNamespaces(namespaces: SessionTypes.Namespaces = {}): CaipNetworkId[] {
     return Object.values(namespaces).flatMap<CaipNetworkId>(namespace => {
       const chains = (namespace.chains || []) as CaipNetworkId[]
@@ -230,6 +269,11 @@ export const WcHelpersUtil = {
     })
   },
 
+  /**
+   * Type guard to check if an object is a WalletConnect session event data.
+   * @param data - The data to check.
+   * @returns True if data matches SessionEventData structure.
+   */
   isSessionEventData(data: unknown): data is WcHelpersUtil.SessionEventData {
     return (
       typeof data === 'object' &&
@@ -246,6 +290,11 @@ export const WcHelpersUtil = {
     )
   },
 
+  /**
+   * Detects if an error object represents a user-rejected WalletConnect request.
+   * @param error - The error object to check.
+   * @returns True if user rejected request, otherwise false.
+   */
   isUserRejectedRequestError(error: unknown) {
     try {
       if (typeof error === 'object' && error !== null) {
@@ -266,42 +315,54 @@ export const WcHelpersUtil = {
     }
   },
 
+  /**
+   * Checks if a current origin is allowed by configured allowed and default origin patterns.
+   * Localhost and 127.0.0.1 are always allowed.
+   * @param currentOrigin - The current web origin.
+   * @param allowedPatterns - Patterns from project configuration.
+   * @param defaultAllowedOrigins - Built-in or default allowed patterns.
+   * @returns True if the origin is allowed, false otherwise.
+   */
   isOriginAllowed(
     currentOrigin: string,
     allowedPatterns: string[],
     defaultAllowedOrigins: string[]
   ): boolean {
-    for (const pattern of [...allowedPatterns, ...defaultAllowedOrigins]) {
-      if (pattern.includes('*')) {
-        // Convert wildcard pattern to regex, escape special chars, replace *, match whole string
-        const escapedPattern = pattern.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
-        const regexString = `^${escapedPattern.replace(/\\\*/gu, '.*')}$`
-        const regex = new RegExp(regexString, 'u')
+    const patterns = [...allowedPatterns, ...defaultAllowedOrigins]
+    // Spec: empty allowlist allows all origins
+    if (allowedPatterns.length === 0) {
+      return true
+    }
+    // Parse current origin up-front
+    const current = parseUrl(currentOrigin)
+    if (!current) {
+      // Legacy exact string equality when pattern has no wildcard
+      return patterns.some(pattern => !pattern.includes('*') && pattern === currentOrigin)
+    }
 
-        if (regex.test(currentOrigin)) {
+    // Local development is always permitted
+    if (current.hostname === 'localhost' || current.hostname === '127.0.0.1') {
+      return true
+    }
+
+    for (const pattern of patterns) {
+      if (pattern.includes('*')) {
+        if (matchWildcardPattern(current, currentOrigin, pattern)) {
           return true
         }
-      } else {
-        /**
-         * There are some cases where pattern is getting just the origin, where using new URL(pattern).origin will throw an error
-         * thus we a try catch to handle this case
-         */
-        try {
-          if (new URL(pattern).origin === currentOrigin) {
-            return true
-          }
-        } catch (e) {
-          if (pattern === currentOrigin) {
-            return true
-          }
-        }
+        // Keep checking remaining patterns
+      } else if (matchNonWildcardPattern(currentOrigin, pattern)) {
+        return true
       }
     }
 
-    // No match found
     return false
   },
 
+  /**
+   * Attaches event listeners to a UniversalProvider instance for WalletConnect events.
+   * @param params - The listener parameters including handlers for connect, disconnect, etc.
+   */
   listenWcProvider({
     universalProvider,
     namespace,
@@ -384,6 +445,12 @@ export const WcHelpersUtil = {
     }
   },
 
+  /**
+   * Retrieves and parses the unique set of accounts for a given WalletConnect namespace.
+   * @param universalProvider - The UniversalProvider instance.
+   * @param namespace - The chain namespace to extract accounts for.
+   * @returns Array of parsed CaipAddress objects.
+   */
   getWalletConnectAccounts(universalProvider: UniversalProvider, namespace: ChainNamespace) {
     const accountsAdded = new Set<string>()
 

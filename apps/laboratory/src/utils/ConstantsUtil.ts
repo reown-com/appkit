@@ -17,10 +17,14 @@ import {
   monadTestnet,
   optimism,
   polygon,
+  rootstock,
+  rootstockTestnet,
   sepolia,
   solana,
   solanaDevnet,
   solanaTestnet,
+  ton,
+  tonTestnet,
   unichainSepolia,
   zkSync
 } from '@reown/appkit/networks'
@@ -84,7 +88,9 @@ const EvmNetworks = [
   aurora,
   mantle,
   abstract,
-  monadTestnet
+  monadTestnet,
+  rootstock,
+  rootstockTestnet
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNotExist = {
@@ -108,6 +114,8 @@ const BitcoinNetworks = [bitcoin, bitcoinTestnet, bitcoinSignet] as [
   AppKitNetwork,
   ...AppKitNetwork[]
 ]
+
+const TonNetworks = [ton, tonTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
@@ -164,7 +172,8 @@ export const ConstantsUtil = {
   EvmNetworks,
   SolanaNetworks,
   BitcoinNetworks,
-  AllNetworks: [...EvmNetworks, ...SolanaNetworks, ...BitcoinNetworks] as [
+  TonNetworks,
+  AllNetworks: [...EvmNetworks, ...SolanaNetworks, ...BitcoinNetworks, ...TonNetworks] as [
     AppKitNetwork,
     ...AppKitNetwork[]
   ],

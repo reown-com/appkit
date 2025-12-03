@@ -14,6 +14,8 @@ import type {
   BlockchainApiGenerateApproveCalldataResponse,
   BlockchainApiGenerateSwapCalldataRequest,
   BlockchainApiGenerateSwapCalldataResponse,
+  BlockchainApiGetAddressBalanceRequest,
+  BlockchainApiGetAddressBalanceResponse,
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse,
   BlockchainApiLookupEnsName,
@@ -294,6 +296,20 @@ export const BlockchainApiController = {
       path: `/v1/convert/tokens`,
       params: { chainId }
     })
+  },
+
+  async getAddressBalance({ caipNetworkId, address }: BlockchainApiGetAddressBalanceRequest) {
+    return state.api
+      .post<BlockchainApiGetAddressBalanceResponse>({
+        path: `/v1?chainId=${caipNetworkId}&projectId=${OptionsController.state.projectId}`,
+        body: {
+          id: '1',
+          jsonrpc: '2.0',
+          method: 'getAddressBalance',
+          params: { address }
+        }
+      })
+      .then(result => result.result)
   },
 
   async fetchTokenPrice({ addresses }: BlockchainApiTokenPriceRequest) {

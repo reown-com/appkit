@@ -53,6 +53,7 @@ import {
   ConnectionController,
   ConnectionControllerUtil,
   ConnectorController,
+  ConnectorUtil,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
   EnsController,
@@ -69,10 +70,10 @@ import {
   SnackController,
   StorageUtil,
   ThemeController,
+  WalletUtil,
   WcHelpersUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
-import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
   CaipNetworksUtil,
@@ -176,6 +177,16 @@ export abstract class AppKitBaseClient {
     this.initControllers(options)
     await this.initChainAdapters()
     this.sendInitializeEvent(options)
+
+    if (options.features?.headless && !ConnectorUtil.hasInjectedConnectors()) {
+      ApiController.prefetch({
+        fetchNetworkImages: false,
+        fetchConnectorImages: false,
+        fetchWalletRanks: false,
+        fetchRecommendedWallets: true
+      })
+    }
+
     if (OptionsController.state.enableReconnect) {
       await this.syncExistingConnection()
       await this.syncAdapterConnections()
@@ -1438,7 +1449,7 @@ export abstract class AppKitBaseClient {
             name: connector.info?.name || connector.name || 'Unknown',
             reconnect: true,
             view: RouterController.state.view,
-            walletRank: undefined
+            walletRank: connector?.explorerWallet?.order
           }
         })
       } else {
@@ -1791,7 +1802,27 @@ export abstract class AppKitBaseClient {
     OptionsController.setManualWCControl(Boolean(this.options?.manualWCControl))
     this.universalProvider =
       this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
-    // Clear the session if we don't want to reconnect on init
+
+    const originalDisconnect = this.universalProvider.disconnect.bind(this.universalProvider)
+
+    this.universalProvider.disconnect = async () => {
+      try {
+        return await originalDisconnect()
+      } catch (error) {
+        if (error instanceof Error) {
+          const isAlreadyDisconnected = error.message.includes(
+            'Missing or invalid. Record was recently deleted'
+          )
+
+          if (isAlreadyDisconnected) {
+            return undefined
+          }
+        }
+
+        throw error
+      }
+    }
+
     if (OptionsController.state.enableReconnect === false && this.universalProvider.session) {
       await this.universalProvider.disconnect()
     }

@@ -1,4 +1,4 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, PresetsUtil } from '@reown/appkit-common'
 import {
   type ChainNamespace,
   type OnRampProvider,
@@ -7,7 +7,7 @@ import {
 } from '@reown/appkit-common'
 
 import type { SIWXConfig } from './SIWXUtil.js'
-import type { Features, PreferredAccountTypes, RemoteFeatures } from './TypeUtil.js'
+import type { ConnectMethod, Features, PreferredAccountTypes, RemoteFeatures } from './TypeUtil.js'
 
 const SECURE_SITE =
   // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
@@ -201,7 +201,8 @@ export const ConstantsUtil = {
     bip122: '0x',
     cosmos: '0x',
     sui: '0x',
-    stacks: '0x'
+    stacks: '0x',
+    ton: '0x'
   } as const satisfies Record<ChainNamespace, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1,
@@ -234,7 +235,8 @@ export const ConstantsUtil = {
     emailCapture: false,
     payWithExchange: false,
     payments: false,
-    reownAuthentication: false
+    reownAuthentication: false,
+    headless: false
   },
   DEFAULT_REMOTE_FEATURES_DISABLED: {
     email: false,
@@ -244,7 +246,8 @@ export const ConstantsUtil = {
     activity: false,
     reownBranding: false,
     emailCapture: false,
-    reownAuthentication: false
+    reownAuthentication: false,
+    headless: false
   } as const satisfies RemoteFeatures,
   DEFAULT_FEATURES: {
     receive: true,
@@ -267,7 +270,8 @@ export const ConstantsUtil = {
     walletFeaturesOrder: ['onramp', 'swaps', 'receive', 'send'],
     connectMethodsOrder: undefined,
     pay: false,
-    reownAuthentication: false
+    reownAuthentication: false,
+    headless: false
   } satisfies Features,
 
   DEFAULT_SOCIALS: [
@@ -284,7 +288,8 @@ export const ConstantsUtil = {
     bip122: 'payment',
     eip155: 'smartAccount',
     polkadot: 'eoa',
-    solana: 'eoa'
+    solana: 'eoa',
+    ton: 'eoa'
   } as const satisfies PreferredAccountTypes,
   ADAPTER_TYPES: {
     UNIVERSAL: 'universal',
@@ -297,5 +302,16 @@ export const ConstantsUtil = {
 
   SIWX_DEFAULTS: {
     signOutOnDisconnect: true
-  } as const satisfies Pick<SIWXConfig, 'signOutOnDisconnect'>
+  } as const satisfies Pick<SIWXConfig, 'signOutOnDisconnect'>,
+
+  MANDATORY_WALLET_IDS_ON_MOBILE: [
+    PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE],
+    PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK],
+    PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT],
+    PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.SOLFLARE_CONNECTOR_NAME],
+    PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.PHANTOM_CONNECTOR_NAME],
+    PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.BINANCE_CONNECTOR_NAME]
+  ],
+
+  DEFAULT_CONNECT_METHOD_ORDER: ['email', 'social', 'wallet'] as ConnectMethod[]
 }

@@ -14,6 +14,7 @@ import {
   siwxSdkOptions,
   solanaSdkOptions,
   testingSdkOptions,
+  tonSdkOptions,
   wagmiSdkOptions
 } from '@/src/utils/DataUtil'
 
@@ -23,10 +24,11 @@ export default function HomePage() {
       <ConfigurationList title="Featured" sdkOptions={featuredSdkOptions} />
       <ConfigurationList title="Testing" sdkOptions={testingSdkOptions} />
       <ConfigurationList title="Wagmi" sdkOptions={wagmiSdkOptions} />
-      <ConfigurationList title="Ethers" sdkOptions={ethersSdkOptions} />
-      <ConfigurationList title="Ethers 5" sdkOptions={ethers5SdkOptions} />
       <ConfigurationList title="Solana" sdkOptions={solanaSdkOptions} />
       <ConfigurationList title="Bitcoin" sdkOptions={bitcoinSdkOptions} />
+      <ConfigurationList title="Ton" sdkOptions={tonSdkOptions} />
+      <ConfigurationList title="Ethers" sdkOptions={ethersSdkOptions} />
+      <ConfigurationList title="Ethers 5" sdkOptions={ethers5SdkOptions} />
       <ConfigurationList
         title={
           <>
