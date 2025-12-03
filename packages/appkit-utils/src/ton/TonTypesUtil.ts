@@ -39,6 +39,9 @@ export declare namespace TonConnector {
     messages: {
       address: string
       amount: string
+      payload?: string
+      stateInit?: string
+      extraCurrency?: Record<number, string>
     }[]
   }
 }
