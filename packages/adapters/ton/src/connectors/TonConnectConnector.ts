@@ -218,10 +218,7 @@ export class TonConnectConnector implements TonConnector {
       valid_until: tx.validUntil ?? Math.floor(Date.now() / 1000) + 60,
       network,
       from,
-      messages: (tx.messages || []).map(m => ({
-        address: m.address,
-        amount: String(m.amount ?? '0')
-      }))
+      messages
     }
 
     const req = {
