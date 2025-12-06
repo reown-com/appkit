@@ -30,18 +30,22 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   public get id(): string {
+    console.log('id', this.name)
     return this.name
   }
 
   public get name(): string {
+    console.log('name', this.wallet.name)
     return this.wallet.name
   }
 
   public get imageUrl(): string {
+    console.log('imageUrl', this.wallet.icon)
     return this.wallet.icon
   }
 
   public get explorerId(): string | undefined {
+    console.log('explorerId', PresetsUtil.ConnectorExplorerIds[this.name])
     return PresetsUtil.ConnectorExplorerIds[this.name]
   }
 
