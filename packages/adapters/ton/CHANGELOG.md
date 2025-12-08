@@ -1,5 +1,55 @@
 # @reown/appkit-adapter-ton
 
+## 1.8.14
+
+### Patch Changes
+
+- [#5180](https://github.com/reown-com/appkit/pull/5180) [`bd86560`](https://github.com/reown-com/appkit/commit/bd86560541de8a34696bb7deea6a405371b3db14) Thanks [@enesozturk](https://github.com/enesozturk)! - Add full support for the TON (The Open Network) blockchain to AppKit, enabling users to connect TON wallets and perform TON-specific operations within the new WalletConnect protocol and TonConnect protocol.
+
+  ## Examples
+
+  ### Create AppKit with TON adapter
+
+  ```
+  import { createAppKit } from '@reown/appkit'
+  import { ton, tonTestnet } from '@reown/appkit/networks'
+  import { TonAdapter } from '@reown/appkit-adapters-ton'
+
+  createAppKit({
+    ...,
+    networks: [ton, tonTestnet],
+    adapters: [new TonAdapter()]
+  })
+  ```
+
+  ### Use TON adapter
+
+  ```
+  const { address, isConnected } = useAppKitAccount({ namespace: "ton" })
+  ```
+
+  ### Multi-chain use cases
+
+  ```
+  const { open } = useAppKit()
+  const { disconnect } = useDisconnect()
+
+  // Open AppKit with only TON connectors
+  open({ namespace: 'ton' })
+
+  // Disconnect only TON namespace
+  disconnect({ namespace: 'ton' })
+  ```
+
+- [#5321](https://github.com/reown-com/appkit/pull/5321) [`2a7ece7`](https://github.com/reown-com/appkit/commit/2a7ece7a1b8ea13fe6ff2d9da151e4b877da75a5) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrades WalletConnect dependencies to 2.23.0
+
+- Updated dependencies [[`bd86560`](https://github.com/reown-com/appkit/commit/bd86560541de8a34696bb7deea6a405371b3db14), [`1dab4e5`](https://github.com/reown-com/appkit/commit/1dab4e5bfc4bf2e5219824f85128d264cd220f2b), [`2a7ece7`](https://github.com/reown-com/appkit/commit/2a7ece7a1b8ea13fe6ff2d9da151e4b877da75a5), [`bc4a961`](https://github.com/reown-com/appkit/commit/bc4a961b448cedd0a8485a2188549b413b4e6512), [`b1d8373`](https://github.com/reown-com/appkit/commit/b1d8373224c946cfbed4a609f925330768e93469)]:
+  - @reown/appkit-utils@1.8.14
+  - @reown/appkit-controllers@1.8.14
+  - @reown/appkit@1.8.14
+  - @reown/appkit-common@1.8.14
+  - @reown/appkit-polyfills@1.8.14
+
 ## 1.8.10
 
 ### Patch Changes
