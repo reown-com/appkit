@@ -10,7 +10,7 @@ export default css`
       ${({ tokens }) => tokens.theme.foregroundPrimary} 100%
     );
     background-size: 200% 100%;
-    animation: shimmer 2s ease-in-out infinite;
+    animation: shimmer 2s linear infinite;
     border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
@@ -20,10 +20,10 @@ export default css`
 
   @keyframes shimmer {
     0% {
-      background-position: 200% 0;
+      background-position: 100% 0;
     }
     100% {
-      background-position: -200% 0;
+      background-position: -100% 0;
     }
   }
 `
