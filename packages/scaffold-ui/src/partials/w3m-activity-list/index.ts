@@ -288,7 +288,7 @@ export class W3mActivityList extends LitElement {
 
   private getTransactionListItemProps(transaction: Transaction) {
     const date = DateUtil.formatDate(transaction?.metadata?.minedAt)
-    const transfers = TransactionUtil.mergeTransfers(transaction?.transfers)
+    const transfers = TransactionUtil.mergeTransfers(transaction?.transfers || [])
     const descriptions = TransactionUtil.getTransactionDescriptions(transaction, transfers)
     const transfer = transfers?.[0]
     const isAllNFT = Boolean(transfer) && transfers?.every(item => Boolean(item.nft_info))

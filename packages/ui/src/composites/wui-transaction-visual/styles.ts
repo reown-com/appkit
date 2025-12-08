@@ -9,7 +9,7 @@ export default css`
     width: 40px;
     height: 40px;
     box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.core.glass010};
-    background-color: ${({ tokens }) => tokens.core.glass010};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   :host([data-no-images='true']) > wui-flex {
@@ -30,11 +30,6 @@ export default css`
     border-top-right-radius: var(--local-right-border-radius);
     border-bottom-left-radius: var(--local-left-border-radius);
     border-bottom-right-radius: var(--local-right-border-radius);
-  }
-
-  wui-icon {
-    width: 20px;
-    height: 20px;
   }
 
   .swap-images-container {
