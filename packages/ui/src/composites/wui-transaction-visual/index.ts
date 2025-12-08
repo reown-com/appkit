@@ -76,7 +76,7 @@ export class WuiTransactionVisual extends LitElement {
       return this.renderSwapImages(firstImage, secondImage)
     }
 
-    if (firstImage?.url) {
+    if (firstImage?.url && !this.failedImageUrls.has(firstImage.url)) {
       return this.renderSingleImage(firstImage)
     }
 
@@ -89,21 +89,28 @@ export class WuiTransactionVisual extends LitElement {
 
   private renderSwapImages(firstImage?: TransactionImage, secondImage?: TransactionImage) {
     return html`<div class="swap-images-container">
-      ${firstImage?.url ? this.renderImageOrFallback(firstImage) : null}
-      ${secondImage?.url ? this.renderImageOrFallback(secondImage) : null}
+      ${firstImage?.url ? this.renderImageOrFallback(firstImage, true, 'first') : null}
+      ${secondImage?.url ? this.renderImageOrFallback(secondImage, true, 'last') : null}
     </div>`
   }
 
   private renderSingleImage(image: TransactionImage) {
-    return this.renderImageOrFallback(image)
+    return this.renderImageOrFallback(image, false)
   }
 
-  private renderImageOrFallback(image: TransactionImage) {
+  private renderImageOrFallback(
+    image: TransactionImage,
+    isInSwapContainer = false,
+    position?: 'first' | 'last'
+  ) {
     if (!image.url) {
       return null
     }
 
     if (this.failedImageUrls.has(image.url)) {
+      if (isInSwapContainer && position) {
+        return this.renderFallbackIconInContainer(position)
+      }
       return this.renderFallbackIcon()
     }
 
@@ -112,6 +119,10 @@ export class WuiTransactionVisual extends LitElement {
       alt="Transaction image"
       @onLoadError=${this.handleImageError(image.url)}
     ></wui-image>`
+  }
+
+  private renderFallbackIconInContainer(position: 'first' | 'last') {
+    return html`<div class="swap-fallback-container ${position}">${this.renderFallbackIcon()}</div>`
   }
 
   private renderFallbackIcon() {

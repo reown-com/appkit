@@ -52,6 +52,24 @@ export default css`
     clip-path: inset(0px 0px 0px calc(50% + 2px));
   }
 
+  .swap-fallback-container {
+    position: absolute;
+    inset: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .swap-fallback-container.first {
+    clip-path: inset(0px calc(50% + 2px) 0px 0%);
+  }
+
+  .swap-fallback-container.last {
+    clip-path: inset(0px 0px 0px calc(50% + 2px));
+  }
+
   wui-flex.status-box {
     position: absolute;
     right: 0;
