@@ -1,5 +1,19 @@
 # @reown/appkit-cdn
 
+## 1.8.14
+
+### Patch Changes
+
+- [#5296](https://github.com/reown-com/appkit/pull/5296) [`bc4a961`](https://github.com/reown-com/appkit/commit/bc4a961b448cedd0a8485a2188549b413b4e6512) Thanks [@magiziz](https://github.com/magiziz)! - Improved wallet search to filter out non-walletconnect and walletconnect wallets based on platform and SDK type
+
+- Updated dependencies [[`bd86560`](https://github.com/reown-com/appkit/commit/bd86560541de8a34696bb7deea6a405371b3db14), [`1dab4e5`](https://github.com/reown-com/appkit/commit/1dab4e5bfc4bf2e5219824f85128d264cd220f2b), [`2a7ece7`](https://github.com/reown-com/appkit/commit/2a7ece7a1b8ea13fe6ff2d9da151e4b877da75a5), [`6e9f251`](https://github.com/reown-com/appkit/commit/6e9f251040d1150ae7a254309050cc2853c5a085), [`bc4a961`](https://github.com/reown-com/appkit/commit/bc4a961b448cedd0a8485a2188549b413b4e6512)]:
+  - @reown/appkit@1.8.14
+  - @reown/appkit-adapter-ethers5@1.8.14
+  - @reown/appkit-adapter-ethers@1.8.14
+  - @reown/appkit-adapter-solana@1.8.14
+  - @reown/appkit-adapter-wagmi@1.8.14
+  - @reown/appkit-polyfills@1.8.14
+
 ## 1.8.13
 
 ### Patch Changes
