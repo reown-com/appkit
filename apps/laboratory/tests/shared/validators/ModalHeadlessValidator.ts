@@ -35,7 +35,7 @@ export class ModalHeadlessValidator extends ModalValidator {
   }
 
   async expectWalletConnectOption() {
-    const walletConnectItem = this.page.getByTestId('wc-wallet-item-WalletConnect')
+    const walletConnectItem = this.page.getByTestId('wallet-button-WalletConnect')
     await expect(walletConnectItem, 'WalletConnect option should be visible').toBeVisible({
       timeout: MAX_WAIT
     })
@@ -62,7 +62,7 @@ export class ModalHeadlessValidator extends ModalValidator {
   }
 
   async expectWalletItemsCount({ min }: { min: number }) {
-    const walletItems = this.page.getByTestId(/^wc-wallet-item-/u)
+    const walletItems = this.page.getByTestId(/^wallet-button-/u)
 
     // Wait up to 10s for the count to reach at least min using expect.poll
     await expect
@@ -82,14 +82,14 @@ export class ModalHeadlessValidator extends ModalValidator {
   }
 
   async expectOnlyMetamaskVisible() {
-    const metamaskItem = this.page.getByTestId('wc-wallet-item-MetaMask')
+    const metamaskItem = this.page.getByTestId('wallet-button-MetaMask')
     await expect(metamaskItem, 'MetaMask should be visible').toBeVisible({
       timeout: MAX_WAIT
     })
 
     // Check that other common wallets are not visible
-    const coinbaseItem = this.page.getByTestId('wc-wallet-item-CoinbaseWallet')
-    const trustItem = this.page.getByTestId('wc-wallet-item-TrustWallet')
+    const coinbaseItem = this.page.getByTestId('wallet-button-CoinbaseWallet')
+    const trustItem = this.page.getByTestId('wallet-button-TrustWallet')
 
     if (await coinbaseItem.isVisible()) {
       await expect(

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
@@ -12,6 +12,8 @@ import { ConnectionController } from '../src/controllers/ConnectionController.js
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { OptionsController } from '../src/controllers/OptionsController.js'
 import { ProviderController } from '../src/controllers/ProviderController.js'
+import { PublicStateController } from '../src/controllers/PublicStateController.js'
+import { ApiControllerUtil } from '../src/utils/ApiControllerUtil.js'
 import { ConnectUtil, type WalletItem } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
@@ -292,9 +294,15 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
 
 export interface UseAppKitWalletsReturn {
   /**
-   * List of all wallets (injected wallets and WalletConnect wallets combined)
+   * List of wallets for the initial connect view including WalletConnect wallet and injected wallets together. If user doesn't have any injected wallets, it'll fill the list with most ranked WalletConnect wallets.
    */
-  data: WalletItem[]
+  wallets: WalletItem[]
+
+  /**
+   * List of WalletConnect wallets from Wallet Guide API. Useful to display all available WalletConnect wallets in a separate Search Wallets view.
+   * @see https://walletguide.walletconnect.network/.
+   */
+  wcWallets: WalletItem[]
 
   /**
    * Boolean that indicates if WalletConnect wallets are being fetched.
@@ -307,39 +315,53 @@ export interface UseAppKitWalletsReturn {
   isFetchingWcUri: boolean
 
   /**
-   * The current WalletConnect URI for QR code display.
-   * This is set when connecting to a WalletConnect wallet.
+   * Boolean that indicates if the AppKit is initialized. It's useful to render a fallback UI when the AppKit initializes and detects all injected wallets.
+   */
+  isInitialized: boolean
+
+  /**
+   * The current WalletConnect URI for QR code display. This is set when connecting to a WalletConnect wallet. Reset with resetWcUri().
    */
   wcUri?: string
 
   /**
-   * The current page number.
+   * The wallet currently being connected to. This is set when a connection is initiated and cleared when it completes or fails. For WalletConnect wallets, resetWcUri() should be called to clear the state.
+   */
+  connectingWallet?: WalletItem
+
+  /**
+   * The current page number of WalletConnect wallets.
    */
   page: number
 
   /**
-   * The total number of available wallets.
+   * The total number of available WalletConnect wallets based on the AppKit configurations and given parameters.
    */
   count: number
 
   /**
-   * Function to fetch WalletConnect wallets from the explorer API.
-   * This is useful for pagination or initial load.
+   * Function to fetch WalletConnect wallets from the explorer API. Allows to list, search and paginate through the wallets.
    * @param options - Options for fetching wallets
    * @param options.page - Page number to fetch (default: 1)
+   * @param options.query - Search query to filter wallets (default: '')
    */
   fetchWallets: (options?: { page?: number; query?: string }) => Promise<void>
 
   /**
    * Function to connect to a wallet.
-   * - For WalletConnect wallets: initiates WC connection and returns the URI in the onSuccess callback
-   * - For injected connectors: triggers the extension/wallet directly
+   * - For WalletConnect wallets: initiates WC connection and returns the URI with the `wcUri` state.
+   * - For injected connectors: triggers the extension/wallet directly.
    *
    * @param wallet - The wallet item to connect to
    * @param callbacks - Success and error callbacks
    * @returns Promise that resolves when connection completes or rejects on error
    */
   connect: (wallet: WalletItem, namespace?: ChainNamespace) => Promise<void>
+
+  /**
+   * Function to reset the WC URI. Useful to keep `connectingWallet` state sync with the WC URI. Can be called when the QR code is closed.
+   */
+  resetWcUri: () => void
 }
 
 /**
@@ -347,25 +369,29 @@ export interface UseAppKitWalletsReturn {
  * Provides all the data and functions needed to build a custom connect UI.
  */
 export function useAppKitWallets(): UseAppKitWalletsReturn {
-  const { enableHeadless, remoteFeatures } = useSnapshot(OptionsController.state)
-  const isHeadlessEnabled = Boolean(enableHeadless && remoteFeatures?.headless)
+  const { features, remoteFeatures } = useSnapshot(OptionsController.state)
+  const isHeadlessEnabled = Boolean(features?.headless && remoteFeatures?.headless)
 
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
   const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
-  const { wallets: wcWallets, search, page, count } = useSnapshot(ApiController.state)
-  const wallets = ConnectUtil.getUnifiedWalletList({
-    wcWallets: wcWallets as WcWallet[],
-    search: search as WcWallet[]
-  })
+  const {
+    wallets: wcAllWallets,
+    search: wcSearchWallets,
+    page,
+    count
+  } = useSnapshot(ApiController.state)
+  const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
 
-  const fetchWallets = useCallback(async (fetchOptions?: { page?: number; query?: string }) => {
+  async function fetchWallets(fetchOptions?: { page?: number; query?: string }) {
     setIsFetchingWallets(true)
     try {
       if (fetchOptions?.query) {
         await ApiController.searchWallet({ search: fetchOptions?.query })
       } else {
         ApiController.state.search = []
-        await ApiController.fetchWalletsByPage({ page: fetchOptions?.page ?? 1 })
+        await ApiController.fetchWalletsByPage({
+          page: fetchOptions?.page ?? 1
+        })
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -373,57 +399,111 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     } finally {
       setIsFetchingWallets(false)
     }
-  }, [])
+  }
 
-  const connect = useCallback(
-    async (_wallet: WalletItem, namespace?: ChainNamespace) => {
-      const wallet = wallets.find(w => w.id === _wallet.id)
-      const walletConnector = wallet?.connectors.find(c => c.chain === namespace)
+  async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
+    PublicStateController.set({ connectingWallet: _wallet })
+
+    try {
+      const walletConnector = _wallet?.connectors.find(c => c.chain === namespace)
 
       const connector =
         walletConnector && namespace
           ? ConnectorController.getConnector({ id: walletConnector?.id, namespace })
           : undefined
 
-      if (wallet?.isInjected && connector) {
+      if (_wallet?.isInjected && connector) {
         await ConnectorControllerUtil.connectExternal(connector)
       } else {
         await ConnectionController.connectWalletConnect({ cache: 'never' })
       }
-    },
-    [wallets]
-  )
+    } catch (error) {
+      PublicStateController.set({ connectingWallet: undefined })
+      throw error
+    }
+  }
+
+  function resetWcUri() {
+    ConnectionController.resetUri()
+  }
+
+  const lastHandledUriRef = useRef<string | undefined>(undefined)
 
   useEffect(() => {
-    if (!isHeadlessEnabled || !remoteFeatures?.headless) {
+    lastHandledUriRef.current = undefined
+  }, [connectingWallet?.id])
+
+  useEffect(() => {
+    const unsubscribe = ConnectionController.subscribeKey('wcUri', wcUri => {
+      if (!wcUri) {
+        lastHandledUriRef.current = undefined
+
+        return
+      }
+
+      if (wcUri === lastHandledUriRef.current || ConnectionController.state.wcLinking) {
+        return
+      }
+
+      const isMobile = CoreHelperUtil.isMobile()
+      const wcWallet = ApiControllerUtil.getWalletById(
+        PublicStateController.state.connectingWallet?.id
+      )
+
+      if (isMobile && wcWallet?.mobile_link) {
+        lastHandledUriRef.current = wcUri
+        ConnectionControllerUtil.onConnectMobile(wcWallet)
+      }
+    })
+
+    return () => unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    if (
+      initialized &&
+      remoteFeatures?.headless !== undefined &&
+      (!isHeadlessEnabled || !remoteFeatures?.headless)
+    ) {
       AlertController.open(
         ConstantsUtil.REMOTE_FEATURES_ALERTS.HEADLESS_NOT_ENABLED.DEFAULT,
         'info'
       )
     }
-  }, [isHeadlessEnabled])
+  }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
 
   if (!isHeadlessEnabled || !remoteFeatures?.headless) {
     return {
-      data: [],
+      wallets: [],
+      wcWallets: [],
       isFetchingWallets: false,
       isFetchingWcUri: false,
+      isInitialized: false,
       wcUri: undefined,
+      connectingWallet: undefined,
       page: 0,
       count: 0,
       connect: () => Promise.resolve(),
-      fetchWallets: () => Promise.resolve()
+      fetchWallets: () => Promise.resolve(),
+      resetWcUri
     }
   }
 
   return {
-    data: wallets,
+    wallets: ConnectUtil.getInitialWallets(),
+    wcWallets: ConnectUtil.getWalletConnectWallets(
+      wcAllWallets as WcWallet[],
+      wcSearchWallets as WcWallet[]
+    ),
     isFetchingWallets,
     isFetchingWcUri: wcFetchingUri,
+    isInitialized: initialized,
     wcUri,
+    connectingWallet: connectingWallet as WalletItem | undefined,
     page,
     count,
     connect,
-    fetchWallets
+    fetchWallets,
+    resetWcUri
   }
 }

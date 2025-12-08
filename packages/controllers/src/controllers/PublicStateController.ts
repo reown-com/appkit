@@ -3,6 +3,8 @@ import { subscribeKey } from 'valtio/vanilla/utils'
 
 import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 
+import type { WalletItem } from '../utils/ConnectUtil.js'
+
 // -- Types --------------------------------------------- //
 export interface PublicStateControllerState {
   /**
@@ -30,6 +32,12 @@ export interface PublicStateControllerState {
    * @type {boolean}
    */
   initialized: boolean
+
+  /**
+   * @description Indicates the wallet item that is currently being connecting.
+   * @type {WalletItem | undefined}
+   */
+  connectingWallet: WalletItem | undefined
 }
 
 // -- State --------------------------------------------- //
@@ -38,7 +46,8 @@ const state = proxy<PublicStateControllerState>({
   open: false,
   selectedNetworkId: undefined,
   activeChain: undefined,
-  initialized: false
+  initialized: false,
+  connectingWallet: undefined
 })
 
 // -- Controller ---------------------------------------- //

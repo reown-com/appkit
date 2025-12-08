@@ -8,15 +8,14 @@ import type { WalletItem } from '@reown/appkit'
 import { useAppKitWallets } from '@reown/appkit/react'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 
-import { WalletConnectWalletItem } from './WalletConnectWalletItem'
+import { WalletListItem } from './WalletListItem'
 
 type Props = {
-  connectingWallet: WalletItem | undefined
-  onBack?: () => void
-  onWalletClick?: (wallet: WalletItem) => void
+  onBack: () => void
+  onConnect: (wallet: WalletItem) => void
 }
 
 function useDebounceValue(value: string, delay: number) {
@@ -35,18 +34,16 @@ function useDebounceValue(value: string, delay: number) {
   return debouncedValue
 }
 
-export function WalletConnectWalletsContent({ connectingWallet, onBack, onWalletClick }: Props) {
-  const { data, isFetchingWallets, page, count, fetchWallets } = useAppKitWallets()
+export function AllWalletsContent({ onBack, onConnect }: Props) {
+  const { wcWallets, isFetchingWallets, page, count, fetchWallets } = useAppKitWallets()
   const [inputValue, setInputValue] = useState('')
   const searchQuery = useDebounceValue(inputValue, 500)
   const loadMoreRef = useRef<HTMLDivElement>(null)
 
-  const wcWallets = data.filter(w => !w.isInjected && w.name !== 'WalletConnect')
-
   // Initial fetch
   useEffect(() => {
     fetchWallets?.()
-  }, [fetchWallets])
+  }, [])
 
   // Search effect
   useEffect(() => {
@@ -55,7 +52,7 @@ export function WalletConnectWalletsContent({ connectingWallet, onBack, onWallet
     } else {
       fetchWallets?.()
     }
-  }, [searchQuery, fetchWallets])
+  }, [searchQuery])
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -77,10 +74,6 @@ export function WalletConnectWalletsContent({ connectingWallet, onBack, onWallet
       intersectionObserver.disconnect()
     }
   }, [page, isFetchingWallets, searchQuery, fetchWallets])
-
-  async function handleWalletClick(item: WalletItem) {
-    onWalletClick?.(item)
-  }
 
   return (
     <div className="flex flex-col gap-4 p-6">
@@ -123,11 +116,11 @@ export function WalletConnectWalletsContent({ connectingWallet, onBack, onWallet
           ) : (
             <>
               {wcWallets.map(item => (
-                <WalletConnectWalletItem
+                <WalletListItem
                   key={item.id}
-                  connectingWallet={connectingWallet}
                   wallet={item}
-                  onClick={handleWalletClick}
+                  onConnect={onConnect}
+                  onOpenNamespaceDialog={() => {}}
                 />
               ))}
 

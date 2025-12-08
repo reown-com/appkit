@@ -3,15 +3,11 @@ import Image from 'next/image'
 
 import type { WalletItem } from '@reown/appkit'
 import { ChainNamespace } from '@reown/appkit/networks'
-import { useAppKitWallets } from '@reown/appkit/react'
 
-import { Button } from '@/components/ui/button'
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger
@@ -44,8 +40,6 @@ export function NamespaceSelectionDialog({
   onOpenChange,
   onSelect
 }: NamespaceSelectionDialogProps) {
-  const { connect } = useAppKitWallets()
-
   async function handleConnectorClick(namespace: ChainNamespace) {
     if (!item) {
       return
