@@ -1,15 +1,14 @@
-import {
-  ApiController,
-  ConnectorController,
-  CoreHelperUtil,
-  OptionsController,
-  StorageUtil
-} from '@reown/appkit-controllers'
-import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-controllers'
-import { HelpersUtil } from '@reown/appkit-utils'
+import { HelpersUtil } from '@reown/appkit-common'
 
+import { ApiController } from '../controllers/ApiController.js'
+import { ConnectionController } from '../controllers/ConnectionController.js'
+import { ConnectorController } from '../controllers/ConnectorController.js'
+import { OptionsController } from '../controllers/OptionsController.js'
 import { ConnectorUtil } from './ConnectorUtil.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
+import { CoreHelperUtil } from './CoreHelperUtil.js'
+import { StorageUtil } from './StorageUtil.js'
+import type { ConnectMethod, Connector, Features, WcWallet } from './TypeUtil.js'
 
 interface AppKitWallet extends WcWallet {
   installed: boolean
@@ -57,11 +56,16 @@ export const WalletUtil = {
 
   filterOutDuplicatesByIds(wallets: WcWallet[]) {
     const connectors = ConnectorController.state.connectors.filter(
-      connector => connector.type === 'ANNOUNCED' || connector.type === 'INJECTED'
+      connector =>
+        connector.type === 'ANNOUNCED' ||
+        connector.type === 'INJECTED' ||
+        connector.type === 'MULTI_CHAIN'
     )
     const recent = StorageUtil.getRecentWallets()
 
-    const connectorIds = connectors.map(connector => connector.explorerId)
+    const connectorIds = connectors.map(
+      connector => connector.explorerId || connector.explorerWallet?.id || connector.id
+    )
 
     const recentIds = recent.map(wallet => wallet.id)
 
@@ -162,6 +166,7 @@ export const WalletUtil = {
 
     return ConstantsUtil.DEFAULT_CONNECT_METHOD_ORDER
   },
+
   isExcluded(wallet: WcWallet) {
     const isRDNSExcluded =
       Boolean(wallet.rdns) && ApiController.state.excludedWallets.some(w => w.rdns === wallet.rdns)
@@ -174,7 +179,48 @@ export const WalletUtil = {
 
     return isRDNSExcluded || isNameExcluded
   },
+
   markWalletsWithDisplayIndex(wallets: WcWallet[]) {
     return wallets.map((w, index) => ({ ...w, display_index: index }))
+  },
+
+  /**
+   * Filters wallets based on WalletConnect support and platform requirements.
+   *
+   * On mobile only wallets with WalletConnect support and some mandatory wallets are shown.
+   * On desktop with Appkit Core only wallets with WalletConnect support are shown.
+   * On desktop with Appkit all wallets are shown.
+   *
+   * @param wallets - Array of wallets to filter
+   * @returns Filtered array of wallets based on WalletConnect support and platform
+   */
+  filterWalletsByWcSupport(wallets: WcWallet[]) {
+    if (ConnectionController.state.wcBasic) {
+      return wallets.filter(wallet => wallet.supports_wc)
+    }
+
+    if (CoreHelperUtil.isMobile()) {
+      return wallets.filter(
+        wallet =>
+          wallet.supports_wc || ConstantsUtil.MANDATORY_WALLET_IDS_ON_MOBILE.includes(wallet.id)
+      )
+    }
+
+    return wallets
+  },
+
+  getWalletConnectWallets(allWallets: WcWallet[]) {
+    const wallets = [...ApiController.state.featured, ...ApiController.state.recommended]
+    if (ApiController.state.filteredWallets?.length > 0) {
+      wallets.push(...ApiController.state.filteredWallets)
+    } else {
+      wallets.push(...allWallets)
+    }
+
+    const uniqueWallets = CoreHelperUtil.uniqueBy(wallets, 'id')
+    const walletsWithInstalled = WalletUtil.markWalletsAsInstalled(uniqueWallets)
+    const walletsByWcSupport = WalletUtil.filterWalletsByWcSupport(walletsWithInstalled)
+
+    return WalletUtil.markWalletsWithDisplayIndex(walletsByWcSupport)
   }
 }

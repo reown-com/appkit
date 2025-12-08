@@ -54,17 +54,6 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
       }
 
       ModalController.close()
-
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'CONNECT_SUCCESS',
-        properties: {
-          method: 'browser',
-          name: this.wallet?.name || 'Unknown',
-          view: RouterController.state.view,
-          walletRank: this.wallet?.order
-        }
-      })
     } catch (error) {
       const isUserRejectedRequestError =
         error instanceof AppKitError &&

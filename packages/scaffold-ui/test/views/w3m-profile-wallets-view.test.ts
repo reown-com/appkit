@@ -57,6 +57,13 @@ const mockBitcoinNetwork = {
   chainNamespace: ConstantsUtil.CHAIN.BITCOIN
 } as unknown as CaipNetwork
 
+const mockTonNetwork = {
+  id: 'ton:-239',
+  name: 'TON',
+  namespace: ConstantsUtil.CHAIN.TON,
+  chainNamespace: ConstantsUtil.CHAIN.TON
+} as unknown as CaipNetwork
+
 const mockMetaMaskConnector = {
   id: 'metamask',
   name: 'MetaMask',
@@ -258,6 +265,115 @@ describe('W3mProfileWalletsView - Tabs Rendering', () => {
 
     const tabs = element.shadowRoot?.querySelector(TABS_COMPONENT)
     expect(tabs).not.toBeNull()
+  })
+
+  it('should respect user-configured network order: A Order', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      activeChain: ConstantsUtil.CHAIN.TON,
+      activeCaipNetwork: mockTonNetwork,
+      chains: new Map([
+        [
+          ConstantsUtil.CHAIN.TON,
+          { namespace: ConstantsUtil.CHAIN.TON, caipNetworks: [mockTonNetwork] }
+        ],
+        [
+          ConstantsUtil.CHAIN.SOLANA,
+          { namespace: ConstantsUtil.CHAIN.SOLANA, caipNetworks: [mockSolanaNetwork] }
+        ],
+        [
+          ConstantsUtil.CHAIN.EVM,
+          { namespace: ConstantsUtil.CHAIN.EVM, caipNetworks: [mockEthereumNetwork] }
+        ]
+      ])
+    } as unknown as ChainControllerState)
+
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: {
+        ton: 'ton-wallet'
+      } as unknown as Record<ChainNamespace, string | undefined>,
+      connectors: []
+    })
+
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
+    vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
+      connections: [],
+      recentConnections: []
+    })
+
+    const element: W3mProfileWalletsView = await fixture(
+      html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
+    )
+
+    const tabs = element.shadowRoot?.querySelector(TABS_COMPONENT) as any
+    expect(tabs).not.toBeNull()
+
+    const tabsArray = tabs.tabs
+    expect(tabsArray).toBeDefined()
+    expect(tabsArray.length).toBe(3)
+
+    expect(tabsArray[0].namespace).toBe('ton')
+    expect(tabsArray[1].namespace).toBe(ConstantsUtil.CHAIN.SOLANA)
+    expect(tabsArray[2].namespace).toBe(ConstantsUtil.CHAIN.EVM)
+  })
+
+  /**
+   * We use two test cases with two different orders
+   * in case the order of the hardcoded value in the tabs array changes.
+   */
+  it('should respect user-configured network order: B Order', async () => {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      activeChain: ConstantsUtil.CHAIN.BITCOIN,
+      activeCaipNetwork: mockBitcoinNetwork,
+      chains: new Map([
+        [
+          ConstantsUtil.CHAIN.BITCOIN,
+          { namespace: ConstantsUtil.CHAIN.BITCOIN, caipNetworks: [mockBitcoinNetwork] }
+        ],
+        [
+          ConstantsUtil.CHAIN.SOLANA,
+          { namespace: ConstantsUtil.CHAIN.SOLANA, caipNetworks: [mockSolanaNetwork] }
+        ],
+        [
+          ConstantsUtil.CHAIN.EVM,
+          { namespace: ConstantsUtil.CHAIN.EVM, caipNetworks: [mockEthereumNetwork] }
+        ],
+        [
+          ConstantsUtil.CHAIN.TON,
+          { namespace: ConstantsUtil.CHAIN.TON, caipNetworks: [mockTonNetwork] }
+        ]
+      ])
+    } as unknown as ChainControllerState)
+
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      activeConnectorIds: {
+        bip122: 'bitcoin-wallet'
+      } as unknown as Record<ChainNamespace, string | undefined>,
+      connectors: []
+    })
+
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue(undefined)
+    vi.spyOn(ConnectionControllerUtil, 'getConnectionsData').mockReturnValue({
+      connections: [],
+      recentConnections: []
+    })
+
+    const element: W3mProfileWalletsView = await fixture(
+      html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
+    )
+
+    const tabs = element.shadowRoot?.querySelector(TABS_COMPONENT) as any
+    expect(tabs).not.toBeNull()
+
+    const tabsArray = tabs.tabs
+    expect(tabsArray).toBeDefined()
+    expect(tabsArray.length).toBe(4)
+    // Tabs should render in user's configured order: Bitcoin, Solana, EVM, TON
+    expect(tabsArray[0].namespace).toBe(ConstantsUtil.CHAIN.BITCOIN)
+    expect(tabsArray[1].namespace).toBe(ConstantsUtil.CHAIN.SOLANA)
+    expect(tabsArray[2].namespace).toBe(ConstantsUtil.CHAIN.EVM)
+    expect(tabsArray[3].namespace).toBe(ConstantsUtil.CHAIN.TON)
   })
 
   it('should not render tabs when only one namespace is available', async () => {

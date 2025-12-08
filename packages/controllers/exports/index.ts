@@ -36,10 +36,7 @@ export type { ConnectExternalOptions } from '../src/controllers/ConnectionContro
 
 export { ConnectorController } from '../src/controllers/ConnectorController.js'
 export { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
-export type {
-  ConnectorControllerState,
-  ConnectorWithProviders
-} from '../src/controllers/ConnectorController.js'
+export type { ConnectorControllerState } from '../src/controllers/ConnectorController.js'
 
 export { SnackController } from '../src/controllers/SnackController.js'
 export type { SnackControllerState } from '../src/controllers/SnackController.js'
@@ -100,7 +97,9 @@ export type { ExchangeControllerState } from '../src/controllers/ExchangeControl
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from '../src/utils/AssetUtil.js'
 export { ConstantsUtil } from '../src/utils/ConstantsUtil.js'
+export { WalletUtil } from '../src/utils/WalletUtil.js'
 export { CoreHelperUtil, type OpenTarget } from '../src/utils/CoreHelperUtil.js'
+export { ConnectorUtil } from '../src/utils/ConnectorUtil.js'
 export { StorageUtil } from '../src/utils/StorageUtil.js'
 export { RouterUtil } from '../src/utils/RouterUtil.js'
 export { OptionsUtil } from '../src/utils/OptionsUtil.js'
@@ -129,5 +128,6 @@ export { FetchUtil } from '../src/utils/FetchUtil.js'
 
 export type * from '../src/utils/TypeUtil.js'
 export type * from '../src/utils/SIWXUtil.js'
+export type { WalletItem } from '../src/utils/ConnectUtil.js'
 export * from '../src/utils/ChainControllerUtil.js'
 export * from '../src/utils/WalletConnectUtil.js'

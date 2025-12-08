@@ -28,10 +28,14 @@ import {
 } from '@wallet-standard/features'
 import base58 from 'bs58'
 
-import { type CaipNetwork, ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
+import {
+  type CaipNetwork,
+  ConstantsUtil,
+  PresetsUtil,
+  UserRejectedRequestError
+} from '@reown/appkit-common'
 import { ConnectorController, type RequestArguments } from '@reown/appkit-controllers'
 import type { Provider as CoreProvider } from '@reown/appkit-controllers'
-import { PresetsUtil } from '@reown/appkit-utils'
 import type {
   AnyTransaction,
   GetActiveChain,

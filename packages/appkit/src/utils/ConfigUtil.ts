@@ -26,7 +26,8 @@ const FEATURE_KEYS: FeatureKey[] = [
   'emailCapture',
   'payWithExchange',
   'payments',
-  'reownAuthentication'
+  'reownAuthentication',
+  'headless'
 ]
 
 const featureConfig = {
@@ -210,6 +211,15 @@ const featureConfig = {
 
       return Boolean(localValue)
     }
+  },
+  headless: {
+    apiFeatureName: 'headless' as const,
+    localFeatureName: 'headless',
+    returnType: false as boolean,
+    isLegacy: false,
+    isAvailableOnBasic: false,
+    processApi: (apiConfig: TypedFeatureConfig) => Boolean(apiConfig.isEnabled),
+    processFallback: () => ConstantsUtil.DEFAULT_REMOTE_FEATURES.headless
   }
 }
 

@@ -12,6 +12,7 @@ import {
   ChainController,
   type ConnectionControllerClient,
   ConnectorController,
+  ConnectorUtil,
   CoreHelperUtil,
   OptionsController,
   type Provider,
@@ -19,8 +20,7 @@ import {
   SIWXUtil,
   WcHelpersUtil
 } from '@reown/appkit-controllers'
-import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
-import { CaipNetworksUtil, HelpersUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { mainnet, polygon } from '@reown/appkit/networks'
 
@@ -111,33 +111,6 @@ describe('EthersAdapter', () => {
         ancestorOrigins: ['https://app.safe.global']
       }
     })
-    vi.mock('@base-org/account', async () => {
-      const actual = await import('@base-org/account')
-      return {
-        ...actual,
-        createBaseAccountSDK: vi.fn(() => ({
-          getProvider: vi.fn(() => {
-            return {
-              request: vi.fn(),
-              connect: vi.fn()
-            }
-          })
-        }))
-      }
-    })
-    vi.mock('@safe-global/safe-apps-sdk', () => ({
-      default: vi.fn(() => ({
-        safe: {
-          getInfo: vi.fn(),
-          getProvider: vi.fn(() => {
-            return {
-              request: vi.fn(),
-              connect: vi.fn()
-            }
-          })
-        }
-      }))
-    }))
 
     adapter = new EthersAdapter()
     ChainController.initialize([adapter], mockCaipNetworks, {
@@ -170,6 +143,41 @@ describe('EthersAdapter', () => {
       const injectedConnector = mockConnectors.filter((c: any) => c.id === 'injected')[0]
 
       expect(injectedConnector?.info).toBeUndefined()
+    })
+
+    it('should set explorerId from PresetsUtil based on rdns or name', () => {
+      const ethersAdapter = new EthersAdapter()
+      const addConnectorSpy = vi.spyOn(ethersAdapter as any, 'addConnector')
+
+      const mockEIP6963Provider = {
+        info: {
+          rdns: 'MetaMask',
+          name: 'MetaMask',
+          icon: 'data:image/png;base64,mock'
+        },
+        provider: mockProvider
+      }
+
+      const { info, provider } = mockEIP6963Provider
+
+      const id = info.rdns || info.name
+
+      ;(ethersAdapter as any).addConnector({
+        id,
+        type: 'ANNOUNCED',
+        explorerId:
+          PresetsUtil.ConnectorExplorerIds[info.rdns || ''] ??
+          PresetsUtil.ConnectorExplorerIds[info.name || ''],
+        imageUrl: info?.icon,
+        name: info?.name || 'Unknown',
+        provider
+      })
+
+      expect(addConnectorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          explorerId: expect.any(String)
+        })
+      )
     })
   })
 
@@ -1261,7 +1269,28 @@ describe('EthersAdapter', () => {
         ...OptionsController.state,
         metadata: mockEthersConfig.metadata
       })
+
+      vi.mock('@reown/appkit-utils/ethers', async () => {
+        const actual = await import('@reown/appkit-utils/ethers')
+        return {
+          ...actual,
+          SafeProvider: vi.fn(() => ({
+            initialize: vi.fn()
+          })),
+          BaseProvider: vi.fn(() => ({
+            initialize: vi.fn()
+          })),
+          InjectedProvider: vi.fn(() => ({
+            initialize: vi.fn()
+          }))
+        }
+      })
     })
+
+    beforeEach(() => {
+      vi.clearAllMocks()
+    })
+
     it('should create Ethers config with coinbase provider if not disabled', async () => {
       const ethersAdapter = new EthersAdapter()
       const providers = await ethersAdapter['createEthersConfig']()
