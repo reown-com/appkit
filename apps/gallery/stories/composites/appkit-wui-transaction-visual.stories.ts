@@ -105,7 +105,7 @@ export const FirstImageBroken: Component = {
         .images=${[
           {
             type: 'NFT' as const,
-            url: 'https://invalid-url-that-will-fail.com/image.png'
+            url: 'https://lab.reown.com/invalid-image-url.png'
           },
           {
             type: 'NFT' as const,
@@ -131,7 +131,7 @@ export const SecondImageBroken: Component = {
           },
           {
             type: 'NFT' as const,
-            url: 'https://invalid-url-that-will-fail.com/image.png'
+            url: 'https://lab.reown.com/invalid-image-url.png'
           }
         ] as TransactionImage[]}
       ></wui-transaction-visual>
@@ -149,11 +149,11 @@ export const BothImagesBroken: Component = {
         .images=${[
           {
             type: 'NFT' as const,
-            url: 'https://invalid-url-that-will-fail.com/image1.png'
+            url: 'https://lab.reown.com/invalid-image-url.png'
           },
           {
             type: 'NFT' as const,
-            url: 'https://invalid-url-that-will-fail.com/image2.png'
+            url: 'https://lab.reown.com/invalid-image-url2.png'
           }
         ] as TransactionImage[]}
       ></wui-transaction-visual>
@@ -171,7 +171,7 @@ export const SingleImageBroken: Component = {
         .images=${[
           {
             type: 'NFT' as const,
-            url: 'https://invalid-url-that-will-fail.com/image.png'
+            url: 'https://lab.reown.com/invalid-image-url.png'
           }
         ] as TransactionImage[]}
       ></wui-transaction-visual>
