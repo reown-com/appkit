@@ -2,6 +2,7 @@ import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
 
 import type { ParsedCaipAddress } from '@reown/appkit-common'
 import {
+  ChainController,
   type Connector,
   ConnectorController,
   ConnectorControllerUtil,
@@ -84,6 +85,10 @@ describe('AppKitWalletButton', () => {
     const mockProvider = {
       connectSocial: vi.fn()
     }
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155'
+    })
 
     const mockAuthConnector = {
       id: 'auth',
@@ -100,7 +105,8 @@ describe('AppKitWalletButton', () => {
     expect(ConnectorControllerUtil.connectSocial).toHaveBeenCalledWith({
       social: 'google',
       onConnect: expect.any(Function),
-      onOpenFarcaster: expect.any(Function)
+      onOpenFarcaster: expect.any(Function),
+      namespace: 'eip155'
     })
 
     expect(mockProvider.connectSocial).not.toHaveBeenCalled()

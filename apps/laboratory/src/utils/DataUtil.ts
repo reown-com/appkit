@@ -191,6 +191,11 @@ export const featuredSdkOptions: SdkOption[] = [
     title: 'Basic',
     link: '/appkit?name=multichain-no-adapters',
     description: 'Configuration with no adapters enabled for AppKit'
+  },
+  {
+    title: 'AppKit Headless',
+    link: '/appkit?name=headless',
+    description: 'Custom connect UI with AppKit Headless'
   }
 ]
 

@@ -34,8 +34,15 @@ export class WuiListToken extends LitElement {
       <button data-clickable=${String(this.clickable)}>
         <wui-flex gap="2" alignItems="center">
           ${this.visualTemplate()}
-          <wui-flex flexDirection="column" justifyContent="space-between" gap="1">
-            <wui-text variant="md-regular" color="primary">${this.tokenName}</wui-text>
+          <wui-flex
+            flexDirection="column"
+            justifyContent="space-between"
+            gap="1"
+            class="token-name-container"
+          >
+            <wui-text variant="md-regular" color="primary" lineClamp="1">
+              ${this.tokenName}
+            </wui-text>
             <wui-text variant="sm-regular-mono" color="secondary">
               ${NumberUtil.formatNumberToLocalString(this.tokenAmount, 4)} ${this.tokenCurrency}
             </wui-text>
@@ -46,6 +53,7 @@ export class WuiListToken extends LitElement {
           justifyContent="space-between"
           gap="1"
           alignItems="flex-end"
+          width="auto"
         >
           <wui-text variant="md-regular-mono" color="primary"
             >$${this.tokenValue.toFixed(2)}</wui-text

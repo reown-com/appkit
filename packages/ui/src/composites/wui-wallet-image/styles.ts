@@ -50,14 +50,18 @@ export default css`
     align-items: center;
   }
 
+  wui-icon {
+    color: ${({ tokens }) => tokens.theme.iconDefault};
+  }
+
   wui-icon[data-parent-size='sm'] {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
   }
 
   wui-icon[data-parent-size='md'] {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
   }
 
   :host > wui-icon-box {

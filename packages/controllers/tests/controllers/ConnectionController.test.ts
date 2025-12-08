@@ -27,6 +27,7 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
+  PublicStateController,
   RouterController
 } from '../../exports/index.js'
 
@@ -131,7 +132,8 @@ describe('ConnectionController', () => {
       buffering: false,
       isSwitchingConnection: false,
       status: 'disconnected',
-      _client: evmAdapter.connectionControllerClient
+      _client: evmAdapter.connectionControllerClient,
+      wcFetchingUri: false
     })
   })
   it('should update state correctly and set wcPromisae on connectWalletConnect()', async () => {
@@ -260,9 +262,11 @@ describe('ConnectionController', () => {
   })
 
   it('should update state correctly on resetWcConnection()', () => {
+    const setPublicStateSpy = vi.spyOn(PublicStateController, 'set')
     ConnectionController.resetWcConnection()
     expect(ConnectionController.state.wcUri).toEqual(undefined)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
+    expect(setPublicStateSpy).toHaveBeenCalledWith({ connectingWallet: undefined })
   })
 
   it('should set wcUri correctly', () => {

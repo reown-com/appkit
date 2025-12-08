@@ -1,5 +1,6 @@
 import type { ChainNamespace } from '@reown/appkit-common'
 import {
+  ChainController,
   type Connector,
   ConnectorController,
   ConnectorControllerUtil,
@@ -44,11 +45,16 @@ export class AppKitWalletButton {
   }
 
   async connect(wallet: Wallet) {
+    const namespace = this.namespace || ChainController.state.activeChain
     const connectors = ConnectorController.state.connectors
+
+    if (!namespace) {
+      throw new Error('Namespace not found')
+    }
 
     if (wallet === ConstantsUtil.Email) {
       return ConnectorControllerUtil.connectEmail({
-        namespace: this.namespace,
+        namespace,
         onOpen() {
           ModalController.open().then(() => RouterController.push('EmailLogin'))
         },
@@ -61,7 +67,7 @@ export class AppKitWalletButton {
     if (ConstantsUtil.Socials.some(social => social === wallet)) {
       return ConnectorControllerUtil.connectSocial({
         social: wallet as SocialProvider,
-        namespace: this.namespace,
+        namespace,
         onOpenFarcaster() {
           ModalController.open({ view: 'ConnectingFarcaster' })
         },
@@ -74,11 +80,7 @@ export class AppKitWalletButton {
     const walletButton = WalletUtil.getWalletButton(wallet)
 
     const connector = walletButton
-      ? ConnectorController.getConnector({
-          id: walletButton.id,
-          rdns: walletButton.rdns,
-          namespace: this.namespace
-        })
+      ? ConnectorController.getConnector({ id: walletButton.id, namespace })
       : undefined
 
     if (connector && connector.type !== 'AUTH') {

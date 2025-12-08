@@ -7,33 +7,21 @@ import {
   ApiController,
   AssetController,
   AssetUtil,
+  ChainController,
   ConnectionController,
   ConnectorController,
-  type ConnectorWithProviders,
+  type ConnectorItemWithKind,
+  ConnectorUtil,
   CoreHelperUtil,
   RouterController,
+  type WalletItemWithKind,
   type WcWallet
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import { HelpersUtil } from '@reown/appkit-utils'
 
-import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import styles from './styles.js'
-
-type ConnectorItem = {
-  kind: 'connector'
-  subtype: 'injected' | 'announced' | 'multiChain' | 'external' | 'walletConnect'
-  connector: ConnectorWithProviders
-}
-
-type WalletItem = {
-  kind: 'wallet'
-  subtype: 'featured' | 'recommended' | 'custom' | 'recent'
-  wallet: WcWallet
-}
-
-type ConnectorOrWalletItem = ConnectorItem | WalletItem
 
 @customElement('w3m-connector-list')
 export class W3mConnectorList extends LitElement {
@@ -44,12 +32,6 @@ export class W3mConnectorList extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property({ type: Number }) public tabIdx?: number
-
-  @state() private connectors = ConnectorController.state.connectors
-
-  @state() private recommended = ApiController.state.recommended
-
-  @state() private featured = ApiController.state.featured
 
   @state() private explorerWallets?: WcWallet[] = ApiController.state.explorerWallets
 
@@ -62,11 +44,8 @@ export class W3mConnectorList extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
       ConnectionController.subscribeKey('connections', val => (this.connections = val)),
       AssetController.subscribeKey('connectorImages', val => (this.connectorImages = val)),
-      ApiController.subscribeKey('recommended', val => (this.recommended = val)),
-      ApiController.subscribeKey('featured', val => (this.featured = val)),
       // Consume explorer wallets for ranking only
       ApiController.subscribeKey('explorerFilteredWallets', val => {
         this.explorerWallets = val?.length ? val : ApiController.state.explorerWallets
@@ -98,112 +77,9 @@ export class W3mConnectorList extends LitElement {
   }
 
   // -- Private ------------------------------------------ //
-  private processConnectorsByType(
-    connectors: ConnectorWithProviders[],
-    shouldFilter = true
-  ): ConnectorWithProviders[] {
-    const sorted = ConnectorUtil.sortConnectorsByExplorerWallet([...connectors])
-
-    return shouldFilter ? sorted.filter(ConnectorUtil.showConnector) : sorted
-  }
 
   private connectorListTemplate() {
-    const byType = ConnectorUtil.getConnectorsByType(
-      this.connectors,
-      this.recommended,
-      this.featured
-    )
-
-    // Build per-type lists with existing filtering/sorting rules
-    const announced = this.processConnectorsByType(
-      byType.announced.filter(c => c.id !== 'walletConnect')
-    )
-    const injected = this.processConnectorsByType(byType.injected)
-    const multiChain = this.processConnectorsByType(
-      byType.multiChain.filter(c => c.name !== 'WalletConnect'),
-      false
-    )
-    const custom = byType.custom
-    const recent = byType.recent
-    const external = this.processConnectorsByType(
-      byType.external.filter(
-        c =>
-          c.id !== CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK &&
-          c.id !== CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT
-      )
-    )
-    const recommended = byType.recommended
-    const featured = byType.featured
-
-    const connectorTypeOrder = ConnectorUtil.getConnectorTypeOrder({
-      custom,
-      recent,
-      announced,
-      injected,
-      multiChain,
-      recommended,
-      featured,
-      external
-    })
-
-    const wcConnector = this.connectors.find(c => c.id === 'walletConnect')
-    const isMobile = CoreHelperUtil.isMobile()
-    const items: Array<ConnectorOrWalletItem> = []
-
-    for (const type of connectorTypeOrder) {
-      switch (type) {
-        case 'walletConnect': {
-          if (!isMobile && wcConnector) {
-            items.push({ kind: 'connector', subtype: 'walletConnect', connector: wcConnector })
-          }
-          break
-        }
-        case 'recent': {
-          const filteredRecent = ConnectorUtil.getFilteredRecentWallets()
-          filteredRecent.forEach(w => items.push({ kind: 'wallet', subtype: 'recent', wallet: w }))
-          break
-        }
-        case 'injected': {
-          multiChain.forEach(c =>
-            items.push({ kind: 'connector', subtype: 'multiChain', connector: c })
-          )
-          announced.forEach(c =>
-            items.push({ kind: 'connector', subtype: 'announced', connector: c })
-          )
-          injected.forEach(c =>
-            items.push({ kind: 'connector', subtype: 'injected', connector: c })
-          )
-          break
-        }
-        case 'featured': {
-          featured.forEach(w => items.push({ kind: 'wallet', subtype: 'featured', wallet: w }))
-          break
-        }
-        case 'custom': {
-          const filteredCustom = ConnectorUtil.getFilteredCustomWallets(custom ?? [])
-          filteredCustom.forEach(w => items.push({ kind: 'wallet', subtype: 'custom', wallet: w }))
-          break
-        }
-        case 'external': {
-          external.forEach(c =>
-            items.push({ kind: 'connector', subtype: 'external', connector: c })
-          )
-          break
-        }
-        case 'recommended': {
-          const cappedRecommended = ConnectorUtil.getCappedRecommendedWallets(recommended)
-          cappedRecommended.forEach(w =>
-            items.push({ kind: 'wallet', subtype: 'recommended', wallet: w })
-          )
-          break
-        }
-        default:
-          // eslint-disable-next-line no-console
-          console.warn(`Unknown connector type: ${type}`)
-      }
-    }
-
-    return items.map((item, displayIndex) => {
+    return ConnectorUtil.connectorList().map((item, displayIndex) => {
       if (item.kind === 'connector') {
         return this.renderConnector(item, displayIndex)
       }
@@ -212,7 +88,7 @@ export class W3mConnectorList extends LitElement {
     })
   }
 
-  private getConnectorNamespaces(item: ConnectorItem) {
+  private getConnectorNamespaces(item: ConnectorItemWithKind) {
     if (item.subtype === 'walletConnect') {
       return []
     }
@@ -224,7 +100,7 @@ export class W3mConnectorList extends LitElement {
     return [item.connector.chain] as ChainNamespace[]
   }
 
-  private renderConnector(item: ConnectorItem, index: number) {
+  private renderConnector(item: ConnectorItemWithKind, index: number) {
     const connector = item.connector
     const imageSrc =
       AssetUtil.getConnectorImage(connector) || this.connectorImages[connector?.imageId ?? '']
@@ -274,7 +150,7 @@ export class W3mConnectorList extends LitElement {
     `
   }
 
-  private onClickConnector(item: ConnectorItem) {
+  private onClickConnector(item: ConnectorItemWithKind) {
     const redirectView = RouterController.state.data?.redirectView
     if (item.subtype === 'walletConnect') {
       ConnectorController.setActiveConnector(item.connector)
@@ -331,7 +207,7 @@ export class W3mConnectorList extends LitElement {
     })
   }
 
-  private renderWallet(item: WalletItem, index: number) {
+  private renderWallet(item: WalletItemWithKind, index: number) {
     const wallet = item.wallet
     const imageSrc = AssetUtil.getWalletImage(wallet)
     const hasWcConnection = ConnectionController.hasAnyConnection(
@@ -363,8 +239,10 @@ export class W3mConnectorList extends LitElement {
     `
   }
 
-  private onClickWallet(item: WalletItem) {
+  private onClickWallet(item: WalletItemWithKind) {
     const redirectView = RouterController.state.data?.redirectView
+    const namespace = ChainController.state.activeChain
+
     if (item.subtype === 'featured') {
       ConnectorController.selectWalletConnector(item.wallet)
 
@@ -395,10 +273,9 @@ export class W3mConnectorList extends LitElement {
       return
     }
 
-    const connector = ConnectorController.getConnector({
-      id: item.wallet.id,
-      rdns: item.wallet.rdns
-    })
+    const connector = namespace
+      ? ConnectorController.getConnector({ id: item.wallet.id, namespace })
+      : undefined
 
     if (connector) {
       RouterController.push('ConnectingExternal', { connector, redirectView })

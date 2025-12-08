@@ -2,7 +2,12 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
 import type { BadgeType, WcWallet } from '@reown/appkit-controllers'
-import { ApiController, ConnectorController, OptionsController } from '@reown/appkit-controllers'
+import {
+  ApiController,
+  ConnectorController,
+  OptionsController,
+  WalletUtil
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-grid'
@@ -10,7 +15,6 @@ import '@reown/appkit-ui/wui-icon-box'
 import '@reown/appkit-ui/wui-loading-spinner'
 import '@reown/appkit-ui/wui-text'
 
-import { WalletUtil } from '../../utils/WalletUtil.js'
 import '../w3m-all-wallets-list-item/index.js'
 import styles from './styles.js'
 
