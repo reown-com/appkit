@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { toast } from 'sonner'
 
@@ -12,49 +12,35 @@ import { NamespaceSelectionDialog } from '@/components/NamespaceSelectionDialog'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
-import { InjectedWalletsCardContent } from './InjectedWalletsContent'
+import { AllWalletsContent } from './AllWalletsContent'
+import { ConnectContent } from './ConnectContent'
 import { WalletConnectQRContent } from './WalletConnectQRContent'
-import { WalletConnectWalletsContent } from './WalletConnectWalletsContent'
 
 export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>) {
-  const { data, connect, wcUri, isFetchingWcUri } = useAppKitWallets()
+  const { connect, wcUri, connectingWallet, resetWcUri } = useAppKitWallets()
   const [selectedWallet, setSelectedWallet] = useState<WalletItem | null>(null)
   const [showWalletSearch, setShowWalletSearch] = useState(false)
-  const [connectingWallet, setConnectingWallet] = useState<WalletItem | undefined>(undefined)
   const [isNamespaceDialogOpen, setIsNamespaceDialogOpen] = useState(false)
 
-  const injectedWallets = data.filter(w => w.isInjected)
+  const showQRCode = wcUri && connectingWallet && !connectingWallet.isInjected
 
-  function handleOpenNamespaceDialog(item: (typeof injectedWallets)[number]) {
+  function onOpenNamespaceDialog(item: WalletItem) {
     setSelectedWallet(item)
     setIsNamespaceDialogOpen(true)
   }
 
-  async function handleConnect(item: WalletItem, namespace?: ChainNamespace) {
-    setConnectingWallet(item)
+  async function onConnect(item: WalletItem, namespace?: ChainNamespace) {
     setIsNamespaceDialogOpen(false)
     await connect(item, namespace)
       .then(() => {
         setSelectedWallet(null)
-        setConnectingWallet(undefined)
         toast.success('Connected wallet')
       })
       .catch(error => {
         console.error(error)
-        setConnectingWallet(undefined)
         toast.error('Failed to connect wallet')
       })
   }
-
-  function handleWalletConnectClick(wallet: WalletItem) {
-    handleConnect(wallet)
-  }
-
-  function handleQRBack() {
-    setConnectingWallet(undefined)
-  }
-
-  const showQRCode = wcUri && connectingWallet && !connectingWallet.isInjected && !isFetchingWcUri
 
   return (
     <div
@@ -66,32 +52,29 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
         item={selectedWallet}
         open={selectedWallet?.name && isNamespaceDialogOpen ? true : false}
         onOpenChange={setIsNamespaceDialogOpen}
-        onSelect={handleConnect}
+        onSelect={onConnect}
       />
       <Card
-        className={cn('min-h-[600px] w-full h-full gap-0 p-0 overflow-hidden shadow-sm', {
-          'flex flex-row p-0': showQRCode
-        })}
+        className={cn(
+          'min-h-[600px] w-full h-full gap-0 p-0 overflow-hidden shadow-sm flex-col-reverse md:flex-row',
+          { 'flex p-0': showQRCode }
+        )}
       >
         <div className={cn('flex-1', showQRCode && 'border-r border-border')}>
           {showWalletSearch ? (
-            <WalletConnectWalletsContent
-              onBack={() => setShowWalletSearch(false)}
-              onWalletClick={handleWalletConnectClick}
-            />
+            <AllWalletsContent onBack={() => setShowWalletSearch(false)} onConnect={onConnect} />
           ) : (
-            <InjectedWalletsCardContent
-              wallets={injectedWallets}
-              connectingWallet={connectingWallet}
-              handleConnect={handleConnect}
-              handleOpenNamespaceDialog={handleOpenNamespaceDialog}
+            <ConnectContent
+              onConnect={onConnect}
+              onOpenNamespaceDialog={onOpenNamespaceDialog}
               setShowWalletSearch={setShowWalletSearch}
             />
           )}
         </div>
-        {showQRCode && connectingWallet && (
+        {/* Render QR Code on the right side */}
+        {showQRCode && (
           <div className="flex-1 p-6 bg-muted/70">
-            <WalletConnectQRContent wallet={connectingWallet} onBack={handleQRBack} />
+            <WalletConnectQRContent onClose={resetWcUri} />
           </div>
         )}
       </Card>

@@ -44,6 +44,7 @@ import type {
   CustomRpcUrlMap
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, NetworkUtil } from '@reown/appkit-common'
+import { PresetsUtil } from '@reown/appkit-common'
 import {
   AdapterBlueprint,
   AssetController,
@@ -54,7 +55,7 @@ import {
   WalletConnectConnector
 } from '@reown/appkit-controllers'
 import { type ConnectorType, type Provider } from '@reown/appkit-controllers'
-import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, HelpersUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { authConnector } from './connectors/AuthConnector.js'
@@ -502,7 +503,9 @@ export class WagmiAdapter extends AdapterBlueprint {
     const customConnectorImages = AssetController.state.connectorImages
     this.addConnector({
       id: connector.id,
-      explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
+      explorerId:
+        PresetsUtil.ConnectorExplorerIds[connector.id] ??
+        PresetsUtil.ConnectorExplorerIds[connector.name],
       imageUrl: customConnectorImages?.[connector.id] ?? connector.icon,
       name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
       imageId: PresetsUtil.ConnectorImageIds[connector.id],

@@ -15,7 +15,8 @@ import {
   OptionsStateController,
   type RemoteFeatures,
   RouterController,
-  type WalletGuideType
+  type WalletGuideType,
+  WalletUtil
 } from '@reown/appkit-controllers'
 import { MathUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
@@ -29,7 +30,6 @@ import '../../partials/w3m-legal-checkbox/index.js'
 import '../../partials/w3m-social-login-widget/index.js'
 import '../../partials/w3m-wallet-login-list/index.js'
 import { HelpersUtil } from '../../utils/HelpersUtil.js'
-import { WalletUtil } from '../../utils/WalletUtil.js'
 import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //

@@ -1,9 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import {
+  type CaipNetwork,
+  type ChainNamespace,
+  ConstantsUtil,
+  PresetsUtil
+} from '@reown/appkit-common'
 import { ChainController, SIWXUtil } from '@reown/appkit-controllers'
 import { WalletConnectConnector } from '@reown/appkit-controllers'
-import { PresetsUtil } from '@reown/appkit-utils'
 
 import { bitcoin, mainnet, solana } from '../../src/networks'
 import mockProvider from '../mocks/UniversalProvider'

@@ -3,10 +3,10 @@ import {
   type CaipNetwork,
   type CaipNetworkId,
   ConstantsUtil as CommonConstantsUtil,
-  ConstantsUtil
+  ConstantsUtil,
+  PresetsUtil
 } from '@reown/appkit-common'
 import { ChainController, CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
-import { PresetsUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
 

@@ -66,10 +66,10 @@ export const TransactionUtil = {
     const type = transaction?.metadata?.operationType as TransactionType
 
     const transfers = mergedTransfers || transaction?.transfers
-    const hasTransfer = transfers?.length > 0
-    const hasMultipleTransfers = transfers?.length > 1
-    const isFungible = hasTransfer && transfers?.every(transfer => Boolean(transfer?.fungible_info))
-    const [firstTransfer, secondTransfer] = transfers
+    const hasTransfer = transfers && transfers.length > 0
+    const hasMultipleTransfers = transfers && transfers.length > 1
+    const isFungible = hasTransfer && transfers.every(transfer => Boolean(transfer?.fungible_info))
+    const [firstTransfer, secondTransfer] = transfers || []
 
     let firstDescription = this.getTransferDescription(firstTransfer)
     let secondDescription = this.getTransferDescription(secondTransfer)
@@ -98,7 +98,7 @@ export const TransactionUtil = {
     }
 
     if (hasMultipleTransfers) {
-      return transfers.map(item => this.getTransferDescription(item))
+      return transfers?.map(item => this.getTransferDescription(item))
     }
 
     let prefix = ''
@@ -187,7 +187,7 @@ export const TransactionUtil = {
 
   filterGasFeeTransfers(transfers: TransactionTransfer[]): TransactionTransfer[] {
     // Group transfers by token name
-    const tokenGroups = transfers.reduce<Record<string, TransactionTransfer[]>>(
+    const tokenGroups = transfers?.reduce<Record<string, TransactionTransfer[]>>(
       (groups, transfer) => {
         const tokenName = transfer?.fungible_info?.name
         if (tokenName) {
@@ -204,7 +204,7 @@ export const TransactionUtil = {
 
     const filteredTransfers: TransactionTransfer[] = []
 
-    Object.values(tokenGroups).forEach(tokenTransfers => {
+    Object.values(tokenGroups ?? {}).forEach(tokenTransfers => {
       if (tokenTransfers.length === 1) {
         const firstTransfer = tokenTransfers[0]
         if (firstTransfer) {
@@ -244,7 +244,7 @@ export const TransactionUtil = {
       }
     })
 
-    transfers.forEach(transfer => {
+    transfers?.forEach(transfer => {
       if (!transfer?.fungible_info?.name) {
         filteredTransfers.push(transfer)
       }
@@ -258,7 +258,7 @@ export const TransactionUtil = {
       return tokenTransfers
     }
 
-    const amounts = tokenTransfers.map(t => Number(t.quantity.numeric))
+    const amounts = tokenTransfers?.map(t => Number(t.quantity.numeric))
     const maxAmount = Math.max(...amounts)
     const minAmount = Math.min(...amounts)
 
@@ -268,7 +268,7 @@ export const TransactionUtil = {
     if (minAmount < maxAmount * extremeGasThreshold) {
       // Filter out extremely small amounts that are likely gas fees
 
-      const filtered = tokenTransfers.filter(t => {
+      const filtered = tokenTransfers?.filter(t => {
         const amount = Number(t.quantity.numeric)
 
         return amount >= maxAmount * extremeGasThreshold
@@ -278,8 +278,8 @@ export const TransactionUtil = {
     }
 
     // If no extremely small amounts, apply standard gas fee logic
-    const inTransfers = tokenTransfers.filter(t => t.direction === 'in')
-    const outTransfers = tokenTransfers.filter(t => t.direction === 'out')
+    const inTransfers = tokenTransfers?.filter(t => t.direction === 'in')
+    const outTransfers = tokenTransfers?.filter(t => t.direction === 'out')
 
     if (inTransfers.length === 1 && outTransfers.length === 1) {
       const inTransfer = inTransfers[0]

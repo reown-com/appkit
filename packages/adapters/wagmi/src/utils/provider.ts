@@ -2,8 +2,8 @@ import { http } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
 import type { HttpTransport } from 'viem'
 
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-common'
 import { CoreHelperUtil } from '@reown/appkit-controllers'
-import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 
 // -- Helpers ------------------------------------------------------------------
 const RPC_URL = CoreHelperUtil.getBlockchainApiUrl()

@@ -30,6 +30,14 @@ export type CustomCaipNetwork<T extends string = InternalChainNamespace> = CaipN
 
 export type CustomRpcUrlMap = Record<CaipNetworkId, CustomRpcUrl[]>
 
+export type ConnectorType =
+  | 'EXTERNAL'
+  | 'WALLET_CONNECT'
+  | 'INJECTED'
+  | 'ANNOUNCED'
+  | 'AUTH'
+  | 'MULTI_CHAIN'
+
 export type CustomRpcUrl = {
   url: string
   config?: HttpTransportConfig
@@ -78,7 +86,7 @@ export type TransactionImage = {
 export interface Transaction {
   id: string
   metadata: TransactionMetadata
-  transfers: TransactionTransfer[]
+  transfers: TransactionTransfer[] | null
 }
 
 export interface TransactionMetadata {
