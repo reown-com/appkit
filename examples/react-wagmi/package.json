@@ -10,8 +10,8 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@tanstack/react-query": "5.75.5",
-    "react": "19.1.1",
-    "react-dom": "19.1.1",
+    "react": "19.1.2",
+    "react-dom": "19.1.2",
     "viem": "2.37.9",
     "wagmi": "2.17.5"
   },

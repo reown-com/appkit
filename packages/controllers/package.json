@@ -73,8 +73,8 @@
     "vue": "3.5.13",
     "@types/react": "19.1.15",
     "@types/react-dom": "19.1.9",
-    "react": "19.1.1",
-    "react-dom": "19.1.1",
+    "react": "19.1.2",
+    "react-dom": "19.1.2",
     "@walletconnect/types": "2.23.0"
   },
   "author": "Reown (https://discord.gg/reown)",
