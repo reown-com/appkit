@@ -70,68 +70,61 @@ export class WuiTransactionVisual extends LitElement {
   // -- Private ------------------------------------------- //
   private templateVisual() {
     const [firstImage, secondImage] = this.images
-    const firstImageType = firstImage?.type
     const hasTwoImages = this.images.length === 2
 
     if (hasTwoImages && (firstImage?.url || secondImage?.url)) {
-      return html`<div class="swap-images-container">
-        ${firstImage?.url
-          ? this.failedImageUrls.has(firstImage.url)
-            ? html`<wui-icon
-                size="xl"
-                weight="regular"
-                color="default"
-                name="networkPlaceholder"
-              ></wui-icon>`
-            : html`<wui-image
-                src=${firstImage.url}
-                alt="Transaction image"
-                @onLoadError=${this.handleImageError(firstImage.url)}
-              ></wui-image>`
-          : null}
-        ${secondImage?.url
-          ? this.failedImageUrls.has(secondImage.url)
-            ? html`<wui-icon
-                size="xl"
-                weight="regular"
-                color="default"
-                name="networkPlaceholder"
-              ></wui-icon>`
-            : html`<wui-image
-                src=${secondImage.url}
-                alt="Transaction image"
-                @onLoadError=${this.handleImageError(secondImage.url)}
-              ></wui-image>`
-          : null}
-      </div>`
-    } else if (firstImage?.url) {
-      return this.failedImageUrls.has(firstImage.url)
-        ? html`<wui-icon
-            size="xl"
-            weight="regular"
-            color="default"
-            name="networkPlaceholder"
-          ></wui-icon>`
-        : html`<wui-image
-            src=${firstImage.url}
-            alt="Transaction image"
-            @onLoadError=${this.handleImageError(firstImage.url)}
-          ></wui-image>`
-    } else if (firstImageType === 'NFT') {
-      return html`<wui-icon
-        size="xl"
-        weight="regular"
-        color="default"
-        name="nftPlaceholder"
-      ></wui-icon>`
+      return this.renderSwapImages(firstImage, secondImage)
     }
 
+    if (firstImage?.url) {
+      return this.renderSingleImage(firstImage)
+    }
+
+    if (firstImage?.type === 'NFT') {
+      return this.renderPlaceholderIcon('nftPlaceholder')
+    }
+
+    return this.renderPlaceholderIcon('coinPlaceholder')
+  }
+
+  private renderSwapImages(firstImage?: TransactionImage, secondImage?: TransactionImage) {
+    return html`<div class="swap-images-container">
+      ${firstImage?.url ? this.renderImageOrFallback(firstImage) : null}
+      ${secondImage?.url ? this.renderImageOrFallback(secondImage) : null}
+    </div>`
+  }
+
+  private renderSingleImage(image: TransactionImage) {
+    return this.renderImageOrFallback(image)
+  }
+
+  private renderImageOrFallback(image: TransactionImage) {
+    if (!image.url) {
+      return null
+    }
+
+    if (this.failedImageUrls.has(image.url)) {
+      return this.renderFallbackIcon()
+    }
+
+    return html`<wui-image
+      src=${image.url}
+      alt="Transaction image"
+      @onLoadError=${this.handleImageError(image.url)}
+    ></wui-image>`
+  }
+
+  private renderFallbackIcon() {
     return html`<wui-icon
       size="xl"
       weight="regular"
       color="default"
-      name="coinPlaceholder"
+      name="networkPlaceholder"
     ></wui-icon>`
+  }
+
+  private renderPlaceholderIcon(iconName: 'nftPlaceholder' | 'coinPlaceholder') {
+    return html`<wui-icon size="xl" weight="regular" color="default" name=${iconName}></wui-icon>`
   }
 
   private templateIcon() {
