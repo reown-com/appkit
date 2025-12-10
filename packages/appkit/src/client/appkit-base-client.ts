@@ -1375,17 +1375,15 @@ export abstract class AppKitBaseClient {
   }) {
     const { chainNamespace, closeModal } = options || {}
 
-    ChainController.resetAccount(chainNamespace)
-    ChainController.resetNetwork(chainNamespace)
-
-    StorageUtil.removeConnectedNamespace(chainNamespace)
-
     const namespaces = Array.from(ChainController.state.chains.keys())
     const namespacesToDisconnect = chainNamespace ? [chainNamespace] : namespaces
     namespacesToDisconnect.forEach(ns =>
       StorageUtil.addDisconnectedConnectorId(ConnectorController.getConnectorId(ns) || '', ns)
     )
-    ConnectorController.removeConnectorId(chainNamespace)
+    ChainController.resetAccount(chainNamespace)
+    ChainController.resetNetwork(chainNamespace)
+
+    StorageUtil.removeConnectedNamespace(chainNamespace)
 
     ProviderController.resetChain(chainNamespace)
 
