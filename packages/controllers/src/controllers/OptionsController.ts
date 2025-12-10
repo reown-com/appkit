@@ -435,6 +435,10 @@ export const OptionsController = {
     state.enableReconnect = enableReconnect
   },
 
+  setEnableCoinbase(enableCoinbase: OptionsControllerState['enableCoinbase']) {
+    state.enableCoinbase = enableCoinbase;
+  },
+
   setCoinbasePreference(coinbasePreference: OptionsControllerState['coinbasePreference']) {
     state.coinbasePreference = coinbasePreference
   },
