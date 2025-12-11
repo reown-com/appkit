@@ -181,6 +181,33 @@ export const ConnectorUtil = {
       return 0
     })
   },
+
+  /**
+   * Sorts connectors with BASE_ACCOUNT first, then COINBASE/COINBASE_SDK, then the rest.
+   * @param connectors - The connectors to sort.
+   * @returns Sorted connectors array.
+   */
+  sortConnectorsByPriority(connectors: ConnectorWithProviders[]): ConnectorWithProviders[] {
+    const getPriority = (connector: ConnectorWithProviders) => {
+      if (connector.id === CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT) {
+        return 0
+      }
+
+      if (
+        connector.id === CommonConstantsUtil.CONNECTOR_ID.COINBASE ||
+        connector.id === CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK
+      ) {
+        return 1
+      }
+
+      return 2
+    }
+
+    return connectors.sort((a, b) => {
+      return getPriority(a) - getPriority(b)
+    })
+  },
+
   getAuthName({
     email,
     socialUsername,
