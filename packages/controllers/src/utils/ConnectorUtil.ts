@@ -203,9 +203,7 @@ export const ConnectorUtil = {
       return 2
     }
 
-    return connectors.sort((a, b) => {
-      return getPriority(a) - getPriority(b)
-    })
+    return connectors.sort((a, b) => getPriority(a) - getPriority(b))
   },
 
   getAuthName({
