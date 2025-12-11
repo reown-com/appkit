@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@walletconnect/sign-client": "2.23.0",
+    "@walletconnect/sign-client": "2.23.1",
     "bs58": "6.0.0"
   },
   "devDependencies": {

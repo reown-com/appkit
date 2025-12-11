@@ -13,7 +13,7 @@
   "dependencies": {
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
-    "@walletconnect/logger": "3.0.0",
+    "@walletconnect/logger": "3.0.1",
     "ethers": "6.14.0"
   },
   "devDependencies": {

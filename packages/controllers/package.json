@@ -63,7 +63,7 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.23.0",
+    "@walletconnect/universal-provider": "2.23.1",
     "valtio": "2.1.7",
     "viem": ">=2.37.9"
   },
@@ -75,7 +75,7 @@
     "@types/react-dom": "19.1.9",
     "react": "19.1.2",
     "react-dom": "19.1.2",
-    "@walletconnect/types": "2.23.0"
+    "@walletconnect/types": "2.23.1"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "SEE LICENSE IN LICENSE.md",

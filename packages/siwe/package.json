@@ -24,8 +24,8 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/utils": "2.23.0",
-    "@walletconnect/types": "2.23.0",
+    "@walletconnect/utils": "2.23.1",
+    "@walletconnect/types": "2.23.1",
     "lit": "3.1.0",
     "valtio": "2.1.7",
     "viem": "2.37.9"

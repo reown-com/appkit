@@ -27,8 +27,8 @@
     "@types/big.js": "6.2.2",
     "@vitest/coverage-v8": "2.1.9",
     "vitest": "3.1.3",
-    "@walletconnect/types": "2.23.0",
-    "@walletconnect/universal-provider": "2.23.0"
+    "@walletconnect/types": "2.23.1",
+    "@walletconnect/universal-provider": "2.23.1"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "SEE LICENSE IN LICENSE.md",
