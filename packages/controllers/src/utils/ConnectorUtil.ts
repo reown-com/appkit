@@ -183,27 +183,34 @@ export const ConnectorUtil = {
   },
 
   /**
-   * Sorts connectors with BASE_ACCOUNT first, then COINBASE/COINBASE_SDK, then the rest.
-   * @param connectors - The connectors to sort.
-   * @returns Sorted connectors array.
+   * Returns the priority of a connector.
+   * @param connector - The connector to get the priority of.
+   * @returns The priority of the connector.
    */
-  sortConnectorsByPriority(connectors: ConnectorWithProviders[]): ConnectorWithProviders[] {
-    const getPriority = (connector: ConnectorWithProviders) => {
-      if (connector.id === CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT) {
-        return 0
-      }
-
-      if (
-        connector.id === CommonConstantsUtil.CONNECTOR_ID.COINBASE ||
-        connector.id === CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK
-      ) {
-        return 1
-      }
-
-      return 2
+  getPriority(connector: ConnectorWithProviders) {
+    if (connector.id === CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT) {
+      return 0
     }
 
-    return [...connectors].sort((a, b) => getPriority(a) - getPriority(b))
+    if (
+      connector.id === CommonConstantsUtil.CONNECTOR_ID.COINBASE ||
+      connector.id === CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK
+    ) {
+      return 1
+    }
+
+    return 2
+  },
+
+  /**
+   * Sorts connectors by priority.
+   * @param connectors - The connectors to sort.
+   * @returns Sorted connectors.
+   */
+  sortConnectorsByPriority(connectors: ConnectorWithProviders[]): ConnectorWithProviders[] {
+    return [...connectors].sort(
+      (a, b) => ConnectorUtil.getPriority(a) - ConnectorUtil.getPriority(b)
+    )
   },
 
   getAuthName({
