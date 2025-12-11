@@ -120,7 +120,13 @@ export const PresetsUtil = {
     // TON
     '-239': '20f673c0-095e-49b2-07cf-eb5049dcf600',
     // TON Testnet
-    '-3': '20f673c0-095e-49b2-07cf-eb5049dcf600'
+    '-3': '20f673c0-095e-49b2-07cf-eb5049dcf600',
+    // TRON
+    'tron:0x2b6653dc': 'dd9de794-d4ce-4c94-682f-a367f926d500',
+    // STACKS
+    'stacks:1': 'a694e2a1-03ee-46bd-2dc8-a04563041e00',
+    // NEAR
+    'near:mainnet': '6a5509e3-e58a-488a-19ee-17279677f800',
   } as Record<string, string>,
 
   ConnectorImageIds: {
