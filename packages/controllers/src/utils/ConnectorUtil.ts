@@ -183,7 +183,11 @@ export const ConnectorUtil = {
   },
 
   /**
-   * Returns the priority of a connector.
+   * Returns the priority of a connector. Base Account has highest priority, followed by Coinbase then the rest.
+   *
+   * This is needed because Base Account and Coinbase share the same explorer wallet ID.
+   * Without prioritization, selecting Base Account could incorrectly trigger the Coinbase Wallet extension.
+   *
    * @param connector - The connector to get the priority of.
    * @returns The priority of the connector.
    */
