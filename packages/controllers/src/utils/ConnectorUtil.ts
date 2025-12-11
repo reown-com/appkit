@@ -181,6 +181,42 @@ export const ConnectorUtil = {
       return 0
     })
   },
+
+  /**
+   * Returns the priority of a connector. Base Account has highest priority, followed by Coinbase then the rest.
+   *
+   * This is needed because Base Account and Coinbase share the same explorer wallet ID.
+   * Without prioritization, selecting Base Account could incorrectly trigger the Coinbase Wallet extension.
+   *
+   * @param connector - The connector to get the priority of.
+   * @returns The priority of the connector.
+   */
+  getPriority(connector: ConnectorWithProviders) {
+    if (connector.id === CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT) {
+      return 0
+    }
+
+    if (
+      connector.id === CommonConstantsUtil.CONNECTOR_ID.COINBASE ||
+      connector.id === CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK
+    ) {
+      return 1
+    }
+
+    return 2
+  },
+
+  /**
+   * Sorts connectors by priority.
+   * @param connectors - The connectors to sort.
+   * @returns Sorted connectors.
+   */
+  sortConnectorsByPriority(connectors: ConnectorWithProviders[]): ConnectorWithProviders[] {
+    return [...connectors].sort(
+      (a, b) => ConnectorUtil.getPriority(a) - ConnectorUtil.getPriority(b)
+    )
+  },
+
   getAuthName({
     email,
     socialUsername,
