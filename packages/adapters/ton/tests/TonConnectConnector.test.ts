@@ -33,12 +33,13 @@ describe('TonConnectConnector', () => {
       const testPayload = 'te6ccgEBAQEADAAMABQAAAAASGVsbG8h'
       const testStateInit = 'te6ccgEBAgEAKAABAcABAgBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAg'
 
+      const testAddress = 'UQA2A5SpYmHjygKewBWilkSc7twv1eTBuHOkWlUOLoXGV9Jg'
       const params = {
         validUntil: Math.floor(Date.now() / 1000) + 300,
-        from: 'UQDCp8fa0dQafUICMadG4KiSYxamwzvf53_4E9d21Ol14xb-',
+        from: testAddress,
         messages: [
           {
-            address: 'UQDCp8fa0dQafUICMadG4KiSYxamwzvf53_4E9d21Ol14xb-',
+            address: testAddress,
             amount: '1000000000',
             payload: testPayload,
             stateInit: testStateInit
@@ -52,7 +53,7 @@ describe('TonConnectConnector', () => {
       const preparedTx = JSON.parse(callArgs?.params[0] as string)
 
       expect(preparedTx.messages[0]).toMatchObject({
-        address: 'UQDCp8fa0dQafUICMadG4KiSYxamwzvf53_4E9d21Ol14xb-',
+        address: testAddress,
         amount: '1000000000',
         payload: testPayload,
         stateInit: testStateInit
