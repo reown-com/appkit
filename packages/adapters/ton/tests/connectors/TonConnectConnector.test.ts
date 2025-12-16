@@ -168,6 +168,45 @@ describe('TonConnectConnector', () => {
       expect(prepared.from).not.toBe(toAddress)
     })
 
+    it('should include payload and stateInit in prepared transaction', async () => {
+      const mocks = mockTonProvider()
+      const connector = new TonConnectConnector({
+        wallet: mocks.wallet,
+        chains: [tonTestnet]
+      })
+
+      const testPayload = 'te6ccgEBAQEADAAMABQAAAAASGVsbG8h'
+      const testStateInit = 'te6ccgEBAgEAKAABAcABAgBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAg'
+
+      const testAddress = 'UQA2A5SpYmHjygKewBWilkSc7twv1eTBuHOkWlUOLoXGV9Jg'
+      const params = {
+        validUntil: Math.floor(Date.now() / 1000) + 300,
+        from: testAddress,
+        messages: [
+          {
+            address: testAddress,
+            amount: '1000000000',
+            payload: testPayload,
+            stateInit: testStateInit
+          }
+        ]
+      }
+
+      await connector.sendMessage(params)
+
+      expect(mockWalletApi.send).toHaveBeenCalled()
+      const callArgs = mockWalletApi.send.mock.calls[0]?.[0]
+      expect(callArgs).toBeDefined()
+      const preparedTx = JSON.parse(callArgs.params[0])
+
+      expect(preparedTx.messages[0]).toMatchObject({
+        address: testAddress,
+        amount: '1000000000',
+        payload: testPayload,
+        stateInit: testStateInit
+      })
+    })
+
     it('should throw error if wallet is not available', async () => {
       const mocks = mockTonProvider()
       const connector = new TonConnectConnector({
