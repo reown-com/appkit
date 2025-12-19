@@ -621,17 +621,17 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
       '@walletconnect/sign-client':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@walletconnect/utils':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@3.25.76)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@3.25.76)
       axios:
         specifier: 1.12.2
         version: 1.12.2
@@ -810,8 +810,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/sign-client':
-        specifier: 2.23.0
-        version: 2.23.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
+        specifier: 2.23.1
+        version: 2.23.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
       bs58:
         specifier: 6.0.0
         version: 6.0.0
@@ -826,8 +826,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
       bs58:
         specifier: 6.0.0
         version: 6.0.0
@@ -852,8 +852,8 @@ importers:
   examples/html-ep:
     dependencies:
       '@walletconnect/ethereum-provider':
-        specifier: 2.23.0
-        version: 2.23.0(@types/react@19.2.2)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(react@19.2.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: 2.23.1
+        version: 2.23.1(@types/react@19.2.2)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(react@19.2.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
     devDependencies:
       vite:
         specifier: 5.4.20
@@ -1003,11 +1003,11 @@ importers:
         specifier: 5.75.5
         version: 5.75.5(react@19.1.2)
       '@walletconnect/sign-client':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       next:
         specifier: 14.2.35
         version: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.55.1)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
@@ -1052,8 +1052,8 @@ importers:
         specifier: 5.75.5
         version: 5.75.5(react@19.1.2)
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       next:
         specifier: 14.2.35
         version: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.55.1)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
@@ -1244,8 +1244,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/ethereum-provider':
-        specifier: 2.23.0
-        version: 2.23.0(@types/react@19.1.15)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(react@19.1.2)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: 2.23.1
+        version: 2.23.1(@types/react@19.1.15)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(react@19.1.2)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       next:
         specifier: 14.2.35
         version: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.55.1)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
@@ -1464,8 +1464,8 @@ importers:
         specifier: 0.2.11
         version: 0.2.11(@tanstack/query-core@5.75.5)(@tanstack/vue-query@5.75.5(vue@3.5.13(typescript@5.9.2)))(@types/react@19.2.2)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(nuxt@4.1.2(@parcel/watcher@2.5.1)(@types/node@22.13.9)(@vue/compiler-sfc@3.5.21)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(eslint@9.39.1(jiti@2.6.1))(idb-keyval@6.2.2)(ioredis@5.8.1)(lightningcss@1.30.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.52.4)(terser@5.43.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(vite@7.1.10(@types/node@22.13.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.43.1)(yaml@2.8.1))(yaml@2.8.1))(react@19.2.1)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.2.1))(utf-8-validate@5.0.10)(viem@2.37.9(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12))(vue@3.5.13(typescript@5.9.2))(zod@4.1.12)
       '@walletconnect/logger':
-        specifier: 3.0.0
-        version: 3.0.0
+        specifier: 3.0.1
+        version: 3.0.1
       nuxt:
         specifier: 4.1.2
         version: 4.1.2(@parcel/watcher@2.5.1)(@types/node@22.13.9)(@vue/compiler-sfc@3.5.21)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(eslint@9.39.1(jiti@2.6.1))(idb-keyval@6.2.2)(ioredis@5.8.1)(lightningcss@1.30.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.52.4)(terser@5.43.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(vite@7.1.10(@types/node@22.13.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.43.1)(yaml@2.8.1))(yaml@2.8.1)
@@ -1506,8 +1506,8 @@ importers:
         specifier: 0.2.11
         version: 0.2.11(@tanstack/query-core@5.75.5)(@tanstack/vue-query@5.75.5(vue@3.5.13(typescript@5.9.2)))(@types/react@19.2.2)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(nuxt@4.1.2(@parcel/watcher@2.5.1)(@types/node@22.13.9)(@vue/compiler-sfc@3.5.21)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(eslint@9.39.1(jiti@2.6.1))(idb-keyval@6.2.2)(ioredis@5.8.1)(lightningcss@1.30.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.52.4)(terser@5.43.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(vite@7.1.10(@types/node@22.13.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.43.1)(yaml@2.8.1))(yaml@2.8.1))(react@19.2.1)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.2.1))(utf-8-validate@5.0.10)(viem@2.37.9(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12))(vue@3.5.13(typescript@5.9.2))(zod@4.1.12)
       '@walletconnect/logger':
-        specifier: 3.0.0
-        version: 3.0.0
+        specifier: 3.0.1
+        version: 3.0.1
       nuxt:
         specifier: 4.1.2
         version: 4.1.2(@parcel/watcher@2.5.1)(@types/node@22.13.9)(@vue/compiler-sfc@3.5.21)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(eslint@9.39.1(jiti@2.6.1))(idb-keyval@6.2.2)(ioredis@5.8.1)(lightningcss@1.30.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.52.4)(terser@5.43.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(vite@7.1.10(@types/node@22.13.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.43.1)(yaml@2.8.1))(yaml@2.8.1)
@@ -1530,11 +1530,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       '@walletconnect/utils':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
       react:
         specifier: 19.1.2
         version: 19.1.2
@@ -1598,11 +1598,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/sign-client':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       ethers:
         specifier: 6.14.0
         version: 6.14.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -1632,8 +1632,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
       ethers:
         specifier: 6.14.0
         version: 6.14.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -1663,8 +1663,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/ethereum-provider':
-        specifier: 2.23.0
-        version: 2.23.0(@types/react@19.1.15)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(react@19.1.2)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: 2.23.1
+        version: 2.23.1(@types/react@19.1.15)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(react@19.1.2)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       ethers:
         specifier: 6.14.0
         version: 6.14.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -1861,8 +1861,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@walletconnect/logger':
-        specifier: 3.0.0
-        version: 3.0.0
+        specifier: 3.0.1
+        version: 3.0.1
       viem:
         specifier: 2.37.9
         version: 2.37.9(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
@@ -1910,8 +1910,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/adapters/ethers
       '@walletconnect/logger':
-        specifier: 3.0.0
-        version: 3.0.0
+        specifier: 3.0.1
+        version: 3.0.1
       ethers:
         specifier: 6.14.0
         version: 6.14.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -1956,8 +1956,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@walletconnect/logger':
-        specifier: 3.0.0
-        version: 3.0.0
+        specifier: 3.0.1
+        version: 3.0.1
       viem:
         specifier: 2.37.9
         version: 2.37.9(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
@@ -2024,11 +2024,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/sign-client':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       vue:
         specifier: 3.4.3
         version: 3.4.3(typescript@5.9.2)
@@ -2052,8 +2052,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)
       vue:
         specifier: 3.4.3
         version: 3.4.3(typescript@5.9.2)
@@ -2074,8 +2074,8 @@ importers:
   examples/vue-ep:
     dependencies:
       '@walletconnect/ethereum-provider':
-        specifier: 2.23.0
-        version: 2.23.0(@types/react@19.2.2)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(react@19.2.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: 2.23.1
+        version: 2.23.1(@types/react@19.2.2)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(react@19.2.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       vue:
         specifier: 3.4.3
         version: 3.4.3(typescript@5.9.2)
@@ -2324,8 +2324,8 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)
       bitcoinjs-lib:
         specifier: 6.1.7
         version: 6.1.7
@@ -2343,8 +2343,8 @@ importers:
         specifier: 1.0.3
         version: 1.0.3
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.43.1)
@@ -2376,8 +2376,8 @@ importers:
         specifier: workspace:*
         version: link:../../wallet
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
       ethers:
         specifier: '>=6'
         version: 6.14.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -2389,8 +2389,8 @@ importers:
         specifier: 2.1.9
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.43.1))
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.43.1)
@@ -2422,8 +2422,8 @@ importers:
         specifier: workspace:*
         version: link:../../wallet
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
       ethers:
         specifier: '>=4.1 <6.0.0'
         version: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -2435,8 +2435,8 @@ importers:
         specifier: 2.1.9
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.43.1))
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.43.1)
@@ -2505,11 +2505,11 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)
       valtio:
         specifier: 2.1.7
         version: 2.1.7(@types/react@19.1.15)(react@19.1.2)
@@ -2564,8 +2564,8 @@ importers:
         specifier: workspace:*
         version: link:../../appkit-utils
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
       tweetnacl-util:
         specifier: 0.15.1
         version: 0.15.1
@@ -2604,8 +2604,8 @@ importers:
         specifier: '>=2.21.2'
         version: 2.21.2(@tanstack/query-core@5.75.5)(@types/react@19.1.15)(react@19.2.1)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.2.1))(viem@2.37.9(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12))
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       valtio:
         specifier: 2.1.7
         version: 2.1.7(@types/react@19.1.15)(react@19.2.1)
@@ -2630,8 +2630,8 @@ importers:
         specifier: 2.1.9
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.43.1))
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.43.1)
@@ -2663,8 +2663,8 @@ importers:
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       bs58:
         specifier: 6.0.0
         version: 6.0.0
@@ -2704,8 +2704,8 @@ importers:
         specifier: 2.4.6
         version: 2.4.6
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       react:
         specifier: 19.1.2
         version: 19.1.2
@@ -2737,11 +2737,11 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
       '@walletconnect/logger':
-        specifier: 3.0.0
-        version: 3.0.0
+        specifier: 3.0.1
+        version: 3.0.1
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
       valtio:
         specifier: 2.1.7
         version: 2.1.7(@types/react@19.2.2)(react@19.2.1)
@@ -2778,8 +2778,8 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       bs58:
         specifier: 6.0.0
         version: 6.0.0
@@ -2889,11 +2889,11 @@ importers:
         specifier: 2.1.9
         version: 2.1.9(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jiti@2.6.1)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.43.1)(yaml@2.8.1))
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       vitest:
         specifier: 3.1.3
         version: 3.1.3(@types/debug@4.1.12)(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jiti@2.6.1)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.43.1)(yaml@2.8.1)
@@ -2907,8 +2907,8 @@ importers:
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       valtio:
         specifier: 2.1.7
         version: 2.1.7(@types/react@19.1.15)(react@19.1.2)
@@ -2926,8 +2926,8 @@ importers:
         specifier: 2.1.9
         version: 2.1.9(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jiti@2.6.1)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.43.1)(yaml@2.8.1))
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       react:
         specifier: 19.1.2
         version: 19.1.2
@@ -3084,11 +3084,11 @@ importers:
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       '@walletconnect/utils':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
       lit:
         specifier: 3.1.0
         version: 3.1.0
@@ -3225,11 +3225,11 @@ importers:
         specifier: workspace:*
         version: link:../common
       '@walletconnect/types':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
       bs58:
         specifier: 6.0.0
         version: 6.0.0
@@ -3256,8 +3256,8 @@ importers:
         specifier: workspace:*
         version: link:../polyfills
       '@walletconnect/logger':
-        specifier: 3.0.0
-        version: 3.0.0
+        specifier: 3.0.1
+        version: 3.0.1
       zod:
         specifier: 3.22.4
         version: 3.22.4
@@ -3287,8 +3287,8 @@ importers:
         specifier: workspace:*
         version: link:../appkit-utils
       '@walletconnect/universal-provider':
-        specifier: 2.23.0
-        version: 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
+        specifier: 2.23.1
+        version: 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
       lit:
         specifier: 3.3.0
         version: 3.3.0
@@ -10352,8 +10352,8 @@ packages:
     resolution: {integrity: sha512-ZQnyDDpqDPAk5lyLV19BRccQ3wwK3LmAwibuIv3X+44aT/dOs2kQGu9pla3iW2LgZ5qRMYvgvvfr5g3WlDGceQ==}
     engines: {node: '>=18.20.8'}
 
-  '@walletconnect/core@2.23.0':
-    resolution: {integrity: sha512-W++xuXf+AsMPrBWn1It8GheIbCTp1ynTQP+aoFB86eUwyCtSiK7UQsn/+vJZdwElrn+Ptp2A0RqQx2onTMVHjQ==}
+  '@walletconnect/core@2.23.1':
+    resolution: {integrity: sha512-fW48PIw41Q/LJW+q0msFogD/OcelkrrDONQMcpGw4C4Y6w+IvFKGEg+7dxGLKWx1g8QuHk/p6C9VEIV/tDsm5A==}
     engines: {node: '>=18.20.8'}
 
   '@walletconnect/environment@1.0.1':
@@ -10363,8 +10363,8 @@ packages:
     resolution: {integrity: sha512-SSlIG6QEVxClgl1s0LMk4xr2wg4eT3Zn/Hb81IocyqNSGfXpjtawWxKxiC5/9Z95f1INyBD6MctJbL/R1oBwIw==}
     deprecated: 'Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases'
 
-  '@walletconnect/ethereum-provider@2.23.0':
-    resolution: {integrity: sha512-jDuFarWWTbET2UhwUBBDfr1ZcPnrKBmqQtIc5EG6+ftzD+GcCz+cEJH7YJ5O77IdT8Uds9ETuIngvRokyWRSUw==}
+  '@walletconnect/ethereum-provider@2.23.1':
+    resolution: {integrity: sha512-G6KBsq92DsLlbCTDLhQu7783hOiZcS71TON+mPBSQkBqIpeDVQm+f3/DXUg7uiW4Ilz7WwehGNNlHa7rsZS0GA==}
 
   '@walletconnect/events@1.0.1':
     resolution: {integrity: sha512-NPTqaoi0oPBVNuLv7qPaJazmGHs5JGyO8eEAk5VGKmJzDR7AHzD4k6ilox5kxk1iwiOnFopBOOMLs86Oa76HpQ==}
@@ -10401,6 +10401,9 @@ packages:
   '@walletconnect/logger@3.0.0':
     resolution: {integrity: sha512-DDktPBFdmt5d7U3sbp4e3fQHNS1b6amsR8FmtOnt6L2SnV7VfcZr8VmAGL12zetAR+4fndegbREmX0P8Mw6eDg==}
 
+  '@walletconnect/logger@3.0.1':
+    resolution: {integrity: sha512-O8lXGMZO1+e5NtHhBSjsAih/I9KC+1BxNhGNGD+SIWTqWd0zsbT5wJtNnJ+LnSXTRE7XZRxFUlvZgkER3vlhFA==}
+
   '@walletconnect/relay-api@1.0.11':
     resolution: {integrity: sha512-tLPErkze/HmC9aCmdZOhtVmYZq1wKfWTJtygQHoWtgg722Jd4homo54Cs4ak2RUFUZIGO2RsOpIcWipaua5D5Q==}
 
@@ -10420,12 +10423,13 @@ packages:
 
   '@walletconnect/sign-client@2.21.7':
     resolution: {integrity: sha512-9k/JEl9copR6nXRhqnmzWz2Zk1hiWysH+o6bp6Cqo8TgDUrZoMLBZMZ6qbo+2HLI54V02kKf0Vg8M81nNFOpjQ==}
+    deprecated: 'Reliability and performance improvements. See: https://github.com/WalletConnect/walletconnect-monorepo/releases'
 
   '@walletconnect/sign-client@2.22.4':
     resolution: {integrity: sha512-la+sol0KL33Fyx5DRlupHREIv8wA6W33bRfuLAfLm8pINRTT06j9rz0IHIqJihiALebFxVZNYzJnF65PhV0q3g==}
 
-  '@walletconnect/sign-client@2.23.0':
-    resolution: {integrity: sha512-Nzf5x/LnQgC0Yjk0NmkT8kdrIMcScpALiFm9gP0n3CulL+dkf3HumqWzdoTmQSqGPxwHu/TNhGOaRKZLGQXSqw==}
+  '@walletconnect/sign-client@2.23.1':
+    resolution: {integrity: sha512-x0sG8ZuuaOi3G/gYWLppf7nmNItWlV8Yga9Bltb46/Ve6G20nCBis6gcTVVeJOpnmqQ85FISwExqOYPmJ0FQlw==}
 
   '@walletconnect/time@1.0.2':
     resolution: {integrity: sha512-uzdd9woDcJ1AaBZRhqy5rNC9laqWGErfc4dxA9a87mPdKOgWMD85mcFo9dIYIts/Jwocfwn07EC6EzclKubk/g==}
@@ -10442,8 +10446,8 @@ packages:
   '@walletconnect/types@2.22.4':
     resolution: {integrity: sha512-KJdiS9ezXzx1uASanldYaaenDwb42VOQ6Rj86H7FRwfYddhNnYnyEaDjDKOdToGRGcpt5Uzom6qYUOnrWEbp5g==}
 
-  '@walletconnect/types@2.23.0':
-    resolution: {integrity: sha512-9ZEOJyx/kNVCRncDHh3Qr9eH7Ih1dXBFB4k1J8iEudkv3t4GhYpXhqIt2kNdQWluPb1BBB4wEuckAT96yKuA8g==}
+  '@walletconnect/types@2.23.1':
+    resolution: {integrity: sha512-sbWOM9oCuzSbz/187rKWnSB3sy7FCFcbTQYeIJMc9+HTMTG2TUPftPCn8NnkfvmXbIeyLw00Y0KNvXoCV/eIeQ==}
 
   '@walletconnect/universal-provider@2.21.0':
     resolution: {integrity: sha512-mtUQvewt+X0VBQay/xOJBvxsB3Xsm1lTwFjZ6WUwSOTR1X+FNb71hSApnV5kbsdDIpYPXeQUbGt2se1n5E5UBg==}
@@ -10460,8 +10464,8 @@ packages:
   '@walletconnect/universal-provider@2.22.4':
     resolution: {integrity: sha512-TF2RNX13qxa0rrBAhVDs5+C2G8CHX7L0PH5hF2uyQHdGyxZ3pFbXf8rxmeW1yKlB76FSbW80XXNrUes6eK/xHg==}
 
-  '@walletconnect/universal-provider@2.23.0':
-    resolution: {integrity: sha512-3ZEqAsbtCbk+CV0ZLpy7Qzc04KXEnrW4zCboZ+gkkC0ey4H62x9h23kBOIrU9qew6orjA7D5gg0ikRC2Up1lbw==}
+  '@walletconnect/universal-provider@2.23.1':
+    resolution: {integrity: sha512-XlvG1clsL7Ds+g28Oz5dXsPA+5ERtQGYvd+L8cskMaTvtphGhipVGgX8WNAhp7p1gfNcDg4tCiTHlj131jctwA==}
 
   '@walletconnect/utils@2.21.0':
     resolution: {integrity: sha512-zfHLiUoBrQ8rP57HTPXW7rQMnYxYI4gT9yTACxVW6LhIFROTF6/ytm5SKNoIvi4a5nX5dfXG4D9XwQUCu8Ilig==}
@@ -10475,8 +10479,8 @@ packages:
   '@walletconnect/utils@2.22.4':
     resolution: {integrity: sha512-coAPrNiTiD+snpiXQyXakMVeYcddqVqII7aLU39TeILdPoXeNPc2MAja+MF7cKNM/PA3tespljvvxck/oTm4+Q==}
 
-  '@walletconnect/utils@2.23.0':
-    resolution: {integrity: sha512-bVyv4Hl+/wVGueZ6rEO0eYgDy5deSBA4JjpJHAMOdaNoYs05NTE1HymV2lfPQQHuqc7suYexo9jwuW7i3JLuAA==}
+  '@walletconnect/utils@2.23.1':
+    resolution: {integrity: sha512-J12DadZHIL0KvsUoQuK0rag9jDUy8qu1zwz47xEHl03LrMcgrotQiXvdTQ3uHwAVA4yKLTQB/LEI2JiTIt7X8Q==}
 
   '@walletconnect/window-getters@1.0.1':
     resolution: {integrity: sha512-vHp+HqzGxORPAN8gY03qnbTMnhqIwjeRJNOMOAzePRg4xVEEE2WvYsI9G2NMjOknA8hnuYbU3/hwLcKbjhc8+Q==}
@@ -27875,7 +27879,7 @@ snapshots:
       '@reown/appkit-polyfills': 1.8.11
       '@reown/appkit-wallet': 1.8.11(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)
       '@wallet-standard/wallet': 1.1.0
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       '@walletconnect/universal-provider': 2.22.4(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       valtio: 2.1.7(@types/react@19.1.15)(react@19.1.2)
       viem: 2.37.9(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
@@ -27914,7 +27918,7 @@ snapshots:
       '@reown/appkit-polyfills': 1.8.11
       '@reown/appkit-wallet': 1.8.11(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)
       '@wallet-standard/wallet': 1.1.0
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       '@walletconnect/universal-provider': 2.22.4(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       valtio: 2.1.7(@types/react@19.2.2)(react@19.2.1)
       viem: 2.37.9(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
@@ -27972,7 +27976,7 @@ snapshots:
     dependencies:
       '@reown/appkit-common': 1.8.11(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.22.4)
       '@reown/appkit-polyfills': 1.8.11
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       zod: 3.22.4
     transitivePeerDependencies:
       - bufferutil
@@ -33019,7 +33023,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/core@2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+  '@walletconnect/core@2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-provider': 1.0.14
@@ -33027,13 +33031,13 @@ snapshots:
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/jsonrpc-ws-connection': 1.0.16(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       '@walletconnect/relay-api': 1.0.11
       '@walletconnect/relay-auth': 1.1.0
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)
       '@walletconnect/window-getters': 1.0.1
       es-toolkit: 1.39.3
       events: 3.3.0
@@ -33063,7 +33067,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/core@2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)':
+  '@walletconnect/core@2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)':
     dependencies:
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-provider': 1.0.14
@@ -33071,13 +33075,13 @@ snapshots:
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/jsonrpc-ws-connection': 1.0.16(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       '@walletconnect/relay-api': 1.0.11
       '@walletconnect/relay-auth': 1.1.0
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@3.25.76)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@3.25.76)
       '@walletconnect/window-getters': 1.0.1
       es-toolkit: 1.39.3
       events: 3.3.0
@@ -33107,7 +33111,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/core@2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@walletconnect/core@2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-provider': 1.0.14
@@ -33115,13 +33119,13 @@ snapshots:
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/jsonrpc-ws-connection': 1.0.16(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       '@walletconnect/relay-api': 1.0.11
       '@walletconnect/relay-auth': 1.1.0
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
       '@walletconnect/window-getters': 1.0.1
       es-toolkit: 1.39.3
       events: 3.3.0
@@ -33151,7 +33155,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/core@2.23.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+  '@walletconnect/core@2.23.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-provider': 1.0.14
@@ -33159,13 +33163,13 @@ snapshots:
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/jsonrpc-ws-connection': 1.0.16(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       '@walletconnect/relay-api': 1.0.11
       '@walletconnect/relay-auth': 1.1.0
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)
       '@walletconnect/window-getters': 1.0.1
       es-toolkit: 1.39.3
       events: 3.3.0
@@ -33486,7 +33490,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/ethereum-provider@2.23.0(@types/react@19.1.15)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(react@19.1.2)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@walletconnect/ethereum-provider@2.23.1(@types/react@19.1.15)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(react@19.1.2)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
       '@reown/appkit': 1.8.11(@types/react@19.1.15)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(react@19.1.2)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       '@walletconnect/jsonrpc-http-connection': 1.0.8
@@ -33494,11 +33498,11 @@ snapshots:
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/logger': 3.0.0
-      '@walletconnect/sign-client': 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/universal-provider': 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
+      '@walletconnect/logger': 3.0.1
+      '@walletconnect/sign-client': 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/universal-provider': 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -33528,7 +33532,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/ethereum-provider@2.23.0(@types/react@19.2.2)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(react@19.2.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@walletconnect/ethereum-provider@2.23.1(@types/react@19.2.2)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(react@19.2.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
       '@reown/appkit': 1.8.11(@types/react@19.2.2)(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(react@19.2.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       '@walletconnect/jsonrpc-http-connection': 1.0.8
@@ -33536,11 +33540,11 @@ snapshots:
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/logger': 3.0.0
-      '@walletconnect/sign-client': 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/universal-provider': 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
+      '@walletconnect/logger': 3.0.1
+      '@walletconnect/sign-client': 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/universal-provider': 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -33648,6 +33652,11 @@ snapshots:
       pino: 7.11.0
 
   '@walletconnect/logger@3.0.0':
+    dependencies:
+      '@walletconnect/safe-json': 1.0.2
+      pino: 10.0.0
+
+  '@walletconnect/logger@3.0.1':
     dependencies:
       '@walletconnect/safe-json': 1.0.2
       pino: 10.0.0
@@ -33956,16 +33965,16 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/sign-client@2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+  '@walletconnect/sign-client@2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@walletconnect/core': 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@walletconnect/core': 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-utils': 1.0.8
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -33992,16 +34001,16 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/sign-client@2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)':
+  '@walletconnect/sign-client@2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)':
     dependencies:
-      '@walletconnect/core': 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
+      '@walletconnect/core': 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-utils': 1.0.8
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@3.25.76)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@3.25.76)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -34028,16 +34037,16 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/sign-client@2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)':
+  '@walletconnect/sign-client@2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)':
     dependencies:
-      '@walletconnect/core': 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
+      '@walletconnect/core': 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-utils': 1.0.8
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@3.25.76)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@3.25.76)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -34064,16 +34073,16 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/sign-client@2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@walletconnect/sign-client@2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
-      '@walletconnect/core': 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@walletconnect/core': 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-utils': 1.0.8
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -34100,16 +34109,16 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/sign-client@2.23.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+  '@walletconnect/sign-client@2.23.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@walletconnect/core': 2.23.0(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@walletconnect/core': 2.23.1(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-utils': 1.0.8
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -34256,13 +34265,13 @@ snapshots:
       - ioredis
       - uploadthing
 
-  '@walletconnect/types@2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)':
+  '@walletconnect/types@2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)':
     dependencies:
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -34605,7 +34614,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/universal-provider@2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)':
+  '@walletconnect/universal-provider@2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/events': 1.0.1
       '@walletconnect/jsonrpc-http-connection': 1.0.8
@@ -34613,10 +34622,10 @@ snapshots:
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/logger': 3.0.0
-      '@walletconnect/sign-client': 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)
+      '@walletconnect/logger': 3.0.1
+      '@walletconnect/sign-client': 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)
       es-toolkit: 1.39.3
       events: 3.3.0
     transitivePeerDependencies:
@@ -34645,7 +34654,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/universal-provider@2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)':
+  '@walletconnect/universal-provider@2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/events': 1.0.1
       '@walletconnect/jsonrpc-http-connection': 1.0.8
@@ -34653,10 +34662,10 @@ snapshots:
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/logger': 3.0.0
-      '@walletconnect/sign-client': 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@3.25.76)
+      '@walletconnect/logger': 3.0.1
+      '@walletconnect/sign-client': 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@3.25.76)
       es-toolkit: 1.39.3
       events: 3.3.0
     transitivePeerDependencies:
@@ -34685,7 +34694,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/universal-provider@2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)':
+  '@walletconnect/universal-provider@2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)':
     dependencies:
       '@walletconnect/events': 1.0.1
       '@walletconnect/jsonrpc-http-connection': 1.0.8
@@ -34693,10 +34702,10 @@ snapshots:
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/logger': 3.0.0
-      '@walletconnect/sign-client': 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@3.25.76)
+      '@walletconnect/logger': 3.0.1
+      '@walletconnect/sign-client': 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@3.25.76)
       es-toolkit: 1.39.3
       events: 3.3.0
     transitivePeerDependencies:
@@ -34725,7 +34734,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/universal-provider@2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)':
+  '@walletconnect/universal-provider@2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)':
     dependencies:
       '@walletconnect/events': 1.0.1
       '@walletconnect/jsonrpc-http-connection': 1.0.8
@@ -34733,10 +34742,10 @@ snapshots:
       '@walletconnect/jsonrpc-types': 1.0.4
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/logger': 3.0.0
-      '@walletconnect/sign-client': 2.23.0(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/utils': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
+      '@walletconnect/logger': 3.0.1
+      '@walletconnect/sign-client': 2.23.1(aws4fetch@1.0.20)(bufferutil@4.0.9)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.12)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/utils': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)
       es-toolkit: 1.39.3
       events: 3.3.0
     transitivePeerDependencies:
@@ -35033,7 +35042,7 @@ snapshots:
       - uploadthing
       - zod
 
-  '@walletconnect/utils@2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)':
+  '@walletconnect/utils@2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.8.3)':
     dependencies:
       '@msgpack/msgpack': 3.1.2
       '@noble/ciphers': 1.3.0
@@ -35042,12 +35051,12 @@ snapshots:
       '@scure/base': 1.2.6
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       '@walletconnect/relay-api': 1.0.11
       '@walletconnect/relay-auth': 1.1.0
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       '@walletconnect/window-getters': 1.0.1
       '@walletconnect/window-metadata': 1.0.1
       blakejs: 1.2.1
@@ -35078,7 +35087,7 @@ snapshots:
       - uploadthing
       - zod
 
-  '@walletconnect/utils@2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@3.25.76)':
+  '@walletconnect/utils@2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@3.25.76)':
     dependencies:
       '@msgpack/msgpack': 3.1.2
       '@noble/ciphers': 1.3.0
@@ -35087,12 +35096,12 @@ snapshots:
       '@scure/base': 1.2.6
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       '@walletconnect/relay-api': 1.0.11
       '@walletconnect/relay-auth': 1.1.0
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       '@walletconnect/window-getters': 1.0.1
       '@walletconnect/window-metadata': 1.0.1
       blakejs: 1.2.1
@@ -35123,7 +35132,7 @@ snapshots:
       - uploadthing
       - zod
 
-  '@walletconnect/utils@2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)':
+  '@walletconnect/utils@2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)(typescript@5.9.2)(zod@4.1.12)':
     dependencies:
       '@msgpack/msgpack': 3.1.2
       '@noble/ciphers': 1.3.0
@@ -35132,12 +35141,12 @@ snapshots:
       '@scure/base': 1.2.6
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
-      '@walletconnect/logger': 3.0.0
+      '@walletconnect/logger': 3.0.1
       '@walletconnect/relay-api': 1.0.11
       '@walletconnect/relay-auth': 1.1.0
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.23.0(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
+      '@walletconnect/types': 2.23.1(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.8.1)
       '@walletconnect/window-getters': 1.0.1
       '@walletconnect/window-metadata': 1.0.1
       blakejs: 1.2.1

@@ -26,7 +26,7 @@
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.23.0",
+    "@walletconnect/universal-provider": "2.23.1",
     "valtio": "2.1.7"
   },
   "peerDependencies": {
@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",
-    "@walletconnect/types": "2.23.0",
+    "@walletconnect/types": "2.23.1",
     "vitest": "2.1.9"
   },
   "author": "Reown (https://discord.gg/reown)",
