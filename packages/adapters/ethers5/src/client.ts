@@ -152,6 +152,14 @@ export class Ethers5Adapter extends AdapterBlueprint {
       Number(params.caipNetwork?.id)
     )
 
+    try {
+      if (result && 'hash' in result) {
+        return { hash: result.hash }
+      }
+    } catch {
+      // ignore
+    }
+
     return { hash: result }
   }
 

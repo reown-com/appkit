@@ -374,34 +374,49 @@ export const PayController = {
       switch (chainNamespace) {
         case ConstantsUtil.CHAIN.EVM:
           if (state.paymentAsset.asset === 'native') {
-            state.currentPayment.result = await processEvmNativePayment(
-              state.paymentAsset,
-              chainNamespace,
-              {
-                recipient: state.recipient as Address,
-                amount: state.amount,
-                fromAddress: address as Address
-              }
-            )
-          }
-          if (state.paymentAsset.asset.startsWith('0x')) {
-            state.currentPayment.result = await processEvmErc20Payment(state.paymentAsset, {
+            const hash = await processEvmNativePayment(state.paymentAsset, chainNamespace, {
               recipient: state.recipient as Address,
               amount: state.amount,
               fromAddress: address as Address
             })
+
+            state.currentPayment = {
+              ...(state.currentPayment ?? {}),
+              result: hash
+            }
           }
-          state.currentPayment.status = 'SUCCESS'
+          if (state.paymentAsset.asset.startsWith('0x')) {
+            const hash = await processEvmErc20Payment(state.paymentAsset, {
+              recipient: state.recipient as Address,
+              amount: state.amount,
+              fromAddress: address as Address
+            })
+
+            state.currentPayment = {
+              ...(state.currentPayment ?? {}),
+              result: hash
+            }
+          }
+
+          state.currentPayment = {
+            ...(state.currentPayment ?? {}),
+            status: 'SUCCESS'
+          }
           break
         case ConstantsUtil.CHAIN.SOLANA:
-          state.currentPayment.result = await processSolanaPayment(chainNamespace, {
+          const hash = await processSolanaPayment(chainNamespace, {
             recipient: state.recipient,
             amount: state.amount,
             fromAddress: address,
             // If the tokenMint is provided, provider will use it to create a SPL token transaction
             tokenMint: state.paymentAsset.asset === 'native' ? undefined : state.paymentAsset.asset
           })
-          state.currentPayment.status = 'SUCCESS'
+
+          state.currentPayment = {
+            ...(state.currentPayment ?? {}),
+            result: hash,
+            status: 'SUCCESS'
+          }
           break
         default:
           throw new AppKitPayError(AppKitPayErrorCodes.INVALID_CHAIN_NAMESPACE)
@@ -412,7 +427,10 @@ export const PayController = {
       } else {
         state.error = AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR
       }
-      state.currentPayment.status = 'FAILED'
+      state.currentPayment = {
+        ...(state.currentPayment ?? {}),
+        status: 'FAILED'
+      }
       SnackController.showError(state.error)
     } finally {
       state.isPaymentInProgress = false
@@ -479,9 +497,12 @@ export const PayController = {
         throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT)
       }
 
-      state.currentPayment.sessionId = payUrl.sessionId
-      state.currentPayment.status = 'IN_PROGRESS'
-      state.currentPayment.exchangeId = exchangeId
+      state.currentPayment = {
+        ...(state.currentPayment ?? {}),
+        sessionId: payUrl.sessionId,
+        status: 'IN_PROGRESS',
+        exchangeId
+      }
       this.initiatePayment()
 
       return {
@@ -540,8 +561,11 @@ export const PayController = {
       const status = await this.getBuyStatus(exchangeId, sessionId)
 
       if (state.currentPayment) {
-        state.currentPayment.status = status.status
-        state.currentPayment.result = status.txHash
+        state.currentPayment = {
+          ...(state.currentPayment ?? {}),
+          status: status.status,
+          result: status.txHash
+        }
       }
       if (status.status === 'SUCCESS' || status.status === 'FAILED') {
         state.isPaymentInProgress = false
