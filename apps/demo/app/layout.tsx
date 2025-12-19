@@ -11,7 +11,7 @@ import { AppKitProvider } from '@/providers/appkit-provider'
 
 import './globals.css'
 
-const title = 'AppKit Demo'
+const title = 'Reown Demo'
 const description = 'The full stack toolkit to build onchain app UX'
 
 export const metadata: Metadata = {
