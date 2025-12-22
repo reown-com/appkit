@@ -76,7 +76,7 @@ export function useAppKitNetworkCore(): Pick<
   const { activeCaipNetwork } = useSnapshot(ChainController.state)
 
   return {
-    caipNetwork: activeCaipNetwork,
+    caipNetwork: activeCaipNetwork as UseAppKitNetworkReturn['caipNetwork'],
     chainId: activeCaipNetwork?.id,
     caipNetworkId: activeCaipNetwork?.caipNetworkId
   }
