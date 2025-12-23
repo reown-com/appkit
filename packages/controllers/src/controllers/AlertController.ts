@@ -45,12 +45,23 @@ const controller = {
       state.open = true
     }
 
-    if (debugMessage) {
-      // eslint-disable-next-line no-console
-      console.error(
-        typeof debugMessage === 'function' ? debugMessage() : debugMessage,
-        code ? { code } : undefined
-      )
+    if (debugMessage && debug) {
+      const message = typeof debugMessage === 'function' ? debugMessage() : debugMessage
+      const logData = code ? { code } : undefined
+
+      switch (variant) {
+        case 'error':
+          // eslint-disable-next-line no-console
+          console.error(message, logData)
+          break
+        case 'warning':
+          // eslint-disable-next-line no-console
+          console.warn(message, logData)
+          break
+        default:
+          // eslint-disable-next-line no-console
+          console.log(message, logData)
+      }
     }
   },
 
