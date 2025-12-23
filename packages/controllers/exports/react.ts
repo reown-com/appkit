@@ -18,12 +18,7 @@ import { ConnectUtil, type WalletItem } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
-import type {
-  NamespaceTypeMap,
-  UseAppKitAccountReturn,
-  UseAppKitNetworkReturn,
-  WcWallet
-} from '../src/utils/TypeUtil.js'
+import type { NamespaceTypeMap, UseAppKitAccountReturn, WcWallet } from '../src/utils/TypeUtil.js'
 import { AssetUtil, StorageUtil } from './utils.js'
 
 // -- Types ------------------------------------------------------------
@@ -69,14 +64,11 @@ export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
   }
 }
 
-export function useAppKitNetworkCore(): Pick<
-  UseAppKitNetworkReturn,
-  'caipNetwork' | 'chainId' | 'caipNetworkId'
-> {
+export function useAppKitNetworkCore() {
   const { activeCaipNetwork } = useSnapshot(ChainController.state)
 
   return {
-    caipNetwork: activeCaipNetwork as UseAppKitNetworkReturn['caipNetwork'],
+    caipNetwork: activeCaipNetwork,
     chainId: activeCaipNetwork?.id,
     caipNetworkId: activeCaipNetwork?.caipNetworkId
   }
