@@ -52,14 +52,19 @@ const controller = {
         return
       }
 
-      const consoleMethod =
-        variant === 'error' ? console.error : variant === 'warning' ? console.warn : console.info
+      const resolved = typeof debugMessage === 'function' ? debugMessage() : debugMessage
+      const meta = code ? { code } : undefined
 
-      // eslint-disable-next-line no-console
-      consoleMethod(
-        typeof debugMessage === 'function' ? debugMessage() : debugMessage,
-        code ? { code } : undefined
-      )
+      if (variant === 'error') {
+        // eslint-disable-next-line no-console
+        console.error(resolved, meta)
+      } else if (variant === 'warning') {
+        // eslint-disable-next-line no-console
+        console.warn(resolved, meta)
+      } else {
+        // eslint-disable-next-line no-console
+        console.info(resolved, meta)
+      }
     }
   },
 
