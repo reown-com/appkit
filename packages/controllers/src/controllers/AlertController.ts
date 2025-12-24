@@ -1,6 +1,8 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -46,8 +48,15 @@ const controller = {
     }
 
     if (debugMessage) {
+      if (!CommonConstantsUtil.IS_DEVELOPMENT) {
+        return
+      }
+
+      const consoleMethod =
+        variant === 'error' ? console.error : variant === 'warning' ? console.warn : console.info
+
       // eslint-disable-next-line no-console
-      console.error(
+      consoleMethod(
         typeof debugMessage === 'function' ? debugMessage() : debugMessage,
         code ? { code } : undefined
       )
