@@ -158,7 +158,7 @@
     "react-qr-code": "2.0.18",
     "rpc-websockets": "7.11.0",
     "valtio": "2.1.7",
-    "viem": "2.37.9",
+    "viem": "2.43.0",
     "wagmi": "2.17.5",
     "webauthn-p256": "0.0.2"
   },
