@@ -18,25 +18,34 @@ import {
 } from '../../src/utils/PaymentUtil'
 
 // --- Mocks -------------------------------------------------------------------
-vi.mock('@reown/appkit-controllers', () => ({
-  ChainController: {
-    switchActiveNetwork: vi.fn(),
-    getNetworkProp: vi.fn()
-  },
-  ConnectionController: {
-    parseUnits: vi.fn((amount: string, decimals: number) =>
-      BigInt(parseFloat(amount) * 10 ** decimals)
-    ),
-    sendTransaction: vi.fn(),
-    writeContract: vi.fn()
-  },
-  CoreHelperUtil: {
-    sortRequestedNetworks: vi.fn()
-  },
-  ProviderController: {
-    getProvider: vi.fn()
+vi.mock('@reown/appkit-controllers', async importOriginal => {
+  const actual = await importOriginal<typeof import('@reown/appkit-controllers')>()
+
+  return {
+    ...actual,
+    ChainController: {
+      ...actual.ChainController,
+      switchActiveNetwork: vi.fn(),
+      getNetworkProp: vi.fn()
+    },
+    ConnectionController: {
+      ...actual.ConnectionController,
+      parseUnits: vi.fn((amount: string, decimals: number) =>
+        BigInt(parseFloat(amount) * 10 ** decimals)
+      ),
+      sendTransaction: vi.fn(),
+      writeContract: vi.fn()
+    },
+    CoreHelperUtil: {
+      ...actual.CoreHelperUtil,
+      sortRequestedNetworks: vi.fn()
+    },
+    ProviderController: {
+      ...actual.ProviderController,
+      getProvider: vi.fn()
+    }
   }
-}))
+})
 
 // --- Test Data ---------------------------------------------------------------
 const MOCK_EVM_NETWORK: CaipNetwork = {
