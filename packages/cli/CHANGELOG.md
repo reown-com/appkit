@@ -1,5 +1,11 @@
 # @reown/appkit-cli
 
+## 1.8.14
+
+### Patch Changes
+
+- [#5296](https://github.com/reown-com/appkit/pull/5296) [`bc4a961`](https://github.com/reown-com/appkit/commit/bc4a961b448cedd0a8485a2188549b413b4e6512) Thanks [@magiziz](https://github.com/magiziz)! - Improved wallet search to filter out non-walletconnect and walletconnect wallets based on platform and SDK type
+
 ## 1.8.13
 
 ## 1.8.12

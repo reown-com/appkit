@@ -12,6 +12,7 @@ import {
   ChainController,
   type ConnectionControllerClient,
   ConnectorController,
+  ConnectorUtil,
   CoreHelperUtil,
   OptionsController,
   type Provider,
@@ -19,8 +20,7 @@ import {
   SIWXUtil,
   WcHelpersUtil
 } from '@reown/appkit-controllers'
-import { ConnectorUtil } from '@reown/appkit-scaffold-ui/utils'
-import { CaipNetworksUtil, HelpersUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { mainnet, polygon } from '@reown/appkit/networks'
 
@@ -143,6 +143,41 @@ describe('EthersAdapter', () => {
       const injectedConnector = mockConnectors.filter((c: any) => c.id === 'injected')[0]
 
       expect(injectedConnector?.info).toBeUndefined()
+    })
+
+    it('should set explorerId from PresetsUtil based on rdns or name', () => {
+      const ethersAdapter = new EthersAdapter()
+      const addConnectorSpy = vi.spyOn(ethersAdapter as any, 'addConnector')
+
+      const mockEIP6963Provider = {
+        info: {
+          rdns: 'MetaMask',
+          name: 'MetaMask',
+          icon: 'data:image/png;base64,mock'
+        },
+        provider: mockProvider
+      }
+
+      const { info, provider } = mockEIP6963Provider
+
+      const id = info.rdns || info.name
+
+      ;(ethersAdapter as any).addConnector({
+        id,
+        type: 'ANNOUNCED',
+        explorerId:
+          PresetsUtil.ConnectorExplorerIds[info.rdns || ''] ??
+          PresetsUtil.ConnectorExplorerIds[info.name || ''],
+        imageUrl: info?.icon,
+        name: info?.name || 'Unknown',
+        provider
+      })
+
+      expect(addConnectorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          explorerId: expect.any(String)
+        })
+      )
     })
   })
 

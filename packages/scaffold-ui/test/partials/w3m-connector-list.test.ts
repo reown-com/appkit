@@ -8,12 +8,12 @@ import {
   ChainController,
   ConnectorController,
   type ConnectorTypeOrder,
+  ConnectorUtil,
   CoreHelperUtil,
   StorageUtil
 } from '@reown/appkit-controllers'
 
 import { W3mConnectorList } from '../../src/partials/w3m-connector-list'
-import { ConnectorUtil } from '../../src/utils/ConnectorUtil'
 
 const MOCK_CONNECTORS = {
   custom: [{ id: 'custom1', name: 'Custom' }],
@@ -70,6 +70,7 @@ describe('W3mConnectorList', () => {
       'external',
       'recommended'
     ])
+    vi.spyOn(ConnectorUtil, 'getCappedRecommendedWallets').mockReturnValue([])
 
     // Provide connectors including WalletConnect connector
     const allConnectors = [
@@ -79,6 +80,12 @@ describe('W3mConnectorList', () => {
       ...(MOCK_CONNECTORS.multiChain as any),
       ...(MOCK_CONNECTORS.external as any)
     ]
+
+    // Mock ConnectorController.state to include WalletConnect connector
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      connectors: [{ id: 'walletConnect', name: 'WalletConnect', type: 'ANNOUNCED' }] as any
+    })
 
     const element: W3mConnectorList = await fixture(
       html`<w3m-connector-list .connectors=${allConnectors}></w3m-connector-list>`
@@ -156,6 +163,12 @@ describe('W3mConnectorList', () => {
       ...(MOCK_CONNECTORS.injected as any),
       ...(MOCK_CONNECTORS.external as any)
     ]
+
+    // Mock ConnectorController.state to include WalletConnect connector
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      connectors: [{ id: 'walletConnect', name: 'WalletConnect', type: 'ANNOUNCED' }] as any
+    })
 
     const element: W3mConnectorList = await fixture(
       html`<w3m-connector-list .connectors=${connectors}></w3m-connector-list>`

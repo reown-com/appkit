@@ -107,11 +107,6 @@ export interface OptionsControllerStatePublic {
    */
   enableCoinbase?: boolean
   /**
-   * Enable or disable the AppKit Headless mode to build custom connect user interfaces.
-   * @default true
-   */
-  enableHeadless?: boolean
-  /**
    * Enable or disable the Injected wallet.
    * @default true
    */
@@ -428,10 +423,6 @@ export const OptionsController = {
 
   setEnableNetworkSwitch(enableNetworkSwitch: OptionsControllerState['enableNetworkSwitch']) {
     state.enableNetworkSwitch = enableNetworkSwitch
-  },
-
-  setEnableHeadless(enableHeadless: OptionsControllerState['enableHeadless']) {
-    state.enableHeadless = enableHeadless
   },
 
   setEnableMobileFullScreen(

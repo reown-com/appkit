@@ -11,18 +11,13 @@ import {
 } from '@chakra-ui/react'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import {
-  type UseAppKitWalletsReturn,
-  useAppKitAccount,
-  useAppKitWallets
-} from '@reown/appkit/react'
+import { type WalletItem, useAppKitAccount, useAppKitWallets } from '@reown/appkit/react'
 
 import { AppKitHeadlessInjectedWallets } from '@/src/components/Headless/AppKitHeadlessInjectedWallets'
 import { AppKitHeadlessQRCode } from '@/src/components/Headless/AppKitHeadlessQRCode'
 import { AppKitHeadlessWcWallets } from '@/src/components/Headless/AppKitHeadlessWcWallets'
 
 type ViewState = 'connect' | 'search' | 'qrcode'
-type AppKitWallet = UseAppKitWalletsReturn['data'][number]
 
 interface Props {
   controls: ReturnType<typeof useDisclosure>
@@ -46,33 +41,25 @@ export function AppkitConnectDrawer({ controls }: Props) {
   const { isOpen, onClose } = controls
   const toast = useToast()
   const { history, push, pop } = useHistory()
-  const [connectingWallet, setConnectingWallet] = useState<AppKitWallet | undefined>(undefined)
 
   // AppKit hooks
   const { isConnected } = useAppKitAccount()
-  const { wcUri, isFetchingWcUri, connect } = useAppKitWallets()
+  const { wcUri, isFetchingWcUri, connectingWallet, connect, resetWcUri } = useAppKitWallets()
 
   const currentView = history[history.length - 1]
 
   function handleClose() {
     push('connect')
-    setConnectingWallet(undefined)
     onClose()
   }
 
-  async function handleConnect(
-    wallet: UseAppKitWalletsReturn['data'][number],
-    namespace?: ChainNamespace
-  ) {
-    setConnectingWallet(wallet)
-
+  async function handleConnect(wallet: WalletItem, namespace?: ChainNamespace) {
     await connect(wallet, namespace)
       .then(() => {
         toast({ title: 'Connected', status: 'success' })
       })
       .catch(() => {
         toast({ title: 'Connection declined', status: 'error' })
-        setConnectingWallet(undefined)
       })
   }
 
@@ -81,8 +68,7 @@ export function AppkitConnectDrawer({ controls }: Props) {
   }
 
   function handleBack() {
-    setConnectingWallet(undefined)
-
+    resetWcUri()
     if (history.length > 1) {
       pop()
     }
@@ -120,27 +106,13 @@ export function AppkitConnectDrawer({ controls }: Props) {
         <DrawerCloseButton data-testid="headless-drawer-close-button" />
         <DrawerBody pt={8} pb={8}>
           {currentView === 'connect' && (
-            <AppKitHeadlessInjectedWallets
-              connectingWallet={connectingWallet}
-              onConnect={handleConnect}
-              onSeeAll={handleSeeAll}
-            />
+            <AppKitHeadlessInjectedWallets onConnect={handleConnect} onSeeAll={handleSeeAll} />
           )}
-
           {currentView === 'search' && (
-            <AppKitHeadlessWcWallets
-              connectingWallet={connectingWallet}
-              onConnect={handleConnect}
-              onBack={handleBack}
-            />
+            <AppKitHeadlessWcWallets onConnect={handleConnect} onBack={handleBack} />
           )}
-
           {wcUri && connectingWallet && currentView === 'qrcode' && (
-            <AppKitHeadlessQRCode
-              wallet={connectingWallet}
-              onBack={handleBack}
-              onCopyUri={handleCopyUri}
-            />
+            <AppKitHeadlessQRCode onBack={handleBack} onCopyUri={handleCopyUri} />
           )}
         </DrawerBody>
       </DrawerContent>

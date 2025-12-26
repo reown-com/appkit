@@ -5,6 +5,7 @@ import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reow
 import {
   ChainController,
   ConnectorController,
+  ConnectorUtil,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
   EventsController,
@@ -25,7 +26,6 @@ import '@reown/appkit-ui/wui-tooltip'
 import '@reown/appkit-ui/wui-wallet-switch'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
-import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import '../w3m-account-activity-widget/index.js'
 import '../w3m-account-tokens-widget/index.js'

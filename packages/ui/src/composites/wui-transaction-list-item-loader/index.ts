@@ -15,7 +15,7 @@ export class WuiTransactionListItemLoader extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex alignItems="center">
+      <wui-flex alignItems="center" .padding=${['1', '2', '1', '2'] as const}>
         <wui-shimmer width="40px" height="40px" rounded></wui-shimmer>
         <wui-flex flexDirection="column" gap="1">
           <wui-shimmer width="124px" height="16px" rounded></wui-shimmer>

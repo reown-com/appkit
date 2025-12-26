@@ -1,27 +1,14 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import {
-  ApiController,
-  ConnectionController,
-  ConnectorController,
-  CoreHelperUtil,
-  OptionsController,
-  StorageUtil
-} from '@reown/appkit-controllers'
-import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-controllers'
-import { HelpersUtil } from '@reown/appkit-utils'
-import { ConstantsUtil as AppKitConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { HelpersUtil } from '@reown/appkit-common'
 
+import { ApiController } from '../controllers/ApiController.js'
+import { ConnectionController } from '../controllers/ConnectionController.js'
+import { ConnectorController } from '../controllers/ConnectorController.js'
+import { OptionsController } from '../controllers/OptionsController.js'
 import { ConnectorUtil } from './ConnectorUtil.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
-
-const MANDATORY_WALLET_IDS_ON_MOBILE = [
-  PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE],
-  PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK],
-  PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT],
-  PresetsUtil.ConnectorExplorerIds[AppKitConstantsUtil.SOLFLARE_CONNECTOR_NAME],
-  PresetsUtil.ConnectorExplorerIds[AppKitConstantsUtil.PHANTOM_CONNECTOR_NAME],
-  PresetsUtil.ConnectorExplorerIds[AppKitConstantsUtil.BINANCE_CONNECTOR_NAME]
-]
+import { CoreHelperUtil } from './CoreHelperUtil.js'
+import { StorageUtil } from './StorageUtil.js'
+import type { ConnectMethod, Connector, Features, WcWallet } from './TypeUtil.js'
 
 interface AppKitWallet extends WcWallet {
   installed: boolean
@@ -179,6 +166,7 @@ export const WalletUtil = {
 
     return ConstantsUtil.DEFAULT_CONNECT_METHOD_ORDER
   },
+
   isExcluded(wallet: WcWallet) {
     const isRDNSExcluded =
       Boolean(wallet.rdns) && ApiController.state.excludedWallets.some(w => w.rdns === wallet.rdns)
@@ -191,6 +179,7 @@ export const WalletUtil = {
 
     return isRDNSExcluded || isNameExcluded
   },
+
   markWalletsWithDisplayIndex(wallets: WcWallet[]) {
     return wallets.map((w, index) => ({ ...w, display_index: index }))
   },
@@ -212,10 +201,26 @@ export const WalletUtil = {
 
     if (CoreHelperUtil.isMobile()) {
       return wallets.filter(
-        wallet => wallet.supports_wc || MANDATORY_WALLET_IDS_ON_MOBILE.includes(wallet.id)
+        wallet =>
+          wallet.supports_wc || ConstantsUtil.MANDATORY_WALLET_IDS_ON_MOBILE.includes(wallet.id)
       )
     }
 
     return wallets
+  },
+
+  getWalletConnectWallets(allWallets: WcWallet[]) {
+    const wallets = [...ApiController.state.featured, ...ApiController.state.recommended]
+    if (ApiController.state.filteredWallets?.length > 0) {
+      wallets.push(...ApiController.state.filteredWallets)
+    } else {
+      wallets.push(...allWallets)
+    }
+
+    const uniqueWallets = CoreHelperUtil.uniqueBy(wallets, 'id')
+    const walletsWithInstalled = WalletUtil.markWalletsAsInstalled(uniqueWallets)
+    const walletsByWcSupport = WalletUtil.filterWalletsByWcSupport(walletsWithInstalled)
+
+    return WalletUtil.markWalletsWithDisplayIndex(walletsByWcSupport)
   }
 }
