@@ -1,4 +1,4 @@
-import type { PaymentAsset } from './options'
+import type { PaymentAsset } from './options.js'
 
 export type QuoteStatus =
   | 'waiting'
