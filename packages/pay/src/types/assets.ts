@@ -139,19 +139,3 @@ export const solanaSOL: PaymentAsset = {
     decimals: 9
   }
 }
-
-export const ALL_TOKENS = [
-  baseETH,
-  baseUSDC,
-  ethereumUSDC,
-  optimismUSDC,
-  arbitrumUSDC,
-  polygonUSDC,
-  solanaUSDC,
-  ethereumUSDT,
-  optimismUSDT,
-  arbitrumUSDT,
-  polygonUSDT,
-  solanaUSDT,
-  solanaSOL
-] as const

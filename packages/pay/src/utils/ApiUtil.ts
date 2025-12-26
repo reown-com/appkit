@@ -10,23 +10,9 @@ import { HelpersUtil } from '@reown/appkit-utils'
 import type { Exchange, ExchangeBuyStatus } from '../types/exchange.js'
 import type { Quote, QuoteStatus } from '../types/quote.js'
 import { API_URL } from './ConstantsUtil.js'
-import { getSameChainQuote } from './PaymentUtil.js'
+import { getDirectTransferQuote } from './PaymentUtil.js'
 
-function getOrigin() {
-  if (typeof window !== 'undefined') {
-    return window.location.origin
-  }
-
-  return ''
-}
-
-const devFetchUtil = new FetchUtil({ baseUrl: getOrigin(), clientId: null })
-
-const DEAD_ADDRESSES_BY_NAMESPACE: Partial<Record<ChainNamespace, string>> = {
-  eip155: '0x000000000000000000000000000000000000dead',
-  solana: 'CbKGgVKLJFb8bBrf58DnAkdryX6ubewVytn7X957YwNr',
-  bip122: 'bc1q4vxn43l44h30nkluqfxd9eckf45vr2awz38lwa'
-}
+const devFetchUtil = new FetchUtil({ baseUrl: 'http://localhost:8787', clientId: null })
 
 class JsonRpcError extends Error {}
 
@@ -77,7 +63,7 @@ type GetBuyStatusResult = {
   txHash?: string
 }
 
-type GetCrossChainQuoteParams = {
+type GetTransfersQuoteParams = {
   address?: string
   sourceToken: PaymentAsset
   toToken: PaymentAsset
@@ -101,6 +87,21 @@ type GetQuoteStatusParams = {
 
 type GetQuoteStatusResult = {
   status: QuoteStatus
+}
+
+type GetAssetsForExchangeResult = {
+  exchangeId: string
+  assets: Record<ChainNamespace, PaymentAsset[]>
+}
+
+function getSdkProperties() {
+  const { projectId, sdkType, sdkVersion } = OptionsController.state
+
+  return {
+    projectId,
+    st: sdkType || 'appkit',
+    sv: sdkVersion || 'html-wagmi-4.2.2'
+  }
 }
 
 async function sendRequest<T>(method: string, params: unknown): Promise<JsonRpcResponse<T>> {
@@ -151,7 +152,7 @@ export async function getBuyStatus(params: GetBuyStatusParams) {
   return response.result
 }
 
-export async function getCrossChainQuote(params: GetCrossChainQuoteParams) {
+export async function getTransfersQuote(params: GetTransfersQuoteParams) {
   const amount = NumberUtil.bigNumber(params.amount)
     .times(10 ** params.toToken.metadata.decimals)
     .toString()
@@ -161,10 +162,6 @@ export async function getCrossChainQuote(params: GetCrossChainQuoteParams) {
 
   const { chainId: destinationChainId, chainNamespace: destinationChainNamespace } =
     ParseUtil.parseCaipNetworkId(params.toToken.network)
-
-  if (!params.address) {
-    params.address = DEAD_ADDRESSES_BY_NAMESPACE[originChainNamespace]
-  }
 
   const originCurrency =
     params.sourceToken.asset === 'native'
@@ -177,7 +174,7 @@ export async function getCrossChainQuote(params: GetCrossChainQuoteParams) {
       : params.toToken.asset
 
   const response = await devFetchUtil.post<GetQuoteResult>({
-    path: '/api/quote',
+    path: '/appkit/v1/transfers/quote',
     body: {
       user: params.address,
       originChainId: originChainId.toString(),
@@ -186,7 +183,8 @@ export async function getCrossChainQuote(params: GetCrossChainQuoteParams) {
       destinationCurrency,
       recipient: params.recipient,
       amount
-    }
+    },
+    params: getSdkProperties()
   })
 
   return response
@@ -198,31 +196,31 @@ export async function getQuote(params: GetQuoteParams) {
     params.toToken.network
   )
 
-  if (isSameChain) {
-    const isSameAsset = HelpersUtil.isLowerCaseMatch(params.sourceToken.asset, params.toToken.asset)
+  const isSameAsset = HelpersUtil.isLowerCaseMatch(params.sourceToken.asset, params.toToken.asset)
 
-    // eslint-disable-next-line no-warning-comments
-    // TODO: Support same-chain deposit address with relay with any asset
-    if (!isSameAsset) {
-      throw new Error('Source and destination assets must be the same')
-    }
-
-    if (!params.address) {
-      throw new Error('Address is required')
-    }
-
-    return getSameChainQuote({ ...params, address: params.address })
+  if (isSameChain && isSameAsset) {
+    return getDirectTransferQuote(params)
   }
 
-  return getCrossChainQuote(params)
+  return getTransfersQuote(params)
 }
 
 export async function getQuoteStatus(params: GetQuoteStatusParams) {
   const response = await devFetchUtil.get<GetQuoteStatusResult>({
-    path: '/api/status',
+    path: '/appkit/v1/transfers/status',
     params: {
-      requestId: params.requestId
+      requestId: params.requestId,
+      ...getSdkProperties()
     }
+  })
+
+  return response
+}
+
+export async function getAssetsForExchange(exchangeId: string) {
+  const response = await devFetchUtil.get<GetAssetsForExchangeResult>({
+    path: `/appkit/v1/transfers/assets/exchanges/${exchangeId}`,
+    params: getSdkProperties()
   })
 
   return response

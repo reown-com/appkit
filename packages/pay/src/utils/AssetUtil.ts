@@ -69,7 +69,7 @@ export function formatBalanceToPaymentAsset(balance: Balance): PaymentAssetWithA
     const { address } = ParseUtil.parseCaipAddress(asset)
 
     asset = address
-  } else {
+  } else if (!asset) {
     throw new Error(`Balance address not found for balance symbol "${balance.symbol}"`)
   }
 
@@ -79,7 +79,7 @@ export function formatBalanceToPaymentAsset(balance: Balance): PaymentAssetWithA
     metadata: {
       name: balance.name,
       symbol: balance.symbol,
-      decimals: parseInt(balance.quantity.decimals, 10),
+      decimals: Number(balance.quantity.decimals),
       logoURI: balance.iconUrl
     },
     amount: balance.quantity.numeric
@@ -109,4 +109,15 @@ export function formatAmount(amount: string | number): string {
   }
 
   return num.round(4).toString()
+}
+
+export function isTestnetAsset(paymentAsset: PaymentAsset) {
+  const allNetworks = ChainController.getAllRequestedCaipNetworks()
+  const targetNetwork = allNetworks.find(net => net.caipNetworkId === paymentAsset.network)
+
+  if (!targetNetwork) {
+    return false
+  }
+
+  return Boolean(targetNetwork.testnet)
 }

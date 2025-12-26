@@ -91,6 +91,8 @@ export const ConstantsUtil = {
     '0xaf88d065e77c8cc2239327c5edb3a432268e5831': 'USDC',
     // USDC on Polygon
     '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': 'USDC',
+    // USDC.e on Polygon
+    '0x2791bca1f2de4661ed88a30c99a7a9449aa84174': 'USDC',
     // USDC on Solana
     EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: 'USDC',
     // USDT on Ethereum

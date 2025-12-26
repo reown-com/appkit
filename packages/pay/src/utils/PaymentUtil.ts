@@ -15,7 +15,12 @@ import {
   ProviderController
 } from '@reown/appkit-controllers'
 
-import { PayController } from '../controllers/PayController.js'
+import {
+  DIRECT_TRANSFER_DEPOSIT_TYPE,
+  DIRECT_TRANSFER_REQUEST_ID,
+  DIRECT_TRANSFER_TRANSACTION_TYPE,
+  PayController
+} from '../controllers/PayController.js'
 import { AppKitPayError } from '../types/errors.js'
 import { AppKitPayErrorCodes } from '../types/errors.js'
 import type { PaymentOptions } from '../types/options.js'
@@ -34,8 +39,7 @@ interface EnsureNetworkOptions {
   requestedCaipNetworks: CaipNetwork[] | undefined
 }
 
-interface GetSameChainQuoteParams {
-  address: string
+interface GetDirectTransferQuoteParams {
   sourceToken: PaymentAsset
   toToken: PaymentAsset
   recipient: string
@@ -231,41 +235,74 @@ export async function processSolanaPayment(
   }
 }
 
-export async function getSameChainQuote({
+export async function getDirectTransferQuote({
   sourceToken,
   toToken,
   amount,
   recipient
-}: GetSameChainQuoteParams): Promise<Quote> {
-  const { chainId: toChainId } = ParseUtil.parseCaipNetworkId(toToken.network)
+}: GetDirectTransferQuoteParams): Promise<Quote> {
+  const originalAmount = ConnectionController.parseUnits(amount, sourceToken.metadata.decimals)
+  const destinationAmount = ConnectionController.parseUnits(amount, toToken.metadata.decimals)
 
   return Promise.resolve({
-    type: 'same-chain',
+    type: DIRECT_TRANSFER_REQUEST_ID,
     origin: {
-      amount,
-      amountFormatted: amount,
-      chainId: sourceToken.network,
-      symbol: sourceToken.metadata.symbol
+      amount: originalAmount?.toString() ?? '0',
+      currency: sourceToken
     },
     destination: {
-      amount,
-      amountFormatted: amount,
-      chainId: toToken.network,
-      symbol: toToken.metadata.symbol
+      amount: destinationAmount?.toString() ?? '0',
+      currency: toToken
     },
     fees: [
       {
         id: 'service',
         label: 'Service Fee',
         amount: '0',
-        amountFormatted: '0',
-        chainId: toChainId.toString(),
-        amountUsd: '0',
         currency: toToken
       }
     ],
-    requestId: 'same-chain',
-    depositAddress: recipient ?? '',
-    timeEstimate: 1000
+    steps: [
+      {
+        requestId: DIRECT_TRANSFER_REQUEST_ID,
+        type: 'deposit',
+        deposit: {
+          amount: originalAmount?.toString() ?? '0',
+          currency: sourceToken.asset,
+          receiver: recipient
+        }
+      }
+    ],
+    timeInSeconds: 6
   })
+}
+
+export function getTransferStep(quote?: Quote) {
+  if (!quote) {
+    return null
+  }
+
+  const step = quote.steps[0]
+
+  if (!step || step.type !== DIRECT_TRANSFER_DEPOSIT_TYPE) {
+    return null
+  }
+
+  return step
+}
+
+export function getTransactionsSteps(quote?: Quote, completedTransactionsCount = 0) {
+  if (!quote) {
+    return []
+  }
+
+  const steps = quote.steps.filter(step => step.type === DIRECT_TRANSFER_TRANSACTION_TYPE)
+
+  const stepsToShow = steps.filter((_, idx) => {
+    const incrementedIdx = idx + 1
+
+    return incrementedIdx > completedTransactionsCount
+  })
+
+  return steps.length > 0 && steps.length < 3 ? stepsToShow : []
 }

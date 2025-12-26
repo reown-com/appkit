@@ -1,22 +1,4 @@
-import type { PaymentAsset } from './options.js'
-
-export interface QuoteFee {
-  id: string
-  label: string
-  amount: string
-  amountFormatted: string
-  chainId: string
-  amountUsd: string
-  currency: PaymentAsset
-}
-
-export interface QuoteCurrency {
-  amount: string
-  amountFormatted: string
-  chainId: string
-  symbol?: string
-  decimals?: number
-}
+import type { PaymentAsset } from './options'
 
 export type QuoteStatus =
   | 'waiting'
@@ -27,12 +9,43 @@ export type QuoteStatus =
   | 'timeout'
   | 'submitted'
 
-export interface Quote {
-  type: 'same-chain' | 'cross-chain'
-  origin: QuoteCurrency
-  destination: QuoteCurrency
-  fees: QuoteFee[]
+export type QuoteCurrency = PaymentAsset
+
+export interface QuoteAmount {
+  amount: string
+  currency: QuoteCurrency
+}
+
+export interface QuoteFee {
+  id: string
+  label: string
+  amount: string
+  currency: QuoteCurrency
+}
+
+export interface QuoteDepositStep {
   requestId: string
-  depositAddress: string
-  timeEstimate: number
+  type: 'deposit'
+  deposit: {
+    amount: string
+    currency: string
+    receiver: string
+  }
+}
+
+export interface QuoteTransactionStep {
+  requestId: string
+  type: 'transaction'
+  transaction: any
+}
+
+export type QuoteStep = QuoteDepositStep | QuoteTransactionStep
+
+export interface Quote {
+  type?: 'direct-transfer'
+  origin: QuoteAmount
+  destination: QuoteAmount
+  steps: QuoteStep[]
+  fees: QuoteFee[]
+  timeInSeconds: number
 }

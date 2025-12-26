@@ -22,6 +22,7 @@ import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-image'
 import '@reown/appkit-ui/wui-list-item'
 import '@reown/appkit-ui/wui-loading-spinner'
+import '@reown/appkit-ui/wui-loading-spinner'
 import '@reown/appkit-ui/wui-network-image'
 import '@reown/appkit-ui/wui-separator'
 import '@reown/appkit-ui/wui-text'
@@ -29,17 +30,9 @@ import '@reown/appkit-ui/wui-wallet-image'
 
 import { PayController } from '../../controllers/PayController.js'
 import type { Exchange } from '../../types/exchange.js'
-import { formatAmount, isPayWithWalletSupported } from '../../utils/AssetUtil.js'
+import { formatAmount, isPayWithWalletSupported, isTestnetAsset } from '../../utils/AssetUtil.js'
+import { REOWN_TEST_EXCHANGE_ID } from '../../utils/ConstantsUtil.js'
 import styles from './styles.js'
-
-// -- Constants ----------------------------------------- //
-const EXCHANGES = [
-  {
-    id: 'binance',
-    imageUrl: 'https://pay-assets.reown.com/binance_128_128.webp',
-    name: 'Binance'
-  }
-] as Exchange[]
 
 @customElement('w3m-pay-view')
 export class W3mPayView extends LitElement {
@@ -54,6 +47,8 @@ export class W3mPayView extends LitElement {
   @state() private paymentAsset = PayController.state.paymentAsset
   @state() private activeConnectorIds = ConnectorController.state.activeConnectorIds
   @state() private caipAddress: CaipAddress | undefined = undefined
+  @state() private exchanges = PayController.state.exchanges
+  @state() private isLoading = PayController.state.isLoading
 
   public constructor() {
     super()
@@ -62,6 +57,11 @@ export class W3mPayView extends LitElement {
     this.unsubscribe.push(
       ConnectorController.subscribeKey('activeConnectorIds', ids => (this.activeConnectorIds = ids))
     )
+    this.unsubscribe.push(PayController.subscribeKey('exchanges', val => (this.exchanges = val)))
+    this.unsubscribe.push(PayController.subscribeKey('isLoading', val => (this.isLoading = val)))
+
+    PayController.fetchExchanges()
+    PayController.setSelectedExchange(undefined)
   }
 
   public override disconnectedCallback() {
@@ -205,7 +205,27 @@ export class W3mPayView extends LitElement {
   }
 
   private templateExchangeOptions() {
-    return EXCHANGES.map(
+    if (this.isLoading) {
+      return html`<wui-flex justifyContent="center" alignItems="center">
+        <wui-loading-spinner size="md"></wui-loading-spinner>
+      </wui-flex>`
+    }
+
+    const exchangesToShow = this.exchanges.filter(exchange => {
+      if (isTestnetAsset(this.paymentAsset)) {
+        return exchange.id === REOWN_TEST_EXCHANGE_ID
+      }
+
+      return exchange.id !== REOWN_TEST_EXCHANGE_ID
+    })
+
+    if (exchangesToShow.length === 0) {
+      return html`<wui-flex justifyContent="center" alignItems="center">
+        <wui-text variant="md-medium" color="primary">No exchanges available</wui-text>
+      </wui-flex>`
+    }
+
+    return exchangesToShow.map(
       exchange => html`
         <wui-list-item
           type="secondary"

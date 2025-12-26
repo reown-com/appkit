@@ -215,7 +215,7 @@ export const AssetUtil = {
    * @param namespace - The namespace to get the image id for.
    * @returns The image URL for the token.
    */
-  getImageByToken(token: string, namespace: ChainNamespace) {
+  async getImageByToken(token: string, namespace: ChainNamespace) {
     if (token === 'native') {
       const imageId =
         ConstantsUtil.NATIVE_IMAGE_IDS_BY_NAMESPACE[
@@ -225,10 +225,14 @@ export const AssetUtil = {
       return AssetUtil.fetchNetworkImage(imageId)
     }
 
-    const symbol =
-      ConstantsUtil.TOKEN_SYMBOLS_BY_ADDRESS[
-        token as keyof typeof ConstantsUtil.TOKEN_SYMBOLS_BY_ADDRESS
-      ] ?? null
+    const [, symbol] =
+      Object.entries(ConstantsUtil.TOKEN_SYMBOLS_BY_ADDRESS).find(
+        ([address]) => address.toLowerCase() === token.toLowerCase()
+      ) ?? []
+
+    if (!symbol) {
+      return undefined
+    }
 
     return AssetUtil.fetchTokenImage(symbol)
   }

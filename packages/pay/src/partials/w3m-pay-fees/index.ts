@@ -36,15 +36,17 @@ export class W3mPayFees extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const amount = this.quote?.origin.amountFormatted ?? '0'
+    const amount = NumberUtil.formatNumber(this.quote?.origin.amount || '0', {
+      decimals: this.quote?.origin.currency.metadata.decimals ?? 0,
+      round: 6
+    }).toString()
 
     return html`
       <wui-flex flexDirection="column" gap="4">
         <wui-flex alignItems="center" justifyContent="space-between">
           <wui-text variant="md-regular" color="secondary">Pay</wui-text>
           <wui-text variant="md-regular" color="primary">
-            ${NumberUtil.bigNumber(amount, { safe: true }).round(6).toString()}
-            ${this.quote?.origin.symbol || 'Unknown'}
+            ${amount} ${this.quote?.origin.currency.metadata.symbol || 'Unknown'}
           </wui-text>
         </wui-flex>
 
@@ -59,6 +61,11 @@ export class W3mPayFees extends LitElement {
   private renderFee(fee: QuoteFee) {
     const isNetworkFee = fee.id === 'network'
 
+    const feeAmount = NumberUtil.formatNumber(fee.amount || '0', {
+      decimals: fee.currency.metadata.decimals ?? 0,
+      round: 6
+    }).toString()
+
     if (isNetworkFee) {
       const allNetworks = ChainController.getAllRequestedCaipNetworks()
       const targetNetwork = allNetworks.find(net =>
@@ -71,8 +78,7 @@ export class W3mPayFees extends LitElement {
 
           <wui-flex flexDirection="column" alignItems="flex-end" gap="2">
             <wui-text variant="md-regular" color="primary">
-              ${NumberUtil.bigNumber(fee.amountFormatted, { safe: true }).round(6).toString()}
-              ${fee.currency.metadata.symbol}
+              ${feeAmount} ${fee.currency.metadata.symbol || 'Unknown'}
             </wui-text>
 
             <wui-flex alignItems="center" gap="01">
@@ -93,8 +99,7 @@ export class W3mPayFees extends LitElement {
       <wui-flex alignItems="center" justifyContent="space-between">
         <wui-text variant="md-regular" color="secondary">${fee.label}</wui-text>
         <wui-text variant="md-regular" color="primary">
-          ${NumberUtil.bigNumber(fee.amountFormatted, { safe: true }).round(6).toString()}
-          ${fee.currency.metadata.symbol || 'Unknown'}
+          ${feeAmount} ${fee.currency.metadata.symbol || 'Unknown'}
         </wui-text>
       </wui-flex>
     `

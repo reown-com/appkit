@@ -6,6 +6,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import {
   type Balance,
   type CaipAddress,
+  type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace,
   NumberUtil,
@@ -35,6 +36,7 @@ import '../../partials/w3m-pay-options-skeleton/index.js'
 import '../../partials/w3m-pay-options/index.js'
 import type { PaymentAssetWithAmount } from '../../types/options.js'
 import { formatAmount, formatBalanceToPaymentAsset } from '../../utils/AssetUtil.js'
+import { getTransactionsSteps, getTransferStep } from '../../utils/PaymentUtil.js'
 import styles from './styles.js'
 
 const NAMESPACE_ICONS = {
@@ -75,6 +77,7 @@ export class W3mPayQuoteView extends LitElement {
   @state() private tokenBalances = PayController.state.tokenBalances
   @state() private isPaymentInProgress = PayController.state.isPaymentInProgress
   @state() private exchangeUrlForQuote = PayController.state.exchangeUrlForQuote
+  @state() private completedTransactionsCount = 0
 
   public constructor() {
     super()
@@ -108,9 +111,6 @@ export class W3mPayQuoteView extends LitElement {
     this.unsubscribe.push(PayController.subscribeKey('recipient', val => (this.recipient = val)))
     this.unsubscribe.push(
       PayController.subscribeKey('isPaymentInProgress', val => (this.isPaymentInProgress = val))
-    )
-    this.unsubscribe.push(
-      PayController.subscribeKey('selectedExchange', val => (this.selectedExchange = val))
     )
     this.unsubscribe.push(
       PayController.subscribeKey('selectedExchange', val => (this.selectedExchange = val))
@@ -170,7 +170,9 @@ export class W3mPayQuoteView extends LitElement {
   // -- Private ------------------------------------------- //
   private profileTemplate() {
     if (this.selectedExchange) {
-      const amount = this.quote?.origin.amountFormatted ?? '0'
+      const amount = NumberUtil.formatNumber(this.quote?.origin.amount, {
+        decimals: this.quote?.origin.currency.metadata.decimals ?? 0
+      }).toString()
 
       return html`
         <wui-flex
@@ -184,9 +186,9 @@ export class W3mPayQuoteView extends LitElement {
           ${this.quote
             ? html`<wui-text variant="lg-regular" color="primary">
                 ${NumberUtil.bigNumber(amount, { safe: true }).round(6).toString()}
-                ${this.quote.origin.symbol}
+                ${this.quote.origin.currency.metadata.symbol}
               </wui-text>`
-            : html`<wui-shimmer width="58px" height="32px" variant="light"></wui-shimmer>`}
+            : html`<wui-shimmer width="80px" height="18px" variant="light"></wui-shimmer>`}
         </wui-flex>
       `
     }
@@ -221,6 +223,7 @@ export class W3mPayQuoteView extends LitElement {
           iconSize="xs"
           .enableGreenCircle=${false}
           alt=${ifDefined(chainLabel)}
+          @click=${this.onConnectOtherWallet.bind(this)}
           data-testid="wui-wallet-switch"
         ></wui-wallet-switch>
       </wui-flex>
@@ -229,9 +232,6 @@ export class W3mPayQuoteView extends LitElement {
 
   private initializeNamespace() {
     const namespace = ChainController.state.activeChain as ChainNamespace
-
-    // eslint-disable-next-line no-console
-    console.log('initializeNamespace', namespace)
 
     this.namespace = namespace
     this.caipAddress = ChainController.getAccountData(namespace)?.caipAddress
@@ -246,25 +246,21 @@ export class W3mPayQuoteView extends LitElement {
   }
 
   private async fetchTokens() {
-    // eslint-disable-next-line no-console
-    console.log({
-      caipAddress: this.caipAddress,
-      namespace: this.namespace
-    })
-    if (this.namespace && this.caipAddress) {
-      const { chainId, chainNamespace } = ParseUtil.parseCaipAddress(this.caipAddress)
-      const caipNetworkId = `${chainNamespace}:${chainId}` as CaipNetworkId
-      const allNetworks = ChainController.getAllRequestedCaipNetworks()
-      const targetNetwork = allNetworks.find(net => net.caipNetworkId === caipNetworkId)
+    if (this.namespace) {
+      let caipNetwork: CaipNetwork | undefined = undefined
+
+      if (this.caipAddress) {
+        const { chainId, chainNamespace } = ParseUtil.parseCaipAddress(this.caipAddress)
+        const caipNetworkId = `${chainNamespace}:${chainId}` as CaipNetworkId
+        const allNetworks = ChainController.getAllRequestedCaipNetworks()
+        caipNetwork = allNetworks.find(net => net.caipNetworkId === caipNetworkId)
+      }
 
       await PayController.fetchTokens({
         caipAddress: this.caipAddress,
-        caipNetwork: targetNetwork,
+        caipNetwork,
         namespace: this.namespace
       })
-
-      // eslint-disable-next-line no-console
-      console.log('FETCHED TOKENS >>', PayController.state.tokenBalances)
     }
   }
 
@@ -360,7 +356,24 @@ export class W3mPayQuoteView extends LitElement {
   }
 
   private paymentActionsTemplate() {
+    const isLoading = this.isFetchingQuote || this.isFetchingTokenBalances
+    const isDisabled =
+      this.isFetchingQuote ||
+      this.isFetchingTokenBalances ||
+      !this.selectedPaymentAsset ||
+      Boolean(this.quoteError)
+
+    const amount = NumberUtil.formatNumber(this.quote?.origin.amount ?? 0, {
+      decimals: this.quote?.origin.currency.metadata.decimals ?? 0
+    }).toString()
+
     if (this.selectedExchange) {
+      if (isLoading || isDisabled) {
+        return html`
+          <wui-shimmer width="100%" height="48px" variant="light" ?rounded=${true}></wui-shimmer>
+        `
+      }
+
       return html`<wui-button
         size="lg"
         fullWidth
@@ -373,15 +386,6 @@ export class W3mPayQuoteView extends LitElement {
       </wui-button>`
     }
 
-    const isLoading = this.isFetchingQuote || this.isFetchingTokenBalances
-    const isDisabled =
-      this.isFetchingQuote ||
-      this.isFetchingTokenBalances ||
-      !this.selectedPaymentAsset ||
-      Boolean(this.quoteError)
-
-    const amount = this.quote?.origin.amountFormatted ?? '0'
-
     return html`
       <wui-flex alignItems="center" justifyContent="space-between">
         <wui-flex flexDirection="column" gap="1">
@@ -393,29 +397,54 @@ export class W3mPayQuoteView extends LitElement {
                 <wui-text variant="h4-regular" color="primary">${formatAmount(amount)}</wui-text>
 
                 <wui-text variant="lg-regular" color="secondary">
-                  ${this.quote?.origin.symbol || 'Unknown'}
+                  ${this.quote?.origin.currency.metadata.symbol || 'Unknown'}
                 </wui-text>
               </wui-flex>`}
         </wui-flex>
 
-        <wui-button
-          size="lg"
-          variant="accent-primary"
-          ?loading=${isLoading || this.isPaymentInProgress}
-          ?disabled=${isDisabled || this.isPaymentInProgress}
-          @click=${this.onPayWithWallet.bind(this)}
-        >
-          Pay
-          ${isLoading
-            ? null
-            : html`<wui-icon
-                name="arrowRight"
-                color="inherit"
-                size="sm"
-                slot="iconRight"
-              ></wui-icon>`}
-        </wui-button>
+        ${this.actionButtonTemplate({ isLoading, isDisabled })}
       </wui-flex>
+    `
+  }
+
+  private actionButtonTemplate(params: { isLoading: boolean; isDisabled: boolean }) {
+    const allTransactionSteps = getTransactionsSteps(this.quote)
+
+    const { isLoading, isDisabled } = params
+
+    let label = 'Pay'
+
+    const isApprovalRequired =
+      allTransactionSteps.length > 1 && this.completedTransactionsCount === 0
+
+    if (isApprovalRequired) {
+      label = 'Approve'
+    }
+
+    return html`
+      <wui-button
+        size="lg"
+        variant="accent-primary"
+        ?loading=${isLoading || this.isPaymentInProgress}
+        ?disabled=${isDisabled || this.isPaymentInProgress}
+        @click=${() => {
+          if (allTransactionSteps.length > 0) {
+            this.onSendTransactions()
+          } else {
+            this.onTransfer()
+          }
+        }}
+      >
+        ${label}
+        ${isLoading
+          ? null
+          : html`<wui-icon
+              name="arrowRight"
+              color="inherit"
+              size="sm"
+              slot="iconRight"
+            ></wui-icon>`}
+      </wui-button>
     `
   }
 
@@ -425,59 +454,42 @@ export class W3mPayQuoteView extends LitElement {
     }
 
     const balances = this.tokenBalances[this.namespace] ?? []
-    // eslint-disable-next-line no-console
-    console.log(
-      'initial',
-      balances.map(balance => {
-        try {
-          return formatBalanceToPaymentAsset(balance)
-        } catch (err) {
-          return null
-        }
-      })
-    )
-    const paymentOptions = balances
+
+    const paymentOptionsWithFormattedBalances = balances
       .map(balance => {
         try {
           return formatBalanceToPaymentAsset(balance)
         } catch (err) {
-          // eslint-disable-next-line no-console
-          console.error('Error formatting balance to payment asset', err)
-
           return null
         }
       })
       .filter((option): option is PaymentAssetWithAmount => Boolean(option))
-      .filter(option => {
-        const { chainId: optionChainId } = ParseUtil.parseCaipNetworkId(option.network)
-        const { chainId: paymentAssetChainId } = ParseUtil.parseCaipNetworkId(
-          this.paymentAsset.network
-        )
-        // eslint-disable-next-line no-console
-        console.log('option', {
-          optionChainId,
-          paymentAssetChainId
-        })
 
-        if (HelpersUtil.isLowerCaseMatch(option.asset, this.paymentAsset.asset)) {
-          return true
-        }
+    const paymentOptionsToShow = paymentOptionsWithFormattedBalances.filter(option => {
+      const { chainId: optionChainId } = ParseUtil.parseCaipNetworkId(option.network)
+      const { chainId: paymentAssetChainId } = ParseUtil.parseCaipNetworkId(
+        this.paymentAsset.network
+      )
 
-        // eslint-disable-next-line no-warning-comments
-        // TODO: Find a way to support same-chain deposit address with relay
+      if (HelpersUtil.isLowerCaseMatch(option.asset, this.paymentAsset.asset)) {
+        return true
+      }
+
+      if (this.selectedExchange) {
         return !HelpersUtil.isLowerCaseMatch(
           optionChainId.toString(),
           paymentAssetChainId.toString()
         )
-      })
+      }
 
-    return paymentOptions
+      return true
+    })
+
+    return paymentOptionsToShow
   }
 
   private onTokenBalancesChanged(tokenBalances: Partial<Record<ChainNamespace, Balance[]>>) {
     this.tokenBalances = tokenBalances
-    // eslint-disable-next-line no-console
-    console.log('TOKEN BALANCES >>', tokenBalances)
 
     const [paymentAsset] = this.getPaymentAssetFromTokenBalances()
 
@@ -522,11 +534,57 @@ export class W3mPayQuoteView extends LitElement {
     }
   }
 
-  private async onPayWithWallet() {
-    const selectedPaymentAssetAmount = this.selectedPaymentAsset?.amount ?? '0'
-    const originAmountToPay = this.quote?.origin.amountFormatted ?? '0'
+  private async onTransfer() {
+    const transferStep = getTransferStep(this.quote)
 
-    const hasEnoughFunds = NumberUtil.bigNumber(selectedPaymentAssetAmount).gte(originAmountToPay)
+    if (transferStep) {
+      // This is just a sanity check to ensure the quote asset is the same as the selected payment asset
+      const isQuoteAssetSameAsSelectedPaymentAsset = HelpersUtil.isLowerCaseMatch(
+        this.selectedPaymentAsset?.asset,
+        transferStep.deposit.currency
+      )
+
+      if (!isQuoteAssetSameAsSelectedPaymentAsset) {
+        throw new Error('Quote asset is not the same as the selected payment asset')
+      }
+
+      const currentAmount = this.selectedPaymentAsset?.amount ?? '0'
+      const amountToTransfer = NumberUtil.formatNumber(transferStep.deposit.amount, {
+        decimals: this.selectedPaymentAsset?.metadata.decimals ?? 0
+      }).toString()
+
+      const hasEnoughFunds = NumberUtil.bigNumber(currentAmount).gte(amountToTransfer)
+
+      if (!hasEnoughFunds) {
+        SnackController.showError('Insufficient funds')
+
+        return
+      }
+
+      if (this.quote && this.selectedPaymentAsset && this.caipAddress && this.namespace) {
+        const { address: fromAddress } = ParseUtil.parseCaipAddress(this.caipAddress)
+
+        await PayController.onTransfer({
+          chainNamespace: this.namespace,
+          fromAddress,
+          toAddress: transferStep.deposit.receiver,
+          amount: amountToTransfer,
+          paymentAsset: this.selectedPaymentAsset
+        })
+
+        PayController.setRequestId(transferStep.requestId)
+        RouterController.push('PayLoading')
+      }
+    }
+  }
+
+  private async onSendTransactions() {
+    const currentAmount = this.selectedPaymentAsset?.amount ?? '0'
+    const amountToSwap = NumberUtil.formatNumber(this.quote?.origin.amount ?? 0, {
+      decimals: this.selectedPaymentAsset?.metadata.decimals ?? 0
+    }).toString()
+
+    const hasEnoughFunds = NumberUtil.bigNumber(currentAmount).gte(amountToSwap)
 
     if (!hasEnoughFunds) {
       SnackController.showError('Insufficient funds')
@@ -534,27 +592,25 @@ export class W3mPayQuoteView extends LitElement {
       return
     }
 
-    if (this.quote && this.selectedPaymentAsset && this.caipAddress && this.namespace) {
-      const { address: fromAddress } = ParseUtil.parseCaipAddress(this.caipAddress)
+    const allTransactionSteps = getTransactionsSteps(this.quote)
 
-      // eslint-disable-next-line no-console
-      console.log({
-        chainNamespace: this.namespace,
-        fromAddress,
-        toAddress: this.quote.depositAddress,
-        amount: this.quote.origin.amountFormatted,
-        paymentAsset: this.selectedPaymentAsset
+    const [transactionStep] = getTransactionsSteps(this.quote, this.completedTransactionsCount)
+
+    if (transactionStep && this.namespace) {
+      await PayController.onSendTransaction({
+        namespace: this.namespace as ChainNamespace,
+        transactionStep
       })
 
-      await PayController.onPayment({
-        chainNamespace: this.namespace,
-        fromAddress,
-        toAddress: this.quote.depositAddress,
-        amount: this.quote.origin.amountFormatted,
-        paymentAsset: this.selectedPaymentAsset
-      })
+      this.completedTransactionsCount += 1
 
-      RouterController.push('PayLoading')
+      const hasCompletedAllTransactions =
+        this.completedTransactionsCount === allTransactionSteps.length
+
+      if (hasCompletedAllTransactions) {
+        PayController.setRequestId(transactionStep.requestId)
+        RouterController.push('PayLoading')
+      }
     }
   }
 
@@ -571,6 +627,14 @@ export class W3mPayQuoteView extends LitElement {
       }
 
       popupWindow.location.href = this.exchangeUrlForQuote
+
+      const transactionStep = getTransferStep(this.quote)
+
+      if (transactionStep) {
+        PayController.setRequestId(transactionStep.requestId)
+      }
+
+      PayController.initiatePayment()
       RouterController.push('PayLoading')
     }
   }

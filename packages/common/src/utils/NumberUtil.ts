@@ -1,7 +1,13 @@
 import Big from 'big.js'
 
 // -- Types --------------------------------------------- //
-type BigNumberParams = {
+interface BigNumberParams {
+  safe?: boolean
+}
+
+interface FormatNumberParams {
+  decimals: number
+  round?: number
   safe?: boolean
 }
 
@@ -29,6 +35,14 @@ export const NumberUtil = {
 
       throw err
     }
+  },
+
+  formatNumber(value: Big | number | string | undefined, params: FormatNumberParams) {
+    const { decimals, round = 8, safe = true } = params
+
+    const bigNumber = NumberUtil.bigNumber(value, { safe })
+
+    return bigNumber.div(Big(10).pow(decimals)).round(round)
   },
 
   /**

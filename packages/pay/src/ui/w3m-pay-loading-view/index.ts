@@ -3,7 +3,7 @@ import { state } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type CaipAddress, type ChainNamespace, ParseUtil } from '@reown/appkit-common'
+import { type CaipAddress, type ChainNamespace, NumberUtil, ParseUtil } from '@reown/appkit-common'
 import { AssetUtil, ChainController, ConnectorController } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
@@ -231,7 +231,7 @@ export class W3mPayLoadingView extends LitElement {
       `
     }
 
-    const timeEstimate = this.quote?.timeEstimate ?? 0
+    const timeEstimate = this.quote?.timeInSeconds ?? 0
 
     return html`
       <wui-flex alignItems="center" justifyContent="space-between" gap="3">
@@ -252,12 +252,24 @@ export class W3mPayLoadingView extends LitElement {
 
   private renderPayment() {
     const allNetworks = ChainController.getAllRequestedCaipNetworks()
-    const targetNetwork = allNetworks.find(net =>
-      HelpersUtil.isLowerCaseMatch(net.id.toString(), this.quote?.origin.chainId)
-    )
+    const targetNetwork = allNetworks.find(net => {
+      const network = this.quote?.origin.currency.network
 
-    const amount = formatAmount(this.quote?.origin.amountFormatted || '0')
-    const symbol = this.quote?.origin.symbol ?? 'Unknown'
+      if (!network) {
+        return false
+      }
+
+      const { chainId } = ParseUtil.parseCaipNetworkId(network)
+
+      return HelpersUtil.isLowerCaseMatch(net.id.toString(), chainId.toString())
+    })
+
+    const formatBigNumber = NumberUtil.formatNumber(this.quote?.origin.amount || '0', {
+      decimals: this.quote?.origin.currency.metadata.decimals ?? 0
+    }).toString()
+
+    const formattedAmount = formatAmount(formatBigNumber)
+    const symbol = this.quote?.origin.currency.metadata.symbol ?? 'Unknown'
 
     return html`
       <wui-flex
@@ -269,7 +281,7 @@ export class W3mPayLoadingView extends LitElement {
 
         <wui-flex flexDirection="column" alignItems="flex-end" gap="1">
           <wui-flex alignItems="center" gap="01">
-            <wui-text variant="lg-regular" color="primary">${amount}</wui-text>
+            <wui-text variant="lg-regular" color="primary">${formattedAmount}</wui-text>
             <wui-text variant="lg-regular" color="secondary">${symbol}</wui-text>
           </wui-flex>
 
@@ -310,6 +322,7 @@ export class W3mPayLoadingView extends LitElement {
       return html`
         <wui-flex alignItems="center" justifyContent="flex-end" gap="1">
           <wui-text variant="lg-regular" color="primary">${exchangeName}</wui-text>
+          <wui-image src=${ifDefined(this.selectedExchange.imageUrl)} size="mdl"></wui-image>
         </wui-flex>
       `
     }
@@ -405,7 +418,7 @@ export class W3mPayLoadingView extends LitElement {
   }
 
   private async fetchQuoteStatus() {
-    const requestId = PayController.state.quote?.requestId
+    const requestId = PayController.state.requestId
 
     if (!requestId || TERMINAL_STATES.includes(this.quoteStatus)) {
       this.stopPolling()
