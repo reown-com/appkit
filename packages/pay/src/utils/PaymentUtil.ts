@@ -156,15 +156,6 @@ export async function processEvmErc20Payment(
     throw new AppKitPayError(AppKitPayErrorCodes.GENERIC_PAYMENT_ERROR)
   }
 
-  // eslint-disable-next-line no-console
-  console.log({
-    fromAddress: params.fromAddress,
-    tokenAddress,
-    args: [recipientAddress, amountBigInt],
-    method: 'transfer',
-    abi: ContractUtil.getERC20Abi(tokenAddress),
-    chainNamespace: ConstantsUtil.CHAIN.EVM
-  })
   const txResponse = await ConnectionController.writeContract({
     fromAddress: params.fromAddress,
     tokenAddress,

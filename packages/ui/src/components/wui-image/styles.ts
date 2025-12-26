@@ -22,20 +22,13 @@ export default css`
     -o-user-drag: none;
   }
 
-  :host([data-boxcolor='foregroundPrimary']) {
-    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
-  }
-
-  :host([data-boxcolor='foregroundSecondary']) {
-    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
-  }
-
   :host([data-boxed='true']) {
     width: 40px;
     height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
     border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 

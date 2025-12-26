@@ -26,9 +26,6 @@ export const NumberUtil = {
 
       return new Big(value)
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log('failed to parse number', value)
-
       if (params.safe) {
         return new Big(0)
       }
@@ -42,7 +39,7 @@ export const NumberUtil = {
 
     const bigNumber = NumberUtil.bigNumber(value, { safe })
 
-    return bigNumber.div(Big(10).pow(decimals)).round(round)
+    return bigNumber.div(new Big(10).pow(decimals)).round(round)
   },
 
   /**

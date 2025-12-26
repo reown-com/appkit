@@ -53,7 +53,9 @@ export class W3mPayHeader extends LitElement {
       <wui-text variant="lg-regular" color="primary">
         ${this.amount} ${this.paymentAsset.metadata.symbol}
       </wui-text>
-      <wui-text variant="sm-regular" color="secondary">on ${targetNetwork?.name}</wui-text>
+      <wui-text variant="sm-regular" color="secondary">
+        on ${targetNetwork?.name ?? 'Unknown'}
+      </wui-text>
     </wui-flex>`
   }
 }

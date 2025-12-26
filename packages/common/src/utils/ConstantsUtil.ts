@@ -79,7 +79,7 @@ export const ConstantsUtil = {
     solana: '3e8119e5-2a6f-4818-c50c-1937011d5900',
     // Bitcoin
     bip122: '0b4838db-0161-4ffe-022d-532bf03dba00'
-  } as const satisfies Partial<Record<ChainNamespace, string>>,
+  } as Partial<Record<ChainNamespace, string>>,
   TOKEN_SYMBOLS_BY_ADDRESS: {
     // USDC on Ethereum
     '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 'USDC',

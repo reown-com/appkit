@@ -222,6 +222,10 @@ export const AssetUtil = {
           namespace as keyof typeof ConstantsUtil.NATIVE_IMAGE_IDS_BY_NAMESPACE
         ] ?? null
 
+      if (!imageId) {
+        return undefined
+      }
+
       return AssetUtil.fetchNetworkImage(imageId)
     }
 

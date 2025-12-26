@@ -41,8 +41,6 @@ export default function DemoContent({
 
   return (
     <>
-      {isPayEnabled ? <AppKitPay /> : null}
-
       <AppKitButtonsMultiChain adapters={config?.adapters} />
       <AppKitInfoMultiChain config={config} />
 
@@ -61,6 +59,8 @@ export default function DemoContent({
       {bitcoinAdapter ? <BitcoinTests /> : null}
       {tonAdapter ? <TonTests /> : null}
       {hasNoAdapters ? <UpaTests /> : null}
+
+      {isPayEnabled ? <AppKitPay /> : null}
 
       {evmAdapter ? (
         <AppKitWalletButtons

@@ -499,8 +499,6 @@ export class W3mPayQuoteView extends LitElement {
   }
 
   private async onConnectOtherWallet() {
-    // eslint-disable-next-line no-warning-comments
-    // TODO: Refactor so we don't need to pass the namespace
     await ConnectorController.connect()
     await ModalController.open({ view: 'PayQuote' })
   }

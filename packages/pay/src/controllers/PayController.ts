@@ -84,31 +84,22 @@ export interface PayControllerState extends PaymentOptions {
   isConfigured: boolean
   error: AppKitPayErrorMessage | null
   isPaymentInProgress: boolean
-  // eslint-disable-next-line no-warning-comments
-  // TODO: remove
   isLoading: boolean
   exchanges: Exchange[]
   currentPayment?: CurrentPayment
   analyticsSet: boolean
   paymentId?: string
-
-  // NEW ONES
   choice: PaymentChoice
-
   tokenBalances: Partial<Record<ChainNamespace, Balance[]>>
   isFetchingTokenBalances: boolean
-
   selectedPaymentAsset: PaymentAssetWithAmount | null
-
   quote?: Quote
   quoteStatus: QuoteStatus
   quoteError: string | null
   isFetchingQuote: boolean
-
   selectedExchange?: Exchange
   exchangeUrlForQuote?: string
   exchangeSessionId?: string
-
   requestId?: string
 }
 
@@ -180,8 +171,6 @@ const state = proxy<PayControllerState>({
   currentPayment: undefined,
   analyticsSet: false,
   paymentId: undefined,
-
-  // NEW ONES
   choice: 'pay',
   tokenBalances: {
     [ConstantsUtil.CHAIN.EVM]: [],
@@ -476,8 +465,6 @@ export const PayController = {
         await ChainController.switchActiveNetwork(targetNetwork)
       }
 
-      // eslint-disable-next-line no-warning-comments
-      // TODO: add bitcoin here as well
       switch (chainNamespace) {
         case ConstantsUtil.CHAIN.EVM:
           if (paymentAsset.asset === 'native') {

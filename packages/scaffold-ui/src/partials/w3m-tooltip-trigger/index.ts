@@ -1,12 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import {
-  ModalController,
-  RouterController,
-  TooltipController,
-  type TooltipControllerState
-} from '@reown/appkit-controllers'
+import { ModalController, RouterController, TooltipController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'
@@ -20,8 +15,6 @@ export class WuiTooltipTrigger extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property() text = ''
-
-  @property() variant: TooltipControllerState['variant'] = 'shade'
 
   @state() open = TooltipController.state.open
 
@@ -86,7 +79,7 @@ export class WuiTooltipTrigger extends LitElement {
       TooltipController.showTooltip({
         message: this.text,
         triggerRect,
-        variant: this.variant
+        variant: 'shade'
       })
     }
   }
