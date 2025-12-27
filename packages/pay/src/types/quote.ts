@@ -36,6 +36,7 @@ export interface QuoteDepositStep {
 export interface QuoteTransactionStep {
   requestId: string
   type: 'transaction'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   transaction: any
 }
 
