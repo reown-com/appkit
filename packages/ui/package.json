@@ -308,6 +308,11 @@
       "import": "./dist/esm/exports/wui-promo.js",
       "default": "./dist/esm/exports/wui-promo.js"
     },
+    "./wui-pulse": {
+      "types": "./dist/types/exports/wui-pulse.d.ts",
+      "import": "./dist/esm/exports/wui-pulse.js",
+      "default": "./dist/esm/exports/wui-pulse.js"
+    },
     "./wui-balance": {
       "types": "./dist/types/exports/wui-balance.d.ts",
       "import": "./dist/esm/exports/wui-balance.js",

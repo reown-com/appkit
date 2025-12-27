@@ -55,6 +55,7 @@ import type { WuiOtp } from '../composites/wui-otp/index.js'
 import type { WuiPreviewItem } from '../composites/wui-preview-item/index.js'
 import type { WuiProfileButton } from '../composites/wui-profile-button/index.js'
 import type { WuiPromo } from '../composites/wui-promo/index.js'
+import type { WuiPulse } from '../composites/wui-pulse/index.js'
 import type { WuiQrCode } from '../composites/wui-qr-code/index.js'
 import type { WuiSearchBar } from '../composites/wui-search-bar/index.js'
 import type { WuiSelect } from '../composites/wui-select/index.js'
@@ -158,6 +159,8 @@ interface AppKitElements {
   'wui-active-profile-wallet-item': CustomElement<WuiActiveProfileWalletItem>
   'wui-inactive-profile-wallet-item': CustomElement<WuiInactiveProfileWalletItem>
   'wui-wallet-switch': CustomElement<WuiWalletSwitch>
+  'wui-pulse': CustomElement<WuiPulse>
+
   // -- Layout ------------------------------------------- //
   'wui-flex': CustomElement<WuiFlex>
   'wui-grid': CustomElement<WuiGrid>

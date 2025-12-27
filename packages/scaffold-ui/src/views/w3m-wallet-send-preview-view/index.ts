@@ -174,8 +174,6 @@ export class W3mWalletSendPreviewView extends LitElement {
         error instanceof AppKitError &&
         error.originalName === ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST
 
-      // eslint-disable-next-line no-warning-comments
-      // TODO: Remove this once we have a better way to handle errors for each adapter
       if (
         ChainController.state.activeChain === CommonConstantsUtil.CHAIN.SOLANA ||
         isUserRejectedRequestError

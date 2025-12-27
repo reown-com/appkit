@@ -29,6 +29,8 @@ export class WuiWalletSwitch extends LitElement {
 
   @property() public iconSize?: IconSizeType = 'md'
 
+  @property({ type: Boolean }) public enableGreenCircle?: boolean = true
+
   @property({ type: Boolean }) public loading = false
 
   @property({ type: Number }) public charsStart = 4
@@ -63,7 +65,7 @@ export class WuiWalletSwitch extends LitElement {
         data-active=${Boolean(this.icon)}
       >
         ${imageOrIconContent}
-        <wui-flex class="circle"></wui-flex>
+        ${this.enableGreenCircle ? html`<wui-flex class="circle"></wui-flex>` : null}
       </wui-flex>
     `
   }

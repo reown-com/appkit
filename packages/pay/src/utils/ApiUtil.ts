@@ -1,7 +1,18 @@
-import { OptionsController } from '@reown/appkit-controllers'
+import { type ChainNamespace, NumberUtil, ParseUtil } from '@reown/appkit-common'
+import {
+  FetchUtil,
+  OptionsController,
+  type PaymentAsset,
+  getNativeTokenAddress
+} from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 import type { Exchange, ExchangeBuyStatus } from '../types/exchange.js'
+import type { Quote, QuoteStatus } from '../types/quote.js'
 import { API_URL } from './ConstantsUtil.js'
+import { getDirectTransferQuote } from './PaymentUtil.js'
+
+const devFetchUtil = new FetchUtil({ baseUrl: 'http://localhost:8787', clientId: null })
 
 class JsonRpcError extends Error {}
 
@@ -52,6 +63,47 @@ type GetBuyStatusResult = {
   txHash?: string
 }
 
+type GetTransfersQuoteParams = {
+  address?: string
+  sourceToken: PaymentAsset
+  toToken: PaymentAsset
+  recipient: string
+  amount: string
+}
+
+type GetQuoteParams = {
+  address?: string
+  sourceToken: PaymentAsset
+  toToken: PaymentAsset
+  recipient: string
+  amount: string
+}
+
+type GetQuoteResult = Quote
+
+type GetQuoteStatusParams = {
+  requestId: string
+}
+
+type GetQuoteStatusResult = {
+  status: QuoteStatus
+}
+
+type GetAssetsForExchangeResult = {
+  exchangeId: string
+  assets: Record<ChainNamespace, PaymentAsset[]>
+}
+
+function getSdkProperties() {
+  const { projectId, sdkType, sdkVersion } = OptionsController.state
+
+  return {
+    projectId,
+    st: sdkType || 'appkit',
+    sv: sdkVersion || 'html-wagmi-4.2.2'
+  }
+}
+
 async function sendRequest<T>(method: string, params: unknown): Promise<JsonRpcResponse<T>> {
   const url = getApiUrl()
   const { sdkType: st, sdkVersion: sv, projectId } = OptionsController.getSnapshot()
@@ -98,4 +150,78 @@ export async function getBuyStatus(params: GetBuyStatusParams) {
   const response = await sendRequest<GetBuyStatusResult>('reown_getExchangeBuyStatus', params)
 
   return response.result
+}
+
+export async function getTransfersQuote(params: GetTransfersQuoteParams) {
+  const amount = NumberUtil.bigNumber(params.amount)
+    .times(10 ** params.toToken.metadata.decimals)
+    .toString()
+
+  const { chainId: originChainId, chainNamespace: originChainNamespace } =
+    ParseUtil.parseCaipNetworkId(params.sourceToken.network)
+
+  const { chainId: destinationChainId, chainNamespace: destinationChainNamespace } =
+    ParseUtil.parseCaipNetworkId(params.toToken.network)
+
+  const originCurrency =
+    params.sourceToken.asset === 'native'
+      ? getNativeTokenAddress(originChainNamespace)
+      : params.sourceToken.asset
+
+  const destinationCurrency =
+    params.toToken.asset === 'native'
+      ? getNativeTokenAddress(destinationChainNamespace)
+      : params.toToken.asset
+
+  const response = await devFetchUtil.post<GetQuoteResult>({
+    path: '/appkit/v1/transfers/quote',
+    body: {
+      user: params.address,
+      originChainId: originChainId.toString(),
+      originCurrency,
+      destinationChainId: destinationChainId.toString(),
+      destinationCurrency,
+      recipient: params.recipient,
+      amount
+    },
+    params: getSdkProperties()
+  })
+
+  return response
+}
+
+export async function getQuote(params: GetQuoteParams) {
+  const isSameChain = HelpersUtil.isLowerCaseMatch(
+    params.sourceToken.network,
+    params.toToken.network
+  )
+
+  const isSameAsset = HelpersUtil.isLowerCaseMatch(params.sourceToken.asset, params.toToken.asset)
+
+  if (isSameChain && isSameAsset) {
+    return getDirectTransferQuote(params)
+  }
+
+  return getTransfersQuote(params)
+}
+
+export async function getQuoteStatus(params: GetQuoteStatusParams) {
+  const response = await devFetchUtil.get<GetQuoteStatusResult>({
+    path: '/appkit/v1/transfers/status',
+    params: {
+      requestId: params.requestId,
+      ...getSdkProperties()
+    }
+  })
+
+  return response
+}
+
+export async function getAssetsForExchange(exchangeId: string) {
+  const response = await devFetchUtil.get<GetAssetsForExchangeResult>({
+    path: `/appkit/v1/transfers/assets/exchanges/${exchangeId}`,
+    params: getSdkProperties()
+  })
+
+  return response
 }

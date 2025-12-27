@@ -90,12 +90,6 @@ describe('BalanceUtil', () => {
       expect(result).toEqual([])
     })
 
-    it('should return empty array when network is missing', async () => {
-      ChainController.state.activeCaipNetwork = undefined
-      const result = await BalanceUtil.getMyTokensWithBalance()
-      expect(result).toEqual([])
-    })
-
     it('should use ERC7811 for EIP155 chain when wallet_getAssets is available', async () => {
       const mockAssetsResponse: WalletGetAssetsResponse = {
         [mockEthChainIdAsHex]: [

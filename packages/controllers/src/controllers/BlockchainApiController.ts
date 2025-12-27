@@ -312,10 +312,11 @@ export const BlockchainApiController = {
       .then(result => result.result)
   },
 
-  async fetchTokenPrice({ addresses }: BlockchainApiTokenPriceRequest) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
-    )
+  async fetchTokenPrice({
+    addresses,
+    caipNetworkId = ChainController.state.activeCaipNetwork?.caipNetworkId
+  }: BlockchainApiTokenPriceRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(caipNetworkId)
     if (!isSupported) {
       return { fungibles: [] }
     }

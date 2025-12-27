@@ -74,6 +74,15 @@ export function getActiveNetworkTokenAddress() {
 }
 
 /**
+ * Get the native token address for a given namespace
+ * @param namespace - The namespace of the native token
+ * @returns The native token address
+ */
+export function getNativeTokenAddress(namespace: ChainNamespace) {
+  return ConstantsUtil.NATIVE_TOKEN_ADDRESS[namespace]
+}
+
+/**
  * Get the preferred account type for a given namespace
  * @param namespace - The namespace of the account
  * @returns The preferred account type

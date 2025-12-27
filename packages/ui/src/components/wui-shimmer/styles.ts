@@ -11,7 +11,7 @@ export default css`
     );
     background-size: 200% 100%;
     animation: shimmer 2s linear infinite;
-    border-radius: ${({ borderRadius }) => borderRadius[2]};
+    border-radius: ${({ borderRadius }) => borderRadius[1]};
   }
 
   :host([data-rounded='true']) {

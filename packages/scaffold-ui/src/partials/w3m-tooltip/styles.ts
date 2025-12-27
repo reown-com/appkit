@@ -35,8 +35,8 @@ export default css`
   }
 
   :host([data-variant='fill']) > wui-flex {
-    background-color: ${({ tokens }) => tokens.theme.textPrimary};
-    border: none;
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
   }
 
   wui-icon {

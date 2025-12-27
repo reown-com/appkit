@@ -1,13 +1,45 @@
 import Big from 'big.js'
 
+// -- Types --------------------------------------------- //
+interface BigNumberParams {
+  safe?: boolean
+}
+
+interface FormatNumberParams {
+  decimals: number
+  round?: number
+  safe?: boolean
+}
+
 export const NumberUtil = {
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  bigNumber(value: Big | string | number | undefined) {
-    if (!value) {
-      return new Big(0)
+  bigNumber(
+    value: Big | string | number | undefined,
+    params: BigNumberParams = {
+      safe: false
     }
+  ) {
+    try {
+      if (!value) {
+        return new Big(0)
+      }
 
-    return new Big(value)
+      return new Big(value)
+    } catch (err) {
+      if (params.safe) {
+        return new Big(0)
+      }
+
+      throw err
+    }
+  },
+
+  formatNumber(value: Big | number | string | undefined, params: FormatNumberParams) {
+    const { decimals, round = 8, safe = true } = params
+
+    const bigNumber = NumberUtil.bigNumber(value, { safe })
+
+    return bigNumber.div(new Big(10).pow(decimals)).round(round)
   },
 
   /**

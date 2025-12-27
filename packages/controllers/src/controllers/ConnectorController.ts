@@ -3,6 +3,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import {
   AVAILABLE_NAMESPACES,
+  type CaipAddress,
   type ChainNamespace,
   ConstantsUtil,
   getW3mThemeVariables
@@ -22,6 +23,7 @@ import type {
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
+import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
 import { RouterController } from './RouterController.js'
 import { ThemeController } from './ThemeController.js'
@@ -37,6 +39,10 @@ export interface ConnectorControllerState {
 }
 
 type StateKey = keyof ConnectorControllerState
+
+export interface ConnectParameters {
+  namespace?: ChainNamespace
+}
 
 const defaultActiveConnectors = Object.fromEntries(
   AVAILABLE_NAMESPACES.map(namespace => [namespace, undefined])
@@ -439,6 +445,59 @@ const controller = {
     const enabledNamespaces = ConnectorController.getEnabledNamespaces()
     const enabledConnectors = ConnectorController.getEnabledConnectors(enabledNamespaces)
     state.connectors = ConnectorController.mergeMultiChainConnectors(enabledConnectors)
+  },
+
+  /**
+   * Opens the connect modal and waits until the user connects their wallet.
+   * @param params - Connection parameters.
+   * @returns Promise resolving to the connected wallet's CAIP address.
+   */
+  async connect(params: ConnectParameters = {}): Promise<{ caipAddress: CaipAddress }> {
+    const { namespace } = params
+
+    ConnectorController.setFilterByNamespace(namespace)
+    RouterController.push('Connect', {
+      addWalletForNamespace: namespace
+    })
+
+    return new Promise((resolve, reject) => {
+      if (namespace) {
+        const unsubscribeChainController = ChainController.subscribeChainProp(
+          'accountState',
+          val => {
+            if (val?.caipAddress) {
+              resolve({ caipAddress: val?.caipAddress })
+              unsubscribeChainController()
+            }
+          },
+          namespace
+        )
+
+        const unsubscribeModalController = ModalController.subscribeKey('open', val => {
+          if (!val) {
+            reject(new Error('Modal closed'))
+            unsubscribeModalController()
+          }
+        })
+      } else {
+        const unsubscribeChainController = ChainController.subscribeKey(
+          'activeCaipAddress',
+          val => {
+            if (val) {
+              resolve({ caipAddress: val })
+              unsubscribeChainController()
+            }
+          }
+        )
+
+        const unsubscribeModalController = ModalController.subscribeKey('open', val => {
+          if (!val) {
+            reject(new Error('Modal closed'))
+            unsubscribeModalController()
+          }
+        })
+      }
+    })
   }
 }
 

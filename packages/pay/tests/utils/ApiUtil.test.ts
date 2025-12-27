@@ -8,15 +8,20 @@ const MOCK_PROJECT_ID = 'mockProjectId'
 const MOCK_SDK_TYPE = 'appkit'
 const MOCK_SDK_VERSION = 'html-wagmi-0.0.1'
 
-vi.mock('@reown/appkit-controllers', () => ({
-  OptionsController: {
-    getSnapshot: vi.fn(() => ({
-      projectId: MOCK_PROJECT_ID,
-      sdkType: MOCK_SDK_TYPE,
-      sdkVersion: MOCK_SDK_VERSION
-    }))
+vi.mock('@reown/appkit-controllers', async importOriginal => {
+  const actual = await importOriginal<typeof import('@reown/appkit-controllers')>()
+  return {
+    ...actual,
+    OptionsController: {
+      ...actual.OptionsController,
+      getSnapshot: vi.fn(() => ({
+        projectId: MOCK_PROJECT_ID,
+        sdkType: MOCK_SDK_TYPE,
+        sdkVersion: MOCK_SDK_VERSION
+      }))
+    }
   }
-}))
+})
 
 // Mock the global fetch function
 const mockFetch = vi.fn()

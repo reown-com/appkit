@@ -307,6 +307,7 @@ export interface BlockchainApiSwapQuoteResponse {
 }
 
 export interface BlockchainApiTokenPriceRequest {
+  caipNetworkId?: CaipNetworkId
   currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth'
   addresses: string[]
 }

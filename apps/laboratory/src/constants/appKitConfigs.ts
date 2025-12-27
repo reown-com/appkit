@@ -391,7 +391,8 @@ export const appKitConfigs = {
   },
   'pay-default': {
     ...commonAppKitConfig,
-    adapters: ['ethers', 'solana', 'bitcoin'],
+    wagmiConfig: commonWagmiConfig,
+    adapters: ['wagmi', 'solana', 'bitcoin'],
     networks: ConstantsUtil.AllNetworks,
     features: { pay: true }
   },
