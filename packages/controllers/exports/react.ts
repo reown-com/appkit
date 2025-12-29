@@ -167,21 +167,6 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
     throw new Error('No namespace found')
   }
 
-  const { connections, recentConnections } =
-    ConnectionControllerUtil.getConnectionsData(chainNamespace)
-
-  if (!isMultiWalletEnabled) {
-    AlertController.open(
-      ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTIONS_HOOK,
-      'info'
-    )
-
-    return {
-      connections: [],
-      recentConnections: []
-    }
-  }
-
   const formatConnection = useCallback((connection: Connection) => {
     const connector = ConnectorController.getConnectorById(connection.connectorId)
 
@@ -196,6 +181,21 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
       ...connection
     }
   }, [])
+
+  const { connections, recentConnections } =
+    ConnectionControllerUtil.getConnectionsData(chainNamespace)
+
+  if (!isMultiWalletEnabled) {
+    AlertController.open(
+      ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTIONS_HOOK,
+      'info'
+    )
+
+    return {
+      connections: [],
+      recentConnections: []
+    }
+  }
 
   return {
     connections: connections.map(formatConnection),
@@ -216,24 +216,6 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
   }
 
   const isMultiWalletEnabled = Boolean(remoteFeatures?.multiWallet)
-
-  if (!isMultiWalletEnabled) {
-    AlertController.open(
-      ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTION_HOOK,
-      'info'
-    )
-
-    return {
-      connection: undefined,
-      isPending: false,
-      switchConnection: () => Promise.resolve(undefined),
-      deleteConnection: () => ({})
-    }
-  }
-
-  const connectorId = activeConnectorIds[chainNamespace]
-  const connList = connections.get(chainNamespace)
-  const connection = connList?.find(c => c.connectorId.toLowerCase() === connectorId?.toLowerCase())
 
   const switchConnection = useCallback(
     async ({ connection: _connection, address }: SwitchConnectionParams) => {
@@ -283,6 +265,24 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
     },
     [chainNamespace]
   )
+
+  if (!isMultiWalletEnabled) {
+    AlertController.open(
+      ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTION_HOOK,
+      'info'
+    )
+
+    return {
+      connection: undefined,
+      isPending: false,
+      switchConnection: () => Promise.resolve(undefined),
+      deleteConnection: () => ({})
+    }
+  }
+
+  const connectorId = activeConnectorIds[chainNamespace]
+  const connList = connections.get(chainNamespace)
+  const connection = connList?.find(c => c.connectorId.toLowerCase() === connectorId?.toLowerCase())
 
   return {
     connection,
