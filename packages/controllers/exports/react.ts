@@ -402,6 +402,11 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }
 
   async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
+    // Reset wcLinking to allow new deeplinks when selecting a different wallet
+    // This fixes the issue where selecting a second wallet after the first one
+    // doesn't trigger the deeplink because wcLinking is still set from the first attempt
+    ConnectionController.setWcLinking(undefined)
+
     PublicStateController.set({ connectingWallet: _wallet })
 
     try {
