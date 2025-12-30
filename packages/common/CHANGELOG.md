@@ -1,5 +1,13 @@
 # @reown/appkit-common
 
+## 1.8.15
+
+### Patch Changes
+
+- [#5378](https://github.com/reown-com/appkit/pull/5378) [`2867bfd`](https://github.com/reown-com/appkit/commit/2867bfd3f06394e559b918d46dc379dd498d1abf) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where profile wallets tabs were shown in the wrong order
+
+- [#5364](https://github.com/reown-com/appkit/pull/5364) [`d186212`](https://github.com/reown-com/appkit/commit/d1862126d3b7da93b52b99a4d709656311926c34) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where wallet buttons were not working in the in-app wallet browser
+
 ## 1.8.14
 
 ### Patch Changes

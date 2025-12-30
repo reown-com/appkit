@@ -1,5 +1,21 @@
 # @reown/appkit-adapter-solana
 
+## 1.8.15
+
+### Patch Changes
+
+- [#5378](https://github.com/reown-com/appkit/pull/5378) [`2867bfd`](https://github.com/reown-com/appkit/commit/2867bfd3f06394e559b918d46dc379dd498d1abf) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where profile wallets tabs were shown in the wrong order
+
+- [#5364](https://github.com/reown-com/appkit/pull/5364) [`d186212`](https://github.com/reown-com/appkit/commit/d1862126d3b7da93b52b99a4d709656311926c34) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where wallet buttons were not working in the in-app wallet browser
+
+- Updated dependencies [[`2867bfd`](https://github.com/reown-com/appkit/commit/2867bfd3f06394e559b918d46dc379dd498d1abf), [`ecf1794`](https://github.com/reown-com/appkit/commit/ecf1794d555806e376ab2253b48ab2b185e85a10), [`d186212`](https://github.com/reown-com/appkit/commit/d1862126d3b7da93b52b99a4d709656311926c34), [`e330f62`](https://github.com/reown-com/appkit/commit/e330f62532f95683ed69bdb0f4fef77f3039df30)]:
+  - @reown/appkit@1.8.15
+  - @reown/appkit-utils@1.8.15
+  - @reown/appkit-common@1.8.15
+  - @reown/appkit-controllers@1.8.15
+  - @reown/appkit-polyfills@1.8.15
+  - @reown/appkit-wallet@1.8.15
+
 ## 1.8.14
 
 ### Patch Changes
