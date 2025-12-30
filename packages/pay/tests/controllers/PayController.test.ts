@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type CaipNetworkId, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
+import { type CaipNetworkId, ConstantsUtil, NumberUtil, ParseUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
@@ -1209,7 +1209,10 @@ describe('PayController', () => {
       expect(generateExchangeUrlSpy).toHaveBeenCalledWith({
         exchangeId: mockExchanges[0]!.id,
         paymentAsset: mockQuoteParams.sourceToken,
-        amount: mockQuoteParams.amount,
+        amount: NumberUtil.formatNumber(mockQuoteParams.amount, {
+          decimals: mockQuoteParams.sourceToken.metadata.decimals ?? 0,
+          round: 8
+        }).toString(),
         recipient: `${mockQuoteParams.sourceToken.network}:${mockTransferStep.deposit.receiver}`
       })
     })
