@@ -9,6 +9,7 @@ import {
   type CaipNetworkId,
   type ChainNamespace,
   ConstantsUtil,
+  NumberUtil,
   ParseUtil
 } from '@reown/appkit-common'
 import {
@@ -758,10 +759,15 @@ export const PayController = {
         if (transferStep) {
           const caipDepositAddress = `${sourceToken.network}:${transferStep.deposit.receiver}`
 
+          const depositAmount = NumberUtil.formatNumber(transferStep.deposit.amount, {
+            decimals: sourceToken.metadata.decimals ?? 0,
+            round: 8
+          })
+
           await PayController.generateExchangeUrlForQuote({
             exchangeId: state.selectedExchange.id,
             paymentAsset: sourceToken,
-            amount,
+            amount: depositAmount.toString(),
             recipient: caipDepositAddress
           })
         }

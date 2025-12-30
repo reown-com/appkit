@@ -1,5 +1,6 @@
 import { type ChainNamespace, NumberUtil, ParseUtil } from '@reown/appkit-common'
 import {
+  CoreHelperUtil,
   FetchUtil,
   OptionsController,
   type PaymentAsset,
@@ -12,7 +13,7 @@ import type { Quote, QuoteStatus } from '../types/quote.js'
 import { API_URL } from './ConstantsUtil.js'
 import { getDirectTransferQuote } from './PaymentUtil.js'
 
-const devFetchUtil = new FetchUtil({ baseUrl: 'http://localhost:8787', clientId: null })
+const api = new FetchUtil({ baseUrl: CoreHelperUtil.getApiUrl(), clientId: null })
 
 class JsonRpcError extends Error {}
 
@@ -173,7 +174,7 @@ export async function getTransfersQuote(params: GetTransfersQuoteParams) {
       ? getNativeTokenAddress(destinationChainNamespace)
       : params.toToken.asset
 
-  const response = await devFetchUtil.post<GetQuoteResult>({
+  const response = await api.post<GetQuoteResult>({
     path: '/appkit/v1/transfers/quote',
     body: {
       user: params.address,
@@ -206,7 +207,7 @@ export async function getQuote(params: GetQuoteParams) {
 }
 
 export async function getQuoteStatus(params: GetQuoteStatusParams) {
-  const response = await devFetchUtil.get<GetQuoteStatusResult>({
+  const response = await api.get<GetQuoteStatusResult>({
     path: '/appkit/v1/transfers/status',
     params: {
       requestId: params.requestId,
@@ -218,7 +219,7 @@ export async function getQuoteStatus(params: GetQuoteStatusParams) {
 }
 
 export async function getAssetsForExchange(exchangeId: string) {
-  const response = await devFetchUtil.get<GetAssetsForExchangeResult>({
+  const response = await api.get<GetAssetsForExchangeResult>({
     path: `/appkit/v1/transfers/assets/exchanges/${exchangeId}`,
     params: getSdkProperties()
   })
