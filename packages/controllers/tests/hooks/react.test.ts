@@ -1139,6 +1139,40 @@ describe('useAppKitWallets', () => {
     expect(connectWalletConnectSpy).toHaveBeenCalledWith({ cache: 'never' })
   })
 
+  it('should reset wcLinking when connecting to allow new deeplinks', async () => {
+    useSnapshot
+      .mockReturnValueOnce({
+        features: { headless: true },
+        remoteFeatures: { headless: true }
+      })
+      .mockReturnValueOnce({
+        wcUri: undefined,
+        wcFetchingUri: false
+      })
+      .mockReturnValueOnce({
+        wallets: [],
+        search: [],
+        page: 1,
+        count: 0
+      })
+      .mockReturnValueOnce({
+        initialized: true,
+        connectingWallet: undefined
+      })
+
+    vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
+    vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
+    const setWcLinkingSpy = vi.spyOn(ConnectionController, 'setWcLinking')
+    vi.spyOn(ConnectionController, 'connectWalletConnect').mockResolvedValue(undefined)
+
+    const result = useAppKitWallets()
+
+    await result.connect(mockWalletItem)
+
+    // Verify wcLinking is reset before connecting to allow new deeplinks
+    expect(setWcLinkingSpy).toHaveBeenCalledWith(undefined)
+  })
+
   it('should connect to WalletConnect wallet when connector is not found', async () => {
     useSnapshot
       .mockReturnValueOnce({
