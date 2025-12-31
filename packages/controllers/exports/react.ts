@@ -453,8 +453,25 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
       PublicStateController.set({ connectingWallet: undefined })
       ConnectionController.setWcError(true)
 
-      // Only call onError for deep link failures (handled separately)
-      // User rejections and other connection failures are handled via thrown errors
+      // Determine error type using ErrorUtil
+      const isUserRejected = ErrorUtil.isUserRejectedRequestError(error)
+      const errorType: ConnectionErrorType = isUserRejected
+        ? ErrorUtil.CONNECTION_ERROR_TYPE.USER_REJECTED
+        : ErrorUtil.CONNECTION_ERROR_TYPE.CONNECTION_FAILED
+
+      // Get error message using ErrorUtil helper
+      const errorMessage = isUserRejected
+        ? ErrorUtil.getErrorMessage(error, 'Connection request was rejected')
+        : ErrorUtil.getErrorMessage(error, 'Failed to connect wallet')
+
+      const connectionError: WalletConnectionError = {
+        type: errorType,
+        message: errorMessage,
+        wallet: _wallet,
+        originalError: error
+      }
+
+      onError?.(connectionError)
       throw error
     }
   }

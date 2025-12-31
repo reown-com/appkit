@@ -14,7 +14,10 @@ export type ProviderRpcErrorCode =
   | 5002 // User Rejected Methods
   | 5000 // User Rejected
 
-export type ConnectionErrorType = 'DEEP_LINK_FAILED'
+export type ConnectionErrorType =
+  | 'DEEP_LINK_FAILED'
+  | 'USER_REJECTED'
+  | 'CONNECTION_FAILED'
 
 type RpcProviderError = {
   message: string
@@ -33,7 +36,9 @@ export const ErrorUtil = {
     USER_REJECTED_REQUEST: 'UserRejectedRequestError'
   },
   CONNECTION_ERROR_TYPE: {
-    DEEP_LINK_FAILED: 'DEEP_LINK_FAILED'
+    DEEP_LINK_FAILED: 'DEEP_LINK_FAILED',
+    USER_REJECTED: 'USER_REJECTED',
+    CONNECTION_FAILED: 'CONNECTION_FAILED'
   } as const,
   isRpcProviderError(error: unknown): error is RpcProviderError {
     try {
