@@ -12,6 +12,7 @@ export { Emitter } from './src/utils/EmitterUtil.js'
 export { PresetsUtil } from './src/utils/PresetsUtil.js'
 export { ParseUtil } from './src/utils/ParseUtil.js'
 export { ErrorUtil, UserRejectedRequestError } from './src/utils/ErrorUtil.js'
+export type { ConnectionErrorType, ProviderRpcErrorCode } from './src/utils/ErrorUtil.js'
 export {
   SafeLocalStorage,
   SafeLocalStorageKeys,
