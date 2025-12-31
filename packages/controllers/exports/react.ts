@@ -438,22 +438,11 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
     if (ConnectionController.state.wcLinking) {
       ConnectionController.setWcLinking(undefined)
     }
-    // Set connecting wallet FIRST before resetting URI
-    // This ensures URI subscription can find the wallet when new URI is generated
+    // Set connecting wallet
     PublicStateController.set({ connectingWallet: _wallet })
-    // Clear lastHandledUriRef to allow retrying with same wallet
-    lastHandledUriRef.current = undefined
     // Clear deep link tracking refs
     deepLinkStartTimeRef.current = undefined
     pageHiddenTimeRef.current = undefined
-    // Reset URI to force new pairing/URI generation
-    // This ensures we get a fresh URI even if the previous one failed
-    // Note: resetUri() clears connectingWallet, so we set it again after
-    if (ConnectionController.state.wcUri) {
-      ConnectionController.resetUri()
-      // Restore connectingWallet after resetUri clears it
-      PublicStateController.set({ connectingWallet: _wallet })
-    }
 
     try {
       const walletConnector = _wallet?.connectors.find(c => c.chain === namespace)
@@ -466,6 +455,31 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
       if (_wallet?.isInjected && connector) {
         await ConnectorControllerUtil.connectExternal(connector)
       } else {
+        // For WalletConnect wallets on mobile, check if we already have a URI
+        // If we do, reuse it (like scaffold-ui does) instead of resetting
+        // This allows retries to work correctly after OS prompt cancellation
+        const existingUri = ConnectionController.state.wcUri
+        const isMobile = CoreHelperUtil.isMobile()
+
+        if (existingUri && isMobile && !_wallet.isInjected) {
+          // We have an existing URI on mobile - reuse it like scaffold-ui does
+          // Clear lastHandledUriRef to allow retry with same URI
+          const uriKey = `${existingUri}|${_wallet.id}`
+          if (lastHandledUriRef.current === uriKey) {
+            lastHandledUriRef.current = undefined
+          }
+
+          // Get wallet and trigger deep link directly (matching scaffold-ui behavior)
+          const wcWallet = ApiControllerUtil.getWalletById(_wallet.id)
+          if (wcWallet?.mobile_link) {
+            // Trigger deep link directly with existing URI - don't generate new one
+            ConnectionControllerUtil.onConnectMobile(wcWallet)
+            // Return early - don't call connectWalletConnect
+            return
+          }
+        }
+
+        // No existing URI, or not mobile, or injected wallet - generate new URI
         await ConnectionController.connectWalletConnect({ cache: 'never' })
       }
     } catch (error) {
