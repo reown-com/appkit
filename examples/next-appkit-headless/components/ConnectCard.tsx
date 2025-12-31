@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
@@ -20,16 +20,54 @@ import { WalletConnectQRContent } from './WalletConnectQRContent'
 
 export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>) {
   const [connectionError, setConnectionError] = useState<WalletConnectionError | null>(null)
+  const previousWcErrorRef = useRef<boolean | undefined>(false)
+  const previousConnectingWalletRef = useRef<WalletItem | undefined>(undefined)
+  const errorShownRef = useRef<string | undefined>(undefined)
 
   const { connect, wcUri, connectingWallet, resetWcUri, wcError } = useAppKitWallets({
     onError: (error: WalletConnectionError) => {
       setConnectionError(error)
-      // Show toast notification for all error types
-      toast.error(error.message, {
-        duration: 5000
-      })
+      // Show toast immediately when error callback is called
+      const errorKey = `${error.type}-${error.wallet?.id}-${Date.now()}`
+      if (errorShownRef.current !== errorKey) {
+        errorShownRef.current = errorKey
+        toast.error(error.message, {
+          duration: 5000
+        })
+      }
     }
   })
+
+  // Monitor wcError and connectingWallet changes to detect errors
+  useEffect(() => {
+    const previousWcError = previousWcErrorRef.current
+    const previousConnectingWallet = previousConnectingWalletRef.current
+
+    // If wcError became true and connectingWallet was cleared, it's likely a deep link failure
+    if (wcError && !previousWcError && previousConnectingWallet && !connectingWallet) {
+      // Error should be set via onError callback, but show toast as fallback
+      if (!connectionError && previousConnectingWallet) {
+        const errorKey = `fallback-${previousConnectingWallet.id}-${Date.now()}`
+        if (errorShownRef.current !== errorKey) {
+          errorShownRef.current = errorKey
+          toast.error(
+            `Unable to open ${previousConnectingWallet.name}. The app may not be installed on your device. Please install it from the App Store or Play Store, or try another wallet.`,
+            {
+              duration: 5000
+            }
+          )
+        }
+      }
+    }
+
+    // Reset error shown ref when connecting wallet changes
+    if (connectingWallet?.id !== previousConnectingWallet?.id) {
+      errorShownRef.current = undefined
+    }
+
+    previousWcErrorRef.current = wcError
+    previousConnectingWalletRef.current = connectingWallet
+  }, [wcError, connectingWallet, connectionError])
 
   const [selectedWallet, setSelectedWallet] = useState<WalletItem | null>(null)
   const [showWalletSearch, setShowWalletSearch] = useState(false)
@@ -50,16 +88,28 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
   async function onConnect(item: WalletItem, namespace?: ChainNamespace) {
     setIsNamespaceDialogOpen(false)
     setConnectionError(null) // Clear previous error when starting new connection
-    await connect(item, namespace)
-      .then(() => {
-        setSelectedWallet(null)
-        setConnectionError(null)
-        toast.success('Connected wallet')
-      })
-      .catch(error => {
-        // Error is already handled by onError callback, just log for debugging
-        console.error(error)
-      })
+    errorShownRef.current = undefined // Reset error shown ref
+
+    try {
+      await connect(item, namespace)
+      setSelectedWallet(null)
+      setConnectionError(null)
+      toast.success('Connected wallet')
+    } catch (error) {
+      // Error might be handled by onError callback, but show toast as fallback
+      // Check if error was already shown via onError callback
+      if (!connectionError) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to connect wallet'
+        const errorKey = `catch-${item.id}-${Date.now()}`
+        if (errorShownRef.current !== errorKey) {
+          errorShownRef.current = errorKey
+          toast.error(errorMessage, {
+            duration: 5000
+          })
+        }
+      }
+      console.error('Connection error:', error)
+    }
   }
 
   function handleDismissError() {
