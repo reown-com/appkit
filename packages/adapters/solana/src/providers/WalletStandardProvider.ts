@@ -294,6 +294,8 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
 
         if (account) {
           this.emit('accountsChanged', new PublicKey(account.publicKey))
+        } else {
+          this.emit('disconnect', undefined)
         }
       }
     })
