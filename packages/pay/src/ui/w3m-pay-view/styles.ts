@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   wui-separator {
@@ -21,5 +21,33 @@ export default css`
 
   wui-loading-spinner {
     padding: var(--apkt-spacing-2);
+  }
+
+  .left-image-container {
+    position: relative;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .token-image {
+    border-radius: ${({ borderRadius }) => borderRadius.round};
+    width: 40px;
+    height: 40px;
+  }
+
+  .chain-image {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    bottom: -3px;
+    right: -5px;
+    border-radius: ${({ borderRadius }) => borderRadius.round};
+    border: 2px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
+  }
+
+  .payment-methods-container {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-top-right-radius: ${({ borderRadius }) => borderRadius[8]};
+    border-top-left-radius: ${({ borderRadius }) => borderRadius[8]};
   }
 `

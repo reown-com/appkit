@@ -233,24 +233,6 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
 
   const isMultiWalletEnabled = Boolean(remoteFeatures?.multiWallet)
 
-  if (!isMultiWalletEnabled) {
-    AlertController.open(
-      ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTION_HOOK,
-      'info'
-    )
-
-    return {
-      connection: undefined,
-      isPending: false,
-      switchConnection: () => Promise.resolve(undefined),
-      deleteConnection: () => ({})
-    }
-  }
-
-  const connectorId = activeConnectorIds[chainNamespace]
-  const connList = connections.get(chainNamespace)
-  const connection = connList?.find(c => c.connectorId.toLowerCase() === connectorId?.toLowerCase())
-
   const switchConnection = useCallback(
     async ({ connection: _connection, address }: SwitchConnectionParams) => {
       try {
@@ -299,6 +281,24 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
     },
     [chainNamespace]
   )
+
+  if (!isMultiWalletEnabled) {
+    AlertController.open(
+      ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTION_HOOK,
+      'info'
+    )
+
+    return {
+      connection: undefined,
+      isPending: false,
+      switchConnection: () => Promise.resolve(undefined),
+      deleteConnection: () => ({})
+    }
+  }
+
+  const connectorId = activeConnectorIds[chainNamespace]
+  const connList = connections.get(chainNamespace)
+  const connection = connList?.find(c => c.connectorId.toLowerCase() === connectorId?.toLowerCase())
 
   return {
     connection,

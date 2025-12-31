@@ -1,17 +1,28 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type Address, ConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
+  type Address,
+  type Balance,
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId,
+  type ChainNamespace,
+  ConstantsUtil,
+  NumberUtil,
+  ParseUtil
+} from '@reown/appkit-common'
+import {
+  AssetUtil,
   ChainController,
   ConnectionController,
   CoreHelperUtil,
   EventsController,
   ModalController,
-  ProviderController,
-  RouterController,
   SnackController
 } from '@reown/appkit-controllers'
+import { BalanceUtil } from '@reown/appkit-controllers/utils'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 import {
   AppKitPayErrorCodes,
@@ -20,11 +31,27 @@ import {
 } from '../types/errors.js'
 import { AppKitPayError } from '../types/errors.js'
 import type { Exchange } from '../types/exchange.js'
-import type { GetExchangesParams, PayUrlParams, PaymentOptions } from '../types/options.js'
-import { getBuyStatus, getExchanges, getPayUrl } from '../utils/ApiUtil.js'
-import { formatCaip19Asset } from '../utils/AssetUtil.js'
+import type {
+  GetExchangesParams,
+  PayUrlParams,
+  PaymentAsset,
+  PaymentAssetWithAmount,
+  PaymentChoice,
+  PaymentOptions
+} from '../types/options.js'
+import type { Quote, QuoteStatus, QuoteTransactionStep } from '../types/quote.js'
 import {
-  ensureCorrectNetwork,
+  getAssetsForExchange,
+  getBuyStatus,
+  getExchanges,
+  getPayUrl,
+  getQuote,
+  getQuoteStatus
+} from '../utils/ApiUtil.js'
+import { formatCaip19Asset, formatPaymentAssetToBalance } from '../utils/AssetUtil.js'
+import {
+  ensureCorrectAddress,
+  getTransferStep,
   processEvmErc20Payment,
   processEvmNativePayment,
   processSolanaPayment
@@ -32,6 +59,10 @@ import {
 
 const DEFAULT_PAGE = 0
 const DEFAULT_PAYMENT_ID = 'unknown'
+
+export const DIRECT_TRANSFER_REQUEST_ID = 'direct-transfer'
+export const DIRECT_TRANSFER_DEPOSIT_TYPE = 'deposit'
+export const DIRECT_TRANSFER_TRANSACTION_TYPE = 'transaction'
 
 // -- Types --------------------------------------------- //
 type PayStatus = 'UNKNOWN' | 'IN_PROGRESS' | 'SUCCESS' | 'FAILED'
@@ -59,6 +90,57 @@ export interface PayControllerState extends PaymentOptions {
   currentPayment?: CurrentPayment
   analyticsSet: boolean
   paymentId?: string
+  choice: PaymentChoice
+  tokenBalances: Partial<Record<ChainNamespace, Balance[]>>
+  isFetchingTokenBalances: boolean
+  selectedPaymentAsset: PaymentAssetWithAmount | null
+  quote?: Quote
+  quoteStatus: QuoteStatus
+  quoteError: string | null
+  isFetchingQuote: boolean
+  selectedExchange?: Exchange
+  exchangeUrlForQuote?: string
+  exchangeSessionId?: string
+  requestId?: string
+}
+
+interface FetchTokensParams {
+  caipAddress?: CaipAddress
+  caipNetwork?: CaipNetwork
+  namespace: ChainNamespace
+}
+
+interface FetchQuoteParams {
+  address?: string
+  sourceToken: PaymentAsset
+  toToken: PaymentAsset
+  recipient: string
+  amount: string
+}
+
+interface FetchQuoteStatusParams {
+  requestId: string
+}
+
+interface OnTransferParams {
+  chainNamespace: ChainNamespace
+  fromAddress: string
+  toAddress: string
+  amount: number | string
+  paymentAsset: PaymentAsset
+}
+
+interface GenerateExchangeUrlForQuoteParams {
+  exchangeId: string
+  paymentAsset: PaymentAsset
+  amount: number | string
+  recipient: string
+}
+
+interface FetchTokensFromEOAParams {
+  caipAddress?: CaipAddress
+  caipNetwork?: CaipNetwork
+  namespace: ChainNamespace
 }
 
 // Define a type for the parameters passed to getPayUrl
@@ -89,7 +171,21 @@ const state = proxy<PayControllerState>({
   payWithExchange: undefined,
   currentPayment: undefined,
   analyticsSet: false,
-  paymentId: undefined
+  paymentId: undefined,
+  choice: 'pay',
+  tokenBalances: {
+    [ConstantsUtil.CHAIN.EVM]: [],
+    [ConstantsUtil.CHAIN.SOLANA]: []
+  },
+  isFetchingTokenBalances: false,
+  selectedPaymentAsset: null,
+  quote: undefined,
+  quoteStatus: 'waiting',
+  quoteError: null,
+  isFetchingQuote: false,
+  selectedExchange: undefined,
+  exchangeUrlForQuote: undefined,
+  requestId: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -108,8 +204,9 @@ export const PayController = {
   async handleOpenPay(options: PaymentOptions) {
     this.resetState()
     this.setPaymentConfig(options)
-    this.subscribeEvents()
     this.initializeAnalytics()
+    ensureCorrectAddress()
+    await this.prepareTokenLogo()
     state.isConfigured = true
     EventsController.sendEvent({
       type: 'track',
@@ -142,6 +239,17 @@ export const PayController = {
     state.isPaymentInProgress = false
     state.isLoading = false
     state.currentPayment = undefined
+    state.selectedExchange = undefined
+    state.exchangeUrlForQuote = undefined
+    state.requestId = undefined
+  },
+
+  resetQuoteState() {
+    state.quote = undefined
+    state.quoteStatus = 'waiting'
+    state.quoteError = null
+    state.isFetchingQuote = false
+    state.requestId = undefined
   },
 
   // -- Setters ----------------------------------------- //
@@ -151,6 +259,7 @@ export const PayController = {
     }
 
     try {
+      state.choice = config.choice ?? 'pay'
       state.paymentAsset = config.paymentAsset
       state.recipient = config.recipient
       state.amount = config.amount
@@ -161,6 +270,22 @@ export const PayController = {
     } catch (error) {
       throw new AppKitPayError(AppKitPayErrorCodes.INVALID_PAYMENT_CONFIG, (error as Error).message)
     }
+  },
+
+  setSelectedPaymentAsset(paymentAsset: PaymentAssetWithAmount | null) {
+    state.selectedPaymentAsset = paymentAsset
+  },
+
+  setSelectedExchange(exchange?: Exchange) {
+    state.selectedExchange = exchange
+  },
+
+  setRequestId(requestId: string) {
+    state.requestId = requestId
+  },
+
+  setPaymentInProgress(isPaymentInProgress: boolean) {
+    state.isPaymentInProgress = isPaymentInProgress
   },
 
   // -- Getters ----------------------------------------- //
@@ -176,9 +301,7 @@ export const PayController = {
     try {
       state.isLoading = true
       const response = await getExchanges({
-        page: DEFAULT_PAGE,
-        asset: formatCaip19Asset(state.paymentAsset.network, state.paymentAsset.asset),
-        amount: state.amount.toString()
+        page: DEFAULT_PAGE
       })
       // Putting this here in order to maintain backawrds compatibility with the UI when we introduce more exchanges
       state.exchanges = response.exchanges.slice(0, 2)
@@ -272,6 +395,23 @@ export const PayController = {
     }
   },
 
+  async generateExchangeUrlForQuote({
+    exchangeId,
+    paymentAsset,
+    amount,
+    recipient
+  }: GenerateExchangeUrlForQuoteParams) {
+    const response = await getPayUrl({
+      exchangeId,
+      asset: formatCaip19Asset(paymentAsset.network, paymentAsset.asset),
+      amount: amount.toString(),
+      recipient
+    })
+
+    state.exchangeSessionId = response.sessionId
+    state.exchangeUrlForQuote = response.url
+  },
+
   async openPayUrl(openParams: OpenPayUrlParams, params: PayUrlParams, headless = false) {
     try {
       const payUrl = await this.getPayUrl(openParams.exchangeId, params, headless)
@@ -294,60 +434,16 @@ export const PayController = {
     }
   },
 
-  subscribeEvents() {
-    if (state.isConfigured) {
-      return
-    }
-
-    ConnectionController.subscribeKey('connections', connections => {
-      if (connections.size > 0) {
-        this.handlePayment()
-      }
-    })
-
-    ChainController.subscribeChainProp('accountState', accountState => {
-      const hasWcConnection = ConnectionController.hasAnyConnection(
-        ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
-      )
-      if (accountState?.caipAddress) {
-        // WalletConnect connections sometimes fail down the line due to state not being updated atomically
-        if (hasWcConnection) {
-          setTimeout(() => {
-            this.handlePayment()
-          }, 100)
-        } else {
-          this.handlePayment()
-        }
-      }
-    })
-  },
-  async handlePayment() {
+  async onTransfer({
+    chainNamespace,
+    fromAddress,
+    toAddress,
+    amount,
+    paymentAsset
+  }: OnTransferParams) {
     state.currentPayment = {
       type: 'wallet',
       status: 'IN_PROGRESS'
-    }
-    const caipAddress = ChainController.getActiveCaipAddress()
-    if (!caipAddress) {
-      return
-    }
-
-    const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
-    const chainNamespace = ChainController.state.activeChain
-
-    if (!address || !chainId || !chainNamespace) {
-      return
-    }
-
-    const provider = ProviderController.getProvider(chainNamespace)
-
-    if (!provider) {
-      return
-    }
-
-    const caipNetwork = ChainController.state.activeCaipNetwork
-
-    if (!caipNetwork) {
-      return
     }
 
     if (state.isPaymentInProgress) {
@@ -357,49 +453,48 @@ export const PayController = {
     try {
       this.initiatePayment()
 
-      const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
-      const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
+      const allNetworks = ChainController.getAllRequestedCaipNetworks()
+      const targetNetwork = allNetworks.find(net => net.caipNetworkId === paymentAsset.network)
 
-      await ensureCorrectNetwork({
-        paymentAssetNetwork: state.paymentAsset.network,
-        activeCaipNetwork: caipNetwork,
-        approvedCaipNetworkIds,
-        requestedCaipNetworks
-      })
+      if (!targetNetwork) {
+        throw new Error('Target network not found')
+      }
 
-      await ModalController.open({
-        view: 'PayLoading'
-      })
+      const caipNetwork = ChainController.state.activeCaipNetwork
+
+      if (!HelpersUtil.isLowerCaseMatch(caipNetwork?.caipNetworkId, targetNetwork.caipNetworkId)) {
+        await ChainController.switchActiveNetwork(targetNetwork)
+      }
 
       switch (chainNamespace) {
         case ConstantsUtil.CHAIN.EVM:
-          if (state.paymentAsset.asset === 'native') {
+          if (paymentAsset.asset === 'native') {
             state.currentPayment.result = await processEvmNativePayment(
-              state.paymentAsset,
+              paymentAsset,
               chainNamespace,
               {
-                recipient: state.recipient as Address,
-                amount: state.amount,
-                fromAddress: address as Address
+                recipient: toAddress as Address,
+                amount,
+                fromAddress: fromAddress as Address
               }
             )
           }
-          if (state.paymentAsset.asset.startsWith('0x')) {
-            state.currentPayment.result = await processEvmErc20Payment(state.paymentAsset, {
-              recipient: state.recipient as Address,
-              amount: state.amount,
-              fromAddress: address as Address
+          if (paymentAsset.asset.startsWith('0x')) {
+            state.currentPayment.result = await processEvmErc20Payment(paymentAsset, {
+              recipient: toAddress as Address,
+              amount,
+              fromAddress: fromAddress as Address
             })
           }
           state.currentPayment.status = 'SUCCESS'
           break
         case ConstantsUtil.CHAIN.SOLANA:
           state.currentPayment.result = await processSolanaPayment(chainNamespace, {
-            recipient: state.recipient,
-            amount: state.amount,
-            fromAddress: address,
+            recipient: toAddress,
+            amount,
+            fromAddress,
             // If the tokenMint is provided, provider will use it to create a SPL token transaction
-            tokenMint: state.paymentAsset.asset === 'native' ? undefined : state.paymentAsset.asset
+            tokenMint: paymentAsset.asset === 'native' ? undefined : paymentAsset.asset
           })
           state.currentPayment.status = 'SUCCESS'
           break
@@ -414,6 +509,55 @@ export const PayController = {
       }
       state.currentPayment.status = 'FAILED'
       SnackController.showError(state.error)
+      throw error
+    } finally {
+      state.isPaymentInProgress = false
+    }
+  },
+
+  async onSendTransaction(params: {
+    namespace: ChainNamespace
+    transactionStep: QuoteTransactionStep
+  }) {
+    try {
+      const { namespace, transactionStep } = params
+
+      const { from, to, data, value } = transactionStep.transaction
+
+      PayController.initiatePayment()
+
+      const allNetworks = ChainController.getAllRequestedCaipNetworks()
+      const targetNetwork = allNetworks.find(
+        net => net.caipNetworkId === state.paymentAsset?.network
+      )
+
+      if (!targetNetwork) {
+        throw new Error('Target network not found')
+      }
+
+      const caipNetwork = ChainController.state.activeCaipNetwork
+
+      if (!HelpersUtil.isLowerCaseMatch(caipNetwork?.caipNetworkId, targetNetwork.caipNetworkId)) {
+        await ChainController.switchActiveNetwork(targetNetwork)
+      }
+
+      if (namespace === ConstantsUtil.CHAIN.EVM) {
+        await ConnectionController.sendTransaction({
+          address: from,
+          to,
+          data,
+          value: BigInt(value),
+          chainNamespace: namespace
+        })
+      }
+    } catch (error) {
+      if (error instanceof AppKitPayError) {
+        state.error = error.message
+      } else {
+        state.error = AppKitPayErrorMessages.GENERIC_PAYMENT_ERROR
+      }
+      SnackController.showError(state.error)
+      throw error
     } finally {
       state.isPaymentInProgress = false
     }
@@ -441,23 +585,6 @@ export const PayController = {
     if (amount === undefined || amount === null || amount <= 0) {
       throw new AppKitPayError(AppKitPayErrorCodes.INVALID_AMOUNT)
     }
-  },
-
-  handlePayWithWallet() {
-    const caipAddress = ChainController.getActiveCaipAddress()
-    if (!caipAddress) {
-      RouterController.push('Connect')
-
-      return
-    }
-    const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
-    const chainNamespace = ChainController.state.activeChain
-    if (!address || !chainId || !chainNamespace) {
-      RouterController.push('Connect')
-
-      return
-    }
-    this.handlePayment()
   },
 
   async handlePayWithExchange(exchangeId: string) {
@@ -535,19 +662,183 @@ export const PayController = {
     }
   },
 
-  async updateBuyStatus(exchangeId: string, sessionId: string) {
-    try {
-      const status = await this.getBuyStatus(exchangeId, sessionId)
+  async fetchTokensFromEOA({ caipAddress, caipNetwork, namespace }: FetchTokensFromEOAParams) {
+    if (!caipAddress) {
+      return []
+    }
 
-      if (state.currentPayment) {
-        state.currentPayment.status = status.status
-        state.currentPayment.result = status.txHash
+    const { address } = ParseUtil.parseCaipAddress(caipAddress)
+
+    let overideCaipNetwork = caipNetwork
+
+    if (namespace === ConstantsUtil.CHAIN.EVM) {
+      overideCaipNetwork = undefined
+    }
+
+    const balances = await BalanceUtil.getMyTokensWithBalance({
+      address,
+      caipNetwork: overideCaipNetwork
+    })
+
+    return balances
+  },
+
+  async fetchTokensFromExchange() {
+    if (!state.selectedExchange) {
+      return []
+    }
+
+    const assets = await getAssetsForExchange(state.selectedExchange.id)
+    const allAssets = Object.values(assets.assets).flat()
+
+    const balanceWithImages = await Promise.all(
+      allAssets.map(async token => {
+        const balance = formatPaymentAssetToBalance(token)
+
+        const { chainNamespace } = ParseUtil.parseCaipNetworkId(balance.chainId as CaipNetworkId)
+
+        let address = balance.address
+
+        if (CoreHelperUtil.isCaipAddress(address)) {
+          const { address: parsedAddress } = ParseUtil.parseCaipAddress(address)
+          address = parsedAddress
+        }
+
+        const image = await AssetUtil.getImageByToken(address ?? '', chainNamespace).catch(
+          () => undefined
+        )
+
+        balance.iconUrl = image ?? ''
+
+        return balance
+      })
+    )
+
+    return balanceWithImages
+  },
+
+  async fetchTokens({ caipAddress, caipNetwork, namespace }: FetchTokensParams) {
+    try {
+      state.isFetchingTokenBalances = true
+
+      const isUsingExchange = Boolean(state.selectedExchange)
+
+      const balancesFnPromise = isUsingExchange
+        ? this.fetchTokensFromExchange()
+        : this.fetchTokensFromEOA({ caipAddress, caipNetwork, namespace })
+
+      const balances = await balancesFnPromise
+
+      // Convert into a new object to trigger a re-render
+      state.tokenBalances = { ...state.tokenBalances, [namespace]: balances }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unable to get token balances'
+      SnackController.showError(message)
+    } finally {
+      state.isFetchingTokenBalances = false
+    }
+  },
+
+  async fetchQuote({ amount, address, sourceToken, toToken, recipient }: FetchQuoteParams) {
+    try {
+      PayController.resetQuoteState()
+
+      state.isFetchingQuote = true
+
+      const quote = await getQuote({
+        amount,
+        address: state.selectedExchange ? undefined : address,
+        sourceToken,
+        toToken,
+        recipient
+      })
+
+      if (state.selectedExchange) {
+        const transferStep = getTransferStep(quote)
+
+        if (transferStep) {
+          const caipDepositAddress = `${sourceToken.network}:${transferStep.deposit.receiver}`
+
+          const depositAmount = NumberUtil.formatNumber(transferStep.deposit.amount, {
+            decimals: sourceToken.metadata.decimals ?? 0,
+            round: 8
+          })
+
+          await PayController.generateExchangeUrlForQuote({
+            exchangeId: state.selectedExchange.id,
+            paymentAsset: sourceToken,
+            amount: depositAmount.toString(),
+            recipient: caipDepositAddress
+          })
+        }
       }
-      if (status.status === 'SUCCESS' || status.status === 'FAILED') {
-        state.isPaymentInProgress = false
+
+      state.quote = quote
+    } catch (err) {
+      let errMessage = AppKitPayErrorMessages.UNABLE_TO_GET_QUOTE
+
+      if (err instanceof Error && err.cause && err.cause instanceof Response) {
+        try {
+          const errorData = await err.cause.json()
+
+          if (errorData.error && typeof errorData.error === 'string') {
+            errMessage = errorData.error
+          }
+        } catch {
+          // Ignore
+        }
       }
-    } catch (error) {
-      throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_BUY_STATUS)
+
+      state.quoteError = errMessage
+      SnackController.showError(errMessage)
+      throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_QUOTE)
+    } finally {
+      state.isFetchingQuote = false
+    }
+  },
+
+  async fetchQuoteStatus({ requestId }: FetchQuoteStatusParams) {
+    try {
+      if (requestId === DIRECT_TRANSFER_REQUEST_ID) {
+        const selectedExchange = state.selectedExchange
+        const sessionId = state.exchangeSessionId
+
+        if (selectedExchange && sessionId) {
+          const status = await this.getBuyStatus(selectedExchange.id, sessionId)
+
+          switch (status.status) {
+            case 'IN_PROGRESS':
+              state.quoteStatus = 'waiting'
+              break
+            case 'SUCCESS':
+              state.quoteStatus = 'success'
+              state.isPaymentInProgress = false
+              break
+            case 'FAILED':
+              state.quoteStatus = 'failure'
+              state.isPaymentInProgress = false
+              break
+            case 'UNKNOWN':
+              state.quoteStatus = 'waiting'
+              break
+            default:
+              state.quoteStatus = 'waiting'
+              break
+          }
+
+          return
+        }
+
+        state.quoteStatus = 'success'
+
+        return
+      }
+
+      const { status } = await getQuoteStatus({ requestId })
+      state.quoteStatus = status
+    } catch {
+      state.quoteStatus = 'failure'
+      throw new AppKitPayError(AppKitPayErrorCodes.UNABLE_TO_GET_QUOTE_STATUS)
     }
   },
 
@@ -595,5 +886,19 @@ export const PayController = {
         })
       }
     })
+  },
+
+  async prepareTokenLogo() {
+    if (!state.paymentAsset.metadata.logoURI) {
+      try {
+        const { chainNamespace } = ParseUtil.parseCaipNetworkId(state.paymentAsset.network)
+
+        const imageUrl = await AssetUtil.getImageByToken(state.paymentAsset.asset, chainNamespace)
+
+        state.paymentAsset.metadata.logoURI = imageUrl
+      } catch {
+        // Ignore
+      }
+    }
   }
 }

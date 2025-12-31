@@ -35,7 +35,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build packages
-        run: pnpm --filter "@reown/appkit-common" --filter "@reown/appkit-polyfills" --filter "@reown/appkit-wallet" --filter "@reown/appkit-controllers" --filter "@reown/appkit-ui" --filter "@reown/appkit-utils" --filter "@reown/appkit-scaffold-ui" build
+        run: pnpm --filter "@reown/appkit-common" --filter "@reown/appkit-polyfills" --filter "@reown/appkit-wallet" --filter "@reown/appkit-controllers" --filter "@reown/appkit-ui" --filter "@reown/appkit-utils" --filter "@reown/appkit-scaffold-ui" --filter "@reown/appkit-pay" build
 
       - name: Run Chromatic
         id: chromatic
