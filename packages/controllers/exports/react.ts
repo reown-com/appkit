@@ -432,7 +432,8 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
   }
 
   async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
-    // Clear error state (like scaffold-ui does in onTryAgain)
+    // Do exactly what scaffold-ui's onTryAgain does:
+    // 1. Clear error state
     ConnectionController.setWcError(false)
 
     // Set connecting wallet
@@ -450,12 +451,12 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
         await ConnectorControllerUtil.connectExternal(connector)
       } else {
         // For WalletConnect wallets on mobile, check if we already have a URI
-        // If we do, reuse it (like scaffold-ui does) - just call onConnectMobile directly
+        // If we do, do exactly what scaffold-ui does: just call onConnectMobile
         const existingUri = ConnectionController.state.wcUri
         const isMobile = CoreHelperUtil.isMobile()
 
         if (existingUri && isMobile && !_wallet.isInjected) {
-          // Simple approach: just call onConnectMobile with existing URI (like scaffold-ui)
+          // Exact same approach as scaffold-ui: get wallet and call onConnectMobile
           const wcWallet = ApiControllerUtil.getWalletById(_wallet.id)
           if (wcWallet?.mobile_link) {
             // Clear lastHandledUriRef to allow retry with same URI
@@ -463,7 +464,7 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
             if (lastHandledUriRef.current === uriKey) {
               lastHandledUriRef.current = undefined
             }
-            // Call onConnectMobile directly - that's it!
+            // Do exactly what scaffold-ui does: call onConnectMobile
             ConnectionControllerUtil.onConnectMobile(wcWallet)
             return
           }
