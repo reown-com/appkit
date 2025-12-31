@@ -438,8 +438,16 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
     if (ConnectionController.state.wcLinking) {
       ConnectionController.setWcLinking(undefined)
     }
+    // Reset URI to force new pairing/URI generation
+    // This ensures we get a fresh URI even if the previous one failed
+    if (ConnectionController.state.wcUri) {
+      ConnectionController.resetUri()
+    }
     // Clear lastHandledUriRef to allow retrying with same wallet
     lastHandledUriRef.current = undefined
+    // Clear deep link tracking refs
+    deepLinkStartTimeRef.current = undefined
+    pageHiddenTimeRef.current = undefined
     PublicStateController.set({ connectingWallet: _wallet })
 
     try {
@@ -690,19 +698,26 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
         return
       }
 
-      // Only skip if this exact URI was handled AND we're still in a linking state
-      // If wcLinking is cleared, allow retry even with same URI
-      if (wcUri === lastHandledUriRef.current) {
+      // Check if we have a connecting wallet - if not, don't trigger deep link
+      const connectingWallet = PublicStateController.state.connectingWallet
+      if (!connectingWallet) {
+        return
+      }
+
+      // Only skip if this exact URI was already handled for the current wallet
+      // This allows retrying with a new wallet even if URI is the same
+      // Store URI with wallet ID to track per-wallet handling
+      const uriKey = `${wcUri}|${connectingWallet.id}`
+      if (lastHandledUriRef.current === uriKey) {
         return
       }
 
       const isMobile = CoreHelperUtil.isMobile()
-      const wcWallet = ApiControllerUtil.getWalletById(
-        PublicStateController.state.connectingWallet?.id
-      )
+      const wcWallet = ApiControllerUtil.getWalletById(connectingWallet.id)
 
       if (isMobile && wcWallet?.mobile_link) {
-        lastHandledUriRef.current = wcUri
+        // Store URI with wallet ID to allow retries with different wallets
+        lastHandledUriRef.current = uriKey
         ConnectionControllerUtil.onConnectMobile(wcWallet)
       }
     })
