@@ -330,6 +330,11 @@ export interface UseAppKitWalletsReturn {
   connectingWallet?: WalletItem
 
   /**
+   * Boolean that indicates if there was an error during WalletConnect connection (e.g., deep link failure on mobile).
+   */
+  wcError?: boolean
+
+  /**
    * The current page number of WalletConnect wallets.
    */
   page: number
@@ -373,7 +378,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   const isHeadlessEnabled = Boolean(features?.headless && remoteFeatures?.headless)
 
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
-  const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
+  const { wcUri, wcFetchingUri, wcError } = useSnapshot(ConnectionController.state)
   const {
     wallets: wcAllWallets,
     search: wcSearchWallets,
@@ -402,6 +407,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }
 
   async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
+    // Clear any previous error state when starting a new connection
+    ConnectionController.setWcError(false)
     PublicStateController.set({ connectingWallet: _wallet })
 
     try {
@@ -419,6 +426,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       }
     } catch (error) {
       PublicStateController.set({ connectingWallet: undefined })
+      ConnectionController.setWcError(true)
       throw error
     }
   }
@@ -428,10 +436,159 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }
 
   const lastHandledUriRef = useRef<string | undefined>(undefined)
+  const deepLinkStartTimeRef = useRef<number | undefined>(undefined)
+  const deepLinkTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const pageHiddenTimeRef = useRef<number | undefined>(undefined)
 
   useEffect(() => {
+    // Clear deep link state when connecting wallet changes
     lastHandledUriRef.current = undefined
+    deepLinkStartTimeRef.current = undefined
+    pageHiddenTimeRef.current = undefined
+    if (deepLinkTimeoutRef.current) {
+      clearTimeout(deepLinkTimeoutRef.current)
+      deepLinkTimeoutRef.current = undefined
+    }
+    // Clear wcLinking and error when switching to a different wallet
+    if (ConnectionController.state.wcLinking) {
+      ConnectionController.setWcLinking(undefined)
+    }
+    if (ConnectionController.state.wcError) {
+      ConnectionController.setWcError(false)
+    }
   }, [connectingWallet?.id])
+
+  // Detect deep link failures by monitoring visibility and focus changes
+  useEffect(() => {
+    if (!CoreHelperUtil.isMobile()) {
+      return
+    }
+
+    const checkDeepLinkFailure = () => {
+      const { wcLinking } = ConnectionController.state
+      const { connectingWallet: currentConnectingWallet } = PublicStateController.state
+
+      // If we were deep linking and page is now visible, check if connection succeeded
+      if (document.visibilityState === 'visible' && wcLinking && currentConnectingWallet) {
+        const deepLinkStartTime = deepLinkStartTimeRef.current
+        const pageHiddenTime = pageHiddenTimeRef.current
+        const now = Date.now()
+
+        // Check if user returned after attempting deep link (within 10 seconds)
+        // This accounts for Safari error dialog appearing and being dismissed
+        const timeSinceDeepLink = deepLinkStartTime ? now - deepLinkStartTime : Infinity
+        const timeSincePageHidden = pageHiddenTime ? now - pageHiddenTime : Infinity
+
+        // If user returned within reasonable time and no connection, it's likely a failure
+        if (
+          (timeSinceDeepLink < 10000 || timeSincePageHidden < 10000) &&
+          timeSinceDeepLink > 500 // Give at least 500ms for the deep link to work
+        ) {
+          const isConnected = Boolean(ChainController.state.activeCaipAddress)
+
+          // If not connected, mark as error and clear state
+          if (!isConnected) {
+            ConnectionController.setWcLinking(undefined)
+            PublicStateController.set({ connectingWallet: undefined })
+            ConnectionController.setWcError(true)
+            // Clear the last handled URI to allow retrying with the same wallet
+            lastHandledUriRef.current = undefined
+            deepLinkStartTimeRef.current = undefined
+            pageHiddenTimeRef.current = undefined
+          }
+        }
+      }
+    }
+
+    const handleVisibilityChange = () => {
+      const { wcLinking } = ConnectionController.state
+
+      if (document.visibilityState === 'hidden' && wcLinking) {
+        // Page became hidden (likely due to deep link attempt)
+        pageHiddenTimeRef.current = Date.now()
+      } else if (document.visibilityState === 'visible') {
+        // Page became visible - check if deep link failed
+        // Use a small delay to ensure Safari error dialog has been dismissed
+        setTimeout(checkDeepLinkFailure, 100)
+      }
+    }
+
+    const handleFocus = () => {
+      // Window gained focus - check if deep link failed
+      setTimeout(checkDeepLinkFailure, 100)
+    }
+
+    const handleBlur = () => {
+      // Window lost focus (likely due to deep link attempt)
+      const { wcLinking } = ConnectionController.state
+      if (wcLinking) {
+        pageHiddenTimeRef.current = Date.now()
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('focus', handleFocus)
+    window.addEventListener('blur', handleBlur)
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('focus', handleFocus)
+      window.removeEventListener('blur', handleBlur)
+    }
+  }, [])
+
+  // Monitor wcLinking state to track deep link start time
+  useEffect(() => {
+    const unsubscribeWcLinking = ConnectionController.subscribeKey('wcLinking', wcLinking => {
+      if (wcLinking) {
+        // Deep linking started, track the time
+        deepLinkStartTimeRef.current = Date.now()
+
+        // Set a timeout fallback to clear state if no connection after 5 seconds
+        if (deepLinkTimeoutRef.current) {
+          clearTimeout(deepLinkTimeoutRef.current)
+        }
+        deepLinkTimeoutRef.current = setTimeout(() => {
+          const isConnected = Boolean(ChainController.state.activeCaipAddress)
+          if (!isConnected && ConnectionController.state.wcLinking) {
+            ConnectionController.setWcLinking(undefined)
+            PublicStateController.set({ connectingWallet: undefined })
+            ConnectionController.setWcError(true)
+            // Clear the last handled URI to allow retrying with the same wallet
+            lastHandledUriRef.current = undefined
+            deepLinkStartTimeRef.current = undefined
+            pageHiddenTimeRef.current = undefined
+          }
+          deepLinkTimeoutRef.current = undefined
+        }, 8000) // Increased to 8 seconds to account for Safari error dialog
+      } else {
+        // Deep linking cleared, reset tracking
+        deepLinkStartTimeRef.current = undefined
+        if (deepLinkTimeoutRef.current) {
+          clearTimeout(deepLinkTimeoutRef.current)
+          deepLinkTimeoutRef.current = undefined
+        }
+      }
+    })
+
+    // Monitor connection success to clear deep link tracking
+    const unsubscribeConnection = ChainController.subscribeKey('activeCaipAddress', address => {
+      if (address && deepLinkTimeoutRef.current) {
+        // Connection succeeded, clear the timeout
+        clearTimeout(deepLinkTimeoutRef.current)
+        deepLinkTimeoutRef.current = undefined
+        deepLinkStartTimeRef.current = undefined
+      }
+    })
+
+    return () => {
+      unsubscribeWcLinking()
+      unsubscribeConnection()
+      if (deepLinkTimeoutRef.current) {
+        clearTimeout(deepLinkTimeoutRef.current)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const unsubscribe = ConnectionController.subscribeKey('wcUri', wcUri => {
@@ -481,6 +638,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       isInitialized: false,
       wcUri: undefined,
       connectingWallet: undefined,
+      wcError: false,
       page: 0,
       count: 0,
       connect: () => Promise.resolve(),
@@ -500,6 +658,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     isInitialized: initialized,
     wcUri,
     connectingWallet: connectingWallet as WalletItem | undefined,
+    wcError,
     page,
     count,
     connect,

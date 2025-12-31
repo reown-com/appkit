@@ -396,6 +396,8 @@ const controller = {
   resetUri() {
     state.wcUri = undefined
     state.wcPairingExpiry = undefined
+    state.wcLinking = undefined
+    state.wcError = false
     wcConnectionPromise = undefined
     state.wcFetchingUri = false
     PublicStateController.set({ connectingWallet: undefined })
