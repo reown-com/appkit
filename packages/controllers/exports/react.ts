@@ -438,17 +438,22 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
     if (ConnectionController.state.wcLinking) {
       ConnectionController.setWcLinking(undefined)
     }
-    // Reset URI to force new pairing/URI generation
-    // This ensures we get a fresh URI even if the previous one failed
-    if (ConnectionController.state.wcUri) {
-      ConnectionController.resetUri()
-    }
+    // Set connecting wallet FIRST before resetting URI
+    // This ensures URI subscription can find the wallet when new URI is generated
+    PublicStateController.set({ connectingWallet: _wallet })
     // Clear lastHandledUriRef to allow retrying with same wallet
     lastHandledUriRef.current = undefined
     // Clear deep link tracking refs
     deepLinkStartTimeRef.current = undefined
     pageHiddenTimeRef.current = undefined
-    PublicStateController.set({ connectingWallet: _wallet })
+    // Reset URI to force new pairing/URI generation
+    // This ensures we get a fresh URI even if the previous one failed
+    // Note: resetUri() clears connectingWallet, so we set it again after
+    if (ConnectionController.state.wcUri) {
+      ConnectionController.resetUri()
+      // Restore connectingWallet after resetUri clears it
+      PublicStateController.set({ connectingWallet: _wallet })
+    }
 
     try {
       const walletConnector = _wallet?.connectors.find(c => c.chain === namespace)
@@ -538,9 +543,14 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
         const timeSinceDeepLink = deepLinkStartTime ? now - deepLinkStartTime : Infinity
         const timeSincePageHidden = pageHiddenTime ? now - pageHiddenTime : Infinity
 
+        // If deep link was attempted but page never became hidden, it means OS prompt was cancelled
+        // This is different from app not installed (where deep link never triggers)
+        const wasOsPromptCancelled = deepLinkStartTime !== undefined && pageHiddenTime === undefined
+
         // If user returned within reasonable time and no connection, it's likely a failure
+        // Also check if OS prompt was cancelled (deep link started but page never hidden)
         if (
-          (timeSinceDeepLink < 10000 || timeSincePageHidden < 10000) &&
+          (timeSinceDeepLink < 10000 || timeSincePageHidden < 10000 || wasOsPromptCancelled) &&
           timeSinceDeepLink > 500 // Give at least 500ms for the deep link to work
         ) {
           const isConnected = Boolean(ChainController.state.activeCaipAddress)
@@ -548,16 +558,20 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
           // If not connected, mark as error and clear state
           if (!isConnected) {
             const failedWallet = currentConnectingWallet
+            // If page was hidden, user opened app then cancelled
+            // If OS prompt was cancelled, page never became hidden
+            // If neither, app might not be installed
             const wasPageHidden = pageHiddenTime !== undefined
+            const wasCancelled = wasPageHidden || wasOsPromptCancelled
 
             // Call onError callback BEFORE clearing state to ensure wallet reference is available
             if (onError && failedWallet) {
-              const errorMessage = wasPageHidden
+              const errorMessage = wasCancelled
                 ? `Connection to ${failedWallet.name} was cancelled. Please try again.`
                 : `Unable to open ${failedWallet.name}. The app may not be installed on your device. Please install it from the App Store or Play Store, or try another wallet.`
 
               onError({
-                type: wasPageHidden
+                type: wasCancelled
                   ? ErrorUtil.CONNECTION_ERROR_TYPE.USER_REJECTED
                   : ErrorUtil.CONNECTION_ERROR_TYPE.DEEP_LINK_FAILED,
                 message: errorMessage,
@@ -631,10 +645,13 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
           if (!isConnected && ConnectionController.state.wcLinking) {
             const failedWallet = PublicStateController.state.connectingWallet
             const wasPageHidden = pageHiddenTimeRef.current !== undefined
+            const wasOsPromptCancelled =
+              deepLinkStartTimeRef.current !== undefined && pageHiddenTimeRef.current === undefined
+            const wasCancelled = wasPageHidden || wasOsPromptCancelled
 
             // Call onError callback BEFORE clearing state to ensure wallet reference is available
             if (onError && failedWallet) {
-              const errorMessage = wasPageHidden
+              const errorMessage = wasCancelled
                 ? `Connection to ${failedWallet.name} timed out. Please try again.`
                 : `Unable to open ${failedWallet.name}. Please make sure the app is installed and try again.`
 
@@ -692,16 +709,27 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
         return
       }
 
-      // Don't trigger if already linking or if this URI was already handled
-      // But allow retry if wcLinking was cleared (e.g., after a failure)
-      if (ConnectionController.state.wcLinking) {
-        return
-      }
-
       // Check if we have a connecting wallet - if not, don't trigger deep link
       const connectingWallet = PublicStateController.state.connectingWallet
       if (!connectingWallet) {
         return
+      }
+
+      // If wcLinking is set but deep link was attempted a while ago without success,
+      // it might be stuck (e.g., OS prompt was cancelled). Clear it to allow retry.
+      const { wcLinking } = ConnectionController.state
+      if (wcLinking) {
+        const deepLinkStartTime = deepLinkStartTimeRef.current
+        const now = Date.now()
+        // If deep link was attempted more than 3 seconds ago and still linking, clear it
+        // This handles the case where OS prompt was cancelled but wcLinking wasn't cleared
+        if (deepLinkStartTime && now - deepLinkStartTime > 3000) {
+          ConnectionController.setWcLinking(undefined)
+          // Continue to allow retry
+        } else {
+          // Still actively linking, don't trigger again
+          return
+        }
       }
 
       // Only skip if this exact URI was already handled for the current wallet
