@@ -434,13 +434,19 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
   async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
     // Clear any previous error state when starting a new connection
     ConnectionController.setWcError(false)
+    // Clear any existing timeout from previous attempts
+    if (deepLinkTimeoutRef.current) {
+      clearTimeout(deepLinkTimeoutRef.current)
+      deepLinkTimeoutRef.current = undefined
+    }
     // Clear wcLinking to allow new connection attempts
+    // This will also clear deepLinkStartTimeRef via the subscription
     if (ConnectionController.state.wcLinking) {
       ConnectionController.setWcLinking(undefined)
     }
     // Set connecting wallet
     PublicStateController.set({ connectingWallet: _wallet })
-    // Clear deep link tracking refs
+    // Clear deep link tracking refs (in case subscription didn't clear them)
     deepLinkStartTimeRef.current = undefined
     pageHiddenTimeRef.current = undefined
 
@@ -472,6 +478,9 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
           // Get wallet and trigger deep link directly (matching scaffold-ui behavior)
           const wcWallet = ApiControllerUtil.getWalletById(_wallet.id)
           if (wcWallet?.mobile_link) {
+            // Set deep link start time BEFORE triggering deep link
+            // This is needed for failure detection to work correctly
+            deepLinkStartTimeRef.current = Date.now()
             // Trigger deep link directly with existing URI - don't generate new one
             ConnectionControllerUtil.onConnectMobile(wcWallet)
             // Return early - don't call connectWalletConnect
@@ -561,11 +570,16 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
         // This is different from app not installed (where deep link never triggers)
         const wasOsPromptCancelled = deepLinkStartTime !== undefined && pageHiddenTime === undefined
 
+        // IMPORTANT: Only check for failure if enough time has passed since deep link attempt
+        // This prevents false positives when user quickly cancels and retries
+        // Give at least 1 second for the OS prompt to appear and be interacted with
+        const minTimeElapsed = timeSinceDeepLink > 1000
+
         // If user returned within reasonable time and no connection, it's likely a failure
         // Also check if OS prompt was cancelled (deep link started but page never hidden)
         if (
-          (timeSinceDeepLink < 10000 || timeSincePageHidden < 10000 || wasOsPromptCancelled) &&
-          timeSinceDeepLink > 500 // Give at least 500ms for the deep link to work
+          minTimeElapsed &&
+          (timeSinceDeepLink < 10000 || timeSincePageHidden < 10000 || wasOsPromptCancelled)
         ) {
           const isConnected = Boolean(ChainController.state.activeCaipAddress)
 
@@ -760,6 +774,9 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
       if (isMobile && wcWallet?.mobile_link) {
         // Store URI with wallet ID to allow retries with different wallets
         lastHandledUriRef.current = uriKey
+        // Set deep link start time BEFORE triggering deep link
+        // This is needed for failure detection to work correctly
+        deepLinkStartTimeRef.current = Date.now()
         ConnectionControllerUtil.onConnectMobile(wcWallet)
       }
     })
