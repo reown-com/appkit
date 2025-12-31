@@ -432,23 +432,11 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
   }
 
   async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
-    // Clear any previous error state when starting a new connection
+    // Clear error state (like scaffold-ui does in onTryAgain)
     ConnectionController.setWcError(false)
-    // Clear any existing timeout from previous attempts
-    if (deepLinkTimeoutRef.current) {
-      clearTimeout(deepLinkTimeoutRef.current)
-      deepLinkTimeoutRef.current = undefined
-    }
-    // Clear wcLinking to allow new connection attempts
-    // This will also clear deepLinkStartTimeRef via the subscription
-    if (ConnectionController.state.wcLinking) {
-      ConnectionController.setWcLinking(undefined)
-    }
+
     // Set connecting wallet
     PublicStateController.set({ connectingWallet: _wallet })
-    // Clear deep link tracking refs (in case subscription didn't clear them)
-    deepLinkStartTimeRef.current = undefined
-    pageHiddenTimeRef.current = undefined
 
     try {
       const walletConnector = _wallet?.connectors.find(c => c.chain === namespace)
@@ -462,28 +450,21 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
         await ConnectorControllerUtil.connectExternal(connector)
       } else {
         // For WalletConnect wallets on mobile, check if we already have a URI
-        // If we do, reuse it (like scaffold-ui does) instead of resetting
-        // This allows retries to work correctly after OS prompt cancellation
+        // If we do, reuse it (like scaffold-ui does) - just call onConnectMobile directly
         const existingUri = ConnectionController.state.wcUri
         const isMobile = CoreHelperUtil.isMobile()
 
         if (existingUri && isMobile && !_wallet.isInjected) {
-          // We have an existing URI on mobile - reuse it like scaffold-ui does
-          // Clear lastHandledUriRef to allow retry with same URI
-          const uriKey = `${existingUri}|${_wallet.id}`
-          if (lastHandledUriRef.current === uriKey) {
-            lastHandledUriRef.current = undefined
-          }
-
-          // Get wallet and trigger deep link directly (matching scaffold-ui behavior)
+          // Simple approach: just call onConnectMobile with existing URI (like scaffold-ui)
           const wcWallet = ApiControllerUtil.getWalletById(_wallet.id)
           if (wcWallet?.mobile_link) {
-            // Set deep link start time BEFORE triggering deep link
-            // This is needed for failure detection to work correctly
-            deepLinkStartTimeRef.current = Date.now()
-            // Trigger deep link directly with existing URI - don't generate new one
+            // Clear lastHandledUriRef to allow retry with same URI
+            const uriKey = `${existingUri}|${_wallet.id}`
+            if (lastHandledUriRef.current === uriKey) {
+              lastHandledUriRef.current = undefined
+            }
+            // Call onConnectMobile directly - that's it!
             ConnectionControllerUtil.onConnectMobile(wcWallet)
-            // Return early - don't call connectWalletConnect
             return
           }
         }
@@ -526,6 +507,7 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
   const deepLinkStartTimeRef = useRef<number | undefined>(undefined)
   const deepLinkTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const pageHiddenTimeRef = useRef<number | undefined>(undefined)
+  const connectionAttemptIdRef = useRef<number>(0)
 
   useEffect(() => {
     // Clear deep link state when connecting wallet changes
@@ -555,9 +537,16 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
       const { wcLinking } = ConnectionController.state
       const { connectingWallet: currentConnectingWallet } = PublicStateController.state
 
+      // Ignore if this is a stale check from a previous connection attempt
+      // We check this by ensuring deepLinkStartTimeRef was set during the current attempt
+      // If it's undefined, it means we're checking a previous attempt that was cleared
+      const deepLinkStartTime = deepLinkStartTimeRef.current
+      if (!deepLinkStartTime) {
+        return
+      }
+
       // If we were deep linking and page is now visible, check if connection succeeded
       if (document.visibilityState === 'visible' && wcLinking && currentConnectingWallet) {
-        const deepLinkStartTime = deepLinkStartTimeRef.current
         const pageHiddenTime = pageHiddenTimeRef.current
         const now = Date.now()
 
@@ -572,11 +561,13 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
 
         // IMPORTANT: Only check for failure if enough time has passed since deep link attempt
         // This prevents false positives when user quickly cancels and retries
-        // Give at least 1 second for the OS prompt to appear and be interacted with
-        const minTimeElapsed = timeSinceDeepLink > 1000
+        // Give at least 1.5 seconds for the OS prompt to appear and be interacted with
+        // Also ensure we have a valid deepLinkStartTime (not cleared by a new attempt)
+        const minTimeElapsed = deepLinkStartTime !== undefined && timeSinceDeepLink > 1500
 
         // If user returned within reasonable time and no connection, it's likely a failure
         // Also check if OS prompt was cancelled (deep link started but page never hidden)
+        // But only if enough time has passed to avoid false positives
         if (
           minTimeElapsed &&
           (timeSinceDeepLink < 10000 || timeSincePageHidden < 10000 || wasOsPromptCancelled)
@@ -628,14 +619,16 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
         pageHiddenTimeRef.current = Date.now()
       } else if (document.visibilityState === 'visible') {
         // Page became visible - check if deep link failed
-        // Use a small delay to ensure Safari error dialog has been dismissed
-        setTimeout(checkDeepLinkFailure, 100)
+        // Use a delay to ensure Safari error dialog has been dismissed
+        // Also give time for a new connection attempt to start (if user retries quickly)
+        setTimeout(checkDeepLinkFailure, 500)
       }
     }
 
     const handleFocus = () => {
       // Window gained focus - check if deep link failed
-      setTimeout(checkDeepLinkFailure, 100)
+      // Use a delay to give time for a new connection attempt to start (if user retries quickly)
+      setTimeout(checkDeepLinkFailure, 500)
     }
 
     const handleBlur = () => {
@@ -664,11 +657,18 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
         // Deep linking started, track the time
         deepLinkStartTimeRef.current = Date.now()
 
-        // Set a timeout fallback to clear state if no connection after 5 seconds
+        // Set a timeout fallback to clear state if no connection after 8 seconds
+        // Capture the attempt ID at the time the timeout is set
+        const timeoutAttemptId = connectionAttemptIdRef.current
         if (deepLinkTimeoutRef.current) {
           clearTimeout(deepLinkTimeoutRef.current)
         }
         deepLinkTimeoutRef.current = setTimeout(() => {
+          // Ignore if this timeout is from a previous connection attempt
+          if (timeoutAttemptId !== connectionAttemptIdRef.current) {
+            return
+          }
+
           const isConnected = Boolean(ChainController.state.activeCaipAddress)
           if (!isConnected && ConnectionController.state.wcLinking) {
             const failedWallet = PublicStateController.state.connectingWallet
