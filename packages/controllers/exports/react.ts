@@ -543,10 +543,18 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
             pageHiddenTimeRef.current = undefined
 
             // Call onError callback for deep link failure
+            // If page was hidden, it means the deep link opened (user cancelled)
+            // If page was never hidden, it means the app might not be installed
             if (onError && failedWallet) {
-              const errorMessage = `Unable to open ${failedWallet.name}. The app may not be installed on your device. Please install it from the App Store or Play Store, or try another wallet.`
+              const wasPageHidden = pageHiddenTime !== undefined
+              const errorMessage = wasPageHidden
+                ? `Connection to ${failedWallet.name} was cancelled. Please try again.`
+                : `Unable to open ${failedWallet.name}. The app may not be installed on your device. Please install it from the App Store or Play Store, or try another wallet.`
+
               onError({
-                type: ErrorUtil.CONNECTION_ERROR_TYPE.DEEP_LINK_FAILED,
+                type: wasPageHidden
+                  ? ErrorUtil.CONNECTION_ERROR_TYPE.USER_REJECTED
+                  : ErrorUtil.CONNECTION_ERROR_TYPE.DEEP_LINK_FAILED,
                 message: errorMessage,
                 wallet: failedWallet
               })
@@ -617,8 +625,13 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
             pageHiddenTimeRef.current = undefined
 
             // Call onError callback for deep link timeout
+            // Check if page was hidden to determine if deep link opened or not
             if (onError && failedWallet) {
-              const errorMessage = `Unable to open ${failedWallet.name}. The app may not be installed on your device. Please install it from the App Store or Play Store, or try another wallet.`
+              const wasPageHidden = pageHiddenTimeRef.current !== undefined
+              const errorMessage = wasPageHidden
+                ? `Connection to ${failedWallet.name} timed out. Please try again.`
+                : `Unable to open ${failedWallet.name}. Please make sure the app is installed and try again.`
+
               onError({
                 type: ErrorUtil.CONNECTION_ERROR_TYPE.DEEP_LINK_FAILED,
                 message: errorMessage,
