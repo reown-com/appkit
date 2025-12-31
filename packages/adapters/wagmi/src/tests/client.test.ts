@@ -19,7 +19,7 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import { type Address, checksumAddress } from 'viem'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import {
   AdapterBlueprint,
   ChainController,
@@ -663,6 +663,57 @@ describe('WagmiAdapter', () => {
 
       expect(result.address).toBe('0x123')
       expect(result.chainId).toBe(1)
+    })
+
+    it('should connect with chainId as undefined when defaultNetwork is not set', async () => {
+      // Mock OptionsController with no defaultNetwork
+      const originalDefaultNetwork = OptionsController.state.defaultNetwork
+      OptionsController.state.defaultNetwork = undefined
+
+      const connectSpy = vi.spyOn(wagmiCore, 'connect')
+
+      await adapter.connect({
+        id: 'test-connector',
+        provider: {},
+        type: 'injected'
+      })
+
+      expect(connectSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          chainId: undefined
+        })
+      )
+
+      // Restore original value
+      OptionsController.state.defaultNetwork = originalDefaultNetwork
+    })
+
+    it('should connect with chainId when defaultNetwork is an eip155 network', async () => {
+      // Mock OptionsController with a defaultNetwork for eip155
+      const originalDefaultNetwork = OptionsController.state.defaultNetwork
+      OptionsController.state.defaultNetwork = {
+        chainNamespace: 'eip155',
+        caipNetworkId: 'eip155:1'
+      } as unknown as CaipNetwork
+
+      const connectSpy = vi.spyOn(wagmiCore, 'connect')
+
+      await adapter.connect({
+        id: 'test-connector',
+        provider: {},
+        type: 'injected'
+      })
+
+      expect(connectSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          chainId: 1
+        })
+      )
+
+      // Restore original value
+      OptionsController.state.defaultNetwork = originalDefaultNetwork
     })
 
     it('should sync connection successfully', async () => {
