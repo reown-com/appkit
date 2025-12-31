@@ -434,6 +434,12 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
   async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
     // Clear any previous error state when starting a new connection
     ConnectionController.setWcError(false)
+    // Clear wcLinking to allow new connection attempts
+    if (ConnectionController.state.wcLinking) {
+      ConnectionController.setWcLinking(undefined)
+    }
+    // Clear lastHandledUriRef to allow retrying with same wallet
+    lastHandledUriRef.current = undefined
     PublicStateController.set({ connectingWallet: _wallet })
 
     try {
@@ -534,19 +540,10 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
           // If not connected, mark as error and clear state
           if (!isConnected) {
             const failedWallet = currentConnectingWallet
-            ConnectionController.setWcLinking(undefined)
-            PublicStateController.set({ connectingWallet: undefined })
-            ConnectionController.setWcError(true)
-            // Clear the last handled URI to allow retrying with the same wallet
-            lastHandledUriRef.current = undefined
-            deepLinkStartTimeRef.current = undefined
-            pageHiddenTimeRef.current = undefined
+            const wasPageHidden = pageHiddenTime !== undefined
 
-            // Call onError callback for deep link failure
-            // If page was hidden, it means the deep link opened (user cancelled)
-            // If page was never hidden, it means the app might not be installed
+            // Call onError callback BEFORE clearing state to ensure wallet reference is available
             if (onError && failedWallet) {
-              const wasPageHidden = pageHiddenTime !== undefined
               const errorMessage = wasPageHidden
                 ? `Connection to ${failedWallet.name} was cancelled. Please try again.`
                 : `Unable to open ${failedWallet.name}. The app may not be installed on your device. Please install it from the App Store or Play Store, or try another wallet.`
@@ -559,6 +556,15 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
                 wallet: failedWallet
               })
             }
+
+            // Clear state after calling onError
+            ConnectionController.setWcLinking(undefined)
+            PublicStateController.set({ connectingWallet: undefined })
+            ConnectionController.setWcError(true)
+            // Clear the last handled URI to allow retrying with the same wallet
+            lastHandledUriRef.current = undefined
+            deepLinkStartTimeRef.current = undefined
+            pageHiddenTimeRef.current = undefined
           }
         }
       }
@@ -616,18 +622,10 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
           const isConnected = Boolean(ChainController.state.activeCaipAddress)
           if (!isConnected && ConnectionController.state.wcLinking) {
             const failedWallet = PublicStateController.state.connectingWallet
-            ConnectionController.setWcLinking(undefined)
-            PublicStateController.set({ connectingWallet: undefined })
-            ConnectionController.setWcError(true)
-            // Clear the last handled URI to allow retrying with the same wallet
-            lastHandledUriRef.current = undefined
-            deepLinkStartTimeRef.current = undefined
-            pageHiddenTimeRef.current = undefined
+            const wasPageHidden = pageHiddenTimeRef.current !== undefined
 
-            // Call onError callback for deep link timeout
-            // Check if page was hidden to determine if deep link opened or not
+            // Call onError callback BEFORE clearing state to ensure wallet reference is available
             if (onError && failedWallet) {
-              const wasPageHidden = pageHiddenTimeRef.current !== undefined
               const errorMessage = wasPageHidden
                 ? `Connection to ${failedWallet.name} timed out. Please try again.`
                 : `Unable to open ${failedWallet.name}. Please make sure the app is installed and try again.`
@@ -638,6 +636,15 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
                 wallet: failedWallet
               })
             }
+
+            // Clear state after calling onError
+            ConnectionController.setWcLinking(undefined)
+            PublicStateController.set({ connectingWallet: undefined })
+            ConnectionController.setWcError(true)
+            // Clear the last handled URI to allow retrying with the same wallet
+            lastHandledUriRef.current = undefined
+            deepLinkStartTimeRef.current = undefined
+            pageHiddenTimeRef.current = undefined
           }
           deepLinkTimeoutRef.current = undefined
         }, 8000) // Increased to 8 seconds to account for Safari error dialog
@@ -674,11 +681,18 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
     const unsubscribe = ConnectionController.subscribeKey('wcUri', wcUri => {
       if (!wcUri) {
         lastHandledUriRef.current = undefined
-
         return
       }
 
-      if (wcUri === lastHandledUriRef.current || ConnectionController.state.wcLinking) {
+      // Don't trigger if already linking or if this URI was already handled
+      // But allow retry if wcLinking was cleared (e.g., after a failure)
+      if (ConnectionController.state.wcLinking) {
+        return
+      }
+
+      // Only skip if this exact URI was handled AND we're still in a linking state
+      // If wcLinking is cleared, allow retry even with same URI
+      if (wcUri === lastHandledUriRef.current) {
         return
       }
 
