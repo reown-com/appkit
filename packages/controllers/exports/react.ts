@@ -2,7 +2,13 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
-import { type ChainNamespace, type Connection, ConstantsUtil } from '@reown/appkit-common'
+import {
+  type ChainNamespace,
+  type Connection,
+  type ConnectionErrorType,
+  ConstantsUtil,
+  ErrorUtil
+} from '@reown/appkit-common'
 
 import { AlertController } from '../src/controllers/AlertController.js'
 import { ApiController } from '../src/controllers/ApiController.js'
@@ -28,6 +34,16 @@ import { AssetUtil, StorageUtil } from './utils.js'
 
 // -- Types ------------------------------------------------------------
 export type { Connection } from '@reown/appkit-common'
+
+export interface WalletConnectionError {
+  type: ConnectionErrorType
+  message: string
+  wallet?: WalletItem
+  /**
+   * The original error that occurred, if available.
+   */
+  originalError?: unknown
+}
 
 interface DisconnectParams {
   id?: string
@@ -170,18 +186,6 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
   const { connections, recentConnections } =
     ConnectionControllerUtil.getConnectionsData(chainNamespace)
 
-  if (!isMultiWalletEnabled) {
-    AlertController.open(
-      ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTIONS_HOOK,
-      'info'
-    )
-
-    return {
-      connections: [],
-      recentConnections: []
-    }
-  }
-
   const formatConnection = useCallback((connection: Connection) => {
     const connector = ConnectorController.getConnectorById(connection.connectorId)
 
@@ -196,6 +200,18 @@ export function useAppKitConnections(namespace?: ChainNamespace) {
       ...connection
     }
   }, [])
+
+  if (!isMultiWalletEnabled) {
+    AlertController.open(
+      ConstantsUtil.REMOTE_FEATURES_ALERTS.MULTI_WALLET_NOT_ENABLED.CONNECTIONS_HOOK,
+      'info'
+    )
+
+    return {
+      connections: [],
+      recentConnections: []
+    }
+  }
 
   return {
     connections: connections.map(formatConnection),
@@ -369,11 +385,20 @@ export interface UseAppKitWalletsReturn {
   resetWcUri: () => void
 }
 
+export interface UseAppKitWalletsOptions {
+  /**
+   * Callback function called when a connection error occurs.
+   * @param error - Error details including type, message, and wallet information
+   */
+  onError?: (error: WalletConnectionError) => void
+}
+
 /**
  * Headless hook for wallet connection.
  * Provides all the data and functions needed to build a custom connect UI.
  */
-export function useAppKitWallets(): UseAppKitWalletsReturn {
+export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWalletsReturn {
+  const { onError } = options ?? {}
   const { features, remoteFeatures } = useSnapshot(OptionsController.state)
   const isHeadlessEnabled = Boolean(features?.headless && remoteFeatures?.headless)
 
@@ -427,6 +452,9 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     } catch (error) {
       PublicStateController.set({ connectingWallet: undefined })
       ConnectionController.setWcError(true)
+
+      // Only call onError for deep link failures (handled separately)
+      // User rejections and other connection failures are handled via thrown errors
       throw error
     }
   }
@@ -488,6 +516,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
           // If not connected, mark as error and clear state
           if (!isConnected) {
+            const failedWallet = currentConnectingWallet
             ConnectionController.setWcLinking(undefined)
             PublicStateController.set({ connectingWallet: undefined })
             ConnectionController.setWcError(true)
@@ -495,6 +524,16 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
             lastHandledUriRef.current = undefined
             deepLinkStartTimeRef.current = undefined
             pageHiddenTimeRef.current = undefined
+
+            // Call onError callback for deep link failure
+            if (onError && failedWallet) {
+              const errorMessage = `Unable to open ${failedWallet.name}. The app may not be installed on your device. Please install it from the App Store or Play Store, or try another wallet.`
+              onError({
+                type: ErrorUtil.CONNECTION_ERROR_TYPE.DEEP_LINK_FAILED,
+                message: errorMessage,
+                wallet: failedWallet
+              })
+            }
           }
         }
       }
@@ -535,7 +574,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       window.removeEventListener('focus', handleFocus)
       window.removeEventListener('blur', handleBlur)
     }
-  }, [])
+  }, [onError])
 
   // Monitor wcLinking state to track deep link start time
   useEffect(() => {
@@ -551,6 +590,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
         deepLinkTimeoutRef.current = setTimeout(() => {
           const isConnected = Boolean(ChainController.state.activeCaipAddress)
           if (!isConnected && ConnectionController.state.wcLinking) {
+            const failedWallet = PublicStateController.state.connectingWallet
             ConnectionController.setWcLinking(undefined)
             PublicStateController.set({ connectingWallet: undefined })
             ConnectionController.setWcError(true)
@@ -558,6 +598,16 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
             lastHandledUriRef.current = undefined
             deepLinkStartTimeRef.current = undefined
             pageHiddenTimeRef.current = undefined
+
+            // Call onError callback for deep link timeout
+            if (onError && failedWallet) {
+              const errorMessage = `Unable to open ${failedWallet.name}. The app may not be installed on your device. Please install it from the App Store or Play Store, or try another wallet.`
+              onError({
+                type: ErrorUtil.CONNECTION_ERROR_TYPE.DEEP_LINK_FAILED,
+                message: errorMessage,
+                wallet: failedWallet
+              })
+            }
           }
           deepLinkTimeoutRef.current = undefined
         }, 8000) // Increased to 8 seconds to account for Safari error dialog
@@ -588,7 +638,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
         clearTimeout(deepLinkTimeoutRef.current)
       }
     }
-  }, [])
+  }, [onError])
 
   useEffect(() => {
     const unsubscribe = ConnectionController.subscribeKey('wcUri', wcUri => {

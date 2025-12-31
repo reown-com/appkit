@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
 
 import type { WalletItem } from '@reown/appkit'
 import type { ChainNamespace } from '@reown/appkit/networks'
-import { CoreHelperUtil, useAppKitWallets } from '@reown/appkit/react'
+import { CoreHelperUtil, type WalletConnectionError, useAppKitWallets } from '@reown/appkit/react'
 
 import { NamespaceSelectionDialog } from '@/components/NamespaceSelectionDialog'
 import { Button } from '@/components/ui/button'
@@ -19,42 +19,28 @@ import { ConnectContent } from './ConnectContent'
 import { WalletConnectQRContent } from './WalletConnectQRContent'
 
 export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>) {
-  const { connect, wcUri, connectingWallet, resetWcUri, wcError } = useAppKitWallets()
+  const [connectionError, setConnectionError] = useState<WalletConnectionError | null>(null)
+
+  const { connect, wcUri, connectingWallet, resetWcUri, wcError } = useAppKitWallets({
+    onError: (error: WalletConnectionError) => {
+      setConnectionError(error)
+      // Show toast notification for all error types
+      toast.error(error.message, {
+        duration: 5000
+      })
+    }
+  })
+
   const [selectedWallet, setSelectedWallet] = useState<WalletItem | null>(null)
   const [showWalletSearch, setShowWalletSearch] = useState(false)
   const [isNamespaceDialogOpen, setIsNamespaceDialogOpen] = useState(false)
-  const previousWcErrorRef = useRef<boolean | undefined>(false)
-  const previousConnectingWalletRef = useRef<WalletItem | undefined>(undefined)
 
   const isMobile = CoreHelperUtil.isMobile()
   // Don't show QR code on mobile - deep linking is used instead
   const showQRCode = !isMobile && wcUri && connectingWallet && !connectingWallet.isInjected
   // Show error if deep link failed on mobile
-  const showDeepLinkError = isMobile && wcError && connectingWallet && !connectingWallet.isInjected
-
-  // Show toast when deep link fails
-  useEffect(() => {
-    // Only show toast when error state changes from false to true
-    // and we had a connecting wallet that's now cleared (indicating failure)
-    if (
-      wcError &&
-      !previousWcErrorRef.current &&
-      previousConnectingWalletRef.current &&
-      !connectingWallet &&
-      isMobile
-    ) {
-      const walletName = previousConnectingWalletRef.current.name
-      toast.error(
-        `Unable to open ${walletName}. The app may not be installed on your device. Please install it from the App Store or Play Store, or try another wallet.`,
-        {
-          duration: 5000
-        }
-      )
-    }
-
-    previousWcErrorRef.current = wcError
-    previousConnectingWalletRef.current = connectingWallet
-  }, [wcError, connectingWallet, isMobile])
+  const showDeepLinkError =
+    isMobile && wcError && connectionError?.type === 'DEEP_LINK_FAILED' && connectionError.wallet
 
   function onOpenNamespaceDialog(item: WalletItem) {
     setSelectedWallet(item)
@@ -63,19 +49,22 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
 
   async function onConnect(item: WalletItem, namespace?: ChainNamespace) {
     setIsNamespaceDialogOpen(false)
+    setConnectionError(null) // Clear previous error when starting new connection
     await connect(item, namespace)
       .then(() => {
         setSelectedWallet(null)
+        setConnectionError(null)
         toast.success('Connected wallet')
       })
       .catch(error => {
+        // Error is already handled by onError callback, just log for debugging
         console.error(error)
-        toast.error('Failed to connect wallet')
       })
   }
 
   function handleDismissError() {
     resetWcUri()
+    setConnectionError(null)
   }
 
   return (
@@ -105,9 +94,8 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
                 <div className="flex-1">
                   <h4 className="font-semibold text-destructive mb-1">Connection Failed</h4>
                   <p className="text-sm text-muted-foreground mb-3">
-                    Unable to open {connectingWallet?.name}. The app may not be installed on your
-                    device. Please install it from the App Store or Play Store, or try another
-                    wallet.
+                    {connectionError?.message ||
+                      `Unable to open ${connectingWallet?.name}. The app may not be installed on your device. Please install it from the App Store or Play Store, or try another wallet.`}
                   </p>
                   <Button
                     variant="outline"

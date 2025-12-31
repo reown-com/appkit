@@ -14,6 +14,8 @@ export type ProviderRpcErrorCode =
   | 5002 // User Rejected Methods
   | 5000 // User Rejected
 
+export type ConnectionErrorType = 'DEEP_LINK_FAILED'
+
 type RpcProviderError = {
   message: string
   code: ProviderRpcErrorCode
@@ -30,6 +32,9 @@ export const ErrorUtil = {
     PROVIDER_RPC: 'ProviderRpcError',
     USER_REJECTED_REQUEST: 'UserRejectedRequestError'
   },
+  CONNECTION_ERROR_TYPE: {
+    DEEP_LINK_FAILED: 'DEEP_LINK_FAILED'
+  } as const,
   isRpcProviderError(error: unknown): error is RpcProviderError {
     try {
       if (typeof error === 'object' && error !== null) {
@@ -71,6 +76,21 @@ export const ErrorUtil = {
     }
 
     return false
+  },
+  /**
+   * Gets a user-friendly error message for a given error.
+   * Uses existing error message if available, otherwise provides a default message.
+   */
+  getErrorMessage(error: unknown, defaultMessage = 'An error occurred'): string {
+    if (error instanceof Error) {
+      return error.message || defaultMessage
+    }
+
+    if (ErrorUtil.isRpcProviderError(error)) {
+      return error.message || defaultMessage
+    }
+
+    return defaultMessage
   }
 }
 
