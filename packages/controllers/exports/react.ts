@@ -450,27 +450,29 @@ export function useAppKitWallets(options?: UseAppKitWalletsOptions): UseAppKitWa
       if (_wallet?.isInjected && connector) {
         await ConnectorControllerUtil.connectExternal(connector)
       } else {
-        // For WalletConnect wallets on mobile, check if we already have a URI
-        // If we do, do exactly what scaffold-ui does: just call onConnectMobile
-        const existingUri = ConnectionController.state.wcUri
+        // For WalletConnect wallets on mobile, do exactly what scaffold-ui does:
+        // Just call onConnectMobile - it will check for URI internally
         const isMobile = CoreHelperUtil.isMobile()
 
-        if (existingUri && isMobile && !_wallet.isInjected) {
-          // Exact same approach as scaffold-ui: get wallet and call onConnectMobile
+        if (isMobile && !_wallet.isInjected) {
           const wcWallet = ApiControllerUtil.getWalletById(_wallet.id)
           if (wcWallet?.mobile_link) {
             // Clear lastHandledUriRef to allow retry with same URI
-            const uriKey = `${existingUri}|${_wallet.id}`
-            if (lastHandledUriRef.current === uriKey) {
-              lastHandledUriRef.current = undefined
+            const existingUri = ConnectionController.state.wcUri
+            if (existingUri) {
+              const uriKey = `${existingUri}|${_wallet.id}`
+              if (lastHandledUriRef.current === uriKey) {
+                lastHandledUriRef.current = undefined
+              }
             }
             // Do exactly what scaffold-ui does: call onConnectMobile
+            // It will check for URI internally and handle it
             ConnectionControllerUtil.onConnectMobile(wcWallet)
             return
           }
         }
 
-        // No existing URI, or not mobile, or injected wallet - generate new URI
+        // Not mobile, or injected wallet - generate new URI
         await ConnectionController.connectWalletConnect({ cache: 'never' })
       }
     } catch (error) {
