@@ -1841,6 +1841,13 @@ export abstract class AppKitBaseClient {
           onConnect: accounts => {
             const { address } = CoreHelperUtil.getAccount(accounts[0])
 
+            for (const namespace of this.chainNamespaces) {
+              StorageUtil.removeDisconnectedConnectorId(
+                ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
+                namespace
+              )
+            }
+
             ConnectionController.finalizeWcConnection(address as string)
           },
           onDisconnect: () => {
