@@ -1279,4 +1279,39 @@ describe('useAppKitWallets', () => {
 
     expect(result.wcWallets).toEqual(mockSearchWalletItems)
   })
+
+  it('should call both resetUri and setWcLinking when resetWcUri is called', () => {
+    useSnapshot
+      .mockReturnValueOnce({
+        features: { headless: true },
+        remoteFeatures: { headless: true }
+      })
+      .mockReturnValueOnce({
+        wcUri: undefined,
+        wcFetchingUri: false
+      })
+      .mockReturnValueOnce({
+        wallets: [],
+        search: [],
+        page: 1,
+        count: 0
+      })
+      .mockReturnValueOnce({
+        initialized: true,
+        connectingWallet: undefined
+      })
+
+    vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
+    vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
+
+    const resetUriSpy = vi.spyOn(ConnectionController, 'resetUri')
+    const setWcLinkingSpy = vi.spyOn(ConnectionController, 'setWcLinking')
+
+    const result = useAppKitWallets()
+
+    result.resetWcUri()
+
+    expect(resetUriSpy).toHaveBeenCalled()
+    expect(setWcLinkingSpy).toHaveBeenCalledWith(undefined)
+  })
 })
