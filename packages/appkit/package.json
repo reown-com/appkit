@@ -120,14 +120,14 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.23.0",
+    "@walletconnect/universal-provider": "2.23.1",
     "bs58": "6.0.0",
     "semver": "7.7.2",
     "valtio": "2.1.7",
     "viem": ">=2.37.9"
   },
   "devDependencies": {
-    "@walletconnect/types": "2.23.0",
+    "@walletconnect/types": "2.23.1",
     "@reown/appkit-siwe": "workspace:*",
     "@testing-library/react": "16.3.0",
     "@types/react": "19.1.15",

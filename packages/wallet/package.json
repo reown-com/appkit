@@ -33,7 +33,7 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
-    "@walletconnect/logger": "3.0.0",
+    "@walletconnect/logger": "3.0.1",
     "zod": "3.22.4"
   },
   "author": "Reown (https://discord.gg/reown)",

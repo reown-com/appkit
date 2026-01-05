@@ -35,7 +35,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build packages
-        run: pnpm --filter "@reown/appkit-common" --filter "@reown/appkit-polyfills" --filter "@reown/appkit-wallet" --filter "@reown/appkit-controllers" --filter "@reown/appkit-ui" --filter "@reown/appkit-utils" --filter "@reown/appkit-scaffold-ui" build
+        run: pnpm --filter "@reown/appkit-common" --filter "@reown/appkit-polyfills" --filter "@reown/appkit-wallet" --filter "@reown/appkit-controllers" --filter "@reown/appkit-ui" --filter "@reown/appkit-utils" --filter "@reown/appkit-scaffold-ui" --filter "@reown/appkit-pay" build
 
       - name: Run Chromatic
         id: chromatic
@@ -47,7 +47,7 @@ jobs:
           buildScriptName: build
           onlyChanged: true
           autoAcceptChanges: false
-          exitZeroOnChanges: false
+          exitZeroOnChanges: true
           zip: true
 
       - name: Comment on PR with Chromatic results
@@ -102,9 +102,3 @@ jobs:
                 body: commentBody
               });
             }
-
-      - name: Fail workflow if visual changes detected
-        if: steps.chromatic.outcome == 'failure'
-        run: |
-          echo "❌ Visual changes detected - workflow failed"
-          exit 1

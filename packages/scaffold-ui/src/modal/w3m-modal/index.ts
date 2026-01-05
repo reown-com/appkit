@@ -23,6 +23,7 @@ import '@reown/appkit-ui/wui-flex'
 import '../../partials/w3m-alertbar/index.js'
 import '../../partials/w3m-header/index.js'
 import '../../partials/w3m-snackbar/index.js'
+import '../../partials/w3m-tooltip-trigger/index.js'
 import '../../partials/w3m-tooltip/index.js'
 import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import '../w3m-footer/index.js'
@@ -35,7 +36,10 @@ const SCROLL_LOCK = 'scroll-lock'
 // -- Constants --------------------------------------------- //
 const PADDING_OVERRIDES: Record<string, string> = {
   PayWithExchange: '0',
-  PayWithExchangeSelectAsset: '0'
+  PayWithExchangeSelectAsset: '0',
+  Pay: '0',
+  PayQuote: '0',
+  PayLoading: '0'
 }
 
 export class W3mModalBase extends LitElement {

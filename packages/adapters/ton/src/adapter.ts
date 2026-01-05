@@ -125,6 +125,10 @@ export class TonAdapter extends AdapterBlueprint<TonConnector> {
     return Promise.resolve({ hash: '' })
   }
 
+  override async writeSolanaTransaction(): Promise<AdapterBlueprint.WriteSolanaTransactionResult> {
+    return Promise.resolve({ hash: '' })
+  }
+
   override async disconnect(
     params?: AdapterBlueprint.DisconnectParams
   ): Promise<AdapterBlueprint.DisconnectResult> {
