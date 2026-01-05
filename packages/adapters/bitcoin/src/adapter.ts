@@ -398,6 +398,10 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return walletConnectProvider as unknown as Provider
   }
 
+  public async writeSolanaTransaction() {
+    return Promise.resolve({ hash: '' })
+  }
+
   override async disconnect(params: AdapterBlueprint.DisconnectParams) {
     if (params.id) {
       const connector = this.connectors.find(c => HelpersUtil.isLowerCaseMatch(c.id, params.id))

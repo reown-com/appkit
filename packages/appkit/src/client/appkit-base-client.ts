@@ -41,7 +41,8 @@ import type {
   UseAppKitNetworkReturn,
   User,
   WalletFeature,
-  WriteContractArgs
+  WriteContractArgs,
+  WriteSolanaTransactionArgs
 } from '@reown/appkit-controllers'
 import {
   AdapterController,
@@ -842,6 +843,35 @@ export abstract class AppKitBaseClient {
         const result = await adapter?.writeContract({ ...args, caipNetwork, provider, caipAddress })
 
         return result?.hash as Hex | null
+      },
+      writeSolanaTransaction: async (args: WriteSolanaTransactionArgs) => {
+        const namespace = ChainController.state.activeChain
+        const adapter = this.getAdapter(namespace)
+
+        if (!namespace) {
+          throw new Error('writeContract: namespace is required but got undefined')
+        }
+
+        if (!adapter) {
+          throw new Error('writeContract: adapter is required but got undefined')
+        }
+
+        const caipNetwork = this.getCaipNetwork()
+        const caipAddress = this.getCaipAddress()
+        const provider = ProviderController.getProvider(namespace)
+
+        if (!caipNetwork || !caipAddress) {
+          throw new Error('writeContract: caipNetwork or caipAddress is required but got undefined')
+        }
+
+        const result = await adapter?.writeSolanaTransaction({
+          ...args,
+          caipNetwork,
+          provider,
+          caipAddress
+        })
+
+        return result?.hash
       },
       parseUnits: (value: string, decimals: number) => {
         const adapter = this.getAdapter(ChainController.state.activeChain)
