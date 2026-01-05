@@ -871,7 +871,7 @@ export abstract class AppKitBaseClient {
           caipAddress
         })
 
-        return result?.hash as string
+        return result?.hash
       },
       parseUnits: (value: string, decimals: number) => {
         const adapter = this.getAdapter(ChainController.state.activeChain)
