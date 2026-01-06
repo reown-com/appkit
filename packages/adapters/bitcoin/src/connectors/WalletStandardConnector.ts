@@ -13,6 +13,12 @@ import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import type { BitcoinFeatures } from '../utils/wallet-standard/WalletFeatures.js'
 
+type WalletAccount = Wallet['accounts'][number]
+
+interface BitcoinAccount extends WalletAccount {
+  purpose?: AddressPurpose
+}
+
 export class WalletStandardConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
@@ -77,11 +83,15 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
     const addresses = new Set<string>()
     const mappedAccounts = this.wallet.accounts
-      .map<BitcoinConnector.AccountAddress>(acc => ({
-        address: acc.address,
-        purpose: AddressPurpose.Payment,
-        publicKey: Buffer.from(acc.publicKey).toString('hex')
-      }))
+      .map<BitcoinConnector.AccountAddress>(acc => {
+        const { address, purpose, publicKey } = acc as BitcoinAccount
+
+        return {
+          address,
+          purpose: purpose ?? AddressPurpose.Payment,
+          publicKey: Buffer.from(publicKey).toString('hex')
+        }
+      })
       .filter(acc => {
         if (addresses.has(acc.address)) {
           return false

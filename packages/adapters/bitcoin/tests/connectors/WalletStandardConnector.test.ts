@@ -109,6 +109,27 @@ describe('WalletStandardConnector', () => {
   })
 
   describe('getAccountAddresses', () => {
+    it('should return accounts with purpose, address, and publicKey', async () => {
+      vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
+        mockWalletStandardProvider.mockAccount({
+          address: 'bc1qtest123',
+          publicKey: new Uint8Array(Buffer.from('testPublicKey')),
+          // @ts-expect-error - purpose is not part of the mock account
+          purpose: 'ordinal'
+        })
+      ])
+
+      const accounts = await connector.getAccountAddresses()
+
+      expect(accounts).toHaveLength(1)
+      expect(accounts[0]).toHaveProperty('address')
+      expect(accounts[0]).toHaveProperty('publicKey')
+      expect(accounts[0]).toHaveProperty('purpose')
+      expect(accounts[0]?.address).toBe('bc1qtest123')
+      expect(accounts[0]?.publicKey).toBeTruthy()
+      expect(accounts[0]?.purpose).toBe('ordinal')
+    })
+
     it('should map accounts correctly', async () => {
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
         mockWalletStandardProvider.mockAccount({
