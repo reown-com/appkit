@@ -1,6 +1,6 @@
 {
   "name": "pay-test-exchange",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack --port 4001",
