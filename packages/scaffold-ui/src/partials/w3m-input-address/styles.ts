@@ -48,7 +48,7 @@ export default css`
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     line-height: ${({ typography }) => typography['lg-regular'].lineHeight};
     letter-spacing: ${({ typography }) => typography['lg-regular'].letterSpacing};
-    color: ${({ tokens }) => tokens.theme.textSecondary};
+    color: ${({ tokens }) => tokens.theme.textPrimary};
     caret-color: ${({ tokens }) => tokens.core.backgroundAccentPrimary};
     box-sizing: border-box;
     -webkit-appearance: none;
