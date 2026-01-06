@@ -109,7 +109,7 @@ describe('WalletStandardConnector', () => {
   })
 
   describe('getAccountAddresses', () => {
-    it('should return accounts with purpose, address, and publicKey', async () => {
+    it('should return accounts with purpose, address and publicKey', async () => {
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
         mockWalletStandardProvider.mockAccount({
           address: 'bc1qtest123',
