@@ -404,7 +404,7 @@ export abstract class AppKitBaseClient {
     ChainController.initialize(options.adapters ?? [], this.caipNetworks, {
       connectionControllerClient: this.connectionControllerClient
     })
-    const network = this.getDefaultNetwork()
+    const network = this.getLastActiveOrDefaultNetwork()
     if (network) {
       ChainController.setActiveCaipNetwork(network)
     }
@@ -453,6 +453,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setPreferUniversalLinks(options.experimental_preferUniversalLinks)
 
     // Save option in controller
+    OptionsController.setDefaultNetwork(options.defaultNetwork)
     OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
 
     const defaultMetaData = this.getDefaultMetaData()
@@ -512,7 +513,10 @@ export abstract class AppKitBaseClient {
     }
   }
 
-  protected getDefaultNetwork() {
+  /**
+   * @returns The last active network from storage or the `defaultNetwork` set by the user.
+   */
+  protected getLastActiveOrDefaultNetwork() {
     return CaipNetworksUtil.getCaipNetworkFromStorage(this.defaultCaipNetwork)
   }
 

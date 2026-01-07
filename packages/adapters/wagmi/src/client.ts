@@ -645,7 +645,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {
     try {
-      const { id, address, provider, type, info, chainId, socialUri } = params
+      const { id, address, provider, type, info, socialUri } = params
       const connector = this.getWagmiConnector(id)
 
       if (!connector) {
@@ -694,9 +694,18 @@ export class WagmiAdapter extends AdapterBlueprint {
         }
       }
 
+      /** The default chainId to connect to, if set by the user as `defaultNetwork` in config options. */
+      let chainId: number | undefined = undefined
+      const defaultNetwork = OptionsController.state.defaultNetwork
+
+      if (defaultNetwork && defaultNetwork.chainNamespace === 'eip155') {
+        const defaultChainId = Number(defaultNetwork.caipNetworkId.split(':')[1])
+        chainId = Number.isFinite(defaultChainId) ? defaultChainId : undefined
+      }
+
       const res = await connect(this.wagmiConfig, {
         connector,
-        chainId: chainId ? Number(chainId) : undefined,
+        chainId,
         // @ts-expect-error socialUri is needed for auth connector but not in wagmi types
         socialUri
       })
