@@ -1,5 +1,109 @@
 # @reown/appkit-ui
 
+## 1.8.15
+
+### Patch Changes
+
+- [#5378](https://github.com/reown-com/appkit/pull/5378) [`2867bfd`](https://github.com/reown-com/appkit/commit/2867bfd3f06394e559b918d46dc379dd498d1abf) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where profile wallets tabs were shown in the wrong order
+
+- [#5364](https://github.com/reown-com/appkit/pull/5364) [`d186212`](https://github.com/reown-com/appkit/commit/d1862126d3b7da93b52b99a4d709656311926c34) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where wallet buttons were not working in the in-app wallet browser
+
+- [#5297](https://github.com/reown-com/appkit/pull/5297) [`e330f62`](https://github.com/reown-com/appkit/commit/e330f62532f95683ed69bdb0f4fef77f3039df30) Thanks [@enesozturk](https://github.com/enesozturk)! - Implements new `useAppKitWallets` hook to let users build custom connect user interfaces.
+
+  ### Features
+
+  - List, and connect with extension wallets.
+  - List, search and connect the WalletConnect wallets.
+  - Multi-chain.
+  - Multi-platform.
+
+  ### Examples
+
+  **Listing injected wallets:**
+
+  ```tsx
+  const { data } = useAppKitWallets()
+
+  const injectedWallets = data.filter(wallet => wallet.isInjected)
+
+  injectedWallets.map(wallet => {
+    return <WalletItem name={wallet.name} imageSrc={wallet.imageUrl} />
+  })
+  ```
+
+  **Listing WalletConnect wallets:**
+
+  ```tsx
+  const { data } = useAppKitWallets()
+
+  const wcWallets = data.filter(wallet => !wallet.isInjected)
+
+  wcWallets.map(wallet => {
+    return <WalletItem name={wallet.name} imageSrc={wallet.imageUrl} />
+  })
+  ```
+
+  **Connecting to a wallet:**
+
+  ```tsx
+  const { connect } = useAppKitWallets()
+  ...
+  await connect(wallet)
+  ```
+
+- Updated dependencies [[`2867bfd`](https://github.com/reown-com/appkit/commit/2867bfd3f06394e559b918d46dc379dd498d1abf), [`d186212`](https://github.com/reown-com/appkit/commit/d1862126d3b7da93b52b99a4d709656311926c34), [`e330f62`](https://github.com/reown-com/appkit/commit/e330f62532f95683ed69bdb0f4fef77f3039df30)]:
+  - @reown/appkit-common@1.8.15
+  - @reown/appkit-controllers@1.8.15
+  - @reown/appkit-wallet@1.8.15
+
+## 1.8.14
+
+### Patch Changes
+
+- [#5180](https://github.com/reown-com/appkit/pull/5180) [`bd86560`](https://github.com/reown-com/appkit/commit/bd86560541de8a34696bb7deea6a405371b3db14) Thanks [@enesozturk](https://github.com/enesozturk)! - Add full support for the TON (The Open Network) blockchain to AppKit, enabling users to connect TON wallets and perform TON-specific operations within the new WalletConnect protocol and TonConnect protocol.
+
+  ## Examples
+
+  ### Create AppKit with TON adapter
+
+  ```
+  import { createAppKit } from '@reown/appkit'
+  import { ton, tonTestnet } from '@reown/appkit/networks'
+  import { TonAdapter } from '@reown/appkit-adapters-ton'
+
+  createAppKit({
+    ...,
+    networks: [ton, tonTestnet],
+    adapters: [new TonAdapter()]
+  })
+  ```
+
+  ### Use TON adapter
+
+  ```
+  const { address, isConnected } = useAppKitAccount({ namespace: "ton" })
+  ```
+
+  ### Multi-chain use cases
+
+  ```
+  const { open } = useAppKit()
+  const { disconnect } = useDisconnect()
+
+  // Open AppKit with only TON connectors
+  open({ namespace: 'ton' })
+
+  // Disconnect only TON namespace
+  disconnect({ namespace: 'ton' })
+  ```
+
+- [#5296](https://github.com/reown-com/appkit/pull/5296) [`bc4a961`](https://github.com/reown-com/appkit/commit/bc4a961b448cedd0a8485a2188549b413b4e6512) Thanks [@magiziz](https://github.com/magiziz)! - Improved wallet search to filter out non-walletconnect and walletconnect wallets based on platform and SDK type
+
+- Updated dependencies [[`bd86560`](https://github.com/reown-com/appkit/commit/bd86560541de8a34696bb7deea6a405371b3db14), [`2a7ece7`](https://github.com/reown-com/appkit/commit/2a7ece7a1b8ea13fe6ff2d9da151e4b877da75a5), [`bc4a961`](https://github.com/reown-com/appkit/commit/bc4a961b448cedd0a8485a2188549b413b4e6512), [`b1d8373`](https://github.com/reown-com/appkit/commit/b1d8373224c946cfbed4a609f925330768e93469)]:
+  - @reown/appkit-controllers@1.8.14
+  - @reown/appkit-common@1.8.14
+  - @reown/appkit-wallet@1.8.14
+
 ## 1.8.13
 
 ### Patch Changes

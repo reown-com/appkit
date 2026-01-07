@@ -403,6 +403,14 @@ export const CoreHelperUtil = {
       case 'solana':
         return /[1-9A-HJ-NP-Za-km-z]{32,44}$/iu.test(address)
 
+      case 'bip122': {
+        const isP2PKH = /^[1][a-km-zA-HJ-NP-Z1-9]{25,34}$/u.test(address)
+        const isP2SH = /^[3][a-km-zA-HJ-NP-Z1-9]{25,34}$/u.test(address)
+        const isBech32 = /^bc1[a-z0-9]{39,87}$/u.test(address)
+        const isBech32m = /^bc1p[a-z0-9]{58}$/u.test(address)
+
+        return isP2PKH || isP2SH || isBech32 || isBech32m
+      }
       default:
         return false
     }
@@ -537,5 +545,12 @@ export const CoreHelperUtil = {
     const newUrl = beforeKeyValue + newKeyValue + afterKeyValue
 
     return newUrl
+  },
+  isNumber(value: unknown): boolean {
+    if (typeof value !== 'number' && typeof value !== 'string') {
+      return false
+    }
+
+    return !isNaN(Number(value))
   }
 }

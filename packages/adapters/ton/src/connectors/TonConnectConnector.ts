@@ -210,18 +210,22 @@ export class TonConnectConnector implements TonConnector {
     }
 
     const connectorInstance = this as unknown as { account?: { address?: string; chain?: string } }
-    const from = tx.from ?? connectorInstance.account?.address ?? undefined
+    const fromUserFriendly = tx.from ?? connectorInstance.account?.address ?? undefined
     const network = tx.network ?? connectorInstance.account?.chain ?? undefined
+
+    // Convert from address to wallet format (wc:hex) if provided
+    let from: string | undefined = undefined
+    if (fromUserFriendly) {
+      const { wc, hex } = parseUserFriendlyAddress(fromUserFriendly)
+      from = `${wc}:${hex}`
+    }
 
     // User-friendly addresses for prepared transaction
     const prepared = {
       valid_until: tx.validUntil ?? Math.floor(Date.now() / 1000) + 60,
       network,
       from,
-      messages: (tx.messages || []).map(m => ({
-        address: m.address,
-        amount: String(m.amount ?? '0')
-      }))
+      messages
     }
 
     const req = {

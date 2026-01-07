@@ -1,10 +1,12 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
   CoreHelperUtil,
-  EventsController
+  EventsController,
+  StorageUtil
 } from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
@@ -124,6 +126,48 @@ describe('WalletConnect Events', () => {
       connectCallback()
 
       expect(finalizeWcConnectionSpy).toHaveBeenCalledWith('0x123')
+    })
+
+    it('should call StorageUtil.removeDisconnectedConnectorId for all namespaces after onConnect', async () => {
+      vi.spyOn(CoreHelperUtil, 'getAccount').mockReturnValueOnce({
+        address: '0x123',
+        chainId: '1'
+      })
+
+      vi.spyOn(ConnectionController, 'finalizeWcConnection').mockReturnValueOnce()
+
+      const removeDisconnectedConnectorIdSpy = vi
+        .spyOn(StorageUtil, 'removeDisconnectedConnectorId')
+        .mockImplementation(() => {})
+
+      mockUniversalProvider.on.mockClear()
+
+      const appkit = new AppKit({
+        ...mockOptions,
+        universalProvider: mockUniversalProvider as any
+      })
+
+      await appkit.ready()
+
+      const connectCallback = mockUniversalProvider.on.mock.calls.find(
+        ([event]) => event === 'connect'
+      )?.[1]
+
+      if (!connectCallback) {
+        throw new Error('connect callback not found')
+      }
+
+      connectCallback()
+
+      expect(removeDisconnectedConnectorIdSpy).toHaveBeenCalledWith(
+        ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
+        'eip155'
+      )
+      expect(removeDisconnectedConnectorIdSpy).toHaveBeenCalledWith(
+        ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
+        'solana'
+      )
+      expect(removeDisconnectedConnectorIdSpy).toHaveBeenCalledTimes(2)
     })
   })
 

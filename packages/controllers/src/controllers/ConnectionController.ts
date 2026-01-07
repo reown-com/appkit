@@ -26,7 +26,8 @@ import type {
   WalletGetAssetsParams,
   WalletGetAssetsResponse,
   WcWallet,
-  WriteContractArgs
+  WriteContractArgs,
+  WriteSolanaTransactionArgs
 } from '../utils/TypeUtil.js'
 import { AppKitError, withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ChainController, type ChainControllerState } from './ChainController.js'
@@ -116,6 +117,7 @@ export interface ConnectionControllerClient {
   reconnectExternal?: (options: ConnectExternalOptions) => Promise<void>
   checkInstalled?: (ids?: string[]) => boolean
   writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>
+  writeSolanaTransaction: (args: WriteSolanaTransactionArgs) => Promise<string | null>
   getEnsAddress: (value: string) => Promise<false | string>
   getEnsAvatar: (value: string) => Promise<false | string>
   grantPermissions: (params: readonly unknown[] | object) => Promise<unknown>
@@ -366,6 +368,10 @@ const controller = {
 
   async writeContract(args: WriteContractArgs) {
     return ConnectionController._getClient()?.writeContract(args)
+  },
+
+  async writeSolanaTransaction(args: WriteSolanaTransactionArgs) {
+    return ConnectionController._getClient()?.writeSolanaTransaction(args)
   },
 
   async getEnsAddress(value: string) {

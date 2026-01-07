@@ -1,18 +1,18 @@
 ---
-'@reown/appkit-adapter-ethers5': patch
-'@reown/appkit-adapter-ethers': patch
-'@reown/appkit-adapter-wagmi': patch
+'@reown/appkit-controllers': patch
 'pay-test-exchange': patch
 '@reown/appkit-adapter-bitcoin': patch
+'@reown/appkit-adapter-ethers': patch
+'@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-ton': patch
+'@reown/appkit-adapter-wagmi': patch
 '@reown/appkit': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-codemod': patch
 '@reown/appkit-common': patch
-'@reown/appkit-controllers': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-pay': patch
@@ -27,4 +27,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where wallet buttons were not working in the in-app wallet browser
+Fixed an issue where selecting Base Account incorrectly triggered the Coinbase Wallet extension connection instead of the Base Account SDK connection

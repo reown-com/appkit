@@ -16,7 +16,11 @@ export const AppKitPayErrorCodes = {
   UNABLE_TO_GET_EXCHANGES: 'UNABLE_TO_GET_EXCHANGES',
   ASSET_NOT_SUPPORTED: 'ASSET_NOT_SUPPORTED',
   UNABLE_TO_GET_PAY_URL: 'UNABLE_TO_GET_PAY_URL',
-  UNABLE_TO_GET_BUY_STATUS: 'UNABLE_TO_GET_BUY_STATUS'
+  UNABLE_TO_GET_BUY_STATUS: 'UNABLE_TO_GET_BUY_STATUS',
+  UNABLE_TO_GET_TOKEN_BALANCES: 'UNABLE_TO_GET_TOKEN_BALANCES',
+  UNABLE_TO_GET_QUOTE: 'UNABLE_TO_GET_QUOTE',
+  UNABLE_TO_GET_QUOTE_STATUS: 'UNABLE_TO_GET_QUOTE_STATUS',
+  INVALID_RECIPIENT_ADDRESS_FOR_ASSET: 'INVALID_RECIPIENT_ADDRESS_FOR_ASSET'
 } as const
 
 export type AppKitPayErrorCode = (typeof AppKitPayErrorCodes)[keyof typeof AppKitPayErrorCodes]
@@ -26,6 +30,8 @@ export const AppKitPayErrorMessages = {
   [AppKitPayErrorCodes.INVALID_RECIPIENT]: 'Invalid recipient address',
   [AppKitPayErrorCodes.INVALID_ASSET]: 'Invalid asset specified',
   [AppKitPayErrorCodes.INVALID_AMOUNT]: 'Invalid payment amount',
+  [AppKitPayErrorCodes.INVALID_RECIPIENT_ADDRESS_FOR_ASSET]:
+    'Invalid recipient address for the asset selected',
 
   [AppKitPayErrorCodes.UNKNOWN_ERROR]: 'Unknown payment error occurred',
   [AppKitPayErrorCodes.UNABLE_TO_INITIATE_PAYMENT]: 'Unable to initiate payment',
@@ -34,7 +40,10 @@ export const AppKitPayErrorMessages = {
   [AppKitPayErrorCodes.UNABLE_TO_GET_EXCHANGES]: 'Unable to get exchanges',
   [AppKitPayErrorCodes.ASSET_NOT_SUPPORTED]: 'Asset not supported by the selected exchange',
   [AppKitPayErrorCodes.UNABLE_TO_GET_PAY_URL]: 'Unable to get payment URL',
-  [AppKitPayErrorCodes.UNABLE_TO_GET_BUY_STATUS]: 'Unable to get buy status'
+  [AppKitPayErrorCodes.UNABLE_TO_GET_BUY_STATUS]: 'Unable to get buy status',
+  [AppKitPayErrorCodes.UNABLE_TO_GET_TOKEN_BALANCES]: 'Unable to get token balances',
+  [AppKitPayErrorCodes.UNABLE_TO_GET_QUOTE]: 'Unable to get quote. Please choose a different token',
+  [AppKitPayErrorCodes.UNABLE_TO_GET_QUOTE_STATUS]: 'Unable to get quote status'
 } as const
 
 export type AppKitPayErrorMessage =

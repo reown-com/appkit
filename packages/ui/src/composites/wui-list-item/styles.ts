@@ -5,13 +5,20 @@ export default css`
     width: 100%;
   }
 
+  :host([data-type='primary']) > button {
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+  }
+
+  :host([data-type='secondary']) > button {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
   button {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: ${({ spacing }) => spacing[3]};
     width: 100%;
-    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
     border-radius: ${({ borderRadius }) => borderRadius[4]};
     transition:
       background-color ${({ durations }) => durations['lg']}
@@ -29,8 +36,12 @@ export default css`
   }
 
   @media (hover: hover) {
-    button:hover:enabled {
+    :host([data-type='primary']) > button:hover:enabled {
       background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    }
+
+    :host([data-type='secondary']) > button:hover:enabled {
+      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
     }
   }
 

@@ -125,7 +125,7 @@ const controller = {
 
   filterSpamTransactions(transactions: Transaction[]) {
     return transactions.filter(transaction => {
-      const isAllSpam = transaction.transfers.every(
+      const isAllSpam = transaction.transfers?.every(
         transfer => transfer.nft_info?.flags.is_spam === true
       )
 
