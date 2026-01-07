@@ -50,6 +50,7 @@ export function AppkitConnectDrawer({ controls }: Props) {
 
   function handleClose() {
     push('connect')
+    resetWcUri()
     onClose()
   }
 

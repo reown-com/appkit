@@ -425,6 +425,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
   function resetWcUri() {
     ConnectionController.resetUri()
+    ConnectionController.setWcLinking(undefined)
   }
 
   const lastHandledUriRef = useRef<string | undefined>(undefined)
