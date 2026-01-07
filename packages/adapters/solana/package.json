@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-solana",
-  "version": "1.8.15",
+  "version": "1.8.16",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
