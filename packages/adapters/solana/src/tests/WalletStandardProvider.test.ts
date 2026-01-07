@@ -158,4 +158,18 @@ describe('WalletStandardProvider specific tests', () => {
     // should be the exact same object guaranteeing usage of requestedChains object
     expect(walletStandardProvider.chains[0]).toBe(requestedChains[testingChainIndex])
   })
+
+  it('should emit disconnect when StandardEvents change is triggered with undefined account', () => {
+    // Get the 'change' event handler that was registered in bindEvents
+    const onChangeMock = wallet.features['standard:events'].on as ReturnType<typeof vi.fn>
+    const changeHandler = onChangeMock.mock.calls.find(call => call[0] === 'change')?.[1]
+
+    expect(changeHandler).toBeDefined()
+
+    // Simulate wallet disconnecting externally - when accounts[0] is undefined
+    // This happens when the wallet extension disconnects and sends a change event with empty/undefined accounts
+    changeHandler?.({ accounts: [undefined] })
+
+    expect(emitSpy).toHaveBeenCalledWith('disconnect', undefined)
+  })
 })
