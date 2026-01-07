@@ -522,8 +522,6 @@ export const PayController = {
     try {
       const { namespace, transactionStep } = params
 
-      const { from, to, data, value } = transactionStep.transaction
-
       PayController.initiatePayment()
 
       const allNetworks = ChainController.getAllRequestedCaipNetworks()
@@ -542,12 +540,20 @@ export const PayController = {
       }
 
       if (namespace === ConstantsUtil.CHAIN.EVM) {
+        const { from, to, data, value } = transactionStep.transaction
+
         await ConnectionController.sendTransaction({
           address: from,
           to,
           data,
           value: BigInt(value),
           chainNamespace: namespace
+        })
+      } else if (namespace === ConstantsUtil.CHAIN.SOLANA) {
+        const { instructions } = transactionStep.transaction
+
+        await ConnectionController.writeSolanaTransaction({
+          instructions
         })
       }
     } catch (error) {
