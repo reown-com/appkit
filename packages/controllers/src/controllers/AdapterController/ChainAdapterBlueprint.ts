@@ -20,6 +20,7 @@ import type {
   Connector as AppKitConnector,
   CombinedProvider,
   Provider,
+  SolanaTransactionRequest,
   Tokens,
   WriteContractArgs
 } from '../../utils/TypeUtil.js'
@@ -451,6 +452,15 @@ export abstract class AdapterBlueprint<
   ): Promise<AdapterBlueprint.WriteContractResult>
 
   /**
+   * Writes a solana contract transaction.
+   * @param {AdapterBlueprint.WriteContractParams} params - Parameters including receiver address, token amount, token address, from address, method, and ABI
+   * @returns {Promise<AdapterBlueprint.WriteContractResult>} Object containing the transaction hash
+   */
+  public abstract writeSolanaTransaction(
+    params: AdapterBlueprint.WriteSolanaTransactionParams
+  ): Promise<AdapterBlueprint.WriteSolanaTransactionResult>
+
+  /**
    * Parses a decimal string value into a bigint with the specified number of decimals.
    * @param {AdapterBlueprint.ParseUnitsParams} params - Parameters including value and decimals
    * @returns {AdapterBlueprint.ParseUnitsResult} The parsed bigint value
@@ -848,7 +858,17 @@ export namespace AdapterBlueprint {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }
 
+  export type WriteSolanaTransactionParams = SolanaTransactionRequest & {
+    caipNetwork: CaipNetwork
+    provider?: AppKitConnector['provider']
+    caipAddress: CaipAddress
+  }
+
   export type WriteContractResult = {
+    hash: string
+  }
+
+  export type WriteSolanaTransactionResult = {
     hash: string
   }
 

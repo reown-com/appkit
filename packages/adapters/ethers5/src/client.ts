@@ -230,6 +230,10 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
   }
 
+  public async writeSolanaTransaction() {
+    return Promise.resolve({ hash: '' })
+  }
+
   override async syncConnectors(): Promise<void> {
     this.ethersConfig = await this.createEthersConfig()
 

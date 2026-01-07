@@ -17,6 +17,7 @@ export const TEXT_VARS_BY_COLOR = {
   tertiary: vars.tokens.theme.textTertiary,
   invert: vars.tokens.theme.textInvert,
   error: vars.tokens.core.textError,
+  success: vars.tokens.core.textSuccess,
   warning: vars.tokens.core.textWarning,
 
   /* Token colors */

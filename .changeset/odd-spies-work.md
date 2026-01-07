@@ -1,12 +1,12 @@
 ---
-'@reown/appkit-adapter-ethers5': patch
-'@reown/appkit-adapter-ethers': patch
-'@reown/appkit-adapter-wagmi': patch
+'@reown/appkit': patch
 'pay-test-exchange': patch
 '@reown/appkit-adapter-bitcoin': patch
+'@reown/appkit-adapter-ethers': patch
+'@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-ton': patch
-'@reown/appkit': patch
+'@reown/appkit-adapter-wagmi': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
@@ -27,4 +27,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where wallet buttons were not working in the in-app wallet browser
+Fixed an issue where WalletConnect would not reconnect after page refresh when using multi-wallet

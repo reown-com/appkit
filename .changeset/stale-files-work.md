@@ -1,5 +1,9 @@
 ---
+'@reown/appkit-controllers': patch
 '@reown/appkit-scaffold-ui': patch
+'@reown/appkit-common': patch
+'@reown/appkit-pay': patch
+'@reown/appkit-ui': patch
 'pay-test-exchange': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
@@ -12,19 +16,18 @@
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-codemod': patch
-'@reown/appkit-common': patch
-'@reown/appkit-controllers': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
-'@reown/appkit-pay': patch
 '@reown/appkit-polyfills': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-testing': patch
-'@reown/appkit-ui': patch
 '@reown/appkit-universal-connector': patch
 '@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where profile wallets tabs were shown in the wrong order
+This update brings another level of upgrade to AppKit Pay and AppKit Deposit 🔥
+
+- Users can pay with any token they choose, while the recipient always receives their preferred token through automatic swapping and bridging
+- Implemented fee splitting between Reown and partners
