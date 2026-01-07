@@ -12,7 +12,8 @@ import {
   type ConnectionControllerClient,
   ConnectorController,
   RouterController,
-  SwapController
+  SwapController,
+  type SwapTokenWithBalance
 } from '../../exports/index.js'
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
 import {
@@ -115,6 +116,38 @@ describe('SwapController', () => {
     expect(SwapController.state.gasPriceInUSD).toEqual(0.00648630001383744)
     expect(SwapController.state.priceImpact).toEqual(3.952736601951709)
     expect(SwapController.state.maxSlippage).toEqual(0.0001726)
+  })
+
+  it('should handle large token amounts with 18 decimal token', async () => {
+    const inputAmount = '499999999999999'
+    const expectedAmount = '499999999999999000000000000000000'
+
+    const fetchSwapQuoteSpy = vi.spyOn(BlockchainApiController, 'fetchSwapQuote')
+
+    SwapController.setSourceTokenAmount(inputAmount)
+    SwapController.setSourceToken({
+      address: '0x123',
+      decimals: 18
+    } as unknown as SwapTokenWithBalance)
+
+    await SwapController.swapTokens()
+
+    await vi.waitFor(
+      () =>
+        expect(fetchSwapQuoteSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            amount: expectedAmount
+          })
+        ),
+      { timeout: 2500 }
+    )
+
+    const capturedAmount = fetchSwapQuoteSpy.mock.calls[0]?.[0]?.amount
+
+    expect(capturedAmount).toBe(expectedAmount)
+    expect(capturedAmount).not.toContain('e')
+    expect(capturedAmount).not.toContain('E')
+    expect(capturedAmount?.length).toBe(33)
   })
 
   it('should handle fetchSwapQuote error correctly', async () => {
