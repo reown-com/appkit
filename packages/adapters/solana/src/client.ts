@@ -10,6 +10,7 @@ import {
 import UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
+import { SendTransactionError as CommonSendTransactionError } from '@reown/appkit-common'
 import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AdapterBlueprint,
@@ -313,7 +314,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
         for (const { pattern, message } of TRANSACTION_ERROR_MAP) {
           if (pattern.test(fullErrorText)) {
-            throw new Error(message)
+            throw new CommonSendTransactionError(message)
           }
         }
       }
