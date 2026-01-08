@@ -1,5 +1,27 @@
 # @reown/appkit-adapter-wagmi
 
+## 1.8.16
+
+### Patch Changes
+
+- [#5437](https://github.com/reown-com/appkit/pull/5437) [`e542ebd`](https://github.com/reown-com/appkit/commit/e542ebdbef99791f91ab000a257dac73f96fd81b) Thanks [@0xmkh](https://github.com/0xmkh)! - Fixed an issue where WalletConnect would not reconnect after page refresh when using multi-wallet
+
+- [#5423](https://github.com/reown-com/appkit/pull/5423) [`73d2b61`](https://github.com/reown-com/appkit/commit/73d2b616ec1e7a919e90e9fd7c8619aedf74475b) Thanks [@0xmkh](https://github.com/0xmkh)! - This update brings another level of upgrade to AppKit Pay and AppKit Deposit 🔥
+
+  - Users can pay with any token they choose, while the recipient always receives their preferred token through automatic swapping and bridging
+  - Implemented fee splitting between Reown and partners
+
+- [#5405](https://github.com/reown-com/appkit/pull/5405) [`c1954be`](https://github.com/reown-com/appkit/commit/c1954befd87a53fda56e9d93b82d31ccb5074aff) Thanks [@0xmkh](https://github.com/0xmkh)! - Fixed an issue where selecting Base Account incorrectly triggered the Coinbase Wallet extension connection instead of the Base Account SDK connection
+
+- Updated dependencies [[`e542ebd`](https://github.com/reown-com/appkit/commit/e542ebdbef99791f91ab000a257dac73f96fd81b), [`73d2b61`](https://github.com/reown-com/appkit/commit/73d2b616ec1e7a919e90e9fd7c8619aedf74475b), [`c1954be`](https://github.com/reown-com/appkit/commit/c1954befd87a53fda56e9d93b82d31ccb5074aff)]:
+  - @reown/appkit@1.8.16
+  - @reown/appkit-utils@1.8.16
+  - @reown/appkit-common@1.8.16
+  - @reown/appkit-controllers@1.8.16
+  - @reown/appkit-polyfills@1.8.16
+  - @reown/appkit-scaffold-ui@1.8.16
+  - @reown/appkit-wallet@1.8.16
+
 ## 1.8.15
 
 ### Patch Changes

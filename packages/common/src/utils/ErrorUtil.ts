@@ -13,6 +13,7 @@ export type ProviderRpcErrorCode =
   | 5710 // Unsupported chain id
   | 5002 // User Rejected Methods
   | 5000 // User Rejected
+  | 5001 // Send Transaction Error
 
 type RpcProviderError = {
   message: string
@@ -24,11 +25,13 @@ export const ErrorUtil = {
   RPC_ERROR_CODE: {
     USER_REJECTED_REQUEST: 4001,
     USER_REJECTED_METHODS: 5002,
-    USER_REJECTED: 5000
+    USER_REJECTED: 5000,
+    SEND_TRANSACTION_ERROR: 5001
   } as const,
   PROVIDER_RPC_ERROR_NAME: {
     PROVIDER_RPC: 'ProviderRpcError',
-    USER_REJECTED_REQUEST: 'UserRejectedRequestError'
+    USER_REJECTED_REQUEST: 'UserRejectedRequestError',
+    SEND_TRANSACTION_ERROR: 'SendTransactionError'
   },
   isRpcProviderError(error: unknown): error is RpcProviderError {
     try {
@@ -92,6 +95,17 @@ export class UserRejectedRequestError extends ProviderRpcError {
     super(cause, {
       code: ErrorUtil.RPC_ERROR_CODE.USER_REJECTED_REQUEST,
       message: 'User rejected the request'
+    })
+  }
+}
+
+export class SendTransactionError extends ProviderRpcError {
+  override name = ErrorUtil.PROVIDER_RPC_ERROR_NAME.SEND_TRANSACTION_ERROR
+
+  constructor(message: string) {
+    super(undefined, {
+      code: ErrorUtil.RPC_ERROR_CODE.SEND_TRANSACTION_ERROR,
+      message
     })
   }
 }

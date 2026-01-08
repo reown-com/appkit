@@ -1,5 +1,5 @@
 ---
-'@reown/appkit': patch
+'@reown/appkit-controllers': patch
 'pay-test-exchange': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
@@ -7,12 +7,12 @@
 '@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-ton': patch
 '@reown/appkit-adapter-wagmi': patch
+'@reown/appkit': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-codemod': patch
 '@reown/appkit-common': patch
-'@reown/appkit-controllers': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-pay': patch
@@ -27,4 +27,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where WalletConnect would not reconnect after page refresh when using multi-wallet
+Fixed an issue in headless mode where triggering a second WalletConnect connection attempt did not initiate the connection request

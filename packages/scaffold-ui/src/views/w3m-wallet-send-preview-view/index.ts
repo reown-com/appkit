@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ConstantsUtil as CommonConstantsUtil, ErrorUtil } from '@reown/appkit-common'
+import { ErrorUtil } from '@reown/appkit-common'
 import {
   AppKitError,
   ChainController,
@@ -168,19 +168,18 @@ export class W3mWalletSendPreviewView extends LitElement {
         RouterController.replace('Account')
       }
     } catch (error) {
-      let errMessage = 'Failed to send transaction. Please try again.'
+      let errMessage = 'Failed to send transaction'
 
       const isUserRejectedRequestError =
         error instanceof AppKitError &&
         error.originalName === ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST
 
-      if (
-        ChainController.state.activeChain === CommonConstantsUtil.CHAIN.SOLANA ||
-        isUserRejectedRequestError
-      ) {
-        if (error instanceof Error) {
-          errMessage = error.message
-        }
+      const isSendTransactionError =
+        error instanceof AppKitError &&
+        error.originalName === ErrorUtil.PROVIDER_RPC_ERROR_NAME.SEND_TRANSACTION_ERROR
+
+      if (isUserRejectedRequestError || isSendTransactionError) {
+        errMessage = error.message
       }
 
       EventsController.sendEvent({

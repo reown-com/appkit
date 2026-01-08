@@ -329,6 +329,7 @@ export class W3mConnectView extends LitElement {
         tabIdx=${ifDefined(tabIndex)}
         @click=${this.onContinueWalletClick.bind(this)}
         text="Continue with a wallet"
+        icon="wallet"
       ></wui-list-button>`
     }
 

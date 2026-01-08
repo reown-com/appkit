@@ -27,4 +27,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where selecting Base Account incorrectly triggered the Coinbase Wallet extension connection instead of the Base Account SDK connection
+Fixed an issue where swaps failed when entering large amounts of high decimal tokens

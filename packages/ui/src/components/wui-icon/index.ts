@@ -6,6 +6,7 @@ import { html, unsafeStatic } from 'lit/static-html.js'
 import { appStoreSvg } from '../../assets/svg/app-store.js'
 import { appleSvg } from '../../assets/svg/apple.js'
 import { bitcoinSvg } from '../../assets/svg/bitcoin.js'
+import { checkmarkSvg } from '../../assets/svg/checkmark.js'
 import { chromeStoreSvg } from '../../assets/svg/chrome-store.js'
 import { coinsSvg } from '../../assets/svg/coins.js'
 import { cursorSvg } from '../../assets/svg/cursor.js'
@@ -53,7 +54,6 @@ const phosphorIconsMap: Record<string, string> = {
   bin: 'ph-trash',
   browser: 'ph-browser',
   card: 'ph-credit-card',
-  checkmark: 'ph-check',
   checkmarkBold: 'ph-check',
   chevronBottom: 'ph-caret-down',
   chevronLeft: 'ph-caret-left',
@@ -131,7 +131,8 @@ const phosphorIconsMap: Record<string, string> = {
   walletConnectBrown: '',
   walletConnectLightBrown: '',
   x: '',
-  infoSeal: ''
+  infoSeal: '',
+  checkmark: ''
 }
 
 // Dynamic imports for Phosphor components
@@ -220,7 +221,8 @@ const svgOptions: Partial<Record<IconType, TemplateResult<2>>> = {
   walletConnectBrown: walletConnectBrownSvg,
   walletConnectLightBrown: walletConnectLightBrownSvg,
   x: xSvg,
-  infoSeal: infoSealSvg
+  infoSeal: infoSealSvg,
+  checkmark: checkmarkSvg
 }
 
 // -- Constants ------------------------------------------ //
