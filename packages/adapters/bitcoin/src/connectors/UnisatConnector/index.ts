@@ -1,7 +1,7 @@
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
-import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
+import { ChainController, CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { MethodNotSupportedError } from '../../errors/MethodNotSupportedError.js'
 import { AddressPurpose } from '../../utils/BitcoinConnector.js'
@@ -20,14 +20,12 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
 
   private readonly wallet: UnisatConnectorTypes.Wallet
   private readonly requestedChains: CaipNetwork[] = []
-  private readonly getActiveNetwork: () => CaipNetwork | undefined
 
   constructor({
     id,
     name,
     wallet,
     requestedChains,
-    getActiveNetwork,
     imageUrl
   }: UnisatConnectorTypes.ConstructorParams) {
     super()
@@ -35,15 +33,10 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
     this.name = name
     this.wallet = wallet
     this.requestedChains = requestedChains
-    this.getActiveNetwork = getActiveNetwork
     this.imageUrl = imageUrl
   }
 
   public get chains() {
-    if (this.id === 'unisat') {
-      return this.requestedChains.filter(chain => chain.caipNetworkId === bitcoin.caipNetworkId)
-    }
-
     return this.requestedChains.filter(
       chain => chain.chainNamespace === ConstantsUtil.CHAIN.BITCOIN
     )
@@ -90,7 +83,7 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
   }
 
   public async sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string> {
-    const network = this.getActiveNetwork()
+    const network = ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)
 
     if (!network) {
       throw new Error('No active network available')
@@ -115,10 +108,28 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
   ): Promise<BitcoinConnector.SignPSBTResponse> {
     const psbtHex = Buffer.from(params.psbt, 'base64').toString('hex')
 
-    const signedPsbtHex = await this.wallet.signPsbt(psbtHex)
+    let options: UnisatConnectorTypes.SignPSBTParams | undefined = undefined
+    if (params.signInputs?.length > 0) {
+      options = {
+        autoFinalized: false,
+        toSignInputs: params.signInputs.map(input => ({
+          index: input.index,
+          address: input.address,
+          sighashTypes: input.sighashTypes,
+          publicKey: input.publicKey,
+          disableTweakSigner: input.disableTweakSigner,
+          useTweakedSigner: input.useTweakedSigner
+        }))
+      }
+    }
+
+    const signedPsbtHex = await this.wallet.signPsbt(psbtHex, options)
 
     let txid: string | undefined = undefined
     if (params.broadcast) {
+      if (params.signInputs?.length > 0) {
+        throw new Error('Broadcast not supported for partial signing')
+      }
       txid = await this.wallet.pushPsbt(signedPsbtHex)
     }
 
@@ -194,6 +205,8 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
         return 'BITCOIN_MAINNET'
       case bitcoinTestnet.caipNetworkId:
         return 'BITCOIN_TESTNET'
+      case bitcoinSignet.caipNetworkId:
+        return 'BITCOIN_SIGNET'
       default:
         throw new Error('UnisatConnector: unsupported network')
     }

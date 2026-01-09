@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
@@ -6,100 +6,83 @@ export default css`
   }
 
   button {
-    border-radius: var(--wui-border-radius-3xl);
-    background: var(--wui-color-gray-glass-002);
+    border-radius: ${({ borderRadius }) => borderRadius['20']};
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
     display: flex;
-    gap: var(--wui-spacing-xs);
-    padding: var(--wui-spacing-3xs) var(--wui-spacing-xs) var(--wui-spacing-3xs)
-      var(--wui-spacing-xs);
-    border: 1px solid var(--wui-color-gray-glass-005);
+    gap: ${({ spacing }) => spacing[1]};
+    padding: ${({ spacing }) => spacing[1]};
+    color: ${({ tokens }) => tokens.theme.textSecondary};
+    border-radius: ${({ borderRadius }) => borderRadius[16]};
+    height: 32px;
+    transition: box-shadow ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
+    will-change: box-shadow;
   }
 
-  button:disabled {
-    background: var(--wui-color-gray-glass-015);
-  }
+  button wui-flex.avatar-container {
+    width: 28px;
+    height: 24px;
+    position: relative;
 
-  button:disabled > wui-text {
-    color: var(--wui-color-gray-glass-015);
-  }
+    wui-flex.network-image-container {
+      position: absolute;
+      bottom: 0px;
+      right: 0px;
+      width: 12px;
+      height: 12px;
+    }
 
-  button:disabled > wui-flex > wui-text {
-    color: var(--wui-color-gray-glass-015);
-  }
+    wui-flex.network-image-container wui-icon {
+      background: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    }
 
-  button:disabled > wui-image,
-  button:disabled > wui-flex > wui-avatar {
-    filter: grayscale(1);
-  }
+    wui-avatar {
+      width: 24px;
+      min-width: 24px;
+      height: 24px;
+    }
 
-  button:has(wui-image) {
-    padding: var(--wui-spacing-3xs) var(--wui-spacing-3xs) var(--wui-spacing-3xs)
-      var(--wui-spacing-xs);
-  }
-
-  wui-text {
-    color: var(--wui-color-fg-100);
-  }
-
-  wui-flex > wui-text {
-    color: var(--wui-color-fg-200);
+    wui-icon {
+      width: 12px;
+      height: 12px;
+    }
   }
 
   wui-image,
-  wui-icon-box {
-    border-radius: var(--wui-border-radius-3xl);
-    width: 24px;
-    height: 24px;
-    box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
+  wui-icon {
+    border-radius: ${({ borderRadius }) => borderRadius[16]};
   }
 
-  wui-flex {
-    border-radius: var(--wui-border-radius-3xl);
-    border: 1px solid var(--wui-color-gray-glass-005);
-    background: var(--wui-color-gray-glass-005);
-    padding: 4px var(--wui-spacing-m) 4px var(--wui-spacing-xxs);
+  wui-text {
+    white-space: nowrap;
   }
 
-  button.local-no-balance {
-    border-radius: 0px;
-    border: none;
-    background: transparent;
+  button wui-flex.balance-container {
+    height: 100%;
+    border-radius: ${({ borderRadius }) => borderRadius[16]};
+    padding-left: ${({ spacing }) => spacing[1]};
+    padding-right: ${({ spacing }) => spacing[1]};
+    background: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    color: ${({ tokens }) => tokens.theme.textPrimary};
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
+    will-change: background-color;
   }
 
-  wui-avatar {
-    width: 20px;
-    height: 20px;
-    box-shadow: 0 0 0 2px var(--wui-color-accent-glass-010);
-  }
+  /* -- Hover & Active states ----------------------------------------------------------- */
+  button:hover:enabled,
+  button:focus-visible:enabled,
+  button:active:enabled {
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
 
-  @media (max-width: 500px) {
-    button {
-      gap: 0px;
-      padding: var(--wui-spacing-3xs) var(--wui-spacing-xs) !important;
-      height: 32px;
-    }
-    wui-image,
-    wui-icon-box,
-    button > wui-text {
-      visibility: hidden;
-      width: 0px;
-      height: 0px;
-    }
-    button {
-      border-radius: 0px;
-      border: none;
-      background: transparent;
-      padding: 0px;
+    wui-flex.balance-container {
+      background: ${({ tokens }) => tokens.theme.foregroundTertiary};
     }
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    button:hover:enabled > wui-flex > wui-text {
-      color: var(--wui-color-fg-175);
-    }
-
-    button:active:enabled > wui-flex > wui-text {
-      color: var(--wui-color-fg-175);
-    }
+  /* -- Disabled states --------------------------------------------------- */
+  button:disabled wui-text,
+  button:disabled wui-flex.avatar-container {
+    opacity: 0.3;
   }
 `

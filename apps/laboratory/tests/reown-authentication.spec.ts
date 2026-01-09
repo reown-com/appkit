@@ -22,7 +22,7 @@ test.beforeAll(async ({ browser }) => {
   walletPage = new WalletPage(await context.newPage())
 
   await walletPage.load()
-  await modalPage.page.goto(`${BASE_URL}library/reown-authentication`)
+  await modalPage.page.goto(`${BASE_URL}appkit?name=reown-authentication`)
   await modalValidator.expectDisconnected()
 })
 

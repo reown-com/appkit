@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/require-await */
-import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
-import { PresetsUtil } from '@reown/appkit-utils'
+import {
+  type CaipNetwork,
+  ConstantsUtil as CommonConstantsUtil,
+  ConstantsUtil,
+  PresetsUtil
+} from '@reown/appkit-common'
+import { ChainController, CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
@@ -29,26 +33,25 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
   private wallet: OKXConnector.Wallet
   private readonly requestedChains: CaipNetwork[] = []
-  private readonly getActiveNetwork: () => CaipNetwork | undefined
 
   constructor({
     wallet,
     requestedChains,
-    getActiveNetwork,
     imageUrl,
     requestedCaipNetworkId
   }: OKXConnector.ConstructorParams) {
     super()
     this.wallet = wallet
     this.requestedChains = requestedChains
-    this.getActiveNetwork = getActiveNetwork
     this.imageUrl = imageUrl
     this.requestedCaipNetworkId = requestedCaipNetworkId
   }
 
   public get chains() {
     return this.requestedChains.filter(
-      chain => chain.caipNetworkId === this.getActiveNetwork()?.caipNetworkId
+      chain =>
+        chain.caipNetworkId ===
+        ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId
     )
   }
 
@@ -87,7 +90,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   }
 
   public async sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string> {
-    const network = this.getActiveNetwork()
+    const network = ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)
 
     if (!network) {
       throw new Error('No active network available')
@@ -113,10 +116,27 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   ): Promise<BitcoinConnector.SignPSBTResponse> {
     const psbtHex = Buffer.from(params.psbt, 'base64').toString('hex')
 
-    const signedPsbtHex = await this.wallet.signPsbt(psbtHex)
+    let options: OKXConnector.SignPSBTParams | undefined = undefined
+    if (params.signInputs?.length > 0) {
+      options = {
+        autoFinalized: false,
+        toSignInputs: params.signInputs.map(input => ({
+          index: input.index,
+          address: input.address,
+          sighashTypes: input.sighashTypes,
+          publicKey: input.publicKey,
+          disableTweakSigner: input.disableTweakSigner
+        }))
+      }
+    }
+
+    const signedPsbtHex = await this.wallet.signPsbt(psbtHex, options)
 
     let txid: string | undefined = undefined
     if (params.broadcast) {
+      if (params.signInputs?.length > 0) {
+        throw new Error('Broadcast not supported for partial signing')
+      }
       txid = await this.wallet.pushPsbt(signedPsbtHex)
     }
 
@@ -129,7 +149,6 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   public async switchNetwork(_caipNetworkId: CaipNetwork['caipNetworkId']): Promise<void> {
     const connector = OKXConnector.getWallet({
       requestedChains: this.requestedChains,
-      getActiveNetwork: this.getActiveNetwork,
       requestedCaipNetworkId: _caipNetworkId
     })
 
@@ -206,7 +225,6 @@ export namespace OKXConnector {
   export type ConstructorParams = {
     wallet: Wallet
     requestedChains: CaipNetwork[]
-    getActiveNetwork: () => CaipNetwork | undefined
     imageUrl: string
     requestedCaipNetworkId?: CaipNetwork['caipNetworkId']
   }
@@ -220,7 +238,18 @@ export namespace OKXConnector {
     disconnect(): Promise<void>
     getAccounts(): Promise<string[]>
     signMessage(signStr: string, type?: 'ecdsa' | 'bip322-simple'): Promise<string>
-    signPsbt(psbtHex: string): Promise<string>
+    signPsbt(
+      psbtHex: string,
+      options?: {
+        autoFinalized?: boolean
+        toSignInputs?: Array<{
+          index: number
+          address?: string
+          publicKey?: string
+          sighashTypes?: number[]
+        }>
+      }
+    ): Promise<string>
     pushPsbt(psbtHex: string): Promise<string>
     send(params: {
       from: string
@@ -236,4 +265,9 @@ export namespace OKXConnector {
   }
 
   export type GetWalletParams = Omit<ConstructorParams, 'wallet' | 'imageUrl'>
+
+  export type SignPSBTParams = {
+    toSignInputs: Omit<BitcoinConnector.SignPSBTParams['signInputs'][number], 'useTweakedSigner'>[]
+    autoFinalized?: boolean
+  }
 }

@@ -3,6 +3,7 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import { SECURE_SITE_SDK, SECURE_SITE_SDK_VERSION, W3mFrameConstants } from './W3mFrameConstants.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import { W3mFrameSchema } from './W3mFrameSchema.js'
+import { W3mFrameStorage } from './W3mFrameStorage.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
 
 type EventKey = typeof W3mFrameConstants.APP_EVENT_KEY | typeof W3mFrameConstants.FRAME_EVENT_KEY
@@ -36,6 +37,12 @@ function createSecureSiteSdkUrl({
   url.searchParams.set('version', SECURE_SITE_SDK_VERSION)
   url.searchParams.set('enableLogger', String(enableLogger))
   url.searchParams.set('rpcUrl', rpcUrl)
+  // Intended for debug usage only
+  const smartAccountVersion = W3mFrameStorage.get('dapp_smart_account_version')
+  if (smartAccountVersion && (smartAccountVersion === 'v6' || smartAccountVersion === 'v7')) {
+    console.warn('>> AppKit - Forcing smart account version', smartAccountVersion)
+    url.searchParams.set('smartAccountVersion', smartAccountVersion)
+  }
   if (enableCloudAuthAccount) {
     url.searchParams.set('enableCloudAuthAccount', 'true')
   }
@@ -97,8 +104,8 @@ export class W3mFrame {
         iframe.style.display = 'none'
         iframe.style.border = 'none'
         iframe.style.animationDelay = '0s, 50ms'
-        iframe.style.borderBottomLeftRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
-        iframe.style.borderBottomRightRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
+        iframe.style.borderBottomLeftRadius = `clamp(0px, var(--apkt-borderRadius-8), 44px)`
+        iframe.style.borderBottomRightRadius = `clamp(0px, var(--apkt-borderRadius-8), 44px)`
         this.iframe = iframe
         this.iframe.onerror = () => {
           this.frameLoadPromiseResolver?.reject('Unable to load email login dependency')

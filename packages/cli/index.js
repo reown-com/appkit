@@ -1,17 +1,20 @@
 #!/usr/bin/env node
-import chalk from 'chalk'
 import inquirer from 'inquirer'
 
-import { banner, checkDirectoryExists, cloneRepository, generateRepoUrl } from './utils.js'
-
-// Define styles
-const redTip = chalk.hex('#C70039') // Red for tips
+import {
+  banner,
+  checkDirectoryExists,
+  cloneRepository,
+  generateRepoUrl,
+  runReactNativeCLI
+} from './utils.js'
 
 // Display CLI Banner
 console.log(banner)
 
 async function questionDirectory() {
   const answer = await inquirer.prompt({ message: 'Enter your project name: ', name: 'directory' })
+
   return answer.directory
 }
 
@@ -20,15 +23,17 @@ async function questionFramework() {
     {
       type: 'list',
       name: 'framework',
-      message: 'Which framework will be used ?',
+      message: 'Select the framework for your project:',
       choices: [
         { name: 'Next.js', value: 'nextjs' },
         { name: 'React', value: 'react' },
         { name: 'Vue', value: 'vue' },
-        { name: 'Javascript', value: 'javascript' }
+        { name: 'Javascript', value: 'javascript' },
+        { name: 'React Native', value: 'react-native' }
       ]
     }
   ]
+
   return await inquirer.prompt(framework)
 }
 
@@ -37,9 +42,8 @@ async function questionLibrary() {
     {
       type: 'list',
       name: 'library',
-      message: 'AppKit Core, Wagmi, Ethers, Solana, Bitcoin or EVM+Solana ?',
+      message: 'Wagmi, Ethers, Solana, Bitcoin or EVM+Solana ?',
       choices: [
-        { name: 'AppKit Core', value: 'core' },
         { name: 'Wagmi', value: 'wagmi' },
         { name: 'Ethers', value: 'ethers' },
         { name: 'Solana', value: 'solana' },
@@ -55,6 +59,14 @@ async function questionLibrary() {
 export async function main() {
   let directoryName = process.argv[2] || ''
 
+  const answerFramework = await questionFramework()
+
+  if (answerFramework.framework === 'react-native') {
+    await runReactNativeCLI(directoryName)
+
+    return
+  }
+
   let directoryExists = false
   do {
     if (!directoryName) {
@@ -67,14 +79,13 @@ export async function main() {
     }
   } while (directoryExists)
 
-  const answerFramework = await questionFramework()
   const answerLibrary = await questionLibrary()
   const repoUrl = generateRepoUrl(answerFramework, answerLibrary)
 
   await cloneRepository(repoUrl, directoryName)
 
-  const url = 'https://cloud.reown.com'
-  console.log(`Your ${redTip('Project Id')} will work only on the localhost enviroment`)
+  const url = 'https://dashboard.reown.com'
+  console.log(`Your 'Project Id' will work only on the localhost environment`)
   console.log(`
 Go to: ${url}
 To create a personal ProjectId

@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-codemod",
-  "version": "1.7.17",
+  "version": "1.8.16",
   "sideEffects": false,
   "description": "Reown AppKit Codemod",
   "main": "index.js",
@@ -9,11 +9,10 @@
     "@reown/appkit-codemod": "./src/index.js"
   },
   "dependencies": {
-    "chalk": "5.4.1",
     "latest-version": "9.0.0"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
@@ -33,5 +32,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

@@ -1,4 +1,5 @@
 import { isSafe } from '@reown/appkit-common'
+import { OptionsController } from '@reown/appkit-controllers'
 
 const abortController = new AbortController()
 
@@ -33,7 +34,7 @@ export const ErrorUtil = {
       code: 'APKT002',
       displayMessage: 'Invalid App Configuration',
       debugMessage: () =>
-        `The origin ${isSafe() ? window.origin : 'unknown'} is not in your allow list. Please update your allowed domains at https://dashboard.reown.com.`
+        `The origin ${isSafe() ? window.origin : 'unknown'} is not in your allow list. Please update your allowed domains at https://dashboard.reown.com. [PID: ${OptionsController.state.projectId}]`
     },
     IFRAME_LOAD_FAILED: {
       code: 'APKT003',
@@ -87,6 +88,17 @@ export const ErrorUtil = {
   ALERT_WARNINGS: {
     LOCAL_CONFIGURATION_IGNORED: {
       debugMessage: (warningMessage: string) => `[Reown Config Notice] ${warningMessage}`
+    },
+    INACTIVE_NAMESPACE_NOT_CONNECTED: {
+      code: 'APKTW001',
+      displayMessage: 'Inactive Namespace Not Connected',
+      debugMessage: (namespace: string, errorMessage?: string) =>
+        `An error occurred while connecting an inactive namespace ${namespace}: "${errorMessage}"`
+    },
+    INVALID_EMAIL: {
+      code: 'APKTW002',
+      displayMessage: 'Invalid Email Address',
+      debugMessage: 'Please enter a valid email address'
     }
   }
 }

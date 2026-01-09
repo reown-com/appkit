@@ -14,6 +14,8 @@ import type {
   BlockchainApiGenerateApproveCalldataResponse,
   BlockchainApiGenerateSwapCalldataRequest,
   BlockchainApiGenerateSwapCalldataResponse,
+  BlockchainApiGetAddressBalanceRequest,
+  BlockchainApiGetAddressBalanceResponse,
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse,
   BlockchainApiLookupEnsName,
@@ -35,7 +37,6 @@ import type {
   PaymentCurrency,
   PurchaseCurrency
 } from '../utils/TypeUtil.js'
-import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 import { SnackController } from './SnackController.js'
@@ -192,18 +193,7 @@ export const BlockchainApiController = {
     }
   },
 
-  async fetchIdentity({
-    address,
-    caipNetworkId
-  }: BlockchainApiIdentityRequest & {
-    caipNetworkId: CaipNetworkId
-  }) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(caipNetworkId)
-
-    if (!isSupported) {
-      return { avatar: '', name: '' }
-    }
-
+  async fetchIdentity({ address }: BlockchainApiIdentityRequest) {
     const identityCache = StorageUtil.getIdentityFromCacheForAddress(address)
     if (identityCache) {
       return identityCache
@@ -308,10 +298,25 @@ export const BlockchainApiController = {
     })
   },
 
-  async fetchTokenPrice({ addresses }: BlockchainApiTokenPriceRequest) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
-    )
+  async getAddressBalance({ caipNetworkId, address }: BlockchainApiGetAddressBalanceRequest) {
+    return state.api
+      .post<BlockchainApiGetAddressBalanceResponse>({
+        path: `/v1?chainId=${caipNetworkId}&projectId=${OptionsController.state.projectId}`,
+        body: {
+          id: '1',
+          jsonrpc: '2.0',
+          method: 'getAddressBalance',
+          params: { address }
+        }
+      })
+      .then(result => result.result)
+  },
+
+  async fetchTokenPrice({
+    addresses,
+    caipNetworkId = ChainController.state.activeCaipNetwork?.caipNetworkId
+  }: BlockchainApiTokenPriceRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(caipNetworkId)
     if (!isSupported) {
       return { fungibles: [] }
     }
@@ -507,10 +512,12 @@ export const BlockchainApiController = {
       return []
     }
 
+    const sender = ChainController.getAccountData()?.address
+
     return BlockchainApiController.get<BlockchainApiLookupEnsName[]>({
       path: `/v1/profile/reverse/${address}`,
       params: {
-        sender: AccountController.state.address,
+        sender,
         apiVersion: '2'
       }
     })

@@ -10,9 +10,9 @@ permissions:
 
 jobs:
   trigger-devin-docs-analysis:
-    # This job runs only if the head commit message on the push to main contains 'chore: version packages'
+    # This job runs only if the head commit message on the push to main contains 'Release/' or 'release/'
     if: |
-      contains(github.event.head_commit.message, 'chore: version packages')
+      contains(github.event.head_commit.message, 'Release/') || contains(github.event.head_commit.message, 'release/')
     runs-on: ubuntu-latest
     steps:
       - name: Send Slack Notification for Docs Analysis
@@ -22,7 +22,7 @@ jobs:
           PROMPT_TEXT: |
             ## Context
 
-            A commit titled "chore: version packages" (SHA: ${{ github.sha }}) was just pushed to the main branch of the ${{ github.repository }} repository. This commit is typically the result of a merged Pull Request.
+            A release merge commit (SHA: ${{ github.sha }}) was just pushed to the main branch of the ${{ github.repository }} repository. This commit is the result of merging a release branch back to main after publishing.
             Your task is to analyze the impact of this specific commit on the reown-com/reown-docs repository.
 
             Please examine the changes introduced by commit ${{ github.sha }} in the ${{ github.repository }} repository. Focus your examination on the content of any `CHANGELOG.md` files modified in this commit. (Note: if multiple CHANGELOG.md files were part of this commit and are identical, examining one is sufficient, as per repository conventions).

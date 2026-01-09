@@ -102,6 +102,7 @@ extensionTest(
   async () => {
     await modalPage.connectToExtensionMultichain('solana')
     await modalValidator.expectConnected()
+
     const extensionSolAddress = (await modalPage.page
       .getByTestId('w3m-address')
       .textContent()) as string
@@ -129,9 +130,15 @@ extensionTest(
       .textContent()) as string
 
     await modalPage.switchNetwork('Solana', true)
+    await modalValidator.expectAccountSwitched(extensionSolAddress)
+
+    const emailSolAddress = (await modalPage.page
+      .getByTestId('w3m-address')
+      .textContent()) as string
+
     await modalPage.closeModal()
     await modalValidator.expectConnected()
-    await modalValidator.expectAccountButtonAddress(extensionSolAddress)
+    await modalValidator.expectAccountButtonAddress(emailSolAddress)
     await modalValidator.expectNoUnsupportedUIOnAccountButton()
 
     // Disconnect from Ethereum
@@ -139,6 +146,48 @@ extensionTest(
     await modalPage.closeModal()
     await modalValidator.expectAccountButtonAddress(emailEthAddress)
     await modalValidator.expectNoUnsupportedUIOnAccountButton()
+    await modalPage.openProfileWalletsView()
+    await modalPage.clickProfileWalletsMoreButton()
+    await modalPage.disconnect(false)
+  }
+)
+
+extensionTest(
+  'it should connect with email on Ethereum, switch to a different chain and be able to switch account type on Ethereum',
+  async () => {
+    const mailsacApiKey = process.env['MAILSAC_API_KEY']
+    if (!mailsacApiKey) {
+      throw new Error('MAILSAC_API_KEY is not set')
+    }
+
+    const email = new Email(mailsacApiKey)
+    await modalPage.emailFlow({
+      emailAddress: await email.getEmailAddressToUse(),
+      context: modalPage.page.context(),
+      mailsacApiKey,
+      clickConnectButton: true
+    })
+    await modalValidator.expectConnected()
+
+    const emailEthAddress = (await modalPage.page
+      .getByTestId('w3m-address')
+      .textContent()) as string
+
+    await modalPage.switchNetwork('Solana', true)
+    await modalPage.closeModal()
+    await modalValidator.expectConnected()
+    await modalValidator.expectNetworkButton('Solana')
+    await modalPage.openProfileWalletsView()
+    await modalPage.clickTab('evm')
+    await modalPage.switchAccount()
+    await modalPage.closeModal()
+    await modalValidator.expectConnected()
+    await modalValidator.expectNetworkButton('Ethereum')
+    await modalPage.openProfileWalletsView()
+    await modalPage.clickTab('evm')
+    await modalPage.switchAccount()
+    await modalPage.closeModal()
+    await modalValidator.expectAccountButtonAddress(emailEthAddress)
     await modalPage.openProfileWalletsView()
     await modalPage.clickProfileWalletsMoreButton()
     await modalPage.disconnect(false)

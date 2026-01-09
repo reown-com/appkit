@@ -1,6 +1,10 @@
-import { Box, type RadioProps, useRadio } from '@chakra-ui/react'
+import { Box, type UseRadioProps, useRadio } from '@chakra-ui/react'
 
-export default function RadioColor(props: RadioProps) {
+export default function RadioColor(
+  props: UseRadioProps & {
+    children: string
+  }
+) {
   const { getInputProps, getRadioProps } = useRadio(props)
 
   const input = getInputProps()

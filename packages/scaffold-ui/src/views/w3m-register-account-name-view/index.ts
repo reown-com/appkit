@@ -4,24 +4,25 @@ import { type Ref, createRef, ref } from 'lit/directives/ref.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   EnsController,
   EventsController,
+  type ReownName,
   SnackController,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-account-name-suggestion-item'
 import '@reown/appkit-ui/wui-ens-input'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-loading-spinner'
-import '@reown/appkit-ui/wui-tag'
 import '@reown/appkit-ui/wui-text'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import styles from './styles.js'
 
 @customElement('w3m-register-account-name-view')
@@ -43,9 +44,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   @state() private suggestions = EnsController.state.suggestions
 
-  @state() private registered = false
-
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = ChainController.getAccountData()?.profileName
 
   public constructor() {
     super()
@@ -55,9 +54,9 @@ export class W3mRegisterAccountNameView extends LitElement {
           this.suggestions = val.suggestions
           this.loading = val.loading
         }),
-        AccountController.subscribeKey('profileName', val => {
-          this.profileName = val
-          if (val) {
+        ChainController.subscribeChainProp('accountState', val => {
+          this.profileName = val?.profileName
+          if (val?.profileName) {
             this.error = 'You already own a name'
           }
         })
@@ -82,14 +81,15 @@ export class W3mRegisterAccountNameView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        gap="m"
-        .padding=${['0', 's', 'm', 's'] as const}
+        gap="4"
+        .padding=${['1', '3', '4', '3'] as const}
       >
         <form ${ref(this.formRef)} @submit=${this.onSubmitName.bind(this)}>
           <wui-ens-input
             @inputChange=${this.onNameInputChange.bind(this)}
             .errorMessage=${this.error}
             .value=${this.name}
+            .onKeyDown=${this.onKeyDown.bind(this)}
           >
           </wui-ens-input>
           ${this.submitButtonTemplate()}
@@ -102,56 +102,55 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private submitButtonTemplate() {
-    const showSubmit = this.isAllowedToSubmit()
+    const isRegistered = this.suggestions.find(
+      s => s.name?.split('.')?.[0] === this.name && s.registered
+    )
 
-    return showSubmit
-      ? html`
-          <wui-icon-link
-            size="sm"
-            icon="chevronRight"
-            iconcolor="accent-100"
-            @click=${this.onSubmitName.bind(this)}
-          >
-          </wui-icon-link>
-        `
-      : null
+    if (this.loading) {
+      return html`<wui-loading-spinner
+        class="input-loading-spinner"
+        color="secondary"
+      ></wui-loading-spinner>`
+    }
+
+    const reownName = `${this.name}${ConstantsUtil.WC_NAME_SUFFIX}` as ReownName
+
+    return html`
+      <wui-icon-link
+        ?disabled=${Boolean(isRegistered)}
+        class="input-submit-button"
+        size="sm"
+        icon="chevronRight"
+        iconColor=${isRegistered ? 'default' : 'accent-primary'}
+        @click=${() => this.onSubmitName(reownName)}
+      >
+      </wui-icon-link>
+    `
   }
 
   private onDebouncedNameInputChange = CoreHelperUtil.debounce((value: string) => {
-    if (EnsController.validateName(value)) {
-      this.error = ''
-      this.name = value
-      EnsController.getSuggestions(value)
-      EnsController.isNameRegistered(value).then(registered => {
-        this.registered = registered
-      })
-    } else if (value.length < 4) {
+    if (value.length < 4) {
       this.error = 'Name must be at least 4 characters long'
+      // eslint-disable-next-line no-negated-condition
+    } else if (!HelpersUtil.isValidReownName(value)) {
+      this.error = 'The value is not a valid username'
     } else {
-      this.error = 'Can only contain letters, numbers and - characters'
+      this.error = ''
+      EnsController.getSuggestions(value)
     }
   })
 
-  private onSelectSuggestion(name: string) {
-    return () => {
-      this.name = name
-      this.registered = false
-      this.requestUpdate()
-    }
-  }
-
   private onNameInputChange(event: CustomEvent<string>) {
-    this.onDebouncedNameInputChange(event.detail)
+    const value = HelpersUtil.validateReownName(event.detail || '')
+    this.name = value
+    this.onDebouncedNameInputChange(value)
   }
 
-  private nameSuggestionTagTemplate() {
-    if (this.loading) {
-      return html`<wui-loading-spinner size="lg" color="fg-100"></wui-loading-spinner>`
+  private onKeyDown(event: KeyboardEvent) {
+    // eslint-disable-next-line no-negated-condition
+    if (event.key.length === 1 && !HelpersUtil.isValidReownName(event.key)) {
+      event.preventDefault()
     }
-
-    return this.registered
-      ? html`<wui-tag variant="shade" size="lg">Registered</wui-tag>`
-      : html`<wui-tag variant="success" size="lg">Available</wui-tag>`
   }
 
   private templateSuggestions() {
@@ -159,55 +158,42 @@ export class W3mRegisterAccountNameView extends LitElement {
       return null
     }
 
-    const suggestions = this.registered ? this.suggestions.filter(s => s.name !== this.name) : []
-
-    return html`<wui-flex flexDirection="column" gap="xxs" alignItems="center">
-      <wui-flex
-        data-testid="account-name-suggestion"
-        .padding=${['m', 'm', 'm', 'm'] as const}
-        justifyContent="space-between"
-        class="suggestion"
-        @click=${this.onSubmitName.bind(this)}
-      >
-        <wui-text color="fg-100" variant="paragraph-400" class="suggested-name">
-          ${this.name}</wui-text
-        >${this.nameSuggestionTagTemplate()}
-      </wui-flex>
-      ${suggestions.map(suggestion => this.availableNameTemplate(suggestion.name))}
+    return html`<wui-flex flexDirection="column" gap="1" alignItems="center">
+      ${this.suggestions.map(
+        suggestion =>
+          html`<wui-account-name-suggestion-item
+            name=${suggestion.name}
+            ?registered=${suggestion.registered}
+            ?loading=${this.loading}
+            ?disabled=${suggestion.registered || this.loading}
+            data-testid="account-name-suggestion"
+            @click=${() => this.onSubmitName(suggestion.name as ReownName)}
+          ></wui-account-name-suggestion-item>`
+      )}
     </wui-flex>`
   }
 
-  private availableNameTemplate(suggestion: string) {
-    return html` <wui-flex
-      data-testid="account-name-suggestion"
-      .padding=${['m', 'm', 'm', 'm'] as const}
-      justifyContent="space-between"
-      class="suggestion"
-      @click=${this.onSelectSuggestion(suggestion)}
-    >
-      <wui-text color="fg-100" variant="paragraph-400" class="suggested-name">
-        ${suggestion}
-      </wui-text>
-      <wui-tag variant="success" size="lg">Available</wui-tag>
-    </wui-flex>`
-  }
+  private isAllowedToSubmit(name: string) {
+    const pureName = name.split('.')?.[0]
+    const isRegistered = this.suggestions.find(
+      s => s.name?.split('.')?.[0] === pureName && s.registered
+    )
 
-  private isAllowedToSubmit() {
     return (
       !this.loading &&
-      !this.registered &&
       !this.error &&
       !this.profileName &&
-      EnsController.validateName(this.name)
+      pureName &&
+      EnsController.validateName(pureName) &&
+      !isRegistered
     )
   }
 
-  private async onSubmitName() {
+  private async onSubmitName(name: ReownName) {
     try {
-      if (!this.isAllowedToSubmit()) {
+      if (!this.isAllowedToSubmit(name)) {
         return
       }
-      const ensName = `${this.name}${ConstantsUtil.WC_NAME_SUFFIX}` as const
       EventsController.sendEvent({
         type: 'track',
         event: 'REGISTER_NAME_INITIATED',
@@ -215,10 +201,10 @@ export class W3mRegisterAccountNameView extends LitElement {
           isSmartAccount:
             getPreferredAccountType(ChainController.state.activeChain) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          ensName
+          ensName: name
         }
       })
-      await EnsController.registerName(ensName)
+      await EnsController.registerName(name)
       EventsController.sendEvent({
         type: 'track',
         event: 'REGISTER_NAME_SUCCESS',
@@ -226,7 +212,7 @@ export class W3mRegisterAccountNameView extends LitElement {
           isSmartAccount:
             getPreferredAccountType(ChainController.state.activeChain) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          ensName
+          ensName: name
         }
       })
     } catch (error) {
@@ -238,16 +224,17 @@ export class W3mRegisterAccountNameView extends LitElement {
           isSmartAccount:
             getPreferredAccountType(ChainController.state.activeChain) ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          ensName: `${this.name}${ConstantsUtil.WC_NAME_SUFFIX}`,
-          error: (error as Error)?.message || 'Unknown error'
+          ensName: name,
+          error: CoreHelperUtil.parseError(error)
         }
       })
     }
   }
 
   private onEnterKey(event: KeyboardEvent) {
-    if (event.key === 'Enter' && this.isAllowedToSubmit()) {
-      this.onSubmitName()
+    if (event.key === 'Enter' && this.name && this.isAllowedToSubmit(this.name)) {
+      const reownName = `${this.name}${ConstantsUtil.WC_NAME_SUFFIX}` as ReownName
+      this.onSubmitName(reownName)
     }
   }
 }

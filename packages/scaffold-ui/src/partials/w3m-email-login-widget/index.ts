@@ -6,6 +6,8 @@ import type { Ref } from 'lit/directives/ref.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
+  AlertController,
+  ApiController,
   ChainController,
   ConnectionController,
   ConnectorController,
@@ -18,7 +20,9 @@ import '@reown/appkit-ui/wui-email-input'
 import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-loading-spinner'
 import '@reown/appkit-ui/wui-text'
+import { ErrorUtil } from '@reown/appkit-utils'
 
+import { HelpersUtil } from '../../utils/HelpersUtil.js'
 import styles from './styles.js'
 
 @customElement('w3m-email-login-widget')
@@ -41,12 +45,18 @@ export class W3mEmailLoginWidget extends LitElement {
 
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
 
+  @state() private hasExceededUsageLimit = ApiController.state.plan.hasExceededUsageLimit
+
   public constructor() {
     super()
     this.unsubscribe.push(
       OptionsController.subscribeKey('remoteFeatures', val => {
         this.remoteFeatures = val
-      })
+      }),
+      ApiController.subscribeKey(
+        'plan',
+        val => (this.hasExceededUsageLimit = val.hasExceededUsageLimit)
+      )
     )
   }
 
@@ -73,7 +83,7 @@ export class W3mEmailLoginWidget extends LitElement {
           .disabled=${this.loading}
           @inputChange=${this.onEmailInputChange.bind(this)}
           tabIdx=${ifDefined(this.tabIdx)}
-          ?disabled=${hasConnection}
+          ?disabled=${hasConnection || this.hasExceededUsageLimit}
         >
         </wui-email-input>
 
@@ -103,13 +113,13 @@ export class W3mEmailLoginWidget extends LitElement {
 
   private loadingTemplate() {
     return this.loading
-      ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
+      ? html`<wui-loading-spinner size="md" color="accent-primary"></wui-loading-spinner>`
       : null
   }
 
   private templateError() {
     if (this.error) {
-      return html`<wui-text variant="tiny-500" color="error-100">${this.error}</wui-text>`
+      return html`<wui-text variant="sm-medium" color="error">${this.error}</wui-text>`
     }
 
     return null
@@ -121,6 +131,17 @@ export class W3mEmailLoginWidget extends LitElement {
   }
 
   private async onSubmitEmail(event: Event) {
+    if (!HelpersUtil.isValidEmail(this.email)) {
+      AlertController.open(
+        {
+          displayMessage: ErrorUtil.ALERT_WARNINGS.INVALID_EMAIL.displayMessage
+        },
+        'warning'
+      )
+
+      return
+    }
+
     const isAvailableChain = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(
       chain => chain === ChainController.state.activeChain
     )

@@ -38,6 +38,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -49,7 +52,7 @@ jobs:
           cache: 'pnpm'
 
       - name: install
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       # Cache Turborepo's build outputs (.turbo directory).
       # This speeds up the 'pnpm build' step significantly if inputs haven't changed.
@@ -116,6 +119,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -142,7 +148,7 @@ jobs:
         run: chmod +x node_modules/*/bin/*
 
       - name: install
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: check
         run: pnpm ${{ matrix.style-command }}
@@ -160,6 +166,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -186,7 +195,7 @@ jobs:
         run: chmod +x node_modules/*/bin/*
 
       - name: install
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: build sample apps
         run: pnpm build:sample-apps
@@ -203,6 +212,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
@@ -229,7 +241,7 @@ jobs:
         run: chmod +x node_modules/*/bin/*
 
       - name: install
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Test
         run: pnpm test:ci
@@ -238,15 +250,185 @@ jobs:
         if: always()
         uses: davelosert/vitest-coverage-report-action@v2
 
+  bundle_size:
+    if: github.event_name != 'push'
+    needs: setup_and_build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+
+      - name: Fix permissions
+        run: chmod +x node_modules/*/bin/*
+
+      - name: install
+        run: pnpm install --frozen-lockfile
+
+      - name: Check bundle size
+        id: size-limit
+        run: |
+          echo "## 📦 Bundle Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Run size-limit and capture output
+          set +e
+          pnpm size > size-output.txt 2>&1
+          SIZE_EXIT_CODE=$?
+          set -e
+
+          if [ $SIZE_EXIT_CODE -eq 0 ]; then
+            echo "✅ All bundles are within size limits" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Bundle Sizes" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat size-output.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Some bundles exceed size limits" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat size-output.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
+      - name: Comment on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            // Strip ANSI color codes
+            function stripAnsi(str) {
+              return str.replace(/\x1B\[[0-9;]*[a-zA-Z]/g, '');
+            }
+
+            // Parse size-limit output into structured data
+            function parseOutput(output) {
+              const clean = stripAnsi(output);
+              const lines = clean.split('\n');
+              const packages = [];
+              let currentPackage = null;
+              
+              for (const line of lines) {
+                // Check if this is a package name line (starts with emoji or has "limit:")
+                if (line.trim() && !line.includes('Adding to') && !line.includes('Running JS')) {
+                  if (!line.startsWith('  ') && !line.includes('Size limit:')) {
+                    // New package
+                    if (currentPackage) packages.push(currentPackage);
+                    currentPackage = { name: line.trim(), details: [] };
+                  } else if (currentPackage) {
+                    // Package detail line
+                    currentPackage.details.push(line.trim());
+                  }
+                }
+              }
+              if (currentPackage) packages.push(currentPackage);
+              return packages;
+            }
+
+            let comment = '## 📦 Bundle Size Check\n\n';
+
+            try {
+              const output = fs.readFileSync('size-output.txt', 'utf8');
+              const hasErrors = output.includes('exceeded') || output.includes('FAILED');
+              
+              if (hasErrors) {
+                comment += '❌ **Some bundles exceed size limits**\n\n';
+              } else {
+                comment += '✅ **All bundles are within size limits**\n\n';
+              }
+              
+              const packages = parseOutput(output);
+              
+              if (packages.length > 0) {
+                comment += '<details>\n<summary>📊 View detailed bundle sizes</summary>\n\n';
+                
+                for (const pkg of packages) {
+                  comment += `\n**${pkg.name}**\n`;
+                  comment += '```\n';
+                  comment += pkg.details.join('\n');
+                  comment += '\n```\n';
+                }
+                
+                comment += '\n</details>';
+              } else {
+                // Fallback to raw output if parsing fails
+                comment += '<details>\n<summary>📊 View bundle sizes</summary>\n\n```\n';
+                comment += stripAnsi(output);
+                comment += '\n```\n</details>';
+              }
+            } catch (error) {
+              comment += '⚠️ Could not read bundle size output. Check the workflow logs.\n';
+              comment += `\nError: ${error.message}`;
+            }
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && comment.body.includes('Bundle Size Check')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+
   ui-test:
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/ui_tests.yml
     secrets: inherit
     permissions:
+      id-token: write
       contents: write
       pull-requests: write
     with:
-      branch: ${{ github.ref }}
+      # Pass the SHA so the called workflow can check out a stable commit
+      branch: ${{ github.sha }}
       build-and-cache-only: ${{ github.event_name == 'push' }}
       matrix_config: '{"shard":[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "shardTotal":[10]}'
       build_trigger_type: ${{ github.event_name }}

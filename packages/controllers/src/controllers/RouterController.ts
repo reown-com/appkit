@@ -5,11 +5,12 @@ import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 import type { Connector, Metadata, WcWallet } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
-import { AccountController } from './AccountController.js'
+import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
+import type { SendInputArguments } from './SendController.js'
 import type { SwapInputArguments, SwapInputTarget } from './SwapController.js'
 
 // -- Types --------------------------------------------- //
@@ -71,6 +72,7 @@ export interface RouterControllerState {
     | 'WalletSend'
     | 'WalletSendPreview'
     | 'WalletSendSelectToken'
+    | 'WalletSendConfirmed'
     | 'WhatIsANetwork'
     | 'WhatIsAWallet'
     | 'WhatIsABuy'
@@ -84,6 +86,12 @@ export interface RouterControllerState {
     | 'SIWXSignMessage'
     | 'Pay'
     | 'PayLoading'
+    | 'PayQuote'
+    | 'FundWallet'
+    | 'PayWithExchange'
+    | 'PayWithExchangeSelectAsset'
+    | 'UsageExceeded'
+    | 'SmartAccountSettings'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
@@ -99,9 +107,19 @@ export interface RouterControllerState {
     navigateTo?: RouterControllerState['view']
     navigateWithReplace?: boolean
     swap?: SwapInputArguments
+    addWalletForNamespace?: ChainNamespace
+    send?: SendInputArguments
   }
   transactionStack: TransactionAction[]
 }
+
+// -- Constants --------------------------------------------- //
+const RESTRICTED_VIEWS_BASED_ON_USAGE: RouterControllerState['view'][] = [
+  'ConnectingExternal',
+  'ConnectingMultiChain',
+  'ConnectingSocial',
+  'ConnectingFarcaster'
+]
 
 // -- State --------------------------------------------- //
 const state = proxy<RouterControllerState>({
@@ -148,10 +166,21 @@ const controller = {
   },
 
   push(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
-    if (view !== state.view) {
-      state.view = view
-      state.history.push(view)
-      state.data = data
+    let finalView = view
+    let finalData = data
+
+    if (
+      ApiController.state.plan.hasExceededUsageLimit &&
+      RESTRICTED_VIEWS_BASED_ON_USAGE.includes(view)
+    ) {
+      finalView = 'UsageExceeded'
+      finalData = undefined
+    }
+
+    if (finalView !== state.view) {
+      state.view = finalView
+      state.history.push(finalView)
+      state.data = finalData
     }
   },
 
@@ -197,10 +226,14 @@ const controller = {
       state.data.wallet = undefined
     }
 
+    if (state.data?.redirectView) {
+      state.data.redirectView = undefined
+    }
+
     // Reloading the iframe contentwindow and doing the view animation in the modal causes a small freeze in the transition. Doing these separately fixes that.
     setTimeout(() => {
       if (shouldReload) {
-        AccountController.setFarcasterUrl(undefined, ChainController.state.activeChain)
+        ChainController.setAccountProp('farcasterUrl', undefined, ChainController.state.activeChain)
         const authConnector = ConnectorController.getAuthConnector()
         authConnector?.provider?.reload()
 

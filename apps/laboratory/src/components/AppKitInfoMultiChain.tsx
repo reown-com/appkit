@@ -1,92 +1,45 @@
 import * as React from 'react'
 
-import {
-  Box,
-  Card,
-  CardBody,
-  CardHeader,
-  Grid,
-  Heading,
-  Stack,
-  StackDivider,
-  Text
-} from '@chakra-ui/react'
+import { Grid } from '@chakra-ui/react'
 
-import { type UseAppKitAccountReturn, useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@reown/appkit/react'
 
-function namespaceToTitle(namespace: string | undefined) {
-  if (!namespace) {
-    return ''
-  }
+import type { AppKitConfigObject } from '../constants/appKitConfigs'
+import { AccountCard } from './AccountCard'
+import { AppKitNetworkInfo } from './AppKitNetworkInfo'
 
-  switch (namespace) {
-    case 'eip155':
-      return 'EVM'
-    case 'solana':
-      return 'Solana'
-    case 'bip122':
-      return 'Bitcoin'
-    default:
-      return namespace
-  }
-}
-
-function AccountCard({ account }: { account: UseAppKitAccountReturn | undefined }) {
-  if (!account?.caipAddress) {
-    return null
-  }
-
-  const namespace = account?.caipAddress?.split(':')[0]
-
-  return (
-    <Card data-testid={`${namespace}-account-card`}>
-      <CardHeader>
-        <Heading size="md">{namespaceToTitle(namespace)} Account Info</Heading>
-      </CardHeader>
-
-      <CardBody>
-        <Stack divider={<StackDivider />} spacing="4">
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              CAIP Address
-            </Heading>
-            <Text data-testid="w3m-caip-address">{account.caipAddress}</Text>
-          </Box>
-
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Address
-            </Heading>
-            <Text data-testid={`w3m-address-${namespace}`}>{account.address}</Text>
-          </Box>
-
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Status
-            </Heading>
-            <Text data-testid="w3m-address">{account.status}</Text>
-          </Box>
-        </Stack>
-      </CardBody>
-    </Card>
+export function AppKitInfoMultiChain({
+  config
+}: {
+  config: AppKitConfigObject[string] | undefined
+}) {
+  const evmAdapter = config?.adapters?.find(
+    adapter => adapter === 'wagmi' || adapter === 'ethers' || adapter === 'ethers5'
   )
-}
+  const solanaAdapter = config?.adapters?.find(adapter => adapter === 'solana')
+  const bitcoinAdapter = config?.adapters?.find(adapter => adapter === 'bitcoin')
 
-export function AppKitInfoMultiChain() {
+  const currentAccount = useAppKitAccount()
   const evmAccount = useAppKitAccount({ namespace: 'eip155' })
   const solanaAccount = useAppKitAccount({ namespace: 'solana' })
   const bitcoinAccount = useAppKitAccount({ namespace: 'bip122' })
 
   return (
-    <Grid
-      templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }}
-      gap={4}
-      marginTop={4}
-      marginBottom={4}
-    >
-      <AccountCard account={evmAccount} />
-      <AccountCard account={solanaAccount} />
-      <AccountCard account={bitcoinAccount} />
-    </Grid>
+    <>
+      <Grid
+        templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }}
+        gap={4}
+        marginTop={4}
+        marginBottom={4}
+      >
+        {evmAdapter && <AccountCard account={evmAccount} namespace="eip155" />}
+        {solanaAdapter && <AccountCard account={solanaAccount} namespace="solana" />}
+        {bitcoinAdapter && <AccountCard account={bitcoinAccount} namespace="bip122" />}
+      </Grid>
+      <Grid templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }} gap={4}>
+        <AccountCard account={currentAccount} />
+        <AppKitNetworkInfo />
+      </Grid>
+    </>
   )
 }

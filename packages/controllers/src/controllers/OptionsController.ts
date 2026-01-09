@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type { CaipNetworkId, CustomRpcUrl } from '@reown/appkit-common'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { OptionsUtil } from '../utils/OptionsUtil.js'
 import type { SIWXConfig } from '../utils/SIWXUtil.js'
 import type {
@@ -116,6 +117,7 @@ export interface OptionsControllerStatePublic {
    */
   enableReconnect?: boolean
   /**
+   * @deprecated This flag is deprecated and will be removed in a future major release.
    * Enable or disable the WalletConnect QR code.
    * @default true
    */
@@ -147,7 +149,6 @@ export interface OptionsControllerStatePublic {
    */
   features?: Features
   /**
-   * @experimental - This feature is not production ready.
    * Enable Sign In With X (SIWX) feature.
    * @default undefined
    */
@@ -164,7 +165,7 @@ export interface OptionsControllerStatePublic {
   allowUnsupportedChain?: boolean
   /**
    * Default account types for each namespace.
-   * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
+   * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa', ton: 'eoa' }"
    */
   defaultAccountTypes: PreferredAccountTypes
   /**
@@ -194,6 +195,13 @@ export interface OptionsControllerStatePublic {
    * @default true
    */
   enableNetworkSwitch?: boolean
+  /**
+   * Render the modal as full height on mobile web browsers.
+   * @default false
+   */
+  enableMobileFullScreen?: boolean
+
+  coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 }
 
 export interface OptionsControllerStateInternal {
@@ -205,7 +213,7 @@ export interface OptionsControllerStateInternal {
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
-type OptionsControllerState = OptionsControllerStatePublic & OptionsControllerStateInternal
+export type OptionsControllerState = OptionsControllerStatePublic & OptionsControllerStateInternal
 
 // -- State --------------------------------------------- //
 const state = proxy<OptionsControllerState>({
@@ -216,7 +224,9 @@ const state = proxy<OptionsControllerState>({
   defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES,
   enableNetworkSwitch: true,
   experimental_preferUniversalLinks: false,
-  remoteFeatures: {}
+  remoteFeatures: {},
+  enableMobileFullScreen: false,
+  coinbasePreference: 'all'
 })
 
 // -- Controller ---------------------------------------- //
@@ -337,10 +347,6 @@ export const OptionsController = {
     state.debug = debug
   },
 
-  setEnableWalletConnect(enableWalletConnect: OptionsControllerState['enableWalletConnect']) {
-    state.enableWalletConnect = enableWalletConnect
-  },
-
   setEnableWalletGuide(enableWalletGuide: OptionsControllerState['enableWalletGuide']) {
     state.enableWalletGuide = enableWalletGuide
   },
@@ -419,8 +425,18 @@ export const OptionsController = {
     state.enableNetworkSwitch = enableNetworkSwitch
   },
 
+  setEnableMobileFullScreen(
+    enableMobileFullScreen: OptionsControllerState['enableMobileFullScreen']
+  ) {
+    state.enableMobileFullScreen = CoreHelperUtil.isMobile() && enableMobileFullScreen
+  },
+
   setEnableReconnect(enableReconnect: OptionsControllerState['enableReconnect']) {
     state.enableReconnect = enableReconnect
+  },
+
+  setCoinbasePreference(coinbasePreference: OptionsControllerState['coinbasePreference']) {
+    state.coinbasePreference = coinbasePreference
   },
 
   setDefaultAccountTypes(

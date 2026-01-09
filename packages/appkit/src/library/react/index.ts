@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
-import { useEffect, useState, useSyncExternalStore } from 'react'
-
-import { useSnapshot } from 'valtio'
+import { useEffect, useState } from 'react'
 
 import type { ChainNamespace } from '@reown/appkit-common'
 import type {
@@ -14,7 +12,6 @@ import type {
   W3mConnectButton,
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui'
-import { ProviderUtil } from '@reown/appkit-utils'
 
 import type {
   AppKitBaseClient as AppKit,
@@ -76,18 +73,6 @@ export function getAppKit(appKit: AppKit) {
 // -- Core Hooks ---------------------------------------------------------------
 export * from '@reown/appkit-controllers/react'
 
-export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
-  const { providers, providerIds } = useSnapshot(ProviderUtil.state)
-
-  const walletProvider = providers[chainNamespace] as T
-  const walletProviderType = providerIds[chainNamespace]
-
-  return {
-    walletProvider,
-    walletProviderType
-  }
-}
-
 export function useAppKitTheme() {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useAppKitTheme" hook')
@@ -133,7 +118,7 @@ export function useAppKit() {
   }
 
   async function open<View extends Views>(options?: OpenOptions<View>) {
-    await modal?.open(options)
+    return modal?.open(options)
   }
 
   async function close() {
@@ -147,15 +132,19 @@ export function useWalletInfo(namespace?: ChainNamespace) {
   if (!modal) {
     throw new Error('Please call "createAppKit" before using "useWalletInfo" hook')
   }
-  const walletInfo = useSyncExternalStore(
-    callback => {
-      const unsubscribe = modal?.subscribeWalletInfo(callback, namespace)
 
-      return () => unsubscribe?.()
-    },
-    () => modal?.getWalletInfo(namespace),
-    () => modal?.getWalletInfo(namespace)
-  )
+  const [walletInfo, setWalletInfo] = useState(() => modal?.getWalletInfo(namespace))
+
+  useEffect(() => {
+    // Sync immediately on namespace change to avoid stale data until subscription emits
+    setWalletInfo(modal?.getWalletInfo(namespace))
+
+    const unsubscribe = modal?.subscribeWalletInfo(newWalletInfo => {
+      setWalletInfo(newWalletInfo)
+    }, namespace)
+
+    return () => unsubscribe?.()
+  }, [namespace])
 
   return { walletInfo }
 }

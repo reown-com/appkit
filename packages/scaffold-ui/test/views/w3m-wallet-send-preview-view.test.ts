@@ -5,13 +5,15 @@ import {
   type Balance,
   type CaipAddress,
   type CaipNetwork,
-  ConstantsUtil
+  ConstantsUtil,
+  UserRejectedRequestError
 } from '@reown/appkit-common'
 import {
+  AppKitError,
   type ChainAdapter,
   ChainController,
   type ConnectionControllerClient,
-  type NetworkControllerClient,
+  EventsController,
   RouterController,
   SendController
 } from '@reown/appkit-controllers'
@@ -58,26 +60,20 @@ const mockSendControllerState = {
   tokenBalances: [mockToken]
 }
 
-const mockNetworkControllerClient: NetworkControllerClient = {
-  switchCaipNetwork: vi.fn(),
-  getApprovedCaipNetworksData: vi.fn().mockResolvedValue({
-    approvedCaipNetworkIds: ['eip155:1'],
-    supportsAllNetworks: true
-  })
-}
-
 const mockConnectionControllerClient: ConnectionControllerClient = {
   connectWalletConnect: vi.fn(),
   connectExternal: vi.fn(),
   reconnectExternal: vi.fn(),
   checkInstalled: vi.fn(),
   disconnect: vi.fn(),
+  disconnectConnector: vi.fn(),
   signMessage: vi.fn(),
   sendTransaction: vi.fn(),
   estimateGas: vi.fn(),
   parseUnits: vi.fn(),
   formatUnits: vi.fn(),
   writeContract: vi.fn(),
+  writeSolanaTransaction: vi.fn(),
   getEnsAddress: vi.fn(),
   getEnsAvatar: vi.fn(),
   grantPermissions: vi.fn(),
@@ -89,7 +85,6 @@ const mockConnectionControllerClient: ConnectionControllerClient = {
 
 const mockChainAdapter: ChainAdapter = {
   namespace: ConstantsUtil.CHAIN.EVM,
-  networkControllerClient: mockNetworkControllerClient,
   connectionControllerClient: mockConnectionControllerClient
 }
 
@@ -99,7 +94,6 @@ const mockChainControllerState = {
   activeCaipAddress: 'eip155:1:0x123456789abcdef123456789abcdef123456789a' as CaipAddress,
   chains: new Map([[ConstantsUtil.CHAIN.EVM, mockChainAdapter]]),
   universalAdapter: {
-    networkControllerClient: mockNetworkControllerClient,
     connectionControllerClient: mockConnectionControllerClient
   },
   noAdapters: false,
@@ -134,7 +128,7 @@ describe('W3mWalletSendPreviewView', () => {
     expect(tokenPreview?.text).to.equal('5 TEST')
     expect(tokenPreview?.imageSrc).to.equal(mockToken.iconUrl)
 
-    const valueText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-400"]')
+    const valueText = element.shadowRoot?.querySelector('wui-text[variant="md-regular"]')
     expect(valueText?.textContent?.trim()).to.equal('$50.00')
   })
 
@@ -148,7 +142,6 @@ describe('W3mWalletSendPreviewView', () => {
     const addressPreview = element.shadowRoot?.querySelectorAll('wui-preview-item')?.[1]
     expect(addressPreview?.text).to.contain('0x45')
     expect(addressPreview?.address).to.equal('0x456')
-    expect(addressPreview?.isAddress).to.be.true
   })
 
   it('should display profile name when available', async () => {
@@ -168,7 +161,6 @@ describe('W3mWalletSendPreviewView', () => {
     expect(addressPreview?.text).to.equal('Test User')
     expect(addressPreview?.imageSrc).to.equal('https://example.com/profile.jpg')
     expect(addressPreview?.address).to.equal('0x456')
-    expect(addressPreview?.isAddress).to.be.true
   })
 
   it('should handle send action', async () => {
@@ -242,7 +234,7 @@ describe('W3mWalletSendPreviewView', () => {
     element['token'] = newToken
     await element.updateComplete
 
-    const valueText = element.shadowRoot?.querySelector('wui-text[variant="paragraph-400"]')
+    const valueText = element.shadowRoot?.querySelector('wui-text[variant="md-regular"]')
     expect(valueText?.textContent?.trim()).to.equal('$100.00')
   })
 
@@ -284,5 +276,51 @@ describe('W3mWalletSendPreviewView', () => {
     // Get the button and check if it has the loading property set
     const button = element.shadowRoot?.querySelector('.sendButton') as WuiButton
     expect(button?.loading).to.equal(true)
+  })
+
+  it('should send SEND_REJECTED event when user rejects request', async () => {
+    const original = new UserRejectedRequestError({})
+    const appKitErr = new AppKitError('Rejected', 'INTERNAL_SDK_ERROR', original)
+
+    vi.spyOn(SendController, 'sendToken').mockRejectedValueOnce(appKitErr)
+    const eventsSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    const element = await fixture<W3mWalletSendPreviewView>(
+      html`<w3m-wallet-send-preview-view></w3m-wallet-send-preview-view>`
+    )
+
+    await element.updateComplete
+
+    const button = element.shadowRoot?.querySelector('.sendButton') as HTMLElement
+    button?.click()
+
+    await element.updateComplete
+
+    viExpect(eventsSpy).toHaveBeenCalledWith(
+      viExpect.objectContaining({ type: 'track', event: 'SEND_REJECTED' })
+    )
+  })
+
+  it('should send SEND_ERROR event when random error is thrown', async () => {
+    const nonUserError = new Error('Some random error')
+    const appKitErr = new AppKitError('Failed', 'INTERNAL_SDK_ERROR', nonUserError)
+
+    vi.spyOn(SendController, 'sendToken').mockRejectedValueOnce(appKitErr)
+    const eventsSpy = vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+
+    const element = await fixture<W3mWalletSendPreviewView>(
+      html`<w3m-wallet-send-preview-view></w3m-wallet-send-preview-view>`
+    )
+
+    await element.updateComplete
+
+    const button = element.shadowRoot?.querySelector('.sendButton') as HTMLElement
+    button?.click()
+
+    await element.updateComplete
+
+    viExpect(eventsSpy).toHaveBeenCalledWith(
+      viExpect.objectContaining({ type: 'track', event: 'SEND_ERROR' })
+    )
   })
 })

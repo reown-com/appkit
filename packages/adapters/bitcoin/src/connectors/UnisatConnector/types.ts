@@ -1,7 +1,12 @@
 import type { CaipNetwork } from '@reown/appkit-common'
+import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 
 export namespace UnisatConnector {
-  export type Chain = 'BITCOIN_MAINNET' | 'BITCOIN_TESTNET' | 'FRACTAL_BITCOIN_MAINNET'
+  export type Chain =
+    | 'BITCOIN_MAINNET'
+    | 'BITCOIN_TESTNET'
+    | 'BITCOIN_SIGNET'
+    | 'FRACTAL_BITCOIN_MAINNET'
   export type Network = 'livenet' | 'testnet'
   export type Id = 'unisat' | 'bitget' | 'binancew3w'
 
@@ -66,9 +71,13 @@ export namespace UnisatConnector {
     name: string
     wallet: Wallet
     requestedChains: CaipNetwork[]
-    getActiveNetwork: () => CaipNetwork | undefined
     imageUrl: string
   }
 
   export type GetWalletParams = Omit<ConstructorParams, 'wallet'>
+
+  export type SignPSBTParams = {
+    toSignInputs: BitcoinConnector.SignPSBTParams['signInputs']
+    autoFinalized?: boolean
+  }
 }

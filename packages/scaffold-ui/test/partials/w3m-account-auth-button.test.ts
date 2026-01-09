@@ -20,7 +20,7 @@ const MOCK_USERNAME = 'john_doe'
 
 describe('W3mAccountAuthButton', () => {
   beforeEach(() => {
-    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('AUTH')
   })
 
   afterEach(() => {
@@ -29,12 +29,12 @@ describe('W3mAccountAuthButton', () => {
 
   test('it should show email when username does not exist', async () => {
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
-      id: 'ID_AUTH',
+      id: 'AUTH',
       provider: {
         getEmail: () => MOCK_EMAIL
       }
     } as AuthConnector)
-    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('AUTH')
 
     const authButton: W3mAccountAuthButton = await fixture(
       html`<w3m-account-auth-button></w3m-account-auth-button>`
@@ -48,12 +48,12 @@ describe('W3mAccountAuthButton', () => {
   test('it should show username when email does not exist', async () => {
     vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue(MOCK_USERNAME)
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
-      id: 'ID_AUTH',
+      id: 'AUTH',
       provider: {
         getEmail: () => null
       }
     } as AuthConnector)
-    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('AUTH')
 
     const authButton: W3mAccountAuthButton = await fixture(
       html`<w3m-account-auth-button></w3m-account-auth-button>`
@@ -67,13 +67,13 @@ describe('W3mAccountAuthButton', () => {
   test('it should navigate to update email view screen when email button is clicked without a social provider', async () => {
     vi.spyOn(RouterController, 'push')
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
-      id: 'ID_AUTH',
+      id: 'AUTH',
       provider: {
         getEmail: () => MOCK_EMAIL
       }
     } as AuthConnector)
     vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('username')
-    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('AUTH')
 
     const authButton: W3mAccountAuthButton = await fixture(
       html`<w3m-account-auth-button></w3m-account-auth-button>`
@@ -93,11 +93,11 @@ describe('W3mAccountAuthButton', () => {
   test('it should not display when email is null, undefined and no username is set', async () => {
     const testCases = [null, undefined]
 
-    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('AUTH')
 
     for (const emailValue of testCases) {
       vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
-        id: 'ID_AUTH',
+        id: 'AUTH',
         provider: {
           getEmail: () => emailValue
         }

@@ -13,8 +13,11 @@ import type {
   ApiGetAllowedOriginsResponse,
   ApiGetAnalyticsConfigResponse,
   ApiGetProjectConfigResponse,
+  ApiGetUsageResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
+  ProjectLimits,
+  Tier,
   WcWallet
 } from '../utils/TypeUtil.js'
 import { AssetController } from './AssetController.js'
@@ -43,11 +46,19 @@ export interface ApiControllerState {
   recommended: WcWallet[]
   allRecommended: WcWallet[]
   wallets: WcWallet[]
+  explorerWallets: WcWallet[]
+  explorerFilteredWallets: WcWallet[]
   filteredWallets: WcWallet[]
   search: WcWallet[]
   isAnalyticsEnabled: boolean
   excludedWallets: { rdns?: string | null; name: string }[]
   isFetchingRecommendedWallets: boolean
+  mobileFilteredOutWalletsLength?: number
+  plan: {
+    tier: Tier
+    hasExceededUsageLimit: boolean
+    limits: ProjectLimits
+  }
 }
 
 interface PrefetchParameters {
@@ -55,6 +66,7 @@ interface PrefetchParameters {
   fetchFeaturedWallets?: boolean
   fetchRecommendedWallets?: boolean
   fetchNetworkImages?: boolean
+  fetchWalletRanks?: boolean
 }
 
 type StateKey = keyof ApiControllerState
@@ -73,7 +85,17 @@ const state = proxy<ApiControllerState>({
   search: [],
   isAnalyticsEnabled: false,
   excludedWallets: [],
-  isFetchingRecommendedWallets: false
+  isFetchingRecommendedWallets: false,
+  explorerWallets: [],
+  explorerFilteredWallets: [],
+  plan: {
+    tier: 'none',
+    hasExceededUsageLimit: false,
+    limits: {
+      isAboveRpcLimit: false,
+      isAboveMauLimit: false
+    }
+  }
 })
 
 // -- Controller ---------------------------------------- //
@@ -133,26 +155,24 @@ export const ApiController = {
   },
 
   _filterWalletsByPlatform(wallets: WcWallet[]) {
+    const walletsLength = wallets.length
     const filteredWallets = CoreHelperUtil.isMobile()
       ? wallets?.filter(w => {
-          if (w.mobile_link) {
+          if (w.mobile_link || w.webapp_link) {
             return true
           }
 
-          if (w.id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id) {
-            return true
-          }
-          const isSolana = ChainController.state.activeChain === 'solana'
-
-          return (
-            isSolana &&
-            (w.id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id ||
-              w.id === CUSTOM_DEEPLINK_WALLETS.PHANTOM.id)
+          const customDeeplinkWalletIds = Object.values(CUSTOM_DEEPLINK_WALLETS).map(
+            wallet => wallet.id
           )
+
+          return customDeeplinkWalletIds.includes(w.id)
         })
       : wallets
 
-    return filteredWallets
+    const mobileFilteredOutWalletsLength = walletsLength - filteredWallets.length
+
+    return { filteredWallets, mobileFilteredOutWalletsLength }
   },
 
   async fetchProjectConfig() {
@@ -162,6 +182,31 @@ export const ApiController = {
     })
 
     return response.features
+  },
+
+  async fetchUsage() {
+    try {
+      const response = await api.get<ApiGetUsageResponse>({
+        path: '/appkit/v1/project-limits',
+        params: ApiController._getSdkProperties()
+      })
+
+      const { tier, isAboveMauLimit, isAboveRpcLimit } = response.planLimits
+
+      const isStarterPlan = tier === 'starter'
+      const isAboveUsageLimit = isAboveMauLimit || isAboveRpcLimit
+
+      ApiController.state.plan = {
+        tier,
+        hasExceededUsageLimit: isStarterPlan && isAboveUsageLimit,
+        limits: {
+          isAboveRpcLimit,
+          isAboveMauLimit
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to fetch usage', e)
+    }
   },
 
   async fetchAllowedOrigins() {
@@ -239,13 +284,51 @@ export const ApiController = {
       }
     })
 
-    const filteredWallets = ApiController._filterWalletsByPlatform(wallets?.data)
+    const { filteredWallets, mobileFilteredOutWalletsLength } =
+      ApiController._filterWalletsByPlatform(wallets?.data)
 
     return {
       data: filteredWallets || [],
       // Keep original count for display on main page
-      count: wallets?.count
+      count: wallets?.count,
+      mobileFilteredOutWalletsLength
     }
+  },
+
+  async prefetchWalletRanks() {
+    const connectors = ConnectorController.state.connectors
+    if (!connectors?.length) {
+      return
+    }
+
+    const params: Omit<ApiGetWalletsRequest, 'chains'> & { chains?: string } = {
+      page: 1,
+      entries: 20,
+      badge: 'certified'
+    }
+
+    params.names = connectors.map(c => c.name).join(',')
+
+    if (ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM) {
+      const rdnsCandidates = [
+        ...connectors.flatMap(c => c.connectors?.map(sc => sc.info?.rdns) || []),
+        ...connectors.map(c => c.info?.rdns)
+      ].filter((val): val is string => typeof val === 'string' && val.length > 0)
+
+      if (rdnsCandidates.length) {
+        params.rdns = rdnsCandidates.join(',')
+      }
+    }
+
+    const { data } = await ApiController.fetchWallets(params)
+
+    state.explorerWallets = data
+    ConnectorController.extendConnectorsWithExplorerWallets(data)
+
+    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
+    state.explorerFilteredWallets = data.filter(wallet =>
+      wallet.chains?.some(chain => caipNetworkIds.includes(chain))
+    )
   },
 
   async fetchFeaturedWallets() {
@@ -317,7 +400,11 @@ export const ApiController = {
       exclude,
       chains
     }
-    const { data, count } = await ApiController.fetchWallets(params)
+    const { data, count, mobileFilteredOutWalletsLength } = await ApiController.fetchWallets(params)
+
+    state.mobileFilteredOutWalletsLength =
+      mobileFilteredOutWalletsLength + (state.mobileFilteredOutWalletsLength ?? 0)
+
     const images = data
       .slice(0, imageCountToFetch)
       .map(w => w.image_id)
@@ -392,7 +479,8 @@ export const ApiController = {
     fetchConnectorImages = true,
     fetchFeaturedWallets = true,
     fetchRecommendedWallets = true,
-    fetchNetworkImages = true
+    fetchNetworkImages = true,
+    fetchWalletRanks = true
   }: PrefetchParameters = {}) {
     const promises = [
       fetchConnectorImages &&
@@ -402,7 +490,9 @@ export const ApiController = {
       fetchRecommendedWallets &&
         ApiController.initPromise('recommendedWallets', ApiController.fetchRecommendedWallets),
       fetchNetworkImages &&
-        ApiController.initPromise('networkImages', ApiController.fetchNetworkImages)
+        ApiController.initPromise('networkImages', ApiController.fetchNetworkImages),
+      fetchWalletRanks &&
+        ApiController.initPromise('walletRanks', ApiController.prefetchWalletRanks)
     ].filter(Boolean)
 
     return Promise.allSettled(promises)

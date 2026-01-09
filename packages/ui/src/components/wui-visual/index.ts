@@ -2,6 +2,7 @@ import type { TemplateResult } from 'lit'
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
+import { tonSvg } from '../../assets/svg/ton.js'
 import { bitcoinSvg } from '../../assets/visual/bitcoin.js'
 import { browserSvg } from '../../assets/visual/browser.js'
 import { daoSvg } from '../../assets/visual/dao.js'
@@ -48,6 +49,7 @@ const svgOptions: Record<VisualType, TemplateResult<2>> = {
   pencil: pencilSvg,
   lightbulb: lightbulbSvg,
   solana: solanaSvg,
+  ton: tonSvg,
   bitcoin: bitcoinSvg
 }
 
@@ -63,7 +65,7 @@ export class WuiVisual extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
-       --local-size: var(--wui-visual-size-${this.size});
+       --local-size: var(--apkt-visual-size-${this.size});
    `
 
     return html`${svgOptions[this.name]}`

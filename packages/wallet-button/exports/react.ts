@@ -128,7 +128,7 @@ export function useAppKitWallet(parameters?: {
           await ConnectorControllerUtil.connectEmail({
             namespace,
             onOpen() {
-              ModalController.open().then(() => RouterController.push('EmailLogin'))
+              ModalController.open({ view: 'EmailLogin' })
             }
           }).then(handleSuccess)
 
@@ -152,13 +152,10 @@ export function useAppKitWallet(parameters?: {
 
         const walletButton = WalletUtil.getWalletButton(wallet)
 
-        const connector = walletButton
-          ? ConnectorController.getConnector({
-              id: walletButton.id,
-              rdns: walletButton.rdns,
-              namespace
-            })
-          : undefined
+        const connector =
+          walletButton && namespace
+            ? ConnectorController.getConnector({ id: walletButton.id, namespace })
+            : undefined
 
         if (connector) {
           await ConnectorControllerUtil.connectExternal(connector).then(handleSuccess)
@@ -170,14 +167,9 @@ export function useAppKitWallet(parameters?: {
           walletConnect: wallet === 'walletConnect',
           connector: connectors.find(c => c.id === 'walletConnect') as Connector | undefined,
           onOpen(isMobile) {
-            ModalController.open().then(() => {
-              if (isMobile) {
-                RouterController.replace('AllWallets')
-              } else {
-                RouterController.replace('ConnectingWalletConnect', {
-                  wallet: walletButton
-                })
-              }
+            ModalController.open({
+              view: isMobile ? 'AllWallets' : 'ConnectingWalletConnect',
+              data: isMobile ? undefined : { wallet: walletButton }
             })
           },
           onConnect() {

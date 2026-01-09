@@ -1,35 +1,61 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
+import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ColorType } from '../../utils/TypeUtil.js'
+import type { ButtonLinkVariant, ButtonSize, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
+
+// -- Constants ------------------------------------------ //
+
+const TEXT_VARIANT_BY_SIZE = {
+  sm: 'sm-medium',
+  md: 'md-medium'
+} as const
+
+const TEXT_COLOR_BY_VARIANT = {
+  accent: 'accent-primary',
+  secondary: 'secondary'
+} as const
 
 @customElement('wui-link')
 export class WuiLink extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public tabIdx?: number = undefined
+  @property() public size: Exclude<ButtonSize, 'lg'> = 'md'
 
   @property({ type: Boolean }) public disabled = false
 
-  @property() color: ColorType = 'inherit'
+  @property() public variant: ButtonLinkVariant = 'accent'
+
+  @property() public icon?: IconType = undefined
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)}>
+      <button ?disabled=${this.disabled} data-variant=${this.variant}>
         <slot name="iconLeft"></slot>
-        <wui-text variant="small-600" color=${this.color}>
+        <wui-text
+          color=${TEXT_COLOR_BY_VARIANT[this.variant]}
+          variant=${TEXT_VARIANT_BY_SIZE[this.size]}
+        >
           <slot></slot>
         </wui-text>
-        <slot name="iconRight"></slot>
+        ${this.iconTemplate()}
       </button>
     `
+  }
+
+  // -- Private ------------------------------------------- //
+  private iconTemplate() {
+    if (!this.icon) {
+      return null
+    }
+
+    return html`<wui-icon name=${this.icon} size="sm"></wui-icon>`
   }
 }
 

@@ -1,9 +1,10 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 import '../../components/wui-icon/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconType } from '../../utils/TypeUtil.js'
+import type { IconButtonSize, IconSizeType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -12,14 +13,30 @@ export class WuiIconButton extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() text = ''
-
   @property() icon: IconType = 'card'
+
+  @property() variant: 'primary' | 'secondary' = 'primary'
+
+  @property() type: 'accent' | 'neutral' | 'success' | 'error' = 'accent'
+
+  @property() public size: IconButtonSize = 'md'
+
+  @property() public iconSize?: IconSizeType = undefined
+
+  @property({ type: Boolean }) public fullWidth = false
+
+  @property({ type: Boolean }) public disabled = false
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`<button>
-      <wui-icon color="accent-100" name=${this.icon} size="lg"></wui-icon>
+    return html`<button
+      data-variant=${this.variant}
+      data-type=${this.type}
+      data-size=${this.size}
+      data-full-width=${this.fullWidth}
+      ?disabled=${this.disabled}
+    >
+      <wui-icon color="inherit" name=${this.icon} size=${ifDefined(this.iconSize)}></wui-icon>
     </button>`
   }
 }

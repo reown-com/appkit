@@ -5,6 +5,8 @@ import {
   ApiController,
   AssetUtil,
   CoreHelperUtil,
+  type CustomWallet,
+  EventsController,
   OptionsController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -18,17 +20,18 @@ export class W3mGetWalletView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 's', 's', 's']} gap="xs">
+      <wui-flex flexDirection="column" .padding=${['0', '3', '3', '3'] as const} gap="2">
         ${this.recommendedWalletsTemplate()}
-        <wui-list-wallet
+        <w3m-list-wallet
           name="Explore all"
           showAllWallets
           walletIcon="allWallets"
           icon="externalLink"
+          size="sm"
           @click=${() => {
             CoreHelperUtil.openHref('https://walletconnect.com/explorer?type=wallet', '_blank')
           }}
-        ></wui-list-wallet>
+        ></w3m-list-wallet>
       </wui-flex>
     `
   }
@@ -40,17 +43,33 @@ export class W3mGetWalletView extends LitElement {
     const wallets = [...featured, ...(customWallets ?? []), ...recommended].slice(0, 4)
 
     return wallets.map(
-      wallet => html`
-        <wui-list-wallet
+      (wallet, index) => html`
+        <w3m-list-wallet
+          displayIndex=${index}
           name=${wallet.name ?? 'Unknown'}
-          tagVariant="main"
+          tagVariant="accent"
+          size="sm"
           imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
           @click=${() => {
-            CoreHelperUtil.openHref(wallet.homepage ?? EXPLORER, '_blank')
+            this.onWalletClick(wallet)
           }}
-        ></wui-list-wallet>
+        ></w3m-list-wallet>
       `
     )
+  }
+
+  private onWalletClick(wallet: CustomWallet) {
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'GET_WALLET',
+      properties: {
+        name: wallet.name,
+        walletRank: undefined,
+        explorerId: wallet.id,
+        type: 'homepage'
+      }
+    })
+    CoreHelperUtil.openHref(wallet.homepage ?? EXPLORER, '_blank')
   }
 }
 

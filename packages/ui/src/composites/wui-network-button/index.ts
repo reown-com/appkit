@@ -19,12 +19,20 @@ export class WuiNetworkButton extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
+  @property() public size: 'sm' | 'md' | 'lg' = 'lg'
+
   // -- Render -------------------------------------------- //
   public override render() {
+    const textVariant = {
+      sm: 'sm-regular',
+      md: 'md-regular',
+      lg: 'lg-regular'
+    } as const
+
     return html`
-      <button data-testid="wui-network-button" ?disabled=${this.disabled}>
+      <button data-size=${this.size} data-testid="wui-network-button" ?disabled=${this.disabled}>
         ${this.visualTemplate()}
-        <wui-text variant="paragraph-600" color="inherit">
+        <wui-text variant=${textVariant[this.size]} color="primary">
           <slot></slot>
         </wui-text>
       </button>
@@ -34,27 +42,13 @@ export class WuiNetworkButton extends LitElement {
   // -- Private ------------------------------------------- //
   private visualTemplate() {
     if (this.isUnsupportedChain) {
-      return html`
-        <wui-icon-box
-          size="sm"
-          iconColor="error-100"
-          backgroundColor="error-100"
-          icon="warningCircle"
-        ></wui-icon-box>
-      `
+      return html` <wui-icon-box color="error" icon="warningCircle"></wui-icon-box> `
     }
     if (this.imageSrc) {
       return html`<wui-image src=${this.imageSrc}></wui-image>`
     }
 
-    return html`
-      <wui-icon-box
-        size="sm"
-        iconColor="inverse-100"
-        backgroundColor="fg-100"
-        icon="networkPlaceholder"
-      ></wui-icon-box>
-    `
+    return html` <wui-icon size="xl" color="default" name="networkPlaceholder"></wui-icon> `
   }
 }
 

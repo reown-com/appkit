@@ -3,14 +3,12 @@ import { property } from 'lit/decorators.js'
 
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
+import '../../layout/wui-flex/index.js'
 import { QrCodeUtil } from '../../utils/QrCode.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { ThemeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-
-// -- Constants ---------------------------------------------- //
-const DEFAULT_ICON_COLOR = '#3396ff'
 
 @customElement('wui-qr-code')
 export class WuiQrCode extends LitElement {
@@ -19,15 +17,13 @@ export class WuiQrCode extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public uri = ''
 
-  @property({ type: Number }) public size = 0
+  @property({ type: Number }) public size = 500
 
   @property() public theme: ThemeType = 'dark'
 
   @property() public imageSrc?: string = undefined
 
   @property() public alt?: string = undefined
-
-  @property() public color?: string
 
   @property({ type: Boolean }) public arenaClear?: boolean = undefined
 
@@ -37,26 +33,28 @@ export class WuiQrCode extends LitElement {
   public override render() {
     this.dataset['theme'] = this.theme
     this.dataset['clear'] = String(this.arenaClear)
-    this.style.cssText = `
-     --local-size: ${this.size}px;
-     --local-icon-color: ${this.color ?? DEFAULT_ICON_COLOR}
-    `
 
-    return html`${this.templateVisual()} ${this.templateSvg()}`
+    return html`<wui-flex
+      alignItems="center"
+      justifyContent="center"
+      class="wui-qr-code"
+      direction="column"
+      gap="4"
+      width="100%"
+      style="height: 100%"
+    >
+      ${this.templateVisual()} ${this.templateSvg()}
+    </wui-flex>`
   }
 
   // -- Private ------------------------------------------- //
-
   private templateSvg() {
-    const size = this.theme === 'light' ? this.size : this.size - 16 * 2
-
     return svg`
-      <svg height=${size} width=${size}>
+      <svg viewBox="0 0 ${this.size} ${this.size}" width="100%" height="100%">
         ${QrCodeUtil.generate({
           uri: this.uri,
-          size,
-          logoSize: this.arenaClear ? 0 : size / 4,
-          dotColor: this.color
+          size: this.size,
+          logoSize: this.arenaClear ? 0 : this.size / 4
         })}
       </svg>
     `

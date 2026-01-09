@@ -10,9 +10,9 @@ permissions:
 
 jobs:
   trigger-devin-appkit-cdn-unity:
-    # This job runs only if the head commit message on the push to main contains 'chore: version packages'
+    # This job runs only if the head commit message on the push to main contains 'Release/' or 'release/'
     if: |
-      contains(github.event.head_commit.message, 'chore: version packages')
+      contains(github.event.head_commit.message, 'Release/') || contains(github.event.head_commit.message, 'release/')
     runs-on: ubuntu-latest
     steps:
       - name: Send Slack Notification for Unity Update
@@ -21,8 +21,8 @@ jobs:
           DEVIN_SLACK_USER_ID: U08M9DKD4MC
           PROMPT_TEXT: |
             ## Context
-            A commit titled **"chore: version packages"** (SHA: ${{ github.sha }}) just landed on **${{ github.repository }}**'s `main` branch.  
-            This commit bumps the published AppKit packages and updates one or more `CHANGELOG.md` files.
+            A release merge commit (SHA: ${{ github.sha }}) just landed on **${{ github.repository }}**'s `main` branch.  
+            This commit is from merging a release branch back to main after publishing new AppKit packages.
 
             ## Task - Update Unity binding
             1. Detect the new AppKit version introduced by this commit.
@@ -39,6 +39,18 @@ jobs:
                • If the import line already uses the latest version, **do not create a PR** and instead respond **"No Unity AppKit update needed."**  
                • Otherwise, commit and open a PR.
 
+            ## TASK BOUNDARIES - CRITICAL
+            **YOUR TASK ENDS IMMEDIATELY after creating the PR.**
+
+            **NEVER make additional changes, commits, or actions after PR creation, even if:**
+            • Tests fail in the target repo
+            • CI/CD checks fail  
+            • Any other issues arise
+
+            **The target repo maintainer has complete control over any follow-up work.** Your only job is the version bump described above.
+
+            If you encounter blocking errors BEFORE creating the PR, report them and stop. Once the PR exists, your work is COMPLETE.
+
             ## PR requirements
             * **Title:** `chore: bump appkit-cdn to <NEW_VER>`
             * **Body must include:**  
@@ -47,7 +59,7 @@ jobs:
 
             ## Reminders
             • Treat duplicated CHANGELOG entries as one source of truth.  
-            • Fail fast and report clear errors if anything blocks you (permissions, missing file, etc.).  
+            • Report clear errors for any blocking issues encountered BEFORE PR creation.  
             • Keep messages concise—no boilerplate.
         run: |
           # Exit on error

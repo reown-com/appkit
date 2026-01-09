@@ -4,12 +4,14 @@ import { BASE_URL, WalletPage, WalletValidator } from '@reown/appkit-testing'
 
 import { expect } from './shared/fixtures/w3m-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
+import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
 let walletPage: WalletPage
 let walletValidator: WalletValidator
 let context: BrowserContext
+let validator: ModalWalletValidator
 /* eslint-enable init-declarations */
 
 // -- Setup --------------------------------------------------------------------
@@ -24,11 +26,12 @@ universalProviderTest.beforeAll(async ({ browser }) => {
   const browserPage = await context.newPage()
 
   // Navigate to universal-provider page
-  await browserPage.goto(`${BASE_URL}core/universal-provider/`)
+  await browserPage.goto(`${BASE_URL}appkit-core/universal-provider/`)
 
   modalPage = new ModalPage(browserPage, 'library', 'core-universal-provider')
   walletPage = new WalletPage(await context.newPage())
   walletValidator = new WalletValidator(walletPage.page)
+  validator = new ModalWalletValidator(browserPage)
 
   await walletPage.load()
 
@@ -68,7 +71,7 @@ universalProviderTest('it should sign message with universal provider', async ()
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
   await walletPage.handleRequest({ accept: true })
-  await expect(modalPage.page.getByText('Signing Succeeded')).toBeVisible()
+  await validator.expectAcceptedSign()
 })
 
 universalProviderTest('it should switch networks with universal provider', async () => {
@@ -83,7 +86,7 @@ universalProviderTest('it should sign message after network switch with UP', asy
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Polygon' })
   await walletPage.handleRequest({ accept: true })
-  await expect(modalPage.page.getByText('Signing Succeeded')).toBeVisible()
+  await validator.expectAcceptedSign()
 })
 
 universalProviderTest('it should stay connected after page refresh with UP', async () => {
@@ -96,7 +99,7 @@ universalProviderTest('it should reject sign message with UP', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
   await walletPage.handleRequest({ accept: false })
-  await expect(modalPage.page.getByText('Failed to sign')).toBeVisible()
+  await validator.expectRejectedSign()
 })
 
 universalProviderTest('it should switch between various networks with UP', async () => {

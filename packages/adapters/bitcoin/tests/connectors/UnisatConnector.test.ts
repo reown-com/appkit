@@ -1,8 +1,8 @@
 import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
-import { CoreHelperUtil } from '@reown/appkit-controllers'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+import { ChainController, CoreHelperUtil } from '@reown/appkit-controllers'
+import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { UnisatConnector } from '../../src/connectors/UnisatConnector'
 import type { UnisatConnector as UnisatConnectorTypes } from '../../src/connectors/UnisatConnector/types'
@@ -35,20 +35,18 @@ describe('UnisatConnector', () => {
   let wallet: ReturnType<typeof mockUnisatWallet>
   let requestedChains: CaipNetwork[]
   let connector: UnisatConnector
-  let getActiveNetwork: Mock<() => CaipNetwork | undefined>
   let imageUrl: string
 
   beforeEach(() => {
     imageUrl = 'mock_image_url'
     requestedChains = [bitcoin, bitcoinTestnet]
-    getActiveNetwork = vi.fn(() => bitcoin)
+    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(bitcoin)
     wallet = mockUnisatWallet()
     connector = new UnisatConnector({
       id: 'unisat',
       name: 'Unisat Wallet',
       wallet,
       requestedChains,
-      getActiveNetwork,
       imageUrl
     })
   })
@@ -61,8 +59,8 @@ describe('UnisatConnector', () => {
     expect(connector.imageUrl).toBe('mock_image_url')
   })
 
-  it('should return only mainnet chain', () => {
-    expect(connector.chains).toEqual([bitcoin])
+  it('should return bitcoin chains', () => {
+    expect(connector.chains).toEqual([bitcoin, bitcoinTestnet])
   })
 
   describe('connect', () => {
@@ -145,7 +143,7 @@ describe('UnisatConnector', () => {
     })
 
     it('should throw an error if the network is unavailable', async () => {
-      getActiveNetwork.mockReturnValueOnce(undefined)
+      vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(undefined)
 
       await expect(
         connector.sendTransfer({ amount: '1500', recipient: 'mock_to_address' })
@@ -174,7 +172,7 @@ describe('UnisatConnector', () => {
     })
 
     it('should sign a PSBT with broadcast', async () => {
-      getActiveNetwork.mockReturnValueOnce(bitcoinTestnet)
+      vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(bitcoinTestnet)
       const result = await connector.signPSBT({
         psbt: Buffer.from('mock_psbt').toString('base64'),
         signInputs: [],
@@ -183,6 +181,62 @@ describe('UnisatConnector', () => {
 
       expect(result).toEqual({ psbt: 'bW9ja19wc2J0', txid: 'mock_txhash' })
       expect(wallet.pushPsbt).toHaveBeenCalled()
+    })
+
+    it('should sign a PSBT with partial signing without broadcast', async () => {
+      const signInputs = [
+        {
+          index: 0,
+          address: 'mock_address',
+          publicKey: 'mock_pubkey',
+          sighashTypes: [1, 3],
+          disableTweakSigner: true,
+          useTweakedSigner: false
+        }
+      ]
+      const psbtBase64 = Buffer.from('mock_psbt').toString('base64')
+      const result = await connector.signPSBT({
+        psbt: psbtBase64,
+        signInputs,
+        broadcast: false
+      })
+      expect(result).toEqual({ psbt: 'bW9ja19wc2J0', txid: undefined })
+      expect(wallet.signPsbt).toHaveBeenCalledWith(
+        Buffer.from(psbtBase64, 'base64').toString('hex'),
+        {
+          autoFinalized: false,
+          toSignInputs: [
+            {
+              index: 0,
+              address: 'mock_address',
+              publicKey: 'mock_pubkey',
+              sighashTypes: [1, 3],
+              disableTweakSigner: true,
+              useTweakedSigner: false
+            }
+          ]
+        }
+      )
+      expect(wallet.pushPsbt).not.toHaveBeenCalled()
+    })
+    it('should throw error when trying to broadcast with partial signing', async () => {
+      const signInputs = [
+        {
+          index: 0,
+          address: 'mock_address',
+          publicKey: 'mock_pubkey',
+          sighashTypes: [1, 3],
+          disableTweakSigner: true,
+          useTweakedSigner: false
+        }
+      ]
+      await expect(
+        connector.signPSBT({
+          psbt: Buffer.from('mock_psbt').toString('base64'),
+          signInputs,
+          broadcast: true
+        })
+      ).rejects.toThrow('Broadcast not supported for partial signing')
     })
   })
 
@@ -217,7 +271,6 @@ describe('UnisatConnector', () => {
       id => {
         expect(
           UnisatConnector.getWallet({
-            getActiveNetwork,
             requestedChains: [],
             id,
             name: `${id} wallet`,
@@ -230,7 +283,6 @@ describe('UnisatConnector', () => {
     it('should return the Connector if there is a unisat wallet', () => {
       ;(window as any).unisat = wallet
       const connector = UnisatConnector.getWallet({
-        getActiveNetwork,
         id: 'unisat',
         name: 'Unisat Wallet',
         requestedChains,
@@ -243,7 +295,6 @@ describe('UnisatConnector', () => {
     it('should return the Connector if there is a bitget wallet', () => {
       ;(window as any).bitkeep = { unisat: wallet }
       const connector = UnisatConnector.getWallet({
-        getActiveNetwork,
         id: 'bitget',
         name: 'Bitget Wallet',
         requestedChains,
@@ -256,7 +307,6 @@ describe('UnisatConnector', () => {
     it('should return the Connector if there is a binance web3 wallet', () => {
       ;(window as any).binancew3w = { bitcoin: wallet }
       const connector = UnisatConnector.getWallet({
-        getActiveNetwork,
         id: 'binancew3w',
         name: 'Binance Web3 Wallet',
         requestedChains,
@@ -271,7 +321,6 @@ describe('UnisatConnector', () => {
 
       expect(
         UnisatConnector.getWallet({
-          getActiveNetwork,
           requestedChains: [],
           id: 'unisat',
           name: 'Unisat Wallet',
@@ -293,6 +342,12 @@ describe('UnisatConnector', () => {
     it('should switch network', async () => {
       await connector.switchNetwork(bitcoin.caipNetworkId)
       expect(wallet.switchChain).toHaveBeenCalledWith('BITCOIN_MAINNET')
+
+      await connector.switchNetwork(bitcoinTestnet.caipNetworkId)
+      expect(wallet.switchChain).toHaveBeenCalledWith('BITCOIN_TESTNET')
+
+      await connector.switchNetwork(bitcoinSignet.caipNetworkId)
+      expect(wallet.switchChain).toHaveBeenCalledWith('BITCOIN_SIGNET')
     })
   })
 })

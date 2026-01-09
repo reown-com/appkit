@@ -1,8 +1,10 @@
 import type { SessionTypes } from '@walletconnect/types'
 import {
+  type ConnectParams,
   type NamespaceConfig,
   type RequestArguments,
-  UniversalProvider
+  UniversalProvider,
+  type UniversalProviderOpts
 } from '@walletconnect/universal-provider'
 
 import type { CreateAppKit } from '@reown/appkit'
@@ -18,6 +20,11 @@ export type Config = {
   projectId: string
   metadata: Metadata
   networks: ExtendedNamespaces[]
+  modalConfig?: Omit<
+    CreateAppKit,
+    'networks' | 'projectId' | 'metadata' | 'universalProvider' | 'manualWCControl'
+  >
+  providerConfig?: Omit<UniversalProviderOpts, 'projectId' | 'metadata'>
 }
 
 export class UniversalConnector {
@@ -41,11 +48,13 @@ export class UniversalConnector {
 
   public static async init(config: Config) {
     const provider = await UniversalProvider.init({
+      ...(config.providerConfig || {}),
       projectId: config.projectId,
       metadata: config.metadata
     })
 
     const appKitConfig: CreateAppKit = {
+      ...(config.modalConfig || {}),
       networks: config.networks.flatMap(network => network.chains) as [
         CaipNetwork,
         ...CaipNetwork[]
@@ -60,7 +69,7 @@ export class UniversalConnector {
     return new UniversalConnector({ appKit, provider, config })
   }
 
-  async connect(): Promise<{
+  async connect(params?: Omit<ConnectParams, 'optionalNamespaces'>): Promise<{
     session: SessionTypes.Struct
   }> {
     const namespaces: NamespaceConfig = this.config?.networks.reduce<NamespaceConfig>(
@@ -80,6 +89,7 @@ export class UniversalConnector {
     try {
       await this.appKit.open()
       const session = await this.provider.connect({
+        ...(params || {}),
         optionalNamespaces: namespaces
       })
 

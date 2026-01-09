@@ -30,7 +30,7 @@ const INSTALLED_WALLET = {
   type: 'ANNOUNCED'
 } as ConnectorWithProviders
 const AUTH_CONNECTOR = {
-  id: 'ID_AUTH',
+  id: 'AUTH',
   type: 'AUTH',
   name: 'Auth',
   chain: 'eip155'
@@ -304,27 +304,6 @@ describe('W3mConnectView - Explore Mode', () => {
     })
     vi.mocked(ChainController.state).noAdapters = false
   })
-  it('should render a single separator in explore mode if wallet guide is enabled and there are adapters', async () => {
-    const element: W3mConnectView = await fixture(
-      html`<w3m-connect-view .walletGuide=${'explore'}></w3m-connect-view>`
-    )
-
-    const separators = element.shadowRoot?.querySelectorAll(SEPARATOR)
-    expect(separators?.length).toBe(1) // Only the explore separator should be present
-    expect(HelpersUtil.querySelect(element, '#explore')).not.toBeNull()
-  })
-
-  it('should render no separators in explore mode if wallet guide is enabled and there are no adapters', async () => {
-    vi.mocked(ChainController.state).noAdapters = true
-
-    const element: W3mConnectView = await fixture(
-      html`<w3m-connect-view .walletGuide=${'explore'}></w3m-connect-view>`
-    )
-
-    const separators = element.shadowRoot?.querySelectorAll(SEPARATOR)
-    expect(separators?.length).toBe(0) // No separators should be present
-    expect(HelpersUtil.querySelect(element, '#explore')).not.toBeNull
-  })
 
   it('should not render wallet list in explore mode', async () => {
     const element: W3mConnectView = await fixture(
@@ -332,46 +311,6 @@ describe('W3mConnectView - Explore Mode', () => {
     )
 
     expect(HelpersUtil.querySelect(element, WALLET_LOGIN_LIST)).toBeNull()
-  })
-})
-
-describe('W3mConnectView - Wallet Guide Mode', () => {
-  beforeEach(() => {
-    vi.mocked(ChainController.state).noAdapters = false
-  })
-
-  it('should render wallet guide if enableWalletGuide is true', async () => {
-    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-      ...OptionsController.state,
-      remoteFeatures: {
-        email: true,
-        socials: ['google']
-      },
-      enableWalletGuide: true
-    })
-
-    const element: W3mConnectView = await fixture(
-      html`<w3m-connect-view .walletGuide=${'get-started'}></w3m-connect-view>`
-    )
-    expect(HelpersUtil.querySelect(element, 'w3m-wallet-guide')).not.toBeNull()
-  })
-
-  it('should not render wallet guide if enableWalletGuide is false', async () => {
-    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-      ...OptionsController.state,
-
-      remoteFeatures: {
-        email: true,
-        socials: ['google']
-      },
-      enableWalletGuide: false
-    })
-
-    const element: W3mConnectView = await fixture(
-      html`<w3m-connect-view .walletGuide=${'get-started'}></w3m-connect-view>`
-    )
-
-    expect(HelpersUtil.querySelect(element, 'w3m-wallet-guide')).toBeNull()
   })
 })
 

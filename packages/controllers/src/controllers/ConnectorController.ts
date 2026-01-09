@@ -3,6 +3,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import {
   AVAILABLE_NAMESPACES,
+  type CaipAddress,
   type ChainNamespace,
   ConstantsUtil,
   getW3mThemeVariables
@@ -10,20 +11,24 @@ import {
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { getPreferredAccountType } from '../utils/ChainControllerUtil.js'
+import { ConnectorUtil } from '../utils/ConnectorUtil.js'
 import { MobileWalletUtil } from '../utils/MobileWallet.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
-import type { AuthConnector, Connector, WcWallet } from '../utils/TypeUtil.js'
+import type {
+  AuthConnector,
+  Connector,
+  ConnectorWithProviders,
+  WcWallet
+} from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
+import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
 import { RouterController } from './RouterController.js'
 import { ThemeController } from './ThemeController.js'
 
 // -- Types --------------------------------------------- //
-export interface ConnectorWithProviders extends Connector {
-  connectors?: Connector[]
-}
 export interface ConnectorControllerState {
   allConnectors: Connector[]
   connectors: ConnectorWithProviders[]
@@ -34,6 +39,10 @@ export interface ConnectorControllerState {
 }
 
 type StateKey = keyof ConnectorControllerState
+
+export interface ConnectParameters {
+  namespace?: ChainNamespace
+}
 
 const defaultActiveConnectors = Object.fromEntries(
   AVAILABLE_NAMESPACES.map(namespace => [namespace, undefined])
@@ -278,27 +287,24 @@ const controller = {
   },
 
   getConnectorById(id: string) {
-    return state.allConnectors.find(c => c.id === id)
+    const sortedConnectors = ConnectorUtil.sortConnectorsByPriority(state.allConnectors)
+
+    return sortedConnectors.find(c => c.id === id)
   },
 
-  getConnector({
-    id,
-    rdns,
-    namespace
-  }: {
-    id?: string
-    rdns?: string | null
-    namespace?: ChainNamespace
-  }) {
+  getConnector({ id, namespace }: { id: string; namespace: ChainNamespace }) {
     const namespaceToUse = namespace || ChainController.state.activeChain
 
     const connectorsByNamespace = state.allConnectors.filter(c => c.chain === namespaceToUse)
+    const sortedConnectorsByNamespace =
+      ConnectorUtil.sortConnectorsByPriority(connectorsByNamespace)
+    const connector = sortedConnectorsByNamespace.find(c => c.id === id || c.explorerId === id)
 
-    return connectorsByNamespace.find(c => c.explorerId === id || c.info?.rdns === rdns)
+    return connector
   },
 
   syncIfAuthConnector(connector: Connector | AuthConnector) {
-    if (connector.id !== 'ID_AUTH') {
+    if (connector.id !== 'AUTH') {
       return
     }
 
@@ -344,10 +350,12 @@ const controller = {
   },
 
   selectWalletConnector(wallet: WcWallet) {
-    const connector = ConnectorController.getConnector({
-      id: wallet.id,
-      rdns: wallet.rdns
-    })
+    const redirectView = RouterController.state.data?.redirectView
+    const namespace = ChainController.state.activeChain
+
+    const connector = namespace
+      ? ConnectorController.getConnector({ id: wallet.id, namespace })
+      : undefined
 
     MobileWalletUtil.handleMobileDeeplinkRedirect(
       connector?.explorerId || wallet.id,
@@ -355,9 +363,9 @@ const controller = {
     )
 
     if (connector) {
-      RouterController.push('ConnectingExternal', { connector, wallet })
+      RouterController.push('ConnectingExternal', { connector, wallet, redirectView })
     } else {
-      RouterController.push('ConnectingWalletConnect', { wallet })
+      RouterController.push('ConnectingWalletConnect', { wallet, redirectView })
     }
   },
 
@@ -420,6 +428,76 @@ const controller = {
 
   resetConnectorIds() {
     state.activeConnectorIds = { ...defaultActiveConnectors }
+  },
+
+  extendConnectorsWithExplorerWallets(explorerWallets: WcWallet[]) {
+    state.allConnectors.forEach(connector => {
+      const explorerWallet = explorerWallets.find(
+        wallet =>
+          wallet.id === connector.id || (wallet.rdns && wallet.rdns === connector.info?.rdns)
+      )
+
+      if (explorerWallet) {
+        connector.explorerWallet = explorerWallet
+      }
+    })
+
+    const enabledNamespaces = ConnectorController.getEnabledNamespaces()
+    const enabledConnectors = ConnectorController.getEnabledConnectors(enabledNamespaces)
+    state.connectors = ConnectorController.mergeMultiChainConnectors(enabledConnectors)
+  },
+
+  /**
+   * Opens the connect modal and waits until the user connects their wallet.
+   * @param params - Connection parameters.
+   * @returns Promise resolving to the connected wallet's CAIP address.
+   */
+  async connect(params: ConnectParameters = {}): Promise<{ caipAddress: CaipAddress }> {
+    const { namespace } = params
+
+    ConnectorController.setFilterByNamespace(namespace)
+    RouterController.push('Connect', {
+      addWalletForNamespace: namespace
+    })
+
+    return new Promise((resolve, reject) => {
+      if (namespace) {
+        const unsubscribeChainController = ChainController.subscribeChainProp(
+          'accountState',
+          val => {
+            if (val?.caipAddress) {
+              resolve({ caipAddress: val?.caipAddress })
+              unsubscribeChainController()
+            }
+          },
+          namespace
+        )
+
+        const unsubscribeModalController = ModalController.subscribeKey('open', val => {
+          if (!val) {
+            reject(new Error('Modal closed'))
+            unsubscribeModalController()
+          }
+        })
+      } else {
+        const unsubscribeChainController = ChainController.subscribeKey(
+          'activeCaipAddress',
+          val => {
+            if (val) {
+              resolve({ caipAddress: val })
+              unsubscribeChainController()
+            }
+          }
+        )
+
+        const unsubscribeModalController = ModalController.subscribeKey('open', val => {
+          if (!val) {
+            reject(new Error('Modal closed'))
+            unsubscribeModalController()
+          }
+        })
+      }
+    })
   }
 }
 

@@ -27,7 +27,7 @@ walletButtonTest.beforeAll(async ({ browser, library }) => {
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
-  modalPage = new ModalPage(browserPage, library, 'wallet-button')
+  modalPage = new ModalPage(browserPage, library, 'default')
   walletPage = new WalletPage(await context.newPage())
   modalValidator = new ModalValidator(browserPage)
 
@@ -52,7 +52,7 @@ walletButtonTest('it should be connected after page refresh', async () => {
 })
 
 walletButtonTest('it should connect with email', async ({ library }) => {
-  if (library === 'bitcoin') {
+  if (library === 'bitcoin' || library === 'ton') {
     return
   }
 

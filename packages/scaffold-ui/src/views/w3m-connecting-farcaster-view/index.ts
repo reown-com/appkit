@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   ConnectorController,
@@ -21,7 +20,6 @@ import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-icon-box'
-import '@reown/appkit-ui/wui-link'
 import '@reown/appkit-ui/wui-loading-thumbnail'
 import '@reown/appkit-ui/wui-logo'
 import '@reown/appkit-ui/wui-qr-code'
@@ -40,9 +38,9 @@ export class W3mConnectingFarcasterView extends LitElement {
   // -- State & Properties -------------------------------- //
   protected timeout?: ReturnType<typeof setTimeout> = undefined
 
-  @state() private socialProvider = AccountController.state.socialProvider
+  @state() private socialProvider = ChainController.getAccountData()?.socialProvider
 
-  @state() protected uri = AccountController.state.farcasterUrl
+  @state() protected uri = ChainController.getAccountData()?.farcasterUrl
 
   @state() protected ready = false
 
@@ -56,16 +54,10 @@ export class W3mConnectingFarcasterView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('farcasterUrl', val => {
-          if (val) {
-            this.uri = val
-            this.connectFarcaster()
-          }
-        }),
-        AccountController.subscribeKey('socialProvider', val => {
-          if (val) {
-            this.socialProvider = val
-          }
+        ChainController.subscribeChainProp('accountState', val => {
+          this.socialProvider = val?.socialProvider
+          this.uri = val?.farcasterUrl
+          this.connectFarcaster()
         }),
         OptionsController.subscribeKey('remoteFeatures', val => {
           this.remoteFeatures = val
@@ -80,6 +72,16 @@ export class W3mConnectingFarcasterView extends LitElement {
     super.disconnectedCallback()
     clearTimeout(this.timeout)
     window.removeEventListener('resize', this.forceUpdate)
+
+    // Track cancellation if user navigates away or closes modal without completing connection
+    const isConnected = ChainController.state.activeCaipAddress
+    if (!isConnected && this.socialProvider && (this.uri || this.loading)) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SOCIAL_LOGIN_CANCELED',
+        properties: { provider: this.socialProvider }
+      })
+    }
   }
 
   // -- Render -------------------------------------------- //
@@ -110,14 +112,12 @@ export class W3mConnectingFarcasterView extends LitElement {
     return html` <wui-flex
       flexDirection="column"
       alignItems="center"
-      .padding=${['0', 'xl', 'xl', 'xl']}
-      gap="xl"
+      .padding=${['0', '5', '5', '5']}
+      gap="5"
     >
-      <wui-shimmer borderRadius="l" width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
+      <wui-shimmer width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
 
-      <wui-text variant="paragraph-500" color="fg-100">
-        Scan this QR Code with your phone
-      </wui-text>
+      <wui-text variant="lg-medium" color="primary"> Scan this QR Code with your phone </wui-text>
       ${this.copyTemplate()}
     </wui-flex>`
   }
@@ -127,27 +127,19 @@ export class W3mConnectingFarcasterView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        .padding=${['xl', 'xl', 'xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['5', '5', '5', '5'] as const}
+        gap="5"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-logo logo="farcaster"></wui-logo>
           ${this.loaderTemplate()}
-          <wui-icon-box
-            backgroundColor="error-100"
-            background="opaque"
-            iconColor="error-100"
-            icon="close"
-            size="sm"
-            border
-            borderColor="wui-color-bg-125"
-          ></wui-icon-box>
+          <wui-icon-box color="error" icon="close" size="sm"></wui-icon-box>
         </wui-flex>
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text align="center" variant="paragraph-500" color="fg-100">
+        <wui-flex flexDirection="column" alignItems="center" gap="2">
+          <wui-text align="center" variant="md-medium" color="primary">
             Loading user data
           </wui-text>
-          <wui-text align="center" variant="small-400" color="fg-200">
+          <wui-text align="center" variant="sm-regular" color="secondary">
             Please wait a moment while we load your data.
           </wui-text>
         </wui-flex>
@@ -159,27 +151,23 @@ export class W3mConnectingFarcasterView extends LitElement {
     return html` <wui-flex
       flexDirection="column"
       alignItems="center"
-      .padding=${['3xl', 'xl', 'xl', 'xl'] as const}
-      gap="xl"
+      .padding=${['10', '5', '5', '5'] as const}
+      gap="5"
     >
       <wui-flex justifyContent="center" alignItems="center">
         <wui-logo logo="farcaster"></wui-logo>
         ${this.loaderTemplate()}
         <wui-icon-box
-          backgroundColor="error-100"
-          background="opaque"
-          iconColor="error-100"
+          color="error"
           icon="close"
           size="sm"
-          border
-          borderColor="wui-color-bg-125"
         ></wui-icon-box>
       </wui-flex>
-      <wui-flex flexDirection="column" alignItems="center" gap="xs">
-        <wui-text align="center" variant="paragraph-500" color="fg-100"
+      <wui-flex flexDirection="column" alignItems="center" gap="2">
+        <wui-text align="center" variant="md-medium" color="primary"
           >Continue in Farcaster</span></wui-text
         >
-        <wui-text align="center" variant="small-400" color="fg-200"
+        <wui-text align="center" variant="sm-regular" color="secondary"
           >Accept connection request in the app</wui-text
         ></wui-flex
       >
@@ -217,10 +205,7 @@ export class W3mConnectingFarcasterView extends LitElement {
           EventsController.sendEvent({
             type: 'track',
             event: 'SOCIAL_LOGIN_SUCCESS',
-            properties: {
-              provider: this.socialProvider,
-              caipNetworkId: ChainController.getActiveCaipNetwork()?.caipNetworkId
-            }
+            properties: { provider: this.socialProvider }
           })
         }
         this.loading = false
@@ -235,7 +220,7 @@ export class W3mConnectingFarcasterView extends LitElement {
           EventsController.sendEvent({
             type: 'track',
             event: 'SOCIAL_LOGIN_ERROR',
-            properties: { provider: this.socialProvider }
+            properties: { provider: this.socialProvider, message: CoreHelperUtil.parseError(error) }
           })
         }
         RouterController.goBack()
@@ -274,6 +259,9 @@ export class W3mConnectingFarcasterView extends LitElement {
     }
 
     const size = this.getBoundingClientRect().width - 40
+    const qrColor =
+      ThemeController.state.themeVariables['--apkt-qr-color'] ??
+      ThemeController.state.themeVariables['--w3m-qr-color']
 
     return html` <wui-qr-code
       size=${size}
@@ -281,22 +269,23 @@ export class W3mConnectingFarcasterView extends LitElement {
       uri=${this.uri}
       ?farcaster=${true}
       data-testid="wui-qr-code"
-      color=${ifDefined(ThemeController.state.themeVariables['--w3m-qr-color'])}
+      color=${ifDefined(qrColor)}
     ></wui-qr-code>`
   }
 
   private copyTemplate() {
     const inactive = !this.uri || !this.ready
 
-    return html`<wui-link
+    return html`<wui-button
       .disabled=${inactive}
       @click=${this.onCopyUri}
-      color="fg-200"
+      variant="neutral-secondary"
+      size="sm"
       data-testid="copy-wc2-uri"
     >
-      <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
+      <wui-icon size="sm" color="default" slot="iconRight" name="copy"></wui-icon>
       Copy link
-    </wui-link>`
+    </wui-button>`
   }
 
   private forceUpdate = () => {

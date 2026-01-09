@@ -4,12 +4,15 @@ import { BASE_URL, WalletPage, WalletValidator } from '@reown/appkit-testing'
 
 import { expect } from './shared/fixtures/w3m-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
+import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
 let walletPage: WalletPage
 let walletValidator: WalletValidator
 let context: BrowserContext
+let validator: ModalWalletValidator
+
 /* eslint-enable init-declarations */
 
 // -- Setup --------------------------------------------------------------------
@@ -24,11 +27,12 @@ coreTest.beforeAll(async ({ browser }) => {
   const browserPage = await context.newPage()
 
   // Navigate to core page
-  await browserPage.goto(`${BASE_URL}core/`)
+  await browserPage.goto(`${BASE_URL}appkit-core/`)
 
   modalPage = new ModalPage(browserPage, 'library', 'core')
   walletPage = new WalletPage(await context.newPage())
   walletValidator = new WalletValidator(walletPage.page)
+  validator = new ModalWalletValidator(browserPage)
 
   await walletPage.load()
 
@@ -66,7 +70,7 @@ coreTest('it should sign message', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
   await walletPage.handleRequest({ accept: true })
-  await expect(modalPage.page.getByText('Signing Succeeded')).toBeVisible()
+  await validator.expectAcceptedSign()
 })
 
 coreTest('it should switch networks', async () => {
@@ -82,7 +86,7 @@ coreTest('it should sign message after network switch', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Polygon' })
   await walletPage.handleRequest({ accept: true })
-  await expect(modalPage.page.getByText('Signing Succeeded')).toBeVisible()
+  await validator.expectAcceptedSign()
 })
 
 coreTest('it should stay connected after page refresh', async () => {
@@ -94,7 +98,7 @@ coreTest('it should reject sign message', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Polygon' })
   await walletPage.handleRequest({ accept: false })
-  await expect(modalPage.page.getByText('Signing Failed')).toBeVisible()
+  await validator.expectRejectedSign()
 })
 
 coreTest('it should switch between various networks', async () => {

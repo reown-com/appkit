@@ -17,6 +17,14 @@ type SDKFramework = 'html' | 'react' | 'vue' | 'cdn' | 'unity'
 export type OpenTarget = '_blank' | '_self' | 'popupWindow' | '_top'
 
 export const CoreHelperUtil = {
+  getWindow(): Window | undefined {
+    if (typeof window === 'undefined') {
+      return undefined
+    }
+
+    return window
+  },
+
   isMobile() {
     if (this.isClient()) {
       return Boolean(
@@ -87,6 +95,7 @@ export const CoreHelperUtil = {
       return false
     }
   },
+
   isSafeApp() {
     if (CoreHelperUtil.isClient() && window.self !== window.top) {
       try {
@@ -267,37 +276,29 @@ export const CoreHelperUtil = {
     return Promise.race([imagePromise, CoreHelperUtil.wait(2000)])
   },
 
-  formatBalance(balance: string | undefined, symbol: string | undefined) {
+  parseBalance(balance: string | undefined, symbol: string | undefined) {
     let formattedBalance = '0.000'
 
     if (typeof balance === 'string') {
       const number = Number(balance)
-      if (number) {
-        const formattedValue = Math.floor(number * 1000) / 1000
+      if (!isNaN(number)) {
+        const formattedValue = (Math.floor(number * 1000) / 1000).toFixed(3)
         if (formattedValue) {
-          formattedBalance = formattedValue.toString()
+          formattedBalance = formattedValue
         }
       }
     }
+    const [valueString, decimalsString] = formattedBalance.split('.')
 
-    return `${formattedBalance}${symbol ? ` ${symbol}` : ''}`
-  },
+    const value = valueString || '0'
+    const decimals = decimalsString || '000'
 
-  formatBalance2(balance: string | undefined, symbol: string | undefined) {
-    let formattedBalance = undefined
-
-    if (balance === '0') {
-      formattedBalance = '0'
-    } else if (typeof balance === 'string') {
-      const number = Number(balance)
-      if (number) {
-        formattedBalance = number.toString().match(/^-?\d+(?:\.\d{0,3})?/u)?.[0]
-      }
-    }
+    const formattedText = `${value}.${decimals}${symbol ? ` ${symbol}` : ''}`
 
     return {
-      value: formattedBalance ?? '0',
-      rest: formattedBalance === '0' ? '000' : '',
+      formattedText,
+      value,
+      decimals,
       symbol
     }
   },
@@ -402,6 +403,14 @@ export const CoreHelperUtil = {
       case 'solana':
         return /[1-9A-HJ-NP-Za-km-z]{32,44}$/iu.test(address)
 
+      case 'bip122': {
+        const isP2PKH = /^[1][a-km-zA-HJ-NP-Z1-9]{25,34}$/u.test(address)
+        const isP2SH = /^[3][a-km-zA-HJ-NP-Z1-9]{25,34}$/u.test(address)
+        const isBech32 = /^bc1[a-z0-9]{39,87}$/u.test(address)
+        const isBech32m = /^bc1p[a-z0-9]{58}$/u.test(address)
+
+        return isP2PKH || isP2SH || isBech32 || isBech32m
+      }
       default:
         return false
     }
@@ -536,5 +545,12 @@ export const CoreHelperUtil = {
     const newUrl = beforeKeyValue + newKeyValue + afterKeyValue
 
     return newUrl
+  },
+  isNumber(value: unknown): boolean {
+    if (typeof value !== 'number' && typeof value !== 'string') {
+      return false
+    }
+
+    return !isNaN(Number(value))
   }
 }

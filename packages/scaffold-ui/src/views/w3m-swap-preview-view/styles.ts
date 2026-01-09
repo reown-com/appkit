@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   :host > wui-flex:first-child {
@@ -19,7 +19,7 @@ export default css`
   .token-image {
     width: 24px;
     height: 24px;
-    box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
+    box-shadow: 0 0 0 2px ${({ tokens }) => tokens.core.glass010};
     border-radius: 12px;
   }
 
@@ -31,19 +31,21 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--wui-spacing-xxs);
-    padding: var(--wui-spacing-xs);
+    gap: ${({ spacing }) => spacing['2']};
+    padding: ${({ spacing }) => spacing['2']};
     height: 40px;
     border: none;
     border-radius: 80px;
-    background: var(--wui-color-gray-glass-002);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.theme.foregroundPrimary};
     cursor: pointer;
-    transition: background 0.2s linear;
+    transition: background ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
+    will-change: background;
   }
 
   .token-item:hover {
-    background: var(--wui-color-gray-glass-005);
+    background: ${({ tokens }) => tokens.core.glass010};
   }
 
   .preview-token-details-container {
@@ -52,14 +54,14 @@ export default css`
 
   .details-row {
     width: 100%;
-    padding: var(--wui-spacing-s) var(--wui-spacing-xl);
-    border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-color-gray-glass-002);
+    padding: ${({ spacing }) => spacing['3']} ${({ spacing }) => spacing['5']};
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   .action-buttons-container {
     width: 100%;
-    gap: var(--wui-spacing-xs);
+    gap: ${({ spacing }) => spacing['2']};
   }
 
   .action-buttons-container > button {
@@ -68,9 +70,9 @@ export default css`
     justify-content: center;
     background: transparent;
     height: 48px;
-    border-radius: var(--wui-border-radius-xs);
+    border-radius: ${({ borderRadius }) => borderRadius['4']};
     border: none;
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
+    box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.core.glass010};
   }
 
   .action-buttons-container > button:disabled {
@@ -100,25 +102,27 @@ export default css`
   }
 
   .details-container > wui-flex {
-    background: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xxs);
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
     width: 100%;
   }
 
   .details-container > wui-flex > button {
     border: none;
     background: none;
-    padding: var(--wui-spacing-s);
-    border-radius: var(--wui-border-radius-xxs);
-    transition: background 0.2s linear;
+    padding: ${({ spacing }) => spacing['3']};
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
+    transition: background ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
+    will-change: background;
   }
 
   .details-container > wui-flex > button:hover {
-    background: var(--wui-color-gray-glass-002);
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 
   .details-content-container {
-    padding: var(--wui-spacing-1xs);
+    padding: ${({ spacing }) => spacing['2']};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -130,8 +134,8 @@ export default css`
 
   .details-row {
     width: 100%;
-    padding: var(--wui-spacing-s) var(--wui-spacing-xl);
-    border-radius: var(--wui-border-radius-xxs);
-    background: var(--wui-color-gray-glass-002);
+    padding: ${({ spacing }) => spacing['3']} ${({ spacing }) => spacing['5']};
+    border-radius: ${({ borderRadius }) => borderRadius['3']};
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 `

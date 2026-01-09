@@ -11,6 +11,7 @@ export * from '../src/modal/w3m-button/index.js'
 export * from '../src/modal/w3m-connect-button/index.js'
 export * from '../src/modal/w3m-network-button/index.js'
 export * from '../src/modal/w3m-router/index.js'
+export * from '../src/modal/w3m-footer/index.js'
 
 // -- Views --------------------------------------------- //
 
@@ -18,6 +19,7 @@ export * from '../src/modal/w3m-router/index.js'
 export * from '../src/views/w3m-account-settings-view/index.js'
 export * from '../src/views/w3m-account-view/index.js'
 export * from '../src/views/w3m-profile-wallets-view/index.js'
+export * from '../src/views/w3m-fund-wallet-view/index.js'
 
 // Connection
 export * from '../src/views/w3m-all-wallets-view/index.js'

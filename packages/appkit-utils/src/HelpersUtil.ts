@@ -1,5 +1,14 @@
-import { type CaipNetworkId, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ChainController, ConnectorController, type Tokens } from '@reown/appkit-controllers'
+import {
+  type CaipNetworkId,
+  type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil
+} from '@reown/appkit-common'
+import {
+  ChainController,
+  ConnectorController,
+  StorageUtil,
+  type Tokens
+} from '@reown/appkit-controllers'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
 
@@ -58,9 +67,9 @@ export const HelpersUtil = {
       async function tryCheck() {
         attempts += 1
 
-        const result = await conditionFn()
+        const isConditionMet = await conditionFn()
 
-        if (result) {
+        if (isConditionMet) {
           return resolve(true)
         }
 
@@ -75,5 +84,54 @@ export const HelpersUtil = {
 
       tryCheck()
     })
+  },
+
+  /**
+   * Returns the chain namespace from user's chainId which is returned from Auth provider.
+   * @param chainId - The chainId to parse.
+   * @returns The chain namespace.
+   */
+  userChainIdToChainNamespace(chainId: number | string) {
+    if (typeof chainId === 'number') {
+      return CommonConstantsUtil.CHAIN.EVM
+    }
+
+    const [namespace] = chainId.split(':')
+
+    return namespace as ChainNamespace
+  },
+
+  /**
+   * Get all auth namespaces except the active one
+   * @param activeNamespace - The active namespace
+   * @returns All auth namespaces except the active one
+   */
+  getOtherAuthNamespaces(activeNamespace: ChainNamespace | undefined) {
+    if (!activeNamespace) {
+      return []
+    }
+
+    const authNamespaces = CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS
+    const otherAuthNamespaces = authNamespaces.filter(ns => ns !== activeNamespace)
+
+    return otherAuthNamespaces
+  },
+
+  /**
+   * Gets the storage info for a connector
+   * @param connectorId - The ID of the connector
+   * @param namespace - The namespace of the connector
+   * @returns
+   */
+  getConnectorStorageInfo(connectorId: string, namespace: ChainNamespace) {
+    const storageConnectionsByNamespace = StorageUtil.getConnections()
+    const storageConnections = storageConnectionsByNamespace[namespace] ?? []
+
+    return {
+      hasDisconnected: StorageUtil.isConnectorDisconnected(connectorId, namespace),
+      hasConnected: storageConnections.some(c =>
+        HelpersUtil.isLowerCaseMatch(c.connectorId, connectorId)
+      )
+    }
   }
 }

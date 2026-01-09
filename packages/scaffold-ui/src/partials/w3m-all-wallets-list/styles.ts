@@ -1,4 +1,4 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
   wui-grid {
@@ -7,6 +7,10 @@ export default css`
     scrollbar-width: none;
     grid-auto-rows: min-content;
     grid-template-columns: repeat(auto-fill, 104px);
+  }
+
+  :host([data-mobile-fullscreen='true']) wui-grid {
+    max-height: none;
   }
 
   @media (max-width: 350px) {
@@ -23,9 +27,26 @@ export default css`
     display: none;
   }
 
+  w3m-all-wallets-list-item {
+    opacity: 0;
+    animation-duration: ${({ durations }) => durations['xl']};
+    animation-timing-function: ${({ easings }) => easings['ease-inout-power-2']};
+    animation-name: fade-in;
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
   wui-loading-spinner {
-    padding-top: var(--wui-spacing-l);
-    padding-bottom: var(--wui-spacing-l);
+    padding-top: ${({ spacing }) => spacing['4']};
+    padding-bottom: ${({ spacing }) => spacing['4']};
     justify-content: center;
     grid-column: 1 / span 4;
   }

@@ -1,8 +1,12 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { type Address, type CaipNetwork, ConstantsUtil, erc20ABI } from '@reown/appkit-common'
-import { ChainController, ConnectionController, CoreHelperUtil } from '@reown/appkit-controllers'
-import { ProviderUtil } from '@reown/appkit-utils'
+import {
+  ChainController,
+  ConnectionController,
+  CoreHelperUtil,
+  ProviderController
+} from '@reown/appkit-controllers'
 
 import { AppKitPayError, AppKitPayErrorCodes } from '../../src/types/errors'
 import type { PaymentAsset } from '../../src/types/options.js'
@@ -14,28 +18,34 @@ import {
 } from '../../src/utils/PaymentUtil'
 
 // --- Mocks -------------------------------------------------------------------
-vi.mock('@reown/appkit-controllers', () => ({
-  ChainController: {
-    switchActiveNetwork: vi.fn(),
-    getNetworkProp: vi.fn()
-  },
-  ConnectionController: {
-    parseUnits: vi.fn((amount: string, decimals: number) =>
-      BigInt(parseFloat(amount) * 10 ** decimals)
-    ),
-    sendTransaction: vi.fn(),
-    writeContract: vi.fn()
-  },
-  CoreHelperUtil: {
-    sortRequestedNetworks: vi.fn()
-  }
-}))
+vi.mock('@reown/appkit-controllers', async importOriginal => {
+  const actual = await importOriginal<typeof import('@reown/appkit-controllers')>()
 
-vi.mock('@reown/appkit-utils', () => ({
-  ProviderUtil: {
-    getProvider: vi.fn()
+  return {
+    ...actual,
+    ChainController: {
+      ...actual.ChainController,
+      switchActiveNetwork: vi.fn(),
+      getNetworkProp: vi.fn()
+    },
+    ConnectionController: {
+      ...actual.ConnectionController,
+      parseUnits: vi.fn((amount: string, decimals: number) =>
+        BigInt(parseFloat(amount) * 10 ** decimals)
+      ),
+      sendTransaction: vi.fn(),
+      writeContract: vi.fn()
+    },
+    CoreHelperUtil: {
+      ...actual.CoreHelperUtil,
+      sortRequestedNetworks: vi.fn()
+    },
+    ProviderController: {
+      ...actual.ProviderController,
+      getProvider: vi.fn()
+    }
   }
-}))
+})
 
 // --- Test Data ---------------------------------------------------------------
 const MOCK_EVM_NETWORK: CaipNetwork = {
@@ -338,12 +348,12 @@ describe('PaymentUtil', () => {
     test('should send native SOL transaction successfully', async () => {
       const mockTxHash = '4xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU'
       const mockProvider = { type: 'solana' }
-      vi.mocked(ProviderUtil.getProvider).mockReturnValue(mockProvider as any)
+      vi.mocked(ProviderController.getProvider).mockReturnValue(mockProvider as any)
       vi.mocked(ConnectionController.sendTransaction).mockResolvedValue(mockTxHash)
 
       const txHash = await processSolanaPayment(ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
 
-      expect(ProviderUtil.getProvider).toHaveBeenCalledWith(ConstantsUtil.CHAIN.SOLANA)
+      expect(ProviderController.getProvider).toHaveBeenCalledWith(ConstantsUtil.CHAIN.SOLANA)
       expect(ConnectionController.sendTransaction).toHaveBeenCalledWith({
         chainNamespace: ConstantsUtil.CHAIN.SOLANA,
         to: MOCK_SOLANA_RECIPIENT_ADDRESS,
@@ -356,7 +366,7 @@ describe('PaymentUtil', () => {
       const mockTxHash = '5xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU'
       const stringAmount = '0.25'
       const mockProvider = { type: 'solana' }
-      vi.mocked(ProviderUtil.getProvider).mockReturnValue(mockProvider as any)
+      vi.mocked(ProviderController.getProvider).mockReturnValue(mockProvider as any)
       vi.mocked(ConnectionController.sendTransaction).mockResolvedValue(mockTxHash)
 
       const txHash = await processSolanaPayment(ConstantsUtil.CHAIN.SOLANA, {
@@ -379,7 +389,7 @@ describe('PaymentUtil', () => {
     })
 
     test('should throw if no provider is available', async () => {
-      vi.mocked(ProviderUtil.getProvider).mockReturnValue(null)
+      vi.mocked(ProviderController.getProvider).mockReturnValue(null)
 
       await expect(
         processSolanaPayment(ConstantsUtil.CHAIN.SOLANA, solanaPaymentParams)
@@ -423,7 +433,7 @@ describe('PaymentUtil', () => {
 
     test('should throw if sendTransaction fails', async () => {
       const mockProvider = { type: 'solana' }
-      vi.mocked(ProviderUtil.getProvider).mockReturnValue(mockProvider as any)
+      vi.mocked(ProviderController.getProvider).mockReturnValue(mockProvider as any)
       vi.mocked(ConnectionController.sendTransaction).mockResolvedValue(undefined)
 
       await expect(

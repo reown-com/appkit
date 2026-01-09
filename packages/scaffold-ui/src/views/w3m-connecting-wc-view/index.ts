@@ -1,8 +1,10 @@
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 
+import { ErrorUtil } from '@reown/appkit-common'
 import type { BaseError, Platform } from '@reown/appkit-controllers'
 import {
+  AppKitError,
   ChainController,
   ConnectionController,
   CoreHelperUtil,
@@ -22,9 +24,12 @@ import '../../partials/w3m-connecting-wc-mobile/index.js'
 import '../../partials/w3m-connecting-wc-qrcode/index.js'
 import '../../partials/w3m-connecting-wc-unsupported/index.js'
 import '../../partials/w3m-connecting-wc-web/index.js'
+import styles from './styles.js'
 
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
+  public static override styles = styles
+
   // -- Members ------------------------------------------- //
   private wallet = RouterController.state.data?.wallet
 
@@ -38,6 +43,10 @@ export class W3mConnectingWcView extends LitElement {
   @state() private isSiwxEnabled = Boolean(OptionsController.state.siwx)
 
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
+
+  @property({ type: Boolean }) public displayBranding = true
+
+  @property({ type: Boolean }) public basic = false
 
   public constructor() {
     super()
@@ -55,16 +64,20 @@ export class W3mConnectingWcView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    if (OptionsController.state.enableMobileFullScreen) {
+      this.setAttribute('data-mobile-fullscreen', 'true')
+    }
+
     return html`
       ${this.headerTemplate()}
-      <div>${this.platformTemplate()}</div>
+      <div class="platform-container">${this.platformTemplate()}</div>
       ${this.reownBrandingTemplate()}
     `
   }
 
   // -- Private ------------------------------------------- //
   private reownBrandingTemplate() {
-    if (!this.remoteFeatures?.reownBranding) {
+    if (!this.remoteFeatures?.reownBranding || !this.displayBranding) {
       return null
     }
 
@@ -85,7 +98,7 @@ export class W3mConnectingWcView extends LitElement {
 
     try {
       const { wcPairingExpiry, status } = ConnectionController.state
-
+      const { redirectView } = RouterController.state.data ?? {}
       if (
         retry ||
         OptionsController.state.enableEmbedded ||
@@ -97,12 +110,14 @@ export class W3mConnectingWcView extends LitElement {
         )
         const isMultiWalletEnabled = this.remoteFeatures?.multiWallet
         const hasConnections = connectionsByNamespace.length > 0
-        await ConnectionController.connectWalletConnect()
+        await ConnectionController.connectWalletConnect({ cache: 'never' })
 
         if (!this.isSiwxEnabled) {
           if (hasConnections && isMultiWalletEnabled) {
             RouterController.replace('ProfileWallets')
             SnackController.showSuccess('New Wallet Added')
+          } else if (redirectView) {
+            RouterController.replace(redirectView)
           } else {
             ModalController.close()
           }
@@ -131,11 +146,24 @@ export class W3mConnectingWcView extends LitElement {
         }
       }
 
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'CONNECT_ERROR',
-        properties: { message: (error as BaseError)?.message ?? 'Unknown' }
-      })
+      const isUserRejectedRequestError =
+        error instanceof AppKitError &&
+        error.originalName === ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST
+
+      if (isUserRejectedRequestError) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'USER_REJECTED',
+          properties: { message: error.message }
+        })
+      } else {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_ERROR',
+          properties: { message: (error as BaseError)?.message ?? 'Unknown' }
+        })
+      }
+
       ConnectionController.setWcError(true)
       SnackController.showError((error as BaseError).message ?? 'Connection error')
       ConnectionController.resetWcConnection()
@@ -202,7 +230,7 @@ export class W3mConnectingWcView extends LitElement {
           </w3m-connecting-wc-mobile>
         `
       case 'qrcode':
-        return html`<w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode>`
+        return html`<w3m-connecting-wc-qrcode ?basic=${this.basic}></w3m-connecting-wc-qrcode>`
       default:
         return html`<w3m-connecting-wc-unsupported></w3m-connecting-wc-unsupported>`
     }

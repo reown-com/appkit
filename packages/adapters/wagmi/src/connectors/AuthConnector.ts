@@ -36,23 +36,35 @@ export type AuthParameters = {
 export function authConnector(parameters: AuthParameters) {
   let currentAccounts: Address[] = []
   let socialProvider: W3mFrameProvider | undefined = undefined
-  let connectSocialPromise:
-    | Promise<{
-        accounts: Address[]
-        account: Address
-        chainId: number
-        chain: {
-          id: number
-          unsuported: boolean
-        }
-      }>
-    | undefined = undefined
+  let connectSocialPromise: Promise<Awaited<ReturnType<typeof connectSocial>>> | undefined =
+    undefined
   type Properties = {
     provider?: W3mFrameProvider
+    getProvider(): Promise<W3mFrameProvider>
+    getChainId(): Promise<number>
+    getAccounts(): Promise<readonly Address[]>
+    isAuthorized(): Promise<boolean>
+    disconnect(): Promise<void>
+    onAccountsChanged(accounts: string[]): void
+    onChainChanged(chain: string | number): void
+    onDisconnect(error?: unknown): Promise<void>
   }
 
   function parseChainId(chainId: string | number) {
-    return NetworkUtil.parseEvmChainId(chainId) || 1
+    const networks = ChainController.getCaipNetworks(ConstantsUtil.CHAIN.EVM)
+    let network = Number(NetworkUtil.parseEvmChainId(chainId))
+    if (!networks.some(n => String(n.id) === String(chainId))) {
+      const currentChainId =
+        ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.EVM)?.id || networks[0]?.id
+      if (currentChainId && Number.isInteger(Number(currentChainId))) {
+        network = Number(currentChainId)
+      }
+    }
+    if (!network) {
+      throw new Error('ChainId not found in networks')
+    }
+
+    return network
   }
 
   function getProviderInstance() {
@@ -87,6 +99,7 @@ export function authConnector(parameters: AuthParameters) {
     } = {}
   ) {
     const provider = getProviderInstance()
+
     let chainId = options.chainId
 
     if (options.isReconnecting) {
@@ -101,7 +114,6 @@ export function authConnector(parameters: AuthParameters) {
     }
 
     const preferredAccountType = getPreferredAccountType('eip155')
-
     const {
       address,
       chainId: frameChainId,
@@ -124,7 +136,7 @@ export function authConnector(parameters: AuthParameters) {
       chainId: parsedChainId,
       chain: {
         id: parsedChainId,
-        unsuported: false
+        unsupported: false
       }
     }
   }
@@ -134,16 +146,27 @@ export function authConnector(parameters: AuthParameters) {
     name: CommonConstantsUtil.CONNECTOR_NAMES.AUTH,
     type: 'AUTH',
     chain: CommonConstantsUtil.CHAIN.EVM,
-    async connect(
+    async connect<withCapabilities extends boolean = false>(
+      this: Properties,
       options: {
         chainId?: number
         isReconnecting?: boolean
+        withCapabilities?: withCapabilities | boolean
         socialUri?: string
         rpcUrl?: string
       } = {}
     ) {
       if (connectSocialPromise) {
-        return connectSocialPromise
+        const result = await connectSocialPromise
+
+        return {
+          accounts: (options.withCapabilities
+            ? (result.accounts.map(address => ({ address, capabilities: {} })) as unknown)
+            : result.accounts) as withCapabilities extends true
+            ? readonly { address: Address; capabilities: Record<string, unknown> }[]
+            : readonly Address[],
+          chainId: result.chainId
+        }
       }
 
       if (!connectSocialPromise) {
@@ -154,7 +177,14 @@ export function authConnector(parameters: AuthParameters) {
       const result = await connectSocialPromise
       connectSocialPromise = undefined
 
-      return result
+      return {
+        accounts: (options.withCapabilities
+          ? (result.accounts.map(address => ({ address, capabilities: {} })) as unknown)
+          : result.accounts) as withCapabilities extends true
+          ? readonly { address: Address; capabilities: Record<string, unknown> }[]
+          : readonly Address[],
+        chainId: result.chainId
+      }
     },
 
     async disconnect() {
@@ -172,7 +202,7 @@ export function authConnector(parameters: AuthParameters) {
       return Promise.resolve(currentAccounts)
     },
 
-    async getProvider() {
+    async getProvider(this: Properties) {
       if (!this.provider) {
         this.provider = W3mFrameProviderSingleton.getInstance({
           projectId: parameters.options.projectId,
@@ -198,7 +228,7 @@ export function authConnector(parameters: AuthParameters) {
     },
 
     async getChainId() {
-      const provider: W3mFrameProvider = await this.getProvider()
+      const provider = await this.getProvider()
       const { chainId } = await provider.getChainId()
 
       return parseChainId(chainId)
@@ -236,9 +266,9 @@ export function authConnector(parameters: AuthParameters) {
           preferredAccountType
         })
 
-        currentAccounts = response?.accounts?.map(a => a.address as Address) || [
-          response.address as Address
-        ]
+        currentAccounts = response?.accounts?.map(
+          (a: { type: 'eoa' | 'smartAccount'; address: string }) => a.address as Address
+        ) || [response.address as Address]
 
         config.emitter.emit('change', {
           chainId: Number(chainId),

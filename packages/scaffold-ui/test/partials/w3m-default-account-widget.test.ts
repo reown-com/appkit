@@ -5,7 +5,6 @@ import { html } from 'lit'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   ConnectorController,
@@ -17,11 +16,7 @@ import {
   SnackController,
   StorageUtil
 } from '@reown/appkit-controllers'
-import type {
-  AccountControllerState,
-  AuthConnector,
-  ChainControllerState
-} from '@reown/appkit-controllers'
+import type { AccountState, AuthConnector, ChainControllerState } from '@reown/appkit-controllers'
 
 import type { W3mAccountDefaultWidget } from '../../src/partials/w3m-account-default-widget/index.js'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -33,8 +28,7 @@ describe('W3mAccountDefaultWidget', () => {
   const mockProfileImage = 'profile.jpg'
 
   beforeEach(() => {
-    // Mock AccountController state
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       caipAddress: mockCaipAddress,
       address: mockAddress,
       profileName: mockProfileName,
@@ -44,9 +38,8 @@ describe('W3mAccountDefaultWidget', () => {
       addressExplorerUrl: 'https://etherscan.io',
       addressLabels: new Map(),
       preferredAccountType: 'eoa'
-    } as unknown as AccountControllerState)
+    } as unknown as AccountState)
 
-    // Mock ChainController state
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       activeChain: ConstantsUtil.CHAIN.EVM,
       activeCaipNetwork: {
@@ -85,9 +78,9 @@ describe('W3mAccountDefaultWidget', () => {
 
   describe('Rendering', () => {
     it('renders nothing when no caipAddress', async () => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
         caipAddress: null
-      } as unknown as AccountControllerState)
+      } as unknown as AccountState)
 
       const element: W3mAccountDefaultWidget = await fixture(
         html`<w3m-account-default-widget></w3m-account-default-widget>`
@@ -116,16 +109,16 @@ describe('W3mAccountDefaultWidget', () => {
   })
 
   describe('Features', () => {
-    it('shows onramp button when enabled for supported chain', async () => {
+    it('shows fund wallet button when enabled for supported chain', async () => {
       const element: W3mAccountDefaultWidget = await fixture(
         html`<w3m-account-default-widget></w3m-account-default-widget>`
       )
       expect(
-        HelpersUtil.querySelect(element, '[data-testid="w3m-account-default-onramp-button"]')
+        HelpersUtil.querySelect(element, '[data-testid="w3m-account-default-fund-wallet-button"]')
       ).toBeTruthy()
     })
 
-    it('should not show onramp button when disabled', async () => {
+    it('should not show fund wallet button when disabled', async () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         features: {
           onramp: false
@@ -135,10 +128,10 @@ describe('W3mAccountDefaultWidget', () => {
       const element: W3mAccountDefaultWidget = await fixture(
         html`<w3m-account-default-widget></w3m-account-default-widget>`
       )
-      expect(HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')).toBeFalsy()
+      expect(HelpersUtil.getByTestId(element, 'w3m-account-fund-wallet-button')).toBeFalsy()
     })
 
-    it('should not show onramp button for non-enabled chain', async () => {
+    it('should not show fund wallet button for non-enabled chain', async () => {
       vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         activeChain: ConstantsUtil.CHAIN.BITCOIN
       } as unknown as ChainControllerState)
@@ -146,7 +139,7 @@ describe('W3mAccountDefaultWidget', () => {
       const element: W3mAccountDefaultWidget = await fixture(
         html`<w3m-account-default-widget></w3m-account-default-widget>`
       )
-      expect(HelpersUtil.getByTestId(element, 'w3m-account-default-onramp-button')).toBeFalsy()
+      expect(HelpersUtil.getByTestId(element, 'w3m-account-fund-wallet-button')).toBeFalsy()
     })
 
     it('shows swap button for EVM chain', async () => {
@@ -230,7 +223,8 @@ describe('W3mAccountDefaultWidget', () => {
 
       expect(EventsController.sendEvent).toHaveBeenCalledWith({
         type: 'track',
-        event: 'DISCONNECT_ERROR'
+        event: 'DISCONNECT_ERROR',
+        properties: { message: 'Failed to disconnect' }
       })
       expect(SnackController.showError).toHaveBeenCalledWith('Failed to disconnect')
     })

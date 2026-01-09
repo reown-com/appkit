@@ -10,7 +10,6 @@ import {
 } from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetUtil,
   ChainController,
   ConnectionController,
@@ -37,10 +36,6 @@ import { HelpersUtil } from '@reown/appkit-utils'
 
 import { ConnectionUtil } from '../../utils/ConnectionUtil.js'
 import styles from './styles.js'
-
-// -- Constants ----------------------------------------- //
-const TABS_PADDING = 16
-const TABS_INNER_PADDING = 4
 
 // -- Types -------------------------------- //
 interface Account {
@@ -73,19 +68,22 @@ const UI_CONFIG = {
 const NAMESPACE_ICONS = {
   eip155: 'ethereum',
   solana: 'solana',
-  bip122: 'bitcoin'
+  bip122: 'bitcoin',
+  ton: 'ton'
 } as const
 
 const NAMESPACE_TABS = [
   { namespace: 'eip155', icon: NAMESPACE_ICONS.eip155, label: 'EVM' },
   { namespace: 'solana', icon: NAMESPACE_ICONS.solana, label: 'Solana' },
-  { namespace: 'bip122', icon: NAMESPACE_ICONS.bip122, label: 'Bitcoin' }
+  { namespace: 'bip122', icon: NAMESPACE_ICONS.bip122, label: 'Bitcoin' },
+  { namespace: 'ton', icon: NAMESPACE_ICONS.ton, label: 'Ton' }
 ] as const satisfies { namespace: ChainNamespace; icon: string; label: string }[]
 
 const CHAIN_LABELS = {
   eip155: { title: 'Add EVM Wallet', description: 'Add your first EVM wallet' },
   solana: { title: 'Add Solana Wallet', description: 'Add your first Solana wallet' },
-  bip122: { title: 'Add Bitcoin Wallet', description: 'Add your first Bitcoin wallet' }
+  bip122: { title: 'Add Bitcoin Wallet', description: 'Add your first Bitcoin wallet' },
+  ton: { title: 'Add TON Wallet', description: 'Add your first TON wallet' }
 } as const
 
 @customElement('w3m-profile-wallets-view')
@@ -96,7 +94,6 @@ export class W3mProfileWalletsView extends LitElement {
   private unsubscribers: (() => void)[] = []
   private resizeObserver?: ResizeObserver
   private chainListener?: () => void
-  private tabsResizeObserver?: ResizeObserver
 
   // -- State & Properties -------------------------------- //
   @state() private currentTab = 0
@@ -109,9 +106,8 @@ export class W3mProfileWalletsView extends LitElement {
   @state() private lastSelectedConnectorId = ''
   @state() private isSwitching = false
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
-  @state() private user = AccountController.state.user
+  @state() private user = ChainController.getAccountData()?.user
   @state() private remoteFeatures = OptionsController.state.remoteFeatures
-  @state() private tabWidth = ''
 
   constructor() {
     super()
@@ -128,7 +124,9 @@ export class W3mProfileWalletsView extends LitElement {
           this.activeConnectorIds = ids
         }),
         ChainController.subscribeKey('activeCaipNetwork', val => (this.caipNetwork = val)),
-        AccountController.subscribeKey('user', val => (this.user = val)),
+        ChainController.subscribeChainProp('accountState', val => {
+          this.user = val?.user
+        }),
         OptionsController.subscribeKey('remoteFeatures', val => (this.remoteFeatures = val))
       ]
     )
@@ -146,14 +144,12 @@ export class W3mProfileWalletsView extends LitElement {
   override disconnectedCallback() {
     this.unsubscribers.forEach(unsubscribe => unsubscribe())
     this.resizeObserver?.disconnect()
-    this.tabsResizeObserver?.disconnect()
     this.removeScrollListener()
     this.chainListener?.()
   }
 
   override firstUpdated() {
     const walletListEl = this.shadowRoot?.querySelector('.wallet-list')
-    const tabsEl = this.shadowRoot?.querySelector('wui-tabs')
 
     if (!walletListEl) {
       return
@@ -167,27 +163,6 @@ export class W3mProfileWalletsView extends LitElement {
     this.resizeObserver = new ResizeObserver(handleScroll)
     this.resizeObserver.observe(walletListEl)
     handleScroll()
-
-    if (tabsEl) {
-      const handleTabsResize = () => {
-        const availableTabs = NAMESPACE_TABS.filter(tab => this.namespaces.includes(tab.namespace))
-        const tabCount = availableTabs.length
-
-        if (tabCount > 1) {
-          const containerWidth = this.getBoundingClientRect()?.width
-          const totalInnerTabsPadding = TABS_INNER_PADDING * 2
-          const totalTabsPadding = TABS_PADDING * 2
-          const availableWidth = containerWidth - totalTabsPadding - totalInnerTabsPadding
-          const tabWidth = availableWidth / tabCount
-          this.tabWidth = `${tabWidth}px`
-          this.requestUpdate()
-        }
-      }
-
-      this.tabsResizeObserver = new ResizeObserver(handleTabsResize)
-      this.tabsResizeObserver.observe(this)
-      handleTabsResize()
-    }
   }
 
   override render() {
@@ -198,7 +173,7 @@ export class W3mProfileWalletsView extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const} gap="l">
+      <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const} gap="4">
         ${this.renderTabs()} ${this.renderHeader(namespace)} ${this.renderConnections(namespace)}
         ${this.renderAddConnectionButton(namespace)}
       </wui-flex>
@@ -207,7 +182,9 @@ export class W3mProfileWalletsView extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private renderTabs() {
-    const availableTabs = NAMESPACE_TABS.filter(tab => this.namespaces.includes(tab.namespace))
+    const availableTabs = this.namespaces
+      .map(namespace => NAMESPACE_TABS.find(tab => tab.namespace === namespace))
+      .filter(Boolean) as typeof NAMESPACE_TABS
 
     const tabCount = availableTabs.length
     if (tabCount > 1) {
@@ -215,7 +192,6 @@ export class W3mProfileWalletsView extends LitElement {
         <wui-tabs
           .onTabChange=${(index: number) => this.handleTabChange(index)}
           .activeTab=${this.currentTab}
-          localTabWidth=${this.tabWidth}
           .tabs=${availableTabs}
         ></wui-tabs>
       `
@@ -230,25 +206,26 @@ export class W3mProfileWalletsView extends LitElement {
       connections.flatMap(({ accounts }) => accounts).length + (this.caipAddress ? 1 : 0)
 
     return html`
-      <wui-flex alignItems="center" columnGap="3xs">
+      <wui-flex alignItems="center" columngap="1">
         <wui-icon
+          size="sm"
           name=${NAMESPACE_ICONS[namespace as keyof typeof NAMESPACE_ICONS] ??
           NAMESPACE_ICONS.eip155}
-          size="lg"
         ></wui-icon>
-        <wui-text color="fg-200" variant="small-400"
+        <wui-text color="secondary" variant="lg-regular"
           >${totalConnections > 1 ? 'Wallets' : 'Wallet'}</wui-text
         >
         <wui-text
-          color="fg-100"
-          variant="small-400"
+          color="primary"
+          variant="lg-regular"
           class="balance-amount"
           data-testid="balance-amount"
         >
           ${totalConnections}
         </wui-text>
         <wui-link
-          color="fg-200"
+          color="secondary"
+          variant="secondary"
           @click=${() => ConnectionController.disconnect({ namespace })}
           ?disabled=${!this.hasAnyConnections(namespace)}
           data-testid="disconnect-all-button"
@@ -269,7 +246,7 @@ export class W3mProfileWalletsView extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" class=${classMap(classes)} rowGap="s">
+      <wui-flex flexDirection="column" class=${classMap(classes)} rowgap="3">
         ${hasConnections
           ? this.renderActiveConnections(namespace)
           : this.renderEmptyState(namespace)}
@@ -286,7 +263,7 @@ export class W3mProfileWalletsView extends LitElement {
       ${plainAddress || connectorId || connections.length > 0
         ? html`<wui-flex
             flexDirection="column"
-            .padding=${['l', '0', 'xs', '0'] as const}
+            .padding=${['4', '0', '4', '0'] as const}
             class="active-wallets"
           >
             ${this.renderActiveProfile(namespace)} ${this.renderActiveConnectionsList(namespace)}
@@ -323,7 +300,7 @@ export class W3mProfileWalletsView extends LitElement {
     )
 
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'l', '0', 'l'] as const}>
+      <wui-flex flexDirection="column" .padding=${['0', '4', '0', '4'] as const}>
         <wui-active-profile-wallet-item
           address=${plainAddress}
           alt=${connector?.name}
@@ -342,7 +319,7 @@ export class W3mProfileWalletsView extends LitElement {
           imageSrc=${connectorImage}
           ?enableMoreButton=${authData.isAuth}
           @copy=${() => this.handleCopyAddress(plainAddress)}
-          @disconnect=${() => this.handleDisconnect(namespace, { id: connectorId })}
+          @disconnect=${() => this.handleDisconnect(namespace, connectorId)}
           @switch=${() => {
             if (isBitcoin && connection && account?.[0]) {
               this.handleSwitchWallet(connection, account[0].address, namespace)
@@ -365,7 +342,7 @@ export class W3mProfileWalletsView extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
+      <wui-flex flexDirection="column" .padding=${['0', '2', '0', '2'] as const}>
         ${this.renderConnectionList(connections, false, namespace)}
       </wui-flex>
     `
@@ -381,11 +358,11 @@ export class W3mProfileWalletsView extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const} rowGap="xs">
-        <wui-text color="fg-200" variant="micro-500" data-testid="recently-connected-text"
+      <wui-flex flexDirection="column" .padding=${['0', '2', '0', '2'] as const} rowGap="2">
+        <wui-text color="secondary" variant="sm-medium" data-testid="recently-connected-text"
           >RECENTLY CONNECTED</wui-text
         >
-        <wui-flex flexDirection="column" .padding=${['0', 'xs', '0', 'xs'] as const}>
+        <wui-flex flexDirection="column" .padding=${['0', '2', '0', '2'] as const}>
           ${this.renderConnectionList(recentConnections, true, namespace)}
         </wui-flex>
       </wui-flex>
@@ -415,8 +392,8 @@ export class W3mProfileWalletsView extends LitElement {
                 address=${account.address}
                 alt=${connection.connectorId}
                 buttonLabel=${isRecentConnections ? 'Connect' : 'Switch'}
-                buttonVariant=${isRecentConnections ? 'neutral' : 'accent'}
-                rightIcon=${isRecentConnections ? 'bin' : 'off'}
+                buttonVariant=${isRecentConnections ? 'neutral-secondary' : 'accent-secondary'}
+                rightIcon=${isRecentConnections ? 'bin' : 'power'}
                 rightIconSize="sm"
                 class=${isRecentConnections ? 'recent-connection' : 'active-connection'}
                 data-testid=${isRecentConnections ? 'recent-connection' : 'active-connection'}
@@ -470,7 +447,7 @@ export class W3mProfileWalletsView extends LitElement {
         @click=${() => this.handleAddConnection(namespace)}
         data-testid="add-connection-button"
       >
-        <wui-text variant="paragraph-500" color="fg-200">${title}</wui-text>
+        <wui-text variant="md-medium" color="secondary">${title}</wui-text>
       </wui-list-item>
     `
   }
@@ -484,35 +461,27 @@ export class W3mProfileWalletsView extends LitElement {
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
-          rowGap="s"
+          rowgap="3"
           class="empty-box"
         >
-          <wui-icon-box
-            size="lg"
-            icon="wallet"
-            background="gray"
-            iconColor="fg-200"
-            backgroundColor="glass-002"
-          ></wui-icon-box>
+          <wui-icon-box size="xl" icon="wallet" color="secondary"></wui-icon-box>
 
-          <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="3xs">
-            <wui-text color="fg-100" variant="paragraph-500" data-testid="empty-state-text"
+          <wui-flex flexDirection="column" alignItems="center" justifyContent="center" gap="1">
+            <wui-text color="primary" variant="lg-regular" data-testid="empty-state-text"
               >No wallet connected</wui-text
             >
-            <wui-text color="fg-200" variant="tiny-500" data-testid="empty-state-description"
+            <wui-text color="secondary" variant="md-regular" data-testid="empty-state-description"
               >${description}</wui-text
             >
           </wui-flex>
 
-          <wui-button
-            variant="neutral"
-            size="md"
+          <wui-link
             @click=${() => this.handleAddConnection(namespace)}
             data-testid="empty-state-button"
+            icon="plus"
           >
-            <wui-icon color="inherit" slot="iconLeft" name="plus"></wui-icon>
             ${title}
-          </wui-button>
+          </wui-link>
         </wui-flex>
       </wui-flex>
     `
@@ -549,6 +518,13 @@ export class W3mProfileWalletsView extends LitElement {
       this.lastSelectedConnectorId = connection.connectorId
       this.lastSelectedAddress = address
 
+      const isDifferentNamespace = this.caipNetwork?.chainNamespace !== namespace
+
+      if (isDifferentNamespace && connection?.caipNetwork) {
+        ConnectorController.setFilterByNamespace(namespace)
+        await ChainController.switchActiveNetwork(connection?.caipNetwork)
+      }
+
       await ConnectionController.switchConnection({
         connection,
         address,
@@ -581,11 +557,11 @@ export class W3mProfileWalletsView extends LitElement {
       ConnectionController.syncStorageConnections()
       SnackController.showSuccess('Wallet deleted')
     } else {
-      this.handleDisconnect(namespace, { id: connection.connectorId })
+      this.handleDisconnect(namespace, connection.connectorId)
     }
   }
 
-  private async handleDisconnect(namespace: ChainNamespace, { id }: { id?: string }) {
+  private async handleDisconnect(namespace: ChainNamespace, id: string) {
     try {
       await ConnectionController.disconnect({ id, namespace })
       SnackController.showSuccess('Wallet disconnected')
@@ -613,7 +589,9 @@ export class W3mProfileWalletsView extends LitElement {
 
   private handleAddConnection(namespace: ChainNamespace) {
     ConnectorController.setFilterByNamespace(namespace)
-    RouterController.push('Connect')
+    RouterController.push('Connect', {
+      addWalletForNamespace: namespace
+    })
   }
 
   private getChainLabelInfo(namespace: ChainNamespace) {
@@ -711,7 +689,7 @@ export class W3mProfileWalletsView extends LitElement {
         profileName: this.profileName,
         buttonType: 'disconnect',
         buttonLabel: 'Disconnect',
-        buttonVariant: 'neutral',
+        buttonVariant: 'neutral-secondary',
         ...(authData.isAuth
           ? { description: this.isSmartAccount(address) ? 'Smart Account' : 'EOA Account' }
           : {})
@@ -743,13 +721,13 @@ export class W3mProfileWalletsView extends LitElement {
               alignItems: 'flex-end',
               buttonType: isConnected ? 'disconnect' : 'switch',
               buttonLabel: isConnected ? 'Disconnect' : 'Switch',
-              buttonVariant: isConnected ? 'neutral' : 'accent'
+              buttonVariant: isConnected ? 'neutral-secondary' : 'accent-secondary'
             }
           : {
               alignItems: 'center',
               buttonType: 'disconnect',
               buttonLabel: 'Disconnect',
-              buttonVariant: 'neutral'
+              buttonVariant: 'neutral-secondary'
             })
       }
     })

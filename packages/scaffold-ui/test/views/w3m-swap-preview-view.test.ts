@@ -3,8 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Address, Hex } from '@reown/appkit-common'
 import {
-  AccountController,
-  type AccountControllerState,
+  type AccountState,
   ChainController,
   type ChainControllerState,
   RouterController,
@@ -50,22 +49,20 @@ const mockChainState: ChainControllerState = {
   activeCaipAddress: 'eip155:1:0x123456789abcdef123456789abcdef123456789a',
   chains: new Map(),
   universalAdapter: {
-    networkControllerClient: {
-      switchCaipNetwork: vi.fn(),
-      getApprovedCaipNetworksData: vi.fn()
-    },
     connectionControllerClient: {
       connectWalletConnect: vi.fn(),
       connectExternal: vi.fn(),
       reconnectExternal: vi.fn(),
       checkInstalled: vi.fn(),
       disconnect: vi.fn(),
+      disconnectConnector: vi.fn(),
       signMessage: vi.fn(),
       sendTransaction: vi.fn(),
       estimateGas: vi.fn(),
       parseUnits: vi.fn(),
       formatUnits: vi.fn(),
       writeContract: vi.fn(),
+      writeSolanaTransaction: vi.fn(),
       getEnsAddress: vi.fn(),
       getEnsAvatar: vi.fn(),
       grantPermissions: vi.fn(),
@@ -88,6 +85,7 @@ const mockSwapState: SwapControllerState = {
   loadingApprovalTransaction: false,
   loadingBuildTransaction: false,
   fetchError: false,
+  switchingTokens: false,
   approvalTransaction: undefined,
   swapTransaction: {
     data: '0x123',
@@ -122,7 +120,7 @@ const mockSwapState: SwapControllerState = {
   providerFee: undefined
 }
 
-const mockAccountState: AccountControllerState = {
+const mockAccountState: AccountState = {
   balanceSymbol: 'ETH',
   address: '0x123',
   currentTab: 0,
@@ -167,7 +165,7 @@ describe('W3mSwapPreviewView', () => {
     // Mock controller states and methods
     vi.spyOn(SwapController, 'state', 'get').mockReturnValue(mockSwapState)
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue(mockChainState)
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue(mockAccountState)
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue(mockAccountState)
     vi.spyOn(SwapController, 'getTransaction').mockImplementation(
       async () => mockSwapState.swapTransaction
     )

@@ -1,20 +1,12 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui'
 
 export default css`
-  wui-flex {
-    width: 100%;
-  }
-
-  :host > wui-flex:first-child {
-    transform: translateY(calc(var(--wui-spacing-xxs) * -1));
-  }
-
   wui-icon-link {
-    margin-right: calc(var(--wui-icon-box-size-md) * -1);
+    margin-right: calc(${({ spacing }) => spacing['8']} * -1);
   }
 
   wui-notice-card {
-    margin-bottom: var(--wui-spacing-3xs);
+    margin-bottom: ${({ spacing }) => spacing['1']};
   }
 
   wui-list-item > wui-text {
@@ -25,11 +17,19 @@ export default css`
     max-height: 200px;
   }
 
+  .balance-container {
+    display: inline;
+  }
+
   .tab-content-container {
     height: 300px;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
+  }
+
+  .symbol {
+    transform: translateY(-2px);
   }
 
   .tab-content-container::-webkit-scrollbar {
@@ -42,18 +42,19 @@ export default css`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--wui-spacing-s);
+    gap: ${({ spacing }) => spacing['3']};
     height: 48px;
-    padding: var(--wui-spacing-xs);
-    padding-right: var(--wui-spacing-s);
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-002);
-    background-color: var(--wui-color-gray-glass-002);
-    border-radius: 24px;
-    transition: background-color 0.2s linear;
+    padding: ${({ spacing }) => spacing['2']};
+    padding-right: ${({ spacing }) => spacing['3']};
+    box-shadow: inset 0 0 0 1px ${({ tokens }) => tokens.theme.foregroundPrimary};
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[6]};
+    transition: background-color ${({ durations }) => durations['lg']}
+      ${({ easings }) => easings['ease-out-power-2']};
   }
 
   .account-button:hover {
-    background-color: var(--wui-color-gray-glass-005);
+    background-color: ${({ tokens }) => tokens.core.glass010};
   }
 
   .avatar-container {
@@ -63,11 +64,11 @@ export default css`
   wui-avatar.avatar {
     width: 32px;
     height: 32px;
-    box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
+    box-shadow: 0 0 0 2px ${({ tokens }) => tokens.core.glass010};
   }
 
   wui-wallet-switch {
-    margin-top: var(--wui-spacing-xs);
+    margin-top: ${({ spacing }) => spacing['2']};
   }
 
   wui-avatar.network-avatar {
@@ -77,7 +78,7 @@ export default css`
     left: 100%;
     top: 100%;
     transform: translate(-75%, -75%);
-    box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
+    box-shadow: 0 0 0 2px ${({ tokens }) => tokens.core.glass010};
   }
 
   .account-links {
@@ -102,8 +103,9 @@ export default css`
     border: 1px solid var(--dark-accent-glass-010, rgba(71, 161, 255, 0.1));
     background: var(--dark-accent-glass-010, rgba(71, 161, 255, 0.1));
     transition:
-      background-color var(--wui-ease-out-power-1) var(--wui-duration-md),
-      opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+      background-color ${({ durations }) => durations['md']}
+        ${({ easings }) => easings['ease-out-power-1']},
+      opacity ${({ durations }) => durations['md']} ${({ easings }) => easings['ease-out-power-1']};
     will-change: background-color, opacity;
   }
 

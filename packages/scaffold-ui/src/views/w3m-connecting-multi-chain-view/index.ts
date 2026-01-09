@@ -13,7 +13,6 @@ import {
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import '@reown/appkit-ui/wui-list-wallet'
 import '@reown/appkit-ui/wui-text'
 import '@reown/appkit-ui/wui-wallet-image'
 
@@ -46,8 +45,8 @@ export class W3mConnectingMultiChainView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        .padding=${['m', 'xl', 'xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['3', '5', '5', '5'] as const}
+        gap="5"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-wallet-image
@@ -58,13 +57,13 @@ export class W3mConnectingMultiChainView extends LitElement {
         <wui-flex
           flexDirection="column"
           alignItems="center"
-          gap="xs"
-          .padding=${['0', 's', '0', 's'] as const}
+          gap="2"
+          .padding=${['0', '3', '0', '3'] as const}
         >
-          <wui-text variant="paragraph-500" color="fg-100">
+          <wui-text variant="lg-medium" color="primary">
             Select Chain for ${this.activeConnector?.name}
           </wui-text>
-          <wui-text align="center" variant="small-500" color="fg-200"
+          <wui-text align="center" variant="lg-regular" color="secondary"
             >Select which chain to connect to your multi chain wallet</wui-text
           >
         </wui-flex>
@@ -72,8 +71,8 @@ export class W3mConnectingMultiChainView extends LitElement {
           flexGrow="1"
           flexDirection="column"
           alignItems="center"
-          gap="xs"
-          .padding=${['xs', '0', 'xs', '0'] as const}
+          gap="2"
+          .padding=${['2', '0', '2', '0'] as const}
         >
           ${this.networksTemplate()}
         </wui-flex>
@@ -83,15 +82,18 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    return this.activeConnector?.connectors?.map(connector =>
+    return this.activeConnector?.connectors?.map((connector, index) =>
       connector.name
         ? html`
-            <wui-list-wallet
+            <w3m-list-wallet
+              displayIndex=${index}
               imageSrc=${ifDefined(AssetUtil.getChainImage(connector.chain))}
               name=${ConstantsUtil.CHAIN_NAME_MAP[connector.chain]}
               @click=${() => this.onConnector(connector)}
+              size="sm"
               data-testid="wui-list-chain-${connector.chain}"
-            ></wui-list-wallet>
+              rdnsId=${connector.explorerWallet?.rdns}
+            ></w3m-list-wallet>
           `
         : null
     )
@@ -99,6 +101,7 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   private onConnector(provider: Connector) {
     const connector = this.activeConnector?.connectors?.find(p => p.chain === provider.chain)
+    const redirectView = RouterController.state.data?.redirectView
 
     if (!connector) {
       SnackController.showError('Failed to find connector')
@@ -110,11 +113,13 @@ export class W3mConnectingMultiChainView extends LitElement {
       if (CoreHelperUtil.isMobile()) {
         RouterController.push('AllWallets')
       } else {
-        RouterController.push('ConnectingWalletConnect')
+        RouterController.push('ConnectingWalletConnect', { redirectView })
       }
     } else {
       RouterController.push('ConnectingExternal', {
-        connector
+        connector,
+        redirectView,
+        wallet: this.activeConnector?.explorerWallet
       })
     }
   }

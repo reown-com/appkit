@@ -4,14 +4,14 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 import { html } from 'lit'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { AccountController, ChainController, OptionsController } from '@reown/appkit-controllers'
+import { type AccountState, ChainController, OptionsController } from '@reown/appkit-controllers'
 
 import { W3mAccountDefaultWidget } from '../../src/partials/w3m-account-default-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // -- Constants ---------------------------------------------------------------
 const ACTIVITY_BUTTON_TEST_ID = 'w3m-account-default-activity-button'
-const ONRAMP_BUTTON_TEST_ID = 'w3m-account-default-onramp-button'
+const FUND_WALLET_BUTTON_TEST_ID = 'w3m-account-default-fund-wallet-button'
 const SWAPS_BUTTON_TEST_ID = 'w3m-account-default-swaps-button'
 const SEND_BUTTON_TEST_ID = 'w3m-account-default-send-button'
 
@@ -26,10 +26,10 @@ describe('W3mAccountDefaultWidget', () => {
 
   describe('activity button visibility', () => {
     beforeEach(() => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        ...ChainController.getAccountData(),
         caipAddress: 'eip155:1:0x123'
-      })
+      } as unknown as AccountState)
     })
 
     it('should not show activity button for solana namespace', async () => {
@@ -84,10 +84,10 @@ describe('W3mAccountDefaultWidget', () => {
 
   describe('wallet features visibility', () => {
     beforeEach(() => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        ...ChainController.getAccountData(),
         caipAddress: 'eip155:1:0x123'
-      })
+      } as unknown as AccountState)
     })
 
     describe('evm wallet features', () => {
@@ -114,16 +114,16 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).not.toBeNull()
+        expect(fundWalletButton).not.toBeNull()
         expect(swapButton).not.toBeNull()
         expect(sendButton).not.toBeNull()
       })
 
-      it('should not show onramp if disabled', async () => {
+      it('should not show fund wallet if onramp is disabled', async () => {
         vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
           ...OptionsController.state,
           features: {
@@ -139,11 +139,11 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).toBeNull()
+        expect(fundWalletButton).toBeNull()
         expect(swapButton).not.toBeNull()
         expect(sendButton).not.toBeNull()
       })
@@ -164,11 +164,11 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).not.toBeNull()
+        expect(fundWalletButton).not.toBeNull()
         expect(swapButton).toBeNull()
         expect(sendButton).not.toBeNull()
       })
@@ -189,13 +189,35 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).not.toBeNull()
+        expect(fundWalletButton).not.toBeNull()
         expect(swapButton).not.toBeNull()
         expect(sendButton).toBeNull()
+      })
+
+      it('should not show fund wallet if payWithExchange, onramp and receive are disabled', async () => {
+        vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+          ...OptionsController.state,
+          features: {
+            swaps: true,
+            receive: false
+          },
+          remoteFeatures: {
+            payWithExchange: false,
+            onramp: false
+          }
+        })
+
+        const element: W3mAccountDefaultWidget = await fixture(
+          html`<w3m-account-default-widget></w3m-account-default-widget>`
+        )
+
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
+
+        expect(fundWalletButton).toBeNull()
       })
     })
 
@@ -223,11 +245,11 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).not.toBeNull()
+        expect(fundWalletButton).not.toBeNull()
         expect(swapButton).toBeNull()
         expect(sendButton).not.toBeNull()
       })
@@ -248,11 +270,11 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).toBeNull()
+        expect(fundWalletButton).toBeNull()
         expect(swapButton).toBeNull()
         expect(sendButton).not.toBeNull()
       })
@@ -273,13 +295,35 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).not.toBeNull()
+        expect(fundWalletButton).not.toBeNull()
         expect(swapButton).toBeNull()
         expect(sendButton).toBeNull()
+      })
+
+      it('should not show fund wallet if payWithExchange, onramp and receive are disabled', async () => {
+        vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+          ...OptionsController.state,
+          features: {
+            swaps: true,
+            receive: false
+          },
+          remoteFeatures: {
+            payWithExchange: false,
+            onramp: false
+          }
+        })
+
+        const element: W3mAccountDefaultWidget = await fixture(
+          html`<w3m-account-default-widget></w3m-account-default-widget>`
+        )
+
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
+
+        expect(fundWalletButton).toBeNull()
       })
     })
 
@@ -289,10 +333,10 @@ describe('W3mAccountDefaultWidget', () => {
           ...ChainController.state,
           activeChain: CommonConstantsUtil.CHAIN.BITCOIN
         })
-        vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-          ...AccountController.state,
+        vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+          ...ChainController.getAccountData(),
           caipAddress: 'bip122:1:bc1qa1234567890'
-        })
+        } as unknown as AccountState)
       })
 
       it('should not have any features enabled', async () => {
@@ -300,11 +344,11 @@ describe('W3mAccountDefaultWidget', () => {
           html`<w3m-account-default-widget></w3m-account-default-widget>`
         )
 
-        const onrampButton = HelpersUtil.getByTestId(element, ONRAMP_BUTTON_TEST_ID)
+        const fundWalletButton = HelpersUtil.getByTestId(element, FUND_WALLET_BUTTON_TEST_ID)
         const swapButton = HelpersUtil.getByTestId(element, SWAPS_BUTTON_TEST_ID)
         const sendButton = HelpersUtil.getByTestId(element, SEND_BUTTON_TEST_ID)
 
-        expect(onrampButton).toBeNull()
+        expect(fundWalletButton).toBeNull()
         expect(swapButton).toBeNull()
         expect(sendButton).toBeNull()
       })

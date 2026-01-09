@@ -1,43 +1,29 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
     display: block;
-    box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-005);
     background: linear-gradient(
-      120deg,
-      var(--wui-color-bg-200) 5%,
-      var(--wui-color-bg-200) 48%,
-      var(--wui-color-bg-300) 55%,
-      var(--wui-color-bg-300) 60%,
-      var(--wui-color-bg-300) calc(60% + 10px),
-      var(--wui-color-bg-200) calc(60% + 12px),
-      var(--wui-color-bg-200) 100%
+      90deg,
+      ${({ tokens }) => tokens.theme.foregroundPrimary} 0%,
+      ${({ tokens }) => tokens.theme.foregroundSecondary} 50%,
+      ${({ tokens }) => tokens.theme.foregroundPrimary} 100%
     );
-    background-size: 250%;
-    animation: shimmer 3s linear infinite reverse;
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+    border-radius: ${({ borderRadius }) => borderRadius[1]};
   }
 
-  :host([variant='light']) {
-    background: linear-gradient(
-      120deg,
-      var(--wui-color-bg-150) 5%,
-      var(--wui-color-bg-150) 48%,
-      var(--wui-color-bg-200) 55%,
-      var(--wui-color-bg-200) 60%,
-      var(--wui-color-bg-200) calc(60% + 10px),
-      var(--wui-color-bg-150) calc(60% + 12px),
-      var(--wui-color-bg-150) 100%
-    );
-    background-size: 250%;
+  :host([data-rounded='true']) {
+    border-radius: ${({ borderRadius }) => borderRadius[16]};
   }
 
   @keyframes shimmer {
-    from {
-      background-position: -250% 0;
+    0% {
+      background-position: 100% 0;
     }
-    to {
-      background-position: 250% 0;
+    100% {
+      background-position: -100% 0;
     }
   }
 `

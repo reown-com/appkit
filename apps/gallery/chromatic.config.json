@@ -1,0 +1,6 @@
+{
+  "buildScriptName": "build",
+  "zip": true,
+  "onlyChanged": true,
+  "exitZeroOnChanges": false
+}

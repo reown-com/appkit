@@ -4,7 +4,7 @@ import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
 
 import type { WalletFeature } from '@reown/appkit'
-import type { Address, Hex } from '@reown/appkit-common'
+import type { Address, ChainNamespace, Hex } from '@reown/appkit-common'
 import { WalletPage, WalletValidator } from '@reown/appkit-testing'
 import {
   BASE_URL,
@@ -18,7 +18,6 @@ import { getNamespaceByLibrary } from '@/tests/shared/utils/namespace'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
-import { routeInterceptUrl } from '../utils/verify'
 import type { ModalValidator } from '../validators/ModalValidator'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 
@@ -47,19 +46,19 @@ export type ModalFlavor =
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
   const urlsByFlavor: Partial<Record<ModalFlavor, string>> = {
-    default: `${baseUrl}library/${library}/`,
-    external: `${baseUrl}library/external/`,
-    siwx: `${baseUrl}library/siwx-default/`,
-    'wagmi-verify-valid': `${baseUrl}library/wagmi-verify-valid/`,
-    'wagmi-verify-domain-mismatch': `${baseUrl}library/wagmi-verify-domain-mismatch/`,
+    default: `${baseUrl}appkit?name=${library}`,
+    external: `${baseUrl}appkit?name=external`,
+    siwx: `${baseUrl}appkit?name=siwx-default`,
+    'wagmi-verify-valid': `${baseUrl}appkit?name=wagmi-verify-valid`,
+    'wagmi-verify-domain-mismatch': `${baseUrl}appkit?name=wagmi-verify-domain-mismatch`,
     'wagmi-verify-evil': maliciousUrl,
-    'ethers-verify-valid': `${baseUrl}library/ethers-verify-valid/`,
-    'ethers-verify-domain-mismatch': `${baseUrl}library/ethers-verify-domain-mismatch/`,
+    'ethers-verify-valid': `${baseUrl}appkit?name=ethers-verify-valid`,
+    'ethers-verify-domain-mismatch': `${baseUrl}appkit?name=ethers-verify-domain-mismatch`,
     'ethers-verify-evil': maliciousUrl,
-    'core-sign-client': `${baseUrl}core/sign-client/`
+    'core-sign-client': `${baseUrl}appkit-core/sign-client`
   }
 
-  return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
+  return urlsByFlavor[flavor] || `${baseUrl}appkit?name=${library}-${flavor}`
 }
 
 export class ModalPage {
@@ -79,11 +78,13 @@ export class ModalPage {
     this.connectButton = this.page.getByTestId('connect-button').first()
 
     if (library === 'multichain-ethers-solana') {
-      this.url = `${this.baseURL}library/multichain-ethers-solana/`
+      this.url = `${this.baseURL}appkit?name=multichain-ethers-solana`
     } else if (library === 'default-account-types-sa' || library === 'default-account-types-eoa') {
-      this.url = `${this.baseURL}flag/${library}/`
+      this.url = `${this.baseURL}appkit?name=flag-${library}`
     } else if (flavor === 'flag-enable-reconnect') {
-      this.url = `${this.baseURL}flag/enable-reconnect/${library}`
+      this.url = `${this.baseURL}appkit?name=${flavor}-${library}`
+    } else if (flavor === 'siwe') {
+      this.url = `${this.baseURL}appkit?name=${library}-all`
     } else {
       this.url = getUrlByFlavor(this.baseURL, library, flavor)
     }
@@ -105,17 +106,14 @@ export class ModalPage {
   }
 
   async load() {
-    if (this.flavor === 'wagmi-verify-evil') {
-      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/wagmi-verify-evil/')
-    }
-    if (this.flavor === 'ethers-verify-evil') {
-      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/ethers-verify-evil/')
+    if (this.flavor === 'wagmi-verify-evil' || this.flavor === 'ethers-verify-evil') {
+      await this.page.goto(maliciousUrl)
     }
 
     await this.page.goto(this.url)
 
     // Wait for w3m-modal to be injected
-    await this.page.waitForSelector('w3m-modal', { state: 'visible', timeout: 5_000 })
+    await this.page.waitForSelector('w3m-modal', { state: 'visible', timeout: 30_000 })
   }
 
   assertDefined<T>(value: T | undefined | null): T {
@@ -125,8 +123,47 @@ export class ModalPage {
     return value!
   }
 
-  async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
-    await this.connectButton.click()
+  async getConnectUriMalicious(timingRecords?: TimingRecords): Promise<string> {
+    // Find div with p containing "Testnets Only?" text and get the adjacent div at the same level
+    const testnetsOnlyP = this.page.locator('p:has-text("Testnets Only?")')
+    await expect(testnetsOnlyP).toBeVisible()
+
+    const parentDiv = testnetsOnlyP.locator('..')
+    const adjacentDiv = parentDiv.locator('div').nth(1)
+    await expect(adjacentDiv).toBeVisible()
+
+    // Click the adjacent div
+    await adjacentDiv.click()
+
+    // Find div with Ethereum Goerli text and click it
+    await this.page.getByText('Ethereum').click()
+
+    // Find button with Connect text and click it
+    await this.page.getByRole('button', { name: 'Connect' }).click()
+
+    const qrLoadInitiatedTime = new Date()
+
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
+  }
+
+  async getConnectUri(timingRecords?: TimingRecords, modalOpen?: boolean): Promise<string> {
+    if (!modalOpen) {
+      await this.connectButton.click()
+    }
+
     await this.clickWalletConnect()
     const qrLoadInitiatedTime = new Date()
 
@@ -189,10 +226,12 @@ export class ModalPage {
     return uri
   }
 
+  // eslint-disable-next-line max-params
   async qrCodeFlow(
     page: ModalPage,
     walletPage: WalletPage,
-    qrCodeFlowType?: 'immediate-connect' | 'immediate'
+    qrCodeFlowType?: 'immediate-connect' | 'immediate',
+    modalOpen?: boolean
   ): Promise<void> {
     // eslint-disable-next-line init-declarations
     let uri: string
@@ -202,7 +241,7 @@ export class ModalPage {
     if (qrCodeFlowType === 'immediate-connect' || qrCodeFlowType === 'immediate') {
       uri = await page.getImmidiateConnectUri(undefined, qrCodeFlowType === 'immediate-connect')
     } else {
-      uri = await page.getConnectUri()
+      uri = await page.getConnectUri(undefined, modalOpen)
     }
     await walletPage.connectWithUri(uri)
 
@@ -224,27 +263,43 @@ export class ModalPage {
     clickConnectButton?: boolean
     timingRecords?: TimingRecords
   }): Promise<void> {
+    const flowStart = Date.now()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] ========== Starting email flow for ${emailAddress} ==========`)
+
     this.emailAddress = emailAddress
 
     const email = new Email(mailsacApiKey)
 
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] Deleting all existing messages`)
     await email.deleteAllMessages(emailAddress)
 
     const loginWithEmail = new Date()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] Calling loginWithEmail at ${Date.now() - flowStart}ms`)
     await this.loginWithEmail(emailAddress, undefined, clickConnectButton)
+    const loginTime = new Date().getTime() - loginWithEmail.getTime()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] loginWithEmail completed in ${loginTime}ms`)
     if (timingRecords) {
       timingRecords.push({
         item: 'loginWithEmail',
-        timeMs: new Date().getTime() - loginWithEmail.getTime()
+        timeMs: loginTime
       })
     }
 
     const getLatestMessageId1 = new Date()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] Waiting for first email at ${Date.now() - flowStart}ms`)
     const firstMessageId = await email.getLatestMessageId(emailAddress)
+    const getMessageId1Time = new Date().getTime() - getLatestMessageId1.getTime()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] Got first messageId in ${getMessageId1Time}ms`)
     if (timingRecords) {
       timingRecords.push({
         item: 'getLatestMessageId1',
-        timeMs: new Date().getTime() - getLatestMessageId1.getTime()
+        timeMs: getMessageId1Time
       })
     }
     if (!firstMessageId) {
@@ -252,19 +307,34 @@ export class ModalPage {
     }
 
     const getEmailBody1 = new Date()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] Fetching first email body at ${Date.now() - flowStart}ms`)
     const firstEmailBody = await email.getEmailBody(emailAddress, firstMessageId)
+    const getEmailBody1Time = new Date().getTime() - getEmailBody1.getTime()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] Got first email body in ${getEmailBody1Time}ms`)
     if (timingRecords) {
       timingRecords.push({
         item: 'getEmailBody1',
-        timeMs: new Date().getTime() - getEmailBody1.getTime()
+        timeMs: getEmailBody1Time
       })
     }
 
     let otp = ''
-    if (email.isApproveEmail(firstEmailBody)) {
+    const isApprove = email.isApproveEmail(firstEmailBody)
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] First email is ${isApprove ? 'APPROVAL' : 'OTP'} email`)
+
+    if (isApprove) {
       const url = email.getApproveUrlFromBody(firstEmailBody)
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Processing device approval flow at ${Date.now() - flowStart}ms`)
 
       const deleteAllMessages = new Date()
+      // eslint-disable-next-line no-console
+      console.log(
+        `[emailFlow] Deleting messages before device approval at ${Date.now() - flowStart}ms`
+      )
       await email.deleteAllMessages(emailAddress)
       if (timingRecords) {
         timingRecords.push({
@@ -274,74 +344,126 @@ export class ModalPage {
       }
 
       const loadDeviceRegistrationPage = new Date()
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Loading device registration page with URL: ${url}`)
       const drp = new DeviceRegistrationPage(await context.newPage(), url)
       drp.load()
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Approving device at ${Date.now() - flowStart}ms`)
       await drp.approveDevice()
       await drp.close()
+      const approvalTime = new Date().getTime() - loadDeviceRegistrationPage.getTime()
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Device approval completed in ${approvalTime}ms`)
       if (timingRecords) {
         timingRecords.push({
           item: 'loadDeviceRegistrationPage',
-          timeMs: new Date().getTime() - loadDeviceRegistrationPage.getTime()
+          timeMs: approvalTime
         })
       }
 
       const getLatestMessageId2 = new Date()
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Waiting for second email (OTP) at ${Date.now() - flowStart}ms`)
       const secondMessageId = await email.getLatestMessageId(emailAddress)
       if (!secondMessageId) {
         throw new Error('No messageId found')
       }
+      const getMessageId2Time = new Date().getTime() - getLatestMessageId2.getTime()
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Got second messageId in ${getMessageId2Time}ms`)
       if (timingRecords) {
         timingRecords.push({
           item: 'getLatestMessageId2',
-          timeMs: new Date().getTime() - getLatestMessageId2.getTime()
+          timeMs: getMessageId2Time
         })
       }
 
       const getEmailBody2 = new Date()
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Fetching second email body at ${Date.now() - flowStart}ms`)
       const secondEmailBody = await email.getEmailBody(emailAddress, secondMessageId)
+      const getEmailBody2Time = new Date().getTime() - getEmailBody2.getTime()
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Got second email body in ${getEmailBody2Time}ms`)
       if (timingRecords) {
         timingRecords.push({
           item: 'getEmailBody2',
-          timeMs: new Date().getTime() - getEmailBody2.getTime()
+          timeMs: getEmailBody2Time
         })
       }
       if (email.isApproveEmail(secondEmailBody)) {
         throw new Error('Unexpected approve email after already approved')
       }
       otp = email.getOtpCodeFromBody(secondEmailBody)
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Extracted OTP from second email`)
     } else {
       otp = email.getOtpCodeFromBody(firstEmailBody)
+      // eslint-disable-next-line no-console
+      console.log(`[emailFlow] Extracted OTP from first email (no approval needed)`)
     }
 
     const enterOTP = new Date()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] Entering OTP at ${Date.now() - flowStart}ms`)
     await this.enterOTP(otp)
+    const enterOTPTime = new Date().getTime() - enterOTP.getTime()
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] enterOTP completed in ${enterOTPTime}ms`)
     if (timingRecords) {
       timingRecords.push({
         item: 'enterOTP',
-        timeMs: new Date().getTime() - enterOTP.getTime()
+        timeMs: enterOTPTime
       })
     }
+
+    const totalFlowTime = Date.now() - flowStart
+    // eslint-disable-next-line no-console
+    console.log(`[emailFlow] ========== Email flow completed in ${totalFlowTime}ms ==========`)
   }
 
   async loginWithEmail(email: string, validate = true, clickConnectButton = true) {
+    // eslint-disable-next-line no-console
+    console.log(`[loginWithEmail] Starting login with email: ${email}`)
+
     if (clickConnectButton) {
+      // eslint-disable-next-line no-console
+      console.log(`[loginWithEmail] Clicking connect button`)
       // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
       await this.page
         .getByTestId('connect-button')
         .getByRole('button', { name: 'Connect Wallet' })
         .click()
     }
+
+    // eslint-disable-next-line no-console
+    console.log(`[loginWithEmail] Filling email input`)
     await this.page.getByTestId('wui-email-input').locator('input').focus()
     await this.page.getByTestId('wui-email-input').locator('input').fill(email)
     await this.page.getByTestId('wui-email-input').locator('input').press('Enter')
+
     if (validate) {
+      // eslint-disable-next-line no-console
+      console.log(
+        `[loginWithEmail] Waiting for email to be visible on notification screen (20s timeout)`
+      )
+      const validationStart = Date.now()
+
       await expect(
         this.page.getByText(email),
         `Expected current email: ${email} to be visible on the notification screen`
       ).toBeVisible({
         timeout: 20_000
       })
+
+      const validationTime = Date.now() - validationStart
+      // eslint-disable-next-line no-console
+      console.log(`[loginWithEmail] Email visible on screen after ${validationTime}ms`)
     }
+
+    // eslint-disable-next-line no-console
+    console.log(`[loginWithEmail] Completed successfully`)
   }
 
   async loginWithSocial(socialOption: 'github', socialMail: string, socialPass: string) {
@@ -380,10 +502,10 @@ export class ModalPage {
 
   async enterOTP(otp: string, headerTitle = 'Confirm Email') {
     await expect(this.page.getByText(headerTitle)).toBeVisible({
-      timeout: 10_000
+      timeout: 20_000
     })
     await expect(this.page.getByText('Enter the code we sent')).toBeVisible({
-      timeout: 10_000
+      timeout: 20_000
     })
 
     const splitted = otp.split('')
@@ -407,8 +529,15 @@ export class ModalPage {
     }
 
     await expect(this.page.getByText(headerTitle)).not.toBeVisible({
-      timeout: 20_000
+      timeout: 30_000
     })
+  }
+
+  async disconnectMalicious() {
+    // Find button with Disconnect text and click it
+    const disconnectButton = this.page.getByRole('button', { name: 'Disconnect' })
+    await expect(disconnectButton, 'Disconnect button should be visible').toBeVisible()
+    await disconnectButton.click()
   }
 
   async disconnect(clickAccountButton = true) {
@@ -431,6 +560,14 @@ export class ModalPage {
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click()
+  }
+
+  async signMalicious(_namespace?: string) {
+    // Find the first button with personal_sign text and click it
+    const signButton = this.page.getByRole('button', { name: 'personal_sign' }).first()
+
+    await signButton.scrollIntoViewIfNeeded()
+    await signButton.click()
   }
 
   async sign(_namespace?: string) {
@@ -554,7 +691,7 @@ export class ModalPage {
   }
 
   async switchActiveChain() {
-    await this.page.getByText('Switch to', { exact: false }).waitFor()
+    await this.page.locator('w3m-switch-active-chain-view').waitFor()
     await this.page.getByTestId('w3m-switch-active-chain-button').click()
   }
 
@@ -568,7 +705,7 @@ export class ModalPage {
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
     await connect.waitFor({
       state: 'visible',
-      timeout: 5000
+      timeout: 15000
     })
     await connect.click()
   }
@@ -589,7 +726,7 @@ export class ModalPage {
   }
 
   async openProfileWalletsView(
-    namespace?: string,
+    namespace?: ChainNamespace,
     clickButtonType: 'account' | 'connect' = 'account'
   ) {
     if (clickButtonType === 'account') {
@@ -602,7 +739,7 @@ export class ModalPage {
     await this.page.waitForTimeout(500)
   }
 
-  async openConnectModal(namespace?: string) {
+  async openConnectModal(namespace?: ChainNamespace) {
     await this.page.getByTestId(`connect-button${namespace ? `-${namespace}` : ''}`).click()
   }
 
@@ -611,7 +748,7 @@ export class ModalPage {
   }
 
   async openOnramp() {
-    await this.page.getByTestId('w3m-account-default-onramp-button').click()
+    await this.page.getByTestId('wallet-features-onramp-button').click()
   }
 
   async closeModal() {
@@ -715,7 +852,9 @@ export class ModalPage {
     let walletSelector: Locator
 
     const walletSelectorRDNS = this.page.getByTestId(`wallet-selector-${EXTENSION_RDNS}`)
-    const walletSelectorName = this.page.getByTestId(`wallet-selector-${EXTENSION_NAME}`)
+    const walletSelectorName = this.page.getByTestId(
+      `wallet-selector-${EXTENSION_NAME.toLowerCase()}`
+    )
 
     try {
       await walletSelectorRDNS.waitFor({ state: 'visible', timeout: 2_000 })
@@ -828,20 +967,31 @@ export class ModalPage {
     await profileButton.waitFor({ state: 'hidden', timeout: 15_000 })
   }
 
-  async getWalletFeaturesButton(feature: WalletFeature) {
+  async getWalletFeaturesButton(feature: WalletFeature | 'fund-wallet') {
     const walletFeatureButton = this.page.getByTestId(`wallet-features-${feature}-button`)
     await expect(walletFeatureButton).toBeVisible()
 
     return walletFeatureButton
   }
 
+  async getDefaultWalletFeaturesButton(feature: WalletFeature | 'fund-wallet') {
+    const walletFeatureButton = this.page.getByTestId(`w3m-account-default-${feature}-button`)
+    await expect(walletFeatureButton).toBeVisible()
+
+    return walletFeatureButton
+  }
+
   async sendCalls() {
+    const fetchCapabilitiesButton = this.page.getByTestId('fetch-capabilities-button')
+    await fetchCapabilitiesButton.click()
     const sendCallsButton = this.page.getByTestId('send-calls-button')
     await sendCallsButton.isVisible()
     await sendCallsButton.scrollIntoViewIfNeeded()
     await sendCallsButton.click()
   }
   async getCallsStatus(batchCallId: string) {
+    const fetchCapabilitiesButton = this.page.getByTestId('fetch-capabilities-button')
+    await fetchCapabilitiesButton.click()
     const sendCallsInput = this.page.getByTestId('get-calls-id-input')
     const sendCallsButton = this.page.getByTestId('get-calls-status-button')
     await sendCallsButton.scrollIntoViewIfNeeded()
@@ -857,6 +1007,20 @@ export class ModalPage {
       .getByTestId('wui-inactive-profile-wallet-item-button')
     await expect(firstActiveConnectionButton).toBeVisible()
     await firstActiveConnectionButton.click()
+
+    // Wait until the active connection is updated
+    await this.page.waitForTimeout(100)
+  }
+
+  async disconnectConnection(alt?: string) {
+    const connection = this.page
+      .getByTestId('active-connection')
+      .filter({ has: this.page.locator(`[alt="${alt}"]`) })
+
+    const disconnectButton = connection.locator('wui-icon-link[icon="power"]')
+
+    await expect(disconnectButton).toBeVisible()
+    await disconnectButton.click()
   }
 
   async switchAccountByAddress(address: string) {
@@ -944,7 +1108,7 @@ export class ModalPage {
   }
 
   async connectToExtensionMultichain(
-    chainNamespace: 'eip155' | 'solana' | 'bip122',
+    chainNamespace: ChainNamespace,
     modalOpen?: boolean,
     isAnotherNamespaceConnected?: boolean
   ) {
@@ -959,5 +1123,17 @@ export class ModalPage {
       const chainSelector = this.page.getByTestId(`wui-list-chain-${chainNamespace}`)
       await chainSelector.click()
     }
+  }
+
+  async goBack() {
+    await this.page.getByTestId('header-back').click()
+    await this.page.waitForTimeout(300)
+  }
+
+  async setCustomProjectId(projectId: string) {
+    await this.page.getByTestId('project-id-button').click()
+    await this.page.getByTestId('project-id-input').fill(projectId)
+    await this.page.getByTestId('project-id-save-button').click()
+    await this.page.reload()
   }
 }

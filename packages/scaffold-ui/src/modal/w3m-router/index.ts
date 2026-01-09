@@ -1,69 +1,62 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import type { RouterControllerState } from '@reown/appkit-controllers'
-import { RouterController, TooltipController } from '@reown/appkit-controllers'
+import { RouterController, type RouterControllerState } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
-import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import '../w3m-footer/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-router')
 export class W3mRouter extends LitElement {
-  public static override styles = styles
+  public static override styles = [styles]
 
   // -- Members ------------------------------------------- //
-  private resizeObserver?: ResizeObserver = undefined
-
-  private prevHeight = '0px'
-
-  private prevHistoryLength = 1
-
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private view = RouterController.state.view
+  @state() private viewState = RouterController.state.view
 
-  @state() private viewDirection = ''
+  @state() private history = RouterController.state.history.join(',')
 
   public constructor() {
     super()
-    this.unsubscribe.push(RouterController.subscribeKey('view', val => this.onViewChange(val)))
-  }
-
-  public override firstUpdated() {
-    this.resizeObserver = new ResizeObserver(([content]) => {
-      const height = `${content?.contentRect.height}px`
-      if (this.prevHeight !== '0px') {
-        this.style.setProperty('--prev-height', this.prevHeight)
-        this.style.setProperty('--new-height', height)
-        this.style.animation = 'w3m-view-height 150ms forwards ease'
-        this.style.height = 'auto'
-      }
-      setTimeout(() => {
-        this.prevHeight = height
-        this.style.animation = 'unset'
-      }, ConstantsUtil.ANIMATION_DURATIONS.ModalHeight)
-    })
-    this.resizeObserver?.observe(this.getWrapper())
+    this.unsubscribe.push(
+      RouterController.subscribeKey('view', () => {
+        this.history = RouterController.state.history.join(',')
+        document.documentElement.style.setProperty(
+          '--apkt-duration-dynamic',
+          'var(--apkt-durations-lg)'
+        )
+      })
+    )
   }
 
   public override disconnectedCallback() {
-    this.resizeObserver?.unobserve(this.getWrapper())
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    document.documentElement.style.setProperty('--apkt-duration-dynamic', '0s')
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`<div class="w3m-router-container" view-direction="${this.viewDirection}">
-      ${this.viewTemplate()}
-    </div>`
+    return html`${this.templatePageContainer()}`
   }
 
   // -- Private ------------------------------------------- //
-  private viewTemplate() {
+  private templatePageContainer() {
+    return html`<w3m-router-container
+      history=${this.history}
+      .setView=${() => {
+        this.viewState = RouterController.state.view
+      }}
+    >
+      ${this.viewTemplate(this.viewState)}
+    </w3m-router-container>`
+  }
+
+  private viewTemplate(view: RouterControllerState['view']) {
     // - These components are imported from the scaffold exports according to the case. This would render empty if the component is not imported.
-    switch (this.view) {
+    switch (view) {
       // Core Views
       case 'AccountSettings':
         return html`<w3m-account-settings-view></w3m-account-settings-view>`
@@ -145,6 +138,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-wallet-send-select-token-view></w3m-wallet-send-select-token-view>`
       case 'WalletSendPreview':
         return html`<w3m-wallet-send-preview-view></w3m-wallet-send-preview-view>`
+      case 'WalletSendConfirmed':
+        return html`<w3m-send-confirmed-view></w3m-send-confirmed-view>`
       case 'WhatIsABuy':
         return html`<w3m-what-is-a-buy-view></w3m-what-is-a-buy-view>`
       case 'WalletReceive':
@@ -175,30 +170,21 @@ export class W3mRouter extends LitElement {
         return html`<w3m-pay-view></w3m-pay-view>`
       case 'PayLoading':
         return html`<w3m-pay-loading-view></w3m-pay-loading-view>`
+      case 'PayQuote':
+        return html`<w3m-pay-quote-view></w3m-pay-quote-view>`
+      case 'FundWallet':
+        return html`<w3m-fund-wallet-view></w3m-fund-wallet-view>`
+      case 'PayWithExchange':
+        return html`<w3m-deposit-from-exchange-view></w3m-deposit-from-exchange-view>`
+      case 'PayWithExchangeSelectAsset':
+        return html`<w3m-deposit-from-exchange-select-asset-view></w3m-deposit-from-exchange-select-asset-view>`
+      case 'UsageExceeded':
+        return html`<w3m-usage-exceeded-view></w3m-usage-exceeded-view>`
+      case 'SmartAccountSettings':
+        return html`<w3m-smart-account-settings-view></w3m-smart-account-settings-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }
-  }
-
-  private onViewChange(newView: RouterControllerState['view']) {
-    TooltipController.hide()
-
-    let direction = ConstantsUtil.VIEW_DIRECTION.Next
-    const { history } = RouterController.state
-    if (history.length < this.prevHistoryLength) {
-      direction = ConstantsUtil.VIEW_DIRECTION.Prev
-    }
-
-    this.prevHistoryLength = history.length
-    this.viewDirection = direction
-
-    setTimeout(() => {
-      this.view = newView
-    }, ConstantsUtil.ANIMATION_DURATIONS.ViewTransition)
-  }
-
-  private getWrapper() {
-    return this.shadowRoot?.querySelector('div') as HTMLElement
   }
 }
 

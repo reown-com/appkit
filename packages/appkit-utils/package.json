@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-utils",
-  "version": "1.7.17",
+  "version": "1.8.16",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -35,6 +35,11 @@
       "types": "./dist/types/exports/bitcoin.d.ts",
       "import": "./dist/esm/exports/bitcoin.js",
       "default": "./dist/esm/exports/bitcoin.js"
+    },
+    "./ton": {
+      "types": "./dist/types/exports/ton.d.ts",
+      "import": "./dist/esm/exports/ton.js",
+      "default": "./dist/esm/exports/ton.js"
     }
   },
   "typesVersions": {
@@ -44,6 +49,9 @@
       ],
       "solana": [
         "./dist/types/exports/solana.d.ts"
+      ],
+      "ton": [
+        "./dist/types/exports/ton.d.ts"
       ]
     }
   },
@@ -61,29 +69,32 @@
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@wallet-standard/wallet": "1.1.0",
-    "@walletconnect/logger": "2.1.2",
-    "@walletconnect/universal-provider": "2.21.5",
-    "valtio": "2.1.5",
-    "viem": ">=2.32.0"
+    "@walletconnect/logger": "3.0.1",
+    "@walletconnect/universal-provider": "2.23.1",
+    "valtio": "2.1.7",
+    "viem": ">=2.37.9"
+  },
+  "optionalDependencies": {
+    "@base-org/account": "2.4.0",
+    "@safe-global/safe-apps-provider": "0.18.6",
+    "@safe-global/safe-apps-sdk": "9.1.0"
   },
   "devDependencies": {
-    "@walletconnect/types": "2.21.5",
+    "@walletconnect/types": "2.23.1",
     "bs58": "6.0.0",
-    "@solana/web3.js": "1.98.2",
+    "@solana/web3.js": "1.98.4",
     "@wallet-standard/features": "1.1.0",
     "@wallet-standard/base": "1.1.0",
     "@solana/wallet-standard-features": "1.3.0",
-    "@coinbase/wallet-sdk": "4.3.0",
-    "@safe-global/safe-apps-provider": "0.18.6",
     "@solana/wallet-adapter-base": "0.9.26",
     "@vitest/coverage-v8": "2.1.9",
     "vitest": "3.1.3"
   },
   "peerDependencies": {
-    "valtio": "2.1.5"
+    "valtio": "2.1.7"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
@@ -103,5 +114,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

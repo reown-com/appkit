@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-wallet-button",
-  "version": "1.7.17",
+  "version": "1.8.16",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -41,14 +41,15 @@
     "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
+    "@walletconnect/universal-provider": "2.23.1",
     "lit": "3.3.0",
-    "valtio": "2.1.5"
+    "valtio": "2.1.7"
   },
   "optionalDependencies": {
     "@lit/react": "1.0.8"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
@@ -59,10 +60,10 @@
   },
   "devDependencies": {
     "@open-wc/testing": "4.0.0",
-    "@types/react": "19.1.3",
+    "@types/react": "19.1.15",
     "@vitest/coverage-v8": "2.1.9",
     "eslint-plugin-react-hooks": "5.2.0",
-    "react": "19.1.0",
+    "react": "19.1.2",
     "vitest": "3.1.3"
   },
   "keywords": [
@@ -76,5 +77,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

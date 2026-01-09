@@ -1,32 +1,39 @@
-import { type BrowserContext, test } from '@playwright/test'
+import { type Page, expect } from '@playwright/test'
 
 import { WalletPage, WalletValidator } from '@reown/appkit-testing'
 import { DEFAULT_SESSION_PARAMS } from '@reown/appkit-testing'
 
+import { extensionFixture } from '../shared/fixtures/extension-fixture'
 import { ModalPage } from '../shared/pages/ModalPage'
 import { ModalValidator } from '../shared/validators/ModalValidator'
 
 /* eslint-disable init-declarations */
+let page: Page
 let modalPage: ModalPage
 let modalValidator: ModalValidator
 let walletPage: WalletPage
 let walletValidator: WalletValidator
-let context: BrowserContext
+let walletConnectEvmAddress: string
+let walletConnectSolanaAddress: string
+let solanaExtensionWalletAddress: string
 /* eslint-enable init-declarations */
 
 const WALLET_CONNECT_TEST_ID = 'walletConnect'
 const NAMESPACE = 'eip155'
 
 // -- Setup --------------------------------------------------------------------
+const test = extensionFixture.extend<{ library: string }>({
+  library: ['wagmi', { option: true }]
+})
+
 test.describe.configure({ mode: 'serial' })
 
-test.beforeAll(async ({ browser }) => {
-  context = await browser.newContext()
-  const browserPage = await context.newPage()
+test.beforeAll(async ({ context }) => {
+  page = await context.newPage()
 
-  modalPage = new ModalPage(browserPage, 'multichain-all', 'default')
+  modalPage = new ModalPage(page, 'multichain-all', 'default')
   walletPage = new WalletPage(await context.newPage())
-  modalValidator = new ModalValidator(browserPage)
+  modalValidator = new ModalValidator(page)
   walletValidator = new WalletValidator(walletPage.page)
 
   await modalPage.load()
@@ -34,7 +41,7 @@ test.beforeAll(async ({ browser }) => {
 })
 
 test.afterAll(async () => {
-  await modalPage.page.close()
+  await page.close()
 })
 
 // -- Tests --------------------------------------------------------------------
@@ -112,17 +119,17 @@ test('should switch network when clicking custom buttons per namespace', async (
   await evmButton.click()
   await modalValidator.expectAccountButtonReady('eip155')
   await modalPage.closeModal()
-  await modalValidator.expectBalanceFetched('POL')
+  await modalValidator.expectBalanceFetched('POL', 'eip155')
 
   await solanaButton.click()
   await modalValidator.expectAccountButtonReady('solana')
   await modalPage.closeModal()
-  await modalValidator.expectBalanceFetched('SOL')
+  await modalValidator.expectBalanceFetched('SOL', 'solana')
 
   await bitcoinButton.click()
   await modalValidator.expectAccountButtonReady('bip122')
   await modalPage.closeModal()
-  await modalValidator.expectBalanceFetched('BTC')
+  await modalValidator.expectBalanceFetched('BTC', 'bip122')
 })
 
 test('should disconnect from all namespaces', async () => {
@@ -157,4 +164,51 @@ test('it should connect to all namespaces with wallet buttons', async () => {
   await modalValidator.expectAccountButtonReady('eip155')
   await modalValidator.expectAccountButtonReady('solana')
   await modalValidator.expectAccountButtonReady('bip122')
+
+  await modalPage.disconnect()
+  await modalValidator.expectDisconnected('eip155')
+  await modalValidator.expectDisconnected('solana')
+  await modalValidator.expectDisconnected('bip122')
+})
+
+test('should disconnect the previous connector when connecting to a new one', async () => {
+  await modalPage.openConnectModal('solana')
+  const solanaExtensionWallet = await modalPage.getExtensionWallet()
+  await solanaExtensionWallet.click()
+  await modalValidator.expectConnected('solana')
+  solanaExtensionWalletAddress = await modalPage.getAddress('solana')
+
+  await modalPage.openConnectModal('eip155')
+  await modalPage.qrCodeFlow(modalPage, walletPage, undefined, true)
+  await modalValidator.expectConnected('eip155')
+  await modalValidator.expectConnected('solana')
+
+  walletConnectSolanaAddress = await modalPage.getAddress('solana')
+  walletConnectEvmAddress = await modalPage.getAddress('eip155')
+
+  expect(await modalPage.getAddress('solana')).not.toBe(solanaExtensionWalletAddress)
+
+  await modalPage.openAccount()
+  await modalPage.clickWalletSwitchButton()
+  await modalPage.clickTab('solana')
+
+  await modalValidator.expectConnectionNotExist('Reown')
+  await modalPage.closeModal()
+
+  await modalPage.page.reload()
+
+  await modalValidator.expectConnected('eip155')
+  await modalValidator.expectConnected('solana')
+
+  expect(await modalPage.getAddress('solana')).toBe(walletConnectSolanaAddress)
+  expect(await modalPage.getAddress('eip155')).toBe(walletConnectEvmAddress)
+
+  await modalPage.disconnect()
+  await modalValidator.expectDisconnected('eip155')
+  await modalValidator.expectDisconnected('solana')
+
+  await modalPage.page.reload()
+
+  await modalValidator.expectDisconnected('solana')
+  await modalValidator.expectDisconnected('eip155')
 })

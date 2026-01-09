@@ -2,11 +2,12 @@ import { state } from 'lit/decorators.js'
 
 import {
   ConnectionController,
+  ConnectionControllerUtil,
   ConstantsUtil,
-  CoreHelperUtil,
   EventsController,
   type OpenTarget,
-  OptionsController
+  OptionsController,
+  RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
@@ -55,7 +56,9 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
       properties: {
         name: this.wallet.name,
         platform: 'mobile',
-        displayIndex: this.wallet?.display_index
+        displayIndex: this.wallet?.display_index,
+        walletRank: this.wallet.order,
+        view: RouterController.state.view
       }
     })
   }
@@ -75,42 +78,7 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
   }
 
   protected override onConnect = () => {
-    if (this.wallet?.mobile_link && this.uri) {
-      try {
-        this.error = false
-        const { mobile_link, link_mode, name } = this.wallet
-        const { redirect, redirectUniversalLink, href } = CoreHelperUtil.formatNativeUrl(
-          mobile_link,
-          this.uri,
-          link_mode
-        )
-
-        this.redirectDeeplink = redirect
-        this.redirectUniversalLink = redirectUniversalLink
-        this.target = CoreHelperUtil.isIframe() ? '_top' : '_self'
-
-        ConnectionController.setWcLinking({ name, href })
-        ConnectionController.setRecentWallet(this.wallet)
-
-        if (this.preferUniversalLinks && this.redirectUniversalLink) {
-          CoreHelperUtil.openHref(this.redirectUniversalLink, this.target)
-        } else {
-          CoreHelperUtil.openHref(this.redirectDeeplink, this.target)
-        }
-      } catch (e) {
-        EventsController.sendEvent({
-          type: 'track',
-          event: 'CONNECT_PROXY_ERROR',
-          properties: {
-            message: e instanceof Error ? e.message : 'Error parsing the deeplink',
-            uri: this.uri,
-            mobile_link: this.wallet.mobile_link,
-            name: this.wallet.name
-          }
-        })
-        this.error = true
-      }
-    }
+    ConnectionControllerUtil.onConnectMobile(this.wallet)
   }
 
   protected override onTryAgain() {

@@ -1,4 +1,5 @@
 // -- Utils -------------------------------------------------------------------
+export { HelpersUtil } from './src/utils/HelpersUtil.js'
 export { DateUtil } from './src/utils/DateUtil.js'
 export { NetworkUtil, AVAILABLE_NAMESPACES } from './src/utils/NetworkUtil.js'
 export { NumberUtil } from './src/utils/NumberUtil.js'
@@ -8,7 +9,9 @@ export { erc20ABI } from './src/contracts/erc20.js'
 export { NavigationUtil } from './src/utils/NavigationUtil.js'
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'
 export { Emitter } from './src/utils/EmitterUtil.js'
+export { PresetsUtil } from './src/utils/PresetsUtil.js'
 export { ParseUtil } from './src/utils/ParseUtil.js'
+export { ErrorUtil, UserRejectedRequestError, SendTransactionError } from './src/utils/ErrorUtil.js'
 export {
   SafeLocalStorage,
   SafeLocalStorageKeys,

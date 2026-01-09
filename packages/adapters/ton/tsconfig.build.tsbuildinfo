@@ -1,0 +1,1 @@
+{"root":["./vitest.config.ts","./src/adapter.ts","./src/connectors/tonconnectconnector.ts","./src/exports/index.ts"],"errors":true,"version":"5.8.3"}

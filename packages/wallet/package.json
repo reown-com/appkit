@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-wallet",
-  "version": "1.7.17",
+  "version": "1.8.16",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -33,11 +33,11 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
-    "@walletconnect/logger": "2.1.2",
+    "@walletconnect/logger": "3.0.1",
     "zod": "3.22.4"
   },
   "author": "Reown (https://discord.gg/reown)",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
@@ -62,5 +62,8 @@
     "ethereum",
     "solana",
     "bitcoin"
-  ]
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
 }

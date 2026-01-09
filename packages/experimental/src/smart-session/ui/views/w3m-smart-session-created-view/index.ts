@@ -21,8 +21,8 @@ export class W3mSmartSessionCreatedView extends LitElement {
       <wui-flex
         flexDirection="column"
         alignItems="center"
-        gap="xxl"
-        .padding=${['0', '0', 'l', '0'] as const}
+        gap="6"
+        .padding=${['0', '0', '4', '0'] as const}
       >
         ${this.onboardingTemplate()}
         <wui-link
@@ -41,24 +41,18 @@ export class W3mSmartSessionCreatedView extends LitElement {
   private onboardingTemplate() {
     return html` <wui-flex
       flexDirection="column"
-      gap="xxl"
+      gap="6"
       alignItems="center"
-      .padding=${['0', 'xxl', '0', 'xxl'] as const}
+      .padding=${['0', '6', '0', '6'] as const}
     >
-      <wui-flex gap="s" alignItems="center" justifyContent="center">
-        <wui-icon-box
-          size="xl"
-          iconcolor="fg-100"
-          backgroundcolor="inverse-100"
-          icon="clock"
-          background="opaque"
-        ></wui-icon-box>
+      <wui-flex gap="3" alignItems="center" justifyContent="center">
+        <wui-icon-box size="xl" color="accent-primary" icon="clock"></wui-icon-box>
       </wui-flex>
-      <wui-flex flexDirection="column" alignItems="center" gap="s">
-        <wui-text align="center" variant="medium-600" color="fg-100">
+      <wui-flex flexDirection="column" alignItems="center" gap="3">
+        <wui-text align="center" variant="md-medium" color="primary">
           Smart Session created successfully
         </wui-text>
-        <wui-text align="center" variant="paragraph-400" color="fg-100">
+        <wui-text align="center" variant="md-regular" color="primary">
           You can manage your session from your account settings.
         </wui-text>
       </wui-flex>
@@ -67,8 +61,8 @@ export class W3mSmartSessionCreatedView extends LitElement {
 
   private buttonsTemplate() {
     return html`<wui-flex
-      .padding=${['0', '2l', '0', '2l'] as const}
-      gap="s"
+      .padding=${['0', '4', '0', '4'] as const}
+      gap="3"
       class="continue-button-container"
     >
       <wui-button fullWidth size="lg" borderRadius="xs" @click=${this.redirectToAccount.bind(this)}>

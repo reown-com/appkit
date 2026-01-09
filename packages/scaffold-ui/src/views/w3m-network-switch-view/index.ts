@@ -7,7 +7,8 @@ import {
   AssetUtil,
   ChainController,
   ConnectorController,
-  RouterController
+  RouterController,
+  SIWXUtil
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
@@ -61,8 +62,8 @@ export class W3mNetworkSwitchView extends LitElement {
         data-error=${this.error}
         flexDirection="column"
         alignItems="center"
-        .padding=${['3xl', 'xl', '3xl', 'xl'] as const}
-        gap="xl"
+        .padding=${['10', '5', '10', '5'] as const}
+        gap="7"
       >
         <wui-flex justifyContent="center" alignItems="center">
           <wui-network-image
@@ -72,25 +73,17 @@ export class W3mNetworkSwitchView extends LitElement {
 
           ${this.error ? null : html`<wui-loading-hexagon></wui-loading-hexagon>`}
 
-          <wui-icon-box
-            backgroundColor="error-100"
-            background="opaque"
-            iconColor="error-100"
-            icon="close"
-            size="sm"
-            ?border=${true}
-            borderColor="wui-color-bg-125"
-          ></wui-icon-box>
+          <wui-icon-box color="error" icon="close" size="sm"></wui-icon-box>
         </wui-flex>
 
-        <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text align="center" variant="paragraph-500" color="fg-100">${label}</wui-text>
-          <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
+        <wui-flex flexDirection="column" alignItems="center" gap="2">
+          <wui-text align="center" variant="h6-regular" color="primary">${label}</wui-text>
+          <wui-text align="center" variant="md-regular" color="secondary">${subLabel}</wui-text>
         </wui-flex>
 
         <wui-button
           data-retry=${this.showRetry}
-          variant="accent"
+          variant="accent-primary"
           size="md"
           .disabled=${!this.error}
           @click=${this.onSwitchNetwork.bind(this)}
@@ -144,6 +137,12 @@ export class W3mNetworkSwitchView extends LitElement {
       }
       if (this.network) {
         await ChainController.switchActiveNetwork(this.network)
+        const isAuthenticated = await SIWXUtil.isAuthenticated()
+
+        // If not authenticated, wait for siwx prompt, else go back to previous view
+        if (isAuthenticated) {
+          RouterController.goBack()
+        }
       }
     } catch (error) {
       this.error = true

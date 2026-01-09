@@ -1,24 +1,32 @@
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { Commitment, ConnectionConfig } from '@solana/web3.js'
-import { PublicKey, Connection as SolanaConnection } from '@solana/web3.js'
+import {
+  PublicKey,
+  SendTransactionError,
+  Connection as SolanaConnection,
+  Transaction,
+  TransactionInstruction
+} from '@solana/web3.js'
 import UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
-import { type AppKit, type AppKitOptions, WcHelpersUtil } from '@reown/appkit'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { SendTransactionError as CommonSendTransactionError } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
+  AdapterBlueprint,
   AlertController,
   ChainController,
   CoreHelperUtil,
   type Provider as CoreProvider,
-  StorageUtil
+  OptionsController,
+  StorageUtil,
+  WcHelpersUtil
 } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 import { HelpersUtil } from '@reown/appkit-utils'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
-import { AdapterBlueprint } from '@reown/appkit/adapters'
 
 import { AuthProvider } from './providers/AuthProvider.js'
 import {
@@ -47,6 +55,21 @@ export interface AdapterOptions {
 const IGNORED_CONNECTIONS_IDS: string[] = [
   CommonConstantsUtil.CONNECTOR_ID.AUTH,
   CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+]
+
+const TRANSACTION_ERROR_MAP = [
+  {
+    pattern: /Attempt to debit an account but found no record of a prior credit/iu,
+    message: 'Not enough SOL to cover fees or rent'
+  },
+  {
+    pattern: /Insufficient funds for fee/iu,
+    message: 'Not enough SOL to cover fees or rent'
+  },
+  {
+    pattern: /Transfer: insufficient lamports/iu,
+    message: 'Not enough SOL to cover this transfer'
+  }
 ]
 
 export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
@@ -87,12 +110,12 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     )
   }
 
-  override syncConnectors(options: AppKitOptions, appKit: AppKit) {
-    if (!options.projectId) {
+  override syncConnectors() {
+    if (!OptionsController.state.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
     }
 
-    const getActiveChain = () => appKit.getCaipNetwork(this.namespace)
+    const getActiveChain = () => ChainController.getActiveCaipNetwork(this.namespace)
 
     // Add Coinbase Wallet if available
     if (CoreHelperUtil.isClient() && 'coinbaseSolana' in window) {
@@ -121,6 +144,72 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     return Promise.resolve({
       hash: ''
     })
+  }
+
+  public async writeSolanaTransaction(
+    params: AdapterBlueprint.WriteSolanaTransactionParams
+  ): Promise<AdapterBlueprint.WriteSolanaTransactionResult> {
+    const provider = params.provider as SolanaProvider
+
+    const connection = SolStoreUtil.state.connection
+
+    if (!connection || !params.provider) {
+      throw new Error('Connection is not set')
+    }
+
+    const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
+
+    const transaction = new Transaction({
+      feePayer: provider.publicKey,
+      blockhash,
+      lastValidBlockHeight
+    })
+
+    for (const instruction of params.instructions) {
+      transaction.add(
+        new TransactionInstruction({
+          keys: instruction.keys.map(key => ({
+            pubkey: new PublicKey(key.pubkey),
+            isSigner: key.isSigner,
+            isWritable: key.isWritable
+          })),
+          programId: new PublicKey(instruction.programId),
+          data: Buffer.from(instruction.data, 'hex')
+        })
+      )
+    }
+
+    const result = await provider.sendTransaction(transaction, connection).catch(error => {
+      if (error instanceof SendTransactionError) {
+        // Check both message and logs
+        const errMessage = error?.transactionError?.message ?? error?.message ?? ''
+        const logs = error?.logs?.join(' ') ?? ''
+        const fullErrorText = `${errMessage} ${logs}`
+
+        for (const { pattern, message } of TRANSACTION_ERROR_MAP) {
+          if (pattern.test(fullErrorText)) {
+            throw new Error(message)
+          }
+        }
+      }
+
+      throw error
+    })
+
+    await new Promise<void>(resolve => {
+      const interval = setInterval(async () => {
+        const status = await connection.getSignatureStatus(result)
+
+        if (status?.value) {
+          clearInterval(interval)
+          resolve()
+        }
+      }, 1000)
+    })
+
+    return {
+      hash: result
+    }
   }
 
   public async getCapabilities(): Promise<unknown> {
@@ -216,7 +305,22 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
           value: Number.isNaN(Number(params.value)) ? 0 : Number(params.value)
         })
 
-    const result = await provider.sendTransaction(transaction, connection)
+    const result = await provider.sendTransaction(transaction, connection).catch(error => {
+      if (error instanceof SendTransactionError) {
+        // Check both message and logs
+        const errMessage = error?.transactionError?.message ?? error?.message ?? ''
+        const logs = error?.logs?.join(' ') ?? ''
+        const fullErrorText = `${errMessage} ${logs}`
+
+        for (const { pattern, message } of TRANSACTION_ERROR_MAP) {
+          if (pattern.test(fullErrorText)) {
+            throw new CommonSendTransactionError(message)
+          }
+        }
+      }
+
+      throw error
+    })
 
     await new Promise<void>(resolve => {
       const interval = setInterval(async () => {
@@ -273,7 +377,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       throw new Error(`RPC URL not found for chainId: ${params.chainId}`)
     }
 
-    const connection = this.connectionManager?.getConnection({
+    const connection = this.getConnection({
       address: params.address,
       connectorId: connector.id,
       connections: this.connections,
@@ -517,18 +621,49 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
   public async syncConnections({
     connectToFirstConnector,
-    caipNetwork,
-    getConnectorStorageInfo
+    caipNetwork
   }: AdapterBlueprint.SyncConnectionsParams) {
-    await this.connectionManager?.syncConnections({
-      connectors: this.connectors,
-      caipNetwork,
-      caipNetworks: this.getCaipNetworks(),
-      universalProvider: this.universalProvider as UniversalProvider,
-      onConnection: this.addConnection.bind(this),
-      onListenProvider: this.listenSolanaProviderEvents.bind(this),
-      getConnectionStatusInfo: getConnectorStorageInfo
-    })
+    await Promise.all(
+      this.connectors
+        .filter(c => {
+          const { hasDisconnected, hasConnected } = HelpersUtil.getConnectorStorageInfo(
+            c.id,
+            this.namespace as ChainNamespace
+          )
+
+          return !hasDisconnected && hasConnected
+        })
+        .map(async connector => {
+          if (connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT) {
+            const accounts = WcHelpersUtil.getWalletConnectAccounts(
+              this.universalProvider as UniversalProvider,
+              this.namespace as ChainNamespace
+            )
+
+            if (accounts.length > 0) {
+              this.addConnection({
+                connectorId: connector.id,
+                accounts: accounts.map(account => ({ address: account.address })),
+                caipNetwork
+              })
+            }
+          } else {
+            const address = await connector.connect({
+              chainId: caipNetwork?.id as string
+            })
+
+            if (address) {
+              this.addConnection({
+                connectorId: connector.id,
+                accounts: [{ address }],
+                caipNetwork
+              })
+
+              this.listenSolanaProviderEvents(connector.id, connector.provider as SolanaProvider)
+            }
+          }
+        })
+    )
 
     if (connectToFirstConnector) {
       this.emitFirstAvailableConnection()

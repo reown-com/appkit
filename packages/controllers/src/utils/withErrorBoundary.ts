@@ -7,12 +7,17 @@ export type Controller = Record<string, any>
 export class AppKitError extends Error {
   public category: TelemetryErrorCategory
   public originalError: unknown
+  public originalName = 'AppKitError'
 
   constructor(message: string, category: TelemetryErrorCategory, originalError?: unknown) {
     super(message)
     this.name = 'AppKitError'
     this.category = category
     this.originalError = originalError
+
+    if (originalError && originalError instanceof Error) {
+      this.originalName = originalError.name
+    }
 
     // Ensure `this instanceof AppKitError` is true, important for custom errors.
     Object.setPrototypeOf(this, AppKitError.prototype)
@@ -60,10 +65,30 @@ export class AppKitError extends Error {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function errorHandler(err: any, defaultCategory: TelemetryErrorCategory) {
-  const error =
-    err instanceof AppKitError
-      ? err
-      : new AppKitError(err instanceof Error ? err.message : String(err), defaultCategory, err)
+  let errMessage = ''
+
+  try {
+    if (err instanceof Error) {
+      errMessage = err.message
+    } else if (typeof err === 'string') {
+      errMessage = err
+    } else if (typeof err === 'object' && err !== null) {
+      if (Object.keys(err).length === 0) {
+        errMessage = 'Unknown error'
+      } else {
+        errMessage = err?.message || JSON.stringify(err)
+      }
+    } else {
+      errMessage = String(err)
+    }
+  } catch (_error) {
+    errMessage = 'Unknown error'
+
+    // eslint-disable-next-line no-console
+    console.error('Error parsing error message', _error)
+  }
+
+  const error = err instanceof AppKitError ? err : new AppKitError(errMessage, defaultCategory, err)
 
   TelemetryController.sendError(error, error.category)
   throw error

@@ -2,10 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
-  type AccountControllerState,
+  type AccountState,
   ApiController,
   BlockchainApiController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   ModalController
@@ -38,9 +38,9 @@ describe('AppKitCore', () => {
 
   describe('open', () => {
     beforeEach(() => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
         caipAddress: undefined
-      } as unknown as AccountControllerState)
+      } as unknown as AccountState)
     })
 
     it('should open modal when not connected', async () => {
@@ -113,6 +113,37 @@ describe('AppKitCore', () => {
       await appKit.syncIdentity(mockParams)
 
       expect(blockchainApiSpy).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('Subscribe methods return unsubscribe functions', () => {
+    beforeEach(() => {
+      appKit = new AppKit(mockOptions)
+    })
+
+    it('should return unsubscribe functions', () => {
+      expect(typeof appKit.subscribeProviders(() => {})).toBe('function')
+      expect(typeof appKit.subscribeTheme(() => {})).toBe('function')
+      expect(typeof appKit.subscribeConnections(() => {})).toBe('function')
+      expect(typeof appKit.subscribeAccount(() => {})).toBe('function')
+      expect(typeof appKit.subscribeNetwork(() => {})).toBe('function')
+      expect(typeof appKit.subscribeWalletInfo(() => {})).toBe('function')
+      expect(typeof appKit.subscribeShouldUpdateToAddress(() => {})).toBe('function')
+      expect(typeof appKit.subscribeCaipNetworkChange(() => {})).toBe('function')
+      expect(typeof appKit.subscribeState(() => {})).toBe('function')
+      expect(typeof appKit.subscribeRemoteFeatures(() => {})).toBe('function')
+      expect(typeof appKit.subscribeEvents(() => {})).toBe('function')
+    })
+
+    it('should call all unsubscribe functions in subscribeAccount', () => {
+      const mockUnsub = vi.fn()
+      vi.spyOn(ChainController, 'subscribe').mockReturnValue(mockUnsub)
+      vi.spyOn(ConnectorController, 'subscribe').mockReturnValue(mockUnsub)
+
+      const unsubscribe = appKit.subscribeAccount(() => {})
+      unsubscribe()
+
+      expect(mockUnsub).toHaveBeenCalledTimes(2)
     })
   })
 })

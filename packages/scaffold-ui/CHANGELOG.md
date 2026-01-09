@@ -1,5 +1,509 @@
 # @reown/appkit-scaffold-ui
 
+## 1.8.16
+
+### Patch Changes
+
+- [#5437](https://github.com/reown-com/appkit/pull/5437) [`e542ebd`](https://github.com/reown-com/appkit/commit/e542ebdbef99791f91ab000a257dac73f96fd81b) Thanks [@0xmkh](https://github.com/0xmkh)! - Fixed an issue where WalletConnect would not reconnect after page refresh when using multi-wallet
+
+- [#5423](https://github.com/reown-com/appkit/pull/5423) [`73d2b61`](https://github.com/reown-com/appkit/commit/73d2b616ec1e7a919e90e9fd7c8619aedf74475b) Thanks [@0xmkh](https://github.com/0xmkh)! - This update brings another level of upgrade to AppKit Pay and AppKit Deposit 🔥
+
+  - Users can pay with any token they choose, while the recipient always receives their preferred token through automatic swapping and bridging
+  - Implemented fee splitting between Reown and partners
+
+- [#5405](https://github.com/reown-com/appkit/pull/5405) [`c1954be`](https://github.com/reown-com/appkit/commit/c1954befd87a53fda56e9d93b82d31ccb5074aff) Thanks [@0xmkh](https://github.com/0xmkh)! - Fixed an issue where selecting Base Account incorrectly triggered the Coinbase Wallet extension connection instead of the Base Account SDK connection
+
+- Updated dependencies [[`e542ebd`](https://github.com/reown-com/appkit/commit/e542ebdbef99791f91ab000a257dac73f96fd81b), [`73d2b61`](https://github.com/reown-com/appkit/commit/73d2b616ec1e7a919e90e9fd7c8619aedf74475b), [`c1954be`](https://github.com/reown-com/appkit/commit/c1954befd87a53fda56e9d93b82d31ccb5074aff)]:
+  - @reown/appkit-utils@1.8.16
+  - @reown/appkit-common@1.8.16
+  - @reown/appkit-controllers@1.8.16
+  - @reown/appkit-pay@1.8.16
+  - @reown/appkit-ui@1.8.16
+  - @reown/appkit-wallet@1.8.16
+
+## 1.8.15
+
+### Patch Changes
+
+- [#5378](https://github.com/reown-com/appkit/pull/5378) [`2867bfd`](https://github.com/reown-com/appkit/commit/2867bfd3f06394e559b918d46dc379dd498d1abf) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where profile wallets tabs were shown in the wrong order
+
+- [#5364](https://github.com/reown-com/appkit/pull/5364) [`d186212`](https://github.com/reown-com/appkit/commit/d1862126d3b7da93b52b99a4d709656311926c34) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where wallet buttons were not working in the in-app wallet browser
+
+- [#5297](https://github.com/reown-com/appkit/pull/5297) [`e330f62`](https://github.com/reown-com/appkit/commit/e330f62532f95683ed69bdb0f4fef77f3039df30) Thanks [@enesozturk](https://github.com/enesozturk)! - Implements new `useAppKitWallets` hook to let users build custom connect user interfaces.
+
+  ### Features
+
+  - List, and connect with extension wallets.
+  - List, search and connect the WalletConnect wallets.
+  - Multi-chain.
+  - Multi-platform.
+
+  ### Examples
+
+  **Listing injected wallets:**
+
+  ```tsx
+  const { data } = useAppKitWallets()
+
+  const injectedWallets = data.filter(wallet => wallet.isInjected)
+
+  injectedWallets.map(wallet => {
+    return <WalletItem name={wallet.name} imageSrc={wallet.imageUrl} />
+  })
+  ```
+
+  **Listing WalletConnect wallets:**
+
+  ```tsx
+  const { data } = useAppKitWallets()
+
+  const wcWallets = data.filter(wallet => !wallet.isInjected)
+
+  wcWallets.map(wallet => {
+    return <WalletItem name={wallet.name} imageSrc={wallet.imageUrl} />
+  })
+  ```
+
+  **Connecting to a wallet:**
+
+  ```tsx
+  const { connect } = useAppKitWallets()
+  ...
+  await connect(wallet)
+  ```
+
+- Updated dependencies [[`2867bfd`](https://github.com/reown-com/appkit/commit/2867bfd3f06394e559b918d46dc379dd498d1abf), [`ecf1794`](https://github.com/reown-com/appkit/commit/ecf1794d555806e376ab2253b48ab2b185e85a10), [`d186212`](https://github.com/reown-com/appkit/commit/d1862126d3b7da93b52b99a4d709656311926c34), [`e330f62`](https://github.com/reown-com/appkit/commit/e330f62532f95683ed69bdb0f4fef77f3039df30)]:
+  - @reown/appkit-utils@1.8.15
+  - @reown/appkit-common@1.8.15
+  - @reown/appkit-controllers@1.8.15
+  - @reown/appkit-ui@1.8.15
+  - @reown/appkit-wallet@1.8.15
+
+## 1.8.14
+
+### Patch Changes
+
+- [#5180](https://github.com/reown-com/appkit/pull/5180) [`bd86560`](https://github.com/reown-com/appkit/commit/bd86560541de8a34696bb7deea6a405371b3db14) Thanks [@enesozturk](https://github.com/enesozturk)! - Add full support for the TON (The Open Network) blockchain to AppKit, enabling users to connect TON wallets and perform TON-specific operations within the new WalletConnect protocol and TonConnect protocol.
+
+  ## Examples
+
+  ### Create AppKit with TON adapter
+
+  ```
+  import { createAppKit } from '@reown/appkit'
+  import { ton, tonTestnet } from '@reown/appkit/networks'
+  import { TonAdapter } from '@reown/appkit-adapters-ton'
+
+  createAppKit({
+    ...,
+    networks: [ton, tonTestnet],
+    adapters: [new TonAdapter()]
+  })
+  ```
+
+  ### Use TON adapter
+
+  ```
+  const { address, isConnected } = useAppKitAccount({ namespace: "ton" })
+  ```
+
+  ### Multi-chain use cases
+
+  ```
+  const { open } = useAppKit()
+  const { disconnect } = useDisconnect()
+
+  // Open AppKit with only TON connectors
+  open({ namespace: 'ton' })
+
+  // Disconnect only TON namespace
+  disconnect({ namespace: 'ton' })
+  ```
+
+- [#5296](https://github.com/reown-com/appkit/pull/5296) [`bc4a961`](https://github.com/reown-com/appkit/commit/bc4a961b448cedd0a8485a2188549b413b4e6512) Thanks [@magiziz](https://github.com/magiziz)! - Improved wallet search to filter out non-walletconnect and walletconnect wallets based on platform and SDK type
+
+- Updated dependencies [[`bd86560`](https://github.com/reown-com/appkit/commit/bd86560541de8a34696bb7deea6a405371b3db14), [`1dab4e5`](https://github.com/reown-com/appkit/commit/1dab4e5bfc4bf2e5219824f85128d264cd220f2b), [`2a7ece7`](https://github.com/reown-com/appkit/commit/2a7ece7a1b8ea13fe6ff2d9da151e4b877da75a5), [`bc4a961`](https://github.com/reown-com/appkit/commit/bc4a961b448cedd0a8485a2188549b413b4e6512), [`b1d8373`](https://github.com/reown-com/appkit/commit/b1d8373224c946cfbed4a609f925330768e93469)]:
+  - @reown/appkit-utils@1.8.14
+  - @reown/appkit-controllers@1.8.14
+  - @reown/appkit-common@1.8.14
+  - @reown/appkit-ui@1.8.14
+  - @reown/appkit-wallet@1.8.14
+
+## 1.8.13
+
+### Patch Changes
+
+- Updated dependencies [[`90e476d`](https://github.com/reown-com/appkit/commit/90e476d49bdd6ad4cd2a2bbd9e18791c4855188b)]:
+  - @reown/appkit-controllers@1.8.13
+  - @reown/appkit-utils@1.8.13
+  - @reown/appkit-ui@1.8.13
+  - @reown/appkit-common@1.8.13
+  - @reown/appkit-wallet@1.8.13
+
+## 1.8.12
+
+### Patch Changes
+
+- [#5274](https://github.com/reown-com/appkit/pull/5274) [`100ee2b`](https://github.com/reown-com/appkit/commit/100ee2bf54f9036e72e5961300e0b3edb8089239) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where remote config endpoint was being called when using appkit core
+
+- [#5238](https://github.com/reown-com/appkit/pull/5238) [`c9ed02e`](https://github.com/reown-com/appkit/commit/c9ed02edd9149484e92407fa48219f7ac7e39568) Thanks [@tomiir](https://github.com/tomiir)! - Adds ability to configure custom SIWX signing behaviors by implementing a custom `SIWXSigner`
+
+- Updated dependencies [[`100ee2b`](https://github.com/reown-com/appkit/commit/100ee2bf54f9036e72e5961300e0b3edb8089239), [`c9ed02e`](https://github.com/reown-com/appkit/commit/c9ed02edd9149484e92407fa48219f7ac7e39568)]:
+  - @reown/appkit-utils@1.8.12
+  - @reown/appkit-common@1.8.12
+  - @reown/appkit-controllers@1.8.12
+  - @reown/appkit-ui@1.8.12
+  - @reown/appkit-wallet@1.8.12
+
+## 1.8.11
+
+### Patch Changes
+
+- [#5228](https://github.com/reown-com/appkit/pull/5228) [`6b543c3`](https://github.com/reown-com/appkit/commit/6b543c3c11d6839720d4bcbb7f93e19a065029c3) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixes an issue where the UI would show incorrect possibility to switch wallet in profile wallets view
+
+- [#5227](https://github.com/reown-com/appkit/pull/5227) [`0e17516`](https://github.com/reown-com/appkit/commit/0e175167afc7790ae1ed009c83076f3dd216d535) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixes an issue where it was possible to continue in the swap view with a token amount of 0
+
+- [#5224](https://github.com/reown-com/appkit/pull/5224) [`1a9f436`](https://github.com/reown-com/appkit/commit/1a9f4367f7b65f91dd4e75bd3d1d018e1be59718) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where declining a Discord connection would cause subsequent connections to fail.
+
+- [#5247](https://github.com/reown-com/appkit/pull/5247) [`99cc58b`](https://github.com/reown-com/appkit/commit/99cc58bb335a359b261eab18676fed13ea325bde) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes package version injecting when building packages
+
+- [#5240](https://github.com/reown-com/appkit/pull/5240) [`fbaaa96`](https://github.com/reown-com/appkit/commit/fbaaa96b29de7cf784a1c37c3811b35836c9806b) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where accessing deposit from exchange view while a deposit is in progress resulted in an automatic redirect to account view
+
+- [#5225](https://github.com/reown-com/appkit/pull/5225) [`fda02dc`](https://github.com/reown-com/appkit/commit/fda02dc9ee173ff34f604dc6b022f421bae44539) Thanks [@magiziz](https://github.com/magiziz)! - Added usage limit UI in AppKit that displays when limits are exceeded
+
+- Updated dependencies [[`6b543c3`](https://github.com/reown-com/appkit/commit/6b543c3c11d6839720d4bcbb7f93e19a065029c3), [`1a9f436`](https://github.com/reown-com/appkit/commit/1a9f4367f7b65f91dd4e75bd3d1d018e1be59718), [`99cc58b`](https://github.com/reown-com/appkit/commit/99cc58bb335a359b261eab18676fed13ea325bde), [`135b5c0`](https://github.com/reown-com/appkit/commit/135b5c0f6ab8e282861562ff11cf71b655d2f830), [`fda02dc`](https://github.com/reown-com/appkit/commit/fda02dc9ee173ff34f604dc6b022f421bae44539), [`2778f7d`](https://github.com/reown-com/appkit/commit/2778f7d5743789ceef4d95ba743f44d365626b75)]:
+  - @reown/appkit-ui@1.8.11
+  - @reown/appkit-controllers@1.8.11
+  - @reown/appkit-utils@1.8.11
+  - @reown/appkit-common@1.8.11
+  - @reown/appkit-wallet@1.8.11
+
+## 1.8.10
+
+### Patch Changes
+
+- [#5148](https://github.com/reown-com/appkit/pull/5148) [`bdce2c8`](https://github.com/reown-com/appkit/commit/bdce2c8dfa58bed7bd5f8114574c2db751e9bdd3) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where social login did not work with wallet button
+
+- [#5160](https://github.com/reown-com/appkit/pull/5160) [`561a215`](https://github.com/reown-com/appkit/commit/561a215f4455a87a5993aa4850e553bc596d75e7) Thanks [@devin-ai-integration](https://github.com/apps/devin-ai-integration)! - Improve QR code rendering performance and responsiveness:
+  - Remove 200ms timeout delay from QR code display for faster connection handshake
+  - Remove fixed sizing calculations and resize listener for better performance
+  - Use percentage-based SVG sizing (width="100%" height="100%") with viewBox for responsive scaling
+  - Set QR code generation to use fixed 500px matrix size for consistent quality
+- Updated dependencies [[`bdce2c8`](https://github.com/reown-com/appkit/commit/bdce2c8dfa58bed7bd5f8114574c2db751e9bdd3), [`561a215`](https://github.com/reown-com/appkit/commit/561a215f4455a87a5993aa4850e553bc596d75e7), [`069ccbf`](https://github.com/reown-com/appkit/commit/069ccbfe215838a523beb362ec18c8a45ab92709), [`17ea7b3`](https://github.com/reown-com/appkit/commit/17ea7b32d4cbfca07cc74eac7ee98bf640fadec2)]:
+  - @reown/appkit-controllers@1.8.10
+  - @reown/appkit-utils@1.8.10
+  - @reown/appkit-common@1.8.10
+  - @reown/appkit-ui@1.8.10
+  - @reown/appkit-wallet@1.8.10
+
+## 1.8.9
+
+### Patch Changes
+
+- [#5090](https://github.com/reown-com/appkit/pull/5090) [`a76c49d`](https://github.com/reown-com/appkit/commit/a76c49d82f831c5a2d112e4c7130bbd4f705b31a) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Add a param to AppKit to make it possible to render AppKit Core in fullscreen on mobile
+
+- [#5144](https://github.com/reown-com/appkit/pull/5144) [`0ec4969`](https://github.com/reown-com/appkit/commit/0ec49696487470b238f945997b11ea190380a93b) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates WALLET_IMPRESSIONS event to send impressions as array and adds displayIndex
+
+- [#5098](https://github.com/reown-com/appkit/pull/5098) [`10cfb56`](https://github.com/reown-com/appkit/commit/10cfb56fc940e6d0371918ba8fb8f29692523fc0) Thanks [@magiziz](https://github.com/magiziz)! - Added `getDisabledCaipNetworks` to AppKit to get disabled caip networks
+
+- Updated dependencies [[`6ba0dac`](https://github.com/reown-com/appkit/commit/6ba0dac506cbd4457034a13067207c5c6231e853), [`a76c49d`](https://github.com/reown-com/appkit/commit/a76c49d82f831c5a2d112e4c7130bbd4f705b31a), [`0ec4969`](https://github.com/reown-com/appkit/commit/0ec49696487470b238f945997b11ea190380a93b), [`10cfb56`](https://github.com/reown-com/appkit/commit/10cfb56fc940e6d0371918ba8fb8f29692523fc0)]:
+  - @reown/appkit-utils@1.8.9
+  - @reown/appkit-controllers@1.8.9
+  - @reown/appkit-common@1.8.9
+  - @reown/appkit-ui@1.8.9
+  - @reown/appkit-wallet@1.8.9
+
+## 1.8.8
+
+### Patch Changes
+
+- [#5079](https://github.com/reown-com/appkit/pull/5079) [`511a735`](https://github.com/reown-com/appkit/commit/511a73590a834a6f81bda675d9a740a4d61924d7) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the universal provider threw a random object error when the wallet rejected connection request
+
+- [`a07270d`](https://github.com/reown-com/appkit/commit/a07270d862717bb6b46f93b09bb073ffd7e15035) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Add a param to AppKit to make it possible to render AppKit Core in fullscreen on mobile
+
+- [#5076](https://github.com/reown-com/appkit/pull/5076) [`10c029a`](https://github.com/reown-com/appkit/commit/10c029acd4fb16d0700823e6afaef095087ec247) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixes an issue where the activity tab was not showing the correct data
+
+- [#5089](https://github.com/reown-com/appkit/pull/5089) [`561bf6b`](https://github.com/reown-com/appkit/commit/561bf6b84719b3dca3bf6db657bc6b5ef4e978ce) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixed an issue where doing a DWE transaction didn't show any status
+
+- [#5078](https://github.com/reown-com/appkit/pull/5078) [`a0a1589`](https://github.com/reown-com/appkit/commit/a0a1589acfe3e92030fd85589fab961e4ea85b1d) Thanks [@magiziz](https://github.com/magiziz)! - Added chain image to token button component for the deposit from exchange view
+
+- [#4959](https://github.com/reown-com/appkit/pull/4959) [`5725b51`](https://github.com/reown-com/appkit/commit/5725b5100ba71bba47173dc5f6318cb857afec9d) Thanks [@magiziz](https://github.com/magiziz)! - Improved the send flow with improved design and added top-up options for users with insufficient token balances
+
+- [#5074](https://github.com/reown-com/appkit/pull/5074) [`216596d`](https://github.com/reown-com/appkit/commit/216596d01128aca0629346b75ac256ea3db7a391) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where the wallets would show a small glitch when rendering the connectors
+
+- Updated dependencies [[`511a735`](https://github.com/reown-com/appkit/commit/511a73590a834a6f81bda675d9a740a4d61924d7), [`a07270d`](https://github.com/reown-com/appkit/commit/a07270d862717bb6b46f93b09bb073ffd7e15035), [`10c029a`](https://github.com/reown-com/appkit/commit/10c029acd4fb16d0700823e6afaef095087ec247), [`a0a1589`](https://github.com/reown-com/appkit/commit/a0a1589acfe3e92030fd85589fab961e4ea85b1d), [`5725b51`](https://github.com/reown-com/appkit/commit/5725b5100ba71bba47173dc5f6318cb857afec9d), [`216596d`](https://github.com/reown-com/appkit/commit/216596d01128aca0629346b75ac256ea3db7a391)]:
+  - @reown/appkit-controllers@1.8.8
+  - @reown/appkit-utils@1.8.8
+  - @reown/appkit-common@1.8.8
+  - @reown/appkit-ui@1.8.8
+  - @reown/appkit-wallet@1.8.8
+
+## 1.8.7
+
+### Patch Changes
+
+- [#5043](https://github.com/reown-com/appkit/pull/5043) [`1fe278b`](https://github.com/reown-com/appkit/commit/1fe278b757e08660dffb1fc2fae64ad34be04db4) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the `useAppKitConnection` hook returned `null` when wallet is disconnected
+
+- [`a36fa66`](https://github.com/reown-com/appkit/commit/a36fa66aa9a589d538f7f7990ffec0bde5fedec6) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixes an issue where the activity tab was not showing the correct data
+
+- [#5006](https://github.com/reown-com/appkit/pull/5006) [`0bb4ee5`](https://github.com/reown-com/appkit/commit/0bb4ee5e94b8743b9102327e487d055197cb6040) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue where new connection doesn't disconnect previous connection when multi-wallet not enabled
+
+- [#5006](https://github.com/reown-com/appkit/pull/5006) [`0bb4ee5`](https://github.com/reown-com/appkit/commit/0bb4ee5e94b8743b9102327e487d055197cb6040) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue where disconnecting single connector disconnects all when multi-wallet enabled
+
+- [#5040](https://github.com/reown-com/appkit/pull/5040) [`d7b0555`](https://github.com/reown-com/appkit/commit/d7b05552367a097ef28430ec67aab454fe7e914d) Thanks [@tomiir](https://github.com/tomiir)! - Removes `enableWalletConnect` flag
+
+- [#5051](https://github.com/reown-com/appkit/pull/5051) [`b241eb7`](https://github.com/reown-com/appkit/commit/b241eb734612a8286f45fc8e3f093761fbbffeb7) Thanks [@tomiir](https://github.com/tomiir)! - Implements multiple improvements on Deposit from Exchange screen:
+
+  - Increases font size for USD value
+  - Increases button sizes for token selection and amount preset selection
+  - Removes background foreground override in token selection screen
+  - Changes Deposit from Exchange menu icon
+
+- [#5047](https://github.com/reown-com/appkit/pull/5047) [`56fd94f`](https://github.com/reown-com/appkit/commit/56fd94f6e20d9986246716cdb6c90f33e44b8107) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue on socials not properly connecting due to state listeners
+
+- [#5028](https://github.com/reown-com/appkit/pull/5028) [`090dbb5`](https://github.com/reown-com/appkit/commit/090dbb53dce58663f6a025d360156ab38c76f886) Thanks [@magiziz](https://github.com/magiziz)! - Removed NFTs tab from account modal view
+
+- [#4937](https://github.com/reown-com/appkit/pull/4937) [`d2644de`](https://github.com/reown-com/appkit/commit/d2644de2a58940ed392b826c72defb1f24551462) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixes an issue where switching tokens in swap view causes unexpected errors
+
+- [#5048](https://github.com/reown-com/appkit/pull/5048) [`9b2154c`](https://github.com/reown-com/appkit/commit/9b2154c069c554a45ed0f155bdda096f03d6649c) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the `publicKey` was returning `undefined` when connecting with the OKX Bitcoin wallet
+
+- [#5065](https://github.com/reown-com/appkit/pull/5065) [`fde8e5d`](https://github.com/reown-com/appkit/commit/fde8e5d6b0145b1729316ad03d9e9b18fdaf0b97) Thanks [@github-actions](https://github.com/apps/github-actions)! - Fix an issue where the wallets would show a small glitch when rendering the connectors
+
+- [#5021](https://github.com/reown-com/appkit/pull/5021) [`05ed5d2`](https://github.com/reown-com/appkit/commit/05ed5d231e53622dde33ecf66e694d85ad411e65) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where a `SEND_ERROR` event was logged when a user rejected a transaction. It now logs a `SEND_REJECTED` event instead
+
+- Updated dependencies [[`1fe278b`](https://github.com/reown-com/appkit/commit/1fe278b757e08660dffb1fc2fae64ad34be04db4), [`a36fa66`](https://github.com/reown-com/appkit/commit/a36fa66aa9a589d538f7f7990ffec0bde5fedec6), [`0bb4ee5`](https://github.com/reown-com/appkit/commit/0bb4ee5e94b8743b9102327e487d055197cb6040), [`0bb4ee5`](https://github.com/reown-com/appkit/commit/0bb4ee5e94b8743b9102327e487d055197cb6040), [`d7b0555`](https://github.com/reown-com/appkit/commit/d7b05552367a097ef28430ec67aab454fe7e914d), [`b241eb7`](https://github.com/reown-com/appkit/commit/b241eb734612a8286f45fc8e3f093761fbbffeb7), [`090dbb5`](https://github.com/reown-com/appkit/commit/090dbb53dce58663f6a025d360156ab38c76f886), [`d2644de`](https://github.com/reown-com/appkit/commit/d2644de2a58940ed392b826c72defb1f24551462), [`c876cde`](https://github.com/reown-com/appkit/commit/c876cde9b09b5e087055dcfd1c4bd504a72cc138), [`9b2154c`](https://github.com/reown-com/appkit/commit/9b2154c069c554a45ed0f155bdda096f03d6649c), [`fde8e5d`](https://github.com/reown-com/appkit/commit/fde8e5d6b0145b1729316ad03d9e9b18fdaf0b97), [`05ed5d2`](https://github.com/reown-com/appkit/commit/05ed5d231e53622dde33ecf66e694d85ad411e65)]:
+  - @reown/appkit-utils@1.8.7
+  - @reown/appkit-common@1.8.7
+  - @reown/appkit-controllers@1.8.7
+  - @reown/appkit-ui@1.8.7
+  - @reown/appkit-wallet@1.8.7
+
+## 1.8.6
+
+### Patch Changes
+
+- [#5030](https://github.com/reown-com/appkit/pull/5030) [`a6779f5`](https://github.com/reown-com/appkit/commit/a6779f5143e1f788450814efcf5beadf8573214a) Thanks [@magiziz](https://github.com/magiziz)! - Added `walletRank` property to the `CONNECT_SUCCESS` event and created a new `@appkit/recent_wallet` local storage key to track the most recently connected wallet
+
+- [#5024](https://github.com/reown-com/appkit/pull/5024) [`a3582c2`](https://github.com/reown-com/appkit/commit/a3582c22e5b761d0412bdc51322c070717ae77bb) Thanks [@tomiir](https://github.com/tomiir)! - Adds main view wallet sorting according to wallet-rank. Adds wallet-rank to main view impression events
+
+- [#5024](https://github.com/reown-com/appkit/pull/5024) [`a3582c2`](https://github.com/reown-com/appkit/commit/a3582c22e5b761d0412bdc51322c070717ae77bb) Thanks [@tomiir](https://github.com/tomiir)! - Emits GET_WALLET event when selecting a wallet to download on w3m-downloads-view
+
+- [#4936](https://github.com/reown-com/appkit/pull/4936) [`0bf1921`](https://github.com/reown-com/appkit/commit/0bf192130f857d395135e5d740328fd1419412bd) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Enhanced connection UX by allowing scanning of QR code with main device camera and prompting the target wallet
+
+- Updated dependencies [[`a6779f5`](https://github.com/reown-com/appkit/commit/a6779f5143e1f788450814efcf5beadf8573214a), [`a3582c2`](https://github.com/reown-com/appkit/commit/a3582c22e5b761d0412bdc51322c070717ae77bb), [`a3582c2`](https://github.com/reown-com/appkit/commit/a3582c22e5b761d0412bdc51322c070717ae77bb), [`0bf1921`](https://github.com/reown-com/appkit/commit/0bf192130f857d395135e5d740328fd1419412bd)]:
+  - @reown/appkit-controllers@1.8.6
+  - @reown/appkit-common@1.8.6
+  - @reown/appkit-utils@1.8.6
+  - @reown/appkit-ui@1.8.6
+  - @reown/appkit-wallet@1.8.6
+
+## 1.8.5
+
+### Patch Changes
+
+- [#4994](https://github.com/reown-com/appkit/pull/4994) [`7050573`](https://github.com/reown-com/appkit/commit/70505730b24293f6f5fedee855e1b852828fe689) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates error events to send message property
+
+- [#5004](https://github.com/reown-com/appkit/pull/5004) [`21f7512`](https://github.com/reown-com/appkit/commit/21f7512914f525f9a55b718cc7c2f4b08e7e7cfa) Thanks [@magiziz](https://github.com/magiziz)! - Added new functionality that allows users to manually edit the deposit amount on the deposit from exchange screen
+
+- [#4982](https://github.com/reown-com/appkit/pull/4982) [`f58c0b4`](https://github.com/reown-com/appkit/commit/f58c0b4d39883ff2bd04eefc6b3b9eb05a6b7bb6) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the question mark icon in the header was not displayed correctly
+
+- [#4992](https://github.com/reown-com/appkit/pull/4992) [`2d27d48`](https://github.com/reown-com/appkit/commit/2d27d480f761e697a14929ba0c687187fd624c3d) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where upon user connection rejection a `CONNECT_ERROR` event was logged. It now logs a new event error called `USER_REJECTED`
+
+- Updated dependencies [[`adc15e2`](https://github.com/reown-com/appkit/commit/adc15e28f5224b8d2da5734c978f25597e993123), [`7050573`](https://github.com/reown-com/appkit/commit/70505730b24293f6f5fedee855e1b852828fe689), [`596c364`](https://github.com/reown-com/appkit/commit/596c3649766975683169e41337e7cd457f57da27), [`21f7512`](https://github.com/reown-com/appkit/commit/21f7512914f525f9a55b718cc7c2f4b08e7e7cfa), [`13700b8`](https://github.com/reown-com/appkit/commit/13700b8a007245bcee3795fbc984ea4ce9a6a51f), [`f58c0b4`](https://github.com/reown-com/appkit/commit/f58c0b4d39883ff2bd04eefc6b3b9eb05a6b7bb6), [`2d27d48`](https://github.com/reown-com/appkit/commit/2d27d480f761e697a14929ba0c687187fd624c3d)]:
+  - @reown/appkit-utils@1.8.5
+  - @reown/appkit-controllers@1.8.5
+  - @reown/appkit-ui@1.8.5
+  - @reown/appkit-common@1.8.5
+  - @reown/appkit-wallet@1.8.5
+
+## 1.8.4
+
+### Patch Changes
+
+- [#4979](https://github.com/reown-com/appkit/pull/4979) [`75dfdbd`](https://github.com/reown-com/appkit/commit/75dfdbda65d1a6d491a866015669da39e013a810) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where using the `open` function with send arguments and attempting to switch networks did not throw, causing the network state to become inconsistent
+
+- [#4965](https://github.com/reown-com/appkit/pull/4965) [`120b141`](https://github.com/reown-com/appkit/commit/120b1410986c787af0ae15094b02adfee8621efd) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the wallet icon from the SIWX screen was not properly rendered on Safari
+
+- [`8e051a4`](https://github.com/reown-com/appkit/commit/8e051a431fbc6d2d386ceb3c1d2764991b0aece1) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the question mark icon in the header was not displayed correctly
+
+- [#4968](https://github.com/reown-com/appkit/pull/4968) [`504fe04`](https://github.com/reown-com/appkit/commit/504fe04237e8213a39bc7dce42db6175829f38b3) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the send input field did not include number pattern validation when typing characters
+
+- [#4962](https://github.com/reown-com/appkit/pull/4962) [`197dcbf`](https://github.com/reown-com/appkit/commit/197dcbf7a0d1ff89e1e820766714cef2acf1eb17) Thanks [@magiziz](https://github.com/magiziz)! - Added send arguments to `open` function to customize the send flow experience by pre-configuring the token, amount, chain, and recipient address
+
+- Updated dependencies [[`75dfdbd`](https://github.com/reown-com/appkit/commit/75dfdbda65d1a6d491a866015669da39e013a810), [`18ca455`](https://github.com/reown-com/appkit/commit/18ca455e2795ac3f9eb2b91d65d4e729c3b101af), [`120b141`](https://github.com/reown-com/appkit/commit/120b1410986c787af0ae15094b02adfee8621efd), [`8e051a4`](https://github.com/reown-com/appkit/commit/8e051a431fbc6d2d386ceb3c1d2764991b0aece1), [`504fe04`](https://github.com/reown-com/appkit/commit/504fe04237e8213a39bc7dce42db6175829f38b3), [`197dcbf`](https://github.com/reown-com/appkit/commit/197dcbf7a0d1ff89e1e820766714cef2acf1eb17)]:
+  - @reown/appkit-controllers@1.8.4
+  - @reown/appkit-utils@1.8.4
+  - @reown/appkit-common@1.8.4
+  - @reown/appkit-ui@1.8.4
+  - @reown/appkit-wallet@1.8.4
+
+## 1.8.3
+
+### Patch Changes
+
+- [#4607](https://github.com/reown-com/appkit/pull/4607) [`c44d696`](https://github.com/reown-com/appkit/commit/c44d69607496e723c37664a25e306f5563846ece) Thanks [@enesozturk](https://github.com/enesozturk)! - Moves `useAppKitProvider` and `ProviderUtil` to `controllers` package, upgrades Valtio versions
+
+- [#4872](https://github.com/reown-com/appkit/pull/4872) [`8ba484f`](https://github.com/reown-com/appkit/commit/8ba484fa97d2da0ca721b05407a4cc439437e16f) Thanks [@zoruka](https://github.com/zoruka)! - Fix filtering of wallets on ApiController to allow webapp wallets in mobile.
+
+- [#4950](https://github.com/reown-com/appkit/pull/4950) [`756a3ee`](https://github.com/reown-com/appkit/commit/756a3eefe6cb075db1582df6cc7ca3456403a158) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Implemented batching for pulse api analytics
+
+- [#4921](https://github.com/reown-com/appkit/pull/4921) [`7495de9`](https://github.com/reown-com/appkit/commit/7495de95e8eea1b54734a25965b43a9f926f28e7) Thanks [@enesozturk](https://github.com/enesozturk)! - Prevent calling SELECT_WALLET event to be trigerred for AppKit Core
+
+- [#4963](https://github.com/reown-com/appkit/pull/4963) [`15f9cd2`](https://github.com/reown-com/appkit/commit/15f9cd238e545bbb4269230637f0d960d6df0ff5) Thanks [@tomiir](https://github.com/tomiir)! - Increases amount of displayed explorer api wallets in main screen to 4. Updates rendering logic to display explorer wallets alongside featured and custom wallets instead of hiding explorer wallets if these wallets were present.
+
+- [#4941](https://github.com/reown-com/appkit/pull/4941) [`721bfcf`](https://github.com/reown-com/appkit/commit/721bfcf90e5d5e7d425d989f3e9a313373e40747) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where funding from the exchange did not work on the first attempt
+
+- [#4957](https://github.com/reown-com/appkit/pull/4957) [`5595d17`](https://github.com/reown-com/appkit/commit/5595d1785821170e301ea4966994419a4cbb21cc) Thanks [@magiziz](https://github.com/magiziz)! - Replaced "deposit from an exchange" to "deposit from exchange" in appkit header
+
+- [#4934](https://github.com/reown-com/appkit/pull/4934) [`6e465c5`](https://github.com/reown-com/appkit/commit/6e465c5f6aaf10c64bc99968f4d3970ecb77831e) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where Solana token-2022 token transfers failed because the send flow used legacy transfer instructions
+
+- [#4920](https://github.com/reown-com/appkit/pull/4920) [`5ab0dda`](https://github.com/reown-com/appkit/commit/5ab0ddab81b9d07a3103b8776ee1aa5c1278ff80) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where changing the z-index in ThemeVariables didn't work properly
+
+- Updated dependencies [[`c44d696`](https://github.com/reown-com/appkit/commit/c44d69607496e723c37664a25e306f5563846ece), [`8ba484f`](https://github.com/reown-com/appkit/commit/8ba484fa97d2da0ca721b05407a4cc439437e16f), [`756a3ee`](https://github.com/reown-com/appkit/commit/756a3eefe6cb075db1582df6cc7ca3456403a158), [`721bfcf`](https://github.com/reown-com/appkit/commit/721bfcf90e5d5e7d425d989f3e9a313373e40747), [`5595d17`](https://github.com/reown-com/appkit/commit/5595d1785821170e301ea4966994419a4cbb21cc), [`99ead12`](https://github.com/reown-com/appkit/commit/99ead12c31d8f591d16e798f229fae84dce5faaa), [`6e465c5`](https://github.com/reown-com/appkit/commit/6e465c5f6aaf10c64bc99968f4d3970ecb77831e), [`5ab0dda`](https://github.com/reown-com/appkit/commit/5ab0ddab81b9d07a3103b8776ee1aa5c1278ff80), [`df63af5`](https://github.com/reown-com/appkit/commit/df63af568507892398a55bc7eb31e37606dac3da)]:
+  - @reown/appkit-utils@1.8.3
+  - @reown/appkit-common@1.8.3
+  - @reown/appkit-controllers@1.8.3
+  - @reown/appkit-ui@1.8.3
+  - @reown/appkit-wallet@1.8.3
+
+## 1.8.2
+
+### Patch Changes
+
+- [#4911](https://github.com/reown-com/appkit/pull/4911) [`2f67cb8`](https://github.com/reown-com/appkit/commit/2f67cb800e99c09a85e89ba7f6dc38486305120a) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix several styling issues when used with AppKit CDN
+
+- [#4917](https://github.com/reown-com/appkit/pull/4917) [`d412fdb`](https://github.com/reown-com/appkit/commit/d412fdbe4a10583844fc19fa5dae364a7e92a9ca) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix an issue where there would be incorrect loading skeletons on mobile environments in the all wallets list due to incorrect count value
+
+- [#4923](https://github.com/reown-com/appkit/pull/4923) [`b6adfdc`](https://github.com/reown-com/appkit/commit/b6adfdc1713daefb63393d9fa3a2cb2e31ba00e2) Thanks [@github-actions](https://github.com/apps/github-actions)! - Fixed an issue where Solana token-2022 token transfers failed because the send flow used legacy transfer instructions
+
+- [#4923](https://github.com/reown-com/appkit/pull/4923) [`7fab812`](https://github.com/reown-com/appkit/commit/7fab812a0e796d52332fc38cdbd57ea020d46713) Thanks [@github-actions](https://github.com/apps/github-actions)! - Fix an issue where changing the z-index in ThemeVariables didn't work properly
+
+- Updated dependencies [[`2f67cb8`](https://github.com/reown-com/appkit/commit/2f67cb800e99c09a85e89ba7f6dc38486305120a), [`d412fdb`](https://github.com/reown-com/appkit/commit/d412fdbe4a10583844fc19fa5dae364a7e92a9ca), [`b6adfdc`](https://github.com/reown-com/appkit/commit/b6adfdc1713daefb63393d9fa3a2cb2e31ba00e2), [`7fab812`](https://github.com/reown-com/appkit/commit/7fab812a0e796d52332fc38cdbd57ea020d46713)]:
+  - @reown/appkit-ui@1.8.2
+  - @reown/appkit-controllers@1.8.2
+  - @reown/appkit-utils@1.8.2
+  - @reown/appkit-common@1.8.2
+  - @reown/appkit-wallet@1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- [#4891](https://github.com/reown-com/appkit/pull/4891) [`01283a8`](https://github.com/reown-com/appkit/commit/01283a82083a25108665f1d8e5c02194ed5e57e3) Thanks [@magiziz](https://github.com/magiziz)! - Added bitcoin signet network
+
+- [`85f8403`](https://github.com/reown-com/appkit/commit/85f84031748af811eaee7d85fbae803c51eb5e11) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix several styling issues when used with AppKit CDN
+
+- [#4892](https://github.com/reown-com/appkit/pull/4892) [`58a66f1`](https://github.com/reown-com/appkit/commit/58a66f1687c8ad7a84ab7aeac9a36a9b2314c885) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where `authConnector` was always included in wagmi config when email and social login were disabled
+
+- Updated dependencies [[`01283a8`](https://github.com/reown-com/appkit/commit/01283a82083a25108665f1d8e5c02194ed5e57e3), [`85f8403`](https://github.com/reown-com/appkit/commit/85f84031748af811eaee7d85fbae803c51eb5e11), [`477eea4`](https://github.com/reown-com/appkit/commit/477eea454add184bc9b5778a0ba46215efee7ede), [`58a66f1`](https://github.com/reown-com/appkit/commit/58a66f1687c8ad7a84ab7aeac9a36a9b2314c885), [`763a4f7`](https://github.com/reown-com/appkit/commit/763a4f7c84c96b9b03258de4f4fcf6764d35c7e8)]:
+  - @reown/appkit-utils@1.8.1
+  - @reown/appkit-common@1.8.1
+  - @reown/appkit-controllers@1.8.1
+  - @reown/appkit-ui@1.8.1
+  - @reown/appkit-wallet@1.8.1
+
+## 1.8.0
+
+### Patch Changes
+
+- [#4890](https://github.com/reown-com/appkit/pull/4890) [`0840d47`](https://github.com/reown-com/appkit/commit/0840d475e721fba14cd8adc32410c7d9b4804c6e) Thanks [@tomiir](https://github.com/tomiir)! - Adds token selection on fund from exchange flow. Fixes issues related to exchanges not supporting specific tokens.
+
+- [#4841](https://github.com/reown-com/appkit/pull/4841) [`aae952a`](https://github.com/reown-com/appkit/commit/aae952a94468307125f46479d8ec41fe609679bc) Thanks [@magiziz](https://github.com/magiziz)! - Improved "Fund Wallet" flow by adding validation checks from remote config
+
+- [#4877](https://github.com/reown-com/appkit/pull/4877) [`530ccda`](https://github.com/reown-com/appkit/commit/530ccda64543ebc32906b0dfc708d8ede96a08ba) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where users could not send SPL solana tokens through the send flow
+
+- [#4886](https://github.com/reown-com/appkit/pull/4886) [`362c203`](https://github.com/reown-com/appkit/commit/362c20314c788245a05f087bbbf19a84da24a897) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where bitcoin walletconnect signing requests did not include the correct user address
+
+- [#4867](https://github.com/reown-com/appkit/pull/4867) [`104528d`](https://github.com/reown-com/appkit/commit/104528d53b7066ec52b8dba5cd6edbfce0385957) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Implemented clean up of open rpc requests send to embedded wallet when the request is responded to.
+
+- Updated dependencies [[`105c370`](https://github.com/reown-com/appkit/commit/105c37090641b211c1f155bddb36339f2a957039), [`0840d47`](https://github.com/reown-com/appkit/commit/0840d475e721fba14cd8adc32410c7d9b4804c6e), [`aae952a`](https://github.com/reown-com/appkit/commit/aae952a94468307125f46479d8ec41fe609679bc), [`530ccda`](https://github.com/reown-com/appkit/commit/530ccda64543ebc32906b0dfc708d8ede96a08ba), [`362c203`](https://github.com/reown-com/appkit/commit/362c20314c788245a05f087bbbf19a84da24a897), [`104528d`](https://github.com/reown-com/appkit/commit/104528d53b7066ec52b8dba5cd6edbfce0385957)]:
+  - @reown/appkit-ui@1.8.0
+  - @reown/appkit-utils@1.8.0
+  - @reown/appkit-common@1.8.0
+  - @reown/appkit-controllers@1.8.0
+  - @reown/appkit-wallet@1.8.0
+
+## 1.7.20
+
+### Patch Changes
+
+- [#4803](https://github.com/reown-com/appkit/pull/4803) [`bd813fb`](https://github.com/reown-com/appkit/commit/bd813fb4e827a43ecdacbf4b3cf7dc8ce84754b2) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the OKX Wallet extension was not detected when using wallet button
+
+- [#4848](https://github.com/reown-com/appkit/pull/4848) [`e040633`](https://github.com/reown-com/appkit/commit/e0406337b25b68dd8a774de099324c8edabc140f) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where cancelling SIWX message signing did not restore the previous connected network state when using social or email login
+
+- [#4836](https://github.com/reown-com/appkit/pull/4836) [`a3ea12d`](https://github.com/reown-com/appkit/commit/a3ea12de7640f6a40967964b8080a15c72a8e03b) Thanks [@tomiir](https://github.com/tomiir)! - Emits connection success events on reconnection
+
+- [#4753](https://github.com/reown-com/appkit/pull/4753) [`0f32a68`](https://github.com/reown-com/appkit/commit/0f32a682ac4daa704bf39c932c38f92ee97e2318) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Moved the `ux by reown` in qr basic view under the `All Wallets` button
+
+- [#4798](https://github.com/reown-com/appkit/pull/4798) [`ce475a4`](https://github.com/reown-com/appkit/commit/ce475a43d29752a4cb6370caa2c07815456aa38d) Thanks [@tomiir](https://github.com/tomiir)! - Adds deposit from exchange view, allowing users to fund their wallets from a CEX account
+
+- [#4821](https://github.com/reown-com/appkit/pull/4821) [`c8f202b`](https://github.com/reown-com/appkit/commit/c8f202bcba777f3fc38aff6618ef4bd0e19fce2b) Thanks [@magiziz](https://github.com/magiziz)! - Introduced checksum address conversion when connecting to wallets
+
+- [#4787](https://github.com/reown-com/appkit/pull/4787) [`8411cf9`](https://github.com/reown-com/appkit/commit/8411cf984c6b46cbd7f205233205bf960be5bc1e) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Fixed a bug in the UP handler where it wasn't subscribing to `accountsChanged` events
+
+- [#4806](https://github.com/reown-com/appkit/pull/4806) [`fe60caa`](https://github.com/reown-com/appkit/commit/fe60caa73f218c85521ace9825f593a2862f96c4) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where errors thrown by controllers were not serialized properly
+
+- [#4819](https://github.com/reown-com/appkit/pull/4819) [`d4eeff9`](https://github.com/reown-com/appkit/commit/d4eeff99b649cea9c9bfe6cb8bc590e40c2978bf) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where rejecting a connection request from a mobile wallet would not redirect back to the previous screen to allow re-initiating the connection
+
+- [#4828](https://github.com/reown-com/appkit/pull/4828) [`5274c54`](https://github.com/reown-com/appkit/commit/5274c54ac5fd5d18dc553333ad0f69305944221c) Thanks [@zoruka](https://github.com/zoruka)! - Add better error message when reown authentication is not enabled
+
+- [#4836](https://github.com/reown-com/appkit/pull/4836) [`a3ea12d`](https://github.com/reown-com/appkit/commit/a3ea12de7640f6a40967964b8080a15c72a8e03b) Thanks [@tomiir](https://github.com/tomiir)! - Enables connection success events regardless of config
+
+- [#4817](https://github.com/reown-com/appkit/pull/4817) [`b0fe149`](https://github.com/reown-com/appkit/commit/b0fe1499bc24b31d0be8188f907b5daf42a9b10f) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where using `<w3m-button>` with multichain didn't reflect the latest state changes and fixed send flow issues on solana when using multichain
+
+- [#4787](https://github.com/reown-com/appkit/pull/4787) [`8411cf9`](https://github.com/reown-com/appkit/commit/8411cf984c6b46cbd7f205233205bf960be5bc1e) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Updated `@walletconnect` deps to `2.21.7`
+
+- [#4750](https://github.com/reown-com/appkit/pull/4750) [`cd762e8`](https://github.com/reown-com/appkit/commit/cd762e8f8c8100d31df1578372def3ce02d31919) Thanks [@zoruka](https://github.com/zoruka)! - Move ReownAuthentication class into @reown/appkit-controllers package and implementing an easy integration through AppKit features and remote features.
+
+- Updated dependencies [[`bd813fb`](https://github.com/reown-com/appkit/commit/bd813fb4e827a43ecdacbf4b3cf7dc8ce84754b2), [`e040633`](https://github.com/reown-com/appkit/commit/e0406337b25b68dd8a774de099324c8edabc140f), [`a3ea12d`](https://github.com/reown-com/appkit/commit/a3ea12de7640f6a40967964b8080a15c72a8e03b), [`0f32a68`](https://github.com/reown-com/appkit/commit/0f32a682ac4daa704bf39c932c38f92ee97e2318), [`ce475a4`](https://github.com/reown-com/appkit/commit/ce475a43d29752a4cb6370caa2c07815456aa38d), [`dd8479d`](https://github.com/reown-com/appkit/commit/dd8479d6ed902a96aa9de0bbd7a64f64139a3a0c), [`c8f202b`](https://github.com/reown-com/appkit/commit/c8f202bcba777f3fc38aff6618ef4bd0e19fce2b), [`8411cf9`](https://github.com/reown-com/appkit/commit/8411cf984c6b46cbd7f205233205bf960be5bc1e), [`fe60caa`](https://github.com/reown-com/appkit/commit/fe60caa73f218c85521ace9825f593a2862f96c4), [`d4eeff9`](https://github.com/reown-com/appkit/commit/d4eeff99b649cea9c9bfe6cb8bc590e40c2978bf), [`5274c54`](https://github.com/reown-com/appkit/commit/5274c54ac5fd5d18dc553333ad0f69305944221c), [`a3ea12d`](https://github.com/reown-com/appkit/commit/a3ea12de7640f6a40967964b8080a15c72a8e03b), [`b0fe149`](https://github.com/reown-com/appkit/commit/b0fe1499bc24b31d0be8188f907b5daf42a9b10f), [`a6335d3`](https://github.com/reown-com/appkit/commit/a6335d370fc9f7e343f6a3c2b61f1a465cdf73e4), [`8411cf9`](https://github.com/reown-com/appkit/commit/8411cf984c6b46cbd7f205233205bf960be5bc1e), [`cd762e8`](https://github.com/reown-com/appkit/commit/cd762e8f8c8100d31df1578372def3ce02d31919)]:
+  - @reown/appkit-utils@1.7.20
+  - @reown/appkit-common@1.7.20
+  - @reown/appkit-controllers@1.7.20
+  - @reown/appkit-ui@1.7.20
+  - @reown/appkit-wallet@1.7.20
+
+## 1.7.19
+
+### Patch Changes
+
+- [#4763](https://github.com/reown-com/appkit/pull/4763) [`769f625`](https://github.com/reown-com/appkit/commit/769f6259a764330f8adb112385ee0a9b44766bcf) Thanks [@enesozturk](https://github.com/enesozturk)! - Improves name validation and sanitization for Reown name registiration
+
+- [#4747](https://github.com/reown-com/appkit/pull/4747) [`cbe17ff`](https://github.com/reown-com/appkit/commit/cbe17ffc0a4a7d8aa8ba9471f02d09f005629d0a) Thanks [@ganchoradkov](https://github.com/ganchoradkov)! - Removed custom logic from EVM adapters that gets `capabilities` from `sessionProperties` as this resposibility should be delegated to the providers
+
+- [#4792](https://github.com/reown-com/appkit/pull/4792) [`2bccf2a`](https://github.com/reown-com/appkit/commit/2bccf2a36cbef80f53453228515cc3407ff8f96e) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where secure site screens would break in demo
+
+- Updated dependencies [[`cbe17ff`](https://github.com/reown-com/appkit/commit/cbe17ffc0a4a7d8aa8ba9471f02d09f005629d0a), [`2bccf2a`](https://github.com/reown-com/appkit/commit/2bccf2a36cbef80f53453228515cc3407ff8f96e)]:
+  - @reown/appkit-utils@1.7.19
+  - @reown/appkit-common@1.7.19
+  - @reown/appkit-controllers@1.7.19
+  - @reown/appkit-ui@1.7.19
+  - @reown/appkit-wallet@1.7.19
+
+## 1.7.18
+
+### Patch Changes
+
+- [#4737](https://github.com/reown-com/appkit/pull/4737) [`f397324`](https://github.com/reown-com/appkit/commit/f3973243b1036b1a51b00331f52983e304c1f1a5) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where `allAccounts` didn't include the `publicKey` value
+
+- [#4744](https://github.com/reown-com/appkit/pull/4744) [`673829b`](https://github.com/reown-com/appkit/commit/673829bfeff9934ab2233d5a14fcf6e45a9fd52b) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where WalletConnect connections didn't include the `address` value when sending the `CONNECT_SUCCESS` event
+
+- [#4717](https://github.com/reown-com/appkit/pull/4717) [`46c064d`](https://github.com/reown-com/appkit/commit/46c064d5f66e5d75754096507c77f31d083479d5) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where cancelling a SIWX message on mobile would reset the network state and log the user out
+
+- [#4725](https://github.com/reown-com/appkit/pull/4725) [`6407ad8`](https://github.com/reown-com/appkit/commit/6407ad8197f43fa14e006dd724abb0e58fec95f7) Thanks [@enesozturk](https://github.com/enesozturk)! - Refactors Swap views to not unnecessarily fetch all tokens, handles network switches and resetting state as expected
+
+- [#4748](https://github.com/reown-com/appkit/pull/4748) [`9ae13b1`](https://github.com/reown-com/appkit/commit/9ae13b155dea440dddcbb3d8dd52e5fda84d8435) Thanks [@magiziz](https://github.com/magiziz)! - Added support for opening Binance Web3 Wallet via deeplink for Bitcoin
+
+- [#4723](https://github.com/reown-com/appkit/pull/4723) [`6d4363a`](https://github.com/reown-com/appkit/commit/6d4363a33a82562addc98f8f6abbd231095fbc8f) Thanks [@enesozturk](https://github.com/enesozturk)! - Refactors Reown name screen logics to list suggestions, improve UX, and fetch name on connection as expected
+
+- [#4749](https://github.com/reown-com/appkit/pull/4749) [`f948216`](https://github.com/reown-com/appkit/commit/f9482168cc64f6cdc4a2d9e7b491c38c68630c76) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates NumberUtil formatting using Big.js for enhanced precision for big numbers with strings
+
+- Updated dependencies [[`f397324`](https://github.com/reown-com/appkit/commit/f3973243b1036b1a51b00331f52983e304c1f1a5), [`673829b`](https://github.com/reown-com/appkit/commit/673829bfeff9934ab2233d5a14fcf6e45a9fd52b), [`46c064d`](https://github.com/reown-com/appkit/commit/46c064d5f66e5d75754096507c77f31d083479d5), [`6407ad8`](https://github.com/reown-com/appkit/commit/6407ad8197f43fa14e006dd724abb0e58fec95f7), [`9ae13b1`](https://github.com/reown-com/appkit/commit/9ae13b155dea440dddcbb3d8dd52e5fda84d8435), [`6d4363a`](https://github.com/reown-com/appkit/commit/6d4363a33a82562addc98f8f6abbd231095fbc8f), [`f948216`](https://github.com/reown-com/appkit/commit/f9482168cc64f6cdc4a2d9e7b491c38c68630c76)]:
+  - @reown/appkit-controllers@1.7.18
+  - @reown/appkit-common@1.7.18
+  - @reown/appkit-utils@1.7.18
+  - @reown/appkit-ui@1.7.18
+  - @reown/appkit-wallet@1.7.18
+
 ## 1.7.17
 
 ### Patch Changes

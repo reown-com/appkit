@@ -70,11 +70,6 @@ describe('W3mConnectingWcBrowser', () => {
     await fixture(html`<w3m-connecting-wc-browser></w3m-connecting-wc-browser>`)
 
     expect(ConnectionController.connectExternal).toHaveBeenCalledWith(CONNECTOR, CONNECTOR.chain)
-    expect(EventsController.sendEvent).toHaveBeenCalledWith({
-      type: 'track',
-      event: 'CONNECT_SUCCESS',
-      properties: { method: 'browser', name: CONNECTOR.name, caipNetworkId: 'eip155:1' }
-    })
   })
 
   it('it should throw an error if trying to connect when a connector does not exist', async () => {

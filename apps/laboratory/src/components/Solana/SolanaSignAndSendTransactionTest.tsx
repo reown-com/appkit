@@ -25,11 +25,11 @@ export function SolanaSignAndSendTransaction() {
   const { walletProvider } = useAppKitProvider<Provider>('solana')
   const { connection } = useAppKitConnection()
 
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   async function onSendTransaction(mode: 'legacy' | 'versioned') {
     try {
-      setLoading(true)
+      setIsLoading(true)
       if (!walletProvider?.publicKey || !address) {
         throw Error('user is disconnected')
       }
@@ -62,7 +62,6 @@ export function SolanaSignAndSendTransaction() {
 
         // Make a versioned transaction
         const versionedTranasction = new VersionedTransaction(messageV0)
-
         signature = await walletProvider.signAndSendTransaction(versionedTranasction)
       } else {
         // Create a new transaction
@@ -84,7 +83,7 @@ export function SolanaSignAndSendTransaction() {
         type: 'error'
       })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -97,14 +96,14 @@ export function SolanaSignAndSendTransaction() {
       <Button
         data-test-id="sign-transaction-button"
         onClick={() => onSendTransaction('legacy')}
-        isDisabled={loading}
+        isDisabled={isLoading}
       >
         Sign and Send Transaction
       </Button>
       <Button
         data-test-id="sign-transaction-button"
         onClick={() => onSendTransaction('versioned')}
-        isDisabled={loading}
+        isDisabled={isLoading}
       >
         Sign and Send Versioned Transaction
       </Button>

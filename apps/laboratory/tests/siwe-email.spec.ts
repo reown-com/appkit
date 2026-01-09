@@ -12,6 +12,7 @@ import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 let page: ModalWalletPage
 let validator: ModalWalletValidator
 let context: BrowserContext
+let beforeAllError: Error | undefined
 /* eslint-enable init-declarations */
 
 // -- Setup --------------------------------------------------------------------
@@ -26,69 +27,81 @@ emailSiweTest.beforeAll(async ({ browser, library }) => {
   emailSiweTest.setTimeout(300000)
 
   const start = new Date()
-  context = await browser.newContext()
-  const browserPage = await context.newPage()
-  page = new ModalWalletPage(browserPage, library, 'siwe')
-  validator = new ModalWalletValidator(browserPage)
 
-  await page.load()
+  try {
+    context = await browser.newContext()
+    const browserPage = await context.newPage()
+    page = new ModalWalletPage(browserPage, library, 'siwe')
+    validator = new ModalWalletValidator(browserPage)
 
-  const mailsacApiKey = process.env['MAILSAC_API_KEY']
-  if (!mailsacApiKey) {
-    throw new Error('MAILSAC_API_KEY is not set')
-  }
-  const email = new Email(mailsacApiKey)
+    await page.load()
 
-  const getEmailAddressToUse = new Date()
-  const tempEmail = await email.getEmailAddressToUse()
-  beforeAllTimingRecords.push({
-    item: 'getEmailAddressToUse',
-    timeMs: new Date().getTime() - getEmailAddressToUse.getTime()
-  })
+    const mailsacApiKey = process.env['MAILSAC_API_KEY']
+    if (!mailsacApiKey) {
+      throw new Error('MAILSAC_API_KEY is not set')
+    }
+    const email = new Email(mailsacApiKey)
 
-  // Iframe should not be injected until needed
-  validator.expectSecureSiteFrameNotInjected()
-
-  const emailFlow = new Date()
-  await page.emailFlow({
-    emailAddress: tempEmail,
-    context,
-    mailsacApiKey,
-    timingRecords: beforeAllTimingRecords
-  })
-  beforeAllTimingRecords.push({
-    item: 'emailFlow',
-    timeMs: new Date().getTime() - emailFlow.getTime()
-  })
-
-  if (library === 'solana') {
-    const promptSiwe = new Date()
-    await page.promptSiwe()
+    const getEmailAddressToUse = new Date()
+    const tempEmail = await email.getEmailAddressToUse()
     beforeAllTimingRecords.push({
-      item: 'promptSiwe',
-      timeMs: new Date().getTime() - promptSiwe.getTime()
+      item: 'getEmailAddressToUse',
+      timeMs: new Date().getTime() - getEmailAddressToUse.getTime()
     })
 
-    const approveSign = new Date()
-    await page.approveSign()
-    beforeAllTimingRecords.push({
-      item: 'approveSign',
-      timeMs: new Date().getTime() - approveSign.getTime()
+    // Iframe should not be injected until needed
+    validator.expectSecureSiteFrameNotInjected()
+
+    const emailFlow = new Date()
+    await page.emailFlow({
+      emailAddress: tempEmail,
+      context,
+      mailsacApiKey,
+      timingRecords: beforeAllTimingRecords
     })
+    beforeAllTimingRecords.push({
+      item: 'emailFlow',
+      timeMs: new Date().getTime() - emailFlow.getTime()
+    })
+
+    if (library === 'solana') {
+      const promptSiwe = new Date()
+      await page.promptSiwe()
+      beforeAllTimingRecords.push({
+        item: 'promptSiwe',
+        timeMs: new Date().getTime() - promptSiwe.getTime()
+      })
+
+      const approveSign = new Date()
+      await page.approveSign()
+      beforeAllTimingRecords.push({
+        item: 'approveSign',
+        timeMs: new Date().getTime() - approveSign.getTime()
+      })
+    }
+
+    const startExpectConnected = new Date()
+    await validator.expectConnected()
+    await validator.expectAuthenticated()
+    beforeAllTimingRecords.push({
+      item: 'expectConnected',
+      timeMs: new Date().getTime() - startExpectConnected.getTime()
+    })
+
+    beforeAllTimingRecords.push({
+      item: 'beforeAll',
+      timeMs: new Date().getTime() - start.getTime()
+    })
+  } catch (error) {
+    // Capture the error for metric reporting
+    beforeAllError = error as Error
+    beforeAllTimingRecords.push({
+      item: 'beforeAll',
+      timeMs: new Date().getTime() - start.getTime()
+    })
+    // Re-throw to maintain test failure behavior
+    throw error
   }
-
-  const startExpectConnected = new Date()
-  await validator.expectConnected()
-  await validator.expectAuthenticated()
-  beforeAllTimingRecords.push({
-    item: 'expectConnected',
-    timeMs: new Date().getTime() - startExpectConnected.getTime()
-  })
-
-  beforeAllTimingRecords.push({
-    item: 'beforeAll',
-    timeMs: new Date().getTime() - start.getTime()
-  })
 })
 
 emailSiweTest.afterAll(async () => {
@@ -99,6 +112,22 @@ emailSiweTest.afterEach(async ({ browserName, timingRecords }, testInfo) => {
   if (browserName === 'firefox') {
     return
   }
+
+  // If beforeAll failed, report that failure for the first test
+  if (beforeAllError && testInfo.status === 'skipped') {
+    // Override the test status to 'failed' and report the beforeAll failure
+    const modifiedTestInfo = {
+      ...testInfo,
+      status: 'failed' as const,
+      duration: beforeAllTimingRecords.find(r => r.item === 'beforeAll')?.timeMs || 0
+    }
+    await afterEachCanary(modifiedTestInfo, beforeAllTimingRecords)
+    // Clear the error so we only report it once
+    beforeAllError = undefined
+
+    return
+  }
+
   await afterEachCanary(testInfo, timingRecords)
 })
 

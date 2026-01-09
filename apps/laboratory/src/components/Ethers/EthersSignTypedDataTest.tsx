@@ -2,7 +2,12 @@ import { Button } from '@chakra-ui/react'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import type { TypedDataField } from 'ethers'
 
-import { type Provider, useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+import {
+  type Provider,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider
+} from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 
@@ -33,6 +38,7 @@ const message = {
 export function EthersSignTypedDataTest() {
   const toast = useChakraToast()
   const { address } = useAppKitAccount({ namespace: 'eip155' })
+  const { chainId } = useAppKitNetwork()
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
 
   async function onSignTypedData() {
@@ -40,12 +46,12 @@ export function EthersSignTypedDataTest() {
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
-      const provider = new BrowserProvider(walletProvider, 1)
+      const provider = new BrowserProvider(walletProvider, chainId)
       const signer = new JsonRpcSigner(provider, address)
       const domain = {
         name: 'Ether Mail',
         version: '1',
-        chainId: 1,
+        chainId,
         verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
       } as const
 

@@ -4,7 +4,8 @@ import {
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
-  EventsController
+  EventsController,
+  RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
@@ -39,7 +40,9 @@ export class W3mConnectingWcWeb extends W3mConnectingWidget {
       properties: {
         name: this.wallet.name,
         platform: 'web',
-        displayIndex: this.wallet?.display_index
+        displayIndex: this.wallet?.display_index,
+        walletRank: this.wallet?.order,
+        view: RouterController.state.view
       }
     })
   }

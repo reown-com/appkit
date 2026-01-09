@@ -3,8 +3,8 @@ import { getWallets } from '@wallet-standard/app'
 import type { Wallet, WalletWithFeatures } from '@wallet-standard/base'
 
 import type { CaipNetwork } from '@reown/appkit-common'
+import { PresetsUtil } from '@reown/appkit-common'
 import type { Provider, RequestArguments } from '@reown/appkit-controllers'
-import { PresetsUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
@@ -12,6 +12,12 @@ import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import type { BitcoinFeatures } from '../utils/wallet-standard/WalletFeatures.js'
+
+type WalletAccount = Wallet['accounts'][number]
+
+interface BitcoinAccount extends WalletAccount {
+  purpose?: AddressPurpose
+}
 
 export class WalletStandardConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly chain = 'bip122'
@@ -77,11 +83,15 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
     const addresses = new Set<string>()
     const mappedAccounts = this.wallet.accounts
-      .map<BitcoinConnector.AccountAddress>(acc => ({
-        address: acc.address,
-        purpose: AddressPurpose.Payment,
-        publicKey: Buffer.from(acc.publicKey).toString('hex')
-      }))
+      .map<BitcoinConnector.AccountAddress>(acc => {
+        const { address, purpose, publicKey } = acc as BitcoinAccount
+
+        return {
+          address,
+          purpose: purpose ?? AddressPurpose.Payment,
+          publicKey: Buffer.from(publicKey).toString('hex')
+        }
+      })
       .filter(acc => {
         if (addresses.has(acc.address)) {
           return false
@@ -216,6 +226,7 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
 
     if (switchFeature && typeof switchFeature.switchNetwork === 'function') {
       await switchFeature.switchNetwork(caipNetworkId)
+
       this.emit('change', { accounts: this.wallet.accounts })
 
       return
