@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { toast } from 'sonner'
 
 import type { WalletItem } from '@reown/appkit'
 import { type ChainNamespace } from '@reown/appkit/networks'
-import { useAppKitWallets } from '@reown/appkit/react'
+import { CoreHelperUtil, useAppKitWallets } from '@reown/appkit/react'
 
 import { NamespaceSelectionDialog } from '@/components/NamespaceSelectionDialog'
 import { Card } from '@/components/ui/card'
@@ -17,12 +17,21 @@ import { ConnectContent } from './ConnectContent'
 import { WalletConnectQRContent } from './WalletConnectQRContent'
 
 export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>) {
-  const { connect, wcUri, connectingWallet, resetWcUri } = useAppKitWallets()
+  const {
+    connect,
+    wcUri,
+    connectingWallet,
+    resetWcUri,
+    deeplinkStatus,
+    deeplinkError,
+    resetDeeplinkStatus
+  } = useAppKitWallets()
   const [selectedWallet, setSelectedWallet] = useState<WalletItem | null>(null)
   const [showWalletSearch, setShowWalletSearch] = useState(false)
   const [isNamespaceDialogOpen, setIsNamespaceDialogOpen] = useState(false)
+  const isMobile = CoreHelperUtil.isMobile()
 
-  const showQRCode = wcUri && connectingWallet && !connectingWallet.isInjected
+  const showQRCode = !isMobile && wcUri && connectingWallet && !connectingWallet.isInjected
 
   function onOpenNamespaceDialog(item: WalletItem) {
     setSelectedWallet(item)
@@ -41,6 +50,13 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
         toast.error('Failed to connect wallet')
       })
   }
+
+  useEffect(() => {
+    if (deeplinkStatus === 'failed' && deeplinkError === 'timeout') {
+      toast.warning('Can’t open wallet. It might not be installed. Install the app or try again.')
+      resetDeeplinkStatus()
+    }
+  }, [deeplinkStatus, deeplinkError, resetDeeplinkStatus])
 
   return (
     <div
@@ -74,7 +90,7 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
         {/* Render QR Code on the right side */}
         {showQRCode && (
           <div className="flex-1 p-6 bg-muted/70">
-            <WalletConnectQRContent onClose={resetWcUri} />
+            <WalletConnectQRContent onClose={() => (isMobile ? null : resetWcUri())} />
           </div>
         )}
       </Card>

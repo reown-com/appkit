@@ -362,6 +362,21 @@ export interface UseAppKitWalletsReturn {
    * Function to reset the WC URI. Useful to keep `connectingWallet` state sync with the WC URI. Can be called when the QR code is closed.
    */
   resetWcUri: () => void
+
+  /**
+   * Status of the last mobile deeplink attempt.
+   */
+  deeplinkStatus: 'idle' | 'pending' | 'success' | 'failed'
+
+  /**
+   * Error reason for the last deeplink attempt (best-effort heuristic).
+   */
+  deeplinkError?: 'timeout'
+
+  /**
+   * Clears the last deeplink status and error.
+   */
+  resetDeeplinkStatus: () => void
 }
 
 /**
@@ -373,6 +388,10 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   const isHeadlessEnabled = Boolean(features?.headless && remoteFeatures?.headless)
 
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
+  const [deeplinkStatus, setDeeplinkStatus] =
+    useState<UseAppKitWalletsReturn['deeplinkStatus']>('idle')
+  const [deeplinkError, setDeeplinkError] =
+    useState<UseAppKitWalletsReturn['deeplinkError']>(undefined)
   const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
   const {
     wallets: wcAllWallets,
@@ -381,6 +400,81 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     count
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
+
+  const lastHandledUriRef = useRef<string | undefined>(undefined)
+  const deeplinkTimerRef = useRef<number | undefined>(undefined)
+  const deeplinkCleanupRef = useRef<(() => void) | undefined>(undefined)
+
+  function clearDeeplinkAttempt() {
+    if (deeplinkTimerRef.current && typeof window !== 'undefined') {
+      window.clearTimeout(deeplinkTimerRef.current)
+      deeplinkTimerRef.current = undefined
+    }
+    if (deeplinkCleanupRef.current) {
+      deeplinkCleanupRef.current()
+      deeplinkCleanupRef.current = undefined
+    }
+  }
+
+  function resetDeeplinkStatus() {
+    clearDeeplinkAttempt()
+    setDeeplinkStatus('idle')
+    setDeeplinkError(undefined)
+  }
+
+  function attemptMobileDeeplink(wallet: WcWallet) {
+    const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
+    const timeoutMs = 1500
+
+    clearDeeplinkAttempt()
+    setDeeplinkStatus('pending')
+    setDeeplinkError(undefined)
+
+    ConnectionControllerUtil.onConnectMobile(wallet)
+
+    if (!isBrowser) {
+      return
+    }
+
+    const markSuccess = () => {
+      clearDeeplinkAttempt()
+      setDeeplinkStatus('success')
+    }
+
+    const markFailure = () => {
+      clearDeeplinkAttempt()
+      setDeeplinkStatus('failed')
+      setDeeplinkError('timeout')
+    }
+
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        markSuccess()
+      }
+    }
+
+    const onPageHide = () => {
+      markSuccess()
+    }
+
+    const onBlur = () => {
+      if (document.hidden) {
+        markSuccess()
+      }
+    }
+
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    window.addEventListener('pagehide', onPageHide)
+    window.addEventListener('blur', onBlur)
+
+    deeplinkCleanupRef.current = () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      window.removeEventListener('pagehide', onPageHide)
+      window.removeEventListener('blur', onBlur)
+    }
+
+    deeplinkTimerRef.current = window.setTimeout(markFailure, timeoutMs)
+  }
 
   async function fetchWallets(fetchOptions?: { page?: number; query?: string }) {
     setIsFetchingWallets(true)
@@ -402,9 +496,24 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }
 
   async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
+    ConnectionController.setWcError(false)
+    ConnectionController.setWcLinking(undefined)
+    lastHandledUriRef.current = undefined
+    resetDeeplinkStatus()
     PublicStateController.set({ connectingWallet: _wallet })
 
     try {
+      const wcWallet = ApiControllerUtil.getWalletById(_wallet.id)
+      const isMobile = CoreHelperUtil.isMobile()
+      const existingUri = ConnectionController.state.wcUri
+      const isExistingUriValid =
+        Boolean(existingUri) && !CoreHelperUtil.isPairingExpired(ConnectionController.state.wcPairingExpiry)
+
+      if (isMobile && wcWallet?.mobile_link && isExistingUriValid && existingUri) {
+        lastHandledUriRef.current = existingUri
+        attemptMobileDeeplink(wcWallet)
+      }
+
       const walletConnector = _wallet?.connectors.find(c => c.chain === namespace)
 
       const connector =
@@ -416,6 +525,9 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
         await ConnectorControllerUtil.connectExternal(connector)
       } else {
         await ConnectionController.connectWalletConnect({ cache: 'never' })
+        if (isMobile && wcWallet?.mobile_link && ConnectionController.state.wcUri) {
+          attemptMobileDeeplink(wcWallet)
+        }
       }
     } catch (error) {
       PublicStateController.set({ connectingWallet: undefined })
@@ -426,9 +538,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   function resetWcUri() {
     ConnectionController.resetUri()
     ConnectionController.setWcLinking(undefined)
+    resetDeeplinkStatus()
   }
-
-  const lastHandledUriRef = useRef<string | undefined>(undefined)
 
   useEffect(() => {
     lastHandledUriRef.current = undefined
@@ -453,7 +564,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
       if (isMobile && wcWallet?.mobile_link) {
         lastHandledUriRef.current = wcUri
-        ConnectionControllerUtil.onConnectMobile(wcWallet)
+        attemptMobileDeeplink(wcWallet)
       }
     })
 
@@ -486,7 +597,10 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       count: 0,
       connect: () => Promise.resolve(),
       fetchWallets: () => Promise.resolve(),
-      resetWcUri
+      resetWcUri,
+      deeplinkStatus: 'idle',
+      deeplinkError: undefined,
+      resetDeeplinkStatus
     }
   }
 
@@ -505,6 +619,9 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     count,
     connect,
     fetchWallets,
-    resetWcUri
+    resetWcUri,
+    deeplinkStatus,
+    deeplinkError,
+    resetDeeplinkStatus
   }
 }
