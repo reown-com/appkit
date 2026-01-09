@@ -1,0 +1,24 @@
+{
+  "name": "@examples/react-adi-custom-network",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite --port 3020",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@tanstack/react-query": "5.75.5",
+    "react": "19.1.2",
+    "react-dom": "19.1.2",
+    "viem": "2.37.9",
+    "wagmi": "2.17.5"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.15",
+    "@types/react-dom": "19.1.9",
+    "@vitejs/plugin-react": "4.3.4",
+    "vite": "5.4.20"
+  }
+}
