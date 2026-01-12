@@ -9,6 +9,7 @@ import { type ChainNamespace } from '@reown/appkit/networks'
 import { CoreHelperUtil, useAppKitWallets } from '@reown/appkit/react'
 
 import { NamespaceSelectionDialog } from '@/components/NamespaceSelectionDialog'
+import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
@@ -24,7 +25,9 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
     resetWcUri,
     deeplinkStatus,
     deeplinkError,
-    resetDeeplinkStatus
+    resetDeeplinkStatus,
+    deeplinkReady,
+    openDeeplink
   } = useAppKitWallets()
   const [selectedWallet, setSelectedWallet] = useState<WalletItem | null>(null)
   const [showWalletSearch, setShowWalletSearch] = useState(false)
@@ -77,6 +80,16 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
         )}
       >
         <div className={cn('flex-1', showQRCode && 'border-r border-border')}>
+          {isMobile && deeplinkReady && connectingWallet && !connectingWallet.isInjected ? (
+            <div className="p-4">
+              <p className="mb-2 text-sm text-muted-foreground">
+                Tap Open to continue in {connectingWallet.name}
+              </p>
+              <Button onClick={openDeeplink} className="w-full">
+                Open {connectingWallet.name}
+              </Button>
+            </div>
+          ) : null}
           {showWalletSearch ? (
             <AllWalletsContent onBack={() => setShowWalletSearch(false)} onConnect={onConnect} />
           ) : (

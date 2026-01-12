@@ -6,6 +6,14 @@ import {
   DrawerCloseButton,
   DrawerContent,
   DrawerOverlay,
+  Button,
+  Text,
+  VStack,
+  HStack,
+  Box,
+  Image,
+  Divider,
+  Badge,
   useDisclosure,
   useToast
 } from '@chakra-ui/react'
@@ -21,6 +29,7 @@ import {
 import { AppKitHeadlessInjectedWallets } from '@/src/components/Headless/AppKitHeadlessInjectedWallets'
 import { AppKitHeadlessQRCode } from '@/src/components/Headless/AppKitHeadlessQRCode'
 import { AppKitHeadlessWcWallets } from '@/src/components/Headless/AppKitHeadlessWcWallets'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 type ViewState = 'connect' | 'search' | 'qrcode'
 
@@ -57,7 +66,9 @@ export function AppkitConnectDrawer({ controls }: Props) {
     resetWcUri,
     deeplinkStatus,
     deeplinkError,
-    resetDeeplinkStatus
+    resetDeeplinkStatus,
+    deeplinkReady,
+    openDeeplink
   } = useAppKitWallets()
   const isMobile = CoreHelperUtil.isMobile()
 
@@ -132,12 +143,86 @@ export function AppkitConnectDrawer({ controls }: Props) {
     }
   }, [deeplinkStatus, deeplinkError, resetDeeplinkStatus, toast])
 
+  // Convert test wallets to WalletItem format for connect function
+  function createTestWalletItem(wallet: (typeof ConstantsUtil.DeeplinkTestWallets)[0]): WalletItem {
+    return {
+      id: wallet.id,
+      name: wallet.name,
+      image: wallet.image_url,
+      isInjected: false,
+      connectors: [],
+      // Include mobile_link and link_mode for deeplink functionality
+      mobile_link: wallet.mobile_link,
+      link_mode: wallet.link_mode
+    } as WalletItem
+  }
+
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={handleClose} size="md">
       <DrawerOverlay />
       <DrawerContent data-testid="headless-drawer">
         <DrawerCloseButton data-testid="headless-drawer-close-button" />
         <DrawerBody pt={8} pb={8}>
+          {/* Deeplink Test Section - For testing mobile deeplink flow */}
+          {isMobile && (
+            <Box mb={6} p={4} borderWidth={1} borderRadius="md" borderColor="blue.200" bg="blue.50">
+              <HStack mb={3}>
+                <Text fontWeight="bold" fontSize="sm">
+                  Deeplink Test
+                </Text>
+                <Badge colorScheme="blue" fontSize="xs">
+                  Mobile Only
+                </Badge>
+              </HStack>
+              <Text fontSize="xs" color="gray.600" mb={3}>
+                Click between wallets to test deeplink switching. Each click should open the
+                correct wallet app.
+              </Text>
+              <VStack spacing={2} align="stretch">
+                {ConstantsUtil.DeeplinkTestWallets.map(wallet => (
+                  <Button
+                    key={wallet.id}
+                    variant={connectingWallet?.id === wallet.id ? 'solid' : 'outline'}
+                    colorScheme={connectingWallet?.id === wallet.id ? 'blue' : 'gray'}
+                    size="md"
+                    justifyContent="flex-start"
+                    onClick={() => handleConnect(createTestWalletItem(wallet))}
+                    data-testid={`deeplink-test-${wallet.name.toLowerCase()}`}
+                  >
+                    <HStack spacing={3}>
+                      <Image src={wallet.image_url} boxSize="24px" borderRadius="md" />
+                      <Text>{wallet.name}</Text>
+                      {connectingWallet?.id === wallet.id && (
+                        <Badge colorScheme="green" fontSize="xs" ml="auto">
+                          Active
+                        </Badge>
+                      )}
+                    </HStack>
+                  </Button>
+                ))}
+              </VStack>
+              {deeplinkStatus !== 'idle' && (
+                <Text fontSize="xs" color="gray.500" mt={2}>
+                  Status: {deeplinkStatus}
+                  {deeplinkError && ` (${deeplinkError})`}
+                </Text>
+              )}
+            </Box>
+          )}
+
+          {isMobile && deeplinkReady && connectingWallet && (
+            <>
+              <Text mb={2} fontSize="sm" color="gray.500">
+                Tap Open to continue in {connectingWallet.name}
+              </Text>
+              <Button mb={4} colorScheme="blue" onClick={openDeeplink}>
+                Open {connectingWallet.name}
+              </Button>
+            </>
+          )}
+
+          {isMobile && <Divider my={4} />}
+
           {currentView === 'connect' && (
             <AppKitHeadlessInjectedWallets onConnect={handleConnect} onSeeAll={handleSeeAll} />
           )}
