@@ -438,11 +438,12 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
   function attemptMobileDeeplink(wallet: WcWallet) {
     const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
-    const timeoutMs = 1500
 
     clearDeeplinkAttempt()
     setDeeplinkStatus('pending')
     setDeeplinkError(undefined)
+    // Always make the "Open" button available for manual retry
+    setDeeplinkReady(true)
 
     ConnectionControllerUtil.onConnectMobile(wallet)
 
@@ -457,28 +458,18 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       setDeeplinkStatus('success')
     }
 
-    const markFailure = () => {
-      if (typeof document !== 'undefined' && document.hidden) {
-        markSuccess()
-        return
-      }
-      if (ChainController.state.activeCaipAddress) {
-        markSuccess()
-        return
-      }
-      clearDeeplinkAttempt()
-      // Don't reset the URI - keep it for retry (same as AppKit modal behavior)
-      // The URI is still valid and can be reused when user clicks "Open" or the wallet again
-      ConnectionController.setWcLinking(undefined)
-      requiresUserOpenRef.current = true
-      setDeeplinkReady(true)
-      setDeeplinkStatus('failed')
-      setDeeplinkError('timeout')
-    }
-
     const onVisibilityChange = () => {
       if (document.hidden) {
+        // Page became hidden - wallet app likely opened, mark success
         markSuccess()
+      } else {
+        // Page became visible again - check if connected
+        // Give a brief moment for connection state to update
+        setTimeout(() => {
+          if (ChainController.state.activeCaipAddress) {
+            markSuccess()
+          }
+        }, 100)
       }
     }
 
@@ -492,6 +483,13 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       }
     }
 
+    // Subscribe to connection changes - if connected, mark success
+    const unsubscribeConnection = ChainController.subscribeKey('activeCaipAddress', address => {
+      if (address) {
+        markSuccess()
+      }
+    })
+
     document.addEventListener('visibilitychange', onVisibilityChange)
     window.addEventListener('pagehide', onPageHide)
     window.addEventListener('blur', onBlur)
@@ -500,9 +498,11 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       document.removeEventListener('visibilitychange', onVisibilityChange)
       window.removeEventListener('pagehide', onPageHide)
       window.removeEventListener('blur', onBlur)
+      unsubscribeConnection()
     }
 
-    deeplinkTimerRef.current = window.setTimeout(markFailure, timeoutMs)
+    // No timeout - we don't show error states for deeplinks
+    // User can always retry with the "Open" button if needed
   }
 
   // Helper to get WcWallet from API or from connectingWallet extended properties
@@ -512,14 +512,16 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       return apiWallet
     }
     // Support custom wallets with mobile_link passed directly
-    const walletWithExtras = connectingWallet as (WalletItem & { mobile_link?: string; link_mode?: string }) | undefined
+    const walletWithExtras = connectingWallet as
+      | (WalletItem & { mobile_link?: string; link_mode?: string })
+      | undefined
     if (walletWithExtras?.mobile_link) {
       return {
         id: walletWithExtras.id,
         name: walletWithExtras.name,
         mobile_link: walletWithExtras.mobile_link,
         link_mode: walletWithExtras.link_mode ?? null,
-        image_url: walletWithExtras.image
+        image_url: walletWithExtras.imageUrl
       }
     }
     return undefined
@@ -565,15 +567,17 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       const apiWallet = ApiControllerUtil.getWalletById(_wallet.id)
       // Support custom wallets with mobile_link passed directly on WalletItem
       const walletWithExtras = _wallet as WalletItem & { mobile_link?: string; link_mode?: string }
-      const wcWallet: WcWallet | undefined = apiWallet ?? (walletWithExtras.mobile_link
-        ? {
-            id: _wallet.id,
-            name: _wallet.name,
-            mobile_link: walletWithExtras.mobile_link,
-            link_mode: walletWithExtras.link_mode ?? null,
-            image_url: _wallet.image
-          }
-        : undefined)
+      const wcWallet: WcWallet | undefined =
+        apiWallet ??
+        (walletWithExtras.mobile_link
+          ? {
+              id: _wallet.id,
+              name: _wallet.name,
+              mobile_link: walletWithExtras.mobile_link,
+              link_mode: walletWithExtras.link_mode ?? null,
+              image_url: _wallet.imageUrl
+            }
+          : undefined)
 
       const isMobile = CoreHelperUtil.isMobile()
       const previousUri = ConnectionController.state.wcUri
@@ -581,22 +585,28 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       lastWalletIdRef.current = _wallet.id
 
       // Reset state for a fresh connection attempt
-      // For new wallet: reset URI to get fresh pairing
-      // For same wallet: reset requiresUserOpenRef to allow auto-trigger
-      if (isNewWallet) {
+      // On mobile: DON'T reset URI when switching wallets - reuse it for synchronous deeplink
+      // The WC URI is not wallet-specific, any wallet can use it to connect
+      // On desktop: reset URI to show fresh QR code for the new wallet
+      if (isNewWallet && !isMobile) {
         ConnectionController.resetUri()
         ConnectionController.setWcLinking(undefined)
         lastHandledUriRef.current = undefined
+      } else if (isNewWallet && isMobile) {
+        // On mobile, just clear linking state but keep the URI
+        ConnectionController.setWcLinking(undefined)
       }
       // Always allow auto-trigger when user explicitly clicks a wallet
       requiresUserOpenRef.current = false
       setDeeplinkReady(false)
 
       const existingUri = ConnectionController.state.wcUri
+      // On mobile, URI is valid even when switching wallets (we reuse it for sync deeplink)
+      // On desktop, URI is only valid for the same wallet (need fresh QR for new wallet)
       const isExistingUriValid =
         Boolean(existingUri) &&
         !CoreHelperUtil.isPairingExpired(ConnectionController.state.wcPairingExpiry) &&
-        !isNewWallet
+        (isMobile || !isNewWallet)
 
       if (isMobile && wcWallet?.mobile_link && isExistingUriValid && existingUri) {
         lastHandledUriRef.current = existingUri
@@ -614,7 +624,11 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       if (_wallet?.isInjected && connector) {
         await ConnectorControllerUtil.connectExternal(connector)
       } else {
-        await ConnectionController.connectWalletConnect({ cache: 'never' })
+        // On mobile, use cache: 'auto' to reuse pre-generated URI for synchronous deeplink triggering
+        // Safari blocks deeplinks from async callbacks, so we need the URI ready before this point
+        // On desktop, use cache: 'never' to ensure fresh pairing for QR code
+        const cacheStrategy = isMobile ? 'auto' : 'never'
+        await ConnectionController.connectWalletConnect({ cache: cacheStrategy })
         const currentUri = ConnectionController.state.wcUri
         if (isMobile && wcWallet?.mobile_link && currentUri && currentUri !== previousUri) {
           attemptMobileDeeplink(wcWallet)
@@ -653,16 +667,20 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       const currentWallet = PublicStateController.state.connectingWallet
       // Get wallet from API or from extended properties on connectingWallet
       const apiWallet = ApiControllerUtil.getWalletById(currentWallet?.id)
-      const walletWithExtras = currentWallet as (WalletItem & { mobile_link?: string; link_mode?: string }) | undefined
-      const wcWallet: WcWallet | undefined = apiWallet ?? (walletWithExtras?.mobile_link
-        ? {
-            id: walletWithExtras.id,
-            name: walletWithExtras.name,
-            mobile_link: walletWithExtras.mobile_link,
-            link_mode: walletWithExtras.link_mode ?? null,
-            image_url: walletWithExtras.image
-          }
-        : undefined)
+      const walletWithExtras = currentWallet as
+        | (WalletItem & { mobile_link?: string; link_mode?: string })
+        | undefined
+      const wcWallet: WcWallet | undefined =
+        apiWallet ??
+        (walletWithExtras?.mobile_link
+          ? {
+              id: walletWithExtras.id,
+              name: walletWithExtras.name,
+              mobile_link: walletWithExtras.mobile_link,
+              link_mode: walletWithExtras.link_mode ?? null,
+              image_url: walletWithExtras.imageUrl
+            }
+          : undefined)
 
       if (isMobile && wcWallet?.mobile_link) {
         if (requiresUserOpenRef.current) {
@@ -689,6 +707,22 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       )
     }
   }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
+
+  // Pre-generate WalletConnect URI on mobile so first wallet click can trigger deeplink synchronously
+  // Safari blocks deeplinks from async callbacks, so we need the URI ready before user clicks
+  useEffect(() => {
+    if (initialized && isHeadlessEnabled && CoreHelperUtil.isMobile()) {
+      const existingUri = ConnectionController.state.wcUri
+      const isExpired = CoreHelperUtil.isPairingExpired(ConnectionController.state.wcPairingExpiry)
+
+      if (!existingUri || isExpired) {
+        // Pre-generate URI in background - don't await, just kick it off
+        ConnectionController.connectWalletConnect({ cache: 'auto' }).catch(() => {
+          // Silently ignore errors during pre-generation
+        })
+      }
+    }
+  }, [initialized, isHeadlessEnabled])
 
   if (!isHeadlessEnabled || !remoteFeatures?.headless) {
     return {

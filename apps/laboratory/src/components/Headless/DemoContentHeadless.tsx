@@ -9,21 +9,21 @@ import {
   Card,
   CardBody,
   CardHeader,
-  Heading,
   HStack,
+  Heading,
   Image,
   Stack,
   StackDivider,
   Text,
-  useDisclosure,
-  VStack
+  VStack,
+  useDisclosure
 } from '@chakra-ui/react'
 
 import type { WalletItem } from '@reown/appkit'
 import { useAppKitAccount, useAppKitWallets, useDisconnect } from '@reown/appkit/react'
 
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { AppkitConnectDrawer } from '../../layout/AppkitConnectDrawer'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { AccountCard } from '../AccountCard'
 
 export default function DemoContentHeadless() {
@@ -42,17 +42,21 @@ export default function DemoContentHeadless() {
     resetDeeplinkStatus
   } = useAppKitWallets()
 
-  // Convert test wallet to WalletItem format
-  function createTestWalletItem(wallet: (typeof ConstantsUtil.DeeplinkTestWallets)[0]): WalletItem {
+  // Convert test wallet to WalletItem format with mobile deeplink support
+  function createTestWalletItem(
+    wallet: (typeof ConstantsUtil.DeeplinkTestWallets)[0]
+  ): WalletItem & { mobile_link: string; link_mode: string | null } {
     return {
       id: wallet.id,
       name: wallet.name,
-      image: wallet.image_url,
-      isInjected: false,
+      imageUrl: wallet.image_url,
       connectors: [],
+      walletInfo: {},
+      isInjected: false,
+      isRecent: false,
       mobile_link: wallet.mobile_link,
       link_mode: wallet.link_mode
-    } as WalletItem
+    } as WalletItem & { mobile_link: string; link_mode: string | null }
   }
 
   async function handleTestWalletClick(wallet: (typeof ConstantsUtil.DeeplinkTestWallets)[0]) {
@@ -93,7 +97,12 @@ export default function DemoContentHeadless() {
                   onClick={() => handleTestWalletClick(wallet)}
                   data-testid={`deeplink-test-${wallet.name.toLowerCase()}`}
                   leftIcon={
-                    <Image src={wallet.image_url} boxSize="24px" borderRadius="md" alt={wallet.name} />
+                    <Image
+                      src={wallet.image_url}
+                      boxSize="24px"
+                      borderRadius="md"
+                      alt={wallet.name}
+                    />
                   }
                 >
                   {wallet.name}

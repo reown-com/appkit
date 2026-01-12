@@ -18,17 +18,8 @@ import { ConnectContent } from './ConnectContent'
 import { WalletConnectQRContent } from './WalletConnectQRContent'
 
 export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>) {
-  const {
-    connect,
-    wcUri,
-    connectingWallet,
-    resetWcUri,
-    deeplinkStatus,
-    deeplinkError,
-    resetDeeplinkStatus,
-    deeplinkReady,
-    openDeeplink
-  } = useAppKitWallets()
+  const { connect, wcUri, connectingWallet, resetWcUri, deeplinkReady, openDeeplink } =
+    useAppKitWallets()
   const [selectedWallet, setSelectedWallet] = useState<WalletItem | null>(null)
   const [showWalletSearch, setShowWalletSearch] = useState(false)
   const [isNamespaceDialogOpen, setIsNamespaceDialogOpen] = useState(false)
@@ -54,12 +45,6 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
       })
   }
 
-  useEffect(() => {
-    if (deeplinkStatus === 'failed' && deeplinkError === 'timeout') {
-      toast.warning('Can’t open wallet. It might not be installed. Install the app or try again.')
-      resetDeeplinkStatus()
-    }
-  }, [deeplinkStatus, deeplinkError, resetDeeplinkStatus])
 
   return (
     <div
