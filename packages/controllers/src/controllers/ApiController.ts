@@ -2,7 +2,7 @@ import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 
 import { AssetUtil } from '../utils/AssetUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
@@ -67,6 +67,14 @@ interface PrefetchParameters {
   fetchRecommendedWallets?: boolean
   fetchNetworkImages?: boolean
   fetchWalletRanks?: boolean
+}
+
+interface SearchWalletParams extends Pick<ApiGetWalletsRequest, 'search' | 'badge'> {
+  caipNetworkIds?: CaipNetworkId[]
+}
+
+interface FetchWalletsByPageParams extends Pick<ApiGetWalletsRequest, 'page'> {
+  caipNetworkIds?: CaipNetworkId[]
 }
 
 type StateKey = keyof ApiControllerState
@@ -385,9 +393,10 @@ export const ApiController = {
     }
   },
 
-  async fetchWalletsByPage({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
+  async fetchWalletsByPage({ page, caipNetworkIds }: FetchWalletsByPageParams) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
-    const chains = ChainController.getRequestedCaipNetworkIds().join(',')
+    const ids = caipNetworkIds ?? ChainController.getRequestedCaipNetworkIds()
+    const chains = ids.join(',')
     const exclude = [
       ...state.recommended.map(({ id }) => id),
       ...(excludeWalletIds ?? []),
@@ -435,9 +444,10 @@ export const ApiController = {
     }
   },
 
-  async searchWallet({ search, badge }: Pick<ApiGetWalletsRequest, 'search' | 'badge'>) {
+  async searchWallet({ search, badge, caipNetworkIds }: SearchWalletParams) {
     const { includeWalletIds, excludeWalletIds } = OptionsController.state
-    const chains = ChainController.getRequestedCaipNetworkIds().join(',')
+    const ids = caipNetworkIds ?? ChainController.getRequestedCaipNetworkIds()
+    const chains = ids.join(',')
     state.search = []
 
     const params = {

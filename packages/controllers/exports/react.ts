@@ -2,7 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
-import { type ChainNamespace, type Connection, ConstantsUtil } from '@reown/appkit-common'
+import {
+  type CaipNetworkId,
+  type ChainNamespace,
+  type Connection,
+  ConstantsUtil
+} from '@reown/appkit-common'
 
 import { AlertController } from '../src/controllers/AlertController.js'
 import { ApiController } from '../src/controllers/ApiController.js'
@@ -54,6 +59,12 @@ interface SwitchConnectionParams {
 interface DeleteRecentConnectionProps {
   address: string
   connectorId: string
+}
+
+interface FetchWalletsProps {
+  page?: number
+  query?: string
+  caipNetworkIds?: CaipNetworkId[]
 }
 
 // -- Hooks ------------------------------------------------------------
@@ -345,7 +356,7 @@ export interface UseAppKitWalletsReturn {
    * @param options.page - Page number to fetch (default: 1)
    * @param options.query - Search query to filter wallets (default: '')
    */
-  fetchWallets: (options?: { page?: number; query?: string }) => Promise<void>
+  fetchWallets: (options?: FetchWalletsProps) => Promise<void>
 
   /**
    * Function to connect to a wallet.
@@ -382,15 +393,17 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
 
-  async function fetchWallets(fetchOptions?: { page?: number; query?: string }) {
+  async function fetchWallets(fetchOptions?: FetchWalletsProps) {
     setIsFetchingWallets(true)
     try {
-      if (fetchOptions?.query) {
-        await ApiController.searchWallet({ search: fetchOptions?.query })
+      const { query, caipNetworkIds } = fetchOptions ?? {}
+      if (query) {
+        await ApiController.searchWallet({ search: query, caipNetworkIds })
       } else {
         ApiController.state.search = []
         await ApiController.fetchWalletsByPage({
-          page: fetchOptions?.page ?? 1
+          page: fetchOptions?.page ?? 1,
+          caipNetworkIds
         })
       }
     } catch (error) {

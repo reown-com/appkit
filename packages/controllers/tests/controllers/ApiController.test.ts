@@ -553,6 +553,51 @@ describe('ApiController', () => {
     expect(ApiController.state.wallets).toEqual(data)
   })
 
+  it('should fetch wallets by page with custom caipNetworkIds', async () => {
+    const includeWalletIds = ['12341', '12342']
+    const excludeWalletIds = ['12343']
+    const featuredWalletIds = ['12344']
+    const customCaipNetworkIds = ['eip155:1', 'solana:mainnet'] as const
+    const data = [
+      {
+        id: '12341',
+        name: 'MetaMask',
+        image_id: '12341',
+        chains: ['eip155:1']
+      },
+      {
+        id: '12342',
+        name: 'Phantom',
+        image_id: '12342',
+        chains: ['solana:mainnet']
+      }
+    ]
+    OptionsController.setIncludeWalletIds(includeWalletIds)
+    OptionsController.setExcludeWalletIds(excludeWalletIds)
+    OptionsController.setFeaturedWalletIds(featuredWalletIds)
+
+    const getRequestedCaipNetworkIdsSpy = vi.spyOn(ChainController, 'getRequestedCaipNetworkIds')
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data, count: data.length })
+    vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
+
+    await ApiController.fetchWalletsByPage({ page: 1, caipNetworkIds: [...customCaipNetworkIds] })
+
+    // Should NOT call getRequestedCaipNetworkIds when caipNetworkIds is provided
+    expect(getRequestedCaipNetworkIdsSpy).not.toHaveBeenCalled()
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      params: {
+        ...ApiController._getSdkProperties(),
+        page: '1',
+        chains: 'eip155:1,solana:mainnet',
+        entries: '40',
+        include: '12341,12342',
+        exclude: '12343,12344'
+      }
+    })
+  })
+
   it('should fetch excludedWalletIds and check if RDNS of EIP6963 matches', async () => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
     const excludeWalletIds = ['12345', '12346']
@@ -646,6 +691,47 @@ describe('ApiController', () => {
 
     expect(fetchImageSpy).toHaveBeenCalledOnce()
     expect(ApiController.state.search).toEqual(data)
+  })
+
+  it('should search wallet with custom caipNetworkIds', async () => {
+    const includeWalletIds = ['12341', '12342']
+    const excludeWalletIds = ['12343']
+    const customCaipNetworkIds = ['eip155:1', 'solana:mainnet'] as const
+    const data = [
+      {
+        id: '12341',
+        name: 'MetaMask',
+        image_id: '12341'
+      }
+    ]
+    OptionsController.setIncludeWalletIds(includeWalletIds)
+    OptionsController.setExcludeWalletIds(excludeWalletIds)
+
+    const getRequestedCaipNetworkIdsSpy = vi.spyOn(ChainController, 'getRequestedCaipNetworkIds')
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
+    vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
+
+    await ApiController.searchWallet({
+      search: 'MetaMask',
+      caipNetworkIds: [...customCaipNetworkIds]
+    })
+
+    // Should NOT call getRequestedCaipNetworkIds when caipNetworkIds is provided
+    expect(getRequestedCaipNetworkIdsSpy).not.toHaveBeenCalled()
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/getWallets',
+      params: {
+        ...ApiController._getSdkProperties(),
+        page: '1',
+        badge_type: undefined,
+        chains: 'eip155:1,solana:mainnet',
+        entries: '100',
+        search: 'MetaMask',
+        include: '12341,12342',
+        exclude: '12343'
+      }
+    })
   })
 
   it('should search wallet with whitespace and multiple words', async () => {
