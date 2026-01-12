@@ -399,6 +399,32 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   const requiresUserOpenRef = useRef(false)
   const deeplinkCleanupRef = useRef<(() => void) | undefined>(undefined)
 
+  /**
+   * Converts a WalletItem to WcWallet format for mobile deeplink handling.
+   * First tries to get wallet from API, then falls back to extracting mobile_link from the wallet item.
+   */
+  function toWcWallet(wallet: WalletItem | undefined): WcWallet | undefined {
+    if (!wallet) {
+      return undefined
+    }
+    const apiWallet = ApiControllerUtil.getWalletById(wallet.id)
+    if (apiWallet) {
+      return apiWallet
+    }
+    // Support custom wallets with mobile_link passed directly
+    const walletWithExtras = wallet as WalletItem & { mobile_link?: string; link_mode?: string }
+    if (walletWithExtras.mobile_link) {
+      return {
+        id: wallet.id,
+        name: wallet.name,
+        mobile_link: walletWithExtras.mobile_link,
+        link_mode: walletWithExtras.link_mode ?? null,
+        image_url: wallet.imageUrl
+      }
+    }
+    return undefined
+  }
+
   function cleanupDeeplinkListeners() {
     if (deeplinkCleanupRef.current) {
       deeplinkCleanupRef.current()
@@ -408,9 +434,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
   function attemptMobileDeeplink(wallet: WcWallet) {
     cleanupDeeplinkListeners()
-    // Always make the "Open" button available for manual retry
     setDeeplinkReady(true)
-
     ConnectionControllerUtil.onConnectMobile(wallet)
 
     // Subscribe to connection changes - when connected, hide "Open" button
@@ -427,30 +451,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     }
   }
 
-  // Helper to get WcWallet from API or from connectingWallet extended properties
-  function getWcWalletForConnecting(): WcWallet | undefined {
-    const apiWallet = ApiControllerUtil.getWalletById(connectingWallet?.id)
-    if (apiWallet) {
-      return apiWallet
-    }
-    // Support custom wallets with mobile_link passed directly
-    const walletWithExtras = connectingWallet as
-      | (WalletItem & { mobile_link?: string; link_mode?: string })
-      | undefined
-    if (walletWithExtras?.mobile_link) {
-      return {
-        id: walletWithExtras.id,
-        name: walletWithExtras.name,
-        mobile_link: walletWithExtras.mobile_link,
-        link_mode: walletWithExtras.link_mode ?? null,
-        image_url: walletWithExtras.imageUrl
-      }
-    }
-    return undefined
-  }
-
   function openDeeplink() {
-    const wcWallet = getWcWalletForConnecting()
+    const wcWallet = toWcWallet(connectingWallet as WalletItem | undefined)
     if (!wcWallet || !CoreHelperUtil.isMobile()) {
       return
     }
@@ -491,22 +493,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, activeNamespace)
 
     try {
-      // Get wallet from API or use passed wallet properties as fallback
-      const apiWallet = ApiControllerUtil.getWalletById(_wallet.id)
-      // Support custom wallets with mobile_link passed directly on WalletItem
-      const walletWithExtras = _wallet as WalletItem & { mobile_link?: string; link_mode?: string }
-      const wcWallet: WcWallet | undefined =
-        apiWallet ??
-        (walletWithExtras.mobile_link
-          ? {
-              id: _wallet.id,
-              name: _wallet.name,
-              mobile_link: walletWithExtras.mobile_link,
-              link_mode: walletWithExtras.link_mode ?? null,
-              image_url: _wallet.imageUrl
-            }
-          : undefined)
-
+      const wcWallet = toWcWallet(_wallet)
       const isMobile = CoreHelperUtil.isMobile()
       const previousUri = ConnectionController.state.wcUri
       const isNewWallet = Boolean(lastWalletIdRef.current) && lastWalletIdRef.current !== _wallet.id
@@ -593,23 +580,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       }
 
       const isMobile = CoreHelperUtil.isMobile()
-      const currentWallet = PublicStateController.state.connectingWallet
-      // Get wallet from API or from extended properties on connectingWallet
-      const apiWallet = ApiControllerUtil.getWalletById(currentWallet?.id)
-      const walletWithExtras = currentWallet as
-        | (WalletItem & { mobile_link?: string; link_mode?: string })
-        | undefined
-      const wcWallet: WcWallet | undefined =
-        apiWallet ??
-        (walletWithExtras?.mobile_link
-          ? {
-              id: walletWithExtras.id,
-              name: walletWithExtras.name,
-              mobile_link: walletWithExtras.mobile_link,
-              link_mode: walletWithExtras.link_mode ?? null,
-              image_url: walletWithExtras.imageUrl
-            }
-          : undefined)
+      const currentWallet = PublicStateController.state.connectingWallet as WalletItem | undefined
+      const wcWallet = toWcWallet(currentWallet)
 
       if (isMobile && wcWallet?.mobile_link) {
         if (requiresUserOpenRef.current) {
