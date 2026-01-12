@@ -364,22 +364,7 @@ export interface UseAppKitWalletsReturn {
   resetWcUri: () => void
 
   /**
-   * Status of the last mobile deeplink attempt.
-   */
-  deeplinkStatus: 'idle' | 'pending' | 'success' | 'failed'
-
-  /**
-   * Error reason for the last deeplink attempt (best-effort heuristic).
-   */
-  deeplinkError?: 'timeout'
-
-  /**
-   * Clears the last deeplink status and error.
-   */
-  resetDeeplinkStatus: () => void
-
-  /**
-   * Whether a deeplink is ready and waiting for user action.
+   * Whether a deeplink is ready and waiting for user action (shows "Open" button).
    */
   deeplinkReady: boolean
 
@@ -398,10 +383,6 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   const isHeadlessEnabled = Boolean(features?.headless && remoteFeatures?.headless)
 
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
-  const [deeplinkStatus, setDeeplinkStatus] =
-    useState<UseAppKitWalletsReturn['deeplinkStatus']>('idle')
-  const [deeplinkError, setDeeplinkError] =
-    useState<UseAppKitWalletsReturn['deeplinkError']>(undefined)
   const [deeplinkReady, setDeeplinkReady] = useState(false)
   const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
   const {
@@ -415,33 +396,19 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   const lastHandledUriRef = useRef<string | undefined>(undefined)
   const lastWalletIdRef = useRef<string | undefined>(undefined)
   const requiresUserOpenRef = useRef(false)
-  const deeplinkTimerRef = useRef<number | undefined>(undefined)
   const deeplinkCleanupRef = useRef<(() => void) | undefined>(undefined)
 
-  function clearDeeplinkAttempt() {
-    if (deeplinkTimerRef.current && typeof window !== 'undefined') {
-      window.clearTimeout(deeplinkTimerRef.current)
-      deeplinkTimerRef.current = undefined
-    }
+  function cleanupDeeplinkListeners() {
     if (deeplinkCleanupRef.current) {
       deeplinkCleanupRef.current()
       deeplinkCleanupRef.current = undefined
     }
   }
 
-  function resetDeeplinkStatus() {
-    clearDeeplinkAttempt()
-    setDeeplinkStatus('idle')
-    setDeeplinkError(undefined)
-    setDeeplinkReady(false)
-  }
-
   function attemptMobileDeeplink(wallet: WcWallet) {
     const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
 
-    clearDeeplinkAttempt()
-    setDeeplinkStatus('pending')
-    setDeeplinkError(undefined)
+    cleanupDeeplinkListeners()
     // Always make the "Open" button available for manual retry
     setDeeplinkReady(true)
 
@@ -451,42 +418,40 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       return
     }
 
-    const markSuccess = () => {
-      clearDeeplinkAttempt()
+    const onSuccess = () => {
+      cleanupDeeplinkListeners()
       requiresUserOpenRef.current = false
       setDeeplinkReady(false)
-      setDeeplinkStatus('success')
     }
 
     const onVisibilityChange = () => {
       if (document.hidden) {
-        // Page became hidden - wallet app likely opened, mark success
-        markSuccess()
+        // Page became hidden - wallet app likely opened
+        onSuccess()
       } else {
         // Page became visible again - check if connected
-        // Give a brief moment for connection state to update
         setTimeout(() => {
           if (ChainController.state.activeCaipAddress) {
-            markSuccess()
+            onSuccess()
           }
         }, 100)
       }
     }
 
     const onPageHide = () => {
-      markSuccess()
+      onSuccess()
     }
 
     const onBlur = () => {
       if (document.hidden) {
-        markSuccess()
+        onSuccess()
       }
     }
 
-    // Subscribe to connection changes - if connected, mark success
+    // Subscribe to connection changes - if connected, cleanup listeners
     const unsubscribeConnection = ChainController.subscribeKey('activeCaipAddress', address => {
       if (address) {
-        markSuccess()
+        onSuccess()
       }
     })
 
@@ -559,7 +524,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     ConnectionController.setWcError(false)
     ConnectionController.setWcLinking(undefined)
     lastHandledUriRef.current = undefined
-    resetDeeplinkStatus()
+    cleanupDeeplinkListeners()
+    setDeeplinkReady(false)
     PublicStateController.set({ connectingWallet: _wallet })
 
     try {
@@ -643,7 +609,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   function resetWcUri() {
     ConnectionController.resetUri()
     ConnectionController.setWcLinking(undefined)
-    resetDeeplinkStatus()
+    cleanupDeeplinkListeners()
+    setDeeplinkReady(false)
   }
 
   useEffect(() => {
@@ -738,9 +705,6 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       connect: () => Promise.resolve(),
       fetchWallets: () => Promise.resolve(),
       resetWcUri,
-      deeplinkStatus: 'idle',
-      deeplinkError: undefined,
-      resetDeeplinkStatus,
       deeplinkReady: false,
       openDeeplink: () => {}
     }
@@ -762,9 +726,6 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     connect,
     fetchWallets,
     resetWcUri,
-    deeplinkStatus,
-    deeplinkError,
-    resetDeeplinkStatus,
     deeplinkReady,
     openDeeplink
   }
