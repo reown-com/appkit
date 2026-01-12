@@ -406,68 +406,24 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }
 
   function attemptMobileDeeplink(wallet: WcWallet) {
-    const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
-
     cleanupDeeplinkListeners()
     // Always make the "Open" button available for manual retry
     setDeeplinkReady(true)
 
     ConnectionControllerUtil.onConnectMobile(wallet)
 
-    if (!isBrowser) {
-      return
-    }
-
-    const onSuccess = () => {
-      cleanupDeeplinkListeners()
-      requiresUserOpenRef.current = false
-      setDeeplinkReady(false)
-    }
-
-    const onVisibilityChange = () => {
-      if (document.hidden) {
-        // Page became hidden - wallet app likely opened
-        onSuccess()
-      } else {
-        // Page became visible again - check if connected
-        setTimeout(() => {
-          if (ChainController.state.activeCaipAddress) {
-            onSuccess()
-          }
-        }, 100)
-      }
-    }
-
-    const onPageHide = () => {
-      onSuccess()
-    }
-
-    const onBlur = () => {
-      if (document.hidden) {
-        onSuccess()
-      }
-    }
-
-    // Subscribe to connection changes - if connected, cleanup listeners
+    // Subscribe to connection changes - when connected, hide "Open" button
     const unsubscribeConnection = ChainController.subscribeKey('activeCaipAddress', address => {
       if (address) {
-        onSuccess()
+        cleanupDeeplinkListeners()
+        requiresUserOpenRef.current = false
+        setDeeplinkReady(false)
       }
     })
 
-    document.addEventListener('visibilitychange', onVisibilityChange)
-    window.addEventListener('pagehide', onPageHide)
-    window.addEventListener('blur', onBlur)
-
     deeplinkCleanupRef.current = () => {
-      document.removeEventListener('visibilitychange', onVisibilityChange)
-      window.removeEventListener('pagehide', onPageHide)
-      window.removeEventListener('blur', onBlur)
       unsubscribeConnection()
     }
-
-    // No timeout - we don't show error states for deeplinks
-    // User can always retry with the "Open" button if needed
   }
 
   // Helper to get WcWallet from API or from connectingWallet extended properties
