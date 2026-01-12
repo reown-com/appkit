@@ -1,25 +1,17 @@
 import { useEffect, useState } from 'react'
 
 import {
-  Button,
-  Divider,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
   DrawerOverlay,
-  Text,
   useDisclosure,
   useToast
 } from '@chakra-ui/react'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import {
-  CoreHelperUtil,
-  type WalletItem,
-  useAppKitAccount,
-  useAppKitWallets
-} from '@reown/appkit/react'
+import { type WalletItem, useAppKitAccount, useAppKitWallets } from '@reown/appkit/react'
 
 import { AppKitHeadlessInjectedWallets } from '@/src/components/Headless/AppKitHeadlessInjectedWallets'
 import { AppKitHeadlessQRCode } from '@/src/components/Headless/AppKitHeadlessQRCode'
@@ -52,24 +44,13 @@ export function AppkitConnectDrawer({ controls }: Props) {
 
   // AppKit hooks
   const { isConnected } = useAppKitAccount()
-  const {
-    wcUri,
-    isFetchingWcUri,
-    connectingWallet,
-    connect,
-    resetWcUri,
-    deeplinkReady,
-    openDeeplink
-  } = useAppKitWallets()
-  const isMobile = CoreHelperUtil.isMobile()
+  const { wcUri, isFetchingWcUri, connectingWallet, connect, resetWcUri } = useAppKitWallets()
 
   const currentView = history[history.length - 1]
 
   function handleClose() {
     push('connect')
-    if (!isMobile) {
-      resetWcUri()
-    }
+    resetWcUri()
     onClose()
   }
 
@@ -88,9 +69,7 @@ export function AppkitConnectDrawer({ controls }: Props) {
   }
 
   function handleBack() {
-    if (!isMobile) {
-      resetWcUri()
-    }
+    resetWcUri()
     if (history.length > 1) {
       pop()
     }
@@ -116,12 +95,10 @@ export function AppkitConnectDrawer({ controls }: Props) {
   }, [isConnected, isOpen])
 
   useEffect(() => {
-    // Only navigate to QR code view when actively connecting to a wallet
-    // (not just because a pre-generated URI exists)
-    if (!isFetchingWcUri && wcUri && connectingWallet) {
+    if (!isFetchingWcUri && wcUri) {
       push('qrcode')
     }
-  }, [isFetchingWcUri, wcUri, connectingWallet])
+  }, [isFetchingWcUri, wcUri])
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={handleClose} size="md">
@@ -129,25 +106,13 @@ export function AppkitConnectDrawer({ controls }: Props) {
       <DrawerContent data-testid="headless-drawer">
         <DrawerCloseButton data-testid="headless-drawer-close-button" />
         <DrawerBody pt={8} pb={8}>
-          {isMobile && deeplinkReady && connectingWallet && (
-            <>
-              <Text mb={2} fontSize="sm" color="gray.500">
-                Tap Open to continue in {connectingWallet.name}
-              </Text>
-              <Button mb={4} colorScheme="blue" onClick={openDeeplink}>
-                Open {connectingWallet.name}
-              </Button>
-              <Divider my={4} />
-            </>
-          )}
-
           {currentView === 'connect' && (
             <AppKitHeadlessInjectedWallets onConnect={handleConnect} onSeeAll={handleSeeAll} />
           )}
           {currentView === 'search' && (
             <AppKitHeadlessWcWallets onConnect={handleConnect} onBack={handleBack} />
           )}
-          {!isMobile && wcUri && connectingWallet && currentView === 'qrcode' && (
+          {wcUri && connectingWallet && currentView === 'qrcode' && (
             <AppKitHeadlessQRCode onBack={handleBack} onCopyUri={handleCopyUri} />
           )}
         </DrawerBody>
