@@ -123,7 +123,6 @@ export function AppkitConnectDrawer({ controls }: Props) {
     }
   }, [isFetchingWcUri, wcUri, connectingWallet])
 
-
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={handleClose} size="md">
       <DrawerOverlay />
