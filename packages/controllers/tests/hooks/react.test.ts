@@ -1012,6 +1012,87 @@ describe('useAppKitWallets', () => {
     expect(fetchWalletsByPageSpy).toHaveBeenCalledWith({ page: 3 })
   })
 
+  it('should fetch wallets with custom caipNetworkIds', async () => {
+    const setIsFetchingWallets = vi.fn()
+    mockedReact.useState.mockReturnValue([false, setIsFetchingWallets])
+
+    useSnapshot
+      .mockReturnValueOnce({
+        features: { headless: true },
+        remoteFeatures: { headless: true }
+      })
+      .mockReturnValueOnce({
+        wcUri: undefined,
+        wcFetchingUri: false
+      })
+      .mockReturnValueOnce({
+        wallets: [],
+        search: [],
+        page: 1,
+        count: 0
+      })
+      .mockReturnValueOnce({
+        initialized: true,
+        connectingWallet: undefined
+      })
+
+    vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
+    vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
+    const fetchWalletsByPageSpy = vi
+      .spyOn(ApiController, 'fetchWalletsByPage')
+      .mockResolvedValue(undefined)
+
+    const result = useAppKitWallets()
+
+    await result.fetchWallets({ page: 2, caipNetworkIds: ['eip155:1', 'solana:mainnet'] })
+
+    expect(fetchWalletsByPageSpy).toHaveBeenCalledWith({
+      page: 2,
+      caipNetworkIds: ['eip155:1', 'solana:mainnet']
+    })
+  })
+
+  it('should search wallets with custom caipNetworkIds', async () => {
+    const setIsFetchingWallets = vi.fn()
+    mockedReact.useState.mockReturnValue([false, setIsFetchingWallets])
+
+    useSnapshot
+      .mockReturnValueOnce({
+        features: { headless: true },
+        remoteFeatures: { headless: true }
+      })
+      .mockReturnValueOnce({
+        wcUri: undefined,
+        wcFetchingUri: false
+      })
+      .mockReturnValueOnce({
+        wallets: [],
+        search: [],
+        page: 1,
+        count: 0
+      })
+      .mockReturnValueOnce({
+        initialized: true,
+        connectingWallet: undefined
+      })
+
+    vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
+    vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
+    const searchWalletSpy = vi.spyOn(ApiController, 'searchWallet').mockResolvedValue(undefined)
+
+    const result = useAppKitWallets()
+
+    await result.fetchWallets({
+      query: 'metamask',
+      caipNetworkIds: ['eip155:1', 'eip155:137']
+    })
+
+    expect(searchWalletSpy).toHaveBeenCalledWith({
+      search: 'metamask',
+      caipNetworkIds: ['eip155:1', 'eip155:137']
+    })
+  })
+
   it('should handle fetchWallets error gracefully', async () => {
     const setIsFetchingWallets = vi.fn()
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
