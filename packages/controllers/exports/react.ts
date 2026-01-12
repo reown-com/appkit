@@ -18,6 +18,7 @@ import { ConnectUtil, type WalletItem } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
+import { MobileWalletUtil } from '../src/utils/MobileWallet.js'
 import type {
   NamespaceTypeMap,
   UseAppKitAccountReturn,
@@ -483,6 +484,11 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     cleanupDeeplinkListeners()
     setDeeplinkReady(false)
     PublicStateController.set({ connectingWallet: _wallet })
+
+    // Handle wallets with custom deeplinks (Phantom, Solflare, Coinbase on Solana, Binance on Bitcoin)
+    // These wallets don't support WalletConnect relay but open the dApp in their in-app browser
+    const activeNamespace = namespace ?? ChainController.state.activeChain
+    MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, activeNamespace)
 
     try {
       // Get wallet from API or use passed wallet properties as fallback
