@@ -6,10 +6,9 @@ import { toast } from 'sonner'
 
 import type { WalletItem } from '@reown/appkit'
 import { type ChainNamespace } from '@reown/appkit/networks'
-import { CoreHelperUtil, useAppKitWallets } from '@reown/appkit/react'
+import { useAppKitWallets } from '@reown/appkit/react'
 
 import { NamespaceSelectionDialog } from '@/components/NamespaceSelectionDialog'
-import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
@@ -18,14 +17,12 @@ import { ConnectContent } from './ConnectContent'
 import { WalletConnectQRContent } from './WalletConnectQRContent'
 
 export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>) {
-  const { connect, wcUri, connectingWallet, resetWcUri, deeplinkReady, openDeeplink } =
-    useAppKitWallets()
+  const { connect, wcUri, connectingWallet, resetWcUri } = useAppKitWallets()
   const [selectedWallet, setSelectedWallet] = useState<WalletItem | null>(null)
   const [showWalletSearch, setShowWalletSearch] = useState(false)
   const [isNamespaceDialogOpen, setIsNamespaceDialogOpen] = useState(false)
-  const isMobile = CoreHelperUtil.isMobile()
 
-  const showQRCode = !isMobile && wcUri && connectingWallet && !connectingWallet.isInjected
+  const showQRCode = wcUri && connectingWallet && !connectingWallet.isInjected
 
   function onOpenNamespaceDialog(item: WalletItem) {
     setSelectedWallet(item)
@@ -64,16 +61,6 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
         )}
       >
         <div className={cn('flex-1', showQRCode && 'border-r border-border')}>
-          {isMobile && deeplinkReady && connectingWallet && !connectingWallet.isInjected ? (
-            <div className="p-4">
-              <p className="mb-2 text-sm text-muted-foreground">
-                Tap Open to continue in {connectingWallet.name}
-              </p>
-              <Button onClick={openDeeplink} className="w-full">
-                Open {connectingWallet.name}
-              </Button>
-            </div>
-          ) : null}
           {showWalletSearch ? (
             <AllWalletsContent onBack={() => setShowWalletSearch(false)} onConnect={onConnect} />
           ) : (
@@ -87,7 +74,7 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
         {/* Render QR Code on the right side */}
         {showQRCode && (
           <div className="flex-1 p-6 bg-muted/70">
-            <WalletConnectQRContent onClose={() => (isMobile ? null : resetWcUri())} />
+            <WalletConnectQRContent onClose={resetWcUri} />
           </div>
         )}
       </Card>
