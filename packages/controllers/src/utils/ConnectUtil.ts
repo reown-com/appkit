@@ -103,32 +103,19 @@ export const ConnectUtil = {
   },
 
   /**
-   * Maps the WalletGuide explorer wallet to a WalletItem.
-   * @param w - The WalletGuide explorer wallet.
-   * @returns The WalletItem for the WalletGuide explorer wallet.
+   * Maps the WalletItem to a Wallet Guide Wallet.
+   * @param wallet - The WalletItem to map to a Wallet Guide Wallet.
+   * @returns The Wallet Guide Wallet for the WalletItem.
    */
-  mapWalletToWalletItem(w: WcWallet): WalletItem {
+  mapWalletItemToWcWallet(wallet: WalletItem): WcWallet {
     return {
-      id: w.id,
-      connectors: [],
-      name: w.name,
-      imageUrl: AssetUtil.getWalletImageUrl(w.image_id),
-      isInjected: false,
-      isRecent: false,
-      walletInfo: {
-        description: w.description,
-        supportedChains: w.chains,
-        website: w.homepage,
-        installationLinks: {
-          appStore: w.app_store,
-          playStore: w.play_store,
-          chromeStore: w.chrome_store,
-          desktopLink: w.desktop_link
-        },
-        deepLink: w.mobile_link,
-        linkMode: w.link_mode,
-        isCertified: w.badge_type === 'certified'
-      }
+      id: wallet.id,
+      name: wallet.name,
+      image_id: wallet.imageUrl,
+      image_url: wallet.imageUrl,
+      description: wallet.walletInfo.description,
+      mobile_link: wallet.walletInfo.deepLink,
+      link_mode: wallet.walletInfo.linkMode ?? null
     }
   }
 }

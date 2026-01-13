@@ -120,7 +120,6 @@ export const ConnectionControllerUtil = {
         ConnectionController.setWcLinking({ name, href })
         ConnectionController.setRecentWallet(wallet)
 
-        console.log('>>> universalLink', universalLink, deepLink)
         if (OptionsController.state.experimental_preferUniversalLinks && universalLink) {
           CoreHelperUtil.openHref(universalLink, target)
         } else {

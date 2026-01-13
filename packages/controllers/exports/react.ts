@@ -418,17 +418,6 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     }
   }
 
-  function mapWalletItemToWcWallet(wallet: WalletItem): WcWallet {
-    return {
-      id: wallet.id,
-      name: wallet.name,
-      image_id: wallet.imageUrl,
-      description: wallet.walletInfo.description,
-      mobile_link: wallet.walletInfo.deepLink,
-      link_mode: wallet.walletInfo.linkMode ?? null
-    }
-  }
-
   async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
     PublicStateController.set({ connectingWallet: _wallet })
 
@@ -443,9 +432,9 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       if (_wallet?.isInjected && connector) {
         await ConnectorControllerUtil.connectExternal(connector)
       } else {
-        const wcWallet = mapWalletItemToWcWallet(_wallet)
+        const wcWallet = ConnectUtil.mapWalletItemToWcWallet(_wallet)
         if (wcWallet.mobile_link) {
-          ConnectionControllerUtil.onConnectMobile(mapWalletItemToWcWallet(_wallet))
+          ConnectionControllerUtil.onConnectMobile(wcWallet)
         } else {
           MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, namespace)
         }
