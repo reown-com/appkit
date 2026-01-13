@@ -35,7 +35,7 @@
   "peerDependencies": {
     "@wagmi/core": ">=2.21.2",
     "viem": ">=2.44.2",
-    "wagmi": ">=3.3.2"
+    "wagmi": ">=2.19.5"
   },
   "devDependencies": {
     "@types/react": "19.1.15",
