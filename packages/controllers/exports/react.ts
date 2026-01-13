@@ -13,7 +13,6 @@ import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { OptionsController } from '../src/controllers/OptionsController.js'
 import { ProviderController } from '../src/controllers/ProviderController.js'
 import { PublicStateController } from '../src/controllers/PublicStateController.js'
-import { ApiControllerUtil } from '../src/utils/ApiControllerUtil.js'
 import { ConnectUtil, type WalletItem } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
@@ -264,7 +263,7 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
         hasDeletedWallet: true
       })
     },
-    [chainNamespace]
+    [chainNamespace, onSuccess]
   )
 
   if (!isMultiWalletEnabled) {
@@ -399,32 +398,6 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   const requiresUserOpenRef = useRef(false)
   const deeplinkCleanupRef = useRef<(() => void) | undefined>(undefined)
 
-  /**
-   * Converts a WalletItem to WcWallet format for mobile deeplink handling.
-   * First tries to get wallet from API, then falls back to extracting mobile_link from the wallet item.
-   */
-  function toWcWallet(wallet: WalletItem | undefined): WcWallet | undefined {
-    if (!wallet) {
-      return undefined
-    }
-    const apiWallet = ApiControllerUtil.getWalletById(wallet.id)
-    if (apiWallet) {
-      return apiWallet
-    }
-    // Support custom wallets with mobile_link passed directly
-    const walletWithExtras = wallet as WalletItem & { mobile_link?: string; link_mode?: string }
-    if (walletWithExtras.mobile_link) {
-      return {
-        id: wallet.id,
-        name: wallet.name,
-        mobile_link: walletWithExtras.mobile_link,
-        link_mode: walletWithExtras.link_mode ?? null,
-        image_url: wallet.imageUrl
-      }
-    }
-    return undefined
-  }
-
   function cleanupDeeplinkListeners() {
     if (deeplinkCleanupRef.current) {
       deeplinkCleanupRef.current()
@@ -432,10 +405,15 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     }
   }
 
-  function attemptMobileDeeplink(wallet: WcWallet) {
+  function attemptMobileDeeplink(wallet: WalletItem) {
     cleanupDeeplinkListeners()
     setDeeplinkReady(true)
-    ConnectionControllerUtil.onConnectMobile(wallet)
+    ConnectionControllerUtil.onConnectMobile({
+      id: wallet.id,
+      name: wallet.name,
+      mobile_link: wallet.walletInfo.deepLink,
+      link_mode: wallet.walletInfo.linkMode ?? null
+    })
 
     // Subscribe to connection changes - when connected, hide "Open" button
     const unsubscribeConnection = ChainController.subscribeKey('activeCaipAddress', address => {
@@ -452,12 +430,115 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }
 
   function openDeeplink() {
-    const wcWallet = toWcWallet(connectingWallet as WalletItem | undefined)
-    if (!wcWallet || !CoreHelperUtil.isMobile()) {
+    const wallet = connectingWallet as WalletItem | undefined
+    if (!wallet?.walletInfo.deepLink || !CoreHelperUtil.isMobile()) {
       return
     }
     requiresUserOpenRef.current = false
-    attemptMobileDeeplink(wcWallet)
+    attemptMobileDeeplink(wallet)
+  }
+
+  // -- Connection helpers ------------------------------------------------
+  interface ConnectionContext {
+    wallet: WalletItem
+    namespace: ChainNamespace | undefined
+    isMobile: boolean
+    isNewWallet: boolean
+    previousUri: string | undefined
+  }
+
+  function resetConnectionState(wallet: WalletItem) {
+    ConnectionController.setWcError(false)
+    ConnectionController.setWcLinking(undefined)
+    lastHandledUriRef.current = undefined
+    cleanupDeeplinkListeners()
+    setDeeplinkReady(false)
+    PublicStateController.set({ connectingWallet: wallet })
+  }
+
+  function getConnectionContext(wallet: WalletItem, namespace?: ChainNamespace): ConnectionContext {
+    const isNewWallet =
+      Boolean(lastWalletIdRef.current) && lastWalletIdRef.current !== wallet.id
+    lastWalletIdRef.current = wallet.id
+
+    return {
+      wallet,
+      namespace,
+      isMobile: CoreHelperUtil.isMobile(),
+      isNewWallet,
+      previousUri: ConnectionController.state.wcUri
+    }
+  }
+
+  function handleWalletSwitchState(context: ConnectionContext) {
+    const { isNewWallet, isMobile } = context
+
+    /*
+     * The WC URI is not wallet-specific - any wallet can use it to connect.
+     * On mobile: reuse existing URI to enable synchronous deeplink (Safari blocks async deeplinks)
+     * On desktop: reset URI for UX reasons - users expect a fresh QR when selecting a different wallet
+     */
+    if (isNewWallet && !isMobile) {
+      ConnectionController.resetUri()
+      ConnectionController.setWcLinking(undefined)
+      lastHandledUriRef.current = undefined
+    } else if (isNewWallet && isMobile) {
+      // On mobile, just clear linking state but keep the URI
+      ConnectionController.setWcLinking(undefined)
+    }
+
+    // Always allow auto-trigger when user explicitly clicks a wallet
+    requiresUserOpenRef.current = false
+    setDeeplinkReady(false)
+  }
+
+  function tryMobileDeeplinkWithExistingUri(context: ConnectionContext): boolean {
+    const { wallet, isMobile, isNewWallet } = context
+    const existingUri = ConnectionController.state.wcUri
+
+    /*
+     * URI is technically valid for any wallet, but we apply different rules per platform:
+     * - Mobile: always reuse valid URI (enables synchronous deeplink)
+     * - Desktop: only reuse for same wallet (UX: users expect fresh QR for different wallet)
+     */
+    const isExistingUriValid =
+      Boolean(existingUri) &&
+      !CoreHelperUtil.isPairingExpired(ConnectionController.state.wcPairingExpiry) &&
+      (isMobile || !isNewWallet)
+
+    if (isMobile && wallet.walletInfo.deepLink && isExistingUriValid && existingUri) {
+      lastHandledUriRef.current = existingUri
+      attemptMobileDeeplink(wallet)
+
+      return true
+    }
+
+    return false
+  }
+
+  function getWalletConnector(wallet: WalletItem, namespace?: ChainNamespace) {
+    const walletConnector = wallet.connectors.find(c => c.chain === namespace)
+
+    return walletConnector && namespace
+      ? ConnectorController.getConnector({ id: walletConnector.id, namespace })
+      : undefined
+  }
+
+  async function connectViaWalletConnect(context: ConnectionContext) {
+    const { wallet, isMobile, previousUri } = context
+
+    /*
+     * On mobile, use cache: 'auto' to reuse pre-generated URI for synchronous deeplink triggering
+     * Safari blocks deeplinks from async callbacks, so we need the URI ready before this point
+     * On desktop, use cache: 'never' to ensure fresh pairing for QR code
+     */
+    const cacheStrategy = isMobile ? 'auto' : 'never'
+    await ConnectionController.connectWalletConnect({ cache: cacheStrategy })
+
+    const currentUri = ConnectionController.state.wcUri
+    if (isMobile && wallet.walletInfo.deepLink && currentUri && currentUri !== previousUri) {
+      attemptMobileDeeplink(wallet)
+    }
   }
 
   async function fetchWallets(fetchOptions?: { page?: number; query?: string }) {
@@ -479,75 +560,30 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     }
   }
 
-  async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
-    ConnectionController.setWcError(false)
-    ConnectionController.setWcLinking(undefined)
-    lastHandledUriRef.current = undefined
-    cleanupDeeplinkListeners()
-    setDeeplinkReady(false)
-    PublicStateController.set({ connectingWallet: _wallet })
+  async function connect(wallet: WalletItem, namespace?: ChainNamespace) {
+    resetConnectionState(wallet)
 
-    // Handle wallets with custom deeplinks (Phantom, Solflare, Coinbase on Solana, Binance on Bitcoin)
-    // These wallets don't support WalletConnect relay but open the dApp in their in-app browser
+    /*
+     * Handle wallets with custom deeplinks (Phantom, Solflare, Coinbase on Solana, Binance on Bitcoin)
+     * These wallets don't support WalletConnect relay but open the dApp in their in-app browser
+     */
     const activeNamespace = namespace ?? ChainController.state.activeChain
-    MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, activeNamespace)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(wallet.id, activeNamespace)
 
     try {
-      const wcWallet = toWcWallet(_wallet)
-      const isMobile = CoreHelperUtil.isMobile()
-      const previousUri = ConnectionController.state.wcUri
-      const isNewWallet = Boolean(lastWalletIdRef.current) && lastWalletIdRef.current !== _wallet.id
-      lastWalletIdRef.current = _wallet.id
+      const context = getConnectionContext(wallet, namespace)
+      handleWalletSwitchState(context)
 
-      // Reset state for a fresh connection attempt
-      // On mobile: DON'T reset URI when switching wallets - reuse it for synchronous deeplink
-      // The WC URI is not wallet-specific, any wallet can use it to connect
-      // On desktop: reset URI to show fresh QR code for the new wallet
-      if (isNewWallet && !isMobile) {
-        ConnectionController.resetUri()
-        ConnectionController.setWcLinking(undefined)
-        lastHandledUriRef.current = undefined
-      } else if (isNewWallet && isMobile) {
-        // On mobile, just clear linking state but keep the URI
-        ConnectionController.setWcLinking(undefined)
-      }
-      // Always allow auto-trigger when user explicitly clicks a wallet
-      requiresUserOpenRef.current = false
-      setDeeplinkReady(false)
-
-      const existingUri = ConnectionController.state.wcUri
-      // On mobile, URI is valid even when switching wallets (we reuse it for sync deeplink)
-      // On desktop, URI is only valid for the same wallet (need fresh QR for new wallet)
-      const isExistingUriValid =
-        Boolean(existingUri) &&
-        !CoreHelperUtil.isPairingExpired(ConnectionController.state.wcPairingExpiry) &&
-        (isMobile || !isNewWallet)
-
-      if (isMobile && wcWallet?.mobile_link && isExistingUriValid && existingUri) {
-        lastHandledUriRef.current = existingUri
-        attemptMobileDeeplink(wcWallet)
+      if (tryMobileDeeplinkWithExistingUri(context)) {
         return
       }
 
-      const walletConnector = _wallet?.connectors.find(c => c.chain === namespace)
+      const connector = getWalletConnector(wallet, namespace)
 
-      const connector =
-        walletConnector && namespace
-          ? ConnectorController.getConnector({ id: walletConnector?.id, namespace })
-          : undefined
-
-      if (_wallet?.isInjected && connector) {
+      if (wallet.isInjected && connector) {
         await ConnectorControllerUtil.connectExternal(connector)
       } else {
-        // On mobile, use cache: 'auto' to reuse pre-generated URI for synchronous deeplink triggering
-        // Safari blocks deeplinks from async callbacks, so we need the URI ready before this point
-        // On desktop, use cache: 'never' to ensure fresh pairing for QR code
-        const cacheStrategy = isMobile ? 'auto' : 'never'
-        await ConnectionController.connectWalletConnect({ cache: cacheStrategy })
-        const currentUri = ConnectionController.state.wcUri
-        if (isMobile && wcWallet?.mobile_link && currentUri && currentUri !== previousUri) {
-          attemptMobileDeeplink(wcWallet)
-        }
+        await connectViaWalletConnect(context)
       }
     } catch (error) {
       PublicStateController.set({ connectingWallet: undefined })
@@ -580,16 +616,16 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       }
 
       const isMobile = CoreHelperUtil.isMobile()
-      const currentWallet = PublicStateController.state.connectingWallet as WalletItem | undefined
-      const wcWallet = toWcWallet(currentWallet)
+      const currentWallet = PublicStateController.state.connectingWallet 
 
-      if (isMobile && wcWallet?.mobile_link) {
+      if (isMobile && currentWallet?.walletInfo.deepLink) {
         if (requiresUserOpenRef.current) {
           setDeeplinkReady(true)
+
           return
         }
         lastHandledUriRef.current = wcUri
-        attemptMobileDeeplink(wcWallet)
+        attemptMobileDeeplink(currentWallet)
       }
     })
 
@@ -609,8 +645,10 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     }
   }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
 
-  // Pre-generate WalletConnect URI on mobile so first wallet click can trigger deeplink synchronously
-  // Safari blocks deeplinks from async callbacks, so we need the URI ready before user clicks
+  /*
+   * Pre-generate WalletConnect URI on mobile so first wallet click can trigger deeplink synchronously
+   * Safari blocks deeplinks from async callbacks, so we need the URI ready before user clicks
+   */
   useEffect(() => {
     if (initialized && isHeadlessEnabled && CoreHelperUtil.isMobile()) {
       const existingUri = ConnectionController.state.wcUri
@@ -640,7 +678,9 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       fetchWallets: () => Promise.resolve(),
       resetWcUri,
       deeplinkReady: false,
-      openDeeplink: () => {}
+      openDeeplink: () => {
+        // Noop - headless mode is disabled
+      }
     }
   }
 

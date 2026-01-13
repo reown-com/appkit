@@ -28,6 +28,7 @@ export type WalletItem = {
       desktopLink?: WcWallet['desktop_link']
     }
     deepLink?: WcWallet['mobile_link']
+    linkMode?: WcWallet['link_mode']
     isCertified?: boolean
   }
   isInjected: boolean
@@ -125,6 +126,7 @@ export const ConnectUtil = {
           desktopLink: w.desktop_link
         },
         deepLink: w.mobile_link,
+        linkMode: w.link_mode,
         isCertified: w.badge_type === 'certified'
       }
     }

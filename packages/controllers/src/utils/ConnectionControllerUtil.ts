@@ -125,8 +125,10 @@ export const ConnectionControllerUtil = {
             ? universalLink
             : deepLink
 
-        // On mobile with _self target, use location.href directly to avoid Safari's popup blocker
-        // Safari blocks window.open() from async callbacks but allows location.href navigation
+        /*
+         * On mobile with _self target, use location.href directly to avoid Safari's popup blocker
+         * Safari blocks window.open() from async callbacks but allows location.href navigation
+         */
         if (target === '_self' && CoreHelperUtil.isMobile() && typeof window !== 'undefined') {
           window.location.href = linkToOpen
         } else {
