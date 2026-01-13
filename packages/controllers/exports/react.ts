@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
@@ -382,9 +382,14 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
 
+  const hasConnected = useRef(false)
+
   useEffect(() => {
-    ConnectionController.connectWalletConnect({ cache: 'never' })
-  }, [])
+    if (initialized && !hasConnected.current) {
+      hasConnected.current = true
+      ConnectionController.connectWalletConnect({ cache: 'never' })
+    }
+  }, [initialized])
 
   useEffect(() => {
     if (
