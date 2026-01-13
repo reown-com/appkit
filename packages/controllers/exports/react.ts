@@ -392,6 +392,12 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }, [initialized])
 
   useEffect(() => {
+    if (initialized && hasConnected.current && !wcUri && !wcFetchingUri) {
+      ConnectionController.connectWalletConnect({ cache: 'never' })
+    }
+  }, [initialized, wcUri, wcFetchingUri])
+
+  useEffect(() => {
     if (
       initialized &&
       remoteFeatures?.headless !== undefined &&
