@@ -2,7 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
-import { type ChainNamespace, type Connection, ConstantsUtil } from '@reown/appkit-common'
+import {
+  type CaipNetwork,
+  type ChainNamespace,
+  type Connection,
+  ConstantsUtil
+} from '@reown/appkit-common'
 
 import { AlertController } from '../src/controllers/AlertController.js'
 import { ApiController } from '../src/controllers/ApiController.js'
@@ -76,7 +81,7 @@ export function useAppKitNetworkCore(): Pick<
   const { activeCaipNetwork } = useSnapshot(ChainController.state)
 
   return {
-    caipNetwork: activeCaipNetwork,
+    caipNetwork: activeCaipNetwork as CaipNetwork,
     chainId: activeCaipNetwork?.id,
     caipNetworkId: activeCaipNetwork?.caipNetworkId
   }
