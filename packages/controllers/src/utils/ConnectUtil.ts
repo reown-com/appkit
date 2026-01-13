@@ -141,7 +141,7 @@ export const ConnectUtil = {
     return {
       id: wallet.id,
       name: wallet.name,
-      image_id: wallet.imageUrl,
+      image_id: wallet.id,
       image_url: wallet.imageUrl,
       description: wallet.walletInfo.description,
       mobile_link: wallet.walletInfo.deepLink,
