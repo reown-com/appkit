@@ -120,19 +120,11 @@ export const ConnectionControllerUtil = {
         ConnectionController.setWcLinking({ name, href })
         ConnectionController.setRecentWallet(wallet)
 
-        const linkToOpen =
-          OptionsController.state.experimental_preferUniversalLinks && universalLink
-            ? universalLink
-            : deepLink
-
-        /*
-         * On mobile with _self target, use location.href directly to avoid Safari's popup blocker
-         * Safari blocks window.open() from async callbacks but allows location.href navigation
-         */
-        if (target === '_self' && CoreHelperUtil.isMobile() && typeof window !== 'undefined') {
-          window.location.href = linkToOpen
+        console.log('>>> universalLink', universalLink, deepLink)
+        if (OptionsController.state.experimental_preferUniversalLinks && universalLink) {
+          CoreHelperUtil.openHref(universalLink, target)
         } else {
-          CoreHelperUtil.openHref(linkToOpen, target)
+          CoreHelperUtil.openHref(deepLink, target)
         }
       } catch (e) {
         EventsController.sendEvent({

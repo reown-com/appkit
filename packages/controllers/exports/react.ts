@@ -386,6 +386,19 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     ConnectionController.connectWalletConnect({ cache: 'never' })
   }, [])
 
+  useEffect(() => {
+    if (
+      initialized &&
+      remoteFeatures?.headless !== undefined &&
+      (!isHeadlessEnabled || !remoteFeatures?.headless)
+    ) {
+      AlertController.open(
+        ConstantsUtil.REMOTE_FEATURES_ALERTS.HEADLESS_NOT_ENABLED.DEFAULT,
+        'info'
+      )
+    }
+  }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
+
   async function fetchWallets(fetchOptions?: { page?: number; query?: string }) {
     setIsFetchingWallets(true)
     try {
