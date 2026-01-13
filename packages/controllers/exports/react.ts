@@ -425,6 +425,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
   async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
     PublicStateController.set({ connectingWallet: _wallet })
+    const isMobile = CoreHelperUtil.isMobile()
 
     try {
       const walletConnector = _wallet?.connectors.find(c => c.chain === namespace)
@@ -436,13 +437,16 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
       if (_wallet?.isInjected && connector) {
         await ConnectorControllerUtil.connectExternal(connector)
-      } else {
+      } else if (isMobile) {
         const wcWallet = ConnectUtil.mapWalletItemToWcWallet(_wallet)
+
         if (wcWallet.mobile_link) {
           ConnectionControllerUtil.onConnectMobile(wcWallet)
         } else {
           MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, namespace)
         }
+      } else {
+        ConnectionController.connectWalletConnect({ cache: 'never' })
       }
     } catch (error) {
       PublicStateController.set({ connectingWallet: undefined })
