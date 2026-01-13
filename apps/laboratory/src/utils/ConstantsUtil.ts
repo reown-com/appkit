@@ -2,6 +2,7 @@ import type { CaipNetwork, SocialProvider } from '@reown/appkit'
 import type { Wallet } from '@reown/appkit-wallet-button'
 import {
   abstract,
+  adi,
   arbitrum,
   aurora,
   base,
@@ -90,7 +91,8 @@ const EvmNetworks = [
   abstract,
   monadTestnet,
   rootstock,
-  rootstockTestnet
+  rootstockTestnet,
+  adi
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNotExist = {
