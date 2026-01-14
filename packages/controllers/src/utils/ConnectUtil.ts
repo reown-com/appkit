@@ -29,10 +29,10 @@ export type WalletItem = {
     }
     deepLink?: WcWallet['mobile_link']
     isCertified?: boolean
+    supportsWcPay?: boolean
   }
   isInjected: boolean
   isRecent: boolean
-  supportsWcPay: boolean
 }
 
 export const ConnectUtil = {
@@ -69,15 +69,14 @@ export const ConnectUtil = {
   /**
    * Serializes WcWallet properties into WalletItem format.
    * @param wallet - The WcWallet to serialize.
-   * @returns The serialized walletInfo and supportsWcPay properties.
+   * @returns The serialized walletInfo property.
    */
-  serializeWcWallet(wallet?: WcWallet): Pick<WalletItem, 'walletInfo' | 'supportsWcPay'> {
+  serializeWcWallet(wallet?: WcWallet): Pick<WalletItem, 'walletInfo'> {
     if (!wallet) {
-      return { walletInfo: {}, supportsWcPay: false }
+      return { walletInfo: {} }
     }
 
     return {
-      supportsWcPay: wallet.supports_wcpay ?? false,
       walletInfo: {
         description: wallet.description,
         supportedChains: wallet.chains,
@@ -89,7 +88,8 @@ export const ConnectUtil = {
           desktopLink: wallet.desktop_link
         },
         deepLink: wallet.mobile_link,
-        isCertified: wallet.badge_type === 'certified'
+        isCertified: wallet.badge_type === 'certified',
+        supportsWcPay: wallet.supports_wcpay ?? false
       }
     }
   },
