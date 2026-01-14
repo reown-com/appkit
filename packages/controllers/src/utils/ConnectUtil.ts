@@ -148,7 +148,8 @@ export const ConnectUtil = {
       image_url: wallet.imageUrl,
       description: wallet.walletInfo.description,
       mobile_link: wallet.walletInfo.deepLink,
-      link_mode: wallet.walletInfo.linkMode ?? null
+      link_mode: wallet.walletInfo.linkMode ?? null,
+      chains: wallet.walletInfo.supportedChains
     }
   }
 }
