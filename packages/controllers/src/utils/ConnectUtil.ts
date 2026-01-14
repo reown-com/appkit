@@ -10,6 +10,7 @@ export type WalletItem = {
   id: string
   name: string
   imageUrl: string
+  imageId?: string
   connectors: {
     id: string
     rdns?: string
@@ -96,6 +97,7 @@ export const ConnectUtil = {
       connectors: subType === 'walletConnect' ? [] : connectors,
       name: connector.name,
       imageUrl: connector.imageUrl || AssetUtil.getAssetImageUrl(connector.imageId),
+      imageId: connector.imageId,
       isInjected: subType !== 'walletConnect',
       isRecent: false,
       walletInfo: {}
@@ -113,6 +115,7 @@ export const ConnectUtil = {
       connectors: [],
       name: w.name,
       imageUrl: AssetUtil.getWalletImageUrl(w.image_id),
+      imageId: w.image_id,
       isInjected: false,
       isRecent: false,
       walletInfo: {
@@ -141,7 +144,7 @@ export const ConnectUtil = {
     return {
       id: wallet.id,
       name: wallet.name,
-      image_id: wallet.id,
+      image_id: wallet.imageId,
       image_url: wallet.imageUrl,
       description: wallet.walletInfo.description,
       mobile_link: wallet.walletInfo.deepLink,
