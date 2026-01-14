@@ -6,14 +6,25 @@ import { CopyIcon, ExternalLinkIcon, Loader2Icon, X } from 'lucide-react'
 import Image from 'next/image'
 import { toast } from 'sonner'
 
-import { CoreHelperUtil, useAppKitWallets } from '@reown/appkit/react'
+import type { WalletItem } from '@reown/appkit'
+import { CoreHelperUtil } from '@reown/appkit/react'
 
 import { Button } from '@/components/ui/button'
 import { CardTitle } from '@/components/ui/card'
 
-export function WalletConnectQRContent({ onClose }: { onClose: () => void }) {
-  const { connectingWallet, wcUri, isFetchingWcUri } = useAppKitWallets()
+interface WalletConnectQRContentProps {
+  connectingWallet: WalletItem | undefined
+  wcUri: string | undefined
+  isFetchingWcUri: boolean
+  onClose: () => void
+}
 
+export function WalletConnectQRContent({
+  connectingWallet,
+  wcUri,
+  isFetchingWcUri,
+  onClose
+}: WalletConnectQRContentProps) {
   function handleCopyUri() {
     if (wcUri) {
       navigator.clipboard.writeText(wcUri)

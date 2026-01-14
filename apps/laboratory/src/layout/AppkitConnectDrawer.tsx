@@ -44,13 +44,14 @@ export function AppkitConnectDrawer({ controls }: Props) {
 
   // AppKit hooks
   const { isConnected } = useAppKitAccount()
-  const { wcUri, isFetchingWcUri, connectingWallet, connect, resetWcUri } = useAppKitWallets()
+  const { wcUri, isFetchingWcUri, connectingWallet, connect, resetConnectingWallet } =
+    useAppKitWallets()
 
   const currentView = history[history.length - 1]
 
   function handleClose() {
     push('connect')
-    resetWcUri()
+    resetConnectingWallet()
     onClose()
   }
 
@@ -69,7 +70,7 @@ export function AppkitConnectDrawer({ controls }: Props) {
   }
 
   function handleBack() {
-    resetWcUri()
+    resetConnectingWallet()
     if (history.length > 1) {
       pop()
     }

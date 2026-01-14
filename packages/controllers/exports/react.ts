@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
@@ -18,11 +18,11 @@ import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { OptionsController } from '../src/controllers/OptionsController.js'
 import { ProviderController } from '../src/controllers/ProviderController.js'
 import { PublicStateController } from '../src/controllers/PublicStateController.js'
-import { ApiControllerUtil } from '../src/utils/ApiControllerUtil.js'
 import { ConnectUtil, type WalletItem } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
+import { MobileWalletUtil } from '../src/utils/MobileWallet.js'
 import type {
   NamespaceTypeMap,
   UseAppKitAccountReturn,
@@ -367,6 +367,10 @@ export interface UseAppKitWalletsReturn {
    * Function to reset the WC URI. Useful to keep `connectingWallet` state sync with the WC URI. Can be called when the QR code is closed.
    */
   resetWcUri: () => void
+  /**
+   * Clears the connectingWallet state in PublicStateController.
+   */
+  resetConnectingWallet: () => void
 }
 
 /**
@@ -386,6 +390,19 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     count
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
+
+  useEffect(() => {
+    if (
+      initialized &&
+      remoteFeatures?.headless !== undefined &&
+      (!isHeadlessEnabled || !remoteFeatures?.headless)
+    ) {
+      AlertController.open(
+        ConstantsUtil.REMOTE_FEATURES_ALERTS.HEADLESS_NOT_ENABLED.DEFAULT,
+        'info'
+      )
+    }
+  }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
 
   async function fetchWallets(fetchOptions?: { page?: number; query?: string }) {
     setIsFetchingWallets(true)
@@ -408,6 +425,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
   async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
     PublicStateController.set({ connectingWallet: _wallet })
+    const isMobile = CoreHelperUtil.isMobile()
 
     try {
       const walletConnector = _wallet?.connectors.find(c => c.chain === namespace)
@@ -419,6 +437,14 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
       if (_wallet?.isInjected && connector) {
         await ConnectorControllerUtil.connectExternal(connector)
+      } else if (isMobile) {
+        const wcWallet = ConnectUtil.mapWalletItemToWcWallet(_wallet)
+
+        if (wcWallet.mobile_link) {
+          ConnectionControllerUtil.onConnectMobile(wcWallet)
+        } else {
+          MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, namespace)
+        }
       } else {
         await ConnectionController.connectWalletConnect({ cache: 'never' })
       }
@@ -433,50 +459,9 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     ConnectionController.setWcLinking(undefined)
   }
 
-  const lastHandledUriRef = useRef<string | undefined>(undefined)
-
-  useEffect(() => {
-    lastHandledUriRef.current = undefined
-  }, [connectingWallet?.id])
-
-  useEffect(() => {
-    const unsubscribe = ConnectionController.subscribeKey('wcUri', wcUri => {
-      if (!wcUri) {
-        lastHandledUriRef.current = undefined
-
-        return
-      }
-
-      if (wcUri === lastHandledUriRef.current || ConnectionController.state.wcLinking) {
-        return
-      }
-
-      const isMobile = CoreHelperUtil.isMobile()
-      const wcWallet = ApiControllerUtil.getWalletById(
-        PublicStateController.state.connectingWallet?.id
-      )
-
-      if (isMobile && wcWallet?.mobile_link) {
-        lastHandledUriRef.current = wcUri
-        ConnectionControllerUtil.onConnectMobile(wcWallet)
-      }
-    })
-
-    return () => unsubscribe()
-  }, [])
-
-  useEffect(() => {
-    if (
-      initialized &&
-      remoteFeatures?.headless !== undefined &&
-      (!isHeadlessEnabled || !remoteFeatures?.headless)
-    ) {
-      AlertController.open(
-        ConstantsUtil.REMOTE_FEATURES_ALERTS.HEADLESS_NOT_ENABLED.DEFAULT,
-        'info'
-      )
-    }
-  }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
+  function resetConnectingWallet() {
+    PublicStateController.set({ connectingWallet: undefined })
+  }
 
   if (!isHeadlessEnabled || !remoteFeatures?.headless) {
     return {
@@ -491,7 +476,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       count: 0,
       connect: () => Promise.resolve(),
       fetchWallets: () => Promise.resolve(),
-      resetWcUri
+      resetWcUri,
+      resetConnectingWallet
     }
   }
 
@@ -510,6 +496,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     count,
     connect,
     fetchWallets,
-    resetWcUri
+    resetWcUri,
+    resetConnectingWallet
   }
 }
