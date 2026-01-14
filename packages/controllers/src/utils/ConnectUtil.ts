@@ -10,6 +10,7 @@ export type WalletItem = {
   id: string
   name: string
   imageUrl: string
+  imageId?: string
   connectors: {
     id: string
     rdns?: string
@@ -28,6 +29,7 @@ export type WalletItem = {
       desktopLink?: WcWallet['desktop_link']
     }
     deepLink?: WcWallet['mobile_link']
+    linkMode?: WcWallet['link_mode']
     isCertified?: boolean
   }
   isInjected: boolean
@@ -95,6 +97,7 @@ export const ConnectUtil = {
       connectors: subType === 'walletConnect' ? [] : connectors,
       name: connector.name,
       imageUrl: connector.imageUrl || AssetUtil.getAssetImageUrl(connector.imageId),
+      imageId: connector.imageId,
       isInjected: subType !== 'walletConnect',
       isRecent: false,
       walletInfo: {}
@@ -112,6 +115,7 @@ export const ConnectUtil = {
       connectors: [],
       name: w.name,
       imageUrl: AssetUtil.getWalletImageUrl(w.image_id),
+      imageId: w.image_id,
       isInjected: false,
       isRecent: false,
       walletInfo: {
@@ -125,8 +129,27 @@ export const ConnectUtil = {
           desktopLink: w.desktop_link
         },
         deepLink: w.mobile_link,
+        linkMode: w.link_mode,
         isCertified: w.badge_type === 'certified'
       }
+    }
+  },
+
+  /**
+   * Maps the WalletItem to a Wallet Guide Wallet.
+   * @param wallet - The WalletItem to map to a Wallet Guide Wallet.
+   * @returns The Wallet Guide Wallet for the WalletItem.
+   */
+  mapWalletItemToWcWallet(wallet: WalletItem): WcWallet {
+    return {
+      id: wallet.id,
+      name: wallet.name,
+      image_id: wallet.imageId,
+      image_url: wallet.imageUrl,
+      description: wallet.walletInfo.description,
+      mobile_link: wallet.walletInfo.deepLink,
+      link_mode: wallet.walletInfo.linkMode ?? null,
+      chains: wallet.walletInfo.supportedChains
     }
   }
 }
