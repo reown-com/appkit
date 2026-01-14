@@ -32,6 +32,7 @@ export type WalletItem = {
   }
   isInjected: boolean
   isRecent: boolean
+  supportsWcPay: boolean
 }
 
 export const ConnectUtil = {
@@ -66,6 +67,34 @@ export const ConnectUtil = {
   },
 
   /**
+   * Serializes WcWallet properties into WalletItem format.
+   * @param wallet - The WcWallet to serialize.
+   * @returns The serialized walletInfo and supportsWcPay properties.
+   */
+  serializeWcWallet(wallet?: WcWallet): Pick<WalletItem, 'walletInfo' | 'supportsWcPay'> {
+    if (!wallet) {
+      return { walletInfo: {}, supportsWcPay: false }
+    }
+
+    return {
+      supportsWcPay: wallet.supports_wcpay ?? false,
+      walletInfo: {
+        description: wallet.description,
+        supportedChains: wallet.chains,
+        website: wallet.homepage,
+        installationLinks: {
+          appStore: wallet.app_store,
+          playStore: wallet.play_store,
+          chromeStore: wallet.chrome_store,
+          desktopLink: wallet.desktop_link
+        },
+        deepLink: wallet.mobile_link,
+        isCertified: wallet.badge_type === 'certified'
+      }
+    }
+  },
+
+  /**
    * Maps the connector to a WalletItem.
    * @param connector - The connector to map to a WalletItem.
    * @param subType - The subtype of the connector.
@@ -97,7 +126,7 @@ export const ConnectUtil = {
       imageUrl: connector.imageUrl || AssetUtil.getAssetImageUrl(connector.imageId),
       isInjected: subType !== 'walletConnect',
       isRecent: false,
-      walletInfo: {}
+      ...this.serializeWcWallet(connector.explorerWallet)
     }
   },
 
@@ -114,19 +143,7 @@ export const ConnectUtil = {
       imageUrl: AssetUtil.getWalletImageUrl(w.image_id),
       isInjected: false,
       isRecent: false,
-      walletInfo: {
-        description: w.description,
-        supportedChains: w.chains,
-        website: w.homepage,
-        installationLinks: {
-          appStore: w.app_store,
-          playStore: w.play_store,
-          chromeStore: w.chrome_store,
-          desktopLink: w.desktop_link
-        },
-        deepLink: w.mobile_link,
-        isCertified: w.badge_type === 'certified'
-      }
+      ...this.serializeWcWallet(w)
     }
   }
 }

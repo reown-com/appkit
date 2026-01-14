@@ -739,6 +739,7 @@ describe('useAppKitWallets', () => {
     ],
     isInjected: false,
     isRecent: false,
+    supportsWcPay: false,
     walletInfo: {}
   }
 
