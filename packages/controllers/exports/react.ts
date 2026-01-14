@@ -385,17 +385,17 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   const hasConnected = useRef(false)
 
   useEffect(() => {
-    if (initialized && !hasConnected.current) {
+    if (isHeadlessEnabled && initialized && !hasConnected.current) {
       hasConnected.current = true
       ConnectionController.connectWalletConnect({ cache: 'never' })
     }
-  }, [initialized])
+  }, [isHeadlessEnabled, initialized])
 
   useEffect(() => {
-    if (initialized && hasConnected.current && !wcUri && !wcFetchingUri) {
+    if (isHeadlessEnabled && initialized && hasConnected.current && !wcUri && !wcFetchingUri) {
       ConnectionController.connectWalletConnect({ cache: 'never' })
     }
-  }, [initialized, wcUri, wcFetchingUri])
+  }, [isHeadlessEnabled, initialized, wcUri, wcFetchingUri])
 
   useEffect(() => {
     if (
