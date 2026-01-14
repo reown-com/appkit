@@ -452,7 +452,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
           MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, namespace)
         }
       } else {
-        ConnectionController.connectWalletConnect({ cache: 'never' })
+        await ConnectionController.connectWalletConnect({ cache: 'never' })
       }
     } catch (error) {
       PublicStateController.set({ connectingWallet: undefined })
@@ -462,6 +462,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
   function resetWcUri() {
     ConnectionController.resetUri()
+    ConnectionController.setWcLinking(undefined)
   }
 
   if (!isHeadlessEnabled || !remoteFeatures?.headless) {
