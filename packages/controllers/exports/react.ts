@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { useSnapshot } from 'valtio'
 
@@ -367,6 +367,10 @@ export interface UseAppKitWalletsReturn {
    * Function to reset the WC URI. Useful to keep `connectingWallet` state sync with the WC URI. Can be called when the QR code is closed.
    */
   resetWcUri: () => void
+  /**
+   * Clears the connectingWallet state in PublicStateController.
+   */
+  resetConnectingWallet: () => void
 }
 
 /**
@@ -386,21 +390,6 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     count
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
-
-  const hasConnected = useRef(false)
-
-  useEffect(() => {
-    if (isHeadlessEnabled && initialized && !hasConnected.current) {
-      hasConnected.current = true
-      ConnectionController.connectWalletConnect({ cache: 'never' })
-    }
-  }, [isHeadlessEnabled, initialized])
-
-  useEffect(() => {
-    if (isHeadlessEnabled && initialized && hasConnected.current && !wcUri && !wcFetchingUri) {
-      ConnectionController.connectWalletConnect({ cache: 'never' })
-    }
-  }, [isHeadlessEnabled, initialized, wcUri, wcFetchingUri])
 
   useEffect(() => {
     if (
@@ -470,6 +459,10 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     ConnectionController.setWcLinking(undefined)
   }
 
+  function resetConnectingWallet() {
+    PublicStateController.set({ connectingWallet: undefined })
+  }
+
   if (!isHeadlessEnabled || !remoteFeatures?.headless) {
     return {
       wallets: [],
@@ -483,7 +476,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       count: 0,
       connect: () => Promise.resolve(),
       fetchWallets: () => Promise.resolve(),
-      resetWcUri
+      resetWcUri,
+      resetConnectingWallet
     }
   }
 
@@ -502,6 +496,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     count,
     connect,
     fetchWallets,
-    resetWcUri
+    resetWcUri,
+    resetConnectingWallet
   }
 }
