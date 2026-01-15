@@ -48,13 +48,17 @@ function useHistory() {
     setHistory(prev => prev.slice(0, -1))
   }
 
-  return { history, push, pop }
+  function reset() {
+    setHistory(['connect'])
+  }
+
+  return { history, push, pop, reset }
 }
 
 export function AppkitConnectDrawer({ controls }: Props) {
   const { isOpen, onClose } = controls
   const toast = useToast()
-  const { history, push, pop } = useHistory()
+  const { history, push, pop, reset } = useHistory()
   const isMobile = CoreHelperUtil.isMobile()
 
   // Selected wallet state for mobile two-step flow
@@ -71,7 +75,7 @@ export function AppkitConnectDrawer({ controls }: Props) {
   const shouldShowOpenButton = isMobile && selectedWallet && !selectedWallet.wallet.isInjected
 
   function handleClose() {
-    push('connect')
+    reset()
     resetConnectingWallet()
     setSelectedWallet(null)
     onClose()
