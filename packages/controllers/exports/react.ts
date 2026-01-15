@@ -385,8 +385,11 @@ export interface UseAppKitWalletsReturn {
 // Module-level tracking for WC URI prefetch interval
 let wcUriPrefetchIntervalId: ReturnType<typeof setInterval> | null = null
 
-// WC URI refresh interval - refresh before the ~5 minute expiry
-const WC_URI_REFRESH_INTERVAL_MS = 4 * 60 * 1000 // 4 minutes
+/*
+ * WC URI refresh interval - refresh before the ~5 minute expiry.
+ * Set to 4 minutes to ensure URI is always valid.
+ */
+const WC_URI_REFRESH_INTERVAL_MS = 4 * 60 * 1000
 
 /**
  * Clears the WC URI prefetch interval. Exported for testing purposes.
@@ -451,7 +454,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
    */
   useEffect(() => {
     if (!initialized || !isHeadlessEnabled || !isMobile) {
-      return
+      return undefined
     }
 
     // Clear any existing interval from other hook instances
@@ -469,9 +472,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     // Set up interval to refresh URI before expiry
     wcUriPrefetchIntervalId = setInterval(prefetchUri, WC_URI_REFRESH_INTERVAL_MS)
 
-    return () => {
-      _clearWcUriPrefetchInterval()
-    }
+    return _clearWcUriPrefetchInterval
   }, [initialized, isHeadlessEnabled, isMobile])
 
   async function fetchWallets(fetchOptions?: { page?: number; query?: string }) {
@@ -500,7 +501,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   ) {
     setCurrentWcPayUrl(options?.wcPayUrl)
     PublicStateController.set({ connectingWallet: _wallet })
-    const isMobile = CoreHelperUtil.isMobile()
+    const isMobileDevice = CoreHelperUtil.isMobile()
 
     try {
       const walletConnector = _wallet?.connectors.find(c => c.chain === namespace)
@@ -512,7 +513,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
       if (_wallet?.isInjected && connector) {
         await ConnectorControllerUtil.connectExternal(connector)
-      } else if (isMobile) {
+      } else if (isMobileDevice) {
         const wcWallet = ConnectUtil.mapWalletItemToWcWallet(_wallet)
 
         if (wcWallet.mobile_link) {
@@ -521,8 +522,10 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
           MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, namespace)
         }
 
-        // Pre-fetch a fresh URI immediately after the current one is consumed for the deeplink.
-        // This ensures a new URI is ready if the user returns (e.g., connection fails or they disconnect).
+        /*
+         * Pre-fetch a fresh URI immediately after the current one is consumed for the deeplink.
+         * This ensures a new URI is ready if the user returns (e.g., connection fails or they disconnect).
+         */
         ConnectionController.connectWalletConnect({ cache: 'never' }).catch(() => {
           // Silently fail - interval will retry
         })
