@@ -380,10 +380,6 @@ export interface UseAppKitWalletsReturn {
    * Clears the connectingWallet state in PublicStateController.
    */
   resetConnectingWallet: () => void
-  /**
-   * Whether the current device is mobile. Useful for disabling WC wallet buttons until wcUri is ready.
-   */
-  isMobile: boolean
 }
 
 // Module-level flag to ensure WC URI is pre-fetched only once across all hook instances
@@ -526,8 +522,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       connect: () => Promise.resolve(),
       fetchWallets: () => Promise.resolve(),
       resetWcUri,
-      resetConnectingWallet,
-      isMobile
+      resetConnectingWallet
     }
   }
 
@@ -547,7 +542,6 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     connect,
     fetchWallets,
     resetWcUri,
-    resetConnectingWallet,
-    isMobile
+    resetConnectingWallet
   }
 }
