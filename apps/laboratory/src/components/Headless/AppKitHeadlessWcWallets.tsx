@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { CoreHelperUtil, type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
+import { type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
 
 import { useDebounceValue } from '@/src/hooks/useDebounceValue'
 
@@ -25,12 +25,12 @@ interface Props {
     namespace?: ChainNamespace
   ) => void
   onBack: () => void
+  selectedWalletId?: string
 }
 
-export function AppKitHeadlessWcWallets({ onConnect, onBack }: Props) {
+export function AppKitHeadlessWcWallets({ onConnect, onBack, selectedWalletId }: Props) {
   const {
     wcWallets,
-    wcUri,
     isFetchingWcUri,
     isFetchingWallets,
     page,
@@ -39,8 +39,6 @@ export function AppKitHeadlessWcWallets({ onConnect, onBack }: Props) {
     fetchWallets
   } = useAppKitWallets()
 
-  // On mobile, wallets need the WC URI to be pre-generated before connecting
-  const isWalletDisabled = CoreHelperUtil.isMobile() && !wcUri
   const [inputValue, setInputValue] = useState('')
   const searchQuery = useDebounceValue(inputValue, 500)
 
@@ -102,7 +100,7 @@ export function AppKitHeadlessWcWallets({ onConnect, onBack }: Props) {
                 item={item}
                 onConnect={onConnect}
                 isConnecting={isFetchingWcUri && connectingWallet?.id === item.id}
-                isDisabled={isWalletDisabled}
+                isSelected={selectedWalletId === item.id}
               />
             ))}
           </Flex>

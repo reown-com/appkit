@@ -376,31 +376,26 @@ export interface UseAppKitWalletsReturn {
    * Function to reset the WC URI. Useful to keep `connectingWallet` state sync with the WC URI. Can be called when the QR code is closed.
    */
   resetWcUri: () => void
+
   /**
    * Clears the connectingWallet state in PublicStateController.
    */
   resetConnectingWallet: () => void
+
+  /**
+   * Pre-fetches the WalletConnect URI. Call this when user selects a wallet on mobile
+   * to ensure the URI is ready when they click "Open". This enables synchronous deeplink
+   * triggering which is required for iOS Safari.
+   *
+   * **Mobile two-step flow:**
+   * 1. User selects wallet → call `getWcUri()` → button shows loading via `isFetchingWcUri`
+   * 2. User clicks "Open" → `connect()` triggers deeplink synchronously (URI is ready)
+   *
+   * @see PR #5456 for context on iOS deeplink requirements
+   */
+  getWcUri: () => Promise<void>
 }
 
-// Module-level tracking for WC URI prefetch interval
-let wcUriPrefetchIntervalId: ReturnType<typeof setInterval> | null = null
-
-/*
- * WC URI refresh interval - refresh before the ~5 minute expiry.
- * Set to 4 minutes to ensure URI is always valid.
- */
-const WC_URI_REFRESH_INTERVAL_MS = 4 * 60 * 1000
-
-/**
- * Clears the WC URI prefetch interval. Exported for testing purposes.
- * @internal
- */
-export function _clearWcUriPrefetchInterval() {
-  if (wcUriPrefetchIntervalId) {
-    clearInterval(wcUriPrefetchIntervalId)
-    wcUriPrefetchIntervalId = null
-  }
-}
 
 /**
  * Headless hook for wallet connection.
@@ -421,8 +416,6 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
 
-  const isMobile = CoreHelperUtil.isMobile()
-
   // Alert if headless is not enabled
   useEffect(() => {
     if (
@@ -438,42 +431,12 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
 
   /**
-   * Pre-fetch and periodically refresh WC URI on mobile.
-   *
-   * **Important:** This is an intentional exception to the "No startup I/O" rule.
-   *
-   * On iOS/Safari, deeplinks triggered from async callbacks (like after fetching a URI)
-   * are blocked by the browser's security policy. The URI must be pre-generated so that
-   * when users tap a wallet, the deeplink can be triggered synchronously within the
-   * user gesture context.
-   *
-   * The URI is refreshed every 4 minutes to prevent expiry (WC URIs expire after ~5 minutes).
-   * This ensures users always have a valid URI available when they tap a wallet.
-   *
-   * @see PR #5456 for full context on the iOS deeplink blocking issue
+   * Pre-fetches the WalletConnect URI. Call this when user selects a wallet on mobile.
+   * Uses 'auto' cache to reuse existing valid URI or fetch new one if expired.
    */
-  useEffect(() => {
-    if (!initialized || !isHeadlessEnabled || !isMobile) {
-      return undefined
-    }
-
-    // Clear any existing interval from other hook instances
-    _clearWcUriPrefetchInterval()
-
-    function prefetchUri() {
-      ConnectionController.connectWalletConnect({ cache: 'auto' }).catch(() => {
-        // Silently fail - will retry on next interval
-      })
-    }
-
-    // Initial prefetch
-    prefetchUri()
-
-    // Set up interval to refresh URI before expiry
-    wcUriPrefetchIntervalId = setInterval(prefetchUri, WC_URI_REFRESH_INTERVAL_MS)
-
-    return _clearWcUriPrefetchInterval
-  }, [initialized, isHeadlessEnabled, isMobile])
+  async function getWcUri() {
+    await ConnectionController.connectWalletConnect({ cache: 'auto' })
+  }
 
   async function fetchWallets(fetchOptions?: { page?: number; query?: string }) {
     setIsFetchingWallets(true)
@@ -521,14 +484,6 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
         } else {
           MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, namespace)
         }
-
-        /*
-         * Pre-fetch a fresh URI immediately after the current one is consumed for the deeplink.
-         * This ensures a new URI is ready if the user returns (e.g., connection fails or they disconnect).
-         */
-        ConnectionController.connectWalletConnect({ cache: 'never' }).catch(() => {
-          // Silently fail - interval will retry
-        })
       } else {
         await ConnectionController.connectWalletConnect({ cache: 'never' })
       }
@@ -566,7 +521,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       connect: () => Promise.resolve(),
       fetchWallets: () => Promise.resolve(),
       resetWcUri,
-      resetConnectingWallet
+      resetConnectingWallet,
+      getWcUri: () => Promise.resolve()
     }
   }
 
@@ -586,6 +542,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     connect,
     fetchWallets,
     resetWcUri,
-    resetConnectingWallet
+    resetConnectingWallet,
+    getWcUri
   }
 }

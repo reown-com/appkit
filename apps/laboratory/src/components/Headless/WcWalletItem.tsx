@@ -8,23 +8,23 @@ interface Props {
   item: WalletItem
   onConnect: (wallet: WalletItem, namespace?: ChainNamespace) => void
   isConnecting: boolean
-  isDisabled?: boolean
+  isSelected?: boolean
 }
 
-export function WcWalletItem({ item, onConnect, isConnecting, isDisabled }: Props) {
+export function WcWalletItem({ item, onConnect, isConnecting, isSelected }: Props) {
   return (
     <Box
       key={item.name}
       data-testid={`wallet-button-${item.name}`}
       p={3}
-      border="1px"
-      borderColor="gray.200"
+      border={isSelected ? '2px' : '1px'}
+      borderColor={isSelected ? 'blue.500' : 'gray.200'}
       borderRadius="md"
-      cursor={isDisabled ? 'not-allowed' : 'pointer'}
-      opacity={isDisabled ? 0.5 : 1}
-      pointerEvents={isDisabled ? 'none' : 'auto'}
+      cursor="pointer"
+      bg={isSelected ? 'blue.50' : undefined}
       onClick={() => onConnect(item)}
-      _hover={{ bg: 'gray.50', _dark: { bg: 'gray.700' } }}
+      _hover={{ bg: isSelected ? 'blue.100' : 'gray.50', _dark: { bg: isSelected ? 'blue.900' : 'gray.700' } }}
+      _dark={{ bg: isSelected ? 'blue.900' : undefined, borderColor: isSelected ? 'blue.400' : 'gray.600' }}
       position="relative"
     >
       <Flex align="center" gap={3}>

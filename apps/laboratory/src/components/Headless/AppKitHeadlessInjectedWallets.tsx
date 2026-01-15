@@ -1,20 +1,18 @@
 import { Button, Flex, Heading } from '@chakra-ui/react'
 
 import { type ChainNamespace } from '@reown/appkit-common'
-import { CoreHelperUtil, type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
+import { type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
 
 import { InjectedWalletItem } from './InjectedWalletItem'
 
 interface Props {
   onConnect: (wallet: UseAppKitWalletsReturn['wallets'][number], namespace?: ChainNamespace) => void
   onSeeAll: () => void
+  selectedWalletId?: string
 }
 
-export function AppKitHeadlessInjectedWallets({ onConnect, onSeeAll }: Props) {
-  const { wallets, connectingWallet, wcUri } = useAppKitWallets()
-
-  // On mobile, non-injected wallets need the WC URI to be pre-generated before connecting
-  const isWcWalletDisabled = CoreHelperUtil.isMobile() && !wcUri
+export function AppKitHeadlessInjectedWallets({ onConnect, onSeeAll, selectedWalletId }: Props) {
+  const { wallets, connectingWallet } = useAppKitWallets()
 
   return (
     <Flex direction="column" gap={4} paddingTop={8}>
@@ -28,7 +26,7 @@ export function AppKitHeadlessInjectedWallets({ onConnect, onSeeAll }: Props) {
             wallet={wallet}
             onConnect={onConnect}
             isConnecting={connectingWallet?.id === wallet.id}
-            isDisabled={!wallet.isInjected && isWcWalletDisabled}
+            isSelected={selectedWalletId === wallet.id}
           />
         ))}
       </Flex>

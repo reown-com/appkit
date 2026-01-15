@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowLeftIcon, Loader2Icon, SearchIcon } from 'lucide-react'
 
 import type { WalletItem } from '@reown/appkit'
-import { CoreHelperUtil, useAppKitWallets } from '@reown/appkit/react'
+import { useAppKitWallets } from '@reown/appkit/react'
 
 import { Button } from '@/components/ui/button'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -16,6 +16,7 @@ import { WalletListItem } from './WalletListItem'
 type Props = {
   onBack: () => void
   onConnect: (wallet: WalletItem) => void
+  selectedWalletId?: string
 }
 
 function useDebounceValue(value: string, delay: number) {
@@ -34,11 +35,8 @@ function useDebounceValue(value: string, delay: number) {
   return debouncedValue
 }
 
-export function AllWalletsContent({ onBack, onConnect }: Props) {
-  const { wcWallets, wcUri, isFetchingWallets, page, count, fetchWallets } = useAppKitWallets()
-
-  // On mobile, wallets need the WC URI to be pre-generated before connecting
-  const isWalletDisabled = CoreHelperUtil.isMobile() && !wcUri
+export function AllWalletsContent({ onBack, onConnect, selectedWalletId }: Props) {
+  const { wcWallets, isFetchingWallets, page, count, fetchWallets } = useAppKitWallets()
   const [inputValue, setInputValue] = useState('')
   const searchQuery = useDebounceValue(inputValue, 500)
   const loadMoreRef = useRef<HTMLDivElement>(null)
@@ -124,7 +122,7 @@ export function AllWalletsContent({ onBack, onConnect }: Props) {
                   wallet={item}
                   onConnect={onConnect}
                   onOpenNamespaceDialog={() => {}}
-                  isDisabled={isWalletDisabled}
+                  isSelected={selectedWalletId === item.id}
                 />
               ))}
 

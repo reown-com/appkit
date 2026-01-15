@@ -4,7 +4,7 @@ import { ArrowRight, Facebook, Github } from 'lucide-react'
 
 import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
 import type { ChainNamespace } from '@reown/appkit/networks'
-import { CoreHelperUtil, WalletItem, useAppKitWallets } from '@reown/appkit/react'
+import { WalletItem, useAppKitWallets } from '@reown/appkit/react'
 
 import { Button } from '@/components/ui/button'
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -17,6 +17,7 @@ type Props = {
   onConnect: (wallet: WalletItem, namespace?: ChainNamespace) => void
   onOpenNamespaceDialog: (wallet: WalletItem) => void
   setShowWalletSearch: (show: boolean) => void
+  selectedWalletId?: string
 }
 
 function WalletsSkeleton() {
@@ -29,11 +30,13 @@ function WalletsSkeleton() {
   )
 }
 
-export function ConnectContent({ onConnect, onOpenNamespaceDialog, setShowWalletSearch }: Props) {
-  const { isInitialized, wallets, wcUri } = useAppKitWallets()
-
-  // On mobile, non-injected wallets need the WC URI to be pre-generated before connecting
-  const isWcWalletDisabled = CoreHelperUtil.isMobile() && !wcUri
+export function ConnectContent({
+  onConnect,
+  onOpenNamespaceDialog,
+  setShowWalletSearch,
+  selectedWalletId
+}: Props) {
+  const { isInitialized, wallets } = useAppKitWallets()
   const { connect: connectWithWalletButton } = useAppKitWallet()
 
   return (
@@ -57,7 +60,7 @@ export function ConnectContent({ onConnect, onOpenNamespaceDialog, setShowWallet
                         wallet={item}
                         onConnect={onConnect}
                         onOpenNamespaceDialog={onOpenNamespaceDialog}
-                        isDisabled={!item.isInjected && isWcWalletDisabled}
+                        isSelected={selectedWalletId === item.id}
                       />
                     ))}
                   </>
