@@ -434,6 +434,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
    * Uses 'auto' cache to reuse existing valid URI or fetch new one if expired.
    */
   async function getWcUri() {
+    resetWcUri()
     await ConnectionController.connectWalletConnect({ cache: 'auto' })
   }
 
