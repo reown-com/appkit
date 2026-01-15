@@ -366,7 +366,11 @@ export interface UseAppKitWalletsReturn {
    * @param options - Optional connect options (e.g., wcPayUrl for WalletConnect Pay)
    * @returns Promise that resolves when connection completes or rejects on error
    */
-  connect: (wallet: WalletItem, namespace?: ChainNamespace, options?: ConnectOptions) => Promise<void>
+  connect: (
+    wallet: WalletItem,
+    namespace?: ChainNamespace,
+    options?: ConnectOptions
+  ) => Promise<void>
 
   /**
    * Function to reset the WC URI. Useful to keep `connectingWallet` state sync with the WC URI. Can be called when the QR code is closed.
@@ -429,7 +433,11 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     }
   }
 
-  async function connect(_wallet: WalletItem, namespace?: ChainNamespace, options?: ConnectOptions) {
+  async function connect(
+    _wallet: WalletItem,
+    namespace?: ChainNamespace,
+    options?: ConnectOptions
+  ) {
     setCurrentWcPayUrl(options?.wcPayUrl)
     PublicStateController.set({ connectingWallet: _wallet })
     const isMobile = CoreHelperUtil.isMobile()
@@ -472,9 +480,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }
 
   // Enhance wcUri with pay param if wcPayUrl was provided
-  const enhancedWcUri = currentWcPayUrl && wcUri
-    ? CoreHelperUtil.appendPayToUri(wcUri, currentWcPayUrl)
-    : wcUri
+  const enhancedWcUri =
+    currentWcPayUrl && wcUri ? CoreHelperUtil.appendPayToUri(wcUri, currentWcPayUrl) : wcUri
 
   if (!isHeadlessEnabled || !remoteFeatures?.headless) {
     return {
