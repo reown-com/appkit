@@ -14,7 +14,7 @@ export function AppKitHeadlessInjectedWallets({ onConnect, onSeeAll }: Props) {
   const { wallets, connectingWallet, wcUri } = useAppKitWallets()
 
   // On mobile, non-injected wallets need the WC URI to be pre-generated before connecting
-  const isWcWalletDisabled = CoreHelperUtil.isMobile && !wcUri
+  const isWcWalletDisabled = CoreHelperUtil.isMobile() && !wcUri
 
   return (
     <Flex direction="column" gap={4} paddingTop={8}>
