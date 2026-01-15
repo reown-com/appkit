@@ -371,6 +371,21 @@ export interface UseAppKitWalletsReturn {
    * Clears the connectingWallet state in PublicStateController.
    */
   resetConnectingWallet: () => void
+  /**
+   * Whether the current device is mobile. Useful for disabling WC wallet buttons until wcUri is ready.
+   */
+  isMobile: boolean
+}
+
+// Module-level flag to ensure WC URI is pre-fetched only once across all hook instances
+let wcUriPrefetched = false
+
+/**
+ * Resets the WC URI prefetch flag. Exported for testing purposes.
+ * @internal
+ */
+export function _resetWcUriPrefetchFlag() {
+  wcUriPrefetched = false
 }
 
 /**
@@ -391,6 +406,9 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
 
+  const isMobile = CoreHelperUtil.isMobile()
+
+  // Alert if headless is not enabled
   useEffect(() => {
     if (
       initialized &&
@@ -403,6 +421,17 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       )
     }
   }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
+
+  // Pre-fetch WC URI on mobile once AppKit is initialized and headless is enabled
+  useEffect(() => {
+    if (initialized && isHeadlessEnabled && isMobile && !wcUriPrefetched) {
+      wcUriPrefetched = true
+      ConnectionController.connectWalletConnect({ cache: 'auto' }).catch(() => {
+        // Reset flag on error so it can be retried
+        wcUriPrefetched = false
+      })
+    }
+  }, [initialized, isHeadlessEnabled, isMobile])
 
   async function fetchWallets(fetchOptions?: { page?: number; query?: string }) {
     setIsFetchingWallets(true)
@@ -477,7 +506,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       connect: () => Promise.resolve(),
       fetchWallets: () => Promise.resolve(),
       resetWcUri,
-      resetConnectingWallet
+      resetConnectingWallet,
+      isMobile
     }
   }
 
@@ -497,6 +527,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     connect,
     fetchWallets,
     resetWcUri,
-    resetConnectingWallet
+    resetConnectingWallet,
+    isMobile
   }
 }

@@ -30,7 +30,10 @@ function WalletsSkeleton() {
 }
 
 export function ConnectContent({ onConnect, onOpenNamespaceDialog, setShowWalletSearch }: Props) {
-  const { isInitialized, wallets } = useAppKitWallets()
+  const { isInitialized, wallets, wcUri, isMobile } = useAppKitWallets()
+
+  // On mobile, non-injected wallets need the WC URI to be pre-generated before connecting
+  const isWcWalletDisabled = isMobile && !wcUri
   const { connect: connectWithWalletButton } = useAppKitWallet()
 
   return (
@@ -54,6 +57,7 @@ export function ConnectContent({ onConnect, onOpenNamespaceDialog, setShowWallet
                         wallet={item}
                         onConnect={onConnect}
                         onOpenNamespaceDialog={onOpenNamespaceDialog}
+                        isDisabled={!item.isInjected && isWcWalletDisabled}
                       />
                     ))}
                   </>

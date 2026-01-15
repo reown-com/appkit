@@ -95,12 +95,6 @@ export function AppkitConnectDrawer({ controls }: Props) {
     }
   }, [isConnected, isOpen])
 
-  useEffect(() => {
-    if (!isFetchingWcUri && wcUri) {
-      push('qrcode')
-    }
-  }, [isFetchingWcUri, wcUri])
-
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={handleClose} size="md">
       <DrawerOverlay />

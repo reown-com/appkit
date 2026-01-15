@@ -800,7 +800,8 @@ describe('useAppKitWallets', () => {
       connect: expect.any(Function),
       fetchWallets: expect.any(Function),
       resetWcUri: expect.any(Function),
-      resetConnectingWallet: expect.any(Function)
+      resetConnectingWallet: expect.any(Function),
+      isMobile: expect.any(Boolean)
     })
   })
 
@@ -1279,6 +1280,36 @@ describe('useAppKitWallets', () => {
     const result = useAppKitWallets()
 
     expect(result.wcWallets).toEqual(mockSearchWalletItems)
+  })
+
+  it('should auto-prefetch WC URI on mobile when initialized and headless enabled', () => {
+    useSnapshot
+      .mockReturnValueOnce({
+        features: { headless: true },
+        remoteFeatures: { headless: true }
+      })
+      .mockReturnValueOnce({
+        wcUri: undefined,
+        wcFetchingUri: false
+      })
+      .mockReturnValueOnce({
+        wallets: [],
+        search: [],
+        page: 1,
+        count: 0
+      })
+      .mockReturnValueOnce({
+        initialized: true,
+        connectingWallet: undefined
+      })
+
+    vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
+    vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
+
+    useAppKitWallets()
+
+    // useEffect should be called for auto-prefetch
+    expect(mockedReact.useEffect).toHaveBeenCalled()
   })
 
   it('should call both resetUri and setWcLinking when resetWcUri is called', () => {

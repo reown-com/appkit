@@ -18,6 +18,7 @@ import { WalletConnectQRContent } from './WalletConnectQRContent'
 
 export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>) {
   const { connect, wcUri, connectingWallet, isFetchingWcUri, resetWcUri } = useAppKitWallets()
+
   const [selectedWallet, setSelectedWallet] = useState<WalletItem | null>(null)
   const [showWalletSearch, setShowWalletSearch] = useState(false)
   const [isNamespaceDialogOpen, setIsNamespaceDialogOpen] = useState(false)
