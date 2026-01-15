@@ -428,7 +428,18 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     }
   }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
 
-  // Pre-fetch WC URI on mobile once AppKit is initialized and headless is enabled
+  /**
+   * Pre-fetch WC URI on mobile once AppKit is initialized and headless is enabled.
+   *
+   * **Important:** This is an intentional exception to the "No startup I/O" rule.
+   *
+   * On iOS/Safari, deeplinks triggered from async callbacks (like after fetching a URI)
+   * are blocked by the browser's security policy. The URI must be pre-generated so that
+   * when users tap a wallet, the deeplink can be triggered synchronously within the
+   * user gesture context.
+   *
+   * @see PR #5456 for full context on the iOS deeplink blocking issue
+   */
   useEffect(() => {
     if (initialized && isHeadlessEnabled && isMobile && !wcUriPrefetched) {
       wcUriPrefetched = true
