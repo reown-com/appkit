@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
+import { CoreHelperUtil, type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
 
 import { useDebounceValue } from '@/src/hooks/useDebounceValue'
 
@@ -36,12 +36,11 @@ export function AppKitHeadlessWcWallets({ onConnect, onBack }: Props) {
     page,
     count,
     connectingWallet,
-    fetchWallets,
-    isMobile
+    fetchWallets
   } = useAppKitWallets()
 
   // On mobile, wallets need the WC URI to be pre-generated before connecting
-  const isWalletDisabled = isMobile && !wcUri
+  const isWalletDisabled = CoreHelperUtil.isMobile() && !wcUri
   const [inputValue, setInputValue] = useState('')
   const searchQuery = useDebounceValue(inputValue, 500)
 
