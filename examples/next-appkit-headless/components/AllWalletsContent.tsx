@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowLeftIcon, Loader2Icon, SearchIcon } from 'lucide-react'
 
 import type { WalletItem } from '@reown/appkit'
-import { useAppKitWallets } from '@reown/appkit/react'
+import { CoreHelperUtil, useAppKitWallets } from '@reown/appkit/react'
 
 import { Button } from '@/components/ui/button'
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -35,11 +35,10 @@ function useDebounceValue(value: string, delay: number) {
 }
 
 export function AllWalletsContent({ onBack, onConnect }: Props) {
-  const { wcWallets, wcUri, isFetchingWallets, page, count, fetchWallets, isMobile } =
-    useAppKitWallets()
+  const { wcWallets, wcUri, isFetchingWallets, page, count, fetchWallets } = useAppKitWallets()
 
   // On mobile, wallets need the WC URI to be pre-generated before connecting
-  const isWalletDisabled = isMobile && !wcUri
+  const isWalletDisabled = CoreHelperUtil.isMobile() && !wcUri
   const [inputValue, setInputValue] = useState('')
   const searchQuery = useDebounceValue(inputValue, 500)
   const loadMoreRef = useRef<HTMLDivElement>(null)
