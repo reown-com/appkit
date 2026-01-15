@@ -382,15 +382,21 @@ export interface UseAppKitWalletsReturn {
   resetConnectingWallet: () => void
 }
 
-// Module-level flag to ensure WC URI is pre-fetched only once across all hook instances
-let wcUriPrefetched = false
+// Module-level tracking for WC URI prefetch interval
+let wcUriPrefetchIntervalId: ReturnType<typeof setInterval> | null = null
+
+// WC URI refresh interval - refresh before the ~5 minute expiry
+const WC_URI_REFRESH_INTERVAL_MS = 4 * 60 * 1000 // 4 minutes
 
 /**
- * Resets the WC URI prefetch flag. Exported for testing purposes.
+ * Clears the WC URI prefetch interval. Exported for testing purposes.
  * @internal
  */
-export function _resetWcUriPrefetchFlag() {
-  wcUriPrefetched = false
+export function _clearWcUriPrefetchInterval() {
+  if (wcUriPrefetchIntervalId) {
+    clearInterval(wcUriPrefetchIntervalId)
+    wcUriPrefetchIntervalId = null
+  }
 }
 
 /**
@@ -429,7 +435,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
 
   /**
-   * Pre-fetch WC URI on mobile once AppKit is initialized and headless is enabled.
+   * Pre-fetch and periodically refresh WC URI on mobile.
    *
    * **Important:** This is an intentional exception to the "No startup I/O" rule.
    *
@@ -438,15 +444,33 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
    * when users tap a wallet, the deeplink can be triggered synchronously within the
    * user gesture context.
    *
+   * The URI is refreshed every 4 minutes to prevent expiry (WC URIs expire after ~5 minutes).
+   * This ensures users always have a valid URI available when they tap a wallet.
+   *
    * @see PR #5456 for full context on the iOS deeplink blocking issue
    */
   useEffect(() => {
-    if (initialized && isHeadlessEnabled && isMobile && !wcUriPrefetched) {
-      wcUriPrefetched = true
+    if (!initialized || !isHeadlessEnabled || !isMobile) {
+      return
+    }
+
+    // Clear any existing interval from other hook instances
+    _clearWcUriPrefetchInterval()
+
+    function prefetchUri() {
       ConnectionController.connectWalletConnect({ cache: 'auto' }).catch(() => {
-        // Reset flag on error so it can be retried
-        wcUriPrefetched = false
+        // Silently fail - will retry on next interval
       })
+    }
+
+    // Initial prefetch
+    prefetchUri()
+
+    // Set up interval to refresh URI before expiry
+    wcUriPrefetchIntervalId = setInterval(prefetchUri, WC_URI_REFRESH_INTERVAL_MS)
+
+    return () => {
+      _clearWcUriPrefetchInterval()
     }
   }, [initialized, isHeadlessEnabled, isMobile])
 
