@@ -216,5 +216,45 @@ describe('CoreHelperUtil', () => {
       expect(result).toBe(`${wcUri}&pay=${encodeURIComponent(wcPayUrl)}`)
       expect(result).toContain('&pay=https%3A%2F%2Fpay.example.com')
     })
+
+    it('should NOT encode pay param in Telegram Android context', () => {
+      const wcPayUrl = 'https://pay.walletconnect.com/?pid=pay_123'
+
+      vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(true)
+      vi.spyOn(CoreHelperUtil, 'isAndroid').mockReturnValue(true)
+
+      const result = CoreHelperUtil.appendPayToUri(wcUri, wcPayUrl)
+
+      expect(result).toBe(`${wcUri}&pay=${wcPayUrl}`)
+      expect(result).not.toContain(encodeURIComponent(wcPayUrl))
+
+      vi.restoreAllMocks()
+    })
+
+    it('should encode pay param in Telegram iOS context', () => {
+      const wcPayUrl = 'https://pay.walletconnect.com/?pid=pay_123'
+
+      vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(true)
+      vi.spyOn(CoreHelperUtil, 'isAndroid').mockReturnValue(false)
+
+      const result = CoreHelperUtil.appendPayToUri(wcUri, wcPayUrl)
+
+      expect(result).toBe(`${wcUri}&pay=${encodeURIComponent(wcPayUrl)}`)
+
+      vi.restoreAllMocks()
+    })
+
+    it('should encode pay param in non-Telegram Android context', () => {
+      const wcPayUrl = 'https://pay.walletconnect.com/?pid=pay_123'
+
+      vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(false)
+      vi.spyOn(CoreHelperUtil, 'isAndroid').mockReturnValue(true)
+
+      const result = CoreHelperUtil.appendPayToUri(wcUri, wcPayUrl)
+
+      expect(result).toBe(`${wcUri}&pay=${encodeURIComponent(wcPayUrl)}`)
+
+      vi.restoreAllMocks()
+    })
   })
 })
