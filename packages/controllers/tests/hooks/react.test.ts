@@ -865,7 +865,10 @@ describe('useAppKitWallets', () => {
 
   it('should return correct state values', () => {
     const setIsFetchingWallets = vi.fn()
-    mockedReact.useState.mockReturnValue([true, setIsFetchingWallets])
+    const setCurrentWcPayUrl = vi.fn()
+    mockedReact.useState
+      .mockReturnValueOnce([true, setIsFetchingWallets])
+      .mockReturnValueOnce([undefined, setCurrentWcPayUrl])
 
     useSnapshot
       .mockReturnValueOnce({
