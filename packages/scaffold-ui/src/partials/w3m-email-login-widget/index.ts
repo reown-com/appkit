@@ -101,7 +101,7 @@ export class W3mEmailLoginWidget extends LitElement {
     return showSubmit
       ? html`
           <wui-icon-link
-            size="sm"
+            size="lg"
             icon="chevronRight"
             iconcolor="accent-100"
             @click=${this.onSubmitEmail.bind(this)}
