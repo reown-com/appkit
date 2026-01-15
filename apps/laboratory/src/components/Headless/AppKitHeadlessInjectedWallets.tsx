@@ -1,7 +1,7 @@
 import { Button, Flex, Heading } from '@chakra-ui/react'
 
 import { type ChainNamespace } from '@reown/appkit-common'
-import { type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
+import { CoreHelperUtil, type UseAppKitWalletsReturn, useAppKitWallets } from '@reown/appkit/react'
 
 import { InjectedWalletItem } from './InjectedWalletItem'
 
@@ -11,10 +11,10 @@ interface Props {
 }
 
 export function AppKitHeadlessInjectedWallets({ onConnect, onSeeAll }: Props) {
-  const { wallets, connectingWallet, wcUri, isMobile } = useAppKitWallets()
+  const { wallets, connectingWallet, wcUri } = useAppKitWallets()
 
   // On mobile, non-injected wallets need the WC URI to be pre-generated before connecting
-  const isWcWalletDisabled = isMobile && !wcUri
+  const isWcWalletDisabled = CoreHelperUtil.isMobile && !wcUri
 
   return (
     <Flex direction="column" gap={4} paddingTop={8}>
