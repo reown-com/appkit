@@ -10,9 +10,15 @@ interface InjectedWalletItemProps {
   wallet: UseAppKitWalletsReturn['wallets'][number]
   onConnect: (wallet: UseAppKitWalletsReturn['wallets'][number], namespace: ChainNamespace) => void
   isConnecting: boolean
+  isDisabled?: boolean
 }
 
-export function InjectedWalletItem({ wallet, onConnect, isConnecting }: InjectedWalletItemProps) {
+export function InjectedWalletItem({
+  wallet,
+  onConnect,
+  isConnecting,
+  isDisabled
+}: InjectedWalletItemProps) {
   const [toggle, setToggle] = useState(false)
 
   const shouldToggleNamespaceDialog = wallet.connectors.length > 1 && wallet.isInjected
@@ -37,6 +43,7 @@ export function InjectedWalletItem({ wallet, onConnect, isConnecting }: Injected
         py={3}
         px={4}
         justifyContent="flex-start"
+        isDisabled={isDisabled}
         onClick={
           shouldToggleNamespaceDialog
             ? () => toggleConnectors()

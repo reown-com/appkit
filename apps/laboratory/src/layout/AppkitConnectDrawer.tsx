@@ -11,7 +11,12 @@ import {
 } from '@chakra-ui/react'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { type WalletItem, useAppKitAccount, useAppKitWallets } from '@reown/appkit/react'
+import {
+  CoreHelperUtil,
+  type WalletItem,
+  useAppKitAccount,
+  useAppKitWallets
+} from '@reown/appkit/react'
 
 import { AppKitHeadlessInjectedWallets } from '@/src/components/Headless/AppKitHeadlessInjectedWallets'
 import { AppKitHeadlessQRCode } from '@/src/components/Headless/AppKitHeadlessQRCode'
@@ -94,6 +99,12 @@ export function AppkitConnectDrawer({ controls }: Props) {
       handleClose()
     }
   }, [isConnected, isOpen])
+
+  useEffect(() => {
+    if (!isFetchingWcUri && wcUri && !CoreHelperUtil.isMobile()) {
+      push('qrcode')
+    }
+  }, [isFetchingWcUri, wcUri])
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={handleClose} size="md">

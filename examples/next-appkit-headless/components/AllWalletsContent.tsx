@@ -35,7 +35,11 @@ function useDebounceValue(value: string, delay: number) {
 }
 
 export function AllWalletsContent({ onBack, onConnect }: Props) {
-  const { wcWallets, isFetchingWallets, page, count, fetchWallets } = useAppKitWallets()
+  const { wcWallets, wcUri, isFetchingWallets, page, count, fetchWallets, isMobile } =
+    useAppKitWallets()
+
+  // On mobile, wallets need the WC URI to be pre-generated before connecting
+  const isWalletDisabled = isMobile && !wcUri
   const [inputValue, setInputValue] = useState('')
   const searchQuery = useDebounceValue(inputValue, 500)
   const loadMoreRef = useRef<HTMLDivElement>(null)
@@ -121,6 +125,7 @@ export function AllWalletsContent({ onBack, onConnect }: Props) {
                   wallet={item}
                   onConnect={onConnect}
                   onOpenNamespaceDialog={() => {}}
+                  isDisabled={isWalletDisabled}
                 />
               ))}
 

@@ -11,7 +11,10 @@ interface Props {
 }
 
 export function AppKitHeadlessInjectedWallets({ onConnect, onSeeAll }: Props) {
-  const { wallets, connectingWallet } = useAppKitWallets()
+  const { wallets, connectingWallet, wcUri, isMobile } = useAppKitWallets()
+
+  // On mobile, non-injected wallets need the WC URI to be pre-generated before connecting
+  const isWcWalletDisabled = isMobile && !wcUri
 
   return (
     <Flex direction="column" gap={4} paddingTop={8}>
@@ -25,6 +28,7 @@ export function AppKitHeadlessInjectedWallets({ onConnect, onSeeAll }: Props) {
             wallet={wallet}
             onConnect={onConnect}
             isConnecting={connectingWallet?.id === wallet.id}
+            isDisabled={!wallet.isInjected && isWcWalletDisabled}
           />
         ))}
       </Flex>

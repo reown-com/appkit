@@ -30,13 +30,18 @@ interface Props {
 export function AppKitHeadlessWcWallets({ onConnect, onBack }: Props) {
   const {
     wcWallets,
+    wcUri,
     isFetchingWcUri,
     isFetchingWallets,
     page,
     count,
     connectingWallet,
-    fetchWallets
+    fetchWallets,
+    isMobile
   } = useAppKitWallets()
+
+  // On mobile, wallets need the WC URI to be pre-generated before connecting
+  const isWalletDisabled = isMobile && !wcUri
   const [inputValue, setInputValue] = useState('')
   const searchQuery = useDebounceValue(inputValue, 500)
 
@@ -98,6 +103,7 @@ export function AppKitHeadlessWcWallets({ onConnect, onBack }: Props) {
                 item={item}
                 onConnect={onConnect}
                 isConnecting={isFetchingWcUri && connectingWallet?.id === item.id}
+                isDisabled={isWalletDisabled}
               />
             ))}
           </Flex>

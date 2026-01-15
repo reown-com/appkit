@@ -8,9 +8,10 @@ interface Props {
   item: WalletItem
   onConnect: (wallet: WalletItem, namespace?: ChainNamespace) => void
   isConnecting: boolean
+  isDisabled?: boolean
 }
 
-export function WcWalletItem({ item, onConnect, isConnecting }: Props) {
+export function WcWalletItem({ item, onConnect, isConnecting, isDisabled }: Props) {
   return (
     <Box
       key={item.name}
@@ -19,7 +20,9 @@ export function WcWalletItem({ item, onConnect, isConnecting }: Props) {
       border="1px"
       borderColor="gray.200"
       borderRadius="md"
-      cursor="pointer"
+      cursor={isDisabled ? 'not-allowed' : 'pointer'}
+      opacity={isDisabled ? 0.5 : 1}
+      pointerEvents={isDisabled ? 'none' : 'auto'}
       onClick={() => onConnect(item)}
       _hover={{ bg: 'gray.50', _dark: { bg: 'gray.700' } }}
       position="relative"
