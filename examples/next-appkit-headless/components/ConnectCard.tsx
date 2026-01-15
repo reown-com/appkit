@@ -124,7 +124,7 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
                 className="w-full"
                 size="lg"
                 onClick={handleMobileOpen}
-                disabled={isFetchingWcUri}
+                disabled={isFetchingWcUri || !wcUri}
               >
                 {isFetchingWcUri ? (
                   <>

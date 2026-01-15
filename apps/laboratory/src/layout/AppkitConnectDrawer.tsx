@@ -194,7 +194,7 @@ export function AppkitConnectDrawer({ controls }: Props) {
                 size="lg"
                 colorScheme="blue"
                 onClick={handleOpenWallet}
-                isDisabled={isFetchingWcUri}
+                isDisabled={isFetchingWcUri || !wcUri}
                 data-testid="open-wallet-button"
               >
                 {isFetchingWcUri ? (
