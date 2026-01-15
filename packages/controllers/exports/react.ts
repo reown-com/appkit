@@ -520,6 +520,12 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
         } else {
           MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, namespace)
         }
+
+        // Pre-fetch a fresh URI immediately after the current one is consumed for the deeplink.
+        // This ensures a new URI is ready if the user returns (e.g., connection fails or they disconnect).
+        ConnectionController.connectWalletConnect({ cache: 'never' }).catch(() => {
+          // Silently fail - interval will retry
+        })
       } else {
         await ConnectionController.connectWalletConnect({ cache: 'never' })
       }
