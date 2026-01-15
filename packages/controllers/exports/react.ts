@@ -396,7 +396,6 @@ export interface UseAppKitWalletsReturn {
   getWcUri: () => Promise<void>
 }
 
-
 /**
  * Headless hook for wallet connection.
  * Provides all the data and functions needed to build a custom connect UI.

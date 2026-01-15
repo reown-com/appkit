@@ -62,14 +62,8 @@ export function AppkitConnectDrawer({ controls }: Props) {
 
   // AppKit hooks
   const { isConnected } = useAppKitAccount()
-  const {
-    wcUri,
-    isFetchingWcUri,
-    connectingWallet,
-    connect,
-    resetConnectingWallet,
-    getWcUri
-  } = useAppKitWallets()
+  const { wcUri, isFetchingWcUri, connectingWallet, connect, resetConnectingWallet, getWcUri } =
+    useAppKitWallets()
 
   const currentView = history[history.length - 1]
 

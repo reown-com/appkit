@@ -36,7 +36,8 @@ export function ConnectCard({ className, ...props }: React.ComponentProps<'div'>
   const [isNamespaceDialogOpen, setIsNamespaceDialogOpen] = useState(false)
 
   const showQRCode = connectingWallet && !connectingWallet.isInjected
-  const showMobileOpenButton = isMobile && mobileSelectedWallet && !mobileSelectedWallet.wallet.isInjected
+  const showMobileOpenButton =
+    isMobile && mobileSelectedWallet && !mobileSelectedWallet.wallet.isInjected
 
   function onOpenNamespaceDialog(item: WalletItem) {
     setSelectedWallet(item)

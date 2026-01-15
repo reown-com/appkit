@@ -23,8 +23,14 @@ export function WcWalletItem({ item, onConnect, isConnecting, isSelected }: Prop
       cursor="pointer"
       bg={isSelected ? 'blue.50' : undefined}
       onClick={() => onConnect(item)}
-      _hover={{ bg: isSelected ? 'blue.100' : 'gray.50', _dark: { bg: isSelected ? 'blue.900' : 'gray.700' } }}
-      _dark={{ bg: isSelected ? 'blue.900' : undefined, borderColor: isSelected ? 'blue.400' : 'gray.600' }}
+      _hover={{
+        bg: isSelected ? 'blue.100' : 'gray.50',
+        _dark: { bg: isSelected ? 'blue.900' : 'gray.700' }
+      }}
+      _dark={{
+        bg: isSelected ? 'blue.900' : undefined,
+        borderColor: isSelected ? 'blue.400' : 'gray.600'
+      }}
       position="relative"
     >
       <Flex align="center" gap={3}>

@@ -54,7 +54,10 @@ export function InjectedWalletItem({
         borderColor={isSelected ? 'blue.500' : undefined}
         borderWidth={isSelected ? '2px' : '1px'}
         bg={isSelected ? 'blue.50' : undefined}
-        _hover={{ bg: isSelected ? 'blue.100' : 'gray.50', _dark: { bg: isSelected ? 'blue.900' : 'gray.700' } }}
+        _hover={{
+          bg: isSelected ? 'blue.100' : 'gray.50',
+          _dark: { bg: isSelected ? 'blue.900' : 'gray.700' }
+        }}
         _dark={{ bg: isSelected ? 'blue.900' : undefined }}
       >
         <Flex align="center" gap={3} width="100%">
