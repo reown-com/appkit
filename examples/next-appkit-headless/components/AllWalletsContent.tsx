@@ -16,6 +16,7 @@ import { WalletListItem } from './WalletListItem'
 type Props = {
   onBack: () => void
   onConnect: (wallet: WalletItem) => void
+  selectedWalletId?: string
 }
 
 function useDebounceValue(value: string, delay: number) {
@@ -34,7 +35,7 @@ function useDebounceValue(value: string, delay: number) {
   return debouncedValue
 }
 
-export function AllWalletsContent({ onBack, onConnect }: Props) {
+export function AllWalletsContent({ onBack, onConnect, selectedWalletId }: Props) {
   const { wcWallets, isFetchingWallets, page, count, fetchWallets } = useAppKitWallets()
   const [inputValue, setInputValue] = useState('')
   const searchQuery = useDebounceValue(inputValue, 500)
@@ -121,6 +122,7 @@ export function AllWalletsContent({ onBack, onConnect }: Props) {
                   wallet={item}
                   onConnect={onConnect}
                   onOpenNamespaceDialog={() => {}}
+                  isSelected={selectedWalletId === item.id}
                 />
               ))}
 

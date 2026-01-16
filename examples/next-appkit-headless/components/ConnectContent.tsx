@@ -17,6 +17,7 @@ type Props = {
   onConnect: (wallet: WalletItem, namespace?: ChainNamespace) => void
   onOpenNamespaceDialog: (wallet: WalletItem) => void
   setShowWalletSearch: (show: boolean) => void
+  selectedWalletId?: string
 }
 
 function WalletsSkeleton() {
@@ -29,7 +30,12 @@ function WalletsSkeleton() {
   )
 }
 
-export function ConnectContent({ onConnect, onOpenNamespaceDialog, setShowWalletSearch }: Props) {
+export function ConnectContent({
+  onConnect,
+  onOpenNamespaceDialog,
+  setShowWalletSearch,
+  selectedWalletId
+}: Props) {
   const { isInitialized, wallets } = useAppKitWallets()
   const { connect: connectWithWalletButton } = useAppKitWallet()
 
@@ -54,6 +60,7 @@ export function ConnectContent({ onConnect, onOpenNamespaceDialog, setShowWallet
                         wallet={item}
                         onConnect={onConnect}
                         onOpenNamespaceDialog={onOpenNamespaceDialog}
+                        isSelected={selectedWalletId === item.id}
                       />
                     ))}
                   </>
