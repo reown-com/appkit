@@ -37,6 +37,17 @@ export const CUSTOM_DEEPLINK_WALLETS = {
 
 export const MobileWalletUtil = {
   /**
+   * Checks if a wallet is a custom deeplink wallet that uses Universal Links
+   * instead of WalletConnect deeplinks.
+   *
+   * @param {string} id - The id of the wallet.
+   * @returns {boolean} Whether the wallet is a custom deeplink wallet.
+   */
+  isCustomDeeplinkWallet(id: string): boolean {
+    return Object.values(CUSTOM_DEEPLINK_WALLETS).some(wallet => wallet.id === id)
+  },
+
+  /**
    * Handles mobile wallet redirection for wallets that have Universal Links and doesn't support WalletConnect Deep Links.
    *
    * @param {string} id - The id of the wallet.

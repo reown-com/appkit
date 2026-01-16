@@ -173,4 +173,30 @@ describe('MobileWalletUtil', () => {
     //
     expect(window.location.href).toBe(expectedUrl)
   })
+
+  describe('isCustomDeeplinkWallet', () => {
+    it('should return true for Phantom wallet', () => {
+      expect(MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.PHANTOM.id)).toBe(true)
+    })
+
+    it('should return true for Coinbase wallet', () => {
+      expect(MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.COINBASE.id)).toBe(
+        true
+      )
+    })
+
+    it('should return true for Solflare wallet', () => {
+      expect(MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id)).toBe(
+        true
+      )
+    })
+
+    it('should return true for Binance wallet', () => {
+      expect(MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.BINANCE.id)).toBe(true)
+    })
+
+    it('should return false for unknown wallet IDs', () => {
+      expect(MobileWalletUtil.isCustomDeeplinkWallet('unknown-wallet-id')).toBe(false)
+    })
+  })
 })
