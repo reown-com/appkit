@@ -1285,7 +1285,7 @@ describe('useAppKitWallets', () => {
     expect(result.wcWallets).toEqual(mockSearchWalletItems)
   })
 
-  it('should auto-prefetch WC URI on mobile when initialized and headless enabled', () => {
+  it('should call resetWcUri and connectWalletConnect when getWcUri is called', async () => {
     useSnapshot
       .mockReturnValueOnce({
         features: { headless: true },
@@ -1309,10 +1309,21 @@ describe('useAppKitWallets', () => {
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
     vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
 
-    useAppKitWallets()
+    const resetUriSpy = vi.spyOn(ConnectionController, 'resetUri')
+    const setWcLinkingSpy = vi.spyOn(ConnectionController, 'setWcLinking')
+    const connectWalletConnectSpy = vi
+      .spyOn(ConnectionController, 'connectWalletConnect')
+      .mockResolvedValue(undefined)
 
-    // useEffect should be called for auto-prefetch
-    expect(mockedReact.useEffect).toHaveBeenCalled()
+    const result = useAppKitWallets()
+
+    await result.getWcUri()
+
+    // getWcUri should reset URI state before fetching new one
+    expect(resetUriSpy).toHaveBeenCalled()
+    expect(setWcLinkingSpy).toHaveBeenCalledWith(undefined)
+    // getWcUri should call connectWalletConnect with cache: 'auto'
+    expect(connectWalletConnectSpy).toHaveBeenCalledWith({ cache: 'auto' })
   })
 
   it('should call both resetUri and setWcLinking when resetWcUri is called', () => {
