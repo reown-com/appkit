@@ -10,16 +10,24 @@ interface InjectedWalletItemProps {
   wallet: UseAppKitWalletsReturn['wallets'][number]
   onConnect: (wallet: UseAppKitWalletsReturn['wallets'][number], namespace: ChainNamespace) => void
   isConnecting: boolean
+  isDisabled?: boolean
+  isSelected?: boolean
 }
 
-export function InjectedWalletItem({ wallet, onConnect, isConnecting }: InjectedWalletItemProps) {
-  const [toggle, setToggle] = useState(false)
+export function InjectedWalletItem({
+  wallet,
+  onConnect,
+  isConnecting,
+  isDisabled,
+  isSelected
+}: InjectedWalletItemProps) {
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const shouldToggleNamespaceDialog = wallet.connectors.length > 1 && wallet.isInjected
   const isMultiChain = wallet.connectors.length > 1 && wallet.isInjected
 
   function toggleConnectors() {
-    setToggle(v => !v)
+    setIsExpanded(v => !v)
   }
 
   const connectorChains = wallet.connectors?.map(c => ({
@@ -37,12 +45,20 @@ export function InjectedWalletItem({ wallet, onConnect, isConnecting }: Injected
         py={3}
         px={4}
         justifyContent="flex-start"
+        isDisabled={isDisabled}
         onClick={
           shouldToggleNamespaceDialog
             ? () => toggleConnectors()
             : () => onConnect(wallet, wallet.connectors[0]?.chain as ChainNamespace)
         }
-        _hover={{ bg: 'gray.50', _dark: { bg: 'gray.700' } }}
+        borderColor={isSelected ? 'blue.500' : undefined}
+        borderWidth={isSelected ? '2px' : '1px'}
+        bg={isSelected ? 'blue.50' : undefined}
+        _hover={{
+          bg: isSelected ? 'blue.100' : 'gray.50',
+          _dark: { bg: isSelected ? 'blue.900' : 'gray.700' }
+        }}
+        _dark={{ bg: isSelected ? 'blue.900' : undefined }}
       >
         <Flex align="center" gap={3} width="100%">
           {/* Wallet Icon */}
@@ -98,7 +114,7 @@ export function InjectedWalletItem({ wallet, onConnect, isConnecting }: Injected
         </Flex>
       </Button>
 
-      {toggle && isMultiChain && (
+      {isExpanded && isMultiChain && (
         <Flex direction="column" gap={2} marginLeft={8}>
           {wallet.connectors?.map(c => (
             <Button

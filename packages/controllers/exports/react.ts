@@ -376,10 +376,24 @@ export interface UseAppKitWalletsReturn {
    * Function to reset the WC URI. Useful to keep `connectingWallet` state sync with the WC URI. Can be called when the QR code is closed.
    */
   resetWcUri: () => void
+
   /**
    * Clears the connectingWallet state in PublicStateController.
    */
   resetConnectingWallet: () => void
+
+  /**
+   * Pre-fetches the WalletConnect URI. Call this when user selects a wallet on mobile
+   * to ensure the URI is ready when they click "Open". This enables synchronous deeplink
+   * triggering which is required for iOS Safari.
+   *
+   * **Mobile two-step flow:**
+   * 1. User selects wallet → call `getWcUri()` → button shows loading via `isFetchingWcUri`
+   * 2. User clicks "Open" → `connect()` triggers deeplink synchronously (URI is ready)
+   *
+   * @see PR #5456 for context on iOS deeplink requirements
+   */
+  getWcUri: () => Promise<void>
 }
 
 /**
@@ -401,6 +415,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
 
+  // Alert if headless is not enabled
   useEffect(() => {
     if (
       initialized &&
@@ -413,6 +428,15 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       )
     }
   }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
+
+  /**
+   * Pre-fetches the WalletConnect URI. Call this when user selects a wallet on mobile.
+   * Uses 'auto' cache to reuse existing valid URI or fetch new one if expired.
+   */
+  async function getWcUri() {
+    resetWcUri()
+    await ConnectionController.connectWalletConnect({ cache: 'auto' })
+  }
 
   async function fetchWallets(fetchOptions?: { page?: number; query?: string }) {
     setIsFetchingWallets(true)
@@ -440,7 +464,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   ) {
     setCurrentWcPayUrl(options?.wcPayUrl)
     PublicStateController.set({ connectingWallet: _wallet })
-    const isMobile = CoreHelperUtil.isMobile()
+    const isMobileDevice = CoreHelperUtil.isMobile()
 
     try {
       const walletConnector = _wallet?.connectors.find(c => c.chain === namespace)
@@ -452,7 +476,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
       if (_wallet?.isInjected && connector) {
         await ConnectorControllerUtil.connectExternal(connector)
-      } else if (isMobile) {
+      } else if (isMobileDevice) {
         const wcWallet = ConnectUtil.mapWalletItemToWcWallet(_wallet)
 
         if (wcWallet.mobile_link) {
@@ -497,7 +521,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       connect: () => Promise.resolve(),
       fetchWallets: () => Promise.resolve(),
       resetWcUri,
-      resetConnectingWallet
+      resetConnectingWallet,
+      getWcUri: () => Promise.resolve()
     }
   }
 
@@ -517,6 +542,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     connect,
     fetchWallets,
     resetWcUri,
-    resetConnectingWallet
+    resetConnectingWallet,
+    getWcUri
   }
 }

@@ -8,9 +8,10 @@ import { InjectedWalletItem } from './InjectedWalletItem'
 interface Props {
   onConnect: (wallet: UseAppKitWalletsReturn['wallets'][number], namespace?: ChainNamespace) => void
   onSeeAll: () => void
+  selectedWalletId?: string
 }
 
-export function AppKitHeadlessInjectedWallets({ onConnect, onSeeAll }: Props) {
+export function AppKitHeadlessInjectedWallets({ onConnect, onSeeAll, selectedWalletId }: Props) {
   const { wallets, connectingWallet } = useAppKitWallets()
 
   return (
@@ -25,6 +26,7 @@ export function AppKitHeadlessInjectedWallets({ onConnect, onSeeAll }: Props) {
             wallet={wallet}
             onConnect={onConnect}
             isConnecting={connectingWallet?.id === wallet.id}
+            isSelected={selectedWalletId === wallet.id}
           />
         ))}
       </Flex>
