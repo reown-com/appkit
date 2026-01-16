@@ -16,16 +16,27 @@ type Props = {
   wallet: WalletItem
   onConnect: (wallet: WalletItem, namespace?: ChainNamespace) => void
   onOpenNamespaceDialog: (wallet: WalletItem) => void
+  isDisabled?: boolean
+  isSelected?: boolean
 }
 
-export function WalletListItem({ wallet, onConnect, onOpenNamespaceDialog }: Props) {
+export function WalletListItem({
+  wallet,
+  onConnect,
+  onOpenNamespaceDialog,
+  isDisabled,
+  isSelected
+}: Props) {
   const { connectingWallet } = useAppKitWallets()
 
   return (
     <Item
       variant="outline"
       size="sm"
-      className={cn('cursor-pointer transition-colors hover:bg-accent/50 group')}
+      className={cn('cursor-pointer transition-colors hover:bg-accent/50 group', {
+        'opacity-50 pointer-events-none cursor-not-allowed': isDisabled,
+        'border-primary bg-primary/10': isSelected
+      })}
       onClick={() => {
         if (wallet.connectors.length > 1) {
           onOpenNamespaceDialog(wallet)

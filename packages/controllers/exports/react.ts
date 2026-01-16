@@ -61,6 +61,10 @@ interface DeleteRecentConnectionProps {
   connectorId: string
 }
 
+export interface ConnectOptions {
+  wcPayUrl?: string
+}
+
 // -- Hooks ------------------------------------------------------------
 export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
   const { providers, providerIds } = useSnapshot(ProviderController.state)
@@ -358,19 +362,38 @@ export interface UseAppKitWalletsReturn {
    * - For injected connectors: triggers the extension/wallet directly.
    *
    * @param wallet - The wallet item to connect to
-   * @param callbacks - Success and error callbacks
+   * @param namespace - Optional chain namespace
+   * @param options - Optional connect options (e.g., wcPayUrl for WalletConnect Pay)
    * @returns Promise that resolves when connection completes or rejects on error
    */
-  connect: (wallet: WalletItem, namespace?: ChainNamespace) => Promise<void>
+  connect: (
+    wallet: WalletItem,
+    namespace?: ChainNamespace,
+    options?: ConnectOptions
+  ) => Promise<void>
 
   /**
    * Function to reset the WC URI. Useful to keep `connectingWallet` state sync with the WC URI. Can be called when the QR code is closed.
    */
   resetWcUri: () => void
+
   /**
    * Clears the connectingWallet state in PublicStateController.
    */
   resetConnectingWallet: () => void
+
+  /**
+   * Pre-fetches the WalletConnect URI. Call this when user selects a wallet on mobile
+   * to ensure the URI is ready when they click "Open". This enables synchronous deeplink
+   * triggering which is required for iOS Safari.
+   *
+   * **Mobile two-step flow:**
+   * 1. User selects wallet → call `getWcUri()` → button shows loading via `isFetchingWcUri`
+   * 2. User clicks "Open" → `connect()` triggers deeplink synchronously (URI is ready)
+   *
+   * @see PR #5456 for context on iOS deeplink requirements
+   */
+  getWcUri: () => Promise<void>
 }
 
 /**
@@ -382,6 +405,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   const isHeadlessEnabled = Boolean(features?.headless && remoteFeatures?.headless)
 
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
+  const [currentWcPayUrl, setCurrentWcPayUrl] = useState<string | undefined>(undefined)
   const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
   const {
     wallets: wcAllWallets,
@@ -391,6 +415,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
 
+  // Alert if headless is not enabled
   useEffect(() => {
     if (
       initialized &&
@@ -403,6 +428,15 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       )
     }
   }, [initialized, isHeadlessEnabled, remoteFeatures?.headless])
+
+  /**
+   * Pre-fetches the WalletConnect URI. Call this when user selects a wallet on mobile.
+   * Uses 'auto' cache to reuse existing valid URI or fetch new one if expired.
+   */
+  async function getWcUri() {
+    resetWcUri()
+    await ConnectionController.connectWalletConnect({ cache: 'auto' })
+  }
 
   async function fetchWallets(fetchOptions?: { page?: number; query?: string }) {
     setIsFetchingWallets(true)
@@ -423,9 +457,14 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     }
   }
 
-  async function connect(_wallet: WalletItem, namespace?: ChainNamespace) {
+  async function connect(
+    _wallet: WalletItem,
+    namespace?: ChainNamespace,
+    options?: ConnectOptions
+  ) {
+    setCurrentWcPayUrl(options?.wcPayUrl)
     PublicStateController.set({ connectingWallet: _wallet })
-    const isMobile = CoreHelperUtil.isMobile()
+    const isMobileDevice = CoreHelperUtil.isMobile()
 
     try {
       const walletConnector = _wallet?.connectors.find(c => c.chain === namespace)
@@ -437,11 +476,11 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
       if (_wallet?.isInjected && connector) {
         await ConnectorControllerUtil.connectExternal(connector)
-      } else if (isMobile) {
+      } else if (isMobileDevice) {
         const wcWallet = ConnectUtil.mapWalletItemToWcWallet(_wallet)
 
         if (wcWallet.mobile_link) {
-          ConnectionControllerUtil.onConnectMobile(wcWallet)
+          ConnectionControllerUtil.onConnectMobile(wcWallet, options?.wcPayUrl)
         } else {
           MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, namespace)
         }
@@ -457,11 +496,16 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   function resetWcUri() {
     ConnectionController.resetUri()
     ConnectionController.setWcLinking(undefined)
+    setCurrentWcPayUrl(undefined)
   }
 
   function resetConnectingWallet() {
     PublicStateController.set({ connectingWallet: undefined })
   }
+
+  // Enhance wcUri with pay param if wcPayUrl was provided
+  const enhancedWcUri =
+    currentWcPayUrl && wcUri ? CoreHelperUtil.appendPayToUri(wcUri, currentWcPayUrl) : wcUri
 
   if (!isHeadlessEnabled || !remoteFeatures?.headless) {
     return {
@@ -477,7 +521,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       connect: () => Promise.resolve(),
       fetchWallets: () => Promise.resolve(),
       resetWcUri,
-      resetConnectingWallet
+      resetConnectingWallet,
+      getWcUri: () => Promise.resolve()
     }
   }
 
@@ -490,13 +535,14 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     isFetchingWallets,
     isFetchingWcUri: wcFetchingUri,
     isInitialized: initialized,
-    wcUri,
+    wcUri: enhancedWcUri,
     connectingWallet: connectingWallet as WalletItem | undefined,
     page,
     count,
     connect,
     fetchWallets,
     resetWcUri,
-    resetConnectingWallet
+    resetConnectingWallet,
+    getWcUri
   }
 }
