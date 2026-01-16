@@ -19,7 +19,8 @@ export const CUSTOM_DEEPLINK_WALLETS = {
   },
   COINBASE: {
     id: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
-    url: 'https://go.cb-w.com'
+    url: 'https://go.cb-w.com',
+    evmDeeplink: 'cbwallet://miniapp'
   },
   /*
    * Got details from their npm package:
@@ -65,6 +66,16 @@ export const MobileWalletUtil = {
     if (namespace === ConstantsUtil.CHAIN.SOLANA) {
       if (id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id && !('coinbaseSolana' in window)) {
         window.location.href = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.url}/dapp?cb_url=${encodedHref}`
+      }
+    }
+
+    /*
+     * Coinbase/Base wallet deeplink for EVM chains.
+     * Uses cbwallet://miniapp?url={REDIRECT_URL} to open in-app browser.
+     */
+    if (namespace === ConstantsUtil.CHAIN.EVM) {
+      if (id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id && !('coinbaseWalletExtension' in window)) {
+        window.location.href = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.evmDeeplink}?url=${encodedHref}`
       }
     }
 

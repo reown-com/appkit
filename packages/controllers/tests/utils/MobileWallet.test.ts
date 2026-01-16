@@ -134,6 +134,33 @@ describe('MobileWalletUtil', () => {
     expect(window.location.href).toBe(originalHref)
   })
 
+  it('should redirect to Coinbase Wallet with EVM deeplink when namespace is EVM', () => {
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
+      ConstantsUtil.CHAIN.EVM
+    )
+
+    const encodedHref = encodeURIComponent(ORIGINAL_HREF)
+    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.evmDeeplink}?url=${encodedHref}`
+
+    expect(window.location.href).toBe(expectedUrl)
+  })
+
+  it('should not redirect for EVM Coinbase when coinbaseWalletExtension is installed', () => {
+    vi.stubGlobal('window', {
+      ...mockWindow,
+      coinbaseWalletExtension: {}
+    })
+
+    const originalHref = window.location.href
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
+      ConstantsUtil.CHAIN.EVM
+    )
+
+    expect(window.location.href).toBe(originalHref)
+  })
+
   it('should redirect to Solflare correctly', () => {
     MobileWalletUtil.handleMobileDeeplinkRedirect(
       CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
