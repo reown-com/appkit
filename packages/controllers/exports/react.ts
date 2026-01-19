@@ -458,25 +458,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }
 
   /**
-   * Connects to the selected wallet.
-   *
-   * This function handles multiple connection scenarios:
-   * 1. Injected wallets with connectors in wallet.connectors array
-   * 2. API wallets (from "All Wallets" list) that have a matching connector by explorerId
-   * 3. Mobile wallets via WalletConnect deeplinks
-   * 4. Desktop wallets via WalletConnect QR code
-   *
-   * **Coinbase/Base Wallet Handling:**
-   * When Coinbase is selected from the "All Wallets" API list, the wallet's `connectors` array
-   * is empty (API wallets don't have connectors pre-populated). To handle this, we perform a
-   * fallback lookup using the wallet's API ID directly. The Base Account connector has its
-   * `explorerId` set to the Coinbase wallet API ID, allowing `ConnectorController.getConnector`
-   * to find it via the `c.explorerId === id` check. This opens the keys.coinbase.com web wallet
-   * instead of falling through to WalletConnect QR code.
-   *
-   * @param _wallet - The wallet item to connect to
-   * @param namespace - Optional chain namespace (falls back to active chain)
-   * @param options - Optional connection options (e.g., wcPayUrl)
+   * Connects to the selected wallet. Falls back to connector lookup by wallet ID
+   * (via explorerId) when wallet.connectors is empty (e.g., API wallets like Coinbase).
    */
   async function connect(
     _wallet: WalletItem,
