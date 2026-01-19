@@ -462,7 +462,11 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
    *
    * Handles injected wallets, API wallets (from "All Wallets" list), and mobile deeplinks.
    * For API wallets without pre-populated connectors, performs a fallback lookup using
-   * the wallet's ID via `explorerId` matching (e.g., Coinbase -> Base Account connector).
+   * the wallet's ID via `explorerId` matching.
+   *
+   * Note: Coinbase from "All Wallets" has empty connectors array. The fallback finds the
+   * Base Account connector (which has explorerId set to Coinbase's API ID) to open the
+   * Coinbase web wallet instead of falling through to WalletConnect.
    *
    * @param _wallet - The wallet item to connect to
    * @param namespace - Optional chain namespace (falls back to active chain)
