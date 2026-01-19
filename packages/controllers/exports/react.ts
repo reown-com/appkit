@@ -458,8 +458,15 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
   }
 
   /**
-   * Connects to the selected wallet. Falls back to connector lookup by wallet ID
-   * (via explorerId) when wallet.connectors is empty (e.g., API wallets like Coinbase).
+   * Connects to the selected wallet.
+   *
+   * Handles injected wallets, API wallets (from "All Wallets" list), and mobile deeplinks.
+   * For API wallets without pre-populated connectors, performs a fallback lookup using
+   * the wallet's ID via `explorerId` matching (e.g., Coinbase -> Base Account connector).
+   *
+   * @param _wallet - The wallet item to connect to
+   * @param namespace - Optional chain namespace (falls back to active chain)
+   * @param options - Optional connection options (e.g., wcPayUrl)
    */
   async function connect(
     _wallet: WalletItem,
