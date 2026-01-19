@@ -1,6 +1,7 @@
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import { ChainController, type ChainControllerState } from '../controllers/ChainController.js'
+import { OptionsController } from '../controllers/OptionsController.js'
 
 /*
  * Exclude wallets that do not support relay connections but have custom deeplink mechanisms
@@ -61,6 +62,7 @@ export const MobileWalletUtil = {
      */
     const href = window.location.href
     const encodedHref = encodeURIComponent(href)
+    const isCoinbaseDisabled = OptionsController.state.enableCoinbase === false
 
     if (id === CUSTOM_DEEPLINK_WALLETS.PHANTOM.id && !('phantom' in window)) {
       const protocol = href.startsWith('https') ? 'https' : 'http'
@@ -75,7 +77,10 @@ export const MobileWalletUtil = {
     }
 
     if (namespace === ConstantsUtil.CHAIN.SOLANA) {
-      if (id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id && !('coinbaseSolana' in window)) {
+      if (
+        id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id &&
+        (isCoinbaseDisabled || !('coinbaseSolana' in window))
+      ) {
         window.location.href = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.url}/dapp?cb_url=${encodedHref}`
       }
     }
@@ -85,7 +90,10 @@ export const MobileWalletUtil = {
      * Uses cbwallet://miniapp?url={REDIRECT_URL} to open in-app browser.
      */
     if (namespace === ConstantsUtil.CHAIN.EVM) {
-      if (id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id && !('coinbaseWalletExtension' in window)) {
+      if (
+        id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id &&
+        (isCoinbaseDisabled || !('coinbaseWalletExtension' in window))
+      ) {
         window.location.href = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.evmDeeplink}?url=${encodedHref}`
       }
     }
