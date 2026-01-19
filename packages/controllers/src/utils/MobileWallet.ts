@@ -42,7 +42,7 @@ export const MobileWalletUtil = {
    * instead of WalletConnect deeplinks for the given chain namespace.
    *
    * Only returns true for supported wallet-chain combinations:
-   * - Phantom: Solana only
+   * - Phantom: Solana, EVM, and Bitcoin (doesn't support WalletConnect)
    * - Solflare: Solana only
    * - Coinbase: Solana and EVM
    * - Binance: Bitcoin only
@@ -52,8 +52,13 @@ export const MobileWalletUtil = {
    * @returns {boolean} Whether the wallet is a custom deeplink wallet for the given namespace.
    */
   isCustomDeeplinkWallet(id: string, namespace: ChainControllerState['activeChain']): boolean {
+    // Phantom doesn't support WalletConnect, uses Universal Links for all supported chains
     if (id === CUSTOM_DEEPLINK_WALLETS.PHANTOM.id) {
-      return namespace === ConstantsUtil.CHAIN.SOLANA
+      return (
+        namespace === ConstantsUtil.CHAIN.SOLANA ||
+        namespace === ConstantsUtil.CHAIN.EVM ||
+        namespace === ConstantsUtil.CHAIN.BITCOIN
+      )
     }
 
     if (id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id) {
@@ -95,7 +100,12 @@ export const MobileWalletUtil = {
       window.location.href = `${CUSTOM_DEEPLINK_WALLETS.PHANTOM.url}/ul/browse/${encodedHref}?ref=${encodedRef}`
     }
 
-    if (id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id && !('solflare' in window)) {
+    // Solflare only supports Solana
+    if (
+      id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id &&
+      namespace === ConstantsUtil.CHAIN.SOLANA &&
+      !('solflare' in window)
+    ) {
       window.location.href = `${CUSTOM_DEEPLINK_WALLETS.SOLFLARE.url}/ul/v1/browse/${encodedHref}?ref=${encodedHref}`
     }
 
