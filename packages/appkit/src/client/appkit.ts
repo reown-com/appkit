@@ -585,9 +585,14 @@ export class AppKit extends AppKitBaseClient {
       return
     }
 
+    // Skip UI loading entirely in headless mode - no modal, no fonts, no UI components
+    const features = { ...CoreConstantsUtil.DEFAULT_FEATURES, ...this.options.features }
+    if (features.headless) {
+      return
+    }
+
     if (!isInitialized) {
       try {
-        const features = { ...CoreConstantsUtil.DEFAULT_FEATURES, ...this.options.features }
         const remoteFeatures = this.remoteFeatures
 
         // Use a factory function that will be properly tree-shaken in SSR builds
