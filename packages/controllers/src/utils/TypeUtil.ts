@@ -79,7 +79,14 @@ export interface LinkingRecord {
 
 export type ProjectId = string
 
-export type Platform = 'mobile' | 'desktop' | 'browser' | 'web' | 'qrcode' | 'unsupported'
+export type Platform =
+  | 'mobile'
+  | 'desktop'
+  | 'browser'
+  | 'web'
+  | 'qrcode'
+  | 'unsupported'
+  | 'customDeeplink'
 
 export type ConnectorType =
   | 'EXTERNAL'

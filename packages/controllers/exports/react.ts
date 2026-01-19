@@ -457,6 +457,21 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     }
   }
 
+  /**
+   * Connects to the selected wallet.
+   *
+   * Handles injected wallets, API wallets (from "All Wallets" list), and mobile deeplinks.
+   * For API wallets without pre-populated connectors, performs a fallback lookup using
+   * the wallet's ID via `explorerId` matching.
+   *
+   * Note: Coinbase from "All Wallets" has empty connectors array. The fallback finds the
+   * Base Account connector (which has explorerId set to Coinbase's API ID) to open the
+   * Coinbase web wallet instead of falling through to WalletConnect.
+   *
+   * @param _wallet - The wallet item to connect to
+   * @param namespace - Optional chain namespace (falls back to active chain)
+   * @param options - Optional connection options (e.g., wcPayUrl)
+   */
   async function connect(
     _wallet: WalletItem,
     namespace?: ChainNamespace,
@@ -466,23 +481,48 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     PublicStateController.set({ connectingWallet: _wallet })
     const isMobileDevice = CoreHelperUtil.isMobile()
 
+    // Fall back to active chain if namespace is not provided (matches headful behavior)
+    const activeNamespace = namespace || ChainController.state.activeChain
+
     try {
-      const walletConnector = _wallet?.connectors.find(c => c.chain === namespace)
+      const walletConnector = _wallet?.connectors.find(c => c.chain === activeNamespace)
 
       const connector =
-        walletConnector && namespace
-          ? ConnectorController.getConnector({ id: walletConnector?.id, namespace })
+        walletConnector && activeNamespace
+          ? ConnectorController.getConnector({
+              id: walletConnector?.id,
+              namespace: activeNamespace
+            })
+          : undefined
+
+      /*
+       * Fallback connector lookup for API wallets (e.g., from "All Wallets" list).
+       *
+       * API wallets have an empty `connectors` array, so we try to find a connector
+       * using the wallet's API ID directly. This is crucial for Coinbase/Base wallet:
+       * - The Base Account connector has `explorerId` set to Coinbase's API wallet ID
+       * - `ConnectorController.getConnector` checks both `c.id === id` and `c.explorerId === id`
+       * - This allows us to find and use the Base Account connector to open the web wallet
+       *
+       * This matches the headful AppKit behavior in `ConnectorController.selectWalletConnector`.
+       */
+      const fallbackConnector =
+        !connector && activeNamespace
+          ? ConnectorController.getConnector({ id: _wallet?.id, namespace: activeNamespace })
           : undefined
 
       if (_wallet?.isInjected && connector) {
         await ConnectorControllerUtil.connectExternal(connector)
+      } else if (fallbackConnector) {
+        // Use connector found by wallet ID (e.g., Base Account connector for Coinbase web wallet)
+        await ConnectorControllerUtil.connectExternal(fallbackConnector)
       } else if (isMobileDevice) {
         const wcWallet = ConnectUtil.mapWalletItemToWcWallet(_wallet)
 
         if (wcWallet.mobile_link) {
           ConnectionControllerUtil.onConnectMobile(wcWallet, options?.wcPayUrl)
         } else {
-          MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, namespace)
+          MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, activeNamespace)
         }
       } else {
         await ConnectionController.connectWalletConnect({ cache: 'never' })
