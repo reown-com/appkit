@@ -1,5 +1,27 @@
 # @reown/appkit-common
 
+## 1.8.17
+
+### Patch Changes
+
+- [#5447](https://github.com/reown-com/appkit/pull/5447) [`05762b5`](https://github.com/reown-com/appkit/commit/05762b5280c09a1bf72bc5d7617df3119be653a4) Thanks [@0xmkh](https://github.com/0xmkh)! - Added unsubscribe function to AppKit event listeners
+
+- [#5451](https://github.com/reown-com/appkit/pull/5451) [`dfb0893`](https://github.com/reown-com/appkit/commit/dfb0893141e07d9911459de640493642dcebd724) Thanks [@0xmkh](https://github.com/0xmkh)! - Fixed text color inconsistency in send amount input fields to properly apply theme primary text color
+
+- [#5452](https://github.com/reown-com/appkit/pull/5452) [`17b1a2c`](https://github.com/reown-com/appkit/commit/17b1a2c0879eb0cb670e457b25a7306ea3f84cda) Thanks [@0xmkh](https://github.com/0xmkh)! - Fixed an issue where the purpose type was not included in accounts returned by the bitcoin wallets
+
+- [#5450](https://github.com/reown-com/appkit/pull/5450) [`1c76e85`](https://github.com/reown-com/appkit/commit/1c76e853225fc85ab2b050de55adaae96f296c8f) Thanks [@0xmkh](https://github.com/0xmkh)! - Fixed an issue where the collapsed wallet button displayed a copy icon instead of a wallet icon
+
+- [#5444](https://github.com/reown-com/appkit/pull/5444) [`f8fec19`](https://github.com/reown-com/appkit/commit/f8fec190ec5754a78d819485d47fe37a168ffd3b) Thanks [@0xmkh](https://github.com/0xmkh)! - Fixed an issue where non-friendly error messages were displayed when failing to send a transaction on Solana
+
+- [#5449](https://github.com/reown-com/appkit/pull/5449) [`4a409be`](https://github.com/reown-com/appkit/commit/4a409bec5213638a33c7b3c22c94ea2828e37022) Thanks [@0xmkh](https://github.com/0xmkh)! - Fixed an issue where the checkmark icon was not displayed on iOS devices
+
+- [#5448](https://github.com/reown-com/appkit/pull/5448) [`e9f7498`](https://github.com/reown-com/appkit/commit/e9f7498b3f7938cfa4273429341ce0df8121b99a) Thanks [@0xmkh](https://github.com/0xmkh)! - Added support for directly opening the ProfileWallets view
+
+- [#5445](https://github.com/reown-com/appkit/pull/5445) [`0824170`](https://github.com/reown-com/appkit/commit/0824170ebb185fc40d4351ec3ed3a8ed11cd15c1) Thanks [@0xmkh](https://github.com/0xmkh)! - Fixed an issue where swaps failed when entering large amounts of high decimal tokens
+
+- [#5446](https://github.com/reown-com/appkit/pull/5446) [`9886b51`](https://github.com/reown-com/appkit/commit/9886b51d7d83b1340a9f116b9b9514ebf6bd14cd) Thanks [@0xmkh](https://github.com/0xmkh)! - Fixed an issue in headless mode where triggering a second WalletConnect connection attempt did not initiate the connection request
+
 ## 1.8.16
 
 ### Patch Changes
