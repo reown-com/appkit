@@ -39,13 +39,36 @@ export const CUSTOM_DEEPLINK_WALLETS = {
 export const MobileWalletUtil = {
   /**
    * Checks if a wallet is a custom deeplink wallet that uses Universal Links
-   * instead of WalletConnect deeplinks.
+   * instead of WalletConnect deeplinks for the given chain namespace.
+   *
+   * Only returns true for supported wallet-chain combinations:
+   * - Phantom: Solana only
+   * - Solflare: Solana only
+   * - Coinbase: Solana and EVM
+   * - Binance: Bitcoin only
    *
    * @param {string} id - The id of the wallet.
-   * @returns {boolean} Whether the wallet is a custom deeplink wallet.
+   * @param {ChainControllerState['activeChain']} namespace - The chain namespace.
+   * @returns {boolean} Whether the wallet is a custom deeplink wallet for the given namespace.
    */
-  isCustomDeeplinkWallet(id: string): boolean {
-    return Object.values(CUSTOM_DEEPLINK_WALLETS).some(wallet => wallet.id === id)
+  isCustomDeeplinkWallet(id: string, namespace: ChainControllerState['activeChain']): boolean {
+    if (id === CUSTOM_DEEPLINK_WALLETS.PHANTOM.id) {
+      return namespace === ConstantsUtil.CHAIN.SOLANA
+    }
+
+    if (id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id) {
+      return namespace === ConstantsUtil.CHAIN.SOLANA
+    }
+
+    if (id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id) {
+      return namespace === ConstantsUtil.CHAIN.SOLANA || namespace === ConstantsUtil.CHAIN.EVM
+    }
+
+    if (id === CUSTOM_DEEPLINK_WALLETS.BINANCE.id) {
+      return namespace === ConstantsUtil.CHAIN.BITCOIN
+    }
+
+    return false
   },
 
   /**

@@ -175,28 +175,62 @@ describe('MobileWalletUtil', () => {
   })
 
   describe('isCustomDeeplinkWallet', () => {
-    it('should return true for Phantom wallet', () => {
-      expect(MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.PHANTOM.id)).toBe(true)
+    it('should return true for Phantom wallet on Solana', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.PHANTOM.id, 'solana')
+      ).toBe(true)
     })
 
-    it('should return true for Coinbase wallet', () => {
-      expect(MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.COINBASE.id)).toBe(
-        true
-      )
+    it('should return false for Phantom wallet on EVM', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.PHANTOM.id, 'eip155')
+      ).toBe(false)
     })
 
-    it('should return true for Solflare wallet', () => {
-      expect(MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id)).toBe(
-        true
-      )
+    it('should return true for Coinbase wallet on Solana', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.COINBASE.id, 'solana')
+      ).toBe(true)
     })
 
-    it('should return true for Binance wallet', () => {
-      expect(MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.BINANCE.id)).toBe(true)
+    it('should return true for Coinbase wallet on EVM', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.COINBASE.id, 'eip155')
+      ).toBe(true)
+    })
+
+    it('should return false for Coinbase wallet on Bitcoin', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.COINBASE.id, 'bip122')
+      ).toBe(false)
+    })
+
+    it('should return true for Solflare wallet on Solana', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id, 'solana')
+      ).toBe(true)
+    })
+
+    it('should return false for Solflare wallet on EVM', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id, 'eip155')
+      ).toBe(false)
+    })
+
+    it('should return true for Binance wallet on Bitcoin', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.BINANCE.id, 'bip122')
+      ).toBe(true)
+    })
+
+    it('should return false for Binance wallet on Solana', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.BINANCE.id, 'solana')
+      ).toBe(false)
     })
 
     it('should return false for unknown wallet IDs', () => {
-      expect(MobileWalletUtil.isCustomDeeplinkWallet('unknown-wallet-id')).toBe(false)
+      expect(MobileWalletUtil.isCustomDeeplinkWallet('unknown-wallet-id', 'eip155')).toBe(false)
     })
   })
 })

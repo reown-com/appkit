@@ -46,6 +46,8 @@ export class W3mConnectingHeader extends LitElement {
         return { label: 'Webapp', icon: 'browser', platform: 'web' } as const
       } else if (platform === 'desktop') {
         return { label: 'Desktop', icon: 'desktop', platform: 'desktop' } as const
+      } else if (platform === 'customDeeplink') {
+        return { label: 'Mobile', icon: 'mobile', platform: 'customDeeplink' } as const
       }
 
       return { label: 'Browser', icon: 'extension', platform: 'unsupported' } as const

@@ -197,7 +197,8 @@ export class W3mConnectingWcView extends LitElement {
 
     // Check if this is a custom deeplink wallet (e.g., Phantom, Coinbase, etc.)
     const isCustomDeeplinkWallet =
-      CoreHelperUtil.isMobile() && MobileWalletUtil.isCustomDeeplinkWallet(this.wallet.id)
+      CoreHelperUtil.isMobile() &&
+      MobileWalletUtil.isCustomDeeplinkWallet(this.wallet.id, ChainController.state.activeChain)
 
     // Populate all preferences
     if (isBrowserWc && !ChainController.state.noAdapters) {
