@@ -1,6 +1,11 @@
 import { type Page, expect } from '@playwright/test'
 
-import { DEFAULT_SESSION_PARAMS, type WalletPage, WalletValidator } from '@reown/appkit-testing'
+import {
+  BASE_URL,
+  DEFAULT_SESSION_PARAMS,
+  type WalletPage,
+  WalletValidator
+} from '@reown/appkit-testing'
 
 import type { ModalFlavor } from './ModalPage'
 import { ModalPage } from './ModalPage'
@@ -9,12 +14,23 @@ export class ModalHeadlessPage extends ModalPage {
   public override readonly page: Page
   public override readonly library: string
   public override readonly flavor: 'default'
+  private readonly headlessUrl: string
 
   constructor(page: Page, library: string, flavor: ModalFlavor) {
     super(page, library, flavor)
     this.page = page
     this.library = library
     this.flavor = 'default'
+    this.headlessUrl = `${BASE_URL}appkit?name=headless`
+  }
+
+  override async load() {
+    await this.page.goto(this.headlessUrl)
+    // In headless mode, w3m-modal is not rendered - wait for the connect button instead
+    await this.page.waitForSelector('[data-testid="headless-connect-button"]', {
+      state: 'visible',
+      timeout: 30_000
+    })
   }
 
   override async qrCodeFlow(_: ModalPage, walletPage: WalletPage): Promise<void> {
