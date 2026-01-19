@@ -495,7 +495,10 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
       const connector =
         walletConnector && activeNamespace
-          ? ConnectorController.getConnector({ id: walletConnector?.id, namespace: activeNamespace })
+          ? ConnectorController.getConnector({
+              id: walletConnector?.id,
+              namespace: activeNamespace
+            })
           : undefined
 
       /*

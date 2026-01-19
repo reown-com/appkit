@@ -462,6 +462,13 @@ export const appKitConfigs = {
     wagmiConfig: commonWagmiConfig,
     networks: ConstantsUtil.EvmNetworks,
     excludeWalletIds: ['2bd8c14e035c2d48f184aaa168559e86b0e3433228d3c4075900a221785019b0']
+  },
+  'flag-no-coinbase': {
+    ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
+    adapters: ['wagmi', 'solana'],
+    networks: [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks],
+    enableCoinbase: false
   }
 
   // ----- Core -------------------------
