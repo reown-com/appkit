@@ -7,6 +7,7 @@ import {
   ChainController,
   EventsController,
   MobileWalletUtil,
+  OptionsController,
   RouterController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -95,7 +96,9 @@ export class W3mConnectingWcCustomDeeplink extends LitElement {
     this.isRetrying = true
 
     // Re-trigger the deeplink redirect
-    MobileWalletUtil.handleMobileDeeplinkRedirect(this.wallet.id, ChainController.state.activeChain)
+    MobileWalletUtil.handleMobileDeeplinkRedirect(this.wallet.id, ChainController.state.activeChain, {
+      isCoinbaseDisabled: OptionsController.state.enableCoinbase === false
+    })
 
     // Reset after a short delay
     setTimeout(() => {

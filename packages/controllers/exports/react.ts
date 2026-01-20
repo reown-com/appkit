@@ -522,7 +522,9 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
         if (wcWallet.mobile_link) {
           ConnectionControllerUtil.onConnectMobile(wcWallet, options?.wcPayUrl)
         } else {
-          MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, activeNamespace)
+          MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, activeNamespace, {
+            isCoinbaseDisabled: OptionsController.state.enableCoinbase === false
+          })
         }
       } else {
         await ConnectionController.connectWalletConnect({ cache: 'never' })
