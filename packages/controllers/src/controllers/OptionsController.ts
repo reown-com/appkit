@@ -343,10 +343,6 @@ export const OptionsController = {
     state.enableEIP6963 = enableEIP6963
   },
 
-  setEnableCoinbase(enableCoinbase: OptionsControllerState['enableCoinbase']) {
-    state.enableCoinbase = enableCoinbase
-  },
-
   setDebug(debug: OptionsControllerState['debug']) {
     state.debug = debug
   },

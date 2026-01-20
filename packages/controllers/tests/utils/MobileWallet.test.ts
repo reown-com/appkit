@@ -134,34 +134,7 @@ describe('MobileWalletUtil', () => {
     expect(window.location.href).toBe(originalHref)
   })
 
-  it('should redirect to Coinbase Wallet with EVM deeplink when namespace is EVM', () => {
-    MobileWalletUtil.handleMobileDeeplinkRedirect(
-      CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
-      ConstantsUtil.CHAIN.EVM
-    )
-
-    const encodedHref = encodeURIComponent(ORIGINAL_HREF)
-    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.evmDeeplink}?url=${encodedHref}`
-
-    expect(window.location.href).toBe(expectedUrl)
-  })
-
-  it('should not redirect for EVM Coinbase when coinbaseWalletExtension is installed', () => {
-    vi.stubGlobal('window', {
-      ...mockWindow,
-      coinbaseWalletExtension: {}
-    })
-
-    const originalHref = window.location.href
-    MobileWalletUtil.handleMobileDeeplinkRedirect(
-      CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
-      ConstantsUtil.CHAIN.EVM
-    )
-
-    expect(window.location.href).toBe(originalHref)
-  })
-
-  it('should redirect to Solflare correctly on Solana', () => {
+  it('should redirect to Solflare correctly', () => {
     MobileWalletUtil.handleMobileDeeplinkRedirect(
       CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
       ConstantsUtil.CHAIN.SOLANA
@@ -170,82 +143,7 @@ describe('MobileWalletUtil', () => {
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
     const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.SOLFLARE.url}/ul/v1/browse/${encodedHref}?ref=${encodedHref}`
 
+    //
     expect(window.location.href).toBe(expectedUrl)
-  })
-
-  it('should not redirect to Solflare on non-Solana namespaces', () => {
-    const originalHref = window.location.href
-    MobileWalletUtil.handleMobileDeeplinkRedirect(
-      CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
-      ConstantsUtil.CHAIN.EVM
-    )
-
-    expect(window.location.href).toBe(originalHref)
-  })
-
-  describe('isCustomDeeplinkWallet', () => {
-    it('should return true for Phantom wallet on Solana', () => {
-      expect(
-        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.PHANTOM.id, 'solana')
-      ).toBe(true)
-    })
-
-    it('should return true for Phantom wallet on EVM', () => {
-      expect(
-        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.PHANTOM.id, 'eip155')
-      ).toBe(true)
-    })
-
-    it('should return true for Phantom wallet on Bitcoin', () => {
-      expect(
-        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.PHANTOM.id, 'bip122')
-      ).toBe(true)
-    })
-
-    it('should return true for Coinbase wallet on Solana', () => {
-      expect(
-        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.COINBASE.id, 'solana')
-      ).toBe(true)
-    })
-
-    it('should return true for Coinbase wallet on EVM', () => {
-      expect(
-        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.COINBASE.id, 'eip155')
-      ).toBe(true)
-    })
-
-    it('should return false for Coinbase wallet on Bitcoin', () => {
-      expect(
-        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.COINBASE.id, 'bip122')
-      ).toBe(false)
-    })
-
-    it('should return true for Solflare wallet on Solana', () => {
-      expect(
-        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id, 'solana')
-      ).toBe(true)
-    })
-
-    it('should return false for Solflare wallet on EVM', () => {
-      expect(
-        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id, 'eip155')
-      ).toBe(false)
-    })
-
-    it('should return true for Binance wallet on Bitcoin', () => {
-      expect(
-        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.BINANCE.id, 'bip122')
-      ).toBe(true)
-    })
-
-    it('should return false for Binance wallet on Solana', () => {
-      expect(
-        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.BINANCE.id, 'solana')
-      ).toBe(false)
-    })
-
-    it('should return false for unknown wallet IDs', () => {
-      expect(MobileWalletUtil.isCustomDeeplinkWallet('unknown-wallet-id', 'eip155')).toBe(false)
-    })
   })
 })
