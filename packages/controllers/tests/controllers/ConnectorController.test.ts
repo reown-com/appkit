@@ -397,7 +397,8 @@ describe('ConnectorController', () => {
     expect(window.location.href).toBe(expectedUrl)
     expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
       mockConnector.id,
-      ConstantsUtil.CHAIN.EVM
+      ConstantsUtil.CHAIN.EVM,
+      { isCoinbaseDisabled: false }
     )
   })
 
@@ -424,7 +425,8 @@ describe('ConnectorController', () => {
     expect(window.location.href).toBe(expectedUrl)
     expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
       mockConnector.id,
-      ConstantsUtil.CHAIN.SOLANA
+      ConstantsUtil.CHAIN.SOLANA,
+      { isCoinbaseDisabled: false }
     )
   })
 
@@ -451,7 +453,8 @@ describe('ConnectorController', () => {
     expect(window.location.href).toBe(expectedUrl)
     expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
       mockConnector.id,
-      ConstantsUtil.CHAIN.EVM
+      ConstantsUtil.CHAIN.EVM,
+      { isCoinbaseDisabled: false }
     )
   })
 
@@ -475,7 +478,8 @@ describe('ConnectorController', () => {
     expect(window.location.href).toBe(ORIGINAL_HREF)
     expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
       mockConnector.id,
-      ConstantsUtil.CHAIN.BITCOIN
+      ConstantsUtil.CHAIN.BITCOIN,
+      { isCoinbaseDisabled: false }
     )
   })
 

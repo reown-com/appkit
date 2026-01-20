@@ -20,7 +20,6 @@ import { CaipNetworksUtil } from '@reown/appkit-utils'
 
 import '../../partials/w3m-connecting-header/index.js'
 import '../../partials/w3m-connecting-wc-browser/index.js'
-import '../../partials/w3m-connecting-wc-custom-deeplink/index.js'
 import '../../partials/w3m-connecting-wc-desktop/index.js'
 import '../../partials/w3m-connecting-wc-mobile/index.js'
 import '../../partials/w3m-connecting-wc-qrcode/index.js'
@@ -195,11 +194,6 @@ export class W3mConnectingWcView extends LitElement {
     const isBrowserWc = isBrowser && isBrowserInstalled
     const isDesktopWc = desktop_link && !CoreHelperUtil.isMobile()
 
-    // Check if this is a custom deeplink wallet (e.g., Phantom, Coinbase, etc.)
-    const isCustomDeeplinkWallet =
-      CoreHelperUtil.isMobile() &&
-      MobileWalletUtil.isCustomDeeplinkWallet(this.wallet.id, ChainController.state.activeChain)
-
     // Populate all preferences
     if (isBrowserWc && !ChainController.state.noAdapters) {
       this.platforms.push('browser')
@@ -213,10 +207,12 @@ export class W3mConnectingWcView extends LitElement {
     if (isDesktopWc) {
       this.platforms.push('desktop')
     }
-    // Show custom deeplink UI for wallets that use Universal Links instead of WalletConnect
-    if (isCustomDeeplinkWallet && !isBrowserWc) {
-      this.platforms.push('customDeeplink')
-    } else if (!isBrowserWc && isBrowser && !ChainController.state.noAdapters) {
+    // Don't show unsupported UI for custom deeplink wallets - they use external connectors
+    const isCustomDeeplinkWallet = MobileWalletUtil.isCustomDeeplinkWallet(
+      this.wallet.id,
+      ChainController.state.activeChain
+    )
+    if (!isBrowserWc && isBrowser && !ChainController.state.noAdapters && !isCustomDeeplinkWallet) {
       this.platforms.push('unsupported')
     }
 
@@ -241,8 +237,6 @@ export class W3mConnectingWcView extends LitElement {
         `
       case 'qrcode':
         return html`<w3m-connecting-wc-qrcode ?basic=${this.basic}></w3m-connecting-wc-qrcode>`
-      case 'customDeeplink':
-        return html`<w3m-connecting-wc-custom-deeplink></w3m-connecting-wc-custom-deeplink>`
       default:
         return html`<w3m-connecting-wc-unsupported></w3m-connecting-wc-unsupported>`
     }

@@ -1,7 +1,6 @@
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import { ChainController, type ChainControllerState } from '../controllers/ChainController.js'
-import { OptionsController } from '../controllers/OptionsController.js'
 
 /*
  * Exclude wallets that do not support relay connections but have custom deeplink mechanisms
@@ -81,8 +80,14 @@ export const MobileWalletUtil = {
    *
    * @param {string} id - The id of the wallet.
    * @param {ChainNamespace} namespace - The namespace of the chain.
+   * @param {object} options - Optional configuration.
+   * @param {boolean} options.isCoinbaseDisabled - Whether Coinbase wallet is disabled. When true, always trigger deeplink.
    */
-  handleMobileDeeplinkRedirect(id: string, namespace: ChainControllerState['activeChain']): void {
+  handleMobileDeeplinkRedirect(
+    id: string,
+    namespace: ChainControllerState['activeChain'],
+    options?: { isCoinbaseDisabled?: boolean }
+  ): void {
     /**
      * Universal Links requires explicit user interaction to open the wallet app.
      * Previously we've been calling this with the life-cycle methods in the Solana clients by listening the SELECT_WALLET event of EventController.
@@ -90,7 +95,7 @@ export const MobileWalletUtil = {
      */
     const href = window.location.href
     const encodedHref = encodeURIComponent(href)
-    const isCoinbaseDisabled = OptionsController.state.enableCoinbase === false
+    const isCoinbaseDisabled = options?.isCoinbaseDisabled ?? false
 
     if (id === CUSTOM_DEEPLINK_WALLETS.PHANTOM.id && !('phantom' in window)) {
       const protocol = href.startsWith('https') ? 'https' : 'http'
