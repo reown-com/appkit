@@ -9,6 +9,7 @@ import {
   ConnectionController,
   CoreHelperUtil,
   EventsController,
+  MobileWalletUtil,
   ModalController,
   OptionsController,
   RouterController,
@@ -206,7 +207,12 @@ export class W3mConnectingWcView extends LitElement {
     if (isDesktopWc) {
       this.platforms.push('desktop')
     }
-    if (!isBrowserWc && isBrowser && !ChainController.state.noAdapters) {
+    // Don't show unsupported UI for custom deeplink wallets - they use external connectors
+    const isCustomDeeplinkWallet = MobileWalletUtil.isCustomDeeplinkWallet(
+      this.wallet.id,
+      ChainController.state.activeChain
+    )
+    if (!isBrowserWc && isBrowser && !ChainController.state.noAdapters && !isCustomDeeplinkWallet) {
       this.platforms.push('unsupported')
     }
 
