@@ -55,7 +55,8 @@ export type {
   ThemeControllerState,
   PublicStateControllerState,
   Features,
-  RemoteFeatures
+  RemoteFeatures,
+  WalletItem
 } from '@reown/appkit-controllers'
 
 export type * from '@reown/appkit-controllers/react'

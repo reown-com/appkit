@@ -45,5 +45,6 @@ export type {
   ThemeControllerState,
   PublicStateControllerState,
   Features,
-  RemoteFeatures
+  RemoteFeatures,
+  WalletItem
 } from '@reown/appkit-controllers'
