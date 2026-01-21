@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react'
 
-import type { ChainNamespace, AppKitNetwork } from '@reown/appkit-common'
+import type { AppKitNetwork, ChainNamespace } from '@reown/appkit-common'
 import type {
-  UseAppKitNetworkReturn,
+  EventsControllerState,
   PublicStateControllerState,
-  EventsControllerState
+  UseAppKitNetworkReturn
 } from '@reown/appkit-controllers'
 import { useAppKitNetworkCore } from '@reown/appkit-controllers/react'
 
 import {
+  type CreateAppKitHeadlessOptions,
   HeadlessClient,
   createAppKitHeadless,
-  getHeadlessClient,
-  type CreateAppKitHeadlessOptions
+  getHeadlessClient
 } from '../src/client/headless-client.js'
 
 // -- Re-export core hooks from controllers ------------------------------------
@@ -136,12 +136,12 @@ export function useAppKit() {
   }
 
   // Note: open() and close() are no-ops in headless mode
-  async function open() {
-    console.warn('useAppKit: open() is a no-op in headless mode')
+  function open() {
+    // No-op in headless mode
   }
 
-  async function close() {
-    await modal?.close()
+  function close() {
+    modal?.close()
   }
 
   return { open, close }
@@ -172,7 +172,10 @@ export function useAppKitState() {
     throw new Error('Please call "createAppKit" before using "useAppKitState" hook')
   }
 
-  const [state, setState] = useState<PublicStateControllerState>({ ...modal.getState(), initialized: false })
+  const [state, setState] = useState<PublicStateControllerState>({
+    ...modal.getState(),
+    initialized: false
+  })
   const [remoteFeatures, setRemoteFeatures] = useState(modal.getRemoteFeatures())
 
   useEffect(() => {

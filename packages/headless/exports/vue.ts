@@ -1,20 +1,18 @@
 import { type Ref, onUnmounted, ref } from 'vue'
 
-import type { ChainNamespace, AppKitNetwork, CaipNetwork } from '@reown/appkit-common'
-import {
-  ChainController
-} from '@reown/appkit-controllers'
+import type { AppKitNetwork, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import { ChainController } from '@reown/appkit-controllers'
 import type {
-  UseAppKitNetworkReturn,
+  EventsControllerState,
   PublicStateControllerState,
-  EventsControllerState
+  UseAppKitNetworkReturn
 } from '@reown/appkit-controllers'
 
 import {
+  type CreateAppKitHeadlessOptions,
   HeadlessClient,
   createAppKitHeadless,
-  getHeadlessClient,
-  type CreateAppKitHeadlessOptions
+  getHeadlessClient
 } from '../src/client/headless-client.js'
 
 // -- Re-export core hooks from controllers ------------------------------------
@@ -84,11 +82,14 @@ export function useAppKitNetwork(): Ref<UseAppKitNetworkReturn> {
     }
   })
 
-  const unsubscribe = ChainController.subscribeKey('activeCaipNetwork', (val: CaipNetwork | undefined) => {
-    state.value.caipNetwork = val
-    state.value.chainId = val?.id
-    state.value.caipNetworkId = val?.caipNetworkId
-  })
+  const unsubscribe = ChainController.subscribeKey(
+    'activeCaipNetwork',
+    (val: CaipNetwork | undefined) => {
+      state.value.caipNetwork = val
+      state.value.chainId = val?.id
+      state.value.caipNetworkId = val?.caipNetworkId
+    }
+  )
 
   onUnmounted(() => {
     unsubscribe()
@@ -140,12 +141,12 @@ export function useAppKit() {
   }
 
   // Note: open() and close() are no-ops in headless mode
-  async function open() {
-    console.warn('useAppKit: open() is a no-op in headless mode')
+  function open() {
+    // No-op in headless mode
   }
 
-  async function close() {
-    await modal?.close()
+  function close() {
+    modal?.close()
   }
 
   return { open, close }

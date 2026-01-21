@@ -1,5 +1,7 @@
-// -- Networks ---------------------------------------------------------------
-// Re-export all chain definitions from viem
+/*
+ * -- Networks ---------------------------------------------------------------
+ * Re-export all chain definitions from viem
+ */
 export * from 'viem/chains'
 
 // -- Types ------------------------------------------------------------------

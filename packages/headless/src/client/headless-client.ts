@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import type { SessionTypes } from '@walletconnect/types'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
@@ -62,8 +63,8 @@ import type {
   PublicStateControllerState,
   RemoteFeatures,
   RouterControllerState,
-  SendTransactionArgs,
   SIWXConfig,
+  SendTransactionArgs,
   ThemeControllerState,
   UseAppKitAccountReturn,
   UseAppKitNetworkReturn,
@@ -91,9 +92,7 @@ function setThemeVariables(_variables: ThemeControllerState['themeVariables']) {
 // -- Window type declaration for ethereum --------------------------------------
 declare global {
   interface Window {
-    ethereum?: {
-      [key: string]: unknown
-    }
+    ethereum?: Record<string, unknown>
   }
 }
 
@@ -316,28 +315,36 @@ class UniversalAdapter extends AdapterBlueprint {
     })
   }
 
-  public async signMessage(
+  public signMessage(
     _params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
-    throw new Error('signMessage not implemented in UniversalAdapter. Use a chain-specific adapter.')
+    throw new Error(
+      'signMessage not implemented in UniversalAdapter. Use a chain-specific adapter.'
+    )
   }
 
-  public async estimateGas(
+  public estimateGas(
     _params: AdapterBlueprint.EstimateGasTransactionArgs
   ): Promise<AdapterBlueprint.EstimateGasTransactionResult> {
-    throw new Error('estimateGas not implemented in UniversalAdapter. Use a chain-specific adapter.')
+    throw new Error(
+      'estimateGas not implemented in UniversalAdapter. Use a chain-specific adapter.'
+    )
   }
 
-  public async sendTransaction(
+  public sendTransaction(
     _params: AdapterBlueprint.SendTransactionParams
   ): Promise<AdapterBlueprint.SendTransactionResult> {
-    throw new Error('sendTransaction not implemented in UniversalAdapter. Use a chain-specific adapter.')
+    throw new Error(
+      'sendTransaction not implemented in UniversalAdapter. Use a chain-specific adapter.'
+    )
   }
 
-  public async writeContract(
+  public writeContract(
     _params: AdapterBlueprint.WriteContractParams
   ): Promise<AdapterBlueprint.WriteContractResult> {
-    throw new Error('writeContract not implemented in UniversalAdapter. Use a chain-specific adapter.')
+    throw new Error(
+      'writeContract not implemented in UniversalAdapter. Use a chain-specific adapter.'
+    )
   }
 
   public getWalletConnectProvider(
@@ -346,28 +353,22 @@ class UniversalAdapter extends AdapterBlueprint {
     return this.provider as UniversalProvider
   }
 
-  public async getCapabilities(
-    _params: AdapterBlueprint.GetCapabilitiesParams
-  ): Promise<unknown> {
-    return {}
+  public getCapabilities(_params: AdapterBlueprint.GetCapabilitiesParams): Promise<unknown> {
+    return Promise.resolve({})
   }
 
-  public async grantPermissions(
-    _params: AdapterBlueprint.GrantPermissionsParams
-  ): Promise<unknown> {
-    throw new Error('grantPermissions not implemented in UniversalAdapter.')
+  public grantPermissions(_params: AdapterBlueprint.GrantPermissionsParams): Promise<unknown> {
+    return Promise.reject(new Error('grantPermissions not implemented in UniversalAdapter.'))
   }
 
-  public async revokePermissions(
-    _params: AdapterBlueprint.RevokePermissionsParams
-  ): Promise<Hex> {
-    throw new Error('revokePermissions not implemented in UniversalAdapter.')
+  public revokePermissions(_params: AdapterBlueprint.RevokePermissionsParams): Promise<Hex> {
+    return Promise.reject(new Error('revokePermissions not implemented in UniversalAdapter.'))
   }
 
-  public async walletGetAssets(
+  public walletGetAssets(
     _params: AdapterBlueprint.WalletGetAssetsParams
   ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
-    return {}
+    return Promise.resolve({})
   }
 }
 
@@ -453,13 +454,15 @@ export class HeadlessClient {
     PublicStateController.set({ initialized: true })
   }
 
-  private async fetchRemoteFeatures(_options: AppKitOptions): Promise<RemoteFeatures> {
-    // For headless mode, we use default remote features with headless enabled
-    // This avoids the complexity of ConfigUtil which transforms API response to RemoteFeatures
-    return {
+  private fetchRemoteFeatures(_options: AppKitOptions): Promise<RemoteFeatures> {
+    /*
+     * For headless mode, we use default remote features with headless enabled
+     * This avoids the complexity of ConfigUtil which transforms API response to RemoteFeatures
+     */
+    return Promise.resolve({
       ...CoreConstantsUtil.DEFAULT_REMOTE_FEATURES,
       headless: true
-    }
+    })
   }
 
   private sendInitializeEvent(options: AppKitOptionsWithSdk) {
@@ -561,7 +564,9 @@ export class HeadlessClient {
     OptionsController.setUniversalProviderConfigOverride(options.universalProviderConfigOverride)
     OptionsController.setPreferUniversalLinks(options.experimental_preferUniversalLinks)
 
-    OptionsController.setDefaultAccountTypes(options.defaultAccountTypes as Partial<PreferredAccountTypes>)
+    OptionsController.setDefaultAccountTypes(
+      options.defaultAccountTypes as Partial<PreferredAccountTypes>
+    )
 
     const defaultMetaData = this.getDefaultMetaData()
     if (!options.metadata && defaultMetaData) {
@@ -1228,7 +1233,7 @@ export class HeadlessClient {
       }
 
       return adapters
-    }, {} as Adapters)
+    }, {})
   }
 
   protected async initChainAdapter(namespace: ChainNamespace) {
@@ -1404,8 +1409,8 @@ export class HeadlessClient {
           ConnectionController.disconnect({ namespace, initialDisconnect: true })
         )
       )
-    } catch (error) {
-      console.error('Error disconnecting existing connections:', error)
+    } catch {
+      // Silently handle disconnect errors
     }
   }
 
@@ -1900,6 +1905,7 @@ export class HeadlessClient {
       if (error) {
         this.handleAlertError(error)
       }
+      // eslint-disable-next-line no-console
       console.error(...args)
     })
 
@@ -2056,6 +2062,7 @@ export class HeadlessClient {
             uncaught: false
           }
         })
+        // eslint-disable-next-line no-console
         console.error('AppKit:getUniversalProvider - Cannot create provider', err)
       }
     }
@@ -2317,10 +2324,7 @@ export class HeadlessClient {
     ChainController.setAccountProp('connectedWalletInfo', walletInfo, chain)
   }
 
-  public setPreferredAccountType(
-    preferredAccountType: string,
-    chain: ChainNamespace
-  ) {
+  public setPreferredAccountType(preferredAccountType: string, chain: ChainNamespace) {
     ChainController.setAccountProp('preferredAccountType', preferredAccountType, chain)
   }
 
@@ -2329,15 +2333,14 @@ export class HeadlessClient {
   }
 
   // -- Public -------------------------------------------------------------------
-  public async open<View extends Views>(options?: OpenOptions<View>) {
+  public open<View extends Views>(options?: OpenOptions<View>) {
     // No-op in headless mode - no UI to open
     if (options?.uri) {
       ConnectionController.setUri(options.uri)
     }
-    console.warn('HeadlessClient: open() is a no-op in headless mode')
   }
 
-  public async close() {
+  public close() {
     // No-op in headless mode - no UI to close
     ModalController.close()
   }
