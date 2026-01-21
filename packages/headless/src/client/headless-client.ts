@@ -1197,7 +1197,7 @@ export class HeadlessClient {
   protected getChainsFromNamespaces(namespaces: SessionTypes.Namespaces = {}): CaipNetworkId[] {
     return Object.values(namespaces).flatMap((namespace: SessionTypes.BaseNamespace) => {
       const chains = (namespace.chains || []) as CaipNetworkId[]
-      const accountsChains = namespace.accounts.map(account => {
+      const accountsChains = namespace.accounts.map((account: string) => {
         const { chainId, chainNamespace } = ParseUtil.parseCaipAddress(account as CaipAddress)
 
         return `${chainNamespace}:${chainId}`

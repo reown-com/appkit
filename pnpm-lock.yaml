@@ -3005,6 +3005,9 @@ importers:
       '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
+      '@walletconnect/types':
+        specifier: 2.23.2
+        version: 2.23.2(aws4fetch@1.0.20)(db0@0.3.4)(ioredis@5.9.1)
       '@walletconnect/universal-provider':
         specifier: 2.23.2
         version: 2.23.2(aws4fetch@1.0.20)(bufferutil@4.1.0)(db0@0.3.4)(ioredis@5.9.1)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.3.5)
