@@ -112,7 +112,7 @@ export const MobileWalletUtil = {
          * Intent URLs bypass browser app link verification and work on all Android browsers.
          * See: https://developer.chrome.com/docs/android/intents
          */
-        const intentUrl = `intent://ul/browse/${encodedHref}?ref=${encodedRef}#Intent;scheme=https;host=phantom.app;package=${CUSTOM_DEEPLINK_WALLETS.PHANTOM.androidPackage};end`
+        const intentUrl = `intent://browse/${encodedHref}?ref=${encodedRef}#Intent;scheme=phantom;package=${CUSTOM_DEEPLINK_WALLETS.PHANTOM.androidPackage};end`
 
         window.location.href = intentUrl
       } else {
