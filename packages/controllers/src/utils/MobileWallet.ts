@@ -1,6 +1,7 @@
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import { ChainController, type ChainControllerState } from '../controllers/ChainController.js'
+import { CoreHelperUtil } from './CoreHelperUtil.js'
 
 /*
  * Exclude wallets that do not support relay connections but have custom deeplink mechanisms
@@ -11,7 +12,8 @@ import { ChainController, type ChainControllerState } from '../controllers/Chain
 export const CUSTOM_DEEPLINK_WALLETS = {
   PHANTOM: {
     id: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
-    url: 'https://phantom.app'
+    url: 'https://phantom.app',
+    androidPackage: 'app.phantom'
   },
   SOLFLARE: {
     id: '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
@@ -101,8 +103,22 @@ export const MobileWalletUtil = {
       const protocol = href.startsWith('https') ? 'https' : 'http'
       const host = href.split('/')[2]
       const encodedRef = encodeURIComponent(`${protocol}://${host}`)
+      const browseUrl = `${CUSTOM_DEEPLINK_WALLETS.PHANTOM.url}/ul/browse/${encodedHref}?ref=${encodedRef}`
 
-      window.location.href = `${CUSTOM_DEEPLINK_WALLETS.PHANTOM.url}/ul/browse/${encodedHref}?ref=${encodedRef}`
+      if (CoreHelperUtil.isAndroid()) {
+        /*
+         * Use Android intent URL for Phantom on Android devices.
+         * Universal Links don't work reliably on many Android browsers (Opera, UC Browser, Samsung Internet, in-app browsers).
+         * Intent URLs bypass browser app link verification and work on all Android browsers.
+         * See: https://developer.chrome.com/docs/android/intents
+         */
+        const intentUrl = `intent://browse/${encodedHref}?ref=${encodedRef}#Intent;scheme=phantom;package=${CUSTOM_DEEPLINK_WALLETS.PHANTOM.androidPackage};end`
+
+        window.location.href = intentUrl
+      } else {
+        // Use Universal Link on iOS - well supported by Safari
+        window.location.href = browseUrl
+      }
     }
 
     // Solflare only supports Solana
