@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import { mockChainControllerState } from '../../exports/testing.js'
-import { CUSTOM_DEEPLINK_WALLETS, MobileWalletUtil } from '../../src/utils/MobileWallet.js'
 import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil.js'
+import { CUSTOM_DEEPLINK_WALLETS, MobileWalletUtil } from '../../src/utils/MobileWallet.js'
 
 const ORIGINAL_HREF = 'https://example.com/path'
 const mockWindow = {
