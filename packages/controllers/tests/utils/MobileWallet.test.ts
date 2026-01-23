@@ -4,6 +4,7 @@ import { ConstantsUtil } from '@reown/appkit-common'
 
 import { mockChainControllerState } from '../../exports/testing.js'
 import { CUSTOM_DEEPLINK_WALLETS, MobileWalletUtil } from '../../src/utils/MobileWallet.js'
+import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil.js'
 
 const ORIGINAL_HREF = 'https://example.com/path'
 const mockWindow = {
@@ -25,17 +26,51 @@ describe('MobileWalletUtil', () => {
     mockChainControllerState({ activeChain: ConstantsUtil.CHAIN.SOLANA })
   })
 
-  it('should redirect to Phantom app when Phantom is not installed', () => {
-    MobileWalletUtil.handleMobileDeeplinkRedirect(
-      CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
-      ConstantsUtil.CHAIN.SOLANA
-    )
+  describe('Phantom deeplink handling', () => {
+    it('should redirect to Phantom using Universal Link on iOS when Phantom is not installed', () => {
+      vi.spyOn(CoreHelperUtil, 'isAndroid').mockReturnValue(false)
 
-    const encodedHref = encodeURIComponent(ORIGINAL_HREF)
-    const encodedRef = encodeURIComponent('https://example.com')
-    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.PHANTOM.url}/ul/browse/${encodedHref}?ref=${encodedRef}`
+      MobileWalletUtil.handleMobileDeeplinkRedirect(
+        CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
+        ConstantsUtil.CHAIN.SOLANA
+      )
 
-    expect(window.location.href).toBe(expectedUrl)
+      const encodedHref = encodeURIComponent(ORIGINAL_HREF)
+      const encodedRef = encodeURIComponent('https://example.com')
+      const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.PHANTOM.url}/ul/browse/${encodedHref}?ref=${encodedRef}`
+
+      expect(window.location.href).toBe(expectedUrl)
+    })
+
+    it('should redirect to Phantom using intent URL on Android when Phantom is not installed', () => {
+      vi.spyOn(CoreHelperUtil, 'isAndroid').mockReturnValue(true)
+
+      MobileWalletUtil.handleMobileDeeplinkRedirect(
+        CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
+        ConstantsUtil.CHAIN.SOLANA
+      )
+
+      const encodedHref = encodeURIComponent(ORIGINAL_HREF)
+      const encodedRef = encodeURIComponent('https://example.com')
+      const expectedUrl = `intent://ul/browse/${encodedHref}?ref=${encodedRef}#Intent;scheme=https;host=phantom.app;package=${CUSTOM_DEEPLINK_WALLETS.PHANTOM.androidPackage};end`
+
+      expect(window.location.href).toBe(expectedUrl)
+    })
+
+    it('should not redirect when Phantom is installed', () => {
+      vi.stubGlobal('window', {
+        ...mockWindow,
+        phantom: {}
+      })
+
+      const originalHref = window.location.href
+      MobileWalletUtil.handleMobileDeeplinkRedirect(
+        CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
+        ConstantsUtil.CHAIN.SOLANA
+      )
+
+      expect(window.location.href).toBe(originalHref)
+    })
   })
 
   it('should redirect to Binance Web3 Wallet when Binance is not installed', () => {
@@ -56,21 +91,6 @@ describe('MobileWalletUtil', () => {
     expect(actualDp.searchParams.get('appId')).toBe(CUSTOM_DEEPLINK_WALLETS.BINANCE.appId)
     expect(actualDp.searchParams.get('startPagePath')).toBe(expectedStartPagePath)
     expect(actualDp.searchParams.get('startPageQuery')).toBe(expectedStartPageQuery)
-  })
-
-  it('should not redirect when Phantom is installed', () => {
-    vi.stubGlobal('window', {
-      ...mockWindow,
-      phantom: {}
-    })
-
-    const originalHref = window.location.href
-    MobileWalletUtil.handleMobileDeeplinkRedirect(
-      CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
-      ConstantsUtil.CHAIN.SOLANA
-    )
-
-    expect(window.location.href).toBe(originalHref)
   })
 
   it('should not redirect when Binance Web3 Wallet is installed', () => {
