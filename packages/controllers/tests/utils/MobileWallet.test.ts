@@ -52,7 +52,7 @@ describe('MobileWalletUtil', () => {
 
       const encodedHref = encodeURIComponent(ORIGINAL_HREF)
       const encodedRef = encodeURIComponent('https://example.com')
-      const expectedUrl = `intent://ul/browse/${encodedHref}?ref=${encodedRef}#Intent;scheme=https;host=phantom.app;package=${CUSTOM_DEEPLINK_WALLETS.PHANTOM.androidPackage};end`
+      const expectedUrl = `intent://phantom.app/ul/browse/${encodedHref}?ref=${encodedRef}#Intent;scheme=https;package=${CUSTOM_DEEPLINK_WALLETS.PHANTOM.androidPackage};end`
 
       expect(window.location.href).toBe(expectedUrl)
     })
