@@ -1,6 +1,7 @@
 packages:
   - 'packages/adapters/*'
   - 'packages/appkit'
+  - 'packages/headless'
   - 'packages/common'
   - 'packages/universal-connector'
   - 'packages/ui'
