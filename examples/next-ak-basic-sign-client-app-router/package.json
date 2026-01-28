@@ -11,8 +11,8 @@
   "dependencies": {
     "@reown/appkit": "workspace:*",
     "@tanstack/react-query": "5.75.5",
-    "@walletconnect/sign-client": "2.23.2",
-    "@walletconnect/types": "2.23.2",
+    "@walletconnect/sign-client": "2.23.4",
+    "@walletconnect/types": "2.23.4",
     "next": "14.2.35",
     "next-themes": "0.4.6",
     "react": "19.1.2",
