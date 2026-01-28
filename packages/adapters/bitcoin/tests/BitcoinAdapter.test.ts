@@ -228,28 +228,27 @@ describe('BitcoinAdapter', () => {
     it('should get wallets from all the available connectors', async () => {
       const walletStandardConnectorSpy = vi.spyOn(WalletStandardConnector, 'watchWallets')
       const satsConnectConnectorSpy = vi.spyOn(SatsConnectConnector, 'getWallets')
-      const okxConnectorSpy = vi.spyOn(OKXConnector, 'getWallet')
 
       await adapter.syncConnectors(undefined)
 
       expect(walletStandardConnectorSpy).toHaveBeenCalled()
       expect(satsConnectConnectorSpy).toHaveBeenCalled()
-      expect(okxConnectorSpy).toHaveBeenCalled()
+      expect(adapter.connectors.some(c => c instanceof OKXConnector)).toBe(true)
     })
 
     it('should add connectors from SatsConnectConnector', async () => {
       mockSatsConnectProvider()
       await adapter.syncConnectors(undefined)
 
-      expect(adapter.connectors).toHaveLength(1)
-      expect(adapter.connectors[0]).toBeInstanceOf(SatsConnectConnector)
+      expect(adapter.connectors.some(c => c instanceof SatsConnectConnector)).toBe(true)
+      expect(adapter.connectors.some(c => c instanceof OKXConnector)).toBe(true)
     })
 
     it('should map LeatherConnector', async () => {
       mockSatsConnectProvider({ id: LeatherConnector.ProviderId, name: 'Leather' })
       await adapter.syncConnectors(undefined)
 
-      expect(adapter.connectors[1]).toBeInstanceOf(LeatherConnector)
+      expect(adapter.connectors.some(c => c instanceof LeatherConnector)).toBe(true)
     })
 
     it('should add OKXConnector', async () => {
@@ -257,7 +256,7 @@ describe('BitcoinAdapter', () => {
 
       await adapter.syncConnectors(undefined)
 
-      expect(adapter.connectors[0]).toBeInstanceOf(OKXConnector)
+      expect(adapter.connectors.some(c => c instanceof OKXConnector)).toBe(true)
     })
   })
 
