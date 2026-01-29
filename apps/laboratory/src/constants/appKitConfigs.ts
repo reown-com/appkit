@@ -3,6 +3,7 @@ import type { CreateConfigParameters } from 'wagmi'
 import { CoreHelperUtil, type CreateAppKit } from '@reown/appkit'
 import type { AppKitNetwork, CustomRpcUrlMap } from '@reown/appkit-common'
 import { DefaultSIWX, ReownAuthentication } from '@reown/appkit-siwx'
+import { datahavenTestnet } from '@reown/appkit/networks'
 
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { siweConfig } from '@/src/utils/SiweUtils'
@@ -50,7 +51,7 @@ const commonAppKitConfig = {
 }
 const commonWagmiConfig = {
   ssr: true,
-  networks: ConstantsUtil.AllNetworks,
+  networks: [datahavenTestnet],
   projectId: ConstantsUtil.ProjectId
 } as WagmiConfig
 
@@ -59,7 +60,7 @@ export const appKitConfigs = {
     ...commonAppKitConfig,
     wagmiConfig: commonWagmiConfig,
     adapters: ['wagmi', 'solana', 'bitcoin', 'ton'],
-    networks: ConstantsUtil.AllNetworks,
+    networks: [datahavenTestnet],
     features: {
       headless: true
     }
@@ -69,13 +70,13 @@ export const appKitConfigs = {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
     wagmiConfig: commonWagmiConfig,
-    networks: ConstantsUtil.EvmNetworks
+    networks: [datahavenTestnet]
   },
   'wagmi-all': {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
     wagmiConfig: commonWagmiConfig,
-    networks: ConstantsUtil.EvmNetworks,
+    networks: [datahavenTestnet],
     siweConfig
   },
   'wagmi-no-email': {

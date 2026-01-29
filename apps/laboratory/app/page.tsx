@@ -40,6 +40,7 @@ export default function HomePage() {
       <ConfigurationList title="SIWX" sdkOptions={siwxSdkOptions} />
       <ConfigurationList title="Pay" sdkOptions={paySdkOptions} />
       <ConfigurationList title="Custom Configurations" sdkOptions={customSdkOptions} />
+
     </>
   )
 }
