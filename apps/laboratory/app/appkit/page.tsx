@@ -14,7 +14,6 @@ import DemoContent from '@/src/components/DemoContent'
 import DemoContentHeadless from '@/src/components/Headless/DemoContentHeadless'
 import { AppKitProvider } from '@/src/context/AppKitContext'
 import { getAppKitAdapters, getAppKitConfigByName } from '@/src/utils/AppKitConfigUtil'
-import { SmartContractActionButtonList } from './test'
 
 const queryClient = new QueryClient()
 
@@ -48,7 +47,6 @@ export default function Page() {
         <QueryClientProvider client={queryClient}>
           <AppKitProvider config={appKitConfig}>
             {isHeadless ? <DemoContentHeadless /> : <DemoContent config={config} />}
-            <SmartContractActionButtonList />
           </AppKitProvider>
         </QueryClientProvider>
       </WagmiProvider>
