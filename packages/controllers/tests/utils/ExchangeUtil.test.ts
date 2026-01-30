@@ -174,5 +174,20 @@ describe('ExchangeUtil', () => {
         'Unsupported chain namespace for CAIP-19 formatting: cosmos'
       )
     })
+
+    it('formats BNB native asset on Binance Smart Chain with correct SLIP-44', () => {
+      const formatted = formatCaip19Asset('eip155:56' as CaipNetworkId, 'native')
+      expect(formatted).toBe('eip155:56/slip44:714')
+    })
+
+    it('formats BNB native asset on opBNB with correct SLIP-44', () => {
+      const formatted = formatCaip19Asset('eip155:204' as CaipNetworkId, 'native')
+      expect(formatted).toBe('eip155:204/slip44:714')
+    })
+
+    it('formats ERC20 token on Binance Smart Chain (not affected by override)', () => {
+      const formatted = formatCaip19Asset('eip155:56' as CaipNetworkId, '0xabc')
+      expect(formatted).toBe('eip155:56/erc20:0xabc')
+    })
   })
 })
