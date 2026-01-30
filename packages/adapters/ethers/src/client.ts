@@ -34,6 +34,7 @@ import { HelpersUtil } from '@reown/appkit-utils'
 import {
   type Address,
   BaseProvider,
+  CoinbaseWalletProvider,
   EthersHelpersUtil,
   InjectedProvider,
   type ProviderType,
@@ -62,7 +63,8 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   private async createEthersConfig() {
-    const { metadata, enableCoinbase, enableInjected, enableEIP6963 } = OptionsController.state
+    const { metadata, enableBaseAccount, enableCoinbase, enableInjected, enableEIP6963 } =
+      OptionsController.state
 
     if (!metadata) {
       return undefined
@@ -74,9 +76,14 @@ export class EthersAdapter extends AdapterBlueprint {
       this.ethersProviders.injected = injectedProvider
     }
 
-    if (enableCoinbase !== false) {
+    if (enableBaseAccount !== false) {
       // Do not initialize provider to prevent unnecessary api calls- lazy load
       this.ethersProviders.baseAccount = new BaseProvider()
+    }
+
+    if (enableCoinbase !== false) {
+      // Do not initialize provider to prevent unnecessary api calls- lazy load
+      this.ethersProviders.coinbaseWallet = new CoinbaseWalletProvider()
     }
 
     if (CoreHelperUtil.isSafeApp()) {
