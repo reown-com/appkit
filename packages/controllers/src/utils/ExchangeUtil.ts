@@ -69,8 +69,10 @@ const CHAIN_ASSET_INFO_MAP: Partial<
 }
 
 const EVM_NATIVE_SLIP44_OVERRIDES: Record<string, string> = {
-  '56': '714', // BNB on Binance Smart Chain
-  '204': '714' // BNB on opBNB
+  // BNB on Binance Smart Chain
+  '56': '714',
+  // BNB on opBNB
+  '204': '714'
 }
 
 class JsonRpcError extends Error {}
