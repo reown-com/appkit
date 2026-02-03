@@ -19,7 +19,7 @@
   "devDependencies": {
     "@eslint/compat": "1.2.3",
     "@sveltejs/adapter-auto": "6.1.0",
-    "@sveltejs/kit": "2.42.1",
+    "@sveltejs/kit": "2.49.5",
     "@sveltejs/vite-plugin-svelte": "4.0.4",
     "eslint-plugin-svelte": "2.36.0",
     "globals": "15.0.0",
