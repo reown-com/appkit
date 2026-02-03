@@ -26,6 +26,13 @@ const CHAIN_ASSET_INFO_MAP: Partial<
   }
 }
 
+const EVM_NATIVE_SLIP44_OVERRIDES: Record<string, string> = {
+  // BNB on Binance Smart Chain
+  '56': '714',
+  // BNB on opBNB
+  '204': '714'
+}
+
 export function formatCaip19Asset(caipNetworkId: CaipNetworkId, asset: string): string {
   const { chainNamespace, chainId } = ParseUtil.parseCaipNetworkId(caipNetworkId)
 
@@ -40,6 +47,9 @@ export function formatCaip19Asset(caipNetworkId: CaipNetworkId, asset: string): 
   if (asset !== 'native') {
     assetNamespace = chainInfo.defaultTokenNamespace
     assetReference = asset
+  } else if (chainNamespace === 'eip155' && EVM_NATIVE_SLIP44_OVERRIDES[chainId]) {
+    // Use chain-specific SLIP-44 coin type for native tokens
+    assetReference = EVM_NATIVE_SLIP44_OVERRIDES[chainId]
   }
 
   const networkPart = `${chainNamespace}:${chainId}`
