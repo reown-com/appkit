@@ -28,7 +28,7 @@
     "@walletconnect/types": "2.23.2",
     "lit": "3.1.0",
     "valtio": "2.1.7",
-    "viem": "2.44.2"
+    "viem": "2.45.0"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "SEE LICENSE IN LICENSE.md",
