@@ -211,7 +211,7 @@ describe('ApiController', () => {
   })
 
   it('should fetch network images ', async () => {
-    const reuqestedCaipNetworks = [
+    const requestedCaipNetworks = [
       {
         caipNetworkId: 'eip155:1',
         id: 1,
@@ -273,10 +273,10 @@ describe('ApiController', () => {
       [
         {
           namespace: ConstantsUtil.CHAIN.EVM,
-          caipNetworks: reuqestedCaipNetworks
+          caipNetworks: requestedCaipNetworks
         }
       ],
-      reuqestedCaipNetworks,
+      requestedCaipNetworks,
       {
         connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
       }
