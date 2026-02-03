@@ -22,7 +22,7 @@ export function WagmiCreatePasskeySignerTest() {
       setPasskey(credential)
       toast({
         type: 'success',
-        title: 'Passkey created succesfully',
+        title: 'Passkey created successfully',
         description: ''
       })
     } catch (error) {

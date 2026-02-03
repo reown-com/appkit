@@ -727,7 +727,7 @@ describe('WagmiAdapter', () => {
       expect(adapter.wagmiConfig.state.connections.size).toBe(0)
     })
 
-    it('should disconnect wagmi context succesfully even if one of the connectors fails to disconnect', async () => {
+    it('should disconnect wagmi context successfully even if one of the connectors fails to disconnect', async () => {
       const mockConnections = [
         {
           accounts: ['0x123'],
