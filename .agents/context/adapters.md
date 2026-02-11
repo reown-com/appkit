@@ -52,6 +52,7 @@ Adapters emit these events:
 ## Available Adapters
 
 ### Wagmi (`@reown/appkit-adapter-wagmi`)
+
 EVM chains via Wagmi/Viem.
 
 ```typescript
@@ -60,7 +61,7 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 const wagmiAdapter = new WagmiAdapter({
   networks: [mainnet, polygon, arbitrum],
   projectId: 'your-project-id',
-  customRpcUrls: { 1: 'https://...' },  // Optional
+  customRpcUrls: { 1: 'https://...' } // Optional
 })
 
 // Exposes wagmiConfig for direct Wagmi usage
@@ -68,6 +69,7 @@ wagmiAdapter.wagmiConfig
 ```
 
 ### Solana (`@reown/appkit-adapter-solana`)
+
 Solana blockchain.
 
 ```typescript
@@ -80,23 +82,29 @@ const solanaAdapter = new SolanaAdapter({
 ```
 
 ### Bitcoin (`@reown/appkit-adapter-bitcoin`)
+
 Bitcoin and UTXO-based chains.
 
 ### Ethers v6 (`@reown/appkit-adapter-ethers`)
+
 EVM via ethers.js v6.
 
 ### Ethers v5 (`@reown/appkit-adapter-ethers5`)
+
 EVM via ethers.js v5 (legacy support).
 
 ### Polkadot (`@reown/appkit-adapter-polkadot`)
+
 Polkadot ecosystem (private/internal).
 
 ### TON (`@reown/appkit-adapter-ton`)
+
 TON blockchain.
 
 ## Creating a New Adapter
 
 1. Create `packages/adapters/<name>/` mirroring existing adapter structure:
+
    ```
    packages/adapters/<name>/
    ├── src/
@@ -112,22 +120,36 @@ TON blockchain.
    ```
 
 2. Extend `AdapterBlueprint`:
+
    ```typescript
    export class MyAdapter extends AdapterBlueprint<MyConnector> {
      constructor(params: MyAdapterParams) {
        super({ namespace: 'mychain' })
      }
 
-     override async connect(params) { /* ... */ }
-     override async disconnect() { /* ... */ }
-     override async switchNetwork(network) { /* ... */ }
-     override async signMessage(message) { /* ... */ }
-     override async sendTransaction(args) { /* ... */ }
-     override async getBalance() { /* ... */ }
+     override async connect(params) {
+       /* ... */
+     }
+     override async disconnect() {
+       /* ... */
+     }
+     override async switchNetwork(network) {
+       /* ... */
+     }
+     override async signMessage(message) {
+       /* ... */
+     }
+     override async sendTransaction(args) {
+       /* ... */
+     }
+     override async getBalance() {
+       /* ... */
+     }
    }
    ```
 
 3. Dependencies in `package.json`:
+
    - `@reown/appkit` — SDK facade
    - `@reown/appkit-common` — Types/utils
    - `@reown/appkit-utils` — Integration helpers
