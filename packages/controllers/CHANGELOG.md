@@ -1,5 +1,20 @@
 # @reown/appkit-core
 
+## 1.8.18
+
+### Patch Changes
+
+- [#5493](https://github.com/reown-com/appkit/pull/5493) [`1c7540f`](https://github.com/reown-com/appkit/commit/1c7540f228e3103b5544b15a8805c0d1a0b2ddd6) Thanks [@enesozturk](https://github.com/enesozturk)! - fix: use Android intent URL for Phantom deeplinks on Android devices
+
+  Universal Links don't work reliably on many Android browsers (Opera, UC Browser, Samsung Internet, in-app browsers like Facebook, Instagram). This change uses Android intent URLs on Android devices which bypass browser app link verification and work on all Android browsers.
+
+  - iOS continues to use Universal Links (well supported by Safari)
+  - Android now uses intent URLs that trigger OS-level intent resolution
+
+- Updated dependencies []:
+  - @reown/appkit-common@1.8.18
+  - @reown/appkit-wallet@1.8.18
+
 ## 1.8.17
 
 ### Patch Changes
