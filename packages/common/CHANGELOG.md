@@ -1,5 +1,7 @@
 # @reown/appkit-common
 
+## 1.8.18
+
 ## 1.8.17
 
 ### Patch Changes

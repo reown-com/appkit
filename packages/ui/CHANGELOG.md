@@ -1,5 +1,14 @@
 # @reown/appkit-ui
 
+## 1.8.18
+
+### Patch Changes
+
+- Updated dependencies [[`1c7540f`](https://github.com/reown-com/appkit/commit/1c7540f228e3103b5544b15a8805c0d1a0b2ddd6)]:
+  - @reown/appkit-controllers@1.8.18
+  - @reown/appkit-common@1.8.18
+  - @reown/appkit-wallet@1.8.18
+
 ## 1.8.17
 
 ### Patch Changes
