@@ -615,7 +615,7 @@ export class EthersAdapter extends AdapterBlueprint {
       return {
         accounts: connection.accounts.map(({ address }) =>
           CoreHelperUtil.createAccount({
-            caipAddress: `${connection.caipNetwork!.caipNetworkId}:${address}` as CaipAddress,
+            caipAddress: `${connection?.caipNetwork?.caipNetworkId}:${address}` as CaipAddress,
             type: 'eoa'
           })
         )
@@ -649,7 +649,7 @@ export class EthersAdapter extends AdapterBlueprint {
       accounts: caipNetwork
         ? accounts.map(account =>
             CoreHelperUtil.createAccount({
-              caipAddress: `${caipNetwork.caipNetworkId}:${account}` as CaipAddress,
+              caipAddress: `${caipNetwork?.caipNetworkId}:${account}`,
               type: 'eoa'
             })
           )
