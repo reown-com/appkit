@@ -85,6 +85,7 @@ describe('useAppKitAccount', () => {
     useSnapshot.mockReturnValue({
       activeChain: 'eip155',
       activeConnectorIds: { eip155: 'test-connector' },
+      connections: new Map(),
       chains: new Map([
         [
           'eip155',
@@ -119,6 +120,7 @@ describe('useAppKitAccount', () => {
     useSnapshot.mockReturnValue({
       activeChain: 'eip155',
       activeConnectorIds: { eip155: 'test-connector' },
+      connections: new Map(),
       chains: new Map([
         [
           'eip155',
@@ -161,6 +163,7 @@ describe('useAppKitAccount', () => {
     useSnapshot.mockReturnValue({
       activeChain: 'eip155',
       activeConnectorIds: { eip155: CommonConstantsUtil.CONNECTOR_ID.AUTH },
+      connections: new Map(),
       chains: new Map([
         [
           'eip155',
@@ -216,6 +219,7 @@ describe('useAppKitAccount', () => {
     useSnapshot.mockReturnValue({
       activeChain: 'eip155',
       activeConnectorIds: { eip155: 'test-connector' },
+      connections: new Map(),
       chains: new Map([
         [
           'eip155',
@@ -241,6 +245,55 @@ describe('useAppKitAccount', () => {
       status: undefined,
       embeddedWalletInfo: undefined
     })
+  })
+
+  it('should return allAccounts with caipAddress when connections exist', () => {
+    const mockConnections = [
+      {
+        connectorId: 'test-connector',
+        accounts: [
+          { address: '0xABC', type: 'eoa' },
+          { address: '0xDEF', type: 'smartAccount' }
+        ],
+        caipNetwork: extendedMainnet
+      }
+    ]
+
+    useSnapshot.mockReturnValue({
+      activeChain: 'eip155',
+      activeConnectorIds: { eip155: 'test-connector' },
+      connections: new Map([['eip155', mockConnections]]),
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              caipAddress: 'eip155:1:0xABC',
+              status: 'connected'
+            }
+          }
+        ]
+      ])
+    })
+
+    const result = useAppKitAccount()
+
+    expect(result.allAccounts).toEqual([
+      expect.objectContaining({
+        namespace: 'eip155',
+        address: '0xABC',
+        chainId: '1',
+        caipAddress: 'eip155:1:0xABC',
+        type: 'eoa'
+      }),
+      expect.objectContaining({
+        namespace: 'eip155',
+        address: '0xDEF',
+        chainId: '1',
+        caipAddress: 'eip155:1:0xDEF',
+        type: 'smartAccount'
+      })
+    ])
   })
 })
 
@@ -801,7 +854,8 @@ describe('useAppKitWallets', () => {
       fetchWallets: expect.any(Function),
       resetWcUri: expect.any(Function),
       resetConnectingWallet: expect.any(Function),
-      getWcUri: expect.any(Function)
+      getWcUri: expect.any(Function),
+      wcError: false
     })
   })
 

@@ -132,7 +132,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     let accounts = caipNetwork
       ? addresses?.map(a =>
           CoreHelperUtil.createAccount({
-            caipAddress: `${caipNetwork.caipNetworkId}:${a.address}` as CaipAddress,
+            caipAddress: `${caipNetwork.caipNetworkId}:${a.address}`,
             type: a.purpose || 'payment',
             publicKey: a.publicKey,
             path: a.path
@@ -303,7 +303,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
           let accounts = caipNetwork
             ? addresses?.map(a =>
                 CoreHelperUtil.createAccount({
-                  caipAddress: `${caipNetwork.caipNetworkId}:${a.address}` as CaipAddress,
+                  caipAddress: `${caipNetwork.caipNetworkId}:${a.address}`,
                   type: a.purpose || 'payment',
                   publicKey: a.publicKey,
                   path: a.path

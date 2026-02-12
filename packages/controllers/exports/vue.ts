@@ -1,6 +1,6 @@
 import { type Ref, onMounted, onUnmounted, ref } from 'vue'
 
-import { type CaipAddress, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 
 import { AlertController } from '../src/controllers/AlertController.js'
@@ -100,17 +100,19 @@ export function useAppKitAccount(options?: {
     const connections = activeChainNamespace
       ? ConnectionController.getConnections(activeChainNamespace)
       : []
-    state.value.allAccounts = connections.flatMap(connection =>
-      connection.caipNetwork
+    state.value.allAccounts = connections.flatMap(connection => {
+      const { caipNetwork } = connection
+
+      return caipNetwork
         ? connection.accounts.map(({ address, type, publicKey }) =>
             CoreHelperUtil.createAccount({
-              caipAddress: `${connection.caipNetwork!.caipNetworkId}:${address}` as CaipAddress,
+              caipAddress: `${caipNetwork.caipNetworkId}:${address}`,
               type: type || 'eoa',
               publicKey
             })
           )
         : []
-    )
+    })
     state.value.address = CoreHelperUtil.getPlainAddress(accountState?.caipAddress)
     state.value.caipAddress = accountState?.caipAddress
     state.value.status = accountState?.status
@@ -136,6 +138,10 @@ export function useAppKitAccount(options?: {
     updateState(chains.value, chainNamespace.value)
   })
 
+  const unsubscribeConnections = ConnectionController.subscribeKey('connections', () => {
+    updateState(chains.value, chainNamespace.value)
+  })
+
   onMounted(() => {
     updateState(chains.value, chainNamespace.value)
   })
@@ -143,6 +149,7 @@ export function useAppKitAccount(options?: {
   onUnmounted(() => {
     unsubscribeChains()
     unsubscribeActiveChain()
+    unsubscribeConnections()
   })
 
   return state
