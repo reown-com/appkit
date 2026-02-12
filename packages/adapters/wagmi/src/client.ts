@@ -38,6 +38,7 @@ import { ErrorUtil, UserRejectedRequestError } from '@reown/appkit-common'
 import type {
   AppKitNetwork,
   BaseNetwork,
+  CaipAddress,
   CaipNetwork,
   ChainNamespace,
   Connection,
@@ -130,21 +131,29 @@ export class WagmiAdapter extends AdapterBlueprint {
         return { accounts: [] }
       }
 
-      const { address, accounts } = provider.user
+      const { address, accounts, chainId } = provider.user
 
       return Promise.resolve({
         accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
-          CoreHelperUtil.createAccount('eip155', account.address, account.type)
+          CoreHelperUtil.createAccount({
+            caipAddress: `eip155:${chainId}:${account.address}` as CaipAddress,
+            type: account.type
+          })
         )
       })
     }
 
-    const { addresses, address } = getAccount(this.wagmiConfig)
+    const { addresses, address, chainId } = getAccount(this.wagmiConfig)
 
     return Promise.resolve({
-      accounts: [...new Set(addresses || [address])]?.map(val =>
-        CoreHelperUtil.createAccount('eip155', val || '', 'eoa')
-      )
+      accounts: chainId
+        ? [...new Set(addresses || [address])]?.map(val =>
+            CoreHelperUtil.createAccount({
+              caipAddress: `eip155:${chainId}:${val || ''}` as CaipAddress,
+              type: 'eoa'
+            })
+          )
+        : []
     })
   }
 

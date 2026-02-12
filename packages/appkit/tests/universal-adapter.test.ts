@@ -278,6 +278,8 @@ describe('UniversalAdapter', () => {
           {
             address: 'mock_address_1',
             namespace: 'eip155',
+            chainId: 'mock_network',
+            caipAddress: 'eip155:mock_network:mock_address_1',
             path: undefined,
             publicKey: undefined,
             type: 'eoa'
@@ -285,6 +287,8 @@ describe('UniversalAdapter', () => {
           {
             address: 'mock_address_2',
             namespace: 'eip155',
+            chainId: 'mock_network',
+            caipAddress: 'eip155:mock_network:mock_address_2',
             path: undefined,
             publicKey: undefined,
             type: 'eoa'

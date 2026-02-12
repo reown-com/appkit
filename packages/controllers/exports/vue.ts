@@ -1,6 +1,6 @@
 import { type Ref, onMounted, onUnmounted, ref } from 'vue'
 
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipAddress, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import type { Connection } from '@reown/appkit-common'
 
 import { AlertController } from '../src/controllers/AlertController.js'
@@ -97,6 +97,20 @@ export function useAppKitAccount(options?: {
       ? _chains.get(activeChainNamespace)?.accountState
       : undefined
 
+    const connections = activeChainNamespace
+      ? ConnectionController.getConnections(activeChainNamespace)
+      : []
+    state.value.allAccounts = connections.flatMap(connection =>
+      connection.caipNetwork
+        ? connection.accounts.map(({ address, type, publicKey }) =>
+            CoreHelperUtil.createAccount({
+              caipAddress: `${connection.caipNetwork!.caipNetworkId}:${address}` as CaipAddress,
+              type: type || 'eoa',
+              publicKey
+            })
+          )
+        : []
+    )
     state.value.address = CoreHelperUtil.getPlainAddress(accountState?.caipAddress)
     state.value.caipAddress = accountState?.caipAddress
     state.value.status = accountState?.status

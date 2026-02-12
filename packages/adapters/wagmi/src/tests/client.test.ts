@@ -103,6 +103,7 @@ const mockWagmiConfig = {
         return Promise.resolve({
           user: {
             address: '0x123',
+            chainId: 1,
             accounts: [
               { address: '0x123', type: 'eoa' },
               { address: '0x456', type: 'smartAccount' }
@@ -1397,6 +1398,8 @@ describe('WagmiAdapter', () => {
           {
             namespace: 'eip155',
             address: '0x123',
+            chainId: '1',
+            caipAddress: 'eip155:1:0x123',
             type: 'eoa',
             publicKey: undefined,
             path: undefined
@@ -1404,6 +1407,8 @@ describe('WagmiAdapter', () => {
           {
             namespace: 'eip155',
             address: '0x456',
+            chainId: '1',
+            caipAddress: 'eip155:1:0x456',
             type: 'smartAccount',
             publicKey: undefined,
             path: undefined
