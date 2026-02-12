@@ -6,6 +6,17 @@ import type { TronConnector } from '@reown/appkit-utils/tron'
 
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 
+/**
+ * Maps TRON chain IDs to fullnode API URLs for building transactions.
+ */
+const TRON_FULLNODE_URLS: Record<string, string> = {
+  '0x2b6653dc': 'https://api.trongrid.io',
+  '0x94a9059e': 'https://api.shasta.trongrid.io',
+  '0xcd8690dc': 'https://nile.trongrid.io'
+}
+
+const DEFAULT_TRON_FULLNODE_URL = 'https://api.trongrid.io'
+
 export class TronConnectConnector implements TronConnector {
   public readonly chain = 'tron'
   public readonly type = 'INJECTED'
@@ -91,26 +102,43 @@ export class TronConnectConnector implements TronConnector {
   }
 
   async sendTransaction(params: TronConnector.SendTransactionParams): Promise<string> {
-    const transaction = {
-      to: params.to,
-      from: params.from,
-      value: params.value,
-      data: params.data
+    const fullNodeUrl = await this.getFullNodeUrl()
+
+    // Build a proper unsigned transaction via the TRON fullnode API
+    const createResponse = await fetch(`${fullNodeUrl}/wallet/createtransaction`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        owner_address: params.from,
+        to_address: params.to,
+        amount: parseInt(params.value, 10),
+        visible: true
+      })
+    })
+
+    const unsignedTx = await createResponse.json()
+
+    if (!unsignedTx.txID) {
+      throw new Error(unsignedTx.Error || 'Failed to create transaction')
     }
 
-    const result = (await this.adapter.signTransaction(transaction)) as
-      | { txid?: string; result?: boolean }
-      | string
+    // Sign the transaction with the wallet adapter
+    const signedTx = await this.adapter.signTransaction(unsignedTx)
 
-    if (typeof result === 'string') {
-      return result
+    // Broadcast the signed transaction
+    const broadcastResponse = await fetch(`${fullNodeUrl}/wallet/broadcasttransaction`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(signedTx)
+    })
+
+    const broadcastResult = await broadcastResponse.json()
+
+    if (!broadcastResult.result) {
+      throw new Error(broadcastResult.message || 'Failed to broadcast transaction')
     }
 
-    if (result?.txid) {
-      return result.txid
-    }
-
-    throw new Error('No transaction hash returned')
+    return unsignedTx.txID
   }
 
   async switchNetwork(): Promise<void> {
@@ -118,6 +146,39 @@ export class TronConnectConnector implements TronConnector {
   }
 
   // -- Private ------------------------------------------------------ //
+
+  /**
+   * Resolves the TRON fullnode API URL for building and broadcasting transactions.
+   * Uses the adapter's chainId to pick the correct network, but always maps to our
+   * own controlled URLs (not the adapter's fullNode) to avoid third-party CSP issues.
+   * TODO: Route through rpc.walletconnect.org once the RPC proxy supports TRON.
+   */
+  private async getFullNodeUrl(): Promise<string> {
+    const adapterWithNetwork = this.adapter as Adapter & {
+      network?: () => Promise<{ chainId?: string }>
+    }
+
+    if (typeof adapterWithNetwork.network === 'function') {
+      try {
+        const network = await adapterWithNetwork.network()
+
+        if (network.chainId) {
+          return TRON_FULLNODE_URLS[network.chainId] || DEFAULT_TRON_FULLNODE_URL
+        }
+      } catch {
+        // Adapter may not support network() — fall through to chain mapping
+      }
+    }
+
+    const chain = this.requestedChains[0]
+
+    if (chain) {
+      return TRON_FULLNODE_URLS[chain.id] || DEFAULT_TRON_FULLNODE_URL
+    }
+
+    return DEFAULT_TRON_FULLNODE_URL
+  }
+
   private setupAdapterListeners() {
     this.adapter.on('connect', (address: unknown) => {
       if (typeof address === 'string' && address) {

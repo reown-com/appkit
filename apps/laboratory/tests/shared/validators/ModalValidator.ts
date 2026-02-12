@@ -65,7 +65,10 @@ export class ModalValidator {
     })
   }
 
-  async expectBalanceFetched(currency: 'SOL' | 'ETH' | 'BTC' | 'POL' | 'TON', namespace?: string) {
+  async expectBalanceFetched(
+    currency: 'SOL' | 'ETH' | 'BTC' | 'POL' | 'TON' | 'TRX',
+    namespace?: string
+  ) {
     const accountButton = namespace
       ? this.page.getByTestId(`account-button-${namespace}`)
       : this.page.locator('appkit-account-button').first()

@@ -236,20 +236,39 @@ export class TronAdapter extends AdapterBlueprint<TronConnector> {
     const caipNetworkId = params.caipNetwork?.caipNetworkId
     const address = params.address
 
+    // eslint-disable-next-line no-console
+    console.log('[TronAdapter] getBalance called', { address, caipNetworkId })
+
     if (!address || !caipNetworkId) {
+      // eslint-disable-next-line no-console
+      console.log('[TronAdapter] getBalance early return — missing address or caipNetworkId')
+
       return { balance: '0', symbol: 'TRX' }
     }
 
-    const balance = await BlockchainApiController.getAddressBalance({
-      caipNetworkId,
-      address
-    })
+    try {
+      const balance = await BlockchainApiController.getAddressBalance({
+        caipNetworkId,
+        address
+      })
 
-    const formattedBalance = NumberUtil.bigNumber(balance)
-      .div(10 ** 6)
-      .toString()
+      // eslint-disable-next-line no-console
+      console.log('[TronAdapter] raw balance from API:', balance)
 
-    return { balance: formattedBalance, symbol: 'TRX' }
+      const formattedBalance = NumberUtil.bigNumber(balance)
+        .div(10 ** 6)
+        .toString()
+
+      // eslint-disable-next-line no-console
+      console.log('[TronAdapter] formatted balance:', formattedBalance)
+
+      return { balance: formattedBalance, symbol: 'TRX' }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('[TronAdapter] getBalance error:', error)
+
+      return { balance: '0', symbol: 'TRX' }
+    }
   }
 
   override parseUnits(): bigint {

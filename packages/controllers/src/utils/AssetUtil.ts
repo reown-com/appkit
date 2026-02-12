@@ -32,7 +32,7 @@ const namespaceImageIds: Record<ChainNamespace, string> = {
   // TON
   ton: '20f673c0-095e-49b2-07cf-eb5049dcf600',
   // TRON
-  tron: ''
+  tron: 'dd9de794-d4ce-4c94-682f-a367f926d500'
 }
 
 // -- State --------------------------------------------- //

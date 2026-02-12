@@ -57,7 +57,7 @@ sampleWalletTest('it should show onramp button accordingly', async ({ library })
   const accountButton = await modalPage.getDefaultWalletFeaturesButton('fund-wallet')
   await accountButton.click()
 
-  if (library === 'bitcoin' || library === 'ton') {
+  if (library === 'bitcoin' || library === 'ton' || library === 'tron') {
     await modalValidator.expectOnrampButton(false)
   } else {
     await modalValidator.expectOnrampButton(true)
@@ -71,7 +71,7 @@ sampleWalletTest('it should be connected instantly after page refresh', async ()
 })
 
 sampleWalletTest('it should show disabled networks', async ({ library }) => {
-  if (library === 'bitcoin' || library === 'ton') {
+  if (library === 'bitcoin' || library === 'ton' || library === 'tron') {
     return
   }
 
@@ -98,7 +98,13 @@ sampleWalletTest('it should switch networks and sign', async ({ library, browser
     const chainName = chains[index] ?? DEFAULT_CHAIN_NAME
     // -- Switch network --------------------------------------------------------
     /* For Solana, even though we switch to Solana Devnet, the chain name on the wallet page is still Solana */
-    const chainNameOnWalletPage = library === 'solana' ? 'Solana' : chainName
+    /* For TRON, the sample wallet displays "Tron" (title case) instead of "TRON" (uppercase) */
+    let chainNameOnWalletPage = chainName
+    if (library === 'solana') {
+      chainNameOnWalletPage = 'Solana'
+    } else if (library === 'tron') {
+      chainNameOnWalletPage = 'Tron'
+    }
     await modalPage.switchNetwork(chainName)
     await modalValidator.expectSwitchedNetwork(chainName)
     await modalPage.closeModal()
@@ -228,7 +234,7 @@ sampleWalletTest('it should disconnect and connect to a single account', async (
 sampleWalletTest(
   'it should show switch network modal if network is not supported and switch to supported network',
   async ({ library }) => {
-    if (library === 'solana' || library === 'bitcoin' || library === 'ton') {
+    if (library === 'solana' || library === 'bitcoin' || library === 'ton' || library === 'tron') {
       return
     }
 
@@ -247,7 +253,7 @@ sampleWalletTest(
 sampleWalletTest(
   "it should switch to first available network when wallet doesn't support the active network of the appkit and sign message",
   async ({ library }) => {
-    if (library === 'solana' || library === 'bitcoin' || library === 'ton') {
+    if (library === 'solana' || library === 'bitcoin' || library === 'ton' || library === 'tron') {
       return
     }
 
