@@ -23,7 +23,8 @@ const NAMESPACE_ICONS = {
   cosmos: undefined,
   sui: undefined,
   stacks: undefined,
-  ton: 'ton'
+  ton: 'ton',
+  tron: undefined
 } as const satisfies Record<ChainNamespace, IconType | undefined>
 
 @customElement('wui-list-wallet')

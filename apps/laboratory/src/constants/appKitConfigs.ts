@@ -9,7 +9,7 @@ import { siweConfig } from '@/src/utils/SiweUtils'
 
 import { externalTestConnector } from '../utils/ConnectorUtil'
 
-export type Adapter = 'wagmi' | 'ethers' | 'ethers5' | 'solana' | 'bitcoin' | 'ton'
+export type Adapter = 'wagmi' | 'ethers' | 'ethers5' | 'solana' | 'bitcoin' | 'ton' | 'tron'
 export type WagmiConfig = Partial<CreateConfigParameters> & {
   networks: AppKitNetwork[]
   projectId: string
@@ -58,7 +58,7 @@ export const appKitConfigs = {
   headless: {
     ...commonAppKitConfig,
     wagmiConfig: commonWagmiConfig,
-    adapters: ['wagmi', 'solana', 'bitcoin', 'ton'],
+    adapters: ['wagmi', 'solana', 'bitcoin', 'ton', 'tron'],
     networks: ConstantsUtil.AllNetworks,
     features: {
       headless: true
@@ -270,6 +270,13 @@ export const appKitConfigs = {
     networks: ConstantsUtil.TonNetworks
   },
 
+  // ----- TRON Variants ------------------------------
+  tron: {
+    ...commonAppKitConfig,
+    adapters: ['tron'],
+    networks: ConstantsUtil.TronNetworks
+  },
+
   // ----- Solana Variants ------------------------------
   solana: {
     ...commonAppKitConfig,
@@ -317,7 +324,7 @@ export const appKitConfigs = {
   'multichain-all': {
     ...commonAppKitConfig,
     wagmiConfig: commonWagmiConfig,
-    adapters: ['wagmi', 'solana', 'bitcoin', 'ton'],
+    adapters: ['wagmi', 'solana', 'bitcoin', 'ton', 'tron'],
     networks: ConstantsUtil.AllNetworks
   },
   'multichain-no-adapters': {
@@ -370,7 +377,7 @@ export const appKitConfigs = {
   'multichain-no-custom-wallets': {
     ...commonAppKitConfig,
     wagmiConfig: commonWagmiConfig,
-    adapters: ['wagmi', 'solana', 'bitcoin', 'ton'],
+    adapters: ['wagmi', 'solana', 'bitcoin', 'ton', 'tron'],
     networks: ConstantsUtil.AllNetworks,
     customWallets: []
   },

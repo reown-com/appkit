@@ -26,6 +26,8 @@ import {
   solanaTestnet,
   ton,
   tonTestnet,
+  tronMainnet,
+  tronShastaTestnet,
   unichainSepolia,
   zkSync
 } from '@reown/appkit/networks'
@@ -119,6 +121,8 @@ const BitcoinNetworks = [bitcoin, bitcoinTestnet, bitcoinSignet] as [
 
 const TonNetworks = [ton, tonTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
 
+const TronNetworks = [tronMainnet, tronShastaTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
+
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
   SigningFailedToastTitle: 'Signing Failed',
@@ -175,10 +179,14 @@ export const ConstantsUtil = {
   SolanaNetworks,
   BitcoinNetworks,
   TonNetworks,
-  AllNetworks: [...EvmNetworks, ...SolanaNetworks, ...BitcoinNetworks, ...TonNetworks] as [
-    AppKitNetwork,
-    ...AppKitNetwork[]
-  ],
+  TronNetworks,
+  AllNetworks: [
+    ...EvmNetworks,
+    ...SolanaNetworks,
+    ...BitcoinNetworks,
+    ...TonNetworks,
+    ...TronNetworks
+  ] as [AppKitNetwork, ...AppKitNetwork[]],
   EvmWalletButtons: [
     'walletConnect',
     'metamask',

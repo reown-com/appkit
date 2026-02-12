@@ -4,6 +4,7 @@ import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { TonAdapter } from '@reown/appkit-adapter-ton'
+import { TronAdapter } from '@reown/appkit-adapter-tron'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 
 import { type Adapter, type WagmiConfig, appKitConfigs } from '@/src/constants/appKitConfigs'
@@ -13,6 +14,7 @@ const ethersAdapter = new EthersAdapter()
 const ethers5Adapter = new Ethers5Adapter()
 const bitcoinAdapter = new BitcoinAdapter()
 const tonAdapter = new TonAdapter()
+const tronAdapter = new TronAdapter()
 
 export function getAppKitConfigByName(name: string) {
   return appKitConfigs[name] || undefined
@@ -44,6 +46,9 @@ export function getAppKitAdapters(
     }
     if (adapter === 'ton') {
       appKitAdapters.push(tonAdapter)
+    }
+    if (adapter === 'tron') {
+      appKitAdapters.push(tronAdapter)
     }
   })
 
