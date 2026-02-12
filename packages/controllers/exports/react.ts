@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useSnapshot } from 'valtio'
 
 import {
+  type CaipAddress,
   type CaipNetwork,
   type ChainNamespace,
   type Connection,
@@ -24,7 +25,6 @@ import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { MobileWalletUtil } from '../src/utils/MobileWallet.js'
 import type {
-  NamespaceTypeMap,
   UseAppKitAccountReturn,
   UseAppKitNetworkReturn,
   WcWallet
@@ -112,14 +112,15 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
   const activeConnectorId = activeConnectorIds[chainNamespace]
   const connections = ConnectionController.getConnections(chainNamespace)
   const allAccounts = connections.flatMap(connection =>
-    connection.accounts.map(({ address, type, publicKey }) =>
-      CoreHelperUtil.createAccount(
-        chainNamespace,
-        address,
-        (type || 'eoa') as NamespaceTypeMap[ChainNamespace],
-        publicKey
-      )
-    )
+    connection.caipNetwork
+      ? connection.accounts.map(({ address, type, publicKey }) =>
+          CoreHelperUtil.createAccount({
+            caipAddress: `${connection.caipNetwork!.caipNetworkId}:${address}` as CaipAddress,
+            type: type || 'eoa',
+            publicKey
+          })
+        )
+      : []
   )
 
   return {
