@@ -144,6 +144,8 @@ describe('BitcoinAdapter', () => {
     let connector: BitcoinConnector
 
     beforeEach(() => {
+      ChainController.setActiveCaipNetwork(bitcoin)
+
       connector = new SatsConnectConnector({
         provider: mockSatsConnectProvider().provider,
         requestedChains: [bitcoin]
@@ -219,7 +221,17 @@ describe('BitcoinAdapter', () => {
       const accounts = await adapter.getAccounts({ id: connector.id })
 
       expect(accounts).toEqual({
-        accounts: [{ address: 'mock_address', type: 'payment', namespace: 'bip122' }]
+        accounts: [
+          {
+            address: 'mock_address',
+            type: 'payment',
+            namespace: 'bip122',
+            chainId: bitcoin.id,
+            caipAddress: `${bitcoin.caipNetworkId}:mock_address`,
+            publicKey: undefined,
+            path: undefined
+          }
+        ]
       })
     })
   })
@@ -553,6 +565,7 @@ describe('BitcoinAdapter', () => {
 
     beforeEach(async () => {
       vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(bitcoin)
+      ChainController.setActiveCaipNetwork(bitcoin)
 
       mocks = mockSatsConnectProvider()
       await adapter.syncConnectors()
@@ -625,7 +638,8 @@ describe('BitcoinAdapter', () => {
             {
               address: 'mock_address',
               type: 'payment',
-              publicKey: 'mock_public_key'
+              publicKey: 'mock_public_key',
+              path: undefined
             }
           ],
           caipNetwork: bitcoin

@@ -9,6 +9,7 @@ import type {
   CaipAddress,
   CaipNetwork,
   CaipNetworkId,
+  ChainId,
   ChainNamespace,
   Hex,
   OnRampProvider,
@@ -1144,6 +1145,8 @@ export type AccountTypeMap = {
   [K in ChainNamespace]: {
     namespace: K
     address: string
+    chainId?: ChainId
+    caipAddress?: CaipAddress
     type: NamespaceTypeMap[K]
     publicKey?: K extends 'bip122' ? string : never
     path?: K extends 'bip122' ? string : never

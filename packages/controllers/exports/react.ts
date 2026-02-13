@@ -24,7 +24,6 @@ import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { MobileWalletUtil } from '../src/utils/MobileWallet.js'
 import type {
-  NamespaceTypeMap,
   UseAppKitAccountReturn,
   UseAppKitNetworkReturn,
   WcWallet
@@ -111,16 +110,19 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
   const authConnector = ConnectorController.getAuthConnector(chainNamespace)
   const activeConnectorId = activeConnectorIds[chainNamespace]
   const connections = ConnectionController.getConnections(chainNamespace)
-  const allAccounts = connections.flatMap(connection =>
-    connection.accounts.map(({ address, type, publicKey }) =>
-      CoreHelperUtil.createAccount(
-        chainNamespace,
-        address,
-        (type || 'eoa') as NamespaceTypeMap[ChainNamespace],
-        publicKey
-      )
-    )
-  )
+  const allAccounts = connections.flatMap(connection => {
+    const { caipNetwork } = connection
+
+    return caipNetwork
+      ? connection.accounts.map(({ address, type, publicKey }) =>
+          CoreHelperUtil.createAccount({
+            caipAddress: `${caipNetwork.caipNetworkId}:${address}`,
+            type: type || 'eoa',
+            publicKey
+          })
+        )
+      : []
+  })
 
   return {
     allAccounts,
@@ -394,6 +396,11 @@ export interface UseAppKitWalletsReturn {
    * @see PR #5456 for context on iOS deeplink requirements
    */
   getWcUri: () => Promise<void>
+
+  /**
+   * Boolean that indicates if there was an error fetching the WalletConnect URI.
+   */
+  wcError: boolean
 }
 
 /**
@@ -406,7 +413,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
   const [currentWcPayUrl, setCurrentWcPayUrl] = useState<string | undefined>(undefined)
-  const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
+  const { wcUri, wcFetchingUri, wcError } = useSnapshot(ConnectionController.state)
   const {
     wallets: wcAllWallets,
     search: wcSearchWallets,
@@ -557,6 +564,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       isFetchingWcUri: false,
       isInitialized: false,
       wcUri: undefined,
+      wcError: false,
       connectingWallet: undefined,
       page: 0,
       count: 0,
@@ -578,6 +586,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     isFetchingWcUri: wcFetchingUri,
     isInitialized: initialized,
     wcUri: enhancedWcUri,
+    wcError: wcError ?? false,
     connectingWallet: connectingWallet as WalletItem | undefined,
     page,
     count,
