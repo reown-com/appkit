@@ -1138,6 +1138,7 @@ export type NamespaceTypeMap = {
   sui: 'eoa'
   stacks: 'eoa'
   ton: 'eoa'
+  tron: 'eoa'
 }
 
 export type AccountTypeMap = {

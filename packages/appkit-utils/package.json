@@ -40,6 +40,11 @@
       "types": "./dist/types/exports/ton.d.ts",
       "import": "./dist/esm/exports/ton.js",
       "default": "./dist/esm/exports/ton.js"
+    },
+    "./tron": {
+      "types": "./dist/types/exports/tron.d.ts",
+      "import": "./dist/esm/exports/tron.js",
+      "default": "./dist/esm/exports/tron.js"
     }
   },
   "typesVersions": {
@@ -52,6 +57,9 @@
       ],
       "ton": [
         "./dist/types/exports/ton.d.ts"
+      ],
+      "tron": [
+        "./dist/types/exports/tron.d.ts"
       ]
     }
   },

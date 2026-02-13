@@ -215,6 +215,14 @@ export const tonSdkOptions: SdkOption[] = [
   }
 ]
 
+export const tronSdkOptions: SdkOption[] = [
+  {
+    title: 'Default',
+    link: '/appkit?name=tron',
+    description: 'Basic configuration using Tron as a driving library'
+  }
+]
+
 export const siwxSdkOptions: SdkOption[] = [
   {
     title: 'Reown Authentication',

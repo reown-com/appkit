@@ -7,12 +7,13 @@ import { Btc } from '../Icons/Btc'
 import { Eth } from '../Icons/Eth'
 import { Sol } from '../Icons/Sol'
 import { Ton } from '../Icons/Ton'
+import { Trx } from '../Icons/Trx'
 
 function Tab({ onTabClick }: { onTabClick: (tab: ChainNamespace) => void }) {
   const [activeTab, setActiveTab] = useState<ChainNamespace>('eip155')
 
-  const tabs: ChainNamespace[] = ['eip155', 'solana', 'bip122', 'ton']
-  const icons: React.ReactNode[] = [<Eth />, <Sol />, <Btc />, <Ton />]
+  const tabs: ChainNamespace[] = ['eip155', 'solana', 'bip122', 'ton', 'tron']
+  const icons: React.ReactNode[] = [<Eth />, <Sol />, <Btc />, <Ton />, <Trx />]
 
   function handleTabClick(tab: ChainNamespace) {
     setActiveTab(tab)
