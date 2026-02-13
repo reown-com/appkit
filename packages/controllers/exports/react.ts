@@ -24,6 +24,7 @@ import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { MobileWalletUtil } from '../src/utils/MobileWallet.js'
 import type {
+  BadgeType,
   NamespaceTypeMap,
   UseAppKitAccountReturn,
   UseAppKitNetworkReturn,
@@ -301,6 +302,23 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
   }
 }
 
+export interface FetchWalletsOptions {
+  /** Page number to fetch (default: 1) */
+  page?: number
+  /** @deprecated Use `search` instead */
+  query?: string
+  /** Search query to filter wallets. When provided, switches to search mode. */
+  search?: string
+  /** Number of entries per page. Defaults to 40 for list mode, 100 for search mode. */
+  entries?: number
+  /** Filter wallets by badge type ('none' | 'certified') */
+  badge?: BadgeType
+  /** Wallet IDs to include. Overrides the global includeWalletIds config when provided. */
+  include?: string[]
+  /** Wallet IDs to exclude. Overrides the default exclude list when provided. */
+  exclude?: string[]
+}
+
 export interface UseAppKitWalletsReturn {
   /**
    * List of wallets for the initial connect view including WalletConnect wallet and injected wallets together. If user doesn't have any injected wallets, it'll fill the list with most ranked WalletConnect wallets.
@@ -351,10 +369,8 @@ export interface UseAppKitWalletsReturn {
   /**
    * Function to fetch WalletConnect wallets from the explorer API. Allows to list, search and paginate through the wallets.
    * @param options - Options for fetching wallets
-   * @param options.page - Page number to fetch (default: 1)
-   * @param options.query - Search query to filter wallets (default: '')
    */
-  fetchWallets: (options?: { page?: number; query?: string }) => Promise<void>
+  fetchWallets: (options?: FetchWalletsOptions) => Promise<void>
 
   /**
    * Function to connect to a wallet.
@@ -438,16 +454,17 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     await ConnectionController.connectWalletConnect({ cache: 'auto' })
   }
 
-  async function fetchWallets(fetchOptions?: { page?: number; query?: string }) {
+  async function fetchWallets(fetchOptions?: FetchWalletsOptions) {
     setIsFetchingWallets(true)
     try {
-      if (fetchOptions?.query) {
-        await ApiController.searchWallet({ search: fetchOptions?.query })
+      const { query, ...options } = fetchOptions ?? {}
+      const search = options.search ?? query
+
+      if (search) {
+        await ApiController.searchWallet({ ...options, search })
       } else {
         ApiController.state.search = []
-        await ApiController.fetchWalletsByPage({
-          page: fetchOptions?.page ?? 1
-        })
+        await ApiController.fetchWalletsByPage({ page: 1, ...options })
       }
     } catch (error) {
       // eslint-disable-next-line no-console
