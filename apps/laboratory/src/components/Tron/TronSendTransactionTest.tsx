@@ -13,7 +13,8 @@ export function TronSendTransactionTest() {
   const toast = useChakraToast()
   const { address, isConnected } = useAppKitAccount({ namespace: 'tron' })
   const { walletProvider } = useAppKitProvider<TronConnector>('tron')
-  const [to, setTo] = useState('TN9RRaXkCFtTXRso2GdTZxSxxwufzxLQPP')
+  // Nacho Rivera Tron Address
+  const [to, setTo] = useState('TQZnRQHi8ioE4rEQHDWsDR9qM1APYUPbJG')
   // 1 TRX in SUN (1 TRX = 1,000,000 SUN)
   const [amount, setAmount] = useState('1000000')
   const [txHash, setTxHash] = useState<string | undefined>()
