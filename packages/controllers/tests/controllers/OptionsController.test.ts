@@ -63,7 +63,8 @@ describe('OptionsController', () => {
       eip155: 'eoa',
       polkadot: 'eoa',
       solana: 'eoa',
-      ton: 'eoa'
+      ton: 'eoa',
+      tron: 'eoa'
     })
   })
 

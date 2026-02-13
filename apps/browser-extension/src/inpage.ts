@@ -24,10 +24,12 @@ const tronProvider = new TronProvider()
   tonconnect: tonProvider.createTonConnectInterface(ConstantsUtil.IconRaw)
 }
 
-// Inject TRON provider at all three locations TronLinkAdapter checks:
-// 1. window.tron (TIP-1193 protocol) — checked by supportTron()
-// 2. window.tronLink — checked by supportTronLink() and _updateWallet()
-// 3. window.tronWeb — fallback for legacy detection
+/*
+ * Inject TRON provider at all three locations TronLinkAdapter checks:
+ * 1. window.tron (TIP-1193 protocol) — checked by supportTron()
+ * 2. window.tronLink — checked by supportTronLink() and _updateWallet()
+ * 3. window.tronWeb — fallback for legacy detection
+ */
 ;(window as unknown as Record<string, unknown>).tron = tronProvider
 ;(window as unknown as Record<string, unknown>).tronLink = tronProvider
 ;(window as unknown as Record<string, unknown>).tronWeb = tronProvider.tronWeb

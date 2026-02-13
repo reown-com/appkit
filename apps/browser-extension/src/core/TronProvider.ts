@@ -10,7 +10,8 @@ import { AccountUtil } from '../utils/AccountUtil'
  * Since we already have the ETH address (same key), we just swap the prefix.
  */
 function ethAddressToTron(ethAddress: string): string {
-  const hex = ethAddress.slice(2) // remove 0x
+  // Remove 0x prefix
+  const hex = ethAddress.slice(2)
   const addressBytes = Buffer.from(hex, 'hex')
 
   // TRON uses 0x41 prefix instead of Ethereum's implicit 0x prefix
@@ -34,7 +35,7 @@ function ethAddressToTron(ethAddress: string): string {
 // Derive TRON address from EVM private key (same secp256k1 curve)
 const evmAccount = privateKeyToAccount(AccountUtil.privateKeyEvm)
 const tronAddress = ethAddressToTron(evmAccount.address)
-const tronHexAddress = '41' + evmAccount.address.slice(2)
+const tronHexAddress = `41${evmAccount.address.slice(2)}`
 
 type EventHandler = (...args: unknown[]) => void
 
@@ -76,9 +77,9 @@ export class TronProvider {
         return signMessageWithKey(message)
       },
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      async sign(transaction: unknown, _privateKey?: string): Promise<unknown> {
+      sign(transaction: unknown, _privateKey?: string): unknown {
         // For E2E testing, return a signed transaction stub
-        return { txid: '0x' + 'a'.repeat(64), result: true }
+        return { txid: `0x${'a'.repeat(64)}`, result: true }
       }
     }
   }
@@ -103,7 +104,7 @@ export class TronProvider {
     this.emit('disconnect')
   }
 
-  async request({ method }: { method: string; params?: unknown }): Promise<unknown> {
+  request({ method }: { method: string; params?: unknown }): unknown {
     switch (method) {
       // TIP-1193 protocol: TronLinkAdapter calls eth_requestAccounts (not tron_requestAccounts)
       case 'eth_requestAccounts':
