@@ -537,24 +537,31 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
           : undefined
 
       if (_wallet?.isInjected && connector) {
+        console.log('>> AppKit: connect external', connector)
         await ConnectorControllerUtil.connectExternal(connector)
       } else if (fallbackConnector) {
+        console.log('>> AppKit: connect external fallback', fallbackConnector)
         // Use connector found by wallet ID (e.g., Base Account connector for Coinbase web wallet)
         await ConnectorControllerUtil.connectExternal(fallbackConnector)
       } else if (isMobileDevice) {
+        console.log('>> AppKit: connect external mobile', isMobileDevice)
         const wcWallet = ConnectUtil.mapWalletItemToWcWallet(_wallet)
 
         if (wcWallet.mobile_link) {
+          console.log('>> AppKit: connect external mobile link', wcWallet.mobile_link)
           ConnectionControllerUtil.onConnectMobile(wcWallet, options?.wcPayUrl)
         } else {
+          console.log('>> AppKit: connect external mobile redirect', _wallet.id, activeNamespace)
           MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, activeNamespace, {
             isCoinbaseDisabled: OptionsController.state.enableCoinbase === false
           })
         }
       } else {
+        console.log('>> AppKit: connect wallet connect')
         await ConnectionController.connectWalletConnect({ cache: 'never' })
       }
     } catch (error) {
+      console.log('>> AppKit: connect error', error)
       PublicStateController.set({ connectingWallet: undefined })
       throw error
     }
