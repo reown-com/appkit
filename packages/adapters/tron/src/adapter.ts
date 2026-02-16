@@ -232,40 +232,46 @@ export class TronAdapter extends AdapterBlueprint<TronConnector> {
     // Switch the network in the provider
     await provider.switchNetwork(params.caipNetwork.caipNetworkId)
 
-    // Manually update the connection with the new network
-    // This is needed because TRON uses hex chain IDs, but the base adapter's
-    // onChainChanged handler converts hex to decimal, causing network lookup to fail
+    /*
+     * Manually update the connection with the new network.
+     * This is needed because TRON uses hex chain IDs, but the base adapter's
+     * onChainChanged handler converts hex to decimal, causing network lookup to fail.
+     */
     const connection = this.getConnection({
       connectorId: provider.id,
       connections: this.connections,
       connectors: this.connectors
     })
 
-    if (connection && connection.accounts[0]) {
-      const address = connection.accounts[0].address
-
-      // Update the connection with the new network
-      this.addConnection({
-        connectorId: provider.id,
-        accounts: connection.accounts,
-        caipNetwork: params.caipNetwork
-      })
-
-      // Update the chain account data to ensure address is set
-      ChainController.setChainAccountData(params.caipNetwork.chainNamespace, {
-        address,
-        caipAddress: `${params.caipNetwork.caipNetworkId}:${address}`
-      })
-
-      // Now update the active network - this will use the account data we just set
-      ChainController.setActiveCaipNetwork(params.caipNetwork)
-
-      // Emit switchNetwork event to update the UI
-      this.emit('switchNetwork', {
-        address,
-        chainId: params.caipNetwork.id
-      })
+    if (!connection?.accounts[0]) {
+      return Promise.resolve()
     }
+
+    const address = connection.accounts[0].address
+
+    // Update the connection with the new network
+    this.addConnection({
+      connectorId: provider.id,
+      accounts: connection.accounts,
+      caipNetwork: params.caipNetwork
+    })
+
+    // Update the chain account data to ensure address is set
+    ChainController.setChainAccountData(params.caipNetwork.chainNamespace, {
+      address,
+      caipAddress: `${params.caipNetwork.caipNetworkId}:${address}`
+    })
+
+    // Now update the active network - this will use the account data we just set
+    ChainController.setActiveCaipNetwork(params.caipNetwork)
+
+    // Emit switchNetwork event to update the UI
+    this.emit('switchNetwork', {
+      address,
+      chainId: params.caipNetwork.id
+    })
+
+    return Promise.resolve()
   }
 
   public override async setUniversalProvider(universalProvider: UniversalProvider) {

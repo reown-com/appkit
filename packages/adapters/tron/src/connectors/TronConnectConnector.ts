@@ -142,8 +142,10 @@ export class TronConnectConnector implements TronConnector {
   }
 
   async switchNetwork(): Promise<void> {
-    // Network switching is handled entirely by the adapter
-    // The adapter manually updates the connection and emits the switchNetwork event
+    /*
+     * Network switching is handled entirely by the adapter.
+     * The adapter manually updates the connection and emits the switchNetwork event.
+     */
     return Promise.resolve()
   }
 
