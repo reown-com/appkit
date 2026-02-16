@@ -1,3 +1,4 @@
+import type { Adapter } from '@tronweb3/tronwallet-abstract-adapter'
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import {
@@ -20,23 +21,47 @@ import { TronConnectConnector } from './connectors/TronConnectConnector.js'
 import { TronWalletConnectConnector } from './connectors/TronWalletConnectConnector.js'
 import { TronConnectUtil } from './utils/TronConnectUtil.js'
 
+// -- Types --------------------------------------------------------------------- //
+export interface TronAdapterParams extends AdapterBlueprint.Params {
+  /**
+   * Array of TRON wallet adapters to support.
+   * Install desired wallet adapter packages and pass them here.
+   *
+   * @example
+   * ```typescript
+   * import { TronLinkAdapter } from '@tronweb3/tronwallet-adapter-tronlink'
+   * import { MetaMaskAdapter } from '@tronweb3/tronwallet-adapter-metamask-tron'
+   *
+   * const tronAdapter = new TronAdapter({
+   *   walletAdapters: [
+   *     new TronLinkAdapter({ openUrlWhenWalletNotFound: false, checkTimeout: 3000 }),
+   *     new MetaMaskAdapter()
+   *   ]
+   * })
+   * ```
+   */
+  walletAdapters?: Adapter[]
+}
+
 export class TronAdapter extends AdapterBlueprint<TronConnector> {
   private universalProvider: UniversalProvider | undefined = undefined
   private cleanupWalletWatch: (() => void) | undefined
+  private walletAdapters: Adapter[]
 
-  constructor(params?: AdapterBlueprint.Params) {
+  constructor(params?: TronAdapterParams) {
     super({
       namespace: ConstantsUtil.CHAIN.TRON,
       adapterType: ConstantsUtil.ADAPTER_TYPES.TRON,
       ...params
     })
+    this.walletAdapters = params?.walletAdapters || []
   }
 
   syncConnectors() {
     const chains = ChainController.getCaipNetworks()
 
     this.cleanupWalletWatch?.()
-    this.cleanupWalletWatch = TronConnectUtil.watchWalletAdapters(adapter => {
+    this.cleanupWalletWatch = TronConnectUtil.watchWalletAdapters(this.walletAdapters, adapter => {
       this.addConnector(new TronConnectConnector({ adapter, chains }))
     })
   }
@@ -150,7 +175,7 @@ export class TronAdapter extends AdapterBlueprint<TronConnector> {
         await connector.disconnect()
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('TronAdapter:disconnect - error', error)
+        console.error('[TronAdapter] disconnect error:', error)
       }
 
       this.removeProviderListeners(connector.id)
@@ -204,7 +229,43 @@ export class TronAdapter extends AdapterBlueprint<TronConnector> {
       throw new Error('Provider not found')
     }
 
-    return await provider.switchNetwork(params.caipNetwork.caipNetworkId)
+    // Switch the network in the provider
+    await provider.switchNetwork(params.caipNetwork.caipNetworkId)
+
+    // Manually update the connection with the new network
+    // This is needed because TRON uses hex chain IDs, but the base adapter's
+    // onChainChanged handler converts hex to decimal, causing network lookup to fail
+    const connection = this.getConnection({
+      connectorId: provider.id,
+      connections: this.connections,
+      connectors: this.connectors
+    })
+
+    if (connection && connection.accounts[0]) {
+      const address = connection.accounts[0].address
+
+      // Update the connection with the new network
+      this.addConnection({
+        connectorId: provider.id,
+        accounts: connection.accounts,
+        caipNetwork: params.caipNetwork
+      })
+
+      // Update the chain account data to ensure address is set
+      ChainController.setChainAccountData(params.caipNetwork.chainNamespace, {
+        address,
+        caipAddress: `${params.caipNetwork.caipNetworkId}:${address}`
+      })
+
+      // Now update the active network - this will use the account data we just set
+      ChainController.setActiveCaipNetwork(params.caipNetwork)
+
+      // Emit switchNetwork event to update the UI
+      this.emit('switchNetwork', {
+        address,
+        chainId: params.caipNetwork.id
+      })
+    }
   }
 
   public override async setUniversalProvider(universalProvider: UniversalProvider) {
@@ -236,13 +297,7 @@ export class TronAdapter extends AdapterBlueprint<TronConnector> {
     const caipNetworkId = params.caipNetwork?.caipNetworkId
     const address = params.address
 
-    // eslint-disable-next-line no-console
-    console.log('[TronAdapter] getBalance called', { address, caipNetworkId })
-
     if (!address || !caipNetworkId) {
-      // eslint-disable-next-line no-console
-      console.log('[TronAdapter] getBalance early return — missing address or caipNetworkId')
-
       return { balance: '0', symbol: 'TRX' }
     }
 
@@ -252,15 +307,9 @@ export class TronAdapter extends AdapterBlueprint<TronConnector> {
         address
       })
 
-      // eslint-disable-next-line no-console
-      console.log('[TronAdapter] raw balance from API:', balance)
-
       const formattedBalance = NumberUtil.bigNumber(balance)
         .div(10 ** 6)
         .toString()
-
-      // eslint-disable-next-line no-console
-      console.log('[TronAdapter] formatted balance:', formattedBalance)
 
       return { balance: formattedBalance, symbol: 'TRX' }
     } catch (error) {

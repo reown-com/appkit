@@ -7,7 +7,8 @@ import {
   solanaTestnet,
   ton,
   tonTestnet,
-  tronMainnet
+  tronMainnet,
+  tronShastaTestnet
 } from '@reown/appkit/networks'
 
 export function getBalanceSymbolByLibrary(library: string) {
@@ -34,7 +35,7 @@ export function getNetworksByLibrary(library: string) {
     case 'ton':
       return [ton, tonTestnet]
     case 'tron':
-      return [tronMainnet]
+      return [tronMainnet, tronShastaTestnet]
     default:
       return [mainnet, polygon]
   }
@@ -49,7 +50,7 @@ export function getLastNetworkNameByLibrary(library: string) {
     case 'ton':
       return tonTestnet.name
     case 'tron':
-      return tronMainnet.name
+      return tronShastaTestnet.name
     default:
       return polygon.name
   }
