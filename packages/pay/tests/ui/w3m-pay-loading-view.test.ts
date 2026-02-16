@@ -367,6 +367,14 @@ describe('W3mPayLoadingView', () => {
     const exchangeName = texts.find(el => el.textContent?.trim() === 'Mock Exchange')
 
     expect(exchangeName).toBeDefined()
+
+    const exchangeLabel = texts.find(el => el.textContent?.trim() === 'Exchange')
+
+    expect(exchangeLabel).toBeDefined()
+
+    const walletLabel = texts.find(el => el.textContent?.trim() === 'Wallet')
+
+    expect(walletLabel).toBeUndefined()
   })
 
   test('should display payment lifecycle steps', async () => {

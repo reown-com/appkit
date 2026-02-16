@@ -305,7 +305,9 @@ export class W3mPayLoadingView extends LitElement {
         justifyContent="space-between"
         .padding=${['3', '0', '3', '0'] as const}
       >
-        <wui-text variant="lg-regular" color="secondary">Wallet</wui-text>
+        <wui-text variant="lg-regular" color="secondary"
+          >${this.selectedExchange ? 'Exchange' : 'Wallet'}</wui-text
+        >
 
         ${this.renderWalletText()}
       </wui-flex>
