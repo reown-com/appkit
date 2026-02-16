@@ -246,8 +246,10 @@ const controller = {
       }
       wcConnectionPromise = ConnectionController._getClient()
         ?.connectWalletConnect?.()
-        .catch(e => {
-          console.log('>> AppKit: connect wallet connect error', e)
+        .catch(() => {
+          state.wcError = true
+          state.wcFetchingUri = false
+          state.status = 'disconnected'
 
           return undefined
         })
