@@ -46,11 +46,11 @@
     "@walletconnect/universal-provider": "2.23.2"
   },
   "peerDependencies": {
-    "@tronweb3/tronwallet-adapter-binance": "^1.0.2",
-    "@tronweb3/tronwallet-adapter-bitkeep": "^1.1.7",
-    "@tronweb3/tronwallet-adapter-metamask-tron": "^1.0.1",
-    "@tronweb3/tronwallet-adapter-okxwallet": "^1.0.7",
-    "@tronweb3/tronwallet-adapter-trust": "^1.0.2"
+    "@tronweb3/tronwallet-adapter-binance": "1.0.2",
+    "@tronweb3/tronwallet-adapter-bitkeep": "1.1.7",
+    "@tronweb3/tronwallet-adapter-metamask-tron": "1.0.1",
+    "@tronweb3/tronwallet-adapter-okxwallet": "1.0.7",
+    "@tronweb3/tronwallet-adapter-trust": "1.0.2"
   },
   "peerDependenciesMeta": {
     "@tronweb3/tronwallet-adapter-binance": {
