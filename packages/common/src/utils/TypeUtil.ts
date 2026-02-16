@@ -231,7 +231,7 @@ export type Connection = {
   name?: string
   icon?: string
   networkIcon?: string
-  accounts: { type?: string; address: string; publicKey?: string }[]
+  accounts: { type?: string; address: string; publicKey?: string; caipAddress?: CaipAddress }[]
   caipNetwork?: CaipNetwork
   connectorId: string
   auth?: {

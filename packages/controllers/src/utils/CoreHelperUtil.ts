@@ -6,12 +6,12 @@ import type {
   ParsedCaipAddress,
   SdkVersion
 } from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstants, ParseUtil } from '@reown/appkit-common'
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
 import { StorageUtil } from './StorageUtil.js'
-import type { AccountTypeMap, ChainAdapter, LinkingRecord, NamespaceTypeMap } from './TypeUtil.js'
+import type { AccountTypeMap, ChainAdapter, LinkingRecord } from './TypeUtil.js'
 
 type SDKFramework = 'html' | 'react' | 'vue' | 'cdn' | 'unity'
 export type OpenTarget = '_blank' | '_self' | 'popupWindow' | '_top'
@@ -445,20 +445,22 @@ export const CoreHelperUtil = {
     return `${platform}-${adapterNames}-${version}`
   },
 
-  // eslint-disable-next-line max-params
-  createAccount<N extends ChainNamespace>(
-    namespace: N,
-    address: string,
-    type: NamespaceTypeMap[N],
-    publicKey?: string,
+  createAccount<N extends ChainNamespace>(params: {
+    caipAddress: CaipAddress
+    type: string
+    publicKey?: string
     path?: string
-  ): AccountTypeMap[N] {
+  }): AccountTypeMap[N] {
+    const { chainNamespace, chainId, address } = ParseUtil.parseCaipAddress(params.caipAddress)
+
     return {
-      namespace,
+      namespace: chainNamespace,
       address,
-      type,
-      publicKey,
-      path
+      chainId,
+      caipAddress: params.caipAddress,
+      type: params.type,
+      publicKey: params.publicKey,
+      path: params.path
     } as AccountTypeMap[N]
   },
 
