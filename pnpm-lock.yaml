@@ -2677,22 +2677,22 @@ importers:
         specifier: 1.1.10
         version: 1.1.10(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@tronweb3/tronwallet-adapter-binance':
-        specifier: ^1.0.2
+        specifier: 1.0.2
         version: 1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@tronweb3/tronwallet-adapter-bitkeep':
-        specifier: ^1.1.7
+        specifier: 1.1.7
         version: 1.1.7(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@tronweb3/tronwallet-adapter-metamask-tron':
-        specifier: ^1.0.1
+        specifier: 1.0.1
         version: 1.0.1(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@tronweb3/tronwallet-adapter-okxwallet':
-        specifier: ^1.0.7
+        specifier: 1.0.7
         version: 1.0.7(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@tronweb3/tronwallet-adapter-tronlink':
         specifier: 1.1.13
         version: 1.1.13(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@tronweb3/tronwallet-adapter-trust':
-        specifier: ^1.0.2
+        specifier: 1.0.2
         version: 1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@walletconnect/universal-provider':
         specifier: 2.23.2
