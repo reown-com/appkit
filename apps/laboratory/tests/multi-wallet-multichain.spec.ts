@@ -49,7 +49,7 @@ test.afterAll(async () => {
 // -- Tests --------------------------------------------------------------------
 test('should enable multi-wallet feature with a whitelisted project id', async () => {
   await page.getByTestId('project-id-button').click()
-  await page.getByTestId('project-id-input').fill('1b0841d0acfe3e32dcb0d53dbf505bdd')
+  await page.getByTestId('project-id-input').fill('b7467c99b61400170fb3fb1073be1873')
   await page.getByTestId('project-id-save-button').click()
   await page.reload()
 })
