@@ -1,4 +1,12 @@
+import { BinanceWalletAdapter } from '@tronweb3/tronwallet-adapter-binance'
+import { BitKeepAdapter } from '@tronweb3/tronwallet-adapter-bitkeep'
+import { MetaMaskAdapter } from '@tronweb3/tronwallet-adapter-metamask-tron'
+import { OkxWalletAdapter } from '@tronweb3/tronwallet-adapter-okxwallet'
+import { TronLinkAdapter } from '@tronweb3/tronwallet-adapter-tronlink'
+import { TrustAdapter } from '@tronweb3/tronwallet-adapter-trust'
+
 import { TronAdapter } from '@reown/appkit-adapter-tron'
+import { ReownTronAdapter } from '@reown/appkit-adapter-tron/testing'
 import { AppKitNetwork, tronMainnet, tronShastaTestnet } from '@reown/appkit/networks'
 import {
   createAppKit,
@@ -16,7 +24,17 @@ export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || 'b56e18d47c72ab68
 
 export const networks = [tronMainnet, tronShastaTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
 
-export const tronAdapter = new TronAdapter()
+export const tronAdapter = new TronAdapter({
+  walletAdapters: [
+    new ReownTronAdapter(), // Reown extension
+    new TronLinkAdapter({ openUrlWhenWalletNotFound: false, checkTimeout: 3000 }),
+    new TrustAdapter(),
+    new BitKeepAdapter(),
+    new BinanceWalletAdapter(),
+    new OkxWalletAdapter({ openUrlWhenWalletNotFound: false }),
+    new MetaMaskAdapter()
+  ]
+})
 
 // Create modal
 const modal = createAppKit({

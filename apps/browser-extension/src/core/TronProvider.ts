@@ -54,10 +54,16 @@ export class TronProvider {
   private connected = false
   private listeners: Record<string, EventHandler[]> = {}
 
-  // Properties that TronLinkAdapter checks
+  // Properties that TronLinkAdapter checks (must be on the instance, not just tronWeb)
   readonly isTronLink = true
+  /* Unique identifier for Reown */
+  readonly isReownWallet = true
   ready = true
   address: string | null = null
+
+  // Current chain ID (TRON mainnet)
+  /* 728126428 in decimal */
+  private chainId = '0x2b6653dc'
 
   /**
    * TronLink adapter reads wallet.tronWeb for:
@@ -91,6 +97,8 @@ export class TronProvider {
     this.tronWeb.defaultAddress.base58 = tronAddress
     this.tronWeb.defaultAddress.hex = tronHexAddress
     this.emit('connect', tronAddress)
+    // Emit accountsChanged event for TronLink adapter compatibility
+    this.emit('accountsChanged', [tronAddress])
 
     return tronAddress
   }
@@ -102,9 +110,11 @@ export class TronProvider {
     this.tronWeb.defaultAddress.base58 = false
     this.tronWeb.defaultAddress.hex = false
     this.emit('disconnect')
+    // Emit accountsChanged event with empty array when disconnecting
+    this.emit('accountsChanged', [])
   }
 
-  request({ method }: { method: string; params?: unknown }): unknown {
+  request({ method, params }: { method: string; params?: unknown }): unknown {
     switch (method) {
       // TIP-1193 protocol: TronLinkAdapter calls eth_requestAccounts (not tron_requestAccounts)
       case 'eth_requestAccounts':
@@ -121,7 +131,28 @@ export class TronProvider {
 
       case 'tron_chainId':
       case 'eth_chainId':
-        return '0x2b6653dc'
+        return this.chainId
+
+      case 'wallet_switchEthereumChain': {
+        // TronLink adapter calls this to switch chains
+        const switchParams = params as [{ chainId: string }] | undefined
+        if (switchParams?.[0]?.chainId) {
+          const newChainId = switchParams[0].chainId
+          this.chainId = newChainId
+
+          // Emit chainChanged event
+          this.emit('chainChanged', newChainId)
+
+          // If connected, also emit accountsChanged to trigger re-sync
+          if (this.connected) {
+            this.emit('accountsChanged', [tronAddress])
+          }
+
+          return null
+        }
+
+        throw new Error('Invalid chain switch params')
+      }
 
       default:
         throw new Error(`Unsupported method: ${method}`)
