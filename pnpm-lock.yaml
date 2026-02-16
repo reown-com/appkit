@@ -614,6 +614,24 @@ importers:
       '@tanstack/react-query':
         specifier: 5.75.5
         version: 5.75.5(react@19.1.2)
+      '@tronweb3/tronwallet-adapter-binance':
+        specifier: 1.0.2
+        version: 1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-bitkeep':
+        specifier: 1.1.7
+        version: 1.1.7(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-metamask-tron':
+        specifier: 1.0.1
+        version: 1.0.1(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-okxwallet':
+        specifier: 1.0.7
+        version: 1.0.7(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-tronlink':
+        specifier: 1.1.13
+        version: 1.1.13(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-trust':
+        specifier: 1.0.2
+        version: 1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@wagmi/connectors':
         specifier: 5.11.2
         version: 5.11.2(@tanstack/react-query@5.75.5(react@19.1.2))(@types/react@19.1.15)(@wagmi/core@2.22.1(@tanstack/query-core@5.75.5)(@types/react@19.1.15)(react@19.1.2)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.1.2))(viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)))(aws4fetch@1.0.20)(bufferutil@4.1.0)(db0@0.3.4)(ioredis@5.9.1)(react@19.1.2)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.1.2))(utf-8-validate@5.0.10)(viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76))(wagmi@2.19.5(@tanstack/query-core@5.75.5)(@tanstack/react-query@5.75.5(react@19.1.2))(@types/react@19.1.15)(aws4fetch@1.0.20)(bufferutil@4.1.0)(db0@0.3.4)(ioredis@5.9.1)(react@19.1.2)(typescript@5.9.2)(utf-8-validate@5.0.10)(viem@2.45.0(bufferutil@4.1.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76))(zod@3.25.76))(zod@3.25.76)
@@ -1344,6 +1362,24 @@ importers:
       '@reown/appkit-adapter-tron':
         specifier: workspace:*
         version: link:../../packages/adapters/tron
+      '@tronweb3/tronwallet-adapter-binance':
+        specifier: 1.0.2
+        version: 1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-bitkeep':
+        specifier: 1.1.7
+        version: 1.1.7(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-metamask-tron':
+        specifier: 1.0.1
+        version: 1.0.1(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-okxwallet':
+        specifier: 1.0.7
+        version: 1.0.7(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-tronlink':
+        specifier: 1.1.13
+        version: 1.1.13(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-trust':
+        specifier: 1.0.2
+        version: 1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       next:
         specifier: 14.2.35
         version: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.48.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
@@ -2641,22 +2677,22 @@ importers:
         specifier: 1.1.10
         version: 1.1.10(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@tronweb3/tronwallet-adapter-binance':
-        specifier: 1.0.2
+        specifier: ^1.0.2
         version: 1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@tronweb3/tronwallet-adapter-bitkeep':
-        specifier: 1.1.7
+        specifier: ^1.1.7
         version: 1.1.7(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@tronweb3/tronwallet-adapter-metamask-tron':
-        specifier: 1.0.1
+        specifier: ^1.0.1
         version: 1.0.1(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@tronweb3/tronwallet-adapter-okxwallet':
-        specifier: 1.0.7
+        specifier: ^1.0.7
         version: 1.0.7(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@tronweb3/tronwallet-adapter-tronlink':
         specifier: 1.1.13
         version: 1.1.13(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@tronweb3/tronwallet-adapter-trust':
-        specifier: 1.0.2
+        specifier: ^1.0.2
         version: 1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@walletconnect/universal-provider':
         specifier: 2.23.2

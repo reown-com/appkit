@@ -11,6 +11,12 @@
   "dependencies": {
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-tron": "workspace:*",
+    "@tronweb3/tronwallet-adapter-binance": "1.0.2",
+    "@tronweb3/tronwallet-adapter-bitkeep": "1.1.7",
+    "@tronweb3/tronwallet-adapter-metamask-tron": "1.0.1",
+    "@tronweb3/tronwallet-adapter-okxwallet": "1.0.7",
+    "@tronweb3/tronwallet-adapter-tronlink": "1.1.13",
+    "@tronweb3/tronwallet-adapter-trust": "1.0.2",
     "next": "14.2.35",
     "next-themes": "0.4.6",
     "react": "19.1.2",
