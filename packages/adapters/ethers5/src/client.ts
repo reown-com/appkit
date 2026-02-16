@@ -4,6 +4,7 @@ import { formatEther } from 'ethers/lib/utils.js'
 
 import { WcConstantsUtil } from '@reown/appkit'
 import {
+  type CaipAddress,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   ErrorUtil,
@@ -590,10 +591,13 @@ export class Ethers5Adapter extends AdapterBlueprint {
       connectors: this.connectors
     })
 
-    if (connection) {
+    if (connection && connection.caipNetwork) {
       return {
         accounts: connection.accounts.map(({ address }) =>
-          CoreHelperUtil.createAccount(CommonConstantsUtil.CHAIN.EVM, address, 'eoa')
+          CoreHelperUtil.createAccount({
+            caipAddress: `${connection?.caipNetwork?.caipNetworkId}:${address}` as CaipAddress,
+            type: 'eoa'
+          })
         )
       }
     }
@@ -603,11 +607,14 @@ export class Ethers5Adapter extends AdapterBlueprint {
       if (!provider.user) {
         return { accounts: [] }
       }
-      const { accounts, address } = provider.user
+      const { accounts, address, chainId } = provider.user
 
       return Promise.resolve({
         accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
-          CoreHelperUtil.createAccount(CommonConstantsUtil.CHAIN.EVM, account.address, account.type)
+          CoreHelperUtil.createAccount({
+            caipAddress: `eip155:${chainId}:${account.address}` as CaipAddress,
+            type: account.type
+          })
         )
       })
     }
@@ -616,10 +623,17 @@ export class Ethers5Adapter extends AdapterBlueprint {
       method: 'eth_requestAccounts'
     })
 
+    const caipNetwork = ChainController.getActiveCaipNetwork(this.namespace as ChainNamespace)
+
     return {
-      accounts: accounts.map(account =>
-        CoreHelperUtil.createAccount(CommonConstantsUtil.CHAIN.EVM, account, 'eoa')
-      )
+      accounts: caipNetwork
+        ? accounts.map(account =>
+            CoreHelperUtil.createAccount({
+              caipAddress: `${caipNetwork?.caipNetworkId}:${account}`,
+              type: 'eoa'
+            })
+          )
+        : []
     }
   }
 

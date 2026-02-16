@@ -24,7 +24,7 @@ import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { MobileWalletUtil } from '../src/utils/MobileWallet.js'
 import type {
-  NamespaceTypeMap,
+  BadgeType,
   UseAppKitAccountReturn,
   UseAppKitNetworkReturn,
   WcWallet
@@ -94,6 +94,7 @@ export function useAppKitNetworkCore(): Pick<
 export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseAppKitAccountReturn {
   const state = useSnapshot(ChainController.state)
   const { activeConnectorIds } = useSnapshot(ConnectorController.state)
+  const { connections: connectionsByNamespace } = useSnapshot(ConnectionController.state)
   const chainNamespace = options?.namespace || state.activeChain
 
   if (!chainNamespace) {
@@ -110,17 +111,20 @@ export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseA
   const chainAccountState = state.chains.get(chainNamespace)?.accountState
   const authConnector = ConnectorController.getAuthConnector(chainNamespace)
   const activeConnectorId = activeConnectorIds[chainNamespace]
-  const connections = ConnectionController.getConnections(chainNamespace)
-  const allAccounts = connections.flatMap(connection =>
-    connection.accounts.map(({ address, type, publicKey }) =>
-      CoreHelperUtil.createAccount(
-        chainNamespace,
-        address,
-        (type || 'eoa') as NamespaceTypeMap[ChainNamespace],
-        publicKey
-      )
-    )
-  )
+  const connections = connectionsByNamespace.get(chainNamespace) ?? []
+  const allAccounts = connections.flatMap(connection => {
+    const { caipNetwork } = connection
+
+    return caipNetwork
+      ? connection.accounts.map(({ address, type, publicKey }) =>
+          CoreHelperUtil.createAccount({
+            caipAddress: `${caipNetwork.caipNetworkId}:${address}`,
+            type: type || 'eoa',
+            publicKey
+          })
+        )
+      : []
+  })
 
   return {
     allAccounts,
@@ -301,6 +305,23 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
   }
 }
 
+export interface FetchWalletsOptions {
+  /** Page number to fetch (default: 1) */
+  page?: number
+  /** @deprecated Use `search` instead */
+  query?: string
+  /** Search query to filter wallets. When provided, switches to search mode. */
+  search?: string
+  /** Number of entries per page. Defaults to 40 for list mode, 100 for search mode. */
+  entries?: number
+  /** Filter wallets by badge type ('none' | 'certified') */
+  badge?: BadgeType
+  /** Wallet IDs to include. Overrides the global includeWalletIds config when provided. */
+  include?: string[]
+  /** Wallet IDs to exclude. Overrides the default exclude list when provided. */
+  exclude?: string[]
+}
+
 export interface UseAppKitWalletsReturn {
   /**
    * List of wallets for the initial connect view including WalletConnect wallet and injected wallets together. If user doesn't have any injected wallets, it'll fill the list with most ranked WalletConnect wallets.
@@ -351,10 +372,8 @@ export interface UseAppKitWalletsReturn {
   /**
    * Function to fetch WalletConnect wallets from the explorer API. Allows to list, search and paginate through the wallets.
    * @param options - Options for fetching wallets
-   * @param options.page - Page number to fetch (default: 1)
-   * @param options.query - Search query to filter wallets (default: '')
    */
-  fetchWallets: (options?: { page?: number; query?: string }) => Promise<void>
+  fetchWallets: (options?: FetchWalletsOptions) => Promise<void>
 
   /**
    * Function to connect to a wallet.
@@ -394,6 +413,11 @@ export interface UseAppKitWalletsReturn {
    * @see PR #5456 for context on iOS deeplink requirements
    */
   getWcUri: () => Promise<void>
+
+  /**
+   * Boolean that indicates if there was an error fetching the WalletConnect URI.
+   */
+  wcError: boolean
 }
 
 /**
@@ -406,7 +430,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
 
   const [isFetchingWallets, setIsFetchingWallets] = useState(false)
   const [currentWcPayUrl, setCurrentWcPayUrl] = useState<string | undefined>(undefined)
-  const { wcUri, wcFetchingUri } = useSnapshot(ConnectionController.state)
+  const { wcUri, wcFetchingUri, wcError } = useSnapshot(ConnectionController.state)
   const {
     wallets: wcAllWallets,
     search: wcSearchWallets,
@@ -438,16 +462,17 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     await ConnectionController.connectWalletConnect({ cache: 'auto' })
   }
 
-  async function fetchWallets(fetchOptions?: { page?: number; query?: string }) {
+  async function fetchWallets(fetchOptions?: FetchWalletsOptions) {
     setIsFetchingWallets(true)
     try {
-      if (fetchOptions?.query) {
-        await ApiController.searchWallet({ search: fetchOptions?.query })
+      const { query, ...options } = fetchOptions ?? {}
+      const search = options.search ?? query
+
+      if (search) {
+        await ApiController.searchWallet({ ...options, search })
       } else {
         ApiController.state.search = []
-        await ApiController.fetchWalletsByPage({
-          page: fetchOptions?.page ?? 1
-        })
+        await ApiController.fetchWalletsByPage({ page: 1, ...options })
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -557,6 +582,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       isFetchingWcUri: false,
       isInitialized: false,
       wcUri: undefined,
+      wcError: false,
       connectingWallet: undefined,
       page: 0,
       count: 0,
@@ -578,6 +604,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     isFetchingWcUri: wcFetchingUri,
     isInitialized: initialized,
     wcUri: enhancedWcUri,
+    wcError: wcError ?? false,
     connectingWallet: connectingWallet as WalletItem | undefined,
     page,
     count,
