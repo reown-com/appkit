@@ -938,7 +938,7 @@ describe('useAppKitWallets', () => {
     await result.fetchWallets()
 
     expect(setIsFetchingWallets).toHaveBeenCalledWith(true)
-    expect(fetchWalletsByPageSpy).toHaveBeenCalledWith({ page: 1, entries: undefined })
+    expect(fetchWalletsByPageSpy).toHaveBeenCalledWith({ page: 1 })
     expect(ApiController.state.search).toEqual([])
     expect(setIsFetchingWallets).toHaveBeenCalledWith(false)
   })
@@ -1056,6 +1056,197 @@ describe('useAppKitWallets', () => {
     )
     expect(setIsFetchingWallets).toHaveBeenCalledWith(false)
     consoleErrorSpy.mockRestore()
+  })
+
+  it('should fetch wallets with search param', async () => {
+    const setIsFetchingWallets = vi.fn()
+    mockedReact.useState.mockReturnValue([false, setIsFetchingWallets])
+
+    useSnapshot
+      .mockReturnValueOnce({
+        features: { headless: true },
+        remoteFeatures: { headless: true }
+      })
+      .mockReturnValueOnce({
+        wcUri: undefined,
+        wcFetchingUri: false
+      })
+      .mockReturnValueOnce({
+        wallets: [],
+        search: [],
+        page: 1,
+        count: 0
+      })
+      .mockReturnValueOnce({
+        initialized: true,
+        connectingWallet: undefined
+      })
+
+    vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
+    vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
+    const searchWalletSpy = vi.spyOn(ApiController, 'searchWallet').mockResolvedValue(undefined)
+
+    const result = useAppKitWallets()
+
+    await result.fetchWallets({ search: 'phantom' })
+
+    expect(searchWalletSpy).toHaveBeenCalledWith({ search: 'phantom' })
+  })
+
+  it('should use search over query when both provided', async () => {
+    const setIsFetchingWallets = vi.fn()
+    mockedReact.useState.mockReturnValue([false, setIsFetchingWallets])
+
+    useSnapshot
+      .mockReturnValueOnce({
+        features: { headless: true },
+        remoteFeatures: { headless: true }
+      })
+      .mockReturnValueOnce({
+        wcUri: undefined,
+        wcFetchingUri: false
+      })
+      .mockReturnValueOnce({
+        wallets: [],
+        search: [],
+        page: 1,
+        count: 0
+      })
+      .mockReturnValueOnce({
+        initialized: true,
+        connectingWallet: undefined
+      })
+
+    vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
+    vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
+    const searchWalletSpy = vi.spyOn(ApiController, 'searchWallet').mockResolvedValue(undefined)
+
+    const result = useAppKitWallets()
+
+    await result.fetchWallets({ search: 'phantom', query: 'metamask' })
+
+    expect(searchWalletSpy).toHaveBeenCalledWith({ search: 'phantom' })
+  })
+
+  it('should pass entries and badge to fetchWalletsByPage', async () => {
+    const setIsFetchingWallets = vi.fn()
+    mockedReact.useState.mockReturnValue([false, setIsFetchingWallets])
+
+    useSnapshot
+      .mockReturnValueOnce({
+        features: { headless: true },
+        remoteFeatures: { headless: true }
+      })
+      .mockReturnValueOnce({
+        wcUri: undefined,
+        wcFetchingUri: false
+      })
+      .mockReturnValueOnce({
+        wallets: [],
+        search: [],
+        page: 1,
+        count: 0
+      })
+      .mockReturnValueOnce({
+        initialized: true,
+        connectingWallet: undefined
+      })
+
+    vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
+    vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
+    const fetchWalletsByPageSpy = vi
+      .spyOn(ApiController, 'fetchWalletsByPage')
+      .mockResolvedValue(undefined)
+
+    const result = useAppKitWallets()
+
+    await result.fetchWallets({ entries: 20, badge: 'certified' })
+
+    expect(fetchWalletsByPageSpy).toHaveBeenCalledWith({
+      page: 1,
+      entries: 20,
+      badge: 'certified'
+    })
+  })
+
+  it('should pass badge and entries to searchWallet', async () => {
+    const setIsFetchingWallets = vi.fn()
+    mockedReact.useState.mockReturnValue([false, setIsFetchingWallets])
+
+    useSnapshot
+      .mockReturnValueOnce({
+        features: { headless: true },
+        remoteFeatures: { headless: true }
+      })
+      .mockReturnValueOnce({
+        wcUri: undefined,
+        wcFetchingUri: false
+      })
+      .mockReturnValueOnce({
+        wallets: [],
+        search: [],
+        page: 1,
+        count: 0
+      })
+      .mockReturnValueOnce({
+        initialized: true,
+        connectingWallet: undefined
+      })
+
+    vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
+    vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
+    const searchWalletSpy = vi.spyOn(ApiController, 'searchWallet').mockResolvedValue(undefined)
+
+    const result = useAppKitWallets()
+
+    await result.fetchWallets({ query: 'safe', badge: 'certified', entries: 50 })
+
+    expect(searchWalletSpy).toHaveBeenCalledWith({
+      search: 'safe',
+      badge: 'certified',
+      entries: 50
+    })
+  })
+
+  it('should pass include and exclude to fetchWalletsByPage', async () => {
+    const setIsFetchingWallets = vi.fn()
+    mockedReact.useState.mockReturnValue([false, setIsFetchingWallets])
+
+    useSnapshot
+      .mockReturnValueOnce({
+        features: { headless: true },
+        remoteFeatures: { headless: true }
+      })
+      .mockReturnValueOnce({
+        wcUri: undefined,
+        wcFetchingUri: false
+      })
+      .mockReturnValueOnce({
+        wallets: [],
+        search: [],
+        page: 1,
+        count: 0
+      })
+      .mockReturnValueOnce({
+        initialized: true,
+        connectingWallet: undefined
+      })
+
+    vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
+    vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
+    const fetchWalletsByPageSpy = vi
+      .spyOn(ApiController, 'fetchWalletsByPage')
+      .mockResolvedValue(undefined)
+
+    const result = useAppKitWallets()
+
+    await result.fetchWallets({ include: ['wallet-1'], exclude: ['wallet-2'] })
+
+    expect(fetchWalletsByPageSpy).toHaveBeenCalledWith({
+      page: 1,
+      include: ['wallet-1'],
+      exclude: ['wallet-2']
+    })
   })
 
   it('should connect to injected wallet', async () => {
