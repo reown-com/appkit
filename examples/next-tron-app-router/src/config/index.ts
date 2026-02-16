@@ -1,3 +1,5 @@
+'use client'
+
 import { BinanceWalletAdapter } from '@tronweb3/tronwallet-adapter-binance'
 import { BitKeepAdapter } from '@tronweb3/tronwallet-adapter-bitkeep'
 import { MetaMaskAdapter } from '@tronweb3/tronwallet-adapter-metamask-tron'
