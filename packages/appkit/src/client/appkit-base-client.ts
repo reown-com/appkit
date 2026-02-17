@@ -599,9 +599,7 @@ export abstract class AppKitBaseClient {
           throw new Error('Adapter not found')
         }
 
-        console.log('>> AppKit: connect wallet connect adapter', adapter)
         const result = await adapter.connectWalletConnect(chainId)
-        console.log('>> AppKit: connect wallet connect result', result)
         const shouldClose = !hasConnections || !isMultiWallet
 
         if (shouldClose) {
