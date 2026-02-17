@@ -29,14 +29,6 @@ function isGenuineAdapter(adapter: Adapter): boolean {
     const hasTronStandard = tron?.isTronLink === true
     const hasCompatibleWallet = tronLink?.ready === true
 
-    // eslint-disable-next-line no-console
-    console.log('[TronConnectUtil] isGenuineAdapter check:', {
-      hasTronStandard,
-      hasCompatibleWallet,
-      'tron.isTronLink': tron?.isTronLink,
-      'tronLink.ready': tronLink?.ready
-    })
-
     return hasTronStandard || hasCompatibleWallet
   }
 
@@ -88,8 +80,6 @@ export const TronConnectUtil = {
 
     for (const adapter of adapters) {
       if (adapter.readyState === WalletReadyState.Found) {
-        // eslint-disable-next-line no-console
-        console.log('[TronConnectUtil] Adapter found:', adapter.name || adapter.constructor.name)
         if (isGenuineAdapter(adapter)) {
           onFound(adapter)
         } else {
