@@ -90,7 +90,8 @@ describe('W3mConnectingExternalView', () => {
           cosmos: undefined,
           sui: undefined,
           stacks: undefined,
-          ton: undefined
+          ton: undefined,
+          tron: undefined
         }
       })
       vi.spyOn(RouterController, 'replace').mockImplementation(() => {})

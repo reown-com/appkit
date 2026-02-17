@@ -76,6 +76,7 @@ describe('W3mPayView', () => {
         bip122: undefined,
         cosmos: undefined,
         ton: undefined,
+        tron: undefined,
         sui: undefined,
         stacks: undefined
       }
@@ -161,6 +162,7 @@ describe('W3mPayView', () => {
         bip122: undefined,
         cosmos: undefined,
         ton: undefined,
+        tron: undefined,
         sui: undefined,
         stacks: undefined
       }
@@ -268,6 +270,7 @@ describe('W3mPayView', () => {
         bip122: undefined,
         cosmos: undefined,
         ton: undefined,
+        tron: undefined,
         sui: undefined,
         stacks: undefined
       }
@@ -307,6 +310,7 @@ describe('W3mPayView', () => {
         bip122: undefined,
         cosmos: undefined,
         ton: undefined,
+        tron: undefined,
         sui: undefined,
         stacks: undefined
       }
@@ -376,6 +380,7 @@ describe('W3mPayView', () => {
         bip122: undefined,
         cosmos: undefined,
         ton: undefined,
+        tron: undefined,
         sui: undefined,
         stacks: undefined
       }
@@ -515,6 +520,7 @@ describe('W3mPayView', () => {
         bip122: undefined,
         cosmos: undefined,
         ton: undefined,
+        tron: undefined,
         sui: undefined,
         stacks: undefined
       }
@@ -564,6 +570,7 @@ describe('W3mPayView', () => {
         bip122: undefined,
         cosmos: undefined,
         ton: undefined,
+        tron: undefined,
         sui: undefined,
         stacks: undefined
       }

@@ -6,7 +6,9 @@ import {
   solana,
   solanaTestnet,
   ton,
-  tonTestnet
+  tonTestnet,
+  tronMainnet,
+  tronShastaTestnet
 } from '@reown/appkit/networks'
 
 export function getBalanceSymbolByLibrary(library: string) {
@@ -17,6 +19,8 @@ export function getBalanceSymbolByLibrary(library: string) {
       return 'SOL'
     case 'ton':
       return 'TON'
+    case 'tron':
+      return 'TRX'
     default:
       return 'ETH'
   }
@@ -30,6 +34,8 @@ export function getNetworksByLibrary(library: string) {
       return [solana, solanaTestnet]
     case 'ton':
       return [ton, tonTestnet]
+    case 'tron':
+      return [tronMainnet, tronShastaTestnet]
     default:
       return [mainnet, polygon]
   }
@@ -43,6 +49,8 @@ export function getLastNetworkNameByLibrary(library: string) {
       return solanaTestnet.name
     case 'ton':
       return tonTestnet.name
+    case 'tron':
+      return tronShastaTestnet.name
     default:
       return polygon.name
   }
