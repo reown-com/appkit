@@ -52,25 +52,27 @@ export class TronConnectConnector implements TronConnector {
   }
 
   public request<T>(args: RequestArguments): Promise<T> {
-    const method = args.method
+    const { method, params } = args
 
-    if (method === 'tron_requestAccounts') {
-      return this.connect().then(addr => [addr] as unknown as T)
+    switch (method) {
+      case 'tron_requestAccounts':
+        return this.connect().then(addr => [addr] as unknown as T)
+
+      case 'tron_signMessageV2': {
+        const { message } = params as { message: string }
+
+        return this.adapter.signMessage(message) as Promise<T>
+      }
+
+      case 'tron_sendTransaction': {
+        const { transaction } = params as { transaction: Record<string, unknown> }
+
+        return this.adapter.signTransaction(transaction) as Promise<T>
+      }
+
+      default:
+        throw new Error(`Unsupported method: ${method}`)
     }
-
-    if (method === 'tron_signMessageV2') {
-      const params = args.params as { message: string }
-
-      return this.adapter.signMessage(params.message) as Promise<T>
-    }
-
-    if (method === 'tron_sendTransaction') {
-      const params = args.params as { transaction: Record<string, unknown> }
-
-      return this.adapter.signTransaction(params.transaction) as Promise<T>
-    }
-
-    throw new Error(`Unsupported method: ${method}`)
   }
 
   async connect(): Promise<string> {
