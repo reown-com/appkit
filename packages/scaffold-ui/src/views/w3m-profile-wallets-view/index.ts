@@ -566,8 +566,32 @@ export class W3mProfileWalletsView extends LitElement {
 
   private async handleDisconnect(namespace: ChainNamespace, id: string) {
     try {
+      const isActiveWallet = this.activeConnectorIds[namespace] === id
+      const { connections } = ConnectionControllerUtil.getConnectionsData(namespace)
+
       await ConnectionController.disconnect({ id, namespace })
       SnackController.showSuccess('Wallet disconnected')
+
+      /*
+       * Explicitly switch to first available wallet after disconnecting the active wallet.
+       * This is needed because TON/TRON adapters emit 'accountChanged' but the event
+       * doesn't always trigger the UI update properly. By explicitly switching here,
+       * we ensure the UI reflects the new active wallet consistently across all adapters.
+       */
+      if (isActiveWallet && connections.length > 1) {
+        const remainingConnections = connections.filter(
+          conn => !HelpersUtil.isLowerCaseMatch(conn.connectorId, id)
+        )
+
+        if (remainingConnections.length > 0) {
+          const nextConnection = remainingConnections[0]
+          const nextAddress = nextConnection?.accounts[0]?.address
+
+          if (nextConnection && nextAddress) {
+            await this.handleSwitchWallet(nextConnection, nextAddress, namespace)
+          }
+        }
+      }
     } catch {
       SnackController.showError('Failed to disconnect wallet')
     }
