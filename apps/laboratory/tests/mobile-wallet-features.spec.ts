@@ -5,8 +5,10 @@ import { ModalValidator } from './shared/validators/ModalValidator'
 
 const TRUST_WALLET_ID = '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0'
 const OKX_WALLET_ID = '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709'
-const REACT_NATIVE_WALLET_ID = 'rn-web3wallet' // React Native Sample Wallet
-const CYPHER_WALLET_ID = 'f2436c67184f158d1beda5df53298ee84abfc367581e4505134b5bcf5f46697d' // Cypher Wallet
+// React Native Sample Wallet
+const REACT_NATIVE_WALLET_ID = 'rn-web3wallet'
+// Cypher Wallet
+const CYPHER_WALLET_ID = 'f2436c67184f158d1beda5df53298ee84abfc367581e4505134b5bcf5f46697d'
 
 // Wallet configuration map by library
 const WALLET_CONFIG: Record<string, { searchTerm: string; walletId: string }> = {
