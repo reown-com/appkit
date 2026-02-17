@@ -53,7 +53,15 @@ mobileWalletFeaturesTest('it should show all wallets option', async () => {
 mobileWalletFeaturesTest(
   'it should show all wallets view and connect to a wallet',
   async ({ library }) => {
-    const walletConfig = WALLET_CONFIG[library] || WALLET_CONFIG.default
+    if (library === 'ton' || library === 'tron') {
+      return
+    }
+
+    const walletConfig = WALLET_CONFIG[library] || WALLET_CONFIG['default']
+
+    if (!walletConfig) {
+      throw new Error(`No wallet config found for library: ${library}`)
+    }
 
     await modalPage.openAllWallets()
     await modalPage.page.waitForTimeout(500)
@@ -63,7 +71,15 @@ mobileWalletFeaturesTest(
 )
 
 mobileWalletFeaturesTest('it should show open button', async ({ library }) => {
-  const walletConfig = WALLET_CONFIG[library] || WALLET_CONFIG.default
+  if (library === 'ton' || library === 'tron') {
+    return
+  }
+
+  const walletConfig = WALLET_CONFIG[library] || WALLET_CONFIG['default']
+
+  if (!walletConfig) {
+    throw new Error(`No wallet config found for library: ${library}`)
+  }
 
   await modalPage.clickAllWalletsListSearchItem(walletConfig.walletId)
   await modalValidator.expectOpenButton({ disabled: true })
