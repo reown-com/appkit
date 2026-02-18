@@ -230,35 +230,37 @@ const controller = {
     const isInTelegramOrSafariIos =
       CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())
 
-    if (cache === 'always' || (cache === 'auto' && isInTelegramOrSafariIos)) {
-      if (wcConnectionPromise) {
-        await wcConnectionPromise
-        wcConnectionPromise = undefined
+    try {
+      if (cache === 'always' || (cache === 'auto' && isInTelegramOrSafariIos)) {
+        if (wcConnectionPromise) {
+          await wcConnectionPromise
+          wcConnectionPromise = undefined
 
-        return
-      }
+          return
+        }
 
-      if (!CoreHelperUtil.isPairingExpired(state?.wcPairingExpiry)) {
-        const link = state.wcUri
-        state.wcUri = link
+        if (!CoreHelperUtil.isPairingExpired(state?.wcPairingExpiry)) {
+          const link = state.wcUri
+          state.wcUri = link
 
-        return
-      }
-      try {
+          return
+        }
+
         wcConnectionPromise = ConnectionController._getClient()?.connectWalletConnect?.()
         ConnectionController.state.status = 'connecting'
         await wcConnectionPromise
         wcConnectionPromise = undefined
         state.wcPairingExpiry = undefined
         ConnectionController.state.status = 'connected'
-      } catch {
-        state.wcError = true
-        state.wcFetchingUri = false
-        state.status = 'disconnected'
-        wcConnectionPromise = undefined
+      } else {
+        await ConnectionController._getClient()?.connectWalletConnect?.()
       }
-    } else {
-      await ConnectionController._getClient()?.connectWalletConnect?.()
+    } catch (error) {
+      state.wcError = true
+      state.wcFetchingUri = false
+      state.status = 'disconnected'
+      wcConnectionPromise = undefined
+      throw error
     }
   },
 

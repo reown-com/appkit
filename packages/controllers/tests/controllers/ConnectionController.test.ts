@@ -311,7 +311,7 @@ describe('ConnectionController', () => {
 
     ConnectionController.state.wcError = false
 
-    await ConnectionController.connectWalletConnect()
+    await expect(ConnectionController.connectWalletConnect()).rejects.toThrow('Connection failed')
 
     expect(ConnectionController.state.wcError).toEqual(true)
     expect(ConnectionController.state.wcFetchingUri).toEqual(false)
@@ -324,7 +324,9 @@ describe('ConnectionController', () => {
 
     ConnectionController.state.wcError = false
 
-    await ConnectionController.connectWalletConnect({ cache: 'always' })
+    await expect(
+      ConnectionController.connectWalletConnect({ cache: 'always' })
+    ).rejects.toThrow('Connection failed')
 
     expect(ConnectionController.state.wcError).toEqual(true)
     expect(ConnectionController.state.wcFetchingUri).toEqual(false)
@@ -342,6 +344,20 @@ describe('ConnectionController', () => {
 
     expect(ConnectionController.state.wcError).toEqual(false)
     expect(ConnectionController.state.status).toEqual('connected')
+  })
+
+  it('should set wcError and rethrow when connectWalletConnect rejects in non-cached mode', async () => {
+    client.connectWalletConnect = vi.fn().mockRejectedValueOnce(new Error('Connection failed'))
+
+    ConnectionController.state.wcError = false
+
+    await expect(
+      ConnectionController.connectWalletConnect({ cache: 'never' })
+    ).rejects.toThrow('Connection failed')
+
+    expect(ConnectionController.state.wcError).toEqual(true)
+    expect(ConnectionController.state.wcFetchingUri).toEqual(false)
+    expect(ConnectionController.state.status).toEqual('disconnected')
   })
 
   it('should handle connectWalletConnect when cache argument is "never"', async () => {
