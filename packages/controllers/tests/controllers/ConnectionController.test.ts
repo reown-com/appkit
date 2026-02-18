@@ -304,6 +304,62 @@ describe('ConnectionController', () => {
     expect(ConnectionController.state.status).toEqual('connected')
   })
 
+  it('should set wcError and status to disconnected when connectWalletConnect rejects in cached mode on telegram', async () => {
+    client.connectWalletConnect = vi.fn().mockRejectedValueOnce(new Error('Connection failed'))
+    vi.spyOn(CoreHelperUtil, 'isPairingExpired').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(true)
+
+    ConnectionController.state.wcError = false
+
+    await expect(ConnectionController.connectWalletConnect()).rejects.toThrow('Connection failed')
+
+    expect(ConnectionController.state.wcError).toEqual(true)
+    expect(ConnectionController.state.wcFetchingUri).toEqual(false)
+    expect(ConnectionController.state.status).toEqual('disconnected')
+  })
+
+  it('should set wcError and status to disconnected when connectWalletConnect rejects with cache "always"', async () => {
+    client.connectWalletConnect = vi.fn().mockRejectedValueOnce(new Error('Connection failed'))
+    vi.spyOn(CoreHelperUtil, 'isPairingExpired').mockReturnValue(true)
+
+    ConnectionController.state.wcError = false
+
+    await expect(ConnectionController.connectWalletConnect({ cache: 'always' })).rejects.toThrow(
+      'Connection failed'
+    )
+
+    expect(ConnectionController.state.wcError).toEqual(true)
+    expect(ConnectionController.state.wcFetchingUri).toEqual(false)
+    expect(ConnectionController.state.status).toEqual('disconnected')
+  })
+
+  it('should not set wcError when connectWalletConnect succeeds in cached mode', async () => {
+    client.connectWalletConnect = vi.fn().mockResolvedValueOnce(undefined)
+    vi.spyOn(CoreHelperUtil, 'isPairingExpired').mockReturnValue(true)
+    vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(true)
+
+    ConnectionController.state.wcError = false
+
+    await ConnectionController.connectWalletConnect()
+
+    expect(ConnectionController.state.wcError).toEqual(false)
+    expect(ConnectionController.state.status).toEqual('connected')
+  })
+
+  it('should set wcError and rethrow when connectWalletConnect rejects in non-cached mode', async () => {
+    client.connectWalletConnect = vi.fn().mockRejectedValueOnce(new Error('Connection failed'))
+
+    ConnectionController.state.wcError = false
+
+    await expect(ConnectionController.connectWalletConnect({ cache: 'never' })).rejects.toThrow(
+      'Connection failed'
+    )
+
+    expect(ConnectionController.state.wcError).toEqual(true)
+    expect(ConnectionController.state.wcFetchingUri).toEqual(false)
+    expect(ConnectionController.state.status).toEqual('disconnected')
+  })
+
   it('should handle connectWalletConnect when cache argument is "never"', async () => {
     vi.spyOn(CoreHelperUtil, 'isTelegram').mockReturnValue(true)
     vi.spyOn(CoreHelperUtil, 'isSafari').mockReturnValue(true)
