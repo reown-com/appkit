@@ -167,37 +167,6 @@ The adapter includes full TypeScript support with exported types:
 import { TronAdapter, TronAdapterParams, TronWalletAdapter } from '@reown/appkit-adapter-tron'
 ```
 
-## Migration Guide
-
-If you're upgrading from a version where wallet adapters were bundled:
-
-### Before
-
-```typescript
-const tronAdapter = new TronAdapter()
-```
-
-### After
-
-```typescript
-import { MetaMaskAdapter } from '@tronweb3/tronwallet-adapter-metamask-tron'
-import { TronLinkAdapter } from '@tronweb3/tronwallet-adapter-tronlink'
-
-const tronAdapter = new TronAdapter({
-  walletAdapters: [
-    new TronLinkAdapter({ openUrlWhenWalletNotFound: false, checkTimeout: 3000 }),
-    new MetaMaskAdapter()
-  ]
-})
-```
-
-## Benefits
-
-- **Reduced Bundle Size**: Only include wallets you need
-- **No Version Conflicts**: You control wallet adapter versions
-- **Flexible**: Easy to add or remove wallet support
-- **Type Safe**: Full TypeScript support
-
 ## Examples
 
 See the [next-tron-app-router example](../../../examples/next-tron-app-router) for a complete working implementation.
