@@ -324,9 +324,9 @@ describe('ConnectionController', () => {
 
     ConnectionController.state.wcError = false
 
-    await expect(
-      ConnectionController.connectWalletConnect({ cache: 'always' })
-    ).rejects.toThrow('Connection failed')
+    await expect(ConnectionController.connectWalletConnect({ cache: 'always' })).rejects.toThrow(
+      'Connection failed'
+    )
 
     expect(ConnectionController.state.wcError).toEqual(true)
     expect(ConnectionController.state.wcFetchingUri).toEqual(false)
@@ -351,9 +351,9 @@ describe('ConnectionController', () => {
 
     ConnectionController.state.wcError = false
 
-    await expect(
-      ConnectionController.connectWalletConnect({ cache: 'never' })
-    ).rejects.toThrow('Connection failed')
+    await expect(ConnectionController.connectWalletConnect({ cache: 'never' })).rejects.toThrow(
+      'Connection failed'
+    )
 
     expect(ConnectionController.state.wcError).toEqual(true)
     expect(ConnectionController.state.wcFetchingUri).toEqual(false)
