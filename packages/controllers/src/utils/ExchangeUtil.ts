@@ -40,6 +40,7 @@ export type GetExchangesParams = {
   asset?: string
   amount?: number | string
   network?: CaipNetworkId
+  enableCoinbase?: boolean
 }
 
 export type PayUrlParams = {
@@ -123,8 +124,19 @@ export type GetBuyStatusResult = {
   txHash?: string
 }
 
-async function sendRequest<T>(method: string, params: unknown): Promise<JsonRpcResponse<T>> {
-  const url = getApiUrl()
+async function sendRequest<T>(
+  method: string,
+  params: unknown,
+  queryParams?: Record<string, string>
+): Promise<JsonRpcResponse<T>> {
+  const url = new URL(getApiUrl())
+
+  if (queryParams) {
+    Object.entries(queryParams).forEach(([key, value]) => {
+      url.searchParams.set(key, value)
+    })
+  }
+
   const { projectId } = OptionsController.getSnapshot()
   const requestBody = {
     jsonrpc: '2.0',
@@ -135,7 +147,7 @@ async function sendRequest<T>(method: string, params: unknown): Promise<JsonRpcR
       projectId
     }
   }
-  const response = await fetch(url, {
+  const response = await fetch(url.toString(), {
     method: 'POST',
     body: JSON.stringify(requestBody),
     headers: { 'Content-Type': 'application/json' }
@@ -151,7 +163,14 @@ async function sendRequest<T>(method: string, params: unknown): Promise<JsonRpcR
 }
 
 export async function getExchanges(params: GetExchangesParams) {
-  const response = await sendRequest<GetExchangesResult>('reown_getExchanges', params)
+  const { enableCoinbase: shouldEnableCoinbase, ...bodyParams } = params
+  const queryParams = shouldEnableCoinbase ? { enableCoinbase: 'true' } : undefined
+
+  const response = await sendRequest<GetExchangesResult>(
+    'reown_getExchanges',
+    bodyParams,
+    queryParams
+  )
 
   return response.result
 }
