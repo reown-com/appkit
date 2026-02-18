@@ -246,7 +246,13 @@ const controller = {
       }
       wcConnectionPromise = ConnectionController._getClient()
         ?.connectWalletConnect?.()
-        .catch(() => undefined)
+        .catch(() => {
+          state.wcError = true
+          state.wcFetchingUri = false
+          state.status = 'disconnected'
+
+          return undefined
+        })
       ConnectionController.state.status = 'connecting'
       await wcConnectionPromise
       wcConnectionPromise = undefined
