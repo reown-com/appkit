@@ -47,6 +47,10 @@ export class TonConnectConnector implements TonConnector {
     return this.requestedChains
   }
 
+  public get provider(): TonConnector {
+    return this
+  }
+
   async connect(): Promise<string> {
     if ('jsBridgeKey' in this.wallet && this.wallet.jsBridgeKey) {
       const address = await TonConnectUtil.connectInjected(this.wallet.jsBridgeKey)
