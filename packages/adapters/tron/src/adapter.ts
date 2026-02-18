@@ -1,12 +1,7 @@
 import type { Adapter } from '@tronweb3/tronwallet-abstract-adapter'
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import {
-  type ChainNamespace,
-  ConstantsUtil,
-  NumberUtil,
-  UserRejectedRequestError
-} from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil, UserRejectedRequestError } from '@reown/appkit-common'
 import {
   AdapterBlueprint,
   BlockchainApiController,
@@ -308,16 +303,13 @@ export class TronAdapter extends AdapterBlueprint<TronConnector> {
     }
 
     try {
-      const balance = await BlockchainApiController.getAddressBalance({
-        caipNetworkId,
-        address
-      })
+      const response = await BlockchainApiController.getBalance(address, caipNetworkId)
+      const trxBalance = response.balances.find(b => b.symbol === 'TRX')
 
-      const formattedBalance = NumberUtil.bigNumber(balance)
-        .div(10 ** 6)
-        .toString()
-
-      return { balance: formattedBalance, symbol: 'TRX' }
+      return {
+        balance: trxBalance?.quantity.numeric ?? '0',
+        symbol: 'TRX'
+      }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('[TronAdapter] getBalance error:', error)

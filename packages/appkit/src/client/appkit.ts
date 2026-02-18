@@ -532,6 +532,11 @@ export class AppKit extends AppKitBaseClient {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
+    // Identity/ENS lookup is only supported for EVM chains
+    if (chainNamespace !== ConstantsUtil.CHAIN.EVM) {
+      return
+    }
+
     const caipNetworkId: CaipNetworkId = `${chainNamespace}:${chainId}`
     const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
 
