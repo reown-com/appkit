@@ -244,20 +244,19 @@ const controller = {
 
         return
       }
-      wcConnectionPromise = ConnectionController._getClient()
-        ?.connectWalletConnect?.()
-        .catch(() => {
-          state.wcError = true
-          state.wcFetchingUri = false
-          state.status = 'disconnected'
-
-          return undefined
-        })
-      ConnectionController.state.status = 'connecting'
-      await wcConnectionPromise
-      wcConnectionPromise = undefined
-      state.wcPairingExpiry = undefined
-      ConnectionController.state.status = 'connected'
+      try {
+        wcConnectionPromise = ConnectionController._getClient()?.connectWalletConnect?.()
+        ConnectionController.state.status = 'connecting'
+        await wcConnectionPromise
+        wcConnectionPromise = undefined
+        state.wcPairingExpiry = undefined
+        ConnectionController.state.status = 'connected'
+      } catch {
+        state.wcError = true
+        state.wcFetchingUri = false
+        state.status = 'disconnected'
+        wcConnectionPromise = undefined
+      }
     } else {
       await ConnectionController._getClient()?.connectWalletConnect?.()
     }
