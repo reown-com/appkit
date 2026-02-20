@@ -14,6 +14,7 @@ import {
 } from '../../exports/index.js'
 import { mockChainControllerState } from '../../exports/testing.js'
 import { api } from '../../src/controllers/ApiController.js'
+import { ConstantsUtil as ControllersConstantsUtil } from '../../src/utils/ConstantsUtil.js'
 import { CUSTOM_DEEPLINK_WALLETS } from '../../src/utils/MobileWallet.js'
 
 // -- Constants ----------------------------------------------------------------
@@ -914,65 +915,120 @@ describe('ApiController', () => {
   })
 
   it('should throw RATE_LIMITED error for HTTP 429 status', async () => {
+    vi.useFakeTimers()
     const mockError = new Error('Rate limited')
     mockError.cause = new Response('Too Many Requests', { status: 429 })
-    const fetchSpy = vi.spyOn(api, 'get').mockRejectedValueOnce(mockError)
+    const fetchSpy = vi.spyOn(api, 'get').mockRejectedValue(mockError)
 
-    await expect(ApiController.fetchAllowedOrigins()).rejects.toThrow('RATE_LIMITED')
+    const promise = ApiController.fetchAllowedOrigins().catch(e => e as Error)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+
+    const err = (await promise) as Error
+    expect(err.message).toBe('RATE_LIMITED')
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/projects/v1/origins',
       params: ApiController._getSdkProperties()
     })
+    await vi.runOnlyPendingTimersAsync()
+    vi.useRealTimers()
   })
 
   it('should throw SERVER_ERROR for HTTP 5xx status codes', async () => {
+    vi.useFakeTimers()
     const mockError = new Error('Internal Server Error')
     mockError.cause = new Response('Internal Server Error', { status: 500 })
-    const fetchSpy = vi.spyOn(api, 'get').mockRejectedValueOnce(mockError)
+    const fetchSpy = vi.spyOn(api, 'get').mockRejectedValue(mockError)
 
-    await expect(ApiController.fetchAllowedOrigins()).rejects.toThrow('SERVER_ERROR')
+    const promise = ApiController.fetchAllowedOrigins().catch(e => e as Error)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+
+    const err = (await promise) as Error
+    expect(err.message).toBe('SERVER_ERROR')
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/projects/v1/origins',
       params: ApiController._getSdkProperties()
     })
+    await vi.runOnlyPendingTimersAsync()
+    vi.useRealTimers()
   })
 
   it('should throw SERVER_ERROR for HTTP 502 status code', async () => {
+    vi.useFakeTimers()
     const mockError = new Error('Bad Gateway')
     mockError.cause = new Response('Bad Gateway', { status: 502 })
-    vi.spyOn(api, 'get').mockRejectedValueOnce(mockError)
+    vi.spyOn(api, 'get').mockRejectedValue(mockError)
 
-    await expect(ApiController.fetchAllowedOrigins()).rejects.toThrow('SERVER_ERROR')
+    const promise = ApiController.fetchAllowedOrigins().catch(e => e as Error)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    const err = (await promise) as Error
+    expect(err.message).toBe('SERVER_ERROR')
+    await vi.runOnlyPendingTimersAsync()
+    vi.useRealTimers()
   })
 
   it('should return empty array for HTTP 403 status (existing behavior)', async () => {
+    vi.useFakeTimers()
     const mockError = new Error('Forbidden')
     mockError.cause = new Response('Forbidden', { status: 403 })
-    const fetchSpy = vi.spyOn(api, 'get').mockRejectedValueOnce(mockError)
+    const fetchSpy = vi.spyOn(api, 'get').mockRejectedValue(mockError)
 
-    const result = await ApiController.fetchAllowedOrigins()
+    const promise = ApiController.fetchAllowedOrigins().catch(e => e as Error)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+
+    const result = await promise
     expect(result).toEqual([])
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/projects/v1/origins',
       params: ApiController._getSdkProperties()
     })
+    await vi.runOnlyPendingTimersAsync()
+    vi.useRealTimers()
   })
 
   it('should return empty array for non-HTTP errors (existing behavior)', async () => {
+    vi.useFakeTimers()
     const mockError = new Error('Network error')
-    vi.spyOn(api, 'get').mockRejectedValueOnce(mockError)
+    vi.spyOn(api, 'get').mockRejectedValue(mockError)
 
-    const result = await ApiController.fetchAllowedOrigins()
+    const promise = ApiController.fetchAllowedOrigins()
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+
+    const result = await promise
     expect(result).toEqual([])
+    await vi.runOnlyPendingTimersAsync()
+    vi.useRealTimers()
   })
 
   it('should return empty array for HTTP errors without Response cause', async () => {
+    vi.useFakeTimers()
     const mockError = new Error('Some error')
     mockError.cause = 'not a response object'
-    vi.spyOn(api, 'get').mockRejectedValueOnce(mockError)
+    vi.spyOn(api, 'get').mockRejectedValue(mockError)
 
-    const result = await ApiController.fetchAllowedOrigins()
+    const promise = ApiController.fetchAllowedOrigins()
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+
+    const result = await promise
     expect(result).toEqual([])
+    await vi.runOnlyPendingTimersAsync()
+    vi.useRealTimers()
   })
 
   it('should filter out wallets without mobile_link in mobile environment', () => {
@@ -1402,5 +1458,105 @@ describe('ApiController', () => {
       expect(ApiController.state.explorerWallets).toEqual(mockWallets)
       expect(ApiController.state.explorerFilteredWallets).toEqual([mockWallets[0]])
     })
+  })
+})
+
+describe('fetchProjectConfig', () => {
+  it('should fetch project config and return features', async () => {
+    const features = [{ id: 'reown_branding', isEnabled: true, config: null }]
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValueOnce({ features })
+
+    const result = await ApiController.fetchProjectConfig()
+
+    expect(fetchSpy).toHaveBeenCalledWith({
+      path: '/appkit/v1/config',
+      params: ApiController._getSdkProperties()
+    })
+    expect(result).toEqual(features)
+  })
+
+  it('should retry on failures and succeed on a later attempt', async () => {
+    vi.useFakeTimers()
+    const features = [{ id: 'reown_branding', isEnabled: true, config: null }]
+    const fetchSpy = vi
+      .spyOn(api, 'get')
+      .mockRejectedValueOnce(new Error('temporary-1'))
+      .mockRejectedValueOnce(new Error('temporary-2'))
+      .mockResolvedValueOnce({ features })
+
+    const promise = ApiController.fetchProjectConfig()
+
+    // Fast-forward timers to allow retries to run
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS * 2)
+
+    await expect(promise).resolves.toEqual(features)
+    // At least 3 calls: initial + 2 retries before success
+    expect(fetchSpy.mock.calls.length).toBeGreaterThanOrEqual(3)
+    vi.useRealTimers()
+  })
+})
+
+describe('fetchUsage', () => {
+  it('should update plan state based on usage limits', async () => {
+    // Reset plan to default
+    ApiController.state.plan = {
+      tier: 'none',
+      hasExceededUsageLimit: false,
+      limits: { isAboveRpcLimit: false, isAboveMauLimit: false }
+    }
+
+    const response = {
+      planLimits: { tier: 'starter', isAboveMauLimit: true, isAboveRpcLimit: false }
+    }
+    vi.spyOn(api, 'get').mockResolvedValueOnce(response)
+
+    await ApiController.fetchUsage()
+
+    expect(ApiController.state.plan).toEqual({
+      tier: 'starter',
+      hasExceededUsageLimit: true,
+      limits: { isAboveRpcLimit: false, isAboveMauLimit: true }
+    })
+  })
+})
+
+describe('fetchAllowedOrigins - retry mechanism', () => {
+  it('should retry and eventually return allowedOrigins after transient failure', async () => {
+    vi.useFakeTimers()
+    const allowed = ['https://example.com']
+    const fetchSpy = vi
+      .spyOn(api, 'get')
+      .mockRejectedValueOnce(new Error('temporary'))
+      .mockResolvedValueOnce({ allowedOrigins: allowed })
+
+    const promise = ApiController.fetchAllowedOrigins()
+
+    // Let retries run (initial + 1 retry)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+
+    await expect(promise).resolves.toEqual(allowed)
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+    await vi.runOnlyPendingTimersAsync()
+    vi.useRealTimers()
+  })
+
+  it('should retry 3 times and then throw RATE_LIMITED for repeated 429 errors', async () => {
+    vi.useFakeTimers()
+    const thrown = new Error('Rate limited')
+    thrown.cause = new Response('Too Many Requests', { status: 429 })
+    const fetchSpy = vi.spyOn(api, 'get').mockRejectedValue(thrown)
+
+    const promise = ApiController.fetchAllowedOrigins().catch(e => e as Error)
+
+    // Let all retries run (initial + 3 retries)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+    await vi.advanceTimersByTimeAsync(ControllersConstantsUtil.FIVE_SEC_MS)
+
+    const caughtErr = (await promise) as Error
+    expect(caughtErr.message).toBe('RATE_LIMITED')
+    expect(fetchSpy).toHaveBeenCalledTimes(4)
+    await vi.runOnlyPendingTimersAsync()
+    vi.useRealTimers()
   })
 })
