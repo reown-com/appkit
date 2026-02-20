@@ -226,7 +226,7 @@ async function checkCorePackage() {
 
   if (modified_core_controllers.length && !modified_core_controllers_tests) {
     message(`
-      The following controllers were modified, but not tests were changed:
+      The following controllers were modified, but no tests were changed:
       ${modified_core_controllers.join('\n')}
     `)
   }
