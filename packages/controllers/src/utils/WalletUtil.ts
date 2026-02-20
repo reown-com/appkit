@@ -1,6 +1,7 @@
 import { HelpersUtil } from '@reown/appkit-common'
 
 import { ApiController } from '../controllers/ApiController.js'
+import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ConnectorController } from '../controllers/ConnectorController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
@@ -210,11 +211,29 @@ export const WalletUtil = {
   },
 
   getWalletConnectWallets(allWallets: WcWallet[]) {
+    const { customWallets } = OptionsController.state
     const wallets = [...ApiController.state.featured, ...ApiController.state.recommended]
+
     if (ApiController.state.filteredWallets?.length > 0) {
       wallets.push(...ApiController.state.filteredWallets)
     } else {
       wallets.push(...allWallets)
+    }
+
+    /*
+     * If AppKit doesn't have any adapters, we need to convert CustomWallet to  WcWallet so they can be shown in the all wallets list
+     */
+
+    if (customWallets && customWallets.length > 0 && ChainController.state.noAdapters) {
+      const existingWalletIds = new Set(wallets.map(w => w.id))
+
+      const convertedCustomWallets: WcWallet[] = customWallets
+        .filter(wallet => !existingWalletIds.has(wallet.id))
+        .map(wallet => ({
+          ...wallet,
+          supports_wc: true
+        }))
+      wallets.push(...convertedCustomWallets)
     }
 
     const uniqueWallets = CoreHelperUtil.uniqueBy(wallets, 'id')
