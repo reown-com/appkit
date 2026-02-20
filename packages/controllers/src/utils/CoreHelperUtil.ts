@@ -561,6 +561,11 @@ export const CoreHelperUtil = {
       return wcUri
     }
 
+    // Avoid encoding in telegram android context
+    if (this.isTelegram() && this.isAndroid()) {
+      return `${wcUri}&pay=${wcPayUrl}`
+    }
+
     return `${wcUri}&pay=${encodeURIComponent(wcPayUrl)}`
   }
 }
