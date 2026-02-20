@@ -147,6 +147,27 @@ describe('W3mConnectView - Connection Methods', () => {
     expect(HelpersUtil.querySelect(element, WALLET_LOGIN_LIST)).toBeNull()
   })
 
+  it('should render collapse wallets button with wallet icon when collapseWallets is true', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      enableWallets: true,
+      features: {
+        connectMethodsOrder: ['wallet', 'email', 'social'],
+        collapseWallets: true
+      },
+      remoteFeatures: {
+        email: true,
+        socials: ['google']
+      }
+    })
+
+    const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
+
+    const collapseButton = HelpersUtil.getByTestId(element, COLLAPSE_WALLETS_BUTTON)
+    expect(collapseButton).not.toBeNull()
+    expect(collapseButton?.getAttribute('icon')).toBe('wallet')
+  })
+
   it('should render one separator between wallet and email/social group', async () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
