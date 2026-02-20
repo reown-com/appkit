@@ -1,4 +1,4 @@
-name: Trigger Devin for AppKit Update in Secure Site
+name: Trigger Devin for AppKit Update in Secure AppKit
 
 on:
   push:
@@ -24,12 +24,12 @@ jobs:
             A release merge commit (SHA: ${{ github.sha }}) was just pushed to **${{ github.repository }}**'s `main` branch.
             This merges a release branch back into `main` after publishing new AppKit packages.
 
-            ## Task — Update secure-site
-            In **reown-com/secure-site**:
+            ## Task — Update secure-appkit
+            In **reown-com/secure-appkit**:
             1. Create a branch from `main`.
             2. In **reown-com/appkit** repository, read the `name` and `version` fields from each `package.json` and build a map of `@reown/appkit/*` → `version`.
-            3. In **reown-com/secure-site** repository, scan all `package.json` files. For every dependency or devDependency that starts with `@reown/appkit/`, update it to the exact version `<version>` from the map.
-            4. If everything is already up to date, respond **"No secure-site update needed."** and stop.
+            3. In **reown-com/secure-appkit** repository, scan all `package.json` files. For every dependency or devDependency that starts with `@reown/appkit/`, update it to the exact version `<version>` from the map.
+            4. If everything is already up to date, respond **"No secure-appkit update needed."** and stop.
             5. Otherwise, commit the changes and open a PR to `main`.
 
             ## PR requirements
