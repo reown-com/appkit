@@ -529,7 +529,7 @@ export interface SIWXConfig {
 
   /**
    * This method will be called to sign a message with the wallet using the signer handler.
-   * This behavior can be overriden by passing in a `signer` parameter to the `SIWXConfig` constructor.
+   * This behavior can be overridden by passing in a `signer` parameter to the `SIWXConfig` constructor.
    * Constraints:
    * - This method MUST forward the message to the wallet for a signature request.
    * - If the signature process fails or is cancelled it MUST throw an error.
