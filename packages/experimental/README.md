@@ -1,4 +1,4 @@
-#### 📚 [Documentation](https://docs.reown.com/2.0/appkit/about)
+#### 📚 [Documentation](https://docs.reown.com/appkit/overview)
 
 #### 🔗 [Website](https://reown.com/appkit)
 
