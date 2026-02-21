@@ -5,7 +5,6 @@ import { ErrorUtil } from '@reown/appkit-common'
 import {
   AppKitError,
   ChainController,
-  EventsController,
   RouterController,
   SendController,
   SnackController
@@ -181,12 +180,6 @@ export class W3mWalletSendPreviewView extends LitElement {
       if (isUserRejectedRequestError || isSendTransactionError) {
         errMessage = error.message
       }
-
-      EventsController.sendEvent({
-        type: 'track',
-        event: isUserRejectedRequestError ? 'SEND_REJECTED' : 'SEND_ERROR',
-        properties: SendController.getSdkEventProperties(error)
-      })
 
       SnackController.showError(errMessage)
     }

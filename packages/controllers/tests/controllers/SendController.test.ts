@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type Balance } from '@reown/appkit-common'
+import { type Balance, UserRejectedRequestError } from '@reown/appkit-common'
 
 import {
   type AccountState,
@@ -223,6 +223,7 @@ describe('SendController', () => {
 
   describe('sendSolanaToken()', () => {
     beforeEach(() => {
+      vi.restoreAllMocks()
       vi.spyOn(RouterController, 'pushTransactionStack').mockImplementation(() => {})
       vi.spyOn(RouterController, 'replace').mockImplementation(() => {})
       vi.spyOn(ConnectionController, 'sendTransaction').mockResolvedValue(undefined)
@@ -253,7 +254,6 @@ describe('SendController', () => {
         value: 0.1
       })
       expect(ConnectionController._getClient()?.updateBalance).toHaveBeenCalledWith('solana')
-      expect(SendController.resetSend).toHaveBeenCalled()
     })
 
     it('should call sendTransaction with tokenMint', async () => {
@@ -288,7 +288,6 @@ describe('SendController', () => {
         value: 50
       })
       expect(ConnectionController._getClient()?.updateBalance).toHaveBeenCalledWith('solana')
-      expect(SendController.resetSend).toHaveBeenCalled()
     })
 
     it('should trigger SEND_SUCCESS event after successful transaction', async () => {
@@ -313,7 +312,7 @@ describe('SendController', () => {
       SendController.setTokenAmount(50)
       SendController.setReceiverAddress('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')
 
-      await SendController.sendSolanaToken()
+      await SendController.sendToken()
 
       expect(EventsController.sendEvent).toHaveBeenCalledWith({
         type: 'track',
@@ -338,6 +337,132 @@ describe('SendController', () => {
       SendController.state.hash = '0x123'
       SendController.resetSend()
       expect(SendController.state.hash).toEqual('0x123')
+    })
+  })
+
+  describe('sendToken events', () => {
+    let resetSend: ReturnType<typeof vi.spyOn>
+    beforeEach(() => {
+      vi.restoreAllMocks()
+      resetSend = vi.spyOn(SendController, 'resetSend')
+      mockChainControllerState({
+        activeCaipNetwork: extendedMainnet
+      })
+      vi.spyOn(EventsController, 'sendEvent').mockImplementation(() => {})
+    })
+
+    it('should fire SEND_INITIATED then SEND_SUCCESS on successful send', async () => {
+      // Arrange
+      SendController.setToken(token as SendControllerState['token'])
+      SendController.setTokenAmount(sendTokenAmount)
+      SendController.setReceiverAddress(receiverAddress)
+      vi.spyOn(SendController, 'sendEvmToken').mockResolvedValue()
+
+      // Act
+      await SendController.sendToken()
+
+      // Assert
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(1, {
+        type: 'track',
+        event: 'SEND_INITIATED',
+        properties: {
+          isSmartAccount: false,
+          token: token.address,
+          amount: sendTokenAmount,
+          network: extendedMainnet.caipNetworkId
+        }
+      })
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          type: 'track',
+          event: 'SEND_SUCCESS',
+          properties: expect.objectContaining({
+            isSmartAccount: false,
+            token: token.symbol,
+            amount: sendTokenAmount,
+            network: extendedMainnet.caipNetworkId
+          })
+        })
+      )
+      expect(resetSend).toHaveBeenCalledTimes(1)
+    })
+
+    it('should fire SEND_INITIATED then SEND_REJECTED when user rejects', async () => {
+      // Arrange
+      SendController.setToken(token as SendControllerState['token'])
+      SendController.setTokenAmount(sendTokenAmount)
+      SendController.setReceiverAddress(receiverAddress)
+      vi.spyOn(SendController, 'sendEvmToken').mockRejectedValue(new UserRejectedRequestError({}))
+
+      // Act
+      await expect(SendController.sendToken()).rejects.toBeTruthy()
+
+      // Assert
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(1, {
+        type: 'track',
+        event: 'SEND_INITIATED',
+        properties: {
+          isSmartAccount: false,
+          token: token.address,
+          amount: sendTokenAmount,
+          network: extendedMainnet.caipNetworkId
+        }
+      })
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          type: 'track',
+          event: 'SEND_REJECTED',
+          properties: expect.objectContaining({
+            isSmartAccount: false,
+            token: token.symbol,
+            amount: sendTokenAmount,
+            network: extendedMainnet.caipNetworkId
+          })
+        })
+      )
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ type: 'track', event: 'SEND_REJECTED' })
+      )
+      expect(EventsController.sendEvent).toHaveBeenCalledTimes(2)
+    })
+
+    it('should fire SEND_INITIATED -> SEND_ERROR when random error occurs', async () => {
+      // Arrange
+      SendController.setToken(token as SendControllerState['token'])
+      SendController.setTokenAmount(sendTokenAmount)
+      SendController.setReceiverAddress(receiverAddress)
+      vi.spyOn(SendController, 'sendEvmToken').mockRejectedValue(new Error('Random failure'))
+
+      // Act
+      await expect(SendController.sendToken()).rejects.toBeTruthy()
+
+      // Assert
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(1, {
+        type: 'track',
+        event: 'SEND_INITIATED',
+        properties: {
+          isSmartAccount: false,
+          token: token.address,
+          amount: sendTokenAmount,
+          network: extendedMainnet.caipNetworkId
+        }
+      })
+      expect(EventsController.sendEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          type: 'track',
+          event: 'SEND_ERROR',
+          properties: expect.objectContaining({
+            isSmartAccount: false,
+            token: token.symbol,
+            amount: sendTokenAmount,
+            network: extendedMainnet.caipNetworkId
+          })
+        })
+      )
     })
   })
 })
