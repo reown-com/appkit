@@ -1252,7 +1252,10 @@ export interface RequestArguments {
 }
 
 export interface Provider {
-  connect: (params?: { onUri?: (uri: string) => void }) => Promise<string>
+  connect: (params?: {
+    caipNetworkId?: CaipNetworkId
+    onUri?: (uri: string) => void
+  }) => Promise<string>
   disconnect: () => Promise<void>
   request: <T>(args: RequestArguments) => Promise<T>
   on<T extends keyof ProviderEventListener>(event: T, listener: ProviderEventListener[T]): void

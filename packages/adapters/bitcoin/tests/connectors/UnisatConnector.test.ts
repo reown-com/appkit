@@ -39,7 +39,7 @@ describe('UnisatConnector', () => {
 
   beforeEach(() => {
     imageUrl = 'mock_image_url'
-    requestedChains = [bitcoin, bitcoinTestnet]
+    requestedChains = [bitcoin, bitcoinTestnet, bitcoinSignet]
     vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(bitcoin)
     wallet = mockUnisatWallet()
     connector = new UnisatConnector({
@@ -60,7 +60,7 @@ describe('UnisatConnector', () => {
   })
 
   it('should return bitcoin chains', () => {
-    expect(connector.chains).toEqual([bitcoin, bitcoinTestnet])
+    expect(connector.chains).toEqual([bitcoin, bitcoinTestnet, bitcoinSignet])
   })
 
   describe('connect', () => {

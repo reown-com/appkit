@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/require-await */
 import {
   type CaipNetwork,
+  type CaipNetworkId,
   ConstantsUtil as CommonConstantsUtil,
   ConstantsUtil,
   PresetsUtil
 } from '@reown/appkit-common'
 import { ChainController, CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import { AddressPurpose } from '../utils/BitcoinConnector.js'
@@ -16,8 +17,20 @@ import { UnitsUtil } from '../utils/UnitsUtil.js'
 
 const OKX_NETWORK_KEYS = {
   [bitcoin.caipNetworkId]: 'bitcoin',
-  [bitcoinTestnet.caipNetworkId]: 'bitcoinTestnet'
+  [bitcoinTestnet.caipNetworkId]: 'bitcoinTestnet',
+  [bitcoinSignet.caipNetworkId]: 'bitcoinSignet'
 } as const
+
+declare global {
+  interface Window {
+    okxwallet?: {
+      bitcoin?: OKXConnector.Wallet
+      bitcoinTestnet?: OKXConnector.Wallet
+      bitcoinSignet?: OKXConnector.Wallet
+      cardano?: { icon: string }
+    }
+  }
+}
 
 export class OKXConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly id = 'OKX'
@@ -26,53 +39,67 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   public readonly type = 'ANNOUNCED'
   public readonly explorerId =
     PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.OKX]
-  public readonly imageUrl: string
   public readonly requestedCaipNetworkId?: CaipNetwork['caipNetworkId']
+  public readonly imageUrl: string
 
   public readonly provider = this
 
-  private wallet: OKXConnector.Wallet
   private readonly requestedChains: CaipNetwork[] = []
 
-  constructor({
-    wallet,
-    requestedChains,
-    imageUrl,
-    requestedCaipNetworkId
-  }: OKXConnector.ConstructorParams) {
+  constructor({ requestedChains, requestedCaipNetworkId }: OKXConnector.ConstructorParams) {
     super()
-    this.wallet = wallet
     this.requestedChains = requestedChains
-    this.imageUrl = imageUrl
     this.requestedCaipNetworkId = requestedCaipNetworkId
+    this.imageUrl = typeof window === 'undefined' ? '' : window.okxwallet?.cardano?.icon || ''
   }
 
   public get chains() {
-    return this.requestedChains.filter(
-      chain =>
-        chain.caipNetworkId ===
-        ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId
-    )
+    return this.requestedChains
   }
 
-  public async connect(): Promise<string> {
-    const result = await this.wallet.connect()
+  public async connect(params?: { caipNetworkId?: CaipNetworkId }): Promise<string> {
+    const caipNetworkId =
+      params?.caipNetworkId ??
+      ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId
 
-    this.bindEvents()
+    if (!caipNetworkId) {
+      throw new Error('No active network available')
+    }
 
-    this.emit('accountsChanged', [result.address])
+    const currentWallet = this.getWallet()
+    if (currentWallet) {
+      this.unbindEvents({ wallet: currentWallet })
+    }
+    const wallet = this.getWallet({ requestedCaipNetworkId: caipNetworkId })
+
+    this.bindEvents({ wallet })
+
+    const result = await wallet.connect()
 
     return result.address
   }
 
   public async disconnect(): Promise<void> {
-    this.unbindEvents()
-    await this.wallet.disconnect()
+    const wallet = this.getWallet()
+    await wallet.disconnect()
+    this.unbindEvents({ wallet })
   }
 
-  public async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
-    const accounts = await this.wallet.getAccounts()
-    const publicKeyOfActiveAccount = await this.wallet.getPublicKey()
+  public async getAccountAddresses(params?: {
+    caipNetworkId?: CaipNetwork['caipNetworkId']
+  }): Promise<BitcoinConnector.AccountAddress[]> {
+    const caipNetworkId =
+      params?.caipNetworkId ??
+      ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId
+
+    const wallet = this.getWallet({ requestedCaipNetworkId: caipNetworkId })
+
+    if (caipNetworkId === bitcoinSignet.caipNetworkId) {
+      return [wallet.selectedAccount]
+    }
+
+    const accounts = await wallet.getAccounts()
+    const publicKeyOfActiveAccount = await wallet.getPublicKey()
 
     const accountList = accounts.map(account => ({
       address: account,
@@ -86,7 +113,9 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
     const protocol = params.protocol === 'bip322' ? 'bip322-simple' : params.protocol
 
-    return this.wallet.signMessage(params.message, protocol)
+    const wallet = this.getWallet()
+
+    return wallet.signMessage(params.message, protocol)
   }
 
   public async sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string> {
@@ -96,13 +125,16 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
       throw new Error('No active network available')
     }
 
-    const from = (await this.wallet.getAccounts())[0]
+    const requestedCaipNetworkId = network.caipNetworkId ?? this.requestedCaipNetworkId
+    const wallet = this.getWallet({ requestedCaipNetworkId })
+
+    const from = (await wallet.getAccounts())[0]
 
     if (!from) {
       throw new Error('No account available')
     }
 
-    const result = await this.wallet.send({
+    const result = await wallet.send({
       from,
       to: params.recipient,
       value: UnitsUtil.parseSatoshis(params.amount, network)
@@ -130,14 +162,16 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
       }
     }
 
-    const signedPsbtHex = await this.wallet.signPsbt(psbtHex, options)
+    const wallet = this.getWallet()
+
+    const signedPsbtHex = await wallet.signPsbt(psbtHex, options)
 
     let txid: string | undefined = undefined
     if (params.broadcast) {
       if (params.signInputs?.length > 0) {
         throw new Error('Broadcast not supported for partial signing')
       }
-      txid = await this.wallet.pushPsbt(signedPsbtHex)
+      txid = await wallet.pushPsbt(signedPsbtHex)
     }
 
     return {
@@ -147,20 +181,16 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   }
 
   public async switchNetwork(_caipNetworkId: CaipNetwork['caipNetworkId']): Promise<void> {
-    const connector = OKXConnector.getWallet({
-      requestedChains: this.requestedChains,
-      requestedCaipNetworkId: _caipNetworkId
-    })
-
-    if (!connector) {
-      throw new Error(`${this.name} wallet does not support network switching`)
-    }
-
-    this.unbindEvents()
-    this.wallet = connector.wallet
-
     try {
-      await this.connect()
+      const currentWallet = this.getWallet()
+      if (currentWallet) {
+        this.unbindEvents({ wallet: currentWallet })
+      }
+      const chain = this.chains.find(c => c.caipNetworkId === _caipNetworkId)
+      if (!chain) {
+        throw new Error(`Chain not found: ${_caipNetworkId}`)
+      }
+      this.emit('chainChanged', chain.id)
     } catch (error) {
       throw new Error(`${this.name} wallet does not support network switching`)
     }
@@ -170,66 +200,58 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     return Promise.reject(new MethodNotSupportedError(this.id, 'request'))
   }
 
-  private bindEvents(): void {
-    this.unbindEvents()
+  private bindEvents({ wallet }: { wallet: OKXConnector.Wallet }): void {
+    this.unbindEvents({ wallet })
 
-    this.wallet.on('accountChanged', account => {
+    wallet.on('accountChanged', account => {
       if (typeof account === 'object' && account && 'address' in account) {
         this.emit('accountsChanged', [account.address])
       }
     })
-    this.wallet.on('disconnect', () => {
+    wallet.on('disconnect', () => {
       this.emit('disconnect')
     })
   }
 
-  private unbindEvents(): void {
-    this.wallet.removeAllListeners()
+  private unbindEvents({ wallet }: { wallet: OKXConnector.Wallet }): void {
+    wallet.removeAllListeners()
   }
 
-  public static getWallet(params: OKXConnector.GetWalletParams): OKXConnector | undefined {
-    if (!CoreHelperUtil.isClient()) {
-      return undefined
+  public getWallet(params?: OKXConnector.GetWalletParams): OKXConnector.Wallet {
+    const requestedCaipNetworkId =
+      params?.requestedCaipNetworkId ??
+      ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)?.caipNetworkId ??
+      this.requestedCaipNetworkId
+
+    if (CoreHelperUtil.isClient()) {
+      const okxwallet = window.okxwallet
+      const networkKey = OKX_NETWORK_KEYS[requestedCaipNetworkId as keyof typeof OKX_NETWORK_KEYS]
+
+      const wallet = okxwallet?.[networkKey] || okxwallet?.bitcoin
+
+      if (wallet) {
+        return wallet
+      }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let wallet: any = undefined
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const okxwallet = (window as any)?.okxwallet
-
-    const networkKey =
-      OKX_NETWORK_KEYS[params.requestedCaipNetworkId as keyof typeof OKX_NETWORK_KEYS]
-
-    wallet = okxwallet?.[networkKey] || okxwallet?.bitcoin
-
-    /**
-     * OKX doesn't provide a way to get the image URL specifally for bitcoin
-     * so we use the icon for cardano as a fallback
-     */
-    const imageUrl = okxwallet?.cardano?.icon || ''
-
-    if (wallet) {
-      return new OKXConnector({ wallet, imageUrl, ...params })
-    }
-
-    return undefined
+    throw new Error('No wallet available')
   }
 
   public async getPublicKey(): Promise<string> {
-    return this.wallet.getPublicKey()
+    const wallet = this.getWallet()
+
+    return wallet.getPublicKey()
   }
 }
 
 export namespace OKXConnector {
   export type ConstructorParams = {
-    wallet: Wallet
     requestedChains: CaipNetwork[]
-    imageUrl: string
     requestedCaipNetworkId?: CaipNetwork['caipNetworkId']
   }
 
   export type Wallet = {
+    selectedAccount: BitcoinConnector.AccountAddress
     /*
      * This interface doesn't include all available methods
      * Reference: https://www.okx.com/web3/build/docs/sdks/chains/bitcoin/provider
@@ -264,7 +286,7 @@ export namespace OKXConnector {
     getPublicKey(): Promise<string>
   }
 
-  export type GetWalletParams = Omit<ConstructorParams, 'wallet' | 'imageUrl'>
+  export type GetWalletParams = Omit<ConstructorParams, 'requestedChains'>
 
   export type SignPSBTParams = {
     toSignInputs: Omit<BitcoinConnector.SignPSBTParams['signInputs'][number], 'useTweakedSigner'>[]
