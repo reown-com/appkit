@@ -1,0 +1,108 @@
+{
+  "name": "@reown/appkit-headless",
+  "version": "1.8.17",
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
+  "files": [
+    "dist",
+    "!tsconfig.tsbuildinfo",
+    "README.md"
+  ],
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "tsc --build tsconfig.build.json",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./react": {
+      "types": "./dist/types/exports/react.d.ts",
+      "import": "./dist/esm/exports/react.js",
+      "default": "./dist/esm/exports/react.js"
+    },
+    "./vue": {
+      "types": "./dist/types/exports/vue.d.ts",
+      "import": "./dist/esm/exports/vue.js",
+      "default": "./dist/esm/exports/vue.js"
+    },
+    "./networks": {
+      "types": "./dist/types/exports/networks.d.ts",
+      "import": "./dist/esm/exports/networks.js",
+      "default": "./dist/esm/exports/networks.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/types/exports/react.d.ts"
+      ],
+      "vue": [
+        "./dist/types/exports/vue.d.ts"
+      ],
+      "networks": [
+        "./dist/types/exports/networks.d.ts"
+      ]
+    }
+  },
+  "dependencies": {
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
+    "@walletconnect/types": "2.23.2",
+    "@walletconnect/universal-provider": "2.23.2",
+    "valtio": "2.1.7",
+    "viem": ">=2.44.2"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "vue": ">=3"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "19.1.15",
+    "@vue/runtime-core": "3.4.3"
+  },
+  "author": "Reown (https://discord.gg/reown)",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://github.com/reown-com/appkit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reown-com/appkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/reown-com/appkit/issues"
+  },
+  "keywords": [
+    "appkit",
+    "headless",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ],
+  "publishConfig": {
+    "provenance": true
+  }
+}
