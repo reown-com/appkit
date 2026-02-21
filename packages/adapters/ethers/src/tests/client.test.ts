@@ -1298,10 +1298,10 @@ describe('EthersAdapter', () => {
       expect(providers?.baseAccount).toBeDefined()
     })
 
-    it('should create Ethers config without coinbase provider if disabled', async () => {
+    it('should create Ethers config without base account provider if disabled', async () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
-        enableCoinbase: false
+        enableBaseAccount: false
       })
       const providers = await adapter['createEthersConfig']()
 
