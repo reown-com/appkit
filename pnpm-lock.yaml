@@ -1354,64 +1354,6 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
 
-  examples/next-tron-app-router:
-    dependencies:
-      '@reown/appkit':
-        specifier: workspace:*
-        version: link:../../packages/appkit
-      '@reown/appkit-adapter-tron':
-        specifier: workspace:*
-        version: link:../../packages/adapters/tron
-      '@tronweb3/tronwallet-adapter-binance':
-        specifier: 1.0.2
-        version: 1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
-      '@tronweb3/tronwallet-adapter-bitkeep':
-        specifier: 1.1.7
-        version: 1.1.7(bufferutil@4.1.0)(utf-8-validate@5.0.10)
-      '@tronweb3/tronwallet-adapter-metamask-tron':
-        specifier: 1.0.1
-        version: 1.0.1(bufferutil@4.1.0)(utf-8-validate@5.0.10)
-      '@tronweb3/tronwallet-adapter-okxwallet':
-        specifier: 1.0.7
-        version: 1.0.7(bufferutil@4.1.0)(utf-8-validate@5.0.10)
-      '@tronweb3/tronwallet-adapter-tronlink':
-        specifier: 1.1.13
-        version: 1.1.13(bufferutil@4.1.0)(utf-8-validate@5.0.10)
-      '@tronweb3/tronwallet-adapter-trust':
-        specifier: 1.0.2
-        version: 1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
-      next:
-        specifier: 14.2.35
-        version: 14.2.35(@opentelemetry/api@1.9.0)(@playwright/test@1.48.2)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
-      next-themes:
-        specifier: 0.4.6
-        version: 0.4.6(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
-      react:
-        specifier: 19.1.2
-        version: 19.1.2
-      react-dom:
-        specifier: 19.1.2
-        version: 19.1.2(react@19.1.2)
-    devDependencies:
-      '@types/node':
-        specifier: 22.13.4
-        version: 22.13.4
-      '@types/react':
-        specifier: 19.1.15
-        version: 19.1.15
-      '@types/react-dom':
-        specifier: 19.1.9
-        version: 19.1.9(@types/react@19.1.15)
-      esbuild:
-        specifier: '>=0.25.1'
-        version: 0.27.2
-      eslint-config-next:
-        specifier: 14.1.0
-        version: 14.1.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.2)
-      typescript:
-        specifier: 5.9.2
-        version: 5.9.2
-
   examples/next-wagmi-app-router:
     dependencies:
       '@reown/appkit':
@@ -2880,6 +2822,9 @@ importers:
       '@base-org/account':
         specifier: 2.4.0
         version: 2.4.0(@types/react@19.1.15)(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(react@19.2.1)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.2.1))(utf-8-validate@5.0.10)(zod@3.25.76)
+      '@coinbase/wallet-sdk':
+        specifier: 4.3.3
+        version: 4.3.3
       '@safe-global/safe-apps-provider':
         specifier: 0.18.6
         version: 0.18.6(bufferutil@4.1.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -4829,6 +4774,9 @@ packages:
 
   '@coinbase/wallet-sdk@4.3.0':
     resolution: {integrity: sha512-T3+SNmiCw4HzDm4we9wCHCxlP0pqCiwKe4sOwPH3YAK2KSKjxPRydKu6UQJrdONFVLG7ujXvbd/6ZqmvJb8rkw==}
+
+  '@coinbase/wallet-sdk@4.3.3':
+    resolution: {integrity: sha512-h8gMLQNvP5TIJVXFOyQZaxbi1Mg5alFR4Z2/PEIngdyXZEoQGcVhzyQGuDa3t9zpllxvqfAaKfzDhsfCo+nhSQ==}
 
   '@coinbase/wallet-sdk@4.3.6':
     resolution: {integrity: sha512-4q8BNG1ViL4mSAAvPAtpwlOs1gpC+67eQtgIwNvT3xyeyFFd+guwkc8bcX5rTmQhXpqnhzC4f0obACbP9CqMSA==}
@@ -21576,6 +21524,14 @@ snapshots:
       - supports-color
 
   '@coinbase/wallet-sdk@4.3.0':
+    dependencies:
+      '@noble/hashes': 1.8.0
+      clsx: 1.2.1
+      eventemitter3: 5.0.1
+      preact: 10.28.2
+    optional: true
+
+  '@coinbase/wallet-sdk@4.3.3':
     dependencies:
       '@noble/hashes': 1.8.0
       clsx: 1.2.1
