@@ -62,7 +62,11 @@ import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { authConnector } from './connectors/AuthConnector.js'
 import { walletConnect } from './connectors/WalletConnectConnector.js'
 import { LimitterUtil } from './utils/LimitterUtil.js'
-import { getBaseAccountConnector, getSafeConnector } from './utils/helpers.js'
+import {
+  getBaseAccountConnector,
+  getCoinbaseConnector,
+  getSafeConnector
+} from './utils/helpers.js'
 
 interface PendingTransactionsFilter {
   enable: boolean
@@ -298,11 +302,20 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   private async addThirdPartyConnectors() {
     const thirdPartyConnectors: CreateConnectorFn[] = []
-    const { enableCoinbase: isCoinbaseEnabled } = OptionsController.state || {}
-    if (isCoinbaseEnabled !== false) {
+    const { enableCoinbase: isCoinbaseEnabled, enableBaseAccount: isBaseAccountEnabled } =
+      OptionsController.state || {}
+
+    if (isBaseAccountEnabled !== false) {
       const baseAccountConnector = await getBaseAccountConnector(this.wagmiConfig.connectors)
       if (baseAccountConnector) {
         thirdPartyConnectors.push(baseAccountConnector)
+      }
+    }
+
+    if (isCoinbaseEnabled !== false) {
+      const coinbaseConnector = await getCoinbaseConnector(this.wagmiConfig.connectors)
+      if (coinbaseConnector) {
+        thirdPartyConnectors.push(coinbaseConnector)
       }
     }
 

@@ -1,6 +1,6 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 import { providers, utils } from 'ethers'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   type CaipAddress,
@@ -12,6 +12,8 @@ import {
   type ConnectionControllerClient,
   ConnectorController,
   ConnectorUtil,
+  CoreHelperUtil,
+  OptionsController,
   type Provider,
   ProviderController,
   SIWXUtil,
@@ -1157,6 +1159,93 @@ describe('Ethers5Adapter', () => {
           chainId: 1
         })
       )
+    })
+  })
+
+  describe('Ethers5Adapter - createEthersConfig', () => {
+    beforeAll(() => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        metadata: {
+          name: 'Test App',
+          description: 'Test Description',
+          url: 'https://test.com',
+          icons: ['https://test.com/icon.png']
+        }
+      })
+
+      vi.mock('@reown/appkit-utils/ethers', async () => {
+        const actual = await import('@reown/appkit-utils/ethers')
+        return {
+          ...actual,
+          SafeProvider: vi.fn(() => ({
+            initialize: vi.fn()
+          })),
+          BaseProvider: vi.fn(() => ({
+            initialize: vi.fn()
+          })),
+          CoinbaseWalletProvider: vi.fn(() => ({
+            initialize: vi.fn()
+          })),
+          InjectedProvider: vi.fn(() => ({
+            initialize: vi.fn()
+          }))
+        }
+      })
+    })
+
+    beforeEach(() => {
+      vi.clearAllMocks()
+    })
+
+    it('should create Ethers config with base account provider if enableBaseAccount is not disabled', async () => {
+      const ethers5Adapter = new Ethers5Adapter()
+      const providers = await ethers5Adapter['createEthersConfig']()
+
+      expect(providers?.baseAccount).toBeDefined()
+    })
+
+    it('should create Ethers config without base account provider if enableBaseAccount is disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        enableBaseAccount: false
+      })
+      const providers = await adapter['createEthersConfig']()
+
+      expect(providers?.baseAccount).toBeUndefined()
+    })
+
+    it('should create Ethers config with coinbase wallet provider if enableCoinbase is not disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        metadata: {
+          name: 'Test App',
+          description: 'Test Description',
+          url: 'https://test.com',
+          icons: ['https://test.com/icon.png']
+        }
+      })
+      const ethers5Adapter = new Ethers5Adapter()
+      const providers = await ethers5Adapter['createEthersConfig']()
+
+      expect(providers?.coinbaseWallet).toBeDefined()
+    })
+
+    it('should create Ethers config without coinbase wallet provider if enableCoinbase is disabled', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        enableCoinbase: false
+      })
+      const providers = await adapter['createEthersConfig']()
+
+      expect(providers?.coinbaseWallet).toBeUndefined()
+    })
+
+    it('should create Ethers config with safe provider if in iframe and ancestor is app.safe.global', async () => {
+      vi.spyOn(CoreHelperUtil, 'isSafeApp').mockReturnValue(true)
+      const providers = await adapter['createEthersConfig']()
+
+      expect(providers?.safe).toBeDefined()
     })
   })
 })
