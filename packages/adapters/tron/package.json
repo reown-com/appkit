@@ -43,7 +43,7 @@
     "@reown/appkit-utils": "workspace:*",
     "@tronweb3/tronwallet-abstract-adapter": "1.1.10",
     "@tronweb3/tronwallet-adapter-tronlink": "1.1.13",
-    "@walletconnect/universal-provider": "2.23.2"
+    "@walletconnect/universal-provider": "2.23.7"
   },
   "peerDependencies": {
     "@tronweb3/tronwallet-adapter-binance": "1.0.2",
