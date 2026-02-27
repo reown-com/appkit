@@ -51,6 +51,10 @@ export class TronConnectConnector implements TronConnector {
     return this.requestedChains
   }
 
+  public get provider(): TronConnector {
+    return this
+  }
+
   public request<T>(args: RequestArguments): Promise<T> {
     const { method, params } = args
 
