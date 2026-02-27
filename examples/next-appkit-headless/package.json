@@ -35,7 +35,7 @@
     "@types/node": "22.13.4",
     "@types/react": "19.1.15",
     "@types/react-dom": "19.1.9",
-    "eslint": "9.39.1",
+    "eslint": "9.26.0",
     "eslint-config-next": "16.0.1",
     "tailwindcss": "4.1.17",
     "tailwindcss-animate": "1.0.7",
