@@ -79,7 +79,7 @@
     "buffer": "5.5.0||6.0.0",
     "chalk": "4.1.2",
     "danger": "13.0.2",
-    "eslint": "8.56.0",
+    "eslint": "9.26.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.3",
     "eslint-plugin-require-extensions": "0.1.3",
