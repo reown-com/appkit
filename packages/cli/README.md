@@ -1,6 +1,6 @@
 # Reown AppKit CLI
 
-**AppKit CLI** is a command-line tool to fast download a funcionaly boilerplate example for Reown Web AppKit SDK.
+**AppKit CLI** is a command-line tool to quickly download a functional boilerplate example for Reown Web AppKit SDK.
 
 ## Installation
 
@@ -45,7 +45,7 @@ npx appkit-cli
 
 ### Example Commands
 
-Provide examples of some paramaeters:
+Provide examples of some parameters:
 
 ```bash
 appkit-cli [project-name]
