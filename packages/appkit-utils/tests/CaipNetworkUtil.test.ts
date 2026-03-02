@@ -294,7 +294,7 @@ describe('CaipNetworksUtil', () => {
       )
     })
 
-    it('should create transport with deafult RPC URL if blockchain API is not supported', () => {
+    it('should create transport with default RPC URL if blockchain API is not supported', () => {
       CaipNetworksUtil.getViemTransport(
         { ...immutableZkEvmTestnet, chainNamespace: 'eip155', caipNetworkId: 'eip155:1' },
         mockProjectId
