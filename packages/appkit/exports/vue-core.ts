@@ -39,17 +39,16 @@ export type { AppKitOptions }
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitNetwork(): Ref<UseAppKitNetworkReturn> {
-  const activeChain = ChainController.state.activeChain
-  const initialNetworkState = activeChain
-    ? ChainController.state.chains.get(activeChain)?.networkState
+  const networkState = ChainController.state.activeChain
+    ? ChainController.state.chains.get(ChainController.state.activeChain)?.networkState
     : undefined
 
   const state = ref({
     caipNetwork: ChainController.state.activeCaipNetwork,
     chainId: ChainController.state.activeCaipNetwork?.id,
     caipNetworkId: ChainController.state.activeCaipNetwork?.caipNetworkId,
-    approvedCaipNetworkIds: initialNetworkState?.approvedCaipNetworkIds,
-    supportsAllNetworks: initialNetworkState?.supportsAllNetworks ?? true,
+    approvedCaipNetworkIds: networkState?.approvedCaipNetworkIds,
+    supportsAllNetworks: networkState?.supportsAllNetworks ?? true,
     switchNetwork: async (network: AppKitNetwork) => {
       await modal?.switchNetwork(network)
     }
