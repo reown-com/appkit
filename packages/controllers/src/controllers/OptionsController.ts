@@ -102,10 +102,15 @@ export interface OptionsControllerStatePublic {
    */
   enableEIP6963?: boolean
   /**
-   * Enable or disable the Coinbase wallet.
+   * Enable or disable the Coinbase Wallet SDK connector (@coinbase/wallet-sdk).
    * @default true
    */
   enableCoinbase?: boolean
+  /**
+   * Enable or disable the Base Account SDK connector (@base-org/account).
+   * @default true
+   */
+  enableBaseAccount?: boolean
   /**
    * Enable or disable the Injected wallet.
    * @default true
@@ -345,6 +350,10 @@ export const OptionsController = {
 
   setEnableCoinbase(enableCoinbase: OptionsControllerState['enableCoinbase']) {
     state.enableCoinbase = enableCoinbase
+  },
+
+  setEnableBaseAccount(enableBaseAccount: OptionsControllerState['enableBaseAccount']) {
+    state.enableBaseAccount = enableBaseAccount
   },
 
   setDebug(debug: OptionsControllerState['debug']) {
