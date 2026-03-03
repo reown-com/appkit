@@ -4,7 +4,6 @@ import { useSnapshot } from 'valtio'
 
 import {
   type CaipNetwork,
-  type CaipNetworkId,
   type ChainNamespace,
   type Connection,
   ConstantsUtil
@@ -91,7 +90,7 @@ export function useAppKitNetworkCore(): Pick<
     caipNetwork: activeCaipNetwork as CaipNetwork,
     chainId: activeCaipNetwork?.id,
     caipNetworkId: activeCaipNetwork?.caipNetworkId,
-    approvedCaipNetworkIds: networkState?.approvedCaipNetworkIds as CaipNetworkId[] | undefined,
+    approvedCaipNetworkIds: networkState?.approvedCaipNetworkIds,
     supportsAllNetworks: networkState?.supportsAllNetworks ?? true
   }
 }
