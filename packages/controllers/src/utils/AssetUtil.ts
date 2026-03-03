@@ -151,7 +151,11 @@ export const AssetUtil = {
   },
 
   getChainImage(chain: ChainNamespace) {
-    return AssetController.state.networkImages[namespaceImageIds[chain]]
+    return (
+      AssetController.state.networkImages[namespaceImageIds[chain]] ||
+      this.getChainNamespaceImageUrl(chain) ||
+      undefined
+    )
   },
 
   getTokenImage(symbol?: string) {
