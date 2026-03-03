@@ -135,14 +135,12 @@ describe('AssetUtil', () => {
       expect(AssetUtil.getChainImage('tron')).toBe('tron-blob-url')
     })
 
-    it('should fall back to asset image URL when pre-fetched image is not available', () => {
+    it('should return undefined when pre-fetched image is not available', () => {
       AssetController.state = {
         ...AssetController.state,
         networkImages: {}
       }
-      const result = AssetUtil.getChainImage('tron')
-      expect(result).toBeDefined()
-      expect(result).toContain('dd9de794-d4ce-4c94-682f-a367f926d500')
+      expect(AssetUtil.getChainImage('tron')).toBeUndefined()
     })
 
     it('should return undefined for namespace without image ID', () => {
@@ -150,8 +148,7 @@ describe('AssetUtil', () => {
         ...AssetController.state,
         networkImages: {}
       }
-      const result = AssetUtil.getChainImage('polkadot')
-      expect(result).toBeUndefined()
+      expect(AssetUtil.getChainImage('polkadot')).toBeUndefined()
     })
   })
 })

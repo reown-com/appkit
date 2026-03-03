@@ -14,7 +14,7 @@ export interface AssetUtilState {
   tokenImagePromises: Record<string, Promise<void>>
 }
 
-const namespaceImageIds: Record<ChainNamespace, string> = {
+export const namespaceImageIds: Record<ChainNamespace, string> = {
   // Ethereum
   eip155: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
   // Solana
@@ -151,11 +151,7 @@ export const AssetUtil = {
   },
 
   getChainImage(chain: ChainNamespace) {
-    return (
-      AssetController.state.networkImages[namespaceImageIds[chain]] ||
-      this.getChainNamespaceImageUrl(chain) ||
-      undefined
-    )
+    return AssetController.state.networkImages[namespaceImageIds[chain]]
   },
 
   getTokenImage(symbol?: string) {
