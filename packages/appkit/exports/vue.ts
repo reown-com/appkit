@@ -65,6 +65,12 @@ export function useAppKitNetwork(): Ref<UseAppKitNetworkReturn> {
       state.value.caipNetwork = val
       state.value.chainId = val?.id
       state.value.caipNetworkId = val?.caipNetworkId
+
+      const ns = ChainController.state.activeChain
+        ? ChainController.state.chains.get(ChainController.state.activeChain)?.networkState
+        : undefined
+      state.value.approvedCaipNetworkIds = ns?.approvedCaipNetworkIds
+      state.value.supportsAllNetworks = ns?.supportsAllNetworks ?? true
     })
   )
 
