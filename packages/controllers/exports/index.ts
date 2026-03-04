@@ -125,6 +125,7 @@ export type {
 } from '../src/utils/ExchangeUtil.js'
 
 export { FetchUtil } from '../src/utils/FetchUtil.js'
+export { MobileWalletUtil } from '../src/utils/MobileWallet.js'
 
 export type * from '../src/utils/TypeUtil.js'
 export type * from '../src/utils/SIWXUtil.js'

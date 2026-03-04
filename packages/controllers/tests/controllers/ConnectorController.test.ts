@@ -397,16 +397,17 @@ describe('ConnectorController', () => {
     expect(window.location.href).toBe(expectedUrl)
     expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
       mockConnector.id,
-      ConstantsUtil.CHAIN.EVM
+      ConstantsUtil.CHAIN.EVM,
+      { isCoinbaseDisabled: false }
     )
   })
 
-  it('should call mobile wallet util when selecting wallet is Coinbase only on Solana ', () => {
+  it('should redirect to Coinbase deeplink when selecting Coinbase wallet on Solana', () => {
     const mockConnector = {
       id: CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
       name: 'Coinbase Wallet',
       type: 'INJECTED' as const,
-      chain: ConstantsUtil.CHAIN.EVM
+      chain: ConstantsUtil.CHAIN.SOLANA
     }
     mockChainControllerState({ activeChain: ConstantsUtil.CHAIN.SOLANA })
     const handleMobileDeeplinkRedirectSpy = vi.spyOn(
@@ -424,11 +425,12 @@ describe('ConnectorController', () => {
     expect(window.location.href).toBe(expectedUrl)
     expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
       mockConnector.id,
-      ConstantsUtil.CHAIN.SOLANA
+      ConstantsUtil.CHAIN.SOLANA,
+      { isCoinbaseDisabled: false }
     )
   })
 
-  it('should not call redirect when selected wallet is Coinbase and active chain is not Solana ', () => {
+  it('should redirect to Coinbase deeplink when selecting Coinbase wallet on EVM', () => {
     const mockConnector = {
       id: CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
       name: 'Coinbase Wallet',
@@ -445,10 +447,39 @@ describe('ConnectorController', () => {
 
     ConnectorController.selectWalletConnector({ name: mockConnector.name, id: mockConnector.id })
 
+    const encodedHref = encodeURIComponent(ORIGINAL_HREF)
+    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.evmDeeplink}?url=${encodedHref}`
+
+    expect(window.location.href).toBe(expectedUrl)
+    expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
+      mockConnector.id,
+      ConstantsUtil.CHAIN.EVM,
+      { isCoinbaseDisabled: false }
+    )
+  })
+
+  it('should not call redirect when selected wallet is Coinbase and active chain is not Solana or EVM', () => {
+    const mockConnector = {
+      id: CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
+      name: 'Coinbase Wallet',
+      type: 'INJECTED' as const,
+      chain: ConstantsUtil.CHAIN.BITCOIN
+    }
+    mockChainControllerState({ activeChain: ConstantsUtil.CHAIN.BITCOIN })
+    const handleMobileDeeplinkRedirectSpy = vi.spyOn(
+      MobileWalletUtil,
+      'handleMobileDeeplinkRedirect'
+    )
+    vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(mockConnector)
+    vi.spyOn(RouterController, 'push')
+
+    ConnectorController.selectWalletConnector({ name: mockConnector.name, id: mockConnector.id })
+
     expect(window.location.href).toBe(ORIGINAL_HREF)
     expect(handleMobileDeeplinkRedirectSpy).toHaveBeenCalledWith(
       mockConnector.id,
-      ConstantsUtil.CHAIN.EVM
+      ConstantsUtil.CHAIN.BITCOIN,
+      { isCoinbaseDisabled: false }
     )
   })
 

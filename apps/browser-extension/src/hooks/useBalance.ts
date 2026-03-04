@@ -59,6 +59,8 @@ export function useBalance(chain: ChainNamespace, account: string) {
         return '0'
       case 'ton':
         return tonBalance.toString()
+      case 'tron':
+        return '0'
       default:
         return '0'
     }

@@ -432,6 +432,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setEnableWalletGuide(options.enableWalletGuide !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
+    OptionsController.setEnableCoinbase(options.enableCoinbase !== false)
     OptionsController.setEnableNetworkSwitch(options.enableNetworkSwitch !== false)
     OptionsController.setEnableReconnect(options.enableReconnect !== false)
     OptionsController.setEnableMobileFullScreen(options.enableMobileFullScreen === true)
@@ -2405,16 +2406,19 @@ export abstract class AppKitBaseClient {
       throw new Error('AppKit:getAccount - namespace is required')
     }
 
-    const allAccounts = connections.flatMap(connection =>
-      connection.accounts.map(({ address, type, publicKey }) =>
-        CoreHelperUtil.createAccount(
-          namespace,
-          address,
-          (type || 'eoa') as NamespaceTypeMap[ChainNamespace],
-          publicKey
-        )
-      )
-    )
+    const allAccounts = connections.flatMap(connection => {
+      const { caipNetwork } = connection
+
+      return caipNetwork
+        ? connection.accounts.map(({ address, type, publicKey }) =>
+            CoreHelperUtil.createAccount({
+              caipAddress: `${caipNetwork.caipNetworkId}:${address}`,
+              type: type || 'eoa',
+              publicKey
+            })
+          )
+        : []
+    })
 
     if (!accountState) {
       return undefined

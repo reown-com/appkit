@@ -25,6 +25,7 @@ import { reownSvg } from '../../assets/svg/reown-logo.js'
 import { solanaSvg } from '../../assets/svg/solana.js'
 import { telegramSvg } from '../../assets/svg/telegram.js'
 import { tonSvg } from '../../assets/svg/ton.js'
+import { tronSvg } from '../../assets/svg/tron.js'
 import { twitchSvg } from '../../assets/svg/twitch.js'
 import { twitterIconSvg } from '../../assets/svg/twitterIcon.js'
 import {
@@ -124,6 +125,7 @@ const phosphorIconsMap: Record<string, string> = {
   reown: '',
   solana: '',
   ton: '',
+  tron: '',
   telegram: '',
   twitch: '',
   twitterIcon: '',
@@ -213,6 +215,7 @@ const svgOptions: Partial<Record<IconType, TemplateResult<2>>> = {
   reown: reownSvg,
   solana: solanaSvg,
   ton: tonSvg,
+  tron: tronSvg,
   telegram: telegramSvg,
   twitch: twitchSvg,
   twitter: xSvg,

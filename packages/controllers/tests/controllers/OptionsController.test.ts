@@ -31,7 +31,8 @@ describe('OptionsController', () => {
         eip155: 'smartAccount',
         polkadot: 'eoa',
         solana: 'eoa',
-        ton: 'eoa'
+        ton: 'eoa',
+        tron: 'eoa'
       },
       enableNetworkSwitch: true,
       experimental_preferUniversalLinks: false,
@@ -62,7 +63,8 @@ describe('OptionsController', () => {
       eip155: 'eoa',
       polkadot: 'eoa',
       solana: 'eoa',
-      ton: 'eoa'
+      ton: 'eoa',
+      tron: 'eoa'
     })
   })
 

@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-utils",
-  "version": "1.8.16",
+  "version": "1.8.18",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -40,6 +40,11 @@
       "types": "./dist/types/exports/ton.d.ts",
       "import": "./dist/esm/exports/ton.js",
       "default": "./dist/esm/exports/ton.js"
+    },
+    "./tron": {
+      "types": "./dist/types/exports/tron.d.ts",
+      "import": "./dist/esm/exports/tron.js",
+      "default": "./dist/esm/exports/tron.js"
     }
   },
   "typesVersions": {
@@ -52,6 +57,9 @@
       ],
       "ton": [
         "./dist/types/exports/ton.d.ts"
+      ],
+      "tron": [
+        "./dist/types/exports/tron.d.ts"
       ]
     }
   },
@@ -70,9 +78,9 @@
     "@reown/appkit-wallet": "workspace:*",
     "@wallet-standard/wallet": "1.1.0",
     "@walletconnect/logger": "3.0.2",
-    "@walletconnect/universal-provider": "2.23.2",
+    "@walletconnect/universal-provider": "2.23.7",
     "valtio": "2.1.7",
-    "viem": ">=2.44.2"
+    "viem": ">=2.45.0"
   },
   "optionalDependencies": {
     "@base-org/account": "2.4.0",
@@ -80,7 +88,7 @@
     "@safe-global/safe-apps-sdk": "9.1.0"
   },
   "devDependencies": {
-    "@walletconnect/types": "2.23.2",
+    "@walletconnect/types": "2.23.7",
     "bs58": "6.0.0",
     "@solana/web3.js": "1.98.4",
     "@wallet-standard/features": "1.1.0",
