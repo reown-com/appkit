@@ -7,6 +7,7 @@ import {
   AssetUtil,
   ChainController,
   ConnectorController,
+  ModalController,
   RouterController,
   SIWXUtil
 } from '@reown/appkit-controllers'
@@ -35,6 +36,8 @@ export class W3mNetworkSwitchView extends LitElement {
 
   @state() public error = false
 
+  @state() public success = false
+
   public constructor() {
     super()
   }
@@ -60,6 +63,7 @@ export class W3mNetworkSwitchView extends LitElement {
     return html`
       <wui-flex
         data-error=${this.error}
+        data-success=${this.success}
         flexDirection="column"
         alignItems="center"
         .padding=${['10', '5', '10', '5'] as const}
@@ -71,9 +75,10 @@ export class W3mNetworkSwitchView extends LitElement {
             imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
           ></wui-network-image>
 
-          ${this.error ? null : html`<wui-loading-hexagon></wui-loading-hexagon>`}
+          ${this.error || this.success ? null : html`<wui-loading-hexagon></wui-loading-hexagon>`}
 
           <wui-icon-box color="error" icon="close" size="sm"></wui-icon-box>
+          <wui-icon-box color="success" icon="checkmark" size="sm"></wui-icon-box>
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="2">
@@ -132,6 +137,7 @@ export class W3mNetworkSwitchView extends LitElement {
   private async onSwitchNetwork() {
     try {
       this.error = false
+      this.success = false
       if (ChainController.state.activeChain !== this.network?.chainNamespace) {
         ChainController.setIsSwitchingNamespace(true)
       }
@@ -139,9 +145,11 @@ export class W3mNetworkSwitchView extends LitElement {
         await ChainController.switchActiveNetwork(this.network)
         const isAuthenticated = await SIWXUtil.isAuthenticated()
 
-        // If not authenticated, wait for siwx prompt, else go back to previous view
+        // If not authenticated, wait for siwx prompt, else show success and close modal
         if (isAuthenticated) {
-          RouterController.goBack()
+          this.success = true
+          await new Promise(resolve => setTimeout(resolve, 800))
+          ModalController.close()
         }
       }
     } catch (error) {

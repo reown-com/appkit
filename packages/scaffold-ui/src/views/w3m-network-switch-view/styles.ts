@@ -19,6 +19,18 @@ export default css`
     }
   }
 
+  @keyframes success-pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
   wui-flex:first-child:not(:only-child) {
     position: relative;
   }
@@ -27,7 +39,16 @@ export default css`
     position: absolute;
   }
 
-  wui-icon-box {
+  wui-icon-box[color='error'] {
+    position: absolute;
+    right: 4px;
+    bottom: 0;
+    opacity: 0;
+    transform: scale(0.5);
+    z-index: 1;
+  }
+
+  wui-icon-box[color='success'] {
     position: absolute;
     right: 4px;
     bottom: 0;
@@ -40,7 +61,20 @@ export default css`
     display: none;
   }
 
-  [data-error='true'] wui-icon-box {
+  [data-error='true'] wui-icon-box[color='error'] {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  [data-success='true'] wui-network-image {
+    animation: success-pulse 0.6s ease-out;
+  }
+
+  [data-success='true'] wui-loading-hexagon {
+    display: none;
+  }
+
+  [data-success='true'] wui-icon-box[color='success'] {
     opacity: 1;
     transform: scale(1);
   }
