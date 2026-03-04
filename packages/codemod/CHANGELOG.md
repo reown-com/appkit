@@ -1,5 +1,11 @@
 # @reown/appkit-experimental
 
+## 1.8.19
+
+### Patch Changes
+
+- [#5535](https://github.com/reown-com/appkit/pull/5535) [`249beb6`](https://github.com/reown-com/appkit/commit/249beb64220596d468c0f91de7b568f5f640b26f) Thanks [@tomiir](https://github.com/tomiir)! - Serializes caip address and chain Id into allAccounts
+
 ## 1.8.18
 
 ## 1.8.17
