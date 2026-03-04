@@ -359,7 +359,8 @@ const controller = {
 
     MobileWalletUtil.handleMobileDeeplinkRedirect(
       connector?.explorerId || wallet.id,
-      ChainController.state.activeChain
+      ChainController.state.activeChain,
+      { isCoinbaseDisabled: OptionsController.state.enableCoinbase === false }
     )
 
     if (connector) {

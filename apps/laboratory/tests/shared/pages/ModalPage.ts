@@ -685,7 +685,14 @@ export class ModalPage {
       await this.page.getByTestId('w3m-account-select-network').click()
     }
 
-    await this.page.getByTestId(`w3m-network-switch-${network}`).click()
+    const networkButton = this.page.getByTestId(`w3m-network-switch-${network}`)
+
+    // Ensure the network button is enabled before clicking
+    await expect(networkButton, `Network button for ${network} should be enabled`).toBeEnabled({
+      timeout: 5000
+    })
+
+    await networkButton.click()
     // The state is chain too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
     await this.page.waitForTimeout(300)
   }

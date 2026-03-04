@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import { mockChainControllerState } from '../../exports/testing.js'
+import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil.js'
 import { CUSTOM_DEEPLINK_WALLETS, MobileWalletUtil } from '../../src/utils/MobileWallet.js'
 
 const ORIGINAL_HREF = 'https://example.com/path'
@@ -25,17 +26,51 @@ describe('MobileWalletUtil', () => {
     mockChainControllerState({ activeChain: ConstantsUtil.CHAIN.SOLANA })
   })
 
-  it('should redirect to Phantom app when Phantom is not installed', () => {
-    MobileWalletUtil.handleMobileDeeplinkRedirect(
-      CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
-      ConstantsUtil.CHAIN.SOLANA
-    )
+  describe('Phantom deeplink handling', () => {
+    it('should redirect to Phantom using Universal Link on iOS when Phantom is not installed', () => {
+      vi.spyOn(CoreHelperUtil, 'isAndroid').mockReturnValue(false)
 
-    const encodedHref = encodeURIComponent(ORIGINAL_HREF)
-    const encodedRef = encodeURIComponent('https://example.com')
-    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.PHANTOM.url}/ul/browse/${encodedHref}?ref=${encodedRef}`
+      MobileWalletUtil.handleMobileDeeplinkRedirect(
+        CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
+        ConstantsUtil.CHAIN.SOLANA
+      )
 
-    expect(window.location.href).toBe(expectedUrl)
+      const encodedHref = encodeURIComponent(ORIGINAL_HREF)
+      const encodedRef = encodeURIComponent('https://example.com')
+      const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.PHANTOM.url}/ul/browse/${encodedHref}?ref=${encodedRef}`
+
+      expect(window.location.href).toBe(expectedUrl)
+    })
+
+    it('should redirect to Phantom using intent URL on Android when Phantom is not installed', () => {
+      vi.spyOn(CoreHelperUtil, 'isAndroid').mockReturnValue(true)
+
+      MobileWalletUtil.handleMobileDeeplinkRedirect(
+        CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
+        ConstantsUtil.CHAIN.SOLANA
+      )
+
+      const encodedHref = encodeURIComponent(ORIGINAL_HREF)
+      const encodedRef = encodeURIComponent('https://example.com')
+      const expectedUrl = `intent://browse/${encodedHref}?ref=${encodedRef}#Intent;scheme=phantom;package=${CUSTOM_DEEPLINK_WALLETS.PHANTOM.androidPackage};end`
+
+      expect(window.location.href).toBe(expectedUrl)
+    })
+
+    it('should not redirect when Phantom is installed', () => {
+      vi.stubGlobal('window', {
+        ...mockWindow,
+        phantom: {}
+      })
+
+      const originalHref = window.location.href
+      MobileWalletUtil.handleMobileDeeplinkRedirect(
+        CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
+        ConstantsUtil.CHAIN.SOLANA
+      )
+
+      expect(window.location.href).toBe(originalHref)
+    })
   })
 
   it('should redirect to Binance Web3 Wallet when Binance is not installed', () => {
@@ -56,21 +91,6 @@ describe('MobileWalletUtil', () => {
     expect(actualDp.searchParams.get('appId')).toBe(CUSTOM_DEEPLINK_WALLETS.BINANCE.appId)
     expect(actualDp.searchParams.get('startPagePath')).toBe(expectedStartPagePath)
     expect(actualDp.searchParams.get('startPageQuery')).toBe(expectedStartPageQuery)
-  })
-
-  it('should not redirect when Phantom is installed', () => {
-    vi.stubGlobal('window', {
-      ...mockWindow,
-      phantom: {}
-    })
-
-    const originalHref = window.location.href
-    MobileWalletUtil.handleMobileDeeplinkRedirect(
-      CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
-      ConstantsUtil.CHAIN.SOLANA
-    )
-
-    expect(window.location.href).toBe(originalHref)
   })
 
   it('should not redirect when Binance Web3 Wallet is installed', () => {
@@ -134,7 +154,34 @@ describe('MobileWalletUtil', () => {
     expect(window.location.href).toBe(originalHref)
   })
 
-  it('should redirect to Solflare correctly', () => {
+  it('should redirect to Coinbase Wallet with EVM deeplink when namespace is EVM', () => {
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
+      ConstantsUtil.CHAIN.EVM
+    )
+
+    const encodedHref = encodeURIComponent(ORIGINAL_HREF)
+    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.evmDeeplink}?url=${encodedHref}`
+
+    expect(window.location.href).toBe(expectedUrl)
+  })
+
+  it('should not redirect for EVM Coinbase when coinbaseWalletExtension is installed', () => {
+    vi.stubGlobal('window', {
+      ...mockWindow,
+      coinbaseWalletExtension: {}
+    })
+
+    const originalHref = window.location.href
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      CUSTOM_DEEPLINK_WALLETS.COINBASE.id,
+      ConstantsUtil.CHAIN.EVM
+    )
+
+    expect(window.location.href).toBe(originalHref)
+  })
+
+  it('should redirect to Solflare correctly on Solana', () => {
     MobileWalletUtil.handleMobileDeeplinkRedirect(
       CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
       ConstantsUtil.CHAIN.SOLANA
@@ -143,7 +190,82 @@ describe('MobileWalletUtil', () => {
     const encodedHref = encodeURIComponent(ORIGINAL_HREF)
     const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.SOLFLARE.url}/ul/v1/browse/${encodedHref}?ref=${encodedHref}`
 
-    //
     expect(window.location.href).toBe(expectedUrl)
+  })
+
+  it('should not redirect to Solflare on non-Solana namespaces', () => {
+    const originalHref = window.location.href
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
+      ConstantsUtil.CHAIN.EVM
+    )
+
+    expect(window.location.href).toBe(originalHref)
+  })
+
+  describe('isCustomDeeplinkWallet', () => {
+    it('should return true for Phantom wallet on Solana', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.PHANTOM.id, 'solana')
+      ).toBe(true)
+    })
+
+    it('should return true for Phantom wallet on EVM', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.PHANTOM.id, 'eip155')
+      ).toBe(true)
+    })
+
+    it('should return true for Phantom wallet on Bitcoin', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.PHANTOM.id, 'bip122')
+      ).toBe(true)
+    })
+
+    it('should return true for Coinbase wallet on Solana', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.COINBASE.id, 'solana')
+      ).toBe(true)
+    })
+
+    it('should return true for Coinbase wallet on EVM', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.COINBASE.id, 'eip155')
+      ).toBe(true)
+    })
+
+    it('should return false for Coinbase wallet on Bitcoin', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.COINBASE.id, 'bip122')
+      ).toBe(false)
+    })
+
+    it('should return true for Solflare wallet on Solana', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id, 'solana')
+      ).toBe(true)
+    })
+
+    it('should return false for Solflare wallet on EVM', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id, 'eip155')
+      ).toBe(false)
+    })
+
+    it('should return true for Binance wallet on Bitcoin', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.BINANCE.id, 'bip122')
+      ).toBe(true)
+    })
+
+    it('should return false for Binance wallet on Solana', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.BINANCE.id, 'solana')
+      ).toBe(false)
+    })
+
+    it('should return false for unknown wallet IDs', () => {
+      expect(MobileWalletUtil.isCustomDeeplinkWallet('unknown-wallet-id', 'eip155')).toBe(false)
+    })
   })
 })
