@@ -142,7 +142,6 @@ describe('useAppKitNetwork', () => {
 
   it('should return approved networks from chain networkState', () => {
     ChainController.state.activeChain = 'eip155'
-    // @ts-expect-error - partial mock
     ChainController.state.chains = new Map([
       [
         'eip155',
@@ -165,7 +164,6 @@ describe('useAppKitNetwork', () => {
 
   it('should subscribe to activeCaipNetwork and networkState', () => {
     ChainController.state.activeChain = 'eip155'
-    // @ts-expect-error - partial mock
     ChainController.state.chains = new Map([
       ['eip155', { networkState: { supportsAllNetworks: true } }]
     ])
