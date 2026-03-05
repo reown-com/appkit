@@ -46,6 +46,12 @@ const mockBaseAccountConnector = vi.fn(() => ({
   type: 'injected',
   getProvider: vi.fn().mockResolvedValue({ connect: vi.fn(), request: vi.fn() })
 }))
+const mockCoinbaseConnector = vi.fn(() => ({
+  id: 'coinbaseWallet',
+  name: 'Coinbase Wallet',
+  type: 'injected',
+  getProvider: vi.fn().mockResolvedValue({ connect: vi.fn(), request: vi.fn() })
+}))
 const mockSafe = vi.fn(() => ({
   id: 'safe',
   name: 'Safe',
@@ -149,6 +155,7 @@ describe('WagmiAdapter', () => {
       return {
         ...actual,
         baseAccount: mockBaseAccountConnector,
+        coinbaseWallet: mockCoinbaseConnector,
         safe: mockSafe
       }
     })
@@ -205,6 +212,7 @@ describe('WagmiAdapter', () => {
 
       // Skip third-party connectors to assert only initial wagmi connectors
       vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(undefined as any)
+      vi.spyOn(helpers, 'getCoinbaseConnector').mockResolvedValue(undefined as any)
 
       await adapter.syncConnectors()
       expect(wagmiCore.watchConnectors).toHaveBeenCalledOnce()
@@ -1553,10 +1561,32 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
     vi.restoreAllMocks()
   })
 
-  it('should add Coinbase connector if enableCoinbase is not false', async () => {
-    const getCoinbaseConnectorSpy = vi
+  it('should add Base Account connector if enableBaseAccount is not false', async () => {
+    const getBaseAccountConnectorSpy = vi
       .spyOn(helpers, 'getBaseAccountConnector')
       .mockResolvedValue(mockBaseAccountConnector() as any)
+    vi.spyOn(helpers, 'getCoinbaseConnector').mockResolvedValue(null)
+    await adapter['addThirdPartyConnectors']()
+    expect(getBaseAccountConnectorSpy).toHaveBeenCalled()
+    expect(adapter.wagmiConfig.connectors.length).toBe(1)
+  })
+
+  it('should not add Base Account connector if enableBaseAccount is false', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...(OptionsController.state || {}),
+      enableBaseAccount: false
+    })
+    vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(null)
+    vi.spyOn(helpers, 'getCoinbaseConnector').mockResolvedValue(null)
+    await adapter['addThirdPartyConnectors']()
+    expect(adapter.wagmiConfig.connectors.length).toBe(0)
+  })
+
+  it('should add Coinbase connector if enableCoinbase is not false', async () => {
+    vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(null)
+    const getCoinbaseConnectorSpy = vi
+      .spyOn(helpers, 'getCoinbaseConnector')
+      .mockResolvedValue(mockCoinbaseConnector() as any)
     await adapter['addThirdPartyConnectors']()
     expect(getCoinbaseConnectorSpy).toHaveBeenCalled()
     expect(adapter.wagmiConfig.connectors.length).toBe(1)
@@ -1567,9 +1597,19 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
       ...(OptionsController.state || {}),
       enableCoinbase: false
     })
+    vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(null)
+    vi.spyOn(helpers, 'getCoinbaseConnector').mockResolvedValue(null)
     await adapter['addThirdPartyConnectors']()
-    expect(mockBaseAccountConnector).not.toHaveBeenCalled()
     expect(adapter.wagmiConfig.connectors.length).toBe(0)
+  })
+
+  it('should add both Base Account and Coinbase connectors when both are enabled', async () => {
+    vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(mockBaseAccountConnector() as any)
+    vi.spyOn(helpers, 'getCoinbaseConnector').mockResolvedValue(mockCoinbaseConnector() as any)
+    await adapter['addThirdPartyConnectors']()
+    expect(adapter.wagmiConfig.connectors.length).toBe(2)
+    expect(adapter.wagmiConfig.connectors.some(c => c.id === 'baseAccount')).toBe(true)
+    expect(adapter.wagmiConfig.connectors.some(c => c.id === 'coinbaseWallet')).toBe(true)
   })
 
   it('should add Safe connector if in iframe and ancestor is app.safe.global', async () => {

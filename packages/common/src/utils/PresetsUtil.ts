@@ -151,7 +151,10 @@ export const PresetsUtil = {
     [ConstantsUtil.CONNECTOR_ID.INJECTED]: 'INJECTED',
     [ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'WALLET_CONNECT',
     [ConstantsUtil.CONNECTOR_ID.EIP6963]: 'ANNOUNCED',
-    [ConstantsUtil.CONNECTOR_ID.AUTH]: 'AUTH'
+    [ConstantsUtil.CONNECTOR_ID.AUTH]: 'AUTH',
+    [ConstantsUtil.CONNECTOR_ID.COINBASE]: 'EXTERNAL',
+    [ConstantsUtil.CONNECTOR_ID.COINBASE_SDK]: 'EXTERNAL',
+    [ConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT]: 'EXTERNAL'
   } as Record<string, ConnectorType>,
 
   WalletConnectRpcChainIds: [
