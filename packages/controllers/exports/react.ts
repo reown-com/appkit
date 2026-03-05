@@ -461,8 +461,9 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
    * Pre-fetches the WalletConnect URI. Call this when user selects a wallet on mobile.
    * Uses 'auto' cache to reuse existing valid URI or fetch new one if expired.
    */
-  async function getWcUri() {
+  async function getWcUri(options?: { wcPayUrl?: string }) {
     resetWcUri()
+    setCurrentWcPayUrl(options?.wcPayUrl)
     await ConnectionController.connectWalletConnect({ cache: 'auto' })
   }
 
