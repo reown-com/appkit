@@ -32,7 +32,7 @@
     "@types/react": "19.1.15",
     "@types/react-dom": "19.1.9",
     "autoprefixer": "10.4.21",
-    "eslint": "8.56.0",
+    "eslint": "9.26.0",
     "eslint-config-next": "15.3.5",
     "postcss": "8.5.3",
     "tailwindcss": "3.4.17",
