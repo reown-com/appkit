@@ -6,9 +6,9 @@ import { ConstantsUtil } from './ConstantsUtil.js'
 export const PresetsUtil = {
   ConnectorExplorerIds: {
     [CommonConstantsUtil.CONNECTOR_ID.COINBASE]:
-      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+      'd0ca99ff52b99abc48743dad0f7fc891e041be73574f7fac4afe5d4bb83845c8',
     [CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]:
-      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+      'd0ca99ff52b99abc48743dad0f7fc891e041be73574f7fac4afe5d4bb83845c8',
     [CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT]:
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
     [CommonConstantsUtil.CONNECTOR_ID.SAFE]:
@@ -155,6 +155,9 @@ export const PresetsUtil = {
     [CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'WALLET_CONNECT',
     [CommonConstantsUtil.CONNECTOR_ID.EIP6963]: 'ANNOUNCED',
     [CommonConstantsUtil.CONNECTOR_ID.AUTH]: 'AUTH',
+    [CommonConstantsUtil.CONNECTOR_ID.COINBASE]: 'EXTERNAL',
+    [CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]: 'EXTERNAL',
+    [CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT]: 'EXTERNAL',
     [ConstantsUtil.CONNECTOR_TYPE_AUTH]: 'AUTH'
   } as Record<string, ConnectorType>,
 

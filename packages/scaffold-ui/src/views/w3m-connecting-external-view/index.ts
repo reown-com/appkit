@@ -96,11 +96,14 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
         }
 
         /**
-         * Coinbase SDK works with popups and popups requires user interaction to be opened since modern browsers block popups which triggered programmatically.
-         * Instead of opening a popup in first render for `W3mConnectingWidget`, we need to trigger connection for Coinbase connector specifically when users select it.
+         * Coinbase SDK and Base Account work with popups and popups requires user interaction to be opened since modern browsers block popups which triggered programmatically.
+         * Instead of opening a popup in first render for `W3mConnectingWidget`, we need to trigger connection for Coinbase/Base Account connectors specifically when users select it.
          * And if there is an error, this condition will be skipped and the connection will be triggered as usual because we have `Try again` button in this view which is a user interaction as well.
          */
-        if (this.connector.id !== CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK || !this.error) {
+        const isPopupBasedConnector =
+          this.connector.id === CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK ||
+          this.connector.id === CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT
+        if (!isPopupBasedConnector || !this.error) {
           await ConnectionController.connectExternal(this.connector, this.connector.chain)
         }
       }
