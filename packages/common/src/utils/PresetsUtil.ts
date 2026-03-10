@@ -73,6 +73,7 @@ export const PresetsUtil = {
     130: '2257980a-3463-48c6-cbac-a42d2a956e00',
     // Monad Testnet
     10_143: '0a728e83-bacb-46db-7844-948f05434900',
+    143: '0a728e83-bacb-46db-7844-948f05434900',
     // Gnosis
     100: '02b53f6a-e3d4-479e-1cb4-21178987d100',
     // EVMos
@@ -120,11 +121,11 @@ export const PresetsUtil = {
     // TON Testnet
     '-3': '20f673c0-095e-49b2-07cf-eb5049dcf600',
     // TRON
-    '0x2b6653dc': 'dd9de794-d4ce-4c94-682f-a367f926d500',
+    '0x2b6653dc': '3502bb86-cc4e-420f-a387-59ea63a28b00',
     // TRON Shasta Testnet
-    '0x94a9059e': 'dd9de794-d4ce-4c94-682f-a367f926d500',
+    '0x94a9059e': '3502bb86-cc4e-420f-a387-59ea63a28b00',
     // TRON Nile Testnet
-    '0xcd8690dc': 'dd9de794-d4ce-4c94-682f-a367f926d500'
+    '0xcd8690dc': '3502bb86-cc4e-420f-a387-59ea63a28b00'
   } as Record<string, string>,
 
   ConnectorImageIds: {
