@@ -1604,7 +1604,9 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
   })
 
   it('should add both Base Account and Coinbase connectors when both are enabled', async () => {
-    vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(mockBaseAccountConnector() as any)
+    vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(
+      mockBaseAccountConnector() as any
+    )
     vi.spyOn(helpers, 'getCoinbaseConnector').mockResolvedValue(mockCoinbaseConnector() as any)
     await adapter['addThirdPartyConnectors']()
     expect(adapter.wagmiConfig.connectors.length).toBe(2)

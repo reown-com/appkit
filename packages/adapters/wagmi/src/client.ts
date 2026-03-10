@@ -62,11 +62,7 @@ import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { authConnector } from './connectors/AuthConnector.js'
 import { walletConnect } from './connectors/WalletConnectConnector.js'
 import { LimitterUtil } from './utils/LimitterUtil.js'
-import {
-  getBaseAccountConnector,
-  getCoinbaseConnector,
-  getSafeConnector
-} from './utils/helpers.js'
+import { getBaseAccountConnector, getCoinbaseConnector, getSafeConnector } from './utils/helpers.js'
 
 interface PendingTransactionsFilter {
   enable: boolean
