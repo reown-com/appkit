@@ -66,13 +66,44 @@ describe('useAppKitNetwork', () => {
   })
 
   it('should return the correct network state', () => {
-    useSnapshot.mockReturnValue({ activeCaipNetwork: extendedMainnet })
+    useSnapshot.mockReturnValue({
+      activeCaipNetwork: extendedMainnet,
+      activeChain: 'eip155',
+      chains: new Map([
+        [
+          'eip155',
+          {
+            networkState: {
+              approvedCaipNetworkIds: ['eip155:1', 'eip155:137'],
+              supportsAllNetworks: false
+            }
+          }
+        ]
+      ])
+    })
 
-    const { caipNetwork, chainId } = useAppKitNetworkCore()
+    const { caipNetwork, chainId, approvedCaipNetworkIds, supportsAllNetworks } =
+      useAppKitNetworkCore()
 
     expect(caipNetwork).toBe(extendedMainnet)
     expect(chainId).toBe(1)
+    expect(approvedCaipNetworkIds).toEqual(['eip155:1', 'eip155:137'])
+    expect(supportsAllNetworks).toBe(false)
     expect(useSnapshot).toHaveBeenCalledWith(ChainController.state)
+  })
+
+  it('should return defaults when no chain is active', () => {
+    useSnapshot.mockReturnValue({
+      activeCaipNetwork: undefined,
+      activeChain: undefined,
+      chains: new Map()
+    })
+
+    const { caipNetwork, approvedCaipNetworkIds, supportsAllNetworks } = useAppKitNetworkCore()
+
+    expect(caipNetwork).toBeUndefined()
+    expect(approvedCaipNetworkIds).toBeUndefined()
+    expect(supportsAllNetworks).toBe(true)
   })
 })
 

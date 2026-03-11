@@ -2488,11 +2488,14 @@ export abstract class AppKitBaseClient {
   public subscribeNetwork(
     callback: (newState: Omit<UseAppKitNetworkReturn, 'switchNetwork'>) => void
   ) {
-    return ChainController.subscribe(({ activeCaipNetwork }) => {
+    return ChainController.subscribe(({ activeCaipNetwork, activeChain, chains }) => {
+      const networkState = activeChain ? chains.get(activeChain)?.networkState : undefined
       callback({
         caipNetwork: activeCaipNetwork,
         chainId: activeCaipNetwork?.id,
-        caipNetworkId: activeCaipNetwork?.caipNetworkId
+        caipNetworkId: activeCaipNetwork?.caipNetworkId,
+        approvedCaipNetworkIds: networkState?.approvedCaipNetworkIds,
+        supportsAllNetworks: networkState?.supportsAllNetworks ?? true
       })
     })
   }
