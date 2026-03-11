@@ -152,12 +152,18 @@ export class W3mNetworkSwitchView extends LitElement {
             setTimeout(resolve, 800)
           })
 
-          // If the previous view is Networks, close the modal (user-initiated switch)
-          // Otherwise go back (programmatic switch, e.g. during connect flow)
+          const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
+          const authConnector = ConnectorController.getAuthConnector()
+          const isUsingAuth = authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
           const history = RouterController.state.history
           const previousView = history.length > 1 ? history[history.length - 2] : undefined
 
-          if (previousView === 'Networks') {
+          /*
+           * Close the modal for user-initiated switches from the Networks view
+           * when not using the auth connector. For auth connector or programmatic
+           * switches, go back to preserve internal state.
+           */
+          if (previousView === 'Networks' && !isUsingAuth) {
             ModalController.close()
           } else {
             RouterController.goBack()
