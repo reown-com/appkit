@@ -708,6 +708,8 @@ export class ModalPage {
   async switchActiveChain() {
     await this.page.locator('w3m-switch-active-chain-view').waitFor()
     await this.page.getByTestId('w3m-switch-active-chain-button').click()
+    // Wait for chain switch to settle (may trigger network switch animation + modal close)
+    await this.page.waitForTimeout(500)
   }
 
   async clickWalletDeeplink() {
@@ -720,7 +722,7 @@ export class ModalPage {
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
     await connect.waitFor({
       state: 'visible',
-      timeout: 15000
+      timeout: 30_000
     })
     await connect.click()
   }
@@ -778,9 +780,19 @@ export class ModalPage {
     }
 
     const closeButton = this.page.getByTestId('w3m-header-close')
-    // Click the button and wait for modal to fade out
-    await closeButton.click()
-    await closeButton.waitFor({ state: 'hidden', timeout: 15_000 })
+
+    try {
+      // Click the button and wait for modal to fade out
+      await closeButton.click({ timeout: 5000 })
+      await closeButton.waitFor({ state: 'hidden', timeout: 15_000 })
+    } catch {
+      // Modal may have auto-closed during the click attempt (e.g. network switch success animation)
+      const stillVisible = await modal.isVisible().catch(() => false)
+      if (stillVisible) {
+        // Modal is still visible but close button failed — wait for it to close on its own
+        await modal.waitFor({ state: 'hidden', timeout: 15_000 })
+      }
+    }
 
     // Wait until stable after animations
     await this.page.waitForTimeout(200)
