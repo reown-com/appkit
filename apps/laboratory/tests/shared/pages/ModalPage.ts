@@ -619,7 +619,15 @@ export class ModalPage {
     await signatureButton.waitFor({ state: 'visible', timeout: 15_000 })
     await signatureButton.scrollIntoViewIfNeeded()
     await signatureButton.click()
-    await signatureHeader.waitFor({ state: 'hidden', timeout: 15_000 })
+
+    // Retry click if the header is still visible after initial attempt
+    try {
+      await signatureHeader.waitFor({ state: 'hidden', timeout: 15_000 })
+    } catch {
+      // Click may not have registered (e.g. iframe timing), retry once
+      await signatureButton.click({ force: true })
+      await signatureHeader.waitFor({ state: 'hidden', timeout: 15_000 })
+    }
   }
 
   async approveSign() {
