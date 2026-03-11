@@ -705,7 +705,15 @@ export class ModalPage {
     })
 
     await networkButton.click()
-    // The state is chain too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
+
+    // Wait for network switch animation to complete (success animation is 800ms + modal close/goBack)
+    const switchView = this.page.locator('w3m-network-switch-view')
+    try {
+      await switchView.waitFor({ state: 'visible', timeout: 5000 })
+      await switchView.waitFor({ state: 'hidden', timeout: 15_000 })
+    } catch {
+      // Switch view may have already completed or wasn't shown
+    }
     await this.page.waitForTimeout(300)
   }
 
