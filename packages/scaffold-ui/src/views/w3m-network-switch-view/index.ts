@@ -145,13 +145,23 @@ export class W3mNetworkSwitchView extends LitElement {
         await ChainController.switchActiveNetwork(this.network)
         const isAuthenticated = await SIWXUtil.isAuthenticated()
 
-        // If not authenticated, wait for siwx prompt, else show success and close modal
+        // If not authenticated, wait for siwx prompt, else show success and close/navigate
         if (isAuthenticated) {
           this.success = true
           await new Promise<void>(resolve => {
             setTimeout(resolve, 800)
           })
-          ModalController.close()
+
+          // If the previous view is Networks, close the modal (user-initiated switch)
+          // Otherwise go back (programmatic switch, e.g. during connect flow)
+          const history = RouterController.state.history
+          const previousView = history.length > 1 ? history[history.length - 2] : undefined
+
+          if (previousView === 'Networks') {
+            ModalController.close()
+          } else {
+            RouterController.goBack()
+          }
         }
       }
     } catch (error) {

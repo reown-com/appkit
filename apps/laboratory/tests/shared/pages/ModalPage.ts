@@ -164,6 +164,10 @@ export class ModalPage {
       await this.connectButton.click()
     }
 
+    // Wait for connect view to render before looking for wallet selector
+    const connectView = this.page.locator('w3m-connect-view')
+    await connectView.waitFor({ state: 'visible', timeout: 30_000 })
+
     await this.clickWalletConnect()
     const qrLoadInitiatedTime = new Date()
 
@@ -850,7 +854,16 @@ export class ModalPage {
 
     const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
     await networkToSwitchButton.click()
-    // Wait for state to settle after network switch
+
+    // Wait for network switch animation to complete (success animation is 800ms + modal close)
+    const switchView = this.page.locator('w3m-network-switch-view')
+    try {
+      await switchView.waitFor({ state: 'visible', timeout: 5000 })
+      await switchView.waitFor({ state: 'hidden', timeout: 15_000 })
+    } catch {
+      // Switch view may have already completed or wasn't shown
+    }
+    // Wait for state to settle
     await this.page.waitForTimeout(300)
   }
 

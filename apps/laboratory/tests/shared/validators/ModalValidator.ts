@@ -264,13 +264,20 @@ export class ModalValidator {
       // Switch view may have already completed
     }
 
+    // Wait for modal close animation to fully complete
+    await this.page.waitForTimeout(500)
+
     const modal = this.page.getByTestId('w3m-modal-card')
     const isModalVisible = await modal.isVisible().catch(() => false)
 
     if (isModalVisible) {
-      // Modal still open (e.g. SIWE flow) - check network list
-      const switchNetworkButton = this.page.getByTestId(`w3m-network-switch-${network}`)
-      await expect(switchNetworkButton).toBeVisible()
+      // Check if we're still on the networks view (modal might be fading out with a different view)
+      const networksView = this.page.locator('w3m-networks-view')
+      const isNetworksView = await networksView.isVisible().catch(() => false)
+      if (isNetworksView) {
+        const switchNetworkButton = this.page.getByTestId(`w3m-network-switch-${network}`)
+        await expect(switchNetworkButton).toBeVisible()
+      }
     }
     // If modal closed after success animation, the switch was successful
   }
@@ -303,13 +310,20 @@ export class ModalValidator {
       // Switch view may have already completed
     }
 
+    // Wait for modal close animation to fully complete
+    await this.page.waitForTimeout(500)
+
     const modal = this.page.getByTestId('w3m-modal-card')
     const isModalVisible = await modal.isVisible().catch(() => false)
 
     if (isModalVisible) {
-      // Modal still open - check network list for checkmark
-      const networkOptions = this.page.getByTestId(`w3m-network-switch-${name}`)
-      await expect(networkOptions.locator('wui-icon')).toBeVisible()
+      // Check if we're still on the networks view (modal might be fading out with a different view)
+      const networksView = this.page.locator('w3m-networks-view')
+      const isNetworksView = await networksView.isVisible().catch(() => false)
+      if (isNetworksView) {
+        const networkOptions = this.page.getByTestId(`w3m-network-switch-${name}`)
+        await expect(networkOptions.locator('wui-icon')).toBeVisible()
+      }
     }
     // If modal closed after success animation, the switch was successful
   }
