@@ -148,7 +148,9 @@ export class W3mNetworkSwitchView extends LitElement {
         // If not authenticated, wait for siwx prompt, else show success and close modal
         if (isAuthenticated) {
           this.success = true
-          await new Promise(resolve => setTimeout(resolve, 800))
+          await new Promise<void>(resolve => {
+            setTimeout(resolve, 800)
+          })
           ModalController.close()
         }
       }
