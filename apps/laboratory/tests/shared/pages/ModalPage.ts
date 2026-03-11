@@ -761,6 +761,14 @@ export class ModalPage {
   async closeModal() {
     // Wait until stable after animations
     await this.page.waitForTimeout(200)
+
+    // Modal may have already been closed (e.g. after network switch success animation)
+    const modal = this.page.getByTestId('w3m-modal-card')
+    const isModalVisible = await modal.isVisible().catch(() => false)
+    if (!isModalVisible) {
+      return
+    }
+
     const closeButton = this.page.getByTestId('w3m-header-close')
     // Click the button and wait for modal to fade out
     await closeButton.click()
@@ -822,6 +830,8 @@ export class ModalPage {
 
     const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
     await networkToSwitchButton.click()
+    // Wait for state to settle after network switch
+    await this.page.waitForTimeout(300)
   }
 
   async openAllWallets() {
