@@ -255,23 +255,13 @@ export class ModalValidator {
   }
 
   async expectSwitchedNetwork(network: string) {
-    // Wait for the network switch view to complete if it's visible
-    const switchView = this.page.locator('w3m-network-switch-view')
-    try {
-      await switchView.waitFor({ state: 'visible', timeout: 5000 })
-      await switchView.waitFor({ state: 'hidden', timeout: 20_000 })
-    } catch {
-      // Switch view may have already completed
-    }
-
-    // Wait for modal close animation to fully complete
-    await this.page.waitForTimeout(500)
+    // switchNetwork() already waits for the animation, so just check final state
+    await this.page.waitForTimeout(300)
 
     const modal = this.page.getByTestId('w3m-modal-card')
     const isModalVisible = await modal.isVisible().catch(() => false)
 
     if (isModalVisible) {
-      // Check if we're still on the networks view (modal might be fading out with a different view)
       const networksView = this.page.locator('w3m-networks-view')
       const isNetworksView = await networksView.isVisible().catch(() => false)
       if (isNetworksView) {
@@ -279,7 +269,6 @@ export class ModalValidator {
         await expect(switchNetworkButton).toBeVisible()
       }
     }
-    // If modal closed after success animation, the switch was successful
   }
 
   async expectNetworkButton(network: string) {
@@ -293,31 +282,22 @@ export class ModalValidator {
   }
 
   async expectSwitchedNetworkWithNetworkView() {
+    // switchNetwork() already waits for the animation to complete
+    // Just verify the switch view is gone (it should be by now)
     const switchNetworkViewLocator = this.page.locator('w3m-network-switch-view')
-    await expect(switchNetworkViewLocator).toBeVisible()
     await expect(switchNetworkViewLocator).not.toBeVisible({
-      timeout: 20_000
+      timeout: 10_000
     })
   }
 
   async expectSwitchedNetworkOnNetworksView(name: string) {
-    // Wait for the network switch view to complete if it's visible
-    const switchView = this.page.locator('w3m-network-switch-view')
-    try {
-      await switchView.waitFor({ state: 'visible', timeout: 5000 })
-      await switchView.waitFor({ state: 'hidden', timeout: 20_000 })
-    } catch {
-      // Switch view may have already completed
-    }
-
-    // Wait for modal close animation to fully complete
-    await this.page.waitForTimeout(500)
+    // switchNetwork() already waits for the animation, so just check final state
+    await this.page.waitForTimeout(300)
 
     const modal = this.page.getByTestId('w3m-modal-card')
     const isModalVisible = await modal.isVisible().catch(() => false)
 
     if (isModalVisible) {
-      // Check if we're still on the networks view (modal might be fading out with a different view)
       const networksView = this.page.locator('w3m-networks-view')
       const isNetworksView = await networksView.isVisible().catch(() => false)
       if (isNetworksView) {
@@ -325,7 +305,6 @@ export class ModalValidator {
         await expect(networkOptions.locator('wui-icon')).toBeVisible()
       }
     }
-    // If modal closed after success animation, the switch was successful
   }
 
   expectSecureSiteFrameNotInjected() {
