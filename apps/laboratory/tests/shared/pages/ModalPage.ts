@@ -164,10 +164,6 @@ export class ModalPage {
       await this.connectButton.click()
     }
 
-    // Wait for connect view to render before looking for wallet selector
-    const connectView = this.page.locator('w3m-connect-view')
-    await connectView.waitFor({ state: 'visible', timeout: 30_000 })
-
     await this.clickWalletConnect()
     const qrLoadInitiatedTime = new Date()
 
@@ -624,14 +620,7 @@ export class ModalPage {
     await signatureButton.scrollIntoViewIfNeeded()
     await signatureButton.click()
 
-    // Retry click if the header is still visible after initial attempt
-    try {
-      await signatureHeader.waitFor({ state: 'hidden', timeout: 15_000 })
-    } catch {
-      // Click may not have registered (e.g. iframe timing), retry once
-      await signatureButton.click({ force: true })
-      await signatureHeader.waitFor({ state: 'hidden', timeout: 15_000 })
-    }
+    await signatureHeader.waitFor({ state: 'hidden', timeout: 15_000 })
   }
 
   async approveSign() {
@@ -720,8 +709,6 @@ export class ModalPage {
   async switchActiveChain() {
     await this.page.locator('w3m-switch-active-chain-view').waitFor()
     await this.page.getByTestId('w3m-switch-active-chain-button').click()
-    // Wait for chain switch to settle (may trigger network switch animation + modal close)
-    await this.page.waitForTimeout(500)
   }
 
   async clickWalletDeeplink() {
@@ -734,7 +721,7 @@ export class ModalPage {
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
     await connect.waitFor({
       state: 'visible',
-      timeout: 30_000
+      timeout: 15000
     })
     await connect.click()
   }
@@ -799,8 +786,8 @@ export class ModalPage {
       await closeButton.waitFor({ state: 'hidden', timeout: 15_000 })
     } catch {
       // Modal may have auto-closed during the click attempt (e.g. network switch success animation)
-      const stillVisible = await modal.isVisible().catch(() => false)
-      if (stillVisible) {
+      const isStillVisible = await modal.isVisible().catch(() => false)
+      if (isStillVisible) {
         // Modal is still visible but close button failed — wait for it to close on its own
         await modal.waitFor({ state: 'hidden', timeout: 15_000 })
       }

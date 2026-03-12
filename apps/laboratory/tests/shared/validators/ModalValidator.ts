@@ -255,7 +255,7 @@ export class ModalValidator {
   }
 
   async expectSwitchedNetwork(network: string) {
-    // switchNetwork() already waits for the animation, so just check final state
+    /* SwitchNetwork() already waits for the animation, so just check final state */
     await this.page.waitForTimeout(300)
 
     const modal = this.page.getByTestId('w3m-modal-card')
@@ -282,8 +282,10 @@ export class ModalValidator {
   }
 
   async expectSwitchedNetworkWithNetworkView() {
-    // switchNetwork() already waits for the animation to complete
-    // Just verify the switch view is gone (it should be by now)
+    /*
+     * SwitchNetwork() already waits for the animation to complete.
+     * Just verify the switch view is gone (it should be by now).
+     */
     const switchNetworkViewLocator = this.page.locator('w3m-network-switch-view')
     await expect(switchNetworkViewLocator).not.toBeVisible({
       timeout: 10_000
@@ -291,7 +293,7 @@ export class ModalValidator {
   }
 
   async expectSwitchedNetworkOnNetworksView(name: string) {
-    // switchNetwork() already waits for the animation, so just check final state
+    /* SwitchNetwork() already waits for the animation, so just check final state */
     await this.page.waitForTimeout(300)
 
     const modal = this.page.getByTestId('w3m-modal-card')

@@ -72,7 +72,7 @@ walletFeaturesTest('it should initialize swap as expected', async () => {
     .getByPlaceholder('Search token')
     .fill('ETH')
   const swapItemLocator = page.page.getByTestId('swap-select-token-item-ETH')
-  await swapItemLocator.waitFor({ state: 'visible', timeout: 30_000 })
+  await swapItemLocator.waitFor({ state: 'visible', timeout: 10_000 })
   await swapItemLocator.click()
 
   await selectToTokenButton.click()
@@ -81,7 +81,7 @@ walletFeaturesTest('it should initialize swap as expected', async () => {
     .getByPlaceholder('Search token')
     .fill('USDC')
   const usdcItemLocator = page.page.getByTestId('swap-select-token-item-USDC')
-  await usdcItemLocator.waitFor({ state: 'visible', timeout: 30_000 })
+  await usdcItemLocator.waitFor({ state: 'visible', timeout: 10_000 })
   await usdcItemLocator.click()
 
   await expect(swapActionButton).toHaveText('Enter amount')
