@@ -8,8 +8,7 @@ import {
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   ErrorUtil,
-  NumberUtil,
-  UserRejectedRequestError
+  NumberUtil
 } from '@reown/appkit-common'
 import { ContractUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
@@ -22,6 +21,7 @@ import {
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
+import type { Event } from '../utils/TypeUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
@@ -130,21 +130,58 @@ const controller = {
   async sendToken() {
     try {
       SendController.setLoading(true)
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_INITIATED',
+        properties: {
+          isSmartAccount:
+            getPreferredAccountType(ChainController.state.activeChain) ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          token: SendController.state.token?.address || SendController.state.token?.symbol || '',
+          amount: SendController.state.sendTokenAmount ?? 0,
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+        }
+      })
       switch (ChainController.state.activeCaipNetwork?.chainNamespace) {
         case 'eip155':
           await SendController.sendEvmToken()
+          break
 
-          return
         case 'solana':
           await SendController.sendSolanaToken()
 
-          return
+          break
         default:
           throw new Error('Unsupported chain')
       }
+
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_SUCCESS',
+        properties: {
+          isSmartAccount:
+            getPreferredAccountType(ChainController.state.activeChain) ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          token: SendController.state.token?.symbol || '',
+          amount: SendController.state.sendTokenAmount ?? 0,
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+          hash: state.hash ?? ''
+        }
+      })
+      SendController.resetSend()
     } catch (err) {
+      const event: Event = {
+        type: 'track',
+        event: 'SEND_ERROR',
+        properties: SendController.getSdkEventProperties(err)
+      }
       if (ErrorUtil.isUserRejectedRequestError(err)) {
-        throw new UserRejectedRequestError(err)
+        EventsController.sendEvent({
+          ...event,
+          event: 'SEND_REJECTED'
+        })
+      } else {
+        EventsController.sendEvent(event)
       }
 
       throw err
@@ -160,8 +197,6 @@ const controller = {
       throw new Error('SendController:sendEvmToken - activeChainNamespace is required')
     }
 
-    const activeAccountType = getPreferredAccountType(activeChainNamespace)
-
     if (!SendController.state.sendTokenAmount || !SendController.state.receiverAddress) {
       throw new Error('An amount and receiver address are required')
     }
@@ -171,16 +206,6 @@ const controller = {
     }
 
     if (SendController.state.token?.address) {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SEND_INITIATED',
-        properties: {
-          isSmartAccount: activeAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          token: SendController.state.token.address,
-          amount: SendController.state.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
-        }
-      })
       const { hash } = await SendController.sendERC20Token({
         receiverAddress: SendController.state.receiverAddress,
         tokenAddress: SendController.state.token.address,
@@ -192,16 +217,6 @@ const controller = {
         state.hash = hash
       }
     } else {
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SEND_INITIATED',
-        properties: {
-          isSmartAccount: activeAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          token: SendController.state.token.symbol || '',
-          amount: SendController.state.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
-        }
-      })
       const { hash } = await SendController.sendNativeToken({
         receiverAddress: SendController.state.receiverAddress,
         sendTokenAmount: SendController.state.sendTokenAmount,
@@ -295,21 +310,7 @@ const controller = {
       value: value ?? BigInt(0)
     })
 
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'SEND_SUCCESS',
-      properties: {
-        isSmartAccount:
-          getPreferredAccountType('eip155') === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-        token: SendController.state.token?.symbol || '',
-        amount: params.sendTokenAmount,
-        network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
-        hash: hash || ''
-      }
-    })
-
     ConnectionController._getClient()?.updateBalance('eip155')
-    SendController.resetSend()
 
     return { hash }
   },
@@ -342,21 +343,6 @@ const controller = {
         abi: ContractUtil.getERC20Abi(tokenAddress),
         chainNamespace: CommonConstantsUtil.CHAIN.EVM
       })
-
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SEND_SUCCESS',
-        properties: {
-          isSmartAccount:
-            getPreferredAccountType('eip155') === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          token: SendController.state.token?.symbol || '',
-          amount: params.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
-          hash: hash || ''
-        }
-      })
-
-      SendController.resetSend()
 
       return { hash }
     }
@@ -400,20 +386,6 @@ const controller = {
     }
 
     ConnectionController._getClient()?.updateBalance('solana')
-
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'SEND_SUCCESS',
-      properties: {
-        isSmartAccount: false,
-        token: SendController.state.token?.symbol || '',
-        amount: SendController.state.sendTokenAmount,
-        network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
-        hash: hash || ''
-      }
-    })
-
-    SendController.resetSend()
   },
 
   resetSend() {
