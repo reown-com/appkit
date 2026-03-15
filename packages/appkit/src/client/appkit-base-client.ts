@@ -1747,10 +1747,15 @@ export abstract class AppKitBaseClient {
     } else if (connectorId) {
       if (
         connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE_SDK ||
-        connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE
+        connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE ||
+        connectorId === ConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT
       ) {
         const connector = this.getConnectors().find(c => c.id === connectorId)
-        const name = connector?.name || 'Coinbase Wallet'
+        const defaultName =
+          connectorId === ConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT
+            ? 'Base Account'
+            : 'Coinbase Wallet'
+        const name = connector?.name || defaultName
         const icon = connector?.imageUrl || this.getConnectorImage(connector)
         const info = connector?.info
 

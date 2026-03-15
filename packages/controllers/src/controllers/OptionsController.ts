@@ -107,6 +107,11 @@ export interface OptionsControllerStatePublic {
    */
   enableCoinbase?: boolean
   /**
+   * Enable or disable the Base Account connector (for gasless transactions via CDP Paymaster).
+   * @default true
+   */
+  enableBaseAccount?: boolean
+  /**
    * Enable or disable the Injected wallet.
    * @default true
    */
@@ -345,6 +350,10 @@ export const OptionsController = {
 
   setEnableCoinbase(enableCoinbase: OptionsControllerState['enableCoinbase']) {
     state.enableCoinbase = enableCoinbase
+  },
+
+  setEnableBaseAccount(enableBaseAccount: OptionsControllerState['enableBaseAccount']) {
+    state.enableBaseAccount = enableBaseAccount
   },
 
   setDebug(debug: OptionsControllerState['debug']) {
