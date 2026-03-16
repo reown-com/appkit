@@ -35,7 +35,7 @@ export const api = new FetchUtil({
 })
 const entries = 40
 const recommendedEntries = 4
-const imageCountToFetch = 20
+const imageCountToFetch = 8
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {

@@ -19,40 +19,44 @@ import { TestConstants } from './util/TestConstants.js'
 
 const getActiveChain = vi.fn(() => TestConstants.chains[0])
 
-const providers: { name: string; provider: Provider }[] = [
-  {
-    name: 'WalletConnectProvider',
-    provider: new SolanaWalletConnectProvider({
-      provider: mockUniversalProvider(),
-      chains: TestConstants.chains,
-      getActiveChain
-    })
-  },
-  {
-    name: 'WalletStandardProvider',
-    provider: new WalletStandardProvider({
-      wallet: mockWalletStandard(),
-      getActiveChain,
-      requestedChains: TestConstants.chains
-    })
-  },
-  {
-    name: 'AuthProvider',
-    provider: new AuthProvider({
-      getActiveChain,
-      chains: TestConstants.chains,
-      w3mFrameProvider: mockW3mFrameProvider()
-    })
-  },
-  {
-    name: 'CoinbaseWalletProvider',
-    provider: new CoinbaseWalletProvider({
-      provider: mockCoinbaseWallet(),
-      chains: TestConstants.chains,
-      getActiveChain
-    })
-  }
-]
+async function createProviders(): Promise<{ name: string; provider: Provider }[]> {
+  return [
+    {
+      name: 'WalletConnectProvider',
+      provider: new SolanaWalletConnectProvider({
+        provider: mockUniversalProvider(),
+        chains: TestConstants.chains,
+        getActiveChain
+      })
+    },
+    {
+      name: 'WalletStandardProvider',
+      provider: new WalletStandardProvider({
+        wallet: mockWalletStandard(),
+        getActiveChain,
+        requestedChains: TestConstants.chains
+      })
+    },
+    {
+      name: 'AuthProvider',
+      provider: new AuthProvider({
+        getActiveChain,
+        chains: TestConstants.chains,
+        w3mFrameProvider: await mockW3mFrameProvider()
+      })
+    },
+    {
+      name: 'CoinbaseWalletProvider',
+      provider: new CoinbaseWalletProvider({
+        provider: mockCoinbaseWallet(),
+        chains: TestConstants.chains,
+        getActiveChain
+      })
+    }
+  ]
+}
+
+const providers = await createProviders()
 
 describe.each(providers)('Generic provider tests for $name', ({ provider }) => {
   const events = {

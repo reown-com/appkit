@@ -67,9 +67,9 @@ export function authConnector(parameters: AuthParameters) {
     return network
   }
 
-  function getProviderInstance() {
+  async function getProviderInstance() {
     if (!socialProvider) {
-      socialProvider = W3mFrameProviderSingleton.getInstance({
+      socialProvider = await W3mFrameProviderSingleton.getInstance({
         projectId: parameters.options.projectId,
         chainId: getActiveCaipNetwork()?.caipNetworkId,
         enableLogger: parameters.options.enableAuthLogger,
@@ -98,7 +98,7 @@ export function authConnector(parameters: AuthParameters) {
       socialUri?: string
     } = {}
   ) {
-    const provider = getProviderInstance()
+    const provider = await getProviderInstance()
 
     let chainId = options.chainId
 
@@ -204,7 +204,7 @@ export function authConnector(parameters: AuthParameters) {
 
     async getProvider(this: Properties) {
       if (!this.provider) {
-        this.provider = W3mFrameProviderSingleton.getInstance({
+        this.provider = await W3mFrameProviderSingleton.getInstance({
           projectId: parameters.options.projectId,
           chainId: getActiveCaipNetwork()?.caipNetworkId,
           enableLogger: parameters.options.enableAuthLogger,

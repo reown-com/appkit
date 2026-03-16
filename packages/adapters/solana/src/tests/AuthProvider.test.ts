@@ -9,15 +9,11 @@ import { mockW3mFrameProvider } from './mocks/W3mFrameProvider'
 import { TestConstants } from './util/TestConstants'
 
 describe('AuthProvider specific tests', () => {
-  let provider = mockW3mFrameProvider()
+  let provider: Awaited<ReturnType<typeof mockW3mFrameProvider>>
   let getActiveChain = vi.fn(() => TestConstants.chains[0])
-  let authProvider = new AuthProvider({
-    w3mFrameProvider: mockW3mFrameProvider(),
-    getActiveChain,
-    chains: TestConstants.chains
-  })
+  let authProvider: AuthProvider
 
-  beforeEach(() => {
+  beforeEach(async () => {
     ChainController.state.chains.set('solana', {
       accountState: {
         address: TestConstants.accounts[0].address,
@@ -25,10 +21,10 @@ describe('AuthProvider specific tests', () => {
         addressLabels: new Map()
       }
     })
-    provider = mockW3mFrameProvider()
+    provider = await mockW3mFrameProvider()
     getActiveChain = vi.fn(() => TestConstants.chains[0])
     authProvider = new AuthProvider({
-      w3mFrameProvider: mockW3mFrameProvider(),
+      w3mFrameProvider: await mockW3mFrameProvider(),
       getActiveChain,
       chains: TestConstants.chains
     })

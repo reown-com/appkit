@@ -89,6 +89,14 @@ import { UniversalAdapter } from '../universal-adapter/client.js'
 import { ConfigUtil } from '../utils/ConfigUtil.js'
 import type { AppKitOptions } from '../utils/index.js'
 
+/**
+ * Yields control to the main thread to prevent long tasks from blocking the UI.
+ * Used during initialization to break up heavy synchronous work.
+ */
+function yieldToMainThread(): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, 0))
+}
+
 export interface AppKitOptionsWithSdk extends AppKitOptions {
   sdkVersion: SdkVersion | AppKitSdkVersion
 }
@@ -177,7 +185,10 @@ export abstract class AppKitBaseClient {
   protected async initialize(options: AppKitOptionsWithSdk) {
     this.initializeProjectSettings(options)
     this.initControllers(options)
+    // Yield to main thread to avoid long tasks during initialization
+    await yieldToMainThread()
     await this.initChainAdapters()
+    await yieldToMainThread()
     this.sendInitializeEvent(options)
 
     if (options.features?.headless && !ConnectorUtil.hasInjectedConnectors()) {
@@ -196,9 +207,14 @@ export abstract class AppKitBaseClient {
       await this.unSyncExistingConnection()
     }
     if (!options.basic && !options.manualWCControl) {
-      this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+      const [remoteFeatures] = await Promise.all([
+        ConfigUtil.fetchRemoteFeatures(options),
+        ApiController.fetchUsage()
+      ])
+      this.remoteFeatures = remoteFeatures
+    } else {
+      await ApiController.fetchUsage()
     }
-    await ApiController.fetchUsage()
     OptionsController.setRemoteFeatures(this.remoteFeatures)
     if (this.remoteFeatures.onramp) {
       OnRampController.setOnrampProviders(this.remoteFeatures.onramp)
@@ -1837,8 +1853,11 @@ export abstract class AppKitBaseClient {
     }
 
     OptionsController.setManualWCControl(Boolean(this.options?.manualWCControl))
+    // Yield to main thread before heavy UniversalProvider initialization
+    await yieldToMainThread()
     this.universalProvider =
       this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
+    await yieldToMainThread()
 
     const originalDisconnect = this.universalProvider.disconnect.bind(this.universalProvider)
 
