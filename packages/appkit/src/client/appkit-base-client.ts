@@ -75,7 +75,7 @@ import {
   WcHelpersUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
-import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
+// SetColorTheme and setThemeVariables are lazily imported to avoid bundling UI utils in headless mode
 import {
   CaipNetworksUtil,
   ErrorUtil,
@@ -94,7 +94,9 @@ import type { AppKitOptions } from '../utils/index.js'
  * Used during initialization to break up heavy synchronous work.
  */
 function yieldToMainThread(): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, 0))
+  return new Promise<void>(resolve => {
+    setTimeout(resolve, 0)
+  })
 }
 
 export interface AppKitOptionsWithSdk extends AppKitOptions {
@@ -207,11 +209,17 @@ export abstract class AppKitBaseClient {
       await this.unSyncExistingConnection()
     }
     if (!options.basic && !options.manualWCControl) {
-      const [remoteFeatures] = await Promise.all([
-        ConfigUtil.fetchRemoteFeatures(options),
+      if (options.features?.headless) {
+        // In headless mode, fire usage fetch in background — limits gate subsequent calls, not init
         ApiController.fetchUsage()
-      ])
-      this.remoteFeatures = remoteFeatures
+        this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+      } else {
+        const [remoteFeatures] = await Promise.all([
+          ConfigUtil.fetchRemoteFeatures(options),
+          ApiController.fetchUsage()
+        ])
+        this.remoteFeatures = remoteFeatures
+      }
     } else {
       await ApiController.fetchUsage()
     }
@@ -396,7 +404,9 @@ export abstract class AppKitBaseClient {
   protected initControllers(options: AppKitOptionsWithSdk) {
     this.initializeOptionsController(options)
     this.initializeChainController(options)
-    this.initializeThemeController(options)
+    if (!options.features?.headless) {
+      this.initializeThemeController(options)
+    }
     this.initializeConnectionController(options)
     this.initializeConnectorController()
   }
@@ -604,6 +614,8 @@ export abstract class AppKitBaseClient {
   protected createClients() {
     this.connectionControllerClient = {
       connectWalletConnect: async () => {
+        // Ensure UniversalProvider is initialized (may have been deferred in headless mode)
+        await this.ensureUniversalProvider()
         const activeChain = ChainController.state.activeChain
         const adapter = this.getAdapter(activeChain)
         const chainId = this.getCaipNetwork(activeChain)?.id
@@ -1180,7 +1192,32 @@ export abstract class AppKitBaseClient {
       throw new Error('adapter not found')
     }
     await adapter.syncConnectors()
-    await this.createUniversalProviderForAdapter(namespace)
+
+    /*
+     * In headless mode with no existing WC session, defer UniversalProvider init
+     * to avoid the expensive relay WebSocket connection during startup
+     */
+    const shouldDeferUp = this.options.features?.headless && !this.hasExistingWcConnection()
+
+    if (!shouldDeferUp) {
+      await this.createUniversalProviderForAdapter(namespace)
+    }
+  }
+
+  private hasExistingWcConnection(): boolean {
+    return this.chainNamespaces.some(
+      ns => StorageUtil.getConnectedConnectorId(ns) === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
+  }
+
+  /**
+   * Ensures UniversalProvider is initialized for all adapters.
+   * Used when UP init was deferred in headless mode.
+   */
+  protected async ensureUniversalProvider() {
+    if (!this.universalProvider) {
+      await Promise.all(this.chainNamespaces.map(ns => this.createUniversalProviderForAdapter(ns)))
+    }
   }
 
   protected async initChainAdapters() {
@@ -2374,8 +2411,9 @@ export abstract class AppKitBaseClient {
     return ThemeController.state.themeVariables
   }
 
-  public setThemeMode(themeMode: ThemeControllerState['themeMode']) {
+  public async setThemeMode(themeMode: ThemeControllerState['themeMode']) {
     ThemeController.setThemeMode(themeMode)
+    const { setColorTheme } = await import('@reown/appkit-ui')
     setColorTheme(ThemeController.state.themeMode)
   }
 
@@ -2387,8 +2425,9 @@ export abstract class AppKitBaseClient {
     OptionsController.setPrivacyPolicyUrl(privacyPolicyUrl)
   }
 
-  public setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
+  public async setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     ThemeController.setThemeVariables(themeVariables)
+    const { setThemeVariables } = await import('@reown/appkit-ui')
     setThemeVariables(ThemeController.state.themeVariables)
   }
 
