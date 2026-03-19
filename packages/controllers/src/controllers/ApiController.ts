@@ -8,6 +8,7 @@ import { AssetUtil } from '../utils/AssetUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { CUSTOM_DEEPLINK_WALLETS } from '../utils/MobileWallet.js'
+import { PerfLogger } from '../utils/PerfLogger.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   ApiGetAllowedOriginsResponse,
@@ -507,20 +508,34 @@ export const ApiController = {
     fetchNetworkImages = true,
     fetchWalletRanks = true
   }: PrefetchParameters = {}) {
+    PerfLogger.mark('prefetch:start')
     const promises = [
       fetchConnectorImages &&
-        ApiController.initPromise('connectorImages', ApiController.fetchConnectorImages),
+        ApiController.initPromise('connectorImages', () =>
+          PerfLogger.wrapAsync('prefetch:connectorImages', ApiController.fetchConnectorImages)
+        ),
       fetchFeaturedWallets &&
-        ApiController.initPromise('featuredWallets', ApiController.fetchFeaturedWallets),
+        ApiController.initPromise('featuredWallets', () =>
+          PerfLogger.wrapAsync('prefetch:featuredWallets', ApiController.fetchFeaturedWallets)
+        ),
       fetchRecommendedWallets &&
-        ApiController.initPromise('recommendedWallets', ApiController.fetchRecommendedWallets),
+        ApiController.initPromise('recommendedWallets', () =>
+          PerfLogger.wrapAsync('prefetch:recommendedWallets', ApiController.fetchRecommendedWallets)
+        ),
       fetchNetworkImages &&
-        ApiController.initPromise('networkImages', ApiController.fetchNetworkImages),
+        ApiController.initPromise('networkImages', () =>
+          PerfLogger.wrapAsync('prefetch:networkImages', ApiController.fetchNetworkImages)
+        ),
       fetchWalletRanks &&
-        ApiController.initPromise('walletRanks', ApiController.prefetchWalletRanks)
+        ApiController.initPromise('walletRanks', () =>
+          PerfLogger.wrapAsync('prefetch:walletRanks', ApiController.prefetchWalletRanks)
+        )
     ].filter(Boolean)
 
-    return Promise.allSettled(promises)
+    const result = Promise.allSettled(promises)
+    result.then(() => PerfLogger.measure('prefetch:total', 'prefetch:start'))
+
+    return result
   },
 
   prefetchAnalyticsConfig() {
