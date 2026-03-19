@@ -180,10 +180,10 @@ export abstract class AppKitBaseClient {
     PerfLogger.mark('init:start')
 
     this.initializeProjectSettings(options)
-    PerfLogger.measure('init:projectSettings', 'init:start')
+    PerfLogger.mark('init:projectSettings:done')
 
     this.initControllers(options)
-    PerfLogger.measure('init:controllers', 'init:projectSettings')
+    PerfLogger.mark('init:controllers:done')
 
     await PerfLogger.wrapAsync('init:chainAdapters', () => this.initChainAdapters())
     this.sendInitializeEvent(options)
