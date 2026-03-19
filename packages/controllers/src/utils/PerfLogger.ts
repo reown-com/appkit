@@ -1,109 +1,123 @@
 /* eslint-disable no-console */
 /**
- * Lightweight performance logger for diagnosing AppKit initialization timing.
- * Gated behind `localStorage.getItem('appkit:perf') === 'true'` so it's zero-cost in production.
+ * Performance logger using the native User Timing API (performance.mark / performance.measure).
+ * These entries are visible in Lighthouse, Chrome DevTools Performance tab, and PerformanceObserver.
+ * All marks are prefixed with "appkit:" for easy filtering.
  */
 
-type TimingEntry = {
-  label: string
-  startMs: number
-  endMs?: number
-  durationMs?: number
-}
+const PREFIX = 'appkit:'
 
-const enabled = true
-
-const marks = new Map<string, number>()
-const timings: TimingEntry[] = []
-
-function now(): number {
-  if (typeof performance !== 'undefined' && performance.now) {
-    return performance.now()
-  }
-
-  return Date.now()
+function hasPerformanceApi(): boolean {
+  return (
+    typeof performance !== 'undefined' &&
+    typeof performance.mark === 'function' &&
+    typeof performance.measure === 'function'
+  )
 }
 
 export const PerfLogger = {
   get enabled() {
-    return enabled
+    return hasPerformanceApi()
   },
 
-  /** Record a named timestamp */
+  /** Record a named performance.mark */
   mark(label: string) {
-    if (!enabled) {
+    if (!hasPerformanceApi()) {
       return
     }
-    const t = now()
-    marks.set(label, t)
-    console.log(`[perf] ⏱ ${label} @ ${t.toFixed(1)}ms`)
+    const name = `${PREFIX}${label}`
+    performance.mark(name)
+    console.log(`[perf] ⏱ ${label}`)
   },
 
-  /** Measure elapsed time between two marks */
+  /** Create a performance.measure between a start mark and now */
   measure(label: string, startLabel: string): number {
-    if (!enabled) {
+    if (!hasPerformanceApi()) {
       return 0
     }
-    const start = marks.get(startLabel)
-    const end = now()
-    if (start === undefined) {
-      console.warn(`[perf] missing start mark: ${startLabel}`)
+    const startName = `${PREFIX}${startLabel}`
+    const endName = `${PREFIX}${label}:end`
+    const measureName = `${PREFIX}${label}`
+
+    try {
+      performance.mark(endName)
+      const entry = performance.measure(measureName, startName, endName)
+      console.log(`[perf] 📊 ${label}: ${entry.duration.toFixed(1)}ms`)
+
+      return entry.duration
+    } catch {
+      console.warn(`[perf] measure failed: ${label} (missing start mark "${startLabel}")`)
 
       return 0
     }
-    const duration = end - start
-    timings.push({ label, startMs: start, endMs: end, durationMs: duration })
-    console.log(`[perf] 📊 ${label}: ${duration.toFixed(1)}ms`)
-
-    return duration
   },
 
-  /** Wrap an async function with automatic timing */
+  /** Wrap an async function with automatic performance.mark + performance.measure */
   async wrapAsync<T>(label: string, fn: () => Promise<T>): Promise<T> {
-    if (!enabled) {
+    if (!hasPerformanceApi()) {
       return fn()
     }
-    const start = now()
+    const startName = `${PREFIX}${label}:start`
+    const endName = `${PREFIX}${label}:end`
+    const measureName = `${PREFIX}${label}`
+
+    performance.mark(startName)
     console.log(`[perf] ▶ ${label} started`)
     try {
       const result = await fn()
-      const duration = now() - start
-      timings.push({ label, startMs: start, endMs: start + duration, durationMs: duration })
-      console.log(`[perf] ✅ ${label}: ${duration.toFixed(1)}ms`)
+      performance.mark(endName)
+      const entry = performance.measure(measureName, startName, endName)
+      console.log(`[perf] ✅ ${label}: ${entry.duration.toFixed(1)}ms`)
 
       return result
     } catch (error) {
-      const duration = now() - start
-      timings.push({ label, startMs: start, endMs: start + duration, durationMs: duration })
-      console.log(`[perf] ❌ ${label}: ${duration.toFixed(1)}ms (error)`)
+      performance.mark(endName)
+      const entry = performance.measure(measureName, startName, endName)
+      console.log(`[perf] ❌ ${label}: ${entry.duration.toFixed(1)}ms (error)`)
       throw error
     }
   },
 
-  /** Print a summary table of all collected timings */
+  /** Print a summary table from all appkit: performance.measure entries */
   summary(groupName: string) {
-    if (!enabled || timings.length === 0) {
+    if (!hasPerformanceApi()) {
+      return
+    }
+
+    const entries = performance.getEntriesByType('measure').filter(e => e.name.startsWith(PREFIX))
+
+    if (entries.length === 0) {
       return
     }
 
     console.group(`[perf] 📋 ${groupName} — Performance Summary`)
     console.table(
-      timings.map(t => ({
-        Step: t.label,
-        'Duration (ms)': t.durationMs?.toFixed(1) ?? '—',
-        'Start (ms)': t.startMs.toFixed(1),
-        'End (ms)': t.endMs?.toFixed(1) ?? '—'
+      entries.map(e => ({
+        Step: e.name.replace(PREFIX, ''),
+        'Duration (ms)': e.duration.toFixed(1),
+        'Start (ms)': e.startTime.toFixed(1)
       }))
     )
 
-    const total = timings.reduce((sum, t) => sum + (t.durationMs || 0), 0)
+    const total = entries.reduce((sum, e) => sum + e.duration, 0)
     console.log(`Total measured time: ${total.toFixed(1)}ms`)
     console.groupEnd()
   },
 
-  /** Clear all marks and timings (useful between runs) */
+  /** Clear all appkit: marks and measures */
   reset() {
-    marks.clear()
-    timings.length = 0
+    if (!hasPerformanceApi()) {
+      return
+    }
+    performance.getEntriesByType('mark').forEach(e => {
+      if (e.name.startsWith(PREFIX)) {
+        performance.clearMarks(e.name)
+      }
+    })
+    performance.getEntriesByType('measure').forEach(e => {
+      if (e.name.startsWith(PREFIX)) {
+        performance.clearMeasures(e.name)
+      }
+    })
   }
 }
