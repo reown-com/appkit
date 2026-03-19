@@ -178,64 +178,70 @@ export const ApiController = {
   },
 
   async fetchProjectConfig() {
-    const response = await api.get<ApiGetProjectConfigResponse>({
-      path: '/appkit/v1/config',
-      params: ApiController._getSdkProperties()
-    })
+    return PerfLogger.wrapAsync('api:fetchProjectConfig', async () => {
+      const response = await api.get<ApiGetProjectConfigResponse>({
+        path: '/appkit/v1/config',
+        params: ApiController._getSdkProperties()
+      })
 
-    return response.features
+      return response.features
+    })
   },
 
   async fetchUsage() {
-    try {
-      const response = await api.get<ApiGetUsageResponse>({
-        path: '/appkit/v1/project-limits',
-        params: ApiController._getSdkProperties()
-      })
+    return PerfLogger.wrapAsync('api:fetchUsage', async () => {
+      try {
+        const response = await api.get<ApiGetUsageResponse>({
+          path: '/appkit/v1/project-limits',
+          params: ApiController._getSdkProperties()
+        })
 
-      const { tier, isAboveMauLimit, isAboveRpcLimit } = response.planLimits
+        const { tier, isAboveMauLimit, isAboveRpcLimit } = response.planLimits
 
-      const isStarterPlan = tier === 'starter'
-      const isAboveUsageLimit = isAboveMauLimit || isAboveRpcLimit
+        const isStarterPlan = tier === 'starter'
+        const isAboveUsageLimit = isAboveMauLimit || isAboveRpcLimit
 
-      ApiController.state.plan = {
-        tier,
-        hasExceededUsageLimit: isStarterPlan && isAboveUsageLimit,
-        limits: {
-          isAboveRpcLimit,
-          isAboveMauLimit
+        ApiController.state.plan = {
+          tier,
+          hasExceededUsageLimit: isStarterPlan && isAboveUsageLimit,
+          limits: {
+            isAboveRpcLimit,
+            isAboveMauLimit
+          }
         }
+      } catch (e) {
+        console.warn('Failed to fetch usage', e)
       }
-    } catch (e) {
-      console.warn('Failed to fetch usage', e)
-    }
+    })
   },
 
   async fetchAllowedOrigins() {
-    try {
-      const { allowedOrigins } = await api.get<ApiGetAllowedOriginsResponse>({
-        path: '/projects/v1/origins',
-        params: ApiController._getSdkProperties()
-      })
+    return PerfLogger.wrapAsync('api:fetchAllowedOrigins', async () => {
+      try {
+        const { allowedOrigins } = await api.get<ApiGetAllowedOriginsResponse>({
+          path: '/projects/v1/origins',
+          params: ApiController._getSdkProperties()
+        })
 
-      return allowedOrigins
-    } catch (error) {
-      if (error instanceof Error && error.cause instanceof Response) {
-        const status = error.cause.status
+        return allowedOrigins
+      } catch (error) {
+        if (error instanceof Error && error.cause instanceof Response) {
+          const status = error.cause.status
 
-        if (status === ConstantsUtil.HTTP_STATUS_CODES.TOO_MANY_REQUESTS) {
-          throw new Error('RATE_LIMITED', { cause: error })
-        }
+          if (status === ConstantsUtil.HTTP_STATUS_CODES.TOO_MANY_REQUESTS) {
+            throw new Error('RATE_LIMITED', { cause: error })
+          }
 
-        if (status >= ConstantsUtil.HTTP_STATUS_CODES.SERVER_ERROR && status < 600) {
-          throw new Error('SERVER_ERROR', { cause: error })
+          if (status >= ConstantsUtil.HTTP_STATUS_CODES.SERVER_ERROR && status < 600) {
+            throw new Error('SERVER_ERROR', { cause: error })
+          }
+
+          return []
         }
 
         return []
       }
-
-      return []
-    }
+    })
   },
 
   async fetchNetworkImages() {
@@ -268,33 +274,38 @@ export const ApiController = {
   },
 
   async fetchWallets(params: Omit<ApiGetWalletsRequest, 'chains'> & { chains?: string }) {
-    const exclude = params.exclude ?? []
-    const sdkProperties = ApiController._getSdkProperties()
-    if (sdkProperties.sv.startsWith('html-core-')) {
-      exclude.push(...Object.values(CUSTOM_DEEPLINK_WALLETS).map(w => w.id))
-    }
+    return PerfLogger.wrapAsync(
+      `api:fetchWallets(page=${params.page},entries=${params.entries})`,
+      async () => {
+        const exclude = params.exclude ?? []
+        const sdkProperties = ApiController._getSdkProperties()
+        if (sdkProperties.sv.startsWith('html-core-')) {
+          exclude.push(...Object.values(CUSTOM_DEEPLINK_WALLETS).map(w => w.id))
+        }
 
-    const wallets = await api.get<ApiGetWalletsResponse>({
-      path: '/getWallets',
-      params: {
-        ...ApiController._getSdkProperties(),
-        ...params,
-        page: String(params.page),
-        entries: String(params.entries),
-        include: params.include?.join(','),
-        exclude: exclude.join(',')
+        const wallets = await api.get<ApiGetWalletsResponse>({
+          path: '/getWallets',
+          params: {
+            ...ApiController._getSdkProperties(),
+            ...params,
+            page: String(params.page),
+            entries: String(params.entries),
+            include: params.include?.join(','),
+            exclude: exclude.join(',')
+          }
+        })
+
+        const { filteredWallets, mobileFilteredOutWalletsLength } =
+          ApiController._filterWalletsByPlatform(wallets?.data)
+
+        return {
+          data: filteredWallets || [],
+          // Keep original count for display on main page
+          count: wallets?.count,
+          mobileFilteredOutWalletsLength
+        }
       }
-    })
-
-    const { filteredWallets, mobileFilteredOutWalletsLength } =
-      ApiController._filterWalletsByPlatform(wallets?.data)
-
-    return {
-      data: filteredWallets || [],
-      // Keep original count for display on main page
-      count: wallets?.count,
-      mobileFilteredOutWalletsLength
-    }
+    )
   },
 
   async prefetchWalletRanks() {
