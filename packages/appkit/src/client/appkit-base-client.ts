@@ -62,6 +62,7 @@ import {
   ModalController,
   OnRampController,
   OptionsController,
+  PerfLogger,
   ProviderController,
   type ProviderControllerState,
   PublicStateController,
@@ -185,12 +186,20 @@ export abstract class AppKitBaseClient {
   }
 
   protected async initialize(options: AppKitOptionsWithSdk) {
-    this.initializeProjectSettings(options)
-    this.initControllers(options)
+    PerfLogger.mark('init:start')
+    PerfLogger.reset()
 
-    // In headless mode, start wallet prefetch and config fetch early — they only need
-    // projectId + chains which are set by initControllers. Running them in parallel
-    // with adapter init saves ~200-500ms vs the previous sequential approach.
+    this.initializeProjectSettings(options)
+    PerfLogger.mark('init:projectSettings')
+
+    this.initControllers(options)
+    PerfLogger.mark('init:controllers')
+
+    /*
+     * In headless mode, start wallet prefetch and config fetch early — they only need
+     * projectId + chains which are set by initControllers. Running them in parallel
+     * with adapter init saves ~200-500ms vs the previous sequential approach.
+     */
     const isHeadless = options.features?.headless
     if (isHeadless && !ConnectorUtil.hasInjectedConnectors()) {
       ApiController.prefetch({
@@ -207,15 +216,17 @@ export abstract class AppKitBaseClient {
 
     // Yield to main thread to avoid long tasks during initialization
     await yieldToMainThread()
-    await this.initChainAdapters()
+    await PerfLogger.wrapAsync('init:chainAdapters', () => this.initChainAdapters())
     await yieldToMainThread()
     this.sendInitializeEvent(options)
 
     if (OptionsController.state.enableReconnect) {
-      await this.syncExistingConnection()
-      await this.syncAdapterConnections()
+      await PerfLogger.wrapAsync('init:syncExistingConnection', () => this.syncExistingConnection())
+      await PerfLogger.wrapAsync('init:syncAdapterConnections', () => this.syncAdapterConnections())
     } else {
-      await this.unSyncExistingConnection()
+      await PerfLogger.wrapAsync('init:unSyncExistingConnection', () =>
+        this.unSyncExistingConnection()
+      )
     }
     if (!options.basic && !options.manualWCControl) {
       if (remoteConfigPromise) {
@@ -224,16 +235,20 @@ export abstract class AppKitBaseClient {
         this.remoteFeatures = await remoteConfigPromise
       } else if (isHeadless) {
         ApiController.fetchUsage()
-        this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+        this.remoteFeatures = await PerfLogger.wrapAsync('init:fetchRemoteFeatures', () =>
+          ConfigUtil.fetchRemoteFeatures(options)
+        )
       } else {
         const [remoteFeatures] = await Promise.all([
-          ConfigUtil.fetchRemoteFeatures(options),
-          ApiController.fetchUsage()
+          PerfLogger.wrapAsync('init:fetchRemoteFeatures', () =>
+            ConfigUtil.fetchRemoteFeatures(options)
+          ),
+          PerfLogger.wrapAsync('init:fetchUsage', () => ApiController.fetchUsage())
         ])
         this.remoteFeatures = remoteFeatures
       }
     } else {
-      await ApiController.fetchUsage()
+      await PerfLogger.wrapAsync('init:fetchUsage', () => ApiController.fetchUsage())
     }
     OptionsController.setRemoteFeatures(this.remoteFeatures)
     if (this.remoteFeatures.onramp) {
@@ -245,7 +260,7 @@ export abstract class AppKitBaseClient {
       (Array.isArray(OptionsController.state.remoteFeatures?.socials) &&
         OptionsController.state.remoteFeatures?.socials.length > 0)
     ) {
-      await this.checkAllowedOrigins()
+      await PerfLogger.wrapAsync('init:checkAllowedOrigins', () => this.checkAllowedOrigins())
     }
 
     if (
@@ -264,6 +279,9 @@ export abstract class AppKitBaseClient {
       }
       // If siwx is already configured for ReownAuthentication we keep the current instance
     }
+
+    PerfLogger.measure('init:total', 'init:start')
+    PerfLogger.summary('AppKit Base Init')
   }
 
   private async openSend(
@@ -1203,7 +1221,9 @@ export abstract class AppKitBaseClient {
     if (!adapter) {
       throw new Error('adapter not found')
     }
-    await adapter.syncConnectors()
+    await PerfLogger.wrapAsync(`init:adapter:${namespace}:syncConnectors`, async () => {
+      await adapter.syncConnectors()
+    })
 
     /*
      * In headless mode with no existing WC session, defer UniversalProvider init
@@ -1212,7 +1232,9 @@ export abstract class AppKitBaseClient {
     const shouldDeferUp = this.options.features?.headless && !this.hasExistingWcConnection()
 
     if (!shouldDeferUp) {
-      await this.createUniversalProviderForAdapter(namespace)
+      await PerfLogger.wrapAsync(`init:adapter:${namespace}:setUniversalProvider`, () =>
+        this.createUniversalProviderForAdapter(namespace)
+      )
     }
   }
 
@@ -1399,7 +1421,11 @@ export abstract class AppKitBaseClient {
   // -- Connection Sync ---------------------------------------------------
   protected async syncExistingConnection() {
     await Promise.allSettled(
-      this.chainNamespaces.map(namespace => this.syncNamespaceConnection(namespace))
+      this.chainNamespaces.map(namespace =>
+        PerfLogger.wrapAsync(`init:syncNamespace:${namespace}`, () =>
+          this.syncNamespaceConnection(namespace)
+        )
+      )
     )
   }
 
@@ -1417,7 +1443,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected async reconnectWalletConnect() {
-    await this.syncWalletConnectAccount()
+    await PerfLogger.wrapAsync('wc:syncWalletConnectAccount', () => this.syncWalletConnectAccount())
     const address = this.getAddress()
 
     if (!this.getCaipAddress()) {
@@ -1502,9 +1528,11 @@ export abstract class AppKitBaseClient {
         const caipAddress = this.getCaipAddress(namespace)
         const caipNetwork = this.getCaipNetwork(namespace)
 
-        return adapter?.syncConnections({
-          connectToFirstConnector: !caipAddress,
-          caipNetwork
+        return PerfLogger.wrapAsync(`init:syncAdapterConn:${namespace}`, async () => {
+          await adapter?.syncConnections({
+            connectToFirstConnector: !caipAddress,
+            caipNetwork
+          })
         })
       })
     )
@@ -1905,7 +1933,10 @@ export abstract class AppKitBaseClient {
     // Yield to main thread before heavy UniversalProvider initialization
     await yieldToMainThread()
     this.universalProvider =
-      this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
+      this.options.universalProvider ??
+      (await PerfLogger.wrapAsync('wc:UniversalProvider.init', () =>
+        UniversalProvider.init(universalProviderOptions)
+      ))
     await yieldToMainThread()
 
     const originalDisconnect = this.universalProvider.disconnect.bind(this.universalProvider)

@@ -17,6 +17,7 @@ import {
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
   type Features,
+  PerfLogger,
   PublicStateController,
   type RemoteFeatures,
   RouterController,
@@ -526,7 +527,9 @@ export class AppKit extends AppKitBaseClient {
         this.chainNamespaces.map(namespace => this.createAuthProviderForAdapter(namespace))
       )
     }
-    await this.injectModalUi()
+    await PerfLogger.wrapAsync('init:injectModalUi', () => this.injectModalUi())
+    PerfLogger.measure('init:fullInit', 'init:start')
+    PerfLogger.summary('AppKit Full Init')
     PublicStateController.set({ initialized: true })
   }
 
