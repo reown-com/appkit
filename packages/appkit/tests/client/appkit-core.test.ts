@@ -139,11 +139,12 @@ describe('AppKitCore', () => {
       const mockUnsub = vi.fn()
       vi.spyOn(ChainController, 'subscribe').mockReturnValue(mockUnsub)
       vi.spyOn(ConnectorController, 'subscribe').mockReturnValue(mockUnsub)
+      vi.spyOn(ConnectionController, 'subscribeKey').mockReturnValue(mockUnsub)
 
       const unsubscribe = appKit.subscribeAccount(() => {})
       unsubscribe()
 
-      expect(mockUnsub).toHaveBeenCalledTimes(2)
+      expect(mockUnsub).toHaveBeenCalledTimes(3)
     })
   })
 })
