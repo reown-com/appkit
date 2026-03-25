@@ -2485,6 +2485,9 @@ export abstract class AppKitBaseClient {
     const unsub = ConnectorController.subscribe(updateVal)
     unsubArr.push(unsub)
 
+    const unsubConnections = ConnectionController.subscribeKey('connections', updateVal)
+    unsubArr.push(unsubConnections)
+
     return () => {
       unsubArr.forEach(fn => fn())
     }
