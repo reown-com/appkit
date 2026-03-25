@@ -137,14 +137,57 @@ describe('AppKitCore', () => {
 
     it('should call all unsubscribe functions in subscribeAccount', () => {
       const mockUnsub = vi.fn()
-      vi.spyOn(ChainController, 'subscribe').mockReturnValue(mockUnsub)
-      vi.spyOn(ConnectorController, 'subscribe').mockReturnValue(mockUnsub)
-      vi.spyOn(ConnectionController, 'subscribeKey').mockReturnValue(mockUnsub)
+      const chainSubscribeSpy = vi.spyOn(ChainController, 'subscribe').mockReturnValue(mockUnsub)
+      const connectorSubscribeSpy = vi
+        .spyOn(ConnectorController, 'subscribe')
+        .mockReturnValue(mockUnsub)
+      const connectionSubscribeKeySpy = vi
+        .spyOn(ConnectionController, 'subscribeKey')
+        .mockReturnValue(mockUnsub)
 
       const unsubscribe = appKit.subscribeAccount(() => {})
       unsubscribe()
 
+      expect(chainSubscribeSpy).toHaveBeenCalledTimes(1)
+      expect(connectorSubscribeSpy).toHaveBeenCalledTimes(1)
+      expect(connectionSubscribeKeySpy).toHaveBeenCalledTimes(1)
+      expect(connectionSubscribeKeySpy).toHaveBeenCalledWith('connections', expect.any(Function))
       expect(mockUnsub).toHaveBeenCalledTimes(3)
+    })
+
+    it('should fire subscribeAccount callback when ConnectionController connections change', async () => {
+      const callback = vi.fn()
+      const namespace = ConstantsUtil.CHAIN.EVM
+
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        caipAddress: `eip155:1:0xABC`,
+        status: 'connected'
+      } as unknown as AccountState)
+
+      vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue(namespace)
+
+      const unsubscribe = appKit.subscribeAccount(callback, namespace)
+
+      ConnectionController.setConnections(
+        [
+          {
+            connectorId: 'io.metamask',
+            accounts: [{ address: '0xABC' }],
+            caipNetwork: { caipNetworkId: 'eip155:1', id: 1, chainNamespace: 'eip155' }
+          }
+        ] as any,
+        namespace
+      )
+
+      // valtio subscribeKey notifies asynchronously via microtask
+      await new Promise(resolve => setTimeout(resolve, 0))
+
+      expect(callback).toHaveBeenCalled()
+      const lastCall = callback.mock.calls[callback.mock.calls.length - 1]![0]
+      expect(lastCall.allAccounts.length).toBeGreaterThan(0)
+      expect(lastCall.allAccounts[0].address).toBe('0xABC')
+
+      unsubscribe()
     })
   })
 })
