@@ -7,7 +7,7 @@ import { AlertDescription } from '@/components/ui/alert'
 import { Alert } from '@/components/ui/alert'
 import { useAppKitContext } from '@/hooks/use-appkit'
 import { NETWORK_OPTIONS, type NetworkOption } from '@/lib/networks'
-import { getImageDeliveryURL, networkImages } from '@/lib/presets'
+import { getImageDeliveryURL, networkImageFallbacks, networkImages } from '@/lib/presets'
 
 import { RoundOptionItem } from './ui/round-option-item'
 
@@ -49,9 +49,11 @@ export function NetworkList() {
               key={n.network.id}
               enabled={enabledNetworks.includes(n.network.id)}
               disabled={Boolean(caipAddress) || isLastChainEnabled}
-              imageSrc={getImageDeliveryURL(
+              imageSrc={
                 networkImages[n.network.id as keyof typeof networkImages]
-              )}
+                  ? getImageDeliveryURL(networkImages[n.network.id as keyof typeof networkImages])
+                  : networkImageFallbacks[n.network.id as keyof typeof networkImageFallbacks] || ''
+              }
               onChange={() => {
                 if (enabledNetworks.includes(n.network.id)) {
                   removeNetwork(n)

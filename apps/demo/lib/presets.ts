@@ -28,9 +28,16 @@ export const networkImages = {
 export const chainImages = {
   eip155: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
   solana: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
-  bip122: '0b4838db-0161-4ffe-022d-532bf03dba00',
-  ton: '222222ee-a5e1-4f99-a75c-1c5a5d2e7b00',
-  tron: '901cfd9a-1e97-4de0-b0c1-4ea15ef8e200'
+  bip122: '0b4838db-0161-4ffe-022d-532bf03dba00'
+}
+
+export const networkImageFallbacks: Record<string, string> = {
+  // TON
+  '-239': '/ton.svg',
+  '-3': '/ton.svg',
+  // TRON
+  '0x2b6653dc': '/tron.svg',
+  '0x94a9059e': '/tron.svg'
 }
 
 export function getImageDeliveryURL(imageId: string) {
