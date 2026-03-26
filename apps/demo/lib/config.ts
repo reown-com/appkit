@@ -1,3 +1,10 @@
+import { BinanceWalletAdapter } from '@tronweb3/tronwallet-adapter-binance'
+import { BitKeepAdapter } from '@tronweb3/tronwallet-adapter-bitkeep'
+import { MetaMaskAdapter } from '@tronweb3/tronwallet-adapter-metamask-tron'
+import { OkxWalletAdapter } from '@tronweb3/tronwallet-adapter-okxwallet'
+import { TronLinkAdapter } from '@tronweb3/tronwallet-adapter-tronlink'
+import { TrustAdapter } from '@tronweb3/tronwallet-adapter-trust'
+
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
@@ -78,7 +85,16 @@ export const evmAdapter = new EthersAdapter()
 export const solanaAdapter = new SolanaAdapter()
 export const bitcoinAdapter = new BitcoinAdapter({})
 export const tonAdapter = new TonAdapter()
-export const tronAdapter = new TronAdapter({})
+export const tronAdapter = new TronAdapter({
+  walletAdapters: [
+    new TronLinkAdapter({ openUrlWhenWalletNotFound: false, checkTimeout: 3000 }),
+    new TrustAdapter(),
+    new BitKeepAdapter(),
+    new BinanceWalletAdapter(),
+    new OkxWalletAdapter({ openUrlWhenWalletNotFound: false }),
+    new MetaMaskAdapter()
+  ]
+})
 export const allAdapters = [evmAdapter, solanaAdapter, bitcoinAdapter, tonAdapter, tronAdapter]
 
 // Metadata
