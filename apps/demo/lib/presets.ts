@@ -22,22 +22,19 @@ export const networkImages = {
   // Bitcoin
   '000000000019d6689c085ae165831e93': '0b4838db-0161-4ffe-022d-532bf03dba00',
   // Bitcoin Testnet
-  '000000000933ea01ad0ee984209779ba': '39354064-d79b-420b-065d-f980c4b78200'
+  '000000000933ea01ad0ee984209779ba': '39354064-d79b-420b-065d-f980c4b78200',
+  // TON
+  '-239': '20f673c0-095e-49b2-07cf-eb5049dcf600',
+  // TRON
+  '0x2b6653dc': 'dd9de794-d4ce-4c94-682f-a367f926d500'
 }
 
 export const chainImages = {
   eip155: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
   solana: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
-  bip122: '0b4838db-0161-4ffe-022d-532bf03dba00'
-}
-
-export const networkImageFallbacks: Record<string, string> = {
-  // TON
-  '-239': '/ton.svg',
-  '-3': '/ton.svg',
-  // TRON
-  '0x2b6653dc': '/tron.svg',
-  '0x94a9059e': '/tron.svg'
+  bip122: '0b4838db-0161-4ffe-022d-532bf03dba00',
+  ton: '20f673c0-095e-49b2-07cf-eb5049dcf600',
+  tron: 'dd9de794-d4ce-4c94-682f-a367f926d500'
 }
 
 export function getImageDeliveryURL(imageId: string) {

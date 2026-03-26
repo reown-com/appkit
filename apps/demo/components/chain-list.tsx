@@ -7,6 +7,7 @@ import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
 import { AlertDescription } from '@/components/ui/alert'
 import { Alert } from '@/components/ui/alert'
 import { useAppKitContext } from '@/hooks/use-appkit'
+import { chainImages, getImageDeliveryURL } from '@/lib/presets'
 
 import { RoundOptionItem } from './ui/round-option-item'
 
@@ -14,8 +15,8 @@ const CHAIN_OPTIONS = [
   { id: 'eip155', name: 'EVM', imageSrc: '/ethereum.png' },
   { id: 'solana', name: 'Solana', imageSrc: '/solana.png' },
   { id: 'bip122', name: 'Bitcoin', imageSrc: '/bitcoin.png' },
-  { id: 'ton', name: 'TON', imageSrc: '/ton.svg' },
-  { id: 'tron', name: 'TRON', imageSrc: '/tron.svg' }
+  { id: 'ton', name: 'TON', imageSrc: getImageDeliveryURL(chainImages.ton) },
+  { id: 'tron', name: 'TRON', imageSrc: getImageDeliveryURL(chainImages.tron) }
 ] as {
   id: ChainNamespace
   name: string

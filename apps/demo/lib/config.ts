@@ -20,9 +20,7 @@ import {
   solana,
   solanaDevnet,
   ton,
-  tonTestnet,
   tronMainnet,
-  tronShastaTestnet,
   zksync
 } from '@reown/appkit/networks'
 import { type CreateAppKit } from '@reown/appkit/react'
@@ -47,9 +45,9 @@ export const solanaNetworks = [solana, solanaDevnet] as AppKitNetworksType
 
 export const bitcoinNetworks = [bitcoin, bitcoinTestnet] as AppKitNetworksType
 
-export const tonNetworks = [ton, tonTestnet] as AppKitNetworksType
+export const tonNetworks = [ton] as AppKitNetworksType
 
-export const tronNetworks = [tronMainnet, tronShastaTestnet] as AppKitNetworksType
+export const tronNetworks = [tronMainnet] as AppKitNetworksType
 
 export const namespaceNetworksMap: Record<ChainNamespace, [AppKitNetwork, ...AppKitNetwork[]]> = {
   eip155: evmNetworks,

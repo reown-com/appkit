@@ -13,9 +13,7 @@ import {
   solana,
   solanaDevnet,
   ton,
-  tonTestnet,
   tronMainnet,
-  tronShastaTestnet,
   zksync
 } from '@reown/appkit/networks'
 
@@ -38,7 +36,5 @@ export const NETWORK_OPTIONS = [
   { namespace: 'bip122', network: bitcoin },
   { namespace: 'bip122', network: bitcoinTestnet },
   { namespace: 'ton', network: ton },
-  { namespace: 'ton', network: tonTestnet },
-  { namespace: 'tron', network: tronMainnet },
-  { namespace: 'tron', network: tronShastaTestnet }
+  { namespace: 'tron', network: tronMainnet }
 ] as NetworkOption[]
