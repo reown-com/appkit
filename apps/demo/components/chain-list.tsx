@@ -13,7 +13,9 @@ import { RoundOptionItem } from './ui/round-option-item'
 const CHAIN_OPTIONS = [
   { id: 'eip155', name: 'EVM', imageSrc: '/ethereum.png' },
   { id: 'solana', name: 'Solana', imageSrc: '/solana.png' },
-  { id: 'bip122', name: 'Bitcoin', imageSrc: '/bitcoin.png' }
+  { id: 'bip122', name: 'Bitcoin', imageSrc: '/bitcoin.png' },
+  { id: 'ton', name: 'TON', imageSrc: '/ton.svg' },
+  { id: 'tron', name: 'TRON', imageSrc: '/tron.svg' }
 ] as {
   id: ChainNamespace
   name: string

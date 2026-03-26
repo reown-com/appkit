@@ -39,6 +39,8 @@
     "@reown/appkit-adapter-bitcoin": "1.8.0",
     "@reown/appkit-adapter-ethers": "1.8.0",
     "@reown/appkit-adapter-solana": "1.8.0",
+    "@reown/appkit-adapter-ton": "workspace:*",
+    "@reown/appkit-adapter-tron": "workspace:*",
     "@reown/appkit-common": "1.8.0",
     "@reown/appkit-controllers": "1.8.0",
     "@reown/appkit-scaffold-ui": "1.8.0",
