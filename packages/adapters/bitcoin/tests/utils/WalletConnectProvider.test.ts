@@ -197,22 +197,42 @@ describe('LeatherConnector', () => {
   describe('getAccountAddresses', () => {
     beforeEach(() => {
       universalProvider.session = mockUniversalProvider.mockSession()
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        caipAddress: `${bitcoin.caipNetworkId}:address`,
+        address: 'address'
+      } as unknown as AccountState)
     })
 
     it('should get the account addresses and parse response', async () => {
       const requestSpy = vi.spyOn(universalProvider, 'request')
-      requestSpy.mockResolvedValueOnce(['mock_address'])
+      requestSpy.mockResolvedValueOnce([
+        {
+          address: 'mock_address',
+          publicKey: Uint8Array.from([1, 2, 3]),
+          path: "m/84'/0'/0'/0/0",
+          intention: 'payment'
+        }
+      ])
 
       const result = await provider.getAccountAddresses()
 
       expect(requestSpy).toHaveBeenCalledWith(
         {
           method: 'getAccountAddresses',
-          params: undefined
+          params: {
+            account: 'address'
+          }
         },
         bitcoin.caipNetworkId
       )
-      expect(result).toEqual([{ address: 'mock_address', purpose: 'payment' }])
+      expect(result).toEqual([
+        {
+          address: 'mock_address',
+          purpose: 'payment',
+          publicKey: '010203',
+          path: "m/84'/0'/0'/0/0"
+        }
+      ])
     })
 
     it('should throw an error if the method is not supported', async () => {
@@ -229,6 +249,20 @@ describe('LeatherConnector', () => {
       await expect(provider.getAccountAddresses()).rejects.toThrow(
         'Method getAccountAddresses is not supported'
       )
+    })
+
+    it('should throw an error if the account is not found', async () => {
+      universalProvider.session = mockUniversalProvider.mockSession({
+        namespaces: {
+          bip122: {
+            accounts: [],
+            events: [],
+            methods: ['getAccountAddresses']
+          }
+        }
+      })
+
+      await expect(provider.getAccountAddresses()).rejects.toThrow('Account not found')
     })
   })
 
