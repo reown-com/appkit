@@ -12,6 +12,7 @@ import {
 import { AlertController } from '../src/controllers/AlertController.js'
 import { ApiController } from '../src/controllers/ApiController.js'
 import { AssetController } from '../src/controllers/AssetController.js'
+import { BlockchainApiController } from '../src/controllers/BlockchainApiController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
@@ -422,6 +423,11 @@ export interface UseAppKitWalletsReturn {
    * Boolean that indicates if there was an error fetching the WalletConnect URI.
    */
   wcError: boolean
+
+  /**
+   * The WalletConnect relay client ID. Set after a WalletConnect connection is established.
+   */
+  clientId: string | null
 }
 
 /**
@@ -442,6 +448,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     count
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
+  const { clientId } = useSnapshot(BlockchainApiController.state)
 
   // Alert if headless is not enabled
   useEffect(() => {
@@ -595,7 +602,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       fetchWallets: () => Promise.resolve(),
       resetWcUri,
       resetConnectingWallet,
-      getWcUri: () => Promise.resolve()
+      getWcUri: () => Promise.resolve(),
+      clientId: null
     }
   }
 
@@ -617,6 +625,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     fetchWallets,
     resetWcUri,
     resetConnectingWallet,
-    getWcUri
+    getWcUri,
+    clientId
   }
 }
