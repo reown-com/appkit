@@ -427,7 +427,7 @@ export interface UseAppKitWalletsReturn {
   /**
    * The WalletConnect relay client ID. Set after a WalletConnect connection is established.
    */
-  clientId: string | null
+  wcClientId: string | null
 }
 
 /**
@@ -448,7 +448,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     count
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
-  const { clientId } = useSnapshot(BlockchainApiController.state)
+  const { clientId: wcClientId } = useSnapshot(BlockchainApiController.state)
 
   // Alert if headless is not enabled
   useEffect(() => {
@@ -603,7 +603,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       resetWcUri,
       resetConnectingWallet,
       getWcUri: () => Promise.resolve(),
-      clientId: null
+      wcClientId: null
     }
   }
 
@@ -626,6 +626,6 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     resetWcUri,
     resetConnectingWallet,
     getWcUri,
-    clientId
+    wcClientId
   }
 }

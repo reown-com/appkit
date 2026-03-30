@@ -887,7 +887,7 @@ describe('useAppKitWallets', () => {
       resetConnectingWallet: expect.any(Function),
       getWcUri: expect.any(Function),
       wcError: false,
-      clientId: null
+      wcClientId: null
     })
   })
 
@@ -993,7 +993,7 @@ describe('useAppKitWallets', () => {
     expect(result.connectingWallet).toEqual(mockWalletItem)
     expect(result.page).toBe(2)
     expect(result.count).toBe(50)
-    expect(result.clientId).toBe('relay-client-abc123')
+    expect(result.wcClientId).toBe('relay-client-abc123')
   })
 
   it('should fetch wallets without query', async () => {
