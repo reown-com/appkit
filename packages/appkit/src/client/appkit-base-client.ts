@@ -62,6 +62,7 @@ import {
   ModalController,
   OnRampController,
   OptionsController,
+  PerfLogger,
   ProviderController,
   type ProviderControllerState,
   PublicStateController,
@@ -175,9 +176,16 @@ export abstract class AppKitBaseClient {
   }
 
   protected async initialize(options: AppKitOptionsWithSdk) {
+    PerfLogger.reset()
+    PerfLogger.mark('init:start')
+
     this.initializeProjectSettings(options)
+    PerfLogger.mark('init:projectSettings:done')
+
     this.initControllers(options)
-    await this.initChainAdapters()
+    PerfLogger.mark('init:controllers:done')
+
+    await PerfLogger.wrapAsync('init:chainAdapters', () => this.initChainAdapters())
     this.sendInitializeEvent(options)
 
     if (options.features?.headless && !ConnectorUtil.hasInjectedConnectors()) {
@@ -190,15 +198,19 @@ export abstract class AppKitBaseClient {
     }
 
     if (OptionsController.state.enableReconnect) {
-      await this.syncExistingConnection()
-      await this.syncAdapterConnections()
+      await PerfLogger.wrapAsync('init:syncExistingConnection', () => this.syncExistingConnection())
+      await PerfLogger.wrapAsync('init:syncAdapterConnections', () => this.syncAdapterConnections())
     } else {
-      await this.unSyncExistingConnection()
+      await PerfLogger.wrapAsync('init:unSyncExistingConnection', () =>
+        this.unSyncExistingConnection()
+      )
     }
     if (!options.basic && !options.manualWCControl) {
-      this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+      this.remoteFeatures = await PerfLogger.wrapAsync('init:fetchRemoteFeatures', () =>
+        ConfigUtil.fetchRemoteFeatures(options)
+      )
     }
-    await ApiController.fetchUsage()
+    await PerfLogger.wrapAsync('init:fetchUsage', () => ApiController.fetchUsage())
     OptionsController.setRemoteFeatures(this.remoteFeatures)
     if (this.remoteFeatures.onramp) {
       OnRampController.setOnrampProviders(this.remoteFeatures.onramp)
@@ -209,7 +221,7 @@ export abstract class AppKitBaseClient {
       (Array.isArray(OptionsController.state.remoteFeatures?.socials) &&
         OptionsController.state.remoteFeatures?.socials.length > 0)
     ) {
-      await this.checkAllowedOrigins()
+      await PerfLogger.wrapAsync('init:checkAllowedOrigins', () => this.checkAllowedOrigins())
     }
 
     if (
@@ -228,6 +240,9 @@ export abstract class AppKitBaseClient {
       }
       // If siwx is already configured for ReownAuthentication we keep the current instance
     }
+
+    PerfLogger.measure('init:total', 'init:start')
+    PerfLogger.summary('AppKit Base Init')
   }
 
   private async openSend(
@@ -1163,8 +1178,12 @@ export abstract class AppKitBaseClient {
     if (!adapter) {
       throw new Error('adapter not found')
     }
-    await adapter.syncConnectors()
-    await this.createUniversalProviderForAdapter(namespace)
+    await PerfLogger.wrapAsync(`init:adapter:${namespace}:syncConnectors`, async () => {
+      await adapter.syncConnectors()
+    })
+    await PerfLogger.wrapAsync(`init:adapter:${namespace}:setUniversalProvider`, () =>
+      this.createUniversalProviderForAdapter(namespace)
+    )
   }
 
   protected async initChainAdapters() {
@@ -1334,7 +1353,11 @@ export abstract class AppKitBaseClient {
   // -- Connection Sync ---------------------------------------------------
   protected async syncExistingConnection() {
     await Promise.allSettled(
-      this.chainNamespaces.map(namespace => this.syncNamespaceConnection(namespace))
+      this.chainNamespaces.map(namespace =>
+        PerfLogger.wrapAsync(`init:syncNamespace:${namespace}`, () =>
+          this.syncNamespaceConnection(namespace)
+        )
+      )
     )
   }
 
@@ -1352,7 +1375,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected async reconnectWalletConnect() {
-    await this.syncWalletConnectAccount()
+    await PerfLogger.wrapAsync('wc:syncWalletConnectAccount', () => this.syncWalletConnectAccount())
     const address = this.getAddress()
 
     if (!this.getCaipAddress()) {
@@ -1437,9 +1460,11 @@ export abstract class AppKitBaseClient {
         const caipAddress = this.getCaipAddress(namespace)
         const caipNetwork = this.getCaipNetwork(namespace)
 
-        return adapter?.syncConnections({
-          connectToFirstConnector: !caipAddress,
-          caipNetwork
+        return PerfLogger.wrapAsync(`init:syncAdapterConn:${namespace}`, async () => {
+          await adapter?.syncConnections({
+            connectToFirstConnector: !caipAddress,
+            caipNetwork
+          })
         })
       })
     )
@@ -1838,7 +1863,10 @@ export abstract class AppKitBaseClient {
 
     OptionsController.setManualWCControl(Boolean(this.options?.manualWCControl))
     this.universalProvider =
-      this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
+      this.options.universalProvider ??
+      (await PerfLogger.wrapAsync('wc:UniversalProvider.init', () =>
+        UniversalProvider.init(universalProviderOptions)
+      ))
 
     const originalDisconnect = this.universalProvider.disconnect.bind(this.universalProvider)
 
