@@ -52,8 +52,9 @@ describe('ConnectUtil', () => {
       expect(result.map(w => w.id)).toEqual(['wc-wallet'])
     })
 
-    it('should include all search results on desktop regardless of wc support', () => {
+    it('should include all search results on desktop when wcBasic is false', () => {
       vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+      ConnectionController.state.wcBasic = false
 
       const walletWithWc = createMockWcWallet({
         id: 'wc-wallet',
@@ -71,7 +72,27 @@ describe('ConnectUtil', () => {
       expect(result.map(w => w.id)).toEqual(['wc-wallet', 'no-wc-wallet'])
     })
 
-    it('should preserve order of search results', () => {
+    it('should filter out wallets without wc support on desktop when wcBasic is true', () => {
+      vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+      ConnectionController.state.wcBasic = true
+
+      const walletWithWc = createMockWcWallet({
+        id: 'wc-wallet',
+        name: 'WC Wallet',
+        supports_wc: true
+      })
+      const walletWithoutWc = createMockWcWallet({
+        id: 'no-wc-wallet',
+        name: 'No WC Wallet',
+        supports_wc: false
+      })
+
+      const result = ConnectUtil.getWalletConnectWallets([], [walletWithWc, walletWithoutWc])
+
+      expect(result.map(w => w.id)).toEqual(['wc-wallet'])
+    })
+
+    it('should preserve order of search results when no installed or featured wallets', () => {
       vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
 
       const wallets = [
@@ -86,6 +107,29 @@ describe('ConnectUtil', () => {
       expect(result[0]?.id).toBe('wallet-0')
       expect(result[1]?.id).toBe('wallet-1')
       expect(result[2]?.id).toBe('wallet-2')
+    })
+
+    it('should sort installed wallets first in search results', () => {
+      vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+      ConnectorController.state.connectors = [
+        {
+          id: 'wallet-2-connector',
+          name: 'Wallet 2',
+          type: 'ANNOUNCED',
+          chain: 'eip155',
+          info: { rdns: 'com.wallet2' }
+        }
+      ] as any
+
+      const wallets = [
+        createMockWcWallet({ id: 'wallet-0', name: 'Wallet 0' }),
+        createMockWcWallet({ id: 'wallet-1', name: 'Wallet 1' }),
+        createMockWcWallet({ id: 'wallet-2', name: 'Wallet 2', rdns: 'com.wallet2' })
+      ]
+
+      const result = ConnectUtil.getWalletConnectWallets([], wallets)
+
+      expect(result[0]?.id).toBe('wallet-2')
     })
   })
 })
