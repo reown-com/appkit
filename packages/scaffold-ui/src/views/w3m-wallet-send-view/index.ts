@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { type CaipAddress } from '@reown/appkit-common'
+import { type CaipAddress, NumberUtil } from '@reown/appkit-common'
 import {
   AssetUtil,
   ChainController,
@@ -183,7 +183,7 @@ export class W3mWalletSendView extends LitElement {
     if (
       this.sendTokenAmount &&
       this.token &&
-      this.sendTokenAmount > Number(this.token.quantity.numeric)
+      NumberUtil.bigNumber(this.sendTokenAmount).gt(this.token.quantity.numeric)
     ) {
       this.message = SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS
     }
@@ -193,7 +193,7 @@ export class W3mWalletSendView extends LitElement {
     }
 
     if (this.sendTokenAmount && this.token?.price) {
-      const value = this.sendTokenAmount * this.token.price
+      const value = Number(this.sendTokenAmount) * this.token.price
       if (!value) {
         this.message = SEND_BUTTON_MESSAGE.INCORRECT_VALUE
       }
@@ -312,7 +312,7 @@ export class W3mWalletSendView extends LitElement {
         },
         iconUrl: AssetUtil.getTokenImage(symbol) ?? ''
       })
-      SendController.setTokenAmount(amount)
+      SendController.setTokenAmount(String(amount))
       SendController.setReceiverAddress(this.params.to)
     } catch (err) {
       // eslint-disable-next-line no-console
