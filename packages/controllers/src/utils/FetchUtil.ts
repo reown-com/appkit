@@ -1,3 +1,5 @@
+import { PerfLogger } from './PerfLogger.js'
+
 // -- Types ----------------------------------------------------------------------
 interface Options {
   baseUrl: string
@@ -17,7 +19,15 @@ interface PostArguments extends RequestArguments {
 }
 
 async function fetchData(...args: Parameters<typeof fetch>) {
+  const start = PerfLogger.enabled ? performance.now() : 0
   const response = await fetch(...args)
+  if (PerfLogger.enabled) {
+    const url = args[0] instanceof Request ? args[0].url : String(args[0])
+    const method = (args[1] as RequestInit | undefined)?.method ?? 'GET'
+    const duration = performance.now() - start
+    // eslint-disable-next-line no-console
+    console.log(`[perf] 🌐 ${method} ${url} — ${duration.toFixed(1)}ms (${response.status})`)
+  }
   if (!response.ok) {
     // Create error object and reject if not a 2xx response code
     const err = new Error(`HTTP status code: ${response.status}`, {

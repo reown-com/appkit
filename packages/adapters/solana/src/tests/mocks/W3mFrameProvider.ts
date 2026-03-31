@@ -7,8 +7,8 @@ import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 import type { AuthProvider } from '../../providers/AuthProvider.js'
 import { TestConstants } from '../util/TestConstants.js'
 
-export function mockW3mFrameProvider() {
-  const w3mFrame = W3mFrameProviderSingleton.getInstance({
+export async function mockW3mFrameProvider() {
+  const w3mFrame = await W3mFrameProviderSingleton.getInstance({
     projectId: 'projectId',
     chainId: 1,
     abortController: ErrorUtil.EmbeddedWalletAbortController,

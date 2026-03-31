@@ -5,6 +5,7 @@ import { type ChainNamespace } from '@reown/appkit-common'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { NetworkUtil } from '../utils/NetworkUtil.js'
+import { PerfLogger } from '../utils/PerfLogger.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
@@ -57,6 +58,7 @@ const controller = {
   },
 
   async open(options?: ModalControllerArguments['open']) {
+    PerfLogger.mark('modal:open:start')
     const namespace = options?.namespace
     const currentNamespace = ChainController.state.activeChain
     const isSwitchingNamespace = namespace && namespace !== currentNamespace
@@ -71,7 +73,7 @@ const controller = {
         fetchWalletRanks: false
       })
     } else {
-      await ApiController.prefetch()
+      await PerfLogger.wrapAsync('modal:open:prefetch', () => ApiController.prefetch())
     }
 
     ConnectorController.setFilterByNamespace(options?.namespace)
@@ -105,6 +107,7 @@ const controller = {
     }
 
     state.open = true
+    PerfLogger.measure('modal:open:total', 'modal:open:start')
     PublicStateController.set({ open: true })
     EventsController.sendEvent({
       type: 'track',

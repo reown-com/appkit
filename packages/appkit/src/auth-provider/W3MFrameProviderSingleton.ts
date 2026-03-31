@@ -6,7 +6,7 @@ import type {
   SdkVersion
 } from '@reown/appkit-common'
 import { type Metadata, OptionsController } from '@reown/appkit-controllers'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 interface W3mFrameProviderConfig {
   projectId: string
@@ -19,12 +19,20 @@ interface W3mFrameProviderConfig {
 }
 
 export class W3mFrameProviderSingleton {
-  private static instance: W3mFrameProvider
+  private static instancePromise: Promise<W3mFrameProvider> | undefined
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function -- This is a singleton
   private constructor() {}
 
-  public static getInstance({
+  public static getInstance(config: W3mFrameProviderConfig): Promise<W3mFrameProvider> {
+    if (!W3mFrameProviderSingleton.instancePromise) {
+      W3mFrameProviderSingleton.instancePromise = W3mFrameProviderSingleton.createInstance(config)
+    }
+
+    return W3mFrameProviderSingleton.instancePromise
+  }
+
+  private static async createInstance({
     projectId,
     chainId,
     enableLogger,
@@ -32,24 +40,22 @@ export class W3mFrameProviderSingleton {
     abortController,
     getActiveCaipNetwork,
     getCaipNetworks
-  }: W3mFrameProviderConfig): W3mFrameProvider {
+  }: W3mFrameProviderConfig): Promise<W3mFrameProvider> {
     const { metadata, sdkVersion, sdkType } = OptionsController.getSnapshot()
-    if (!W3mFrameProviderSingleton.instance) {
-      W3mFrameProviderSingleton.instance = new W3mFrameProvider({
-        projectId,
-        chainId,
-        enableLogger,
-        onTimeout,
-        abortController,
-        getActiveCaipNetwork,
-        getCaipNetworks,
-        enableCloudAuthAccount: Boolean(OptionsController.state.remoteFeatures?.emailCapture),
-        metadata: metadata as Metadata,
-        sdkVersion: sdkVersion as SdkVersion,
-        sdkType
-      })
-    }
+    const { W3mFrameProvider: Provider } = await import('@reown/appkit-wallet')
 
-    return W3mFrameProviderSingleton.instance
+    return new Provider({
+      projectId,
+      chainId,
+      enableLogger,
+      onTimeout,
+      abortController,
+      getActiveCaipNetwork,
+      getCaipNetworks,
+      enableCloudAuthAccount: Boolean(OptionsController.state.remoteFeatures?.emailCapture),
+      metadata: metadata as Metadata,
+      sdkVersion: sdkVersion as SdkVersion,
+      sdkType
+    })
   }
 }

@@ -62,6 +62,7 @@ import {
   ModalController,
   OnRampController,
   OptionsController,
+  PerfLogger,
   ProviderController,
   type ProviderControllerState,
   PublicStateController,
@@ -75,7 +76,7 @@ import {
   WcHelpersUtil,
   getPreferredAccountType
 } from '@reown/appkit-controllers'
-import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
+// SetColorTheme and setThemeVariables are lazily imported to avoid bundling UI utils in headless mode
 import {
   CaipNetworksUtil,
   ErrorUtil,
@@ -88,6 +89,16 @@ import {
 import { UniversalAdapter } from '../universal-adapter/client.js'
 import { ConfigUtil } from '../utils/ConfigUtil.js'
 import type { AppKitOptions } from '../utils/index.js'
+
+/**
+ * Yields control to the main thread to prevent long tasks from blocking the UI.
+ * Used during initialization to break up heavy synchronous work.
+ */
+function yieldToMainThread(): Promise<void> {
+  return new Promise<void>(resolve => {
+    setTimeout(resolve, 0)
+  })
+}
 
 export interface AppKitOptionsWithSdk extends AppKitOptions {
   sdkVersion: SdkVersion | AppKitSdkVersion
@@ -175,12 +186,22 @@ export abstract class AppKitBaseClient {
   }
 
   protected async initialize(options: AppKitOptionsWithSdk) {
-    this.initializeProjectSettings(options)
-    this.initControllers(options)
-    await this.initChainAdapters()
-    this.sendInitializeEvent(options)
+    PerfLogger.reset()
+    PerfLogger.mark('init:start')
 
-    if (options.features?.headless && !ConnectorUtil.hasInjectedConnectors()) {
+    this.initializeProjectSettings(options)
+    PerfLogger.mark('init:projectSettings:done')
+
+    this.initControllers(options)
+    PerfLogger.mark('init:controllers:done')
+
+    /*
+     * In headless mode, start wallet prefetch and config fetch early — they only need
+     * projectId + chains which are set by initControllers. Running them in parallel
+     * with adapter init saves ~200-500ms vs the previous sequential approach.
+     */
+    const isHeadless = options.features?.headless
+    if (isHeadless && !ConnectorUtil.hasInjectedConnectors()) {
       ApiController.prefetch({
         fetchNetworkImages: false,
         fetchConnectorImages: false,
@@ -188,17 +209,47 @@ export abstract class AppKitBaseClient {
         fetchRecommendedWallets: true
       })
     }
+    const remoteConfigPromise =
+      isHeadless && !options.basic && !options.manualWCControl
+        ? ConfigUtil.fetchRemoteFeatures(options)
+        : null
+
+    // Yield to main thread to avoid long tasks during initialization
+    await yieldToMainThread()
+    await PerfLogger.wrapAsync('init:chainAdapters', () => this.initChainAdapters())
+    await yieldToMainThread()
+    this.sendInitializeEvent(options)
 
     if (OptionsController.state.enableReconnect) {
-      await this.syncExistingConnection()
-      await this.syncAdapterConnections()
+      await PerfLogger.wrapAsync('init:syncExistingConnection', () => this.syncExistingConnection())
+      await PerfLogger.wrapAsync('init:syncAdapterConnections', () => this.syncAdapterConnections())
     } else {
-      await this.unSyncExistingConnection()
+      await PerfLogger.wrapAsync('init:unSyncExistingConnection', () =>
+        this.unSyncExistingConnection()
+      )
     }
     if (!options.basic && !options.manualWCControl) {
-      this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
+      if (remoteConfigPromise) {
+        // In headless mode, config fetch started early (parallel with adapters) — just await it
+        ApiController.fetchUsage()
+        this.remoteFeatures = await remoteConfigPromise
+      } else if (isHeadless) {
+        ApiController.fetchUsage()
+        this.remoteFeatures = await PerfLogger.wrapAsync('init:fetchRemoteFeatures', () =>
+          ConfigUtil.fetchRemoteFeatures(options)
+        )
+      } else {
+        const [remoteFeatures] = await Promise.all([
+          PerfLogger.wrapAsync('init:fetchRemoteFeatures', () =>
+            ConfigUtil.fetchRemoteFeatures(options)
+          ),
+          PerfLogger.wrapAsync('init:fetchUsage', () => ApiController.fetchUsage())
+        ])
+        this.remoteFeatures = remoteFeatures
+      }
+    } else {
+      await PerfLogger.wrapAsync('init:fetchUsage', () => ApiController.fetchUsage())
     }
-    await ApiController.fetchUsage()
     OptionsController.setRemoteFeatures(this.remoteFeatures)
     if (this.remoteFeatures.onramp) {
       OnRampController.setOnrampProviders(this.remoteFeatures.onramp)
@@ -209,7 +260,7 @@ export abstract class AppKitBaseClient {
       (Array.isArray(OptionsController.state.remoteFeatures?.socials) &&
         OptionsController.state.remoteFeatures?.socials.length > 0)
     ) {
-      await this.checkAllowedOrigins()
+      await PerfLogger.wrapAsync('init:checkAllowedOrigins', () => this.checkAllowedOrigins())
     }
 
     if (
@@ -228,6 +279,9 @@ export abstract class AppKitBaseClient {
       }
       // If siwx is already configured for ReownAuthentication we keep the current instance
     }
+
+    PerfLogger.measure('init:total', 'init:start')
+    PerfLogger.summary('AppKit Base Init')
   }
 
   private async openSend(
@@ -380,7 +434,9 @@ export abstract class AppKitBaseClient {
   protected initControllers(options: AppKitOptionsWithSdk) {
     this.initializeOptionsController(options)
     this.initializeChainController(options)
-    this.initializeThemeController(options)
+    if (!options.features?.headless) {
+      this.initializeThemeController(options)
+    }
     this.initializeConnectionController(options)
     this.initializeConnectorController()
   }
@@ -588,6 +644,8 @@ export abstract class AppKitBaseClient {
   protected createClients() {
     this.connectionControllerClient = {
       connectWalletConnect: async () => {
+        // Ensure UniversalProvider is initialized (may have been deferred in headless mode)
+        await this.ensureUniversalProvider()
         const activeChain = ChainController.state.activeChain
         const adapter = this.getAdapter(activeChain)
         const chainId = this.getCaipNetwork(activeChain)?.id
@@ -1163,8 +1221,37 @@ export abstract class AppKitBaseClient {
     if (!adapter) {
       throw new Error('adapter not found')
     }
-    await adapter.syncConnectors()
-    await this.createUniversalProviderForAdapter(namespace)
+    await PerfLogger.wrapAsync(`init:adapter:${namespace}:syncConnectors`, async () => {
+      await adapter.syncConnectors()
+    })
+
+    /*
+     * In headless mode with no existing WC session, defer UniversalProvider init
+     * to avoid the expensive relay WebSocket connection during startup
+     */
+    const shouldDeferUp = this.options.features?.headless && !this.hasExistingWcConnection()
+
+    if (!shouldDeferUp) {
+      await PerfLogger.wrapAsync(`init:adapter:${namespace}:setUniversalProvider`, () =>
+        this.createUniversalProviderForAdapter(namespace)
+      )
+    }
+  }
+
+  private hasExistingWcConnection(): boolean {
+    return this.chainNamespaces.some(
+      ns => StorageUtil.getConnectedConnectorId(ns) === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
+  }
+
+  /**
+   * Ensures UniversalProvider is initialized for all adapters.
+   * Used when UP init was deferred in headless mode.
+   */
+  protected async ensureUniversalProvider() {
+    if (!this.universalProvider) {
+      await Promise.all(this.chainNamespaces.map(ns => this.createUniversalProviderForAdapter(ns)))
+    }
   }
 
   protected async initChainAdapters() {
@@ -1334,7 +1421,11 @@ export abstract class AppKitBaseClient {
   // -- Connection Sync ---------------------------------------------------
   protected async syncExistingConnection() {
     await Promise.allSettled(
-      this.chainNamespaces.map(namespace => this.syncNamespaceConnection(namespace))
+      this.chainNamespaces.map(namespace =>
+        PerfLogger.wrapAsync(`init:syncNamespace:${namespace}`, () =>
+          this.syncNamespaceConnection(namespace)
+        )
+      )
     )
   }
 
@@ -1352,7 +1443,7 @@ export abstract class AppKitBaseClient {
   }
 
   protected async reconnectWalletConnect() {
-    await this.syncWalletConnectAccount()
+    await PerfLogger.wrapAsync('wc:syncWalletConnectAccount', () => this.syncWalletConnectAccount())
     const address = this.getAddress()
 
     if (!this.getCaipAddress()) {
@@ -1437,9 +1528,11 @@ export abstract class AppKitBaseClient {
         const caipAddress = this.getCaipAddress(namespace)
         const caipNetwork = this.getCaipNetwork(namespace)
 
-        return adapter?.syncConnections({
-          connectToFirstConnector: !caipAddress,
-          caipNetwork
+        return PerfLogger.wrapAsync(`init:syncAdapterConn:${namespace}`, async () => {
+          await adapter?.syncConnections({
+            connectToFirstConnector: !caipAddress,
+            caipNetwork
+          })
         })
       })
     )
@@ -1837,8 +1930,14 @@ export abstract class AppKitBaseClient {
     }
 
     OptionsController.setManualWCControl(Boolean(this.options?.manualWCControl))
+    // Yield to main thread before heavy UniversalProvider initialization
+    await yieldToMainThread()
     this.universalProvider =
-      this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
+      this.options.universalProvider ??
+      (await PerfLogger.wrapAsync('wc:UniversalProvider.init', () =>
+        UniversalProvider.init(universalProviderOptions)
+      ))
+    await yieldToMainThread()
 
     const originalDisconnect = this.universalProvider.disconnect.bind(this.universalProvider)
 
@@ -2355,8 +2454,9 @@ export abstract class AppKitBaseClient {
     return ThemeController.state.themeVariables
   }
 
-  public setThemeMode(themeMode: ThemeControllerState['themeMode']) {
+  public async setThemeMode(themeMode: ThemeControllerState['themeMode']) {
     ThemeController.setThemeMode(themeMode)
+    const { setColorTheme } = await import('@reown/appkit-ui')
     setColorTheme(ThemeController.state.themeMode)
   }
 
@@ -2368,8 +2468,9 @@ export abstract class AppKitBaseClient {
     OptionsController.setPrivacyPolicyUrl(privacyPolicyUrl)
   }
 
-  public setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
+  public async setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
     ThemeController.setThemeVariables(themeVariables)
+    const { setThemeVariables } = await import('@reown/appkit-ui')
     setThemeVariables(ThemeController.state.themeVariables)
   }
 

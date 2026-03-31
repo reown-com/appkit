@@ -418,7 +418,7 @@ describe('syncConnectedWalletInfo', () => {
   })
 
   describe('setupAuthConnectorListeners', () => {
-    it('should call onSocialConnected with the user', () => {
+    it('should call onSocialConnected with the user', async () => {
       const userMock = {
         email: 'test@test.com',
         username: 'test',
@@ -434,7 +434,7 @@ describe('syncConnectedWalletInfo', () => {
 
       const appKit = new AppKit(mockOptions)
 
-      appKit['setupAuthConnectorListeners'](mockFrameProvider)
+      await appKit['setupAuthConnectorListeners'](mockFrameProvider)
 
       expect(cbSpy).toHaveBeenCalledWith(userMock)
     })

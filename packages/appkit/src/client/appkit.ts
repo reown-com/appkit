@@ -17,6 +17,7 @@ import {
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
   type Features,
+  PerfLogger,
   PublicStateController,
   type RemoteFeatures,
   RouterController,
@@ -35,9 +36,7 @@ import {
 } from '@reown/appkit-controllers'
 import type { AdapterBlueprint } from '@reown/appkit-controllers'
 import { ErrorUtil, HelpersUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
-import { W3mFrameHelpers, W3mFrameProvider } from '@reown/appkit-wallet'
-import type { W3mFrameTypes } from '@reown/appkit-wallet'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { W3mFrameProviderSingleton } from '../auth-provider/W3MFrameProviderSingleton.js'
 import { AppKitBaseClient, type AppKitOptionsWithSdk } from './appkit-base-client.js'
@@ -120,7 +119,12 @@ export class AppKit extends AppKitBaseClient {
 
     this.setLoading(false, namespace)
   }
-  private setupAuthConnectorListeners(provider: W3mFrameProvider) {
+  private async setupAuthConnectorListeners(provider: W3mFrameProvider) {
+    const [{ W3mFrameHelpers }, { W3mFrameRpcConstants }] = await Promise.all([
+      import('@reown/appkit-wallet'),
+      import('@reown/appkit-wallet/utils')
+    ])
+
     provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
       if (W3mFrameHelpers.checkIfRequestExists(request)) {
         if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
@@ -235,7 +239,7 @@ export class AppKit extends AppKitBaseClient {
 
     const user = ChainController.getAccountData(chainNamespace)?.user || {}
     this.setUser({ ...user, username, email }, chainNamespace)
-    this.setupAuthConnectorListeners(provider)
+    await this.setupAuthConnectorListeners(provider)
 
     const { isConnected } = await provider.isConnected()
 
@@ -349,7 +353,7 @@ export class AppKit extends AppKitBaseClient {
     }
   }
 
-  private createAuthProvider(chainNamespace: ChainNamespace) {
+  private async createAuthProvider(chainNamespace: ChainNamespace) {
     const isSupported = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(chainNamespace)
 
     if (!isSupported) {
@@ -365,7 +369,7 @@ export class AppKit extends AppKitBaseClient {
     const namespaceToConnect = activeNamespaceConnectedToAuth || chainNamespace
 
     if (!this.authProvider && this.options?.projectId && isAuthEnabled) {
-      this.authProvider = W3mFrameProviderSingleton.getInstance({
+      this.authProvider = await W3mFrameProviderSingleton.getInstance({
         projectId: this.options.projectId,
         enableLogger: this.options.enableAuthLogger,
         chainId: this.getCaipNetwork(namespaceToConnect)?.caipNetworkId,
@@ -400,9 +404,9 @@ export class AppKit extends AppKitBaseClient {
     }
   }
 
-  private createAuthProviderForAdapter(chainNamespace: ChainNamespace) {
+  private async createAuthProviderForAdapter(chainNamespace: ChainNamespace) {
     // Override as we need to set authProvider for each adapter
-    this.createAuthProvider(chainNamespace)
+    await this.createAuthProvider(chainNamespace)
 
     if (this.authProvider) {
       this.chainAdapters?.[chainNamespace]?.setAuthProvider?.(this.authProvider)
@@ -518,10 +522,14 @@ export class AppKit extends AppKitBaseClient {
   protected override async initialize(options: AppKitOptionsWithSdk) {
     await super.initialize(options)
 
-    this.chainNamespaces?.forEach(namespace => {
-      this.createAuthProviderForAdapter(namespace)
-    })
-    await this.injectModalUi()
+    if (this.chainNamespaces) {
+      await Promise.all(
+        this.chainNamespaces.map(namespace => this.createAuthProviderForAdapter(namespace))
+      )
+    }
+    await PerfLogger.wrapAsync('init:injectModalUi', () => this.injectModalUi())
+    PerfLogger.measure('init:fullInit', 'init:start')
+    PerfLogger.summary('AppKit Full Init')
     PublicStateController.set({ initialized: true })
   }
 
