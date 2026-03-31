@@ -1,5 +1,7 @@
 import { Metadata } from 'next'
+import { headers } from 'next/headers'
 
+import { wagmiAdapter } from '@/config'
 import ContextProvider from '@/context'
 
 import './globals.css'
@@ -33,11 +35,18 @@ export const metadata: Metadata = {
   }
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const cookies = (await headers()).get('cookie')
+
+  // Reset SSR state when no cookies to prevent cross-request state leakage
+  if (!cookies) {
+    wagmiAdapter.resetSSRState()
+  }
+
   return (
     <html lang="en">
       <body>
-        <ContextProvider cookies={null}>{children}</ContextProvider>
+        <ContextProvider cookies={cookies}>{children}</ContextProvider>
       </body>
     </html>
   )
