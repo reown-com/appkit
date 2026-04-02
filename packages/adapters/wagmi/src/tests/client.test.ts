@@ -1734,3 +1734,105 @@ describe('WagmiAdapter - BaseAccount lazy initialization', () => {
     expect(result.provider).toBe(providedProvider as any)
   })
 })
+
+describe('WagmiAdapter - resetSSRState', () => {
+  it('should reset wagmi config state to disconnected', () => {
+    const mockConnections = new Map([
+      ['connector1', { connector: { id: 'connector1' }, accounts: ['0x123'] }]
+    ])
+
+    const setStateSpy = vi.fn((fn: (state: any) => any) => {
+      const newState = fn({
+        connections: mockConnections,
+        current: 'connector1',
+        status: 'connected'
+      })
+      expect(newState.connections).toBeInstanceOf(Map)
+      expect(newState.connections.size).toBe(0)
+      expect(newState.current).toBeNull()
+      expect(newState.status).toBe('disconnected')
+    })
+
+    const mockConfig = {
+      chains: mockCaipNetworks,
+      connectors: [],
+      state: {
+        connections: mockConnections
+      },
+      setState: setStateSpy,
+      _internal: {
+        connectors: {
+          setup: vi.fn(connector => connector),
+          setState: vi.fn()
+        }
+      }
+    } as unknown as Config
+
+    vi.spyOn(wagmiCore, 'createConfig').mockReturnValue(mockConfig)
+
+    const adapter = new WagmiAdapter({
+      networks: mockNetworks,
+      projectId: mockProjectId,
+      ssr: true
+    })
+
+    adapter.wagmiConfig = mockConfig
+
+    adapter.resetSSRState()
+
+    expect(setStateSpy).toHaveBeenCalled()
+    expect(mockConnections.size).toBe(0)
+  })
+
+  it('should return early when wagmiConfig is not set', () => {
+    const adapter = new WagmiAdapter({
+      networks: mockNetworks,
+      projectId: mockProjectId,
+      ssr: true
+    })
+
+    // Set wagmiConfig to undefined to test early return
+    adapter.wagmiConfig = undefined as unknown as Config
+
+    // This should not throw
+    expect(() => adapter.resetSSRState()).not.toThrow()
+  })
+
+  it('should clear connections map after setState', () => {
+    const mockConnections = new Map([
+      ['connector1', { connector: { id: 'connector1' }, accounts: ['0x123'] }],
+      ['connector2', { connector: { id: 'connector2' }, accounts: ['0x456'] }]
+    ])
+
+    const mockConfig = {
+      chains: mockCaipNetworks,
+      connectors: [],
+      state: {
+        connections: mockConnections
+      },
+      setState: vi.fn(),
+      _internal: {
+        connectors: {
+          setup: vi.fn(connector => connector),
+          setState: vi.fn()
+        }
+      }
+    } as unknown as Config
+
+    vi.spyOn(wagmiCore, 'createConfig').mockReturnValue(mockConfig)
+
+    const adapter = new WagmiAdapter({
+      networks: mockNetworks,
+      projectId: mockProjectId,
+      ssr: true
+    })
+
+    adapter.wagmiConfig = mockConfig
+
+    expect(mockConnections.size).toBe(2)
+
+    adapter.resetSSRState()
+
+    expect(mockConnections.size).toBe(0)
+  })
+})
