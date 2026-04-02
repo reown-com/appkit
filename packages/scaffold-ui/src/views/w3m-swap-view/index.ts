@@ -299,6 +299,7 @@ export class W3mSwapView extends LitElement {
       .price=${myToken?.price}
       .marketValue=${marketValue}
       .onSetMaxValue=${this.onSetMaxValue.bind(this)}
+      ?autoFocus=${target === 'sourceToken'}
     ></w3m-swap-input>`
   }
 

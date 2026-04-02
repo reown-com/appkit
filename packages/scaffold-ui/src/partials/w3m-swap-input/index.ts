@@ -45,6 +45,16 @@ export class W3mSwapInput extends LitElement {
     | ((target: SwapInputTarget, balance: string | undefined) => void)
     | null = null
 
+  @property({ type: Boolean }) public autoFocus = false
+
+  // -- Lifecycle ----------------------------------------- //
+  public override firstUpdated() {
+    if (this.autoFocus) {
+      const input = this.shadowRoot?.querySelector('input')
+      input?.focus()
+    }
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     const marketValue = this.marketValue || '0'
