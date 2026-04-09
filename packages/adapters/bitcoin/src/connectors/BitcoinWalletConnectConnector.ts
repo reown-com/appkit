@@ -77,10 +77,11 @@ export class BitcoinWalletConnectConnector
 
   public async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
     this.checkIfMethodIsSupported('getAccountAddresses')
+    const account = this.getAccount(true)
 
     const addresses = await this.internalRequest({
       method: 'getAccountAddresses',
-      params: undefined
+      params: { account }
     })
 
     return addresses.map(address => ({ address, purpose: AddressPurpose.Payment }))
@@ -210,6 +211,11 @@ export namespace WalletConnectProvider {
     memo?: string
   }
 
+  export type WCGetAccountAddressesParams = {
+    account: string
+    intentions?: string[]
+  }
+
   export type WCGetAccountAddressesResponse = {
     address: string
     publicKey: Uint8Array
@@ -240,7 +246,7 @@ export namespace WalletConnectProvider {
   export type RequestMethods = {
     signMessage: Request<WCSignMessageParams, WCSignMessageResponse>
     sendTransfer: Request<WCSendTransferParams, WCSendTransferResponse>
-    getAccountAddresses: Request<undefined, string[]>
+    getAccountAddresses: Request<WCGetAccountAddressesParams, string[]>
     signPsbt: Request<WCSignPSBTParams, WCSignPSBTResponse>
   }
 
