@@ -39,23 +39,46 @@ export type { AppKitOptions }
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitNetwork(): Ref<UseAppKitNetworkReturn> {
+  const networkState = ChainController.state.activeChain
+    ? ChainController.state.chains.get(ChainController.state.activeChain)?.networkState
+    : undefined
+
   const state = ref({
     caipNetwork: ChainController.state.activeCaipNetwork,
     chainId: ChainController.state.activeCaipNetwork?.id,
     caipNetworkId: ChainController.state.activeCaipNetwork?.caipNetworkId,
+    approvedCaipNetworkIds: networkState?.approvedCaipNetworkIds,
+    supportsAllNetworks: networkState?.supportsAllNetworks ?? true,
     switchNetwork: async (network: AppKitNetwork) => {
       await modal?.switchNetwork(network)
     }
   })
 
-  const unsubscribe = ChainController.subscribeKey('activeCaipNetwork', val => {
-    state.value.caipNetwork = val
-    state.value.chainId = val?.id
-    state.value.caipNetworkId = val?.caipNetworkId
-  })
+  const unsubscribes: (() => void)[] = []
+
+  unsubscribes.push(
+    ChainController.subscribeKey('activeCaipNetwork', val => {
+      state.value.caipNetwork = val
+      state.value.chainId = val?.id
+      state.value.caipNetworkId = val?.caipNetworkId
+
+      const ns = ChainController.state.activeChain
+        ? ChainController.state.chains.get(ChainController.state.activeChain)?.networkState
+        : undefined
+      state.value.approvedCaipNetworkIds = ns?.approvedCaipNetworkIds
+      state.value.supportsAllNetworks = ns?.supportsAllNetworks ?? true
+    })
+  )
+
+  unsubscribes.push(
+    ChainController.subscribeChainProp('networkState', networkState => {
+      state.value.approvedCaipNetworkIds = networkState?.approvedCaipNetworkIds
+      state.value.supportsAllNetworks = networkState?.supportsAllNetworks ?? true
+    })
+  )
 
   onUnmounted(() => {
-    unsubscribe()
+    unsubscribes.forEach(u => u())
   })
 
   return state

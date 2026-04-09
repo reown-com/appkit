@@ -66,13 +66,44 @@ describe('useAppKitNetwork', () => {
   })
 
   it('should return the correct network state', () => {
-    useSnapshot.mockReturnValue({ activeCaipNetwork: extendedMainnet })
+    useSnapshot.mockReturnValue({
+      activeCaipNetwork: extendedMainnet,
+      activeChain: 'eip155',
+      chains: new Map([
+        [
+          'eip155',
+          {
+            networkState: {
+              approvedCaipNetworkIds: ['eip155:1', 'eip155:137'],
+              supportsAllNetworks: false
+            }
+          }
+        ]
+      ])
+    })
 
-    const { caipNetwork, chainId } = useAppKitNetworkCore()
+    const { caipNetwork, chainId, approvedCaipNetworkIds, supportsAllNetworks } =
+      useAppKitNetworkCore()
 
     expect(caipNetwork).toBe(extendedMainnet)
     expect(chainId).toBe(1)
+    expect(approvedCaipNetworkIds).toEqual(['eip155:1', 'eip155:137'])
+    expect(supportsAllNetworks).toBe(false)
     expect(useSnapshot).toHaveBeenCalledWith(ChainController.state)
+  })
+
+  it('should return defaults when no chain is active', () => {
+    useSnapshot.mockReturnValue({
+      activeCaipNetwork: undefined,
+      activeChain: undefined,
+      chains: new Map()
+    })
+
+    const { caipNetwork, approvedCaipNetworkIds, supportsAllNetworks } = useAppKitNetworkCore()
+
+    expect(caipNetwork).toBeUndefined()
+    expect(approvedCaipNetworkIds).toBeUndefined()
+    expect(supportsAllNetworks).toBe(true)
   })
 })
 
@@ -855,7 +886,8 @@ describe('useAppKitWallets', () => {
       resetWcUri: expect.any(Function),
       resetConnectingWallet: expect.any(Function),
       getWcUri: expect.any(Function),
-      wcError: false
+      wcError: false,
+      wcClientId: null
     })
   })
 
@@ -903,6 +935,9 @@ describe('useAppKitWallets', () => {
         initialized: true,
         connectingWallet: undefined
       })
+      .mockReturnValueOnce({
+        clientId: null
+      })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue(mockWallets)
     vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue(mockWcWallets)
@@ -943,6 +978,9 @@ describe('useAppKitWallets', () => {
         initialized: true,
         connectingWallet: mockWalletItem
       })
+      .mockReturnValueOnce({
+        clientId: 'relay-client-abc123'
+      })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
     vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
@@ -955,6 +993,7 @@ describe('useAppKitWallets', () => {
     expect(result.connectingWallet).toEqual(mockWalletItem)
     expect(result.page).toBe(2)
     expect(result.count).toBe(50)
+    expect(result.wcClientId).toBe('relay-client-abc123')
   })
 
   it('should fetch wallets without query', async () => {
@@ -979,6 +1018,9 @@ describe('useAppKitWallets', () => {
       .mockReturnValueOnce({
         initialized: true,
         connectingWallet: undefined
+      })
+      .mockReturnValueOnce({
+        clientId: null
       })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
@@ -1020,6 +1062,9 @@ describe('useAppKitWallets', () => {
         initialized: true,
         connectingWallet: undefined
       })
+      .mockReturnValueOnce({
+        clientId: null
+      })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
     vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
@@ -1056,6 +1101,9 @@ describe('useAppKitWallets', () => {
       .mockReturnValueOnce({
         initialized: true,
         connectingWallet: undefined
+      })
+      .mockReturnValueOnce({
+        clientId: null
       })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
@@ -1094,6 +1142,9 @@ describe('useAppKitWallets', () => {
       .mockReturnValueOnce({
         initialized: true,
         connectingWallet: undefined
+      })
+      .mockReturnValueOnce({
+        clientId: null
       })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
@@ -1135,6 +1186,9 @@ describe('useAppKitWallets', () => {
         initialized: true,
         connectingWallet: undefined
       })
+      .mockReturnValueOnce({
+        clientId: null
+      })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
     vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
@@ -1170,6 +1224,9 @@ describe('useAppKitWallets', () => {
         initialized: true,
         connectingWallet: undefined
       })
+      .mockReturnValueOnce({
+        clientId: null
+      })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
     vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
@@ -1204,6 +1261,9 @@ describe('useAppKitWallets', () => {
       .mockReturnValueOnce({
         initialized: true,
         connectingWallet: undefined
+      })
+      .mockReturnValueOnce({
+        clientId: null
       })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
@@ -1246,6 +1306,9 @@ describe('useAppKitWallets', () => {
         initialized: true,
         connectingWallet: undefined
       })
+      .mockReturnValueOnce({
+        clientId: null
+      })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
     vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
@@ -1284,6 +1347,9 @@ describe('useAppKitWallets', () => {
       .mockReturnValueOnce({
         initialized: true,
         connectingWallet: undefined
+      })
+      .mockReturnValueOnce({
+        clientId: null
       })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
@@ -1330,6 +1396,9 @@ describe('useAppKitWallets', () => {
         initialized: true,
         connectingWallet: undefined
       })
+      .mockReturnValueOnce({
+        clientId: null
+      })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
     vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
@@ -1373,6 +1442,9 @@ describe('useAppKitWallets', () => {
         initialized: true,
         connectingWallet: undefined
       })
+      .mockReturnValueOnce({
+        clientId: null
+      })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
     vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
@@ -1408,6 +1480,9 @@ describe('useAppKitWallets', () => {
       .mockReturnValueOnce({
         initialized: true,
         connectingWallet: undefined
+      })
+      .mockReturnValueOnce({
+        clientId: null
       })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
@@ -1448,6 +1523,9 @@ describe('useAppKitWallets', () => {
         initialized: true,
         connectingWallet: undefined
       })
+      .mockReturnValueOnce({
+        clientId: null
+      })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
     vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
@@ -1480,6 +1558,9 @@ describe('useAppKitWallets', () => {
       .mockReturnValueOnce({
         initialized: true,
         connectingWallet: undefined
+      })
+      .mockReturnValueOnce({
+        clientId: null
       })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
@@ -1516,6 +1597,9 @@ describe('useAppKitWallets', () => {
         initialized: true,
         connectingWallet: undefined
       })
+      .mockReturnValueOnce({
+        clientId: null
+      })
 
     const mockSearchWalletItems = mockSearchWallets.map(w => ({
       ...mockWalletItem,
@@ -1549,6 +1633,9 @@ describe('useAppKitWallets', () => {
       .mockReturnValueOnce({
         initialized: true,
         connectingWallet: undefined
+      })
+      .mockReturnValueOnce({
+        clientId: null
       })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
@@ -1590,6 +1677,9 @@ describe('useAppKitWallets', () => {
       .mockReturnValueOnce({
         initialized: true,
         connectingWallet: undefined
+      })
+      .mockReturnValueOnce({
+        clientId: null
       })
 
     vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])

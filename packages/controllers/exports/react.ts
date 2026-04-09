@@ -12,6 +12,7 @@ import {
 import { AlertController } from '../src/controllers/AlertController.js'
 import { ApiController } from '../src/controllers/ApiController.js'
 import { AssetController } from '../src/controllers/AssetController.js'
+import { BlockchainApiController } from '../src/controllers/BlockchainApiController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
@@ -80,14 +81,18 @@ export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
 
 export function useAppKitNetworkCore(): Pick<
   UseAppKitNetworkReturn,
-  'caipNetwork' | 'chainId' | 'caipNetworkId'
+  'caipNetwork' | 'chainId' | 'caipNetworkId' | 'approvedCaipNetworkIds' | 'supportsAllNetworks'
 > {
-  const { activeCaipNetwork } = useSnapshot(ChainController.state)
+  const { activeCaipNetwork, activeChain, chains } = useSnapshot(ChainController.state)
+
+  const networkState = activeChain ? chains.get(activeChain)?.networkState : undefined
 
   return {
     caipNetwork: activeCaipNetwork as CaipNetwork,
     chainId: activeCaipNetwork?.id,
-    caipNetworkId: activeCaipNetwork?.caipNetworkId
+    caipNetworkId: activeCaipNetwork?.caipNetworkId,
+    approvedCaipNetworkIds: networkState?.approvedCaipNetworkIds,
+    supportsAllNetworks: networkState?.supportsAllNetworks ?? true
   }
 }
 
@@ -418,6 +423,11 @@ export interface UseAppKitWalletsReturn {
    * Boolean that indicates if there was an error fetching the WalletConnect URI.
    */
   wcError: boolean
+
+  /**
+   * The WalletConnect relay client ID. Set after a WalletConnect connection is established.
+   */
+  wcClientId: string | null
 }
 
 /**
@@ -438,6 +448,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     count
   } = useSnapshot(ApiController.state)
   const { initialized, connectingWallet } = useSnapshot(PublicStateController.state)
+  const { clientId: wcClientId } = useSnapshot(BlockchainApiController.state)
 
   // Alert if headless is not enabled
   useEffect(() => {
@@ -457,8 +468,9 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
    * Pre-fetches the WalletConnect URI. Call this when user selects a wallet on mobile.
    * Uses 'auto' cache to reuse existing valid URI or fetch new one if expired.
    */
-  async function getWcUri() {
+  async function getWcUri(options?: { wcPayUrl?: string }) {
     resetWcUri()
+    setCurrentWcPayUrl(options?.wcPayUrl)
     await ConnectionController.connectWalletConnect({ cache: 'auto' })
   }
 
@@ -590,7 +602,8 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
       fetchWallets: () => Promise.resolve(),
       resetWcUri,
       resetConnectingWallet,
-      getWcUri: () => Promise.resolve()
+      getWcUri: () => Promise.resolve(),
+      wcClientId: null
     }
   }
 
@@ -612,6 +625,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
     fetchWallets,
     resetWcUri,
     resetConnectingWallet,
-    getWcUri
+    getWcUri,
+    wcClientId
   }
 }
