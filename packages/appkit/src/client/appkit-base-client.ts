@@ -2131,6 +2131,13 @@ export abstract class AppKitBaseClient {
     chain: ChainNamespace,
     shouldRefresh = false
   ) => {
+    if (caipAddress !== null) {
+      const parts = caipAddress.split(':')
+      if (parts.length !== 3 || parts.some(p => !p)) {
+        return
+      }
+    }
+
     ChainController.setAccountProp('caipAddress', caipAddress, chain, shouldRefresh)
     ChainController.setAccountProp(
       'address',
