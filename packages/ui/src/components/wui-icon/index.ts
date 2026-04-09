@@ -1,8 +1,8 @@
 import type { TemplateResult } from 'lit'
 import { LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { html, unsafeStatic } from 'lit/static-html.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { html, unsafeStatic } from 'lit/static-html.js'
 
 import { appStoreSvg } from '../../assets/svg/app-store.js'
 import { appleSvg } from '../../assets/svg/apple.js'
