@@ -2134,6 +2134,8 @@ export abstract class AppKitBaseClient {
     if (caipAddress !== null) {
       const parts = caipAddress.split(':')
       if (parts.length !== 3 || parts.some(p => !p)) {
+        console.warn(`[AppKit] setCaipAddress: invalid CAIP-10 address rejected: "${caipAddress}"`)
+
         return
       }
     }
