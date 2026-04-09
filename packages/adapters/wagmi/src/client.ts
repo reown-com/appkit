@@ -1079,6 +1079,14 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private toChecksummedAddress(address: string) {
-    return checksumAddress(address.toLowerCase() as `0x${string}`)
+    if (!address) {
+      return address as `0x${string}`
+    }
+
+    try {
+      return checksumAddress(address.toLowerCase() as `0x${string}`)
+    } catch {
+      return address as `0x${string}`
+    }
   }
 }
