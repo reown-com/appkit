@@ -182,6 +182,17 @@ describe('FetchUtil', () => {
       expect(url.toString()).toBe('https://api.example.com/test?key=value&clientId=test-client-id')
     })
 
+    it('should include empty string values in query params', () => {
+      const url = fetchUtil['createUrl']({
+        path: '/test',
+        params: { projectId: 'abc123', key: '', empty: undefined }
+      })
+
+      expect(url.toString()).toBe(
+        'https://api.example.com/test?projectId=abc123&key=&clientId=test-client-id'
+      )
+    })
+
     it('should handle paths with leading slash', () => {
       const url = fetchUtil['createUrl']({ path: 'test' })
 
