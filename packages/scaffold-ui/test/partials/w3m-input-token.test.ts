@@ -78,7 +78,7 @@ describe('W3mInputToken', () => {
 
   it('should display total value when token amount is set', async () => {
     const element: W3mInputToken = await fixture(
-      html`<w3m-input-token .token=${MOCK_TOKEN} .sendTokenAmount=${50}></w3m-input-token>`
+      html`<w3m-input-token .token=${MOCK_TOKEN} .sendTokenAmount=${'50'}></w3m-input-token>`
     )
 
     const totalValue = element.shadowRoot?.querySelector('.totalValue')
@@ -94,7 +94,7 @@ describe('W3mInputToken', () => {
     const maxLink = element.shadowRoot?.querySelector('wui-link')
     maxLink?.click()
 
-    expect(setTokenAmountSpy).toHaveBeenCalledWith(100)
+    expect(setTokenAmountSpy).toHaveBeenCalledWith('100.00000000000000000000')
   })
 
   it('should handle max amount click for native token', async () => {
@@ -119,6 +119,6 @@ describe('W3mInputToken', () => {
     const input = element.shadowRoot?.querySelector('wui-input-amount')
     input?.dispatchEvent(new CustomEvent('inputChange', { detail: 75 }))
 
-    expect(setTokenAmountSpy).toHaveBeenCalledWith(75)
+    expect(setTokenAmountSpy).toHaveBeenCalledWith('75')
   })
 })

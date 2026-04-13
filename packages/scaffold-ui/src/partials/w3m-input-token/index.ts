@@ -23,7 +23,7 @@ export class W3mInputToken extends LitElement {
 
   @property({ type: Boolean }) public readOnly = false
 
-  @property({ type: Number }) public sendTokenAmount?: number
+  @property({ type: String }) public sendTokenAmount?: string
 
   @property({ type: Boolean }) public isInsufficientBalance = false
 
@@ -40,7 +40,7 @@ export class W3mInputToken extends LitElement {
         <wui-input-amount
           @inputChange=${this.onInputChange.bind(this)}
           ?disabled=${isDisabled}
-          .value=${this.sendTokenAmount ? String(this.sendTokenAmount) : ''}
+          .value=${this.sendTokenAmount ?? ''}
           ?error=${Boolean(this.isInsufficientBalance)}
         ></wui-input-amount>
         ${this.buttonTemplate()}
@@ -77,7 +77,7 @@ export class W3mInputToken extends LitElement {
   private sendValueTemplate() {
     if (!this.readOnly && this.token && this.sendTokenAmount) {
       const price = this.token.price
-      const totalValue = price * this.sendTokenAmount
+      const totalValue = price * Number(this.sendTokenAmount)
 
       return html`<wui-text class="totalValue" variant="sm-regular" color="secondary"
         >${totalValue
@@ -121,14 +121,14 @@ export class W3mInputToken extends LitElement {
   }
 
   private onInputChange(event: InputEvent) {
-    SendController.setTokenAmount(event.detail)
+    SendController.setTokenAmount(String(event.detail))
   }
 
   private onMaxClick() {
     if (this.token) {
       const maxValue = NumberUtil.bigNumber(this.token.quantity.numeric)
 
-      SendController.setTokenAmount(Number(maxValue.toFixed(20)))
+      SendController.setTokenAmount(maxValue.toFixed(20))
     }
   }
 }
