@@ -1276,10 +1276,10 @@ export abstract class AppKitBaseClient {
           address,
           chainId: syncAccountChainId,
           chainNamespace
-        })
+        }).catch(() => null)
       } else if (!isActiveChain && syncAccountChainId) {
         this.syncAccountInfo(address, syncAccountChainId, chainNamespace)
-        this.syncBalance({ address, chainId: syncAccountChainId, chainNamespace })
+        this.syncBalance({ address, chainId: syncAccountChainId, chainNamespace }).catch(() => null)
       } else {
         this.syncAccountInfo(address, chainId, chainNamespace)
       }
@@ -1666,7 +1666,7 @@ export abstract class AppKitBaseClient {
         address,
         chainId,
         chainNamespace
-      })
+      }).catch(() => null)
     }
   }
 
@@ -2131,6 +2131,15 @@ export abstract class AppKitBaseClient {
     chain: ChainNamespace,
     shouldRefresh = false
   ) => {
+    if (caipAddress !== null) {
+      const parts = caipAddress.split(':')
+      if (parts.length !== 3 || parts.some(p => !p)) {
+        console.warn(`[AppKit] setCaipAddress: invalid CAIP-10 address rejected: "${caipAddress}"`)
+
+        return
+      }
+    }
+
     ChainController.setAccountProp('caipAddress', caipAddress, chain, shouldRefresh)
     ChainController.setAccountProp(
       'address',

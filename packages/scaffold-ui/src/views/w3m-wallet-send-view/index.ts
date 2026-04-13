@@ -61,8 +61,6 @@ export class W3mWalletSendView extends LitElement {
 
   @state() private caipAddress = ChainController.getAccountData()?.caipAddress
 
-  @state() private message: SendButtonMessage = SEND_BUTTON_MESSAGE.PREVIEW_SEND
-
   @state() private disconnecting = false
 
   public constructor() {
@@ -112,8 +110,7 @@ export class W3mWalletSendView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.getMessage()
-
+    const message = this.getMessage()
     const isReadOnly = Boolean(this.params)
 
     return html` <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const}>
@@ -122,7 +119,7 @@ export class W3mWalletSendView extends LitElement {
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
           ?readOnly=${isReadOnly}
-          ?isInsufficientBalance=${this.message === SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS}
+          ?isInsufficientBalance=${message === SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS}
         ></w3m-input-token>
         <wui-icon-box size="md" variant="secondary" icon="arrowBottom"></wui-icon-box>
         <w3m-input-address
@@ -130,7 +127,7 @@ export class W3mWalletSendView extends LitElement {
           .value=${this.receiverProfileName ? this.receiverProfileName : this.receiverAddress}
         ></w3m-input-address>
       </wui-flex>
-      ${this.buttonTemplate()}
+      ${this.buttonTemplate(message)}
     </wui-flex>`
   }
 
@@ -166,18 +163,16 @@ export class W3mWalletSendView extends LitElement {
     }
   }
 
-  private getMessage() {
-    this.message = SEND_BUTTON_MESSAGE.PREVIEW_SEND
-
-    if (
-      this.receiverAddress &&
-      !CoreHelperUtil.isAddress(this.receiverAddress, ChainController.state.activeChain)
-    ) {
-      this.message = SEND_BUTTON_MESSAGE.INVALID_ADDRESS
+  private getMessage(): SendButtonMessage {
+    if (!this.token) {
+      return SEND_BUTTON_MESSAGE.SELECT_TOKEN
     }
 
-    if (!this.receiverAddress) {
-      this.message = SEND_BUTTON_MESSAGE.ADD_ADDRESS
+    if (this.sendTokenAmount && this.token.price) {
+      const value = this.sendTokenAmount * this.token.price
+      if (!value) {
+        return SEND_BUTTON_MESSAGE.INCORRECT_VALUE
+      }
     }
 
     if (
@@ -188,8 +183,8 @@ export class W3mWalletSendView extends LitElement {
       this.message = SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS
     }
 
-    if (!this.sendTokenAmount) {
-      this.message = SEND_BUTTON_MESSAGE.ADD_AMOUNT
+    if (this.sendTokenAmount > Number(this.token.quantity.numeric)) {
+      return SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS
     }
 
     if (this.sendTokenAmount && this.token?.price) {
@@ -199,14 +194,16 @@ export class W3mWalletSendView extends LitElement {
       }
     }
 
-    if (!this.token) {
-      this.message = SEND_BUTTON_MESSAGE.SELECT_TOKEN
+    if (!CoreHelperUtil.isAddress(this.receiverAddress, ChainController.state.activeChain)) {
+      return SEND_BUTTON_MESSAGE.INVALID_ADDRESS
     }
+
+    return SEND_BUTTON_MESSAGE.PREVIEW_SEND
   }
 
-  private buttonTemplate() {
-    const isDisabled = !this.message.startsWith(SEND_BUTTON_MESSAGE.PREVIEW_SEND)
-    const isInsufficientBalance = this.message === SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS
+  private buttonTemplate(message: SendButtonMessage) {
+    const isDisabled = !message.startsWith(SEND_BUTTON_MESSAGE.PREVIEW_SEND)
+    const isInsufficientBalance = message === SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS
     const isReadOnly = Boolean(this.params)
 
     if (isInsufficientBalance && !isReadOnly) {
@@ -245,7 +242,7 @@ export class W3mWalletSendView extends LitElement {
         ?loading=${this.loading}
         fullWidth
       >
-        ${this.message}
+        ${message}
       </wui-button>
     </wui-flex>`
   }
