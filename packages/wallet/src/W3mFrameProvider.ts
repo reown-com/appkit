@@ -15,6 +15,28 @@ import type { W3mFrameTypes } from './W3mFrameTypes.js'
 
 type AppEventType = Omit<W3mFrameTypes.AppEvent, 'id'>
 
+// -- Helpers ----------------------------------------------------------------
+function serializeBigInts<T>(value: T): T {
+  if (typeof value === 'bigint') {
+    return `0x${value.toString(16)}` as unknown as T
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(serializeBigInts) as unknown as T
+  }
+
+  if (value !== null && typeof value === 'object') {
+    const result: Record<string, unknown> = {}
+    for (const [k, v] of Object.entries(value)) {
+      result[k] = serializeBigInts(v)
+    }
+
+    return result as T
+  }
+
+  return value
+}
+
 interface W3mFrameProviderConfig {
   projectId: string
   chainId?: W3mFrameTypes.Network['chainId']
@@ -541,7 +563,7 @@ export class W3mFrameProvider {
       this.rpcRequestHandler?.(req)
       const response = await this.appEvent<'Rpc'>({
         type: W3mFrameConstants.APP_RPC_REQUEST,
-        payload: request
+        payload: serializeBigInts(request)
       } as W3mFrameTypes.AppEvent)
 
       this.rpcSuccessHandler?.(response, request)
