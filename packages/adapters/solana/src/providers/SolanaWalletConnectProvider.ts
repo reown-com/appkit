@@ -232,7 +232,7 @@ export class SolanaWalletConnectProvider
   }
 
   public setDefaultChain(chainId: string) {
-    this.provider.setDefaultChain(chainId)
+    this.provider?.setDefaultChain(chainId)
   }
 
   // -- Private ------------------------------------------ //
