@@ -1276,10 +1276,10 @@ export abstract class AppKitBaseClient {
           address,
           chainId: syncAccountChainId,
           chainNamespace
-        })
+        }).catch(() => null)
       } else if (!isActiveChain && syncAccountChainId) {
         this.syncAccountInfo(address, syncAccountChainId, chainNamespace)
-        this.syncBalance({ address, chainId: syncAccountChainId, chainNamespace })
+        this.syncBalance({ address, chainId: syncAccountChainId, chainNamespace }).catch(() => null)
       } else {
         this.syncAccountInfo(address, chainId, chainNamespace)
       }
@@ -1666,7 +1666,7 @@ export abstract class AppKitBaseClient {
         address,
         chainId,
         chainNamespace
-      })
+      }).catch(() => null)
     }
   }
 
