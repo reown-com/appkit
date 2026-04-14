@@ -168,33 +168,28 @@ export class W3mWalletSendView extends LitElement {
       return SEND_BUTTON_MESSAGE.SELECT_TOKEN
     }
 
-    if (this.sendTokenAmount && this.token.price) {
-      const value = this.sendTokenAmount * this.token.price
+    if (!this.sendTokenAmount) {
+      return SEND_BUTTON_MESSAGE.ADD_AMOUNT
+    }
+
+    if (this.token.price) {
+      const value = Number(this.sendTokenAmount) * this.token.price
       if (!value) {
         return SEND_BUTTON_MESSAGE.INCORRECT_VALUE
       }
     }
 
-    if (
-      this.sendTokenAmount &&
-      this.token &&
-      NumberUtil.bigNumber(this.sendTokenAmount).gt(this.token.quantity.numeric)
-    ) {
-      this.message = SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS
-    }
-
-    if (this.sendTokenAmount > Number(this.token.quantity.numeric)) {
+    if (NumberUtil.bigNumber(this.sendTokenAmount).gt(this.token.quantity.numeric)) {
       return SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS
     }
 
-    if (this.sendTokenAmount && this.token?.price) {
-      const value = Number(this.sendTokenAmount) * this.token.price
-      if (!value) {
-        this.message = SEND_BUTTON_MESSAGE.INCORRECT_VALUE
-      }
+    if (!this.receiverAddress) {
+      return SEND_BUTTON_MESSAGE.ADD_ADDRESS
     }
 
-    if (!CoreHelperUtil.isAddress(this.receiverAddress, ChainController.state.activeChain)) {
+    if (
+      !CoreHelperUtil.isAddress(this.receiverAddress, ChainController.state.activeChain)
+    ) {
       return SEND_BUTTON_MESSAGE.INVALID_ADDRESS
     }
 
