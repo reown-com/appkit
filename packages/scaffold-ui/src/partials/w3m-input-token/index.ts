@@ -126,9 +126,10 @@ export class W3mInputToken extends LitElement {
 
   private onMaxClick() {
     if (this.token) {
+      const decimals = Number(this.token.quantity.decimals)
       const maxValue = NumberUtil.bigNumber(this.token.quantity.numeric)
 
-      SendController.setTokenAmount(maxValue.toFixed(20))
+      SendController.setTokenAmount(maxValue.toFixed(decimals))
     }
   }
 }
