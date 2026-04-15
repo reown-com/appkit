@@ -129,7 +129,7 @@ export class W3mInputToken extends LitElement {
       const decimals = Number(this.token.quantity.decimals)
       const maxValue = NumberUtil.bigNumber(this.token.quantity.numeric)
 
-      SendController.setTokenAmount(maxValue.toFixed(decimals))
+      SendController.setTokenAmount(maxValue.toFixed(decimals, 0))
     }
   }
 }

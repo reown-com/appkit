@@ -312,7 +312,7 @@ export class W3mSwapView extends LitElement {
     }
     const token = target === 'sourceToken' ? this.sourceToken : this.toToken
     const decimals = token?.decimals ?? 18
-    this.handleChangeAmount(target, maxValue.toFixed(decimals))
+    this.handleChangeAmount(target, maxValue.toFixed(decimals, 0))
   }
 
   private templateDetails() {
