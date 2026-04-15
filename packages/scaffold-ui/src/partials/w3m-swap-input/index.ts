@@ -50,8 +50,10 @@ export class W3mSwapInput extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
     if (this.autoFocus) {
-      const input = this.shadowRoot?.querySelector('input')
-      input?.focus()
+      requestAnimationFrame(() => {
+        const input = this.shadowRoot?.querySelector('input')
+        input?.focus()
+      })
     }
   }
 
