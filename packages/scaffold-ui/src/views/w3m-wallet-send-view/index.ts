@@ -63,6 +63,8 @@ export class W3mWalletSendView extends LitElement {
 
   @state() private disconnecting = false
 
+  @state() private gasFee = SwapController.state.gasFee
+
   public constructor() {
     super()
     // Only load balances and network price if a token is set, else they will be loaded in the select token view
@@ -95,6 +97,9 @@ export class W3mWalletSendView extends LitElement {
           this.receiverAddress = val.receiverAddress
           this.receiverProfileName = val.receiverProfileName
           this.loading = val.loading
+        }),
+        SwapController.subscribeKey('gasFee', val => {
+          this.gasFee = val
         })
       ]
     )
@@ -118,6 +123,7 @@ export class W3mWalletSendView extends LitElement {
         <w3m-input-token
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
+          .gasPrice=${this.gasFee}
           ?readOnly=${isReadOnly}
           ?isInsufficientBalance=${message === SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS}
         ></w3m-input-token>
@@ -139,6 +145,7 @@ export class W3mWalletSendView extends LitElement {
 
   private async fetchNetworkPrice() {
     await SwapController.getNetworkTokenPrice()
+    await SwapController.getInitialGasPrice()
   }
 
   private onButtonClick() {

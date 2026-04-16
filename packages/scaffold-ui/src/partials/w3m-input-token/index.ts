@@ -27,6 +27,8 @@ export class W3mInputToken extends LitElement {
 
   @property({ type: Boolean }) public isInsufficientBalance = false
 
+  @property({ type: String }) public gasPrice?: string
+
   // -- Render -------------------------------------------- //
   public override render() {
     const isDisabled = this.readOnly || !this.token
@@ -129,7 +131,23 @@ export class W3mInputToken extends LitElement {
       const decimals = Number(this.token.quantity.decimals)
       const maxValue = NumberUtil.bigNumber(this.token.quantity.numeric)
 
-      SendController.setTokenAmount(maxValue.toFixed(decimals, 0))
+      // For native tokens (no contract address), subtract estimated gas so the
+      // transaction doesn't consume the entire balance leaving nothing for fees.
+      if (!this.token.address && this.gasPrice) {
+        // 65000 covers EOA recipients (21000) and common contract recipients
+        // such as multisigs and exchange deposit addresses (~25000–50000).
+        const ETH_TRANSFER_GAS_LIMIT = 65000n
+        const gasCostWei = ETH_TRANSFER_GAS_LIMIT * BigInt(this.gasPrice)
+        const gasCost = NumberUtil.bigNumber(gasCostWei.toString()).div(
+          NumberUtil.bigNumber(10).pow(decimals)
+        )
+        const maxAfterGas = maxValue.minus(gasCost)
+        SendController.setTokenAmount(
+          maxAfterGas.gt(0) ? maxAfterGas.toFixed(decimals, 0) : '0'
+        )
+      } else {
+        SendController.setTokenAmount(maxValue.toFixed(decimals, 0))
+      }
     }
   }
 }

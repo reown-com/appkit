@@ -414,7 +414,7 @@ describe('W3mSwapView', () => {
 
     vitestExpect(handleChangeAmountSpy).toHaveBeenCalledWith(
       'sourceToken',
-      '100.00000000000000000000'
+      '100.000000000000000000'
     )
 
     // Wait for debounce timeout
