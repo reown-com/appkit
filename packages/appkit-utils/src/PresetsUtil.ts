@@ -6,9 +6,9 @@ import { ConstantsUtil } from './ConstantsUtil.js'
 export const PresetsUtil = {
   ConnectorExplorerIds: {
     [CommonConstantsUtil.CONNECTOR_ID.COINBASE]:
-      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+      'd0ca99ff52b99abc48743dad0f7fc891e041be73574f7fac4afe5d4bb83845c8',
     [CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]:
-      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+      'd0ca99ff52b99abc48743dad0f7fc891e041be73574f7fac4afe5d4bb83845c8',
     [CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT]:
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
     [CommonConstantsUtil.CONNECTOR_ID.SAFE]:
@@ -73,8 +73,9 @@ export const PresetsUtil = {
     1301: '4eeea7ef-0014-4649-5d1d-07271a80f600',
     // Unichain Mainnet
     130: '2257980a-3463-48c6-cbac-a42d2a956e00',
-    // Monad Testnet
+    // Monad
     10_143: '0a728e83-bacb-46db-7844-948f05434900',
+    143: '0a728e83-bacb-46db-7844-948f05434900',
     // Gnosis
     100: '02b53f6a-e3d4-479e-1cb4-21178987d100',
     // EVMos
@@ -122,11 +123,11 @@ export const PresetsUtil = {
     // TON Testnet
     '-3': '20f673c0-095e-49b2-07cf-eb5049dcf600',
     // TRON
-    '0x2b6653dc': 'dd9de794-d4ce-4c94-682f-a367f926d500',
+    '0x2b6653dc': '3502bb86-cc4e-420f-a387-59ea63a28b00',
     // TRON Shasta Testnet
-    '0x94a9059e': 'dd9de794-d4ce-4c94-682f-a367f926d500',
+    '0x94a9059e': '3502bb86-cc4e-420f-a387-59ea63a28b00',
     // TRON Nile Testnet
-    '0xcd8690dc': 'dd9de794-d4ce-4c94-682f-a367f926d500'
+    '0xcd8690dc': '3502bb86-cc4e-420f-a387-59ea63a28b00'
   } as Record<string, string>,
 
   ConnectorImageIds: {
@@ -154,6 +155,9 @@ export const PresetsUtil = {
     [CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'WALLET_CONNECT',
     [CommonConstantsUtil.CONNECTOR_ID.EIP6963]: 'ANNOUNCED',
     [CommonConstantsUtil.CONNECTOR_ID.AUTH]: 'AUTH',
+    [CommonConstantsUtil.CONNECTOR_ID.COINBASE]: 'EXTERNAL',
+    [CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]: 'EXTERNAL',
+    [CommonConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT]: 'EXTERNAL',
     [ConstantsUtil.CONNECTOR_TYPE_AUTH]: 'AUTH'
   } as Record<string, ConnectorType>,
 

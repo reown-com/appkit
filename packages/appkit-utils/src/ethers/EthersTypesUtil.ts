@@ -3,6 +3,7 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import type { BaseProvider } from './BaseProvider.js'
+import type { CoinbaseWalletProvider } from './CoinbaseProvider.js'
 import type { InjectedProvider } from './InjectedProvider.js'
 import type { SafeProvider } from './SafeProvider.js'
 
@@ -11,6 +12,7 @@ export type Address = `0x${string}`
 export type ProviderType = {
   injected?: InjectedProvider
   baseAccount?: BaseProvider
+  coinbaseWallet?: CoinbaseWalletProvider
   safe?: SafeProvider
   EIP6963?: boolean
   metadata: Metadata

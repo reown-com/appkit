@@ -4,9 +4,9 @@ import type { ConnectorType } from './TypeUtil.js'
 export const PresetsUtil = {
   ConnectorExplorerIds: {
     [ConstantsUtil.CONNECTOR_ID.COINBASE]:
-      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+      'd0ca99ff52b99abc48743dad0f7fc891e041be73574f7fac4afe5d4bb83845c8',
     [ConstantsUtil.CONNECTOR_ID.COINBASE_SDK]:
-      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+      'd0ca99ff52b99abc48743dad0f7fc891e041be73574f7fac4afe5d4bb83845c8',
     [ConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT]:
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
     [ConstantsUtil.CONNECTOR_ID.SAFE]:
@@ -73,6 +73,7 @@ export const PresetsUtil = {
     130: '2257980a-3463-48c6-cbac-a42d2a956e00',
     // Monad Testnet
     10_143: '0a728e83-bacb-46db-7844-948f05434900',
+    143: '0a728e83-bacb-46db-7844-948f05434900',
     // Gnosis
     100: '02b53f6a-e3d4-479e-1cb4-21178987d100',
     // EVMos
@@ -120,11 +121,11 @@ export const PresetsUtil = {
     // TON Testnet
     '-3': '20f673c0-095e-49b2-07cf-eb5049dcf600',
     // TRON
-    '0x2b6653dc': 'dd9de794-d4ce-4c94-682f-a367f926d500',
+    '0x2b6653dc': '3502bb86-cc4e-420f-a387-59ea63a28b00',
     // TRON Shasta Testnet
-    '0x94a9059e': 'dd9de794-d4ce-4c94-682f-a367f926d500',
+    '0x94a9059e': '3502bb86-cc4e-420f-a387-59ea63a28b00',
     // TRON Nile Testnet
-    '0xcd8690dc': 'dd9de794-d4ce-4c94-682f-a367f926d500'
+    '0xcd8690dc': '3502bb86-cc4e-420f-a387-59ea63a28b00'
   } as Record<string, string>,
 
   ConnectorImageIds: {
@@ -151,7 +152,10 @@ export const PresetsUtil = {
     [ConstantsUtil.CONNECTOR_ID.INJECTED]: 'INJECTED',
     [ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'WALLET_CONNECT',
     [ConstantsUtil.CONNECTOR_ID.EIP6963]: 'ANNOUNCED',
-    [ConstantsUtil.CONNECTOR_ID.AUTH]: 'AUTH'
+    [ConstantsUtil.CONNECTOR_ID.AUTH]: 'AUTH',
+    [ConstantsUtil.CONNECTOR_ID.COINBASE]: 'EXTERNAL',
+    [ConstantsUtil.CONNECTOR_ID.COINBASE_SDK]: 'EXTERNAL',
+    [ConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT]: 'EXTERNAL'
   } as Record<string, ConnectorType>,
 
   WalletConnectRpcChainIds: [

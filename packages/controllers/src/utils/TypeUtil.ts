@@ -276,11 +276,13 @@ export interface BlockchainApiSwapTokensRequest {
 export interface BlockchainApiGetAddressBalanceRequest {
   caipNetworkId: string
   address: string
+  method?: string
+  params?: unknown
 }
 
-export interface BlockchainApiGetAddressBalanceResponse {
+export interface BlockchainApiGetAddressBalanceResponse<T = string> {
   ok: boolean
-  result: string
+  result: T
   jsonrpc: string
   id: string
 }
@@ -1423,6 +1425,8 @@ export type UseAppKitNetworkReturn = {
   caipNetwork: CaipNetwork | undefined
   chainId: number | string | undefined
   caipNetworkId: CaipNetworkId | undefined
+  approvedCaipNetworkIds: CaipNetworkId[] | undefined
+  supportsAllNetworks: boolean
   switchNetwork: (network: AppKitNetwork) => Promise<void>
 }
 

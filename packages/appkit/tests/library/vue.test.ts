@@ -3,9 +3,10 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { ProviderController } from '@reown/appkit-controllers'
+import { ChainController, ProviderController } from '@reown/appkit-controllers'
 
 import { type ConnectorType, createAppKit, useAppKitProvider } from '../../exports/vue-core.js'
+import { useAppKitNetwork } from '../../exports/vue.js'
 import { mainnet } from '../mocks/Networks.js'
 
 const TestComponent = defineComponent({
@@ -93,5 +94,94 @@ describe('useAppKitProvider', () => {
     wrapper.unmount()
 
     expect(mockUnsubscribe).toHaveBeenCalled()
+  })
+})
+
+describe('useAppKitNetwork', () => {
+  const NetworkTestComponent = defineComponent({
+    setup() {
+      const state = useAppKitNetwork()
+
+      return { state }
+    },
+    render() {
+      return h('div', {}, [
+        h(
+          'div',
+          { 'data-testid': 'approvedCaipNetworkIds' },
+          JSON.stringify(this.state.approvedCaipNetworkIds)
+        ),
+        h(
+          'div',
+          { 'data-testid': 'supportsAllNetworks' },
+          JSON.stringify(this.state.supportsAllNetworks)
+        )
+      ])
+    }
+  })
+
+  let mockUnsubscribeKey: ReturnType<typeof vi.fn>
+  let mockUnsubscribeChainProp: ReturnType<typeof vi.fn>
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    mockUnsubscribeKey = vi.fn()
+    mockUnsubscribeChainProp = vi.fn()
+    vi.spyOn(ChainController, 'subscribeKey').mockReturnValue(mockUnsubscribeKey)
+    vi.spyOn(ChainController, 'subscribeChainProp').mockReturnValue(mockUnsubscribeChainProp)
+  })
+
+  it('should return defaults when no chain is active', () => {
+    ChainController.state.activeChain = undefined
+
+    const wrapper = mount(NetworkTestComponent)
+
+    expect(wrapper.get('[data-testid="supportsAllNetworks"]').text()).toBe('true')
+  })
+
+  it('should return approved networks from chain networkState', () => {
+    ChainController.state.activeChain = 'eip155'
+    ChainController.state.chains = new Map([
+      [
+        'eip155',
+        {
+          networkState: {
+            approvedCaipNetworkIds: ['eip155:1', 'eip155:137'],
+            supportsAllNetworks: false
+          }
+        }
+      ]
+    ])
+
+    const wrapper = mount(NetworkTestComponent)
+
+    expect(wrapper.get('[data-testid="approvedCaipNetworkIds"]').text()).toBe(
+      '["eip155:1","eip155:137"]'
+    )
+    expect(wrapper.get('[data-testid="supportsAllNetworks"]').text()).toBe('false')
+  })
+
+  it('should subscribe to activeCaipNetwork and networkState', () => {
+    ChainController.state.activeChain = 'eip155'
+    ChainController.state.chains = new Map([
+      ['eip155', { networkState: { supportsAllNetworks: true } }]
+    ])
+
+    const wrapper = mount(NetworkTestComponent)
+
+    expect(ChainController.subscribeKey).toHaveBeenCalledWith(
+      'activeCaipNetwork',
+      expect.any(Function)
+    )
+    expect(ChainController.subscribeChainProp).toHaveBeenCalledWith(
+      'networkState',
+      expect.any(Function)
+    )
+
+    wrapper.unmount()
+
+    expect(mockUnsubscribeKey).toHaveBeenCalled()
+    expect(mockUnsubscribeChainProp).toHaveBeenCalled()
   })
 })
