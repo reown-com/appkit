@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil.js'
 
@@ -122,6 +122,80 @@ describe('CoreHelperUtil', () => {
     ['bip122:mock_chain_id:mock_address', true]
   ])('should validate the value $s is valid caip address $b', (caipAddress, expected) => {
     expect(CoreHelperUtil.isCaipAddress(caipAddress)).toEqual(expected)
+  })
+
+  describe('isMobile', () => {
+    function mockMatchMedia(results: Record<string, boolean>) {
+      vi.spyOn(window, 'matchMedia').mockImplementation(
+        (query: string) =>
+          ({
+            matches: results[query] ?? false,
+            media: query,
+            onchange: null,
+            addListener: vi.fn(),
+            removeListener: vi.fn(),
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            dispatchEvent: vi.fn()
+          }) as MediaQueryList
+      )
+    }
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('should return true for iPhone user agent', () => {
+      vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue(
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1'
+      )
+
+      expect(CoreHelperUtil.isMobile()).toBe(true)
+    })
+
+    it('should return true for Android user agent', () => {
+      vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue(
+        'Mozilla/5.0 (Linux; Android 14; Pixel 8 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36'
+      )
+
+      expect(CoreHelperUtil.isMobile()).toBe(true)
+    })
+
+    it('should return false for non-touch desktop', () => {
+      vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue(
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      )
+      mockMatchMedia({
+        '(pointer:coarse)': false,
+        '(any-pointer:fine)': true
+      })
+
+      expect(CoreHelperUtil.isMobile()).toBe(false)
+    })
+
+    it('should return false for touchscreen desktop/laptop', () => {
+      vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      )
+      mockMatchMedia({
+        '(pointer:coarse)': true,
+        '(any-pointer:fine)': true
+      })
+
+      expect(CoreHelperUtil.isMobile()).toBe(false)
+    })
+
+    it('should return true for coarse-only device without mobile UA', () => {
+      vi.spyOn(navigator, 'userAgent', 'get').mockReturnValue(
+        'Mozilla/5.0 (X11; CrOS armv7l 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+      )
+      mockMatchMedia({
+        '(pointer:coarse)': true,
+        '(any-pointer:fine)': false
+      })
+
+      expect(CoreHelperUtil.isMobile()).toBe(true)
+    })
   })
 
   describe('formatNativeUrl', () => {
