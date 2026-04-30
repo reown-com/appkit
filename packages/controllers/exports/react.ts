@@ -69,6 +69,12 @@ export interface ConnectOptions {
 // -- Hooks ------------------------------------------------------------
 export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
   const { providers, providerIds } = useSnapshot(ProviderController.state)
+  /*
+   * Re-render on network switch even when the provider reference is unchanged,
+   * so consumers wrapping the provider in chain-bound objects (e.g. ethers
+   * BrowserProvider) can reconstruct after switchNetwork. See #5453.
+   */
+  useSnapshot(ChainController.state)
 
   const walletProvider = providers[chainNamespace] as T
   const walletProviderType = providerIds[chainNamespace]

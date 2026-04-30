@@ -10,6 +10,7 @@ import {
   ConnectionController,
   ConnectorController,
   type ConnectorControllerState,
+  ProviderController,
   PublicStateController,
   StorageUtil
 } from '../../exports/index.js'
@@ -18,10 +19,11 @@ import {
   useAppKitConnection,
   useAppKitConnections,
   useAppKitNetworkCore,
+  useAppKitProvider,
   useAppKitWallets,
   useDisconnect
 } from '../../exports/react.js'
-import { extendedMainnet } from '../../exports/testing.js'
+import { extendedMainnet, solanaCaipNetwork } from '../../exports/testing.js'
 import { AssetUtil } from '../../exports/utils.js'
 import { ConnectUtil } from '../../src/utils/ConnectUtil.js'
 import type { WalletItem } from '../../src/utils/ConnectUtil.js'
@@ -325,6 +327,39 @@ describe('useAppKitAccount', () => {
         type: 'smartAccount'
       })
     ])
+  })
+})
+
+describe('useAppKitProvider', () => {
+  beforeEach(() => {
+    vi.resetAllMocks()
+  })
+
+  it('should return the Solana provider and provider type for the namespace', () => {
+    const solanaProvider = { id: 'solana-wallet-standard-provider' }
+
+    useSnapshot
+      .mockReturnValueOnce({
+        providers: { solana: solanaProvider },
+        providerIds: { solana: 'ANNOUNCED' }
+      })
+      .mockReturnValueOnce({ activeCaipNetwork: solanaCaipNetwork })
+
+    const { walletProvider, walletProviderType } = useAppKitProvider('solana')
+
+    expect(walletProvider).toBe(solanaProvider)
+    expect(walletProviderType).toBe('ANNOUNCED')
+  })
+
+  it('should subscribe to ChainController state so Solana switchNetwork re-renders the hook', () => {
+    useSnapshot
+      .mockReturnValueOnce({ providers: {}, providerIds: {} })
+      .mockReturnValueOnce({ activeCaipNetwork: solanaCaipNetwork })
+
+    useAppKitProvider('solana')
+
+    expect(useSnapshot).toHaveBeenCalledWith(ProviderController.state)
+    expect(useSnapshot).toHaveBeenCalledWith(ChainController.state)
   })
 })
 

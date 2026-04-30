@@ -7,11 +7,11 @@ import { ChainController, ProviderController } from '@reown/appkit-controllers'
 
 import { type ConnectorType, createAppKit, useAppKitProvider } from '../../exports/vue-core.js'
 import { useAppKitNetwork } from '../../exports/vue.js'
-import { mainnet } from '../mocks/Networks.js'
+import { mainnet, solana } from '../mocks/Networks.js'
 
 const TestComponent = defineComponent({
   setup() {
-    const state = useAppKitProvider('eip155')
+    const state = useAppKitProvider('solana')
 
     return { state }
   },
@@ -26,11 +26,13 @@ const TestComponent = defineComponent({
 describe('useAppKitProvider', () => {
   const mockSubscribe = vi.fn()
   const mockUnsubscribe = vi.fn()
+  const mockSubscribeNetworkKey = vi.fn()
+  const mockUnsubscribeNetworkKey = vi.fn()
 
   beforeAll(() => {
     createAppKit({
       projectId: 'test',
-      networks: [mainnet]
+      networks: [mainnet, solana]
     })
   })
 
@@ -40,10 +42,10 @@ describe('useAppKitProvider', () => {
     vi.spyOn(ProviderController, 'state', 'get').mockReturnValue({
       ...ProviderController.state,
       providers: {
-        eip155: { test: 'provider' }
+        solana: { test: 'solana-provider' }
       } as unknown as Record<ChainNamespace, ConnectorType>,
       providerIds: {
-        eip155: 'test-provider'
+        solana: 'ANNOUNCED'
       } as unknown as Record<ChainNamespace, ConnectorType>
     })
 
@@ -52,13 +54,23 @@ describe('useAppKitProvider', () => {
 
       return mockUnsubscribe
     })
+
+    vi.spyOn(ChainController, 'subscribeKey').mockImplementation((key, callback) => {
+      if (key === 'activeCaipNetwork') {
+        mockSubscribeNetworkKey(callback)
+
+        return mockUnsubscribeNetworkKey
+      }
+
+      return vi.fn()
+    })
   })
 
   it('should initialize with correct initial state', () => {
     const wrapper = mount(TestComponent)
 
-    expect(wrapper.get('[data-testid="provider"]').text()).toContain('test')
-    expect(wrapper.get('[data-testid="type"]').text()).toBe('"test-provider"')
+    expect(wrapper.get('[data-testid="provider"]').text()).toContain('solana-provider')
+    expect(wrapper.get('[data-testid="type"]').text()).toBe('"ANNOUNCED"')
   })
 
   it('should subscribe to provider updates', () => {
@@ -75,17 +87,44 @@ describe('useAppKitProvider', () => {
 
     firstCallback({
       providers: {
-        eip155: { test: 'new-provider' }
+        solana: { test: 'new-solana-provider' }
       },
       providerIds: {
-        eip155: 'new-provider-type'
+        solana: 'WALLET_CONNECT'
       }
     })
 
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.get('[data-testid="provider"]').text()).toContain('new-provider')
-    expect(wrapper.get('[data-testid="type"]').text()).toBe('"new-provider-type"')
+    expect(wrapper.get('[data-testid="provider"]').text()).toContain('new-solana-provider')
+    expect(wrapper.get('[data-testid="type"]').text()).toBe('"WALLET_CONNECT"')
+  })
+
+  it('should re-fire when Solana switchNetwork updates activeCaipNetwork', async () => {
+    const wrapper = mount(TestComponent)
+
+    expect(ChainController.subscribeKey).toHaveBeenCalledWith(
+      'activeCaipNetwork',
+      expect.any(Function)
+    )
+
+    vi.spyOn(ProviderController, 'state', 'get').mockReturnValue({
+      ...ProviderController.state,
+      providers: {
+        solana: { test: 'devnet-provider' }
+      } as unknown as Record<ChainNamespace, ConnectorType>,
+      providerIds: {
+        solana: 'ANNOUNCED'
+      } as unknown as Record<ChainNamespace, ConnectorType>
+    })
+
+    const networkCallback = mockSubscribeNetworkKey.mock.calls[0]?.[0]
+    networkCallback?.()
+
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.get('[data-testid="provider"]').text()).toContain('devnet-provider')
+    expect(wrapper.get('[data-testid="type"]').text()).toBe('"ANNOUNCED"')
   })
 
   it('should unsubscribe on component unmount', () => {
@@ -94,6 +133,7 @@ describe('useAppKitProvider', () => {
     wrapper.unmount()
 
     expect(mockUnsubscribe).toHaveBeenCalled()
+    expect(mockUnsubscribeNetworkKey).toHaveBeenCalled()
   })
 })
 

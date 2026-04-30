@@ -2,7 +2,7 @@ import { onUnmounted, reactive, ref } from 'vue'
 
 import type { ChainNamespace } from '@reown/appkit-common'
 import { type ConnectorType, type Event } from '@reown/appkit-controllers'
-import { ProviderController } from '@reown/appkit-controllers'
+import { ChainController, ProviderController } from '@reown/appkit-controllers'
 import type {
   AppKitAccountButton,
   AppKitButton,
@@ -66,13 +66,24 @@ export function useAppKitProvider<T>(chainNamespace: ChainNamespace): UseAppKitR
   const walletProvider = ref(ProviderController.state.providers[chainNamespace] as T | undefined)
   const walletProviderType = ref(ProviderController.state.providerIds[chainNamespace])
 
-  const unsubscribe = ProviderController.subscribe(newState => {
-    walletProvider.value = newState.providers[chainNamespace]
+  const unsubscribeProvider = ProviderController.subscribe(newState => {
+    walletProvider.value = newState.providers[chainNamespace] as T | undefined
     walletProviderType.value = newState.providerIds[chainNamespace]
   })
 
+  /*
+   * Re-fire on network switch even when the provider reference is unchanged,
+   * so consumers wrapping the provider in chain-bound objects can reconstruct
+   * after switchNetwork. See #5453.
+   */
+  const unsubscribeNetwork = ChainController.subscribeKey('activeCaipNetwork', () => {
+    walletProvider.value = ProviderController.state.providers[chainNamespace] as T | undefined
+    walletProviderType.value = ProviderController.state.providerIds[chainNamespace]
+  })
+
   onUnmounted(() => {
-    unsubscribe?.()
+    unsubscribeProvider?.()
+    unsubscribeNetwork?.()
   })
 
   return reactive({
