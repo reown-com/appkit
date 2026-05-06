@@ -82,7 +82,13 @@ mobileWalletFeaturesTest('it should show open button', async ({ library }) => {
   }
 
   await modalPage.clickAllWalletsListSearchItem(walletConfig.walletId)
-  await modalValidator.expectOpenButton({ disabled: true })
-  await modalPage.page.waitForTimeout(2000)
+  /*
+   * Skip the transient `disabled: true` precondition: the connecting widget
+   * sets isLoading = !this.uri synchronously in its constructor, so when the
+   * WC URI is already cached (which depends on relay timing and prior tests),
+   * the loading state is invisible to the test. The user-meaningful behavior
+   * is that the Open button ends up enabled — which the assertion below
+   * verifies (with a 60s default timeout).
+   */
   await modalValidator.expectOpenButton({ disabled: false })
 })
