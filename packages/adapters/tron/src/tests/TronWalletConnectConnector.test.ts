@@ -1,10 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ChainController, OptionsController } from '@reown/appkit-controllers'
+import { ChainController } from '@reown/appkit-controllers'
 
 import { TronWalletConnectConnector } from '../connectors/TronWalletConnectConnector'
 
-const MOCK_PROJECT_ID = 'test-project-id'
 const MOCK_CHAIN_ID = 'tron:0x2b6653dc'
 const MOCK_OWNER_ADDRESS = 'TQZnRQHi8ioE4rEQHDWsDR9qM1APYUPbJG'
 const MOCK_TO_ADDRESS = 'TYMwiDu22V37pBMr8ZBYNyaS9nRSpa4mYH'
