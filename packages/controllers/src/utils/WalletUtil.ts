@@ -184,6 +184,13 @@ export const WalletUtil = {
     return wallets.map((w, index) => ({ ...w, display_index: index }))
   },
 
+  filterAndFlagWallets(wallets: WcWallet[]) {
+    const withInstalled = WalletUtil.markWalletsAsInstalled(wallets)
+    const filtered = WalletUtil.filterWalletsByWcSupport(withInstalled)
+
+    return WalletUtil.markWalletsWithDisplayIndex(filtered)
+  },
+
   /**
    * Filters wallets based on WalletConnect support and platform requirements.
    *
@@ -218,9 +225,7 @@ export const WalletUtil = {
     }
 
     const uniqueWallets = CoreHelperUtil.uniqueBy(wallets, 'id')
-    const walletsWithInstalled = WalletUtil.markWalletsAsInstalled(uniqueWallets)
-    const walletsByWcSupport = WalletUtil.filterWalletsByWcSupport(walletsWithInstalled)
 
-    return WalletUtil.markWalletsWithDisplayIndex(walletsByWcSupport)
+    return WalletUtil.filterAndFlagWallets(uniqueWallets)
   }
 }
