@@ -651,6 +651,54 @@ describe('SolanaAdapter', () => {
       expect(switchNetworkSpy).toHaveBeenCalled()
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
     })
+
+    it('should emit switchNetwork event for WalletConnect provider', async () => {
+      const wcProvider = mockUniversalProvider()
+      ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, wcProvider)
+      ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'WALLET_CONNECT')
+
+      ChainController.state.chains.get('solana')!.accountState!.address = '0xTestAddress'
+
+      const emitSpy = vi.spyOn(adapter, 'emit')
+
+      await adapter.switchNetwork({ caipNetwork: mockCaipNetworks[0] })
+
+      expect(SolStoreUtil.setConnection).toHaveBeenCalled()
+      expect(emitSpy).toHaveBeenCalledWith('switchNetwork', {
+        chainId: mockCaipNetworks[0].id,
+        address: '0xTestAddress'
+      })
+    })
+
+    it('should emit switchNetwork event for standard wallet provider', async () => {
+      ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, mockProvider)
+      ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'ANNOUNCED')
+
+      ChainController.state.chains.get('solana')!.accountState!.address = '0xTestAddress'
+
+      const emitSpy = vi.spyOn(adapter, 'emit')
+
+      await adapter.switchNetwork({ caipNetwork: mockCaipNetworks[0] })
+
+      expect(SolStoreUtil.setConnection).toHaveBeenCalled()
+      expect(emitSpy).toHaveBeenCalledWith('switchNetwork', {
+        chainId: mockCaipNetworks[0].id,
+        address: '0xTestAddress'
+      })
+    })
+
+    it('should not emit switchNetwork event when no account address is present', async () => {
+      ProviderController.setProvider(mockCaipNetworks[0].chainNamespace, mockProvider)
+      ProviderController.setProviderId(mockCaipNetworks[0].chainNamespace, 'ANNOUNCED')
+
+      ChainController.state.chains.get('solana')!.accountState!.address = undefined
+
+      const emitSpy = vi.spyOn(adapter, 'emit')
+
+      await adapter.switchNetwork({ caipNetwork: mockCaipNetworks[0] })
+
+      expect(emitSpy).not.toHaveBeenCalledWith('switchNetwork', expect.anything())
+    })
   })
 
   describe('SolanaAdapter - connectWalletConnect', () => {

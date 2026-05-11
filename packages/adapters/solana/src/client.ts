@@ -19,6 +19,7 @@ import {
   CoreHelperUtil,
   type Provider as CoreProvider,
   OptionsController,
+  ProviderController,
   StorageUtil,
   WcHelpersUtil
 } from '@reown/appkit-controllers'
@@ -507,6 +508,20 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       SolStoreUtil.setConnection(
         new SolanaConnection(caipNetwork.rpcUrls.default.http[0], this.connectionSettings)
       )
+    }
+
+    /*
+     * super.switchNetwork() only emits 'switchNetwork' for AUTH providers.
+     * For WalletConnect and standard wallet providers we must emit it here so
+     * the base-client can re-sync the provider state via syncProvider().
+     */
+    const providerType = ProviderController.getProviderId(caipNetwork.chainNamespace)
+    if (providerType !== 'AUTH') {
+      const address = ChainController.state.chains.get(caipNetwork.chainNamespace)?.accountState
+        ?.address
+      if (address) {
+        this.emit('switchNetwork', { chainId: caipNetwork.id, address })
+      }
     }
   }
 
