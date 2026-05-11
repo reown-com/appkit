@@ -432,7 +432,9 @@ describe('EthersAdapter', () => {
       expect(mockEthersProvider.initialize).toHaveBeenCalled()
       expect(mockEthersProvider.getProvider).toHaveBeenCalled()
       expect(accountChangedSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ connector: expect.objectContaining({ provider: resolvedProvider }) })
+        expect.objectContaining({
+          connector: expect.objectContaining({ provider: resolvedProvider })
+        })
       )
       expect(result.provider).toBe(resolvedProvider)
     })
@@ -479,7 +481,9 @@ describe('EthersAdapter', () => {
       expect(mockEthersProvider.initialize).not.toHaveBeenCalled()
       expect(mockEthersProvider.getProvider).not.toHaveBeenCalled()
       expect(accountChangedSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ connector: expect.objectContaining({ provider: existingProvider }) })
+        expect.objectContaining({
+          connector: expect.objectContaining({ provider: existingProvider })
+        })
       )
       expect(result.provider).toBe(existingProvider)
     })
