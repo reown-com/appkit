@@ -459,6 +459,20 @@ export class EthersAdapter extends AdapterBlueprint {
         }
 
         if (connection.account) {
+          /*
+           * Resolve the provider before emitting so the base-client's accountChanged
+           * handler can call syncProvider() — keeping useAppKitProvider reactive
+           * when the user switches accounts inside the modal.
+           */
+          if (!connector.provider) {
+            const ethersProvider =
+              this.ethersProviders[connector.id as keyof Omit<ProviderType, 'metadata' | 'EIP6963'>]
+            if (ethersProvider) {
+              await ethersProvider.initialize()
+              connector.provider = (await ethersProvider.getProvider()) as Provider | undefined
+            }
+          }
+
           this.emit('accountChanged', {
             address: this.toChecksummedAddress(connection.account.address),
             chainId: caipNetwork.id,
