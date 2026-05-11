@@ -18,11 +18,15 @@ export function AppKitInfoMultiChain({
   )
   const solanaAdapter = config?.adapters?.find(adapter => adapter === 'solana')
   const bitcoinAdapter = config?.adapters?.find(adapter => adapter === 'bitcoin')
+  const tonAdapter = config?.adapters?.find(adapter => adapter === 'ton')
+  const tronAdapter = config?.adapters?.find(adapter => adapter === 'tron')
 
   const currentAccount = useAppKitAccount()
   const evmAccount = useAppKitAccount({ namespace: 'eip155' })
   const solanaAccount = useAppKitAccount({ namespace: 'solana' })
   const bitcoinAccount = useAppKitAccount({ namespace: 'bip122' })
+  const tonAccount = useAppKitAccount({ namespace: 'ton' })
+  const tronAccount = useAppKitAccount({ namespace: 'tron' })
 
   return (
     <>
@@ -35,6 +39,8 @@ export function AppKitInfoMultiChain({
         {evmAdapter && <AccountCard account={evmAccount} namespace="eip155" />}
         {solanaAdapter && <AccountCard account={solanaAccount} namespace="solana" />}
         {bitcoinAdapter && <AccountCard account={bitcoinAccount} namespace="bip122" />}
+        {tonAdapter && <AccountCard account={tonAccount} namespace="ton" />}
+        {tronAdapter && <AccountCard account={tronAccount} namespace="tron" />}
       </Grid>
       <Grid templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }} gap={4}>
         <AccountCard account={currentAccount} />

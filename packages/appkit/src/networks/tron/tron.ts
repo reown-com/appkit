@@ -6,7 +6,8 @@ export const tronMainnet = defineChain({
   network: 'tron-mainnet',
   nativeCurrency: { name: 'TRX', symbol: 'TRX', decimals: 6 },
   rpcUrls: {
-    default: { http: ['https://rpc.walletconnect.org/v1'] }
+    default: { http: ['https://rpc.walletconnect.org/v1'] },
+    chainDefault: { http: ['https://api.trongrid.io'] }
   },
   blockExplorers: { default: { name: 'Tronscan', url: 'https://tronscan.org' } },
   testnet: false,
