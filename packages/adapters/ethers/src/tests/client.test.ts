@@ -394,6 +394,95 @@ describe('EthersAdapter', () => {
         preferredAccountType: 'smartAccount'
       })
     })
+
+    it('should resolve provider from ethersProviders when connector has no provider in early-return path', async () => {
+      const resolvedProvider = {
+        request: vi.fn(),
+        on: vi.fn(),
+        removeListener: vi.fn()
+      } as unknown as Provider
+
+      const mockEthersProvider = {
+        initialize: vi.fn().mockResolvedValue(undefined),
+        getProvider: vi.fn().mockResolvedValue(resolvedProvider)
+      }
+
+      const connector = { id: 'injected', provider: undefined, type: 'EXTERNAL', chain: 'eip155' }
+
+      Object.defineProperty(adapter, 'connectors', {
+        value: [connector],
+        configurable: true,
+        writable: true
+      })
+
+      adapter['ethersProviders'] = { injected: mockEthersProvider as any }
+
+      vi.spyOn(adapter as any, 'getConnection').mockReturnValue({
+        connectorId: 'injected',
+        caipNetwork: mainnet,
+        account: { address: '0x1234567890123456789012345678901234567890' },
+        accounts: [{ address: '0x1234567890123456789012345678901234567890' }]
+      })
+
+      const accountChangedSpy = vi.fn()
+      adapter.on('accountChanged', accountChangedSpy)
+
+      const result = await adapter.connect({ id: 'injected', type: 'EXTERNAL', chainId: 1 })
+
+      expect(mockEthersProvider.initialize).toHaveBeenCalled()
+      expect(mockEthersProvider.getProvider).toHaveBeenCalled()
+      expect(accountChangedSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ connector: expect.objectContaining({ provider: resolvedProvider }) })
+      )
+      expect(result.provider).toBe(resolvedProvider)
+    })
+
+    it('should not re-initialize provider when connector already has one in early-return path', async () => {
+      const existingProvider = {
+        request: vi.fn(),
+        on: vi.fn(),
+        removeListener: vi.fn()
+      } as unknown as Provider
+
+      const mockEthersProvider = {
+        initialize: vi.fn().mockResolvedValue(undefined),
+        getProvider: vi.fn()
+      }
+
+      const connector = {
+        id: 'injected',
+        provider: existingProvider,
+        type: 'EXTERNAL',
+        chain: 'eip155'
+      }
+
+      Object.defineProperty(adapter, 'connectors', {
+        value: [connector],
+        configurable: true,
+        writable: true
+      })
+
+      adapter['ethersProviders'] = { injected: mockEthersProvider as any }
+
+      vi.spyOn(adapter as any, 'getConnection').mockReturnValue({
+        connectorId: 'injected',
+        caipNetwork: mainnet,
+        account: { address: '0x1234567890123456789012345678901234567890' },
+        accounts: [{ address: '0x1234567890123456789012345678901234567890' }]
+      })
+
+      const accountChangedSpy = vi.fn()
+      adapter.on('accountChanged', accountChangedSpy)
+
+      const result = await adapter.connect({ id: 'injected', type: 'EXTERNAL', chainId: 1 })
+
+      expect(mockEthersProvider.initialize).not.toHaveBeenCalled()
+      expect(mockEthersProvider.getProvider).not.toHaveBeenCalled()
+      expect(accountChangedSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ connector: expect.objectContaining({ provider: existingProvider }) })
+      )
+      expect(result.provider).toBe(existingProvider)
+    })
   })
 
   describe('EthersAdapter -reconnect', () => {
