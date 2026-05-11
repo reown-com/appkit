@@ -1225,6 +1225,19 @@ export abstract class AppKitBaseClient {
       } else {
         this.setUnsupportedNetwork(chainId)
       }
+
+      const currentProvider = ProviderController.getProvider(chainNamespace)
+      const currentProviderId = ProviderController.getProviderId(chainNamespace)
+      const currentConnectorId = ConnectorController.getConnectorId(chainNamespace)
+
+      if (currentProvider && currentProviderId && currentConnectorId) {
+        this.syncProvider({
+          id: currentConnectorId,
+          type: currentProviderId,
+          provider: currentProvider,
+          chainNamespace
+        })
+      }
     })
 
     adapter.on('disconnect', () => {
