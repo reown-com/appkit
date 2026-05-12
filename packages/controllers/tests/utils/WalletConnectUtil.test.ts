@@ -158,8 +158,8 @@ describe('WcHelpersUtil', () => {
           events: ['accountsChanged', 'chainChanged'],
           chains: ['eip155:1', 'eip155:137'],
           rpcMap: {
-            '1': 'https://mainnet.infura.io/v3/YOUR-PROJECT-ID',
-            '137': 'https://polygon.rpc.com'
+            'eip155:1': 'https://mainnet.infura.io/v3/YOUR-PROJECT-ID',
+            'eip155:137': 'https://polygon.rpc.com'
           }
         },
         solana: {
@@ -179,8 +179,8 @@ describe('WcHelpersUtil', () => {
             'solana:8E9rvCKLFQia2Y35HXjjpWzj8weVo44K'
           ],
           rpcMap: {
-            '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'https://api.mainnet-beta.solana.com',
-            EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'https://api.mainnet-beta.solana.com'
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'https://api.mainnet-beta.solana.com',
+            'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1': 'https://api.mainnet-beta.solana.com'
           }
         }
       })
@@ -189,6 +189,25 @@ describe('WcHelpersUtil', () => {
     test('creates empty namespaces for empty input', () => {
       const namespaces = WcHelpersUtil.createNamespaces([])
       expect(namespaces).toEqual({})
+    })
+
+    test('uses caipNetworkId directly when id differs from caip chain reference (custom chains)', () => {
+      const customNetwork: CaipNetwork = {
+        id: 1,
+        chainNamespace: 'neo3',
+        caipNetworkId: 'neo3:MainNet',
+        name: 'Neo3 MainNet',
+        nativeCurrency: { name: 'GAS', symbol: 'GAS', decimals: 8 },
+        rpcUrls: { default: { http: ['https://mainnet1.neo.coz.io'] } }
+      } as unknown as CaipNetwork
+
+      const namespaces = WcHelpersUtil.createNamespaces([customNetwork])
+
+      expect(namespaces['neo3']?.chains).toContain('neo3:MainNet')
+      expect(namespaces['neo3']?.chains).not.toContain('neo3:1')
+      expect(namespaces['neo3']?.rpcMap).toEqual({
+        'neo3:MainNet': 'https://mainnet1.neo.coz.io'
+      })
     })
   })
 
