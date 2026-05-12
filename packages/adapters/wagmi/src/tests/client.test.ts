@@ -1561,7 +1561,11 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
     vi.restoreAllMocks()
   })
 
-  it('should add Base Account connector if enableBaseAccount is not false', async () => {
+  it('should add Base Account connector when coinbasePreference is smartWalletOnly', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...(OptionsController.state || {}),
+      coinbasePreference: 'smartWalletOnly'
+    })
     const getBaseAccountConnectorSpy = vi
       .spyOn(helpers, 'getBaseAccountConnector')
       .mockResolvedValue(mockBaseAccountConnector() as any)
@@ -1569,17 +1573,21 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
     await adapter['addThirdPartyConnectors']()
     expect(getBaseAccountConnectorSpy).toHaveBeenCalled()
     expect(adapter.wagmiConfig.connectors.length).toBe(1)
+    expect(adapter.wagmiConfig.connectors.some(c => c.id === 'baseAccount')).toBe(true)
   })
 
   it('should not add Base Account connector if enableBaseAccount is false', async () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...(OptionsController.state || {}),
+      coinbasePreference: 'smartWalletOnly',
       enableBaseAccount: false
     })
-    vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(null)
-    vi.spyOn(helpers, 'getCoinbaseConnector').mockResolvedValue(null)
+    const getBaseAccountConnectorSpy = vi
+      .spyOn(helpers, 'getBaseAccountConnector')
+      .mockResolvedValue(null)
+    vi.spyOn(helpers, 'getCoinbaseConnector').mockResolvedValue(mockCoinbaseConnector() as any)
     await adapter['addThirdPartyConnectors']()
-    expect(adapter.wagmiConfig.connectors.length).toBe(0)
+    expect(getBaseAccountConnectorSpy).not.toHaveBeenCalled()
   })
 
   it('should add Coinbase connector if enableCoinbase is not false', async () => {
@@ -1603,14 +1611,49 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
     expect(adapter.wagmiConfig.connectors.length).toBe(0)
   })
 
-  it('should add both Base Account and Coinbase connectors when both are enabled', async () => {
-    vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(
-      mockBaseAccountConnector() as any
-    )
-    vi.spyOn(helpers, 'getCoinbaseConnector').mockResolvedValue(mockCoinbaseConnector() as any)
+  it('should use coinbaseWallet with preference "all" by default', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...(OptionsController.state || {}),
+      coinbasePreference: 'all'
+    })
+    vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(null)
+    const getCoinbaseConnectorSpy = vi
+      .spyOn(helpers, 'getCoinbaseConnector')
+      .mockResolvedValue(mockCoinbaseConnector() as any)
     await adapter['addThirdPartyConnectors']()
-    expect(adapter.wagmiConfig.connectors.length).toBe(2)
-    expect(adapter.wagmiConfig.connectors.some(c => c.id === 'baseAccount')).toBe(true)
+    expect(getCoinbaseConnectorSpy).toHaveBeenCalledWith(adapter.wagmiConfig.connectors, 'all')
+    expect(adapter.wagmiConfig.connectors.some(c => c.id === 'coinbaseWallet')).toBe(true)
+  })
+
+  it('should use coinbaseWallet with preference "eoaOnly" when coinbasePreference is eoaOnly', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...(OptionsController.state || {}),
+      coinbasePreference: 'eoaOnly'
+    })
+    vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(null)
+    const getCoinbaseConnectorSpy = vi
+      .spyOn(helpers, 'getCoinbaseConnector')
+      .mockResolvedValue(mockCoinbaseConnector() as any)
+    await adapter['addThirdPartyConnectors']()
+    expect(getCoinbaseConnectorSpy).toHaveBeenCalledWith(adapter.wagmiConfig.connectors, 'eoaOnly')
+    expect(adapter.wagmiConfig.connectors.some(c => c.id === 'coinbaseWallet')).toBe(true)
+  })
+
+  it('should fall back to coinbaseWallet when coinbasePreference is smartWalletOnly but enableBaseAccount is false', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...(OptionsController.state || {}),
+      coinbasePreference: 'smartWalletOnly',
+      enableBaseAccount: false
+    })
+    vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(null)
+    const getCoinbaseConnectorSpy = vi
+      .spyOn(helpers, 'getCoinbaseConnector')
+      .mockResolvedValue(mockCoinbaseConnector() as any)
+    await adapter['addThirdPartyConnectors']()
+    expect(getCoinbaseConnectorSpy).toHaveBeenCalledWith(
+      adapter.wagmiConfig.connectors,
+      'smartWalletOnly'
+    )
     expect(adapter.wagmiConfig.connectors.some(c => c.id === 'coinbaseWallet')).toBe(true)
   })
 
