@@ -207,6 +207,11 @@ export interface OptionsControllerStatePublic {
   enableMobileFullScreen?: boolean
 
   coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
+  /**
+   * Enable or disable changing the Smart Account Version in the modal.
+   * @default false
+   */
+  enableSmartAccountVersionSwitch?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -231,7 +236,8 @@ const state = proxy<OptionsControllerState>({
   experimental_preferUniversalLinks: false,
   remoteFeatures: {},
   enableMobileFullScreen: false,
-  coinbasePreference: 'all'
+  coinbasePreference: 'all',
+  enableSmartAccountVersionSwitch: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -471,6 +477,12 @@ export const OptionsController = {
 
   getUniversalProviderConfigOverride() {
     return state.universalProviderConfigOverride
+  },
+
+  setEnableSmartAccountVersionSwitch(
+    enableSmartAccountVersionSwitch: OptionsControllerState['enableSmartAccountVersionSwitch']
+  ) {
+    state.enableSmartAccountVersionSwitch = enableSmartAccountVersionSwitch
   },
 
   getSnapshot() {
