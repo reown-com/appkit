@@ -65,14 +65,12 @@ export function createDefaultNamespace(chainNamespace: string): Namespace {
 
 export function createNamespaces(caipNetworks: CaipNetwork[]): NamespaceConfig {
   return caipNetworks.reduce<NamespaceConfig>((acc, chain) => {
-    const { id, chainNamespace, rpcUrls } = chain
+    const { caipNetworkId, chainNamespace, rpcUrls } = chain
     const rpcUrl = rpcUrls.default.http[0]
 
     if (!acc[chainNamespace]) {
       acc[chainNamespace] = createDefaultNamespace(chainNamespace)
     }
-
-    const caipNetworkId = `${chainNamespace}:${id}`
 
     // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
     const namespace = acc[chainNamespace]
@@ -91,7 +89,7 @@ export function createNamespaces(caipNetworks: CaipNetwork[]): NamespaceConfig {
     }
 
     if (namespace?.rpcMap && rpcUrl) {
-      namespace.rpcMap[id] = rpcUrl
+      namespace.rpcMap[caipNetworkId] = rpcUrl
     }
 
     return acc
