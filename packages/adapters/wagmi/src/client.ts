@@ -298,18 +298,26 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   private async addThirdPartyConnectors() {
     const thirdPartyConnectors: CreateConnectorFn[] = []
-    const { enableCoinbase: isCoinbaseEnabled, enableBaseAccount: isBaseAccountEnabled } =
-      OptionsController.state || {}
+    const {
+      enableCoinbase: isCoinbaseEnabled,
+      enableBaseAccount: isBaseAccountEnabled,
+      coinbasePreference
+    } = OptionsController.state || {}
 
-    if (isBaseAccountEnabled !== false) {
+    // baseAccount connector is for smart wallet only — use it when preference is smartWalletOnly
+    const useBaseAccount =
+      coinbasePreference === 'smartWalletOnly' && isBaseAccountEnabled !== false
+
+    if (useBaseAccount) {
       const baseAccountConnector = await getBaseAccountConnector(this.wagmiConfig.connectors)
       if (baseAccountConnector) {
         thirdPartyConnectors.push(baseAccountConnector)
       }
-    }
-
-    if (isCoinbaseEnabled !== false) {
-      const coinbaseConnector = await getCoinbaseConnector(this.wagmiConfig.connectors)
+    } else if (isCoinbaseEnabled !== false) {
+      const coinbaseConnector = await getCoinbaseConnector(
+        this.wagmiConfig.connectors,
+        coinbasePreference
+      )
       if (coinbaseConnector) {
         thirdPartyConnectors.push(coinbaseConnector)
       }
