@@ -452,6 +452,76 @@ describe('WagmiAdapter', () => {
         })
       )
     })
+
+    it('should skip basic injected connector when enableInjected is false', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        enableInjected: false,
+        enableEIP6963: true
+      })
+
+      const addConnectorSpy = vi.spyOn(adapter as any, 'addConnector')
+
+      const basicInjected = {
+        id: 'injected',
+        name: 'Browser Wallet',
+        type: 'injected',
+        getProvider() {
+          return Promise.resolve({ connect: vi.fn(), request: vi.fn() })
+        }
+      } as unknown as wagmiCore.Connector
+
+      await (adapter as any).addWagmiConnector(basicInjected)
+
+      expect(addConnectorSpy).not.toHaveBeenCalled()
+    })
+
+    it('should keep basic injected connector when enableEIP6963 is false but enableInjected is true', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        enableInjected: true,
+        enableEIP6963: false
+      })
+
+      const addConnectorSpy = vi.spyOn(adapter as any, 'addConnector')
+
+      const basicInjected = {
+        id: 'injected',
+        name: 'Browser Wallet',
+        type: 'injected',
+        getProvider() {
+          return Promise.resolve({ connect: vi.fn(), request: vi.fn() })
+        }
+      } as unknown as wagmiCore.Connector
+
+      await (adapter as any).addWagmiConnector(basicInjected)
+
+      expect(addConnectorSpy).toHaveBeenCalled()
+    })
+
+    it('should skip EIP6963-discovered connector when enableEIP6963 is false', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        enableInjected: true,
+        enableEIP6963: false
+      })
+
+      const addConnectorSpy = vi.spyOn(adapter as any, 'addConnector')
+
+      const eip6963Connector = {
+        id: 'io.metamask',
+        name: 'MetaMask',
+        type: 'injected',
+        info: { rdns: 'io.metamask' },
+        getProvider() {
+          return Promise.resolve({ connect: vi.fn(), request: vi.fn() })
+        }
+      } as unknown as wagmiCore.Connector
+
+      await (adapter as any).addWagmiConnector(eip6963Connector)
+
+      expect(addConnectorSpy).not.toHaveBeenCalled()
+    })
   })
 
   describe('WagmiAdapter - signMessage', () => {
