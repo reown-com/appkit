@@ -131,11 +131,15 @@ export class W3mInputToken extends LitElement {
       const decimals = Number(this.token.quantity.decimals)
       const maxValue = NumberUtil.bigNumber(this.token.quantity.numeric)
 
-      // For native tokens (no contract address), subtract estimated gas so the
-      // transaction doesn't consume the entire balance leaving nothing for fees.
+      /*
+       * For native tokens (no contract address), subtract estimated gas so the
+       * transaction doesn't consume the entire balance leaving nothing for fees.
+       */
       if (!this.token.address && this.gasPrice) {
-        // 65000 covers EOA recipients (21000) and common contract recipients
-        // such as multisigs and exchange deposit addresses (~25000–50000).
+        /*
+         * 65000 covers EOA recipients (21000) and common contract recipients
+         * such as multisigs and exchange deposit addresses (~25000–50000).
+         */
         const ETH_TRANSFER_GAS_LIMIT = 65000n
         const gasCostWei = ETH_TRANSFER_GAS_LIMIT * BigInt(this.gasPrice)
         const gasCost = NumberUtil.bigNumber(gasCostWei.toString()).div(
