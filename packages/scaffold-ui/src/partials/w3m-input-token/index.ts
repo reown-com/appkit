@@ -142,9 +142,7 @@ export class W3mInputToken extends LitElement {
           NumberUtil.bigNumber(10).pow(decimals)
         )
         const maxAfterGas = maxValue.minus(gasCost)
-        SendController.setTokenAmount(
-          maxAfterGas.gt(0) ? maxAfterGas.toFixed(decimals, 0) : '0'
-        )
+        SendController.setTokenAmount(maxAfterGas.gt(0) ? maxAfterGas.toFixed(decimals, 0) : '0')
       } else {
         SendController.setTokenAmount(maxValue.toFixed(decimals, 0))
       }

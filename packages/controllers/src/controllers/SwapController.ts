@@ -757,9 +757,7 @@ const controller = {
        * the actual numbers from the first calldata response.
        */
       if (isSourceTokenIsNetworkToken && amount) {
-        const nativeToken = state.myTokensWithBalance?.find(
-          t => t.address === networkAddress
-        )
+        const nativeToken = state.myTokensWithBalance?.find(t => t.address === networkAddress)
         if (nativeToken) {
           const decimals = parseInt(nativeToken.quantity.decimals, 10)
           const rawBalance =
@@ -770,6 +768,7 @@ const controller = {
           if (value + gasCost > rawBalance) {
             // Re-request calldata with an amount that leaves room for gas
             const adjustedAmount = rawBalance > gasCost ? rawBalance - gasCost : 0n
+            // eslint-disable-next-line max-depth
             if (adjustedAmount > 0n) {
               response = await BlockchainApiController.generateSwapCalldata({
                 userAddress: fromCaipAddress,

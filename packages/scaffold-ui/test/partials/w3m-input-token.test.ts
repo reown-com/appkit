@@ -100,7 +100,10 @@ describe('W3mInputToken', () => {
   it('should handle max amount click for native token', async () => {
     const setTokenAmountSpy = vi.spyOn(SendController, 'setTokenAmount')
     const element: W3mInputToken = await fixture(
-      html`<w3m-input-token .token=${MOCK_NATIVE_TOKEN} .gasPrice=${'1000000000'}></w3m-input-token>`
+      html`<w3m-input-token
+        .token=${MOCK_NATIVE_TOKEN}
+        .gasPrice=${'1000000000'}
+      ></w3m-input-token>`
     )
 
     const maxLink = element.shadowRoot?.querySelector('wui-link')

@@ -194,9 +194,7 @@ export class W3mWalletSendView extends LitElement {
       return SEND_BUTTON_MESSAGE.ADD_ADDRESS
     }
 
-    if (
-      !CoreHelperUtil.isAddress(this.receiverAddress, ChainController.state.activeChain)
-    ) {
+    if (!CoreHelperUtil.isAddress(this.receiverAddress, ChainController.state.activeChain)) {
       return SEND_BUTTON_MESSAGE.INVALID_ADDRESS
     }
 
