@@ -309,19 +309,23 @@ export class ModalValidator {
   }
 
   async expectOpenButton({ disabled }: { disabled: boolean }) {
-    await this.page.waitForFunction(
-      ({ testId, expectedDisabled }) => {
-        const el = document.querySelector(`[data-testid="${testId}"]`)
-        if (!el) return false
-        const innerBtn = el.shadowRoot?.querySelector('button') as HTMLButtonElement | null
-        if (innerBtn) return innerBtn.disabled === expectedDisabled
-        const attrValue = el.getAttribute('disabled')
-        const isDisabled = attrValue !== null && attrValue !== 'false'
-        return isDisabled === expectedDisabled
-      },
-      { testId: 'w3m-connecting-widget-secondary-button', expectedDisabled: disabled },
-      { timeout: 60000 }
-    )
+    const secondaryButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
+
+    await expect
+      .poll(
+        () =>
+          secondaryButton.evaluate((el: Element) => {
+            const btn = el.shadowRoot?.querySelector('button') as HTMLButtonElement | null
+            if (btn) {
+              return btn.disabled
+            }
+            const attr = el.getAttribute('disabled')
+
+            return attr !== null && attr !== 'false'
+          }),
+        { timeout: 60000 }
+      )
+      .toBe(disabled)
   }
 
   async expectTryAgainButton() {
