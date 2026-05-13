@@ -1155,6 +1155,39 @@ describe('Base Public methods', () => {
     })
   })
 
+  it('returns allAccounts even when connection.caipNetwork is undefined, falling back to active network', () => {
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+      caipAddress: 'eip155:1:0xabc',
+      status: 'connected',
+      currentTab: 0,
+      addressLabels: new Map(),
+      preferredAccountType: 'eoa'
+    })
+    vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(mainnet)
+    vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([
+      {
+        connectorId: 'metamask',
+        accounts: [{ address: '0xabc' }],
+        caipNetwork: undefined
+      }
+    ])
+
+    const appKit = new AppKit(mockOptions)
+    const account = appKit.getAccount('eip155')
+
+    expect(account?.allAccounts).toEqual([
+      {
+        namespace: 'eip155',
+        address: '0xabc',
+        chainId: String(mainnet.id),
+        caipAddress: `${mainnet.caipNetworkId}:0xabc`,
+        type: 'eoa',
+        publicKey: undefined,
+        path: undefined
+      }
+    ])
+  })
+
   it('should handle network switcher UI when enableNetworkSwitch is true', async () => {
     vi.spyOn(ChainController, 'getNetworkData').mockReturnValue(
       mainnet as unknown as AdapterNetworkState
