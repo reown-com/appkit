@@ -432,6 +432,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setEnableWalletGuide(options.enableWalletGuide !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
+    OptionsController.setEnableInjected(options.enableInjected !== false)
     OptionsController.setEnableCoinbase(options.enableCoinbase !== false)
     OptionsController.setEnableNetworkSwitch(options.enableNetworkSwitch !== false)
     OptionsController.setEnableReconnect(options.enableReconnect !== false)
@@ -1747,10 +1748,15 @@ export abstract class AppKitBaseClient {
     } else if (connectorId) {
       if (
         connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE_SDK ||
-        connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE
+        connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE ||
+        connectorId === ConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT
       ) {
         const connector = this.getConnectors().find(c => c.id === connectorId)
-        const name = connector?.name || 'Coinbase Wallet'
+        const defaultName =
+          connectorId === ConstantsUtil.CONNECTOR_ID.BASE_ACCOUNT
+            ? 'Base Account'
+            : 'Coinbase Wallet'
+        const name = connector?.name || defaultName
         const icon = connector?.imageUrl || this.getConnectorImage(connector)
         const info = connector?.info
 
@@ -2406,18 +2412,22 @@ export abstract class AppKitBaseClient {
       throw new Error('AppKit:getAccount - namespace is required')
     }
 
-    const allAccounts = connections.flatMap(connection => {
-      const { caipNetwork } = connection
+    const fallbackCaipNetwork = ChainController.getActiveCaipNetwork(namespace)
 
-      return caipNetwork
-        ? connection.accounts.map(({ address, type, publicKey }) =>
-            CoreHelperUtil.createAccount({
-              caipAddress: `${caipNetwork.caipNetworkId}:${address}`,
-              type: type || 'eoa',
-              publicKey
-            })
-          )
-        : []
+    const allAccounts = connections.flatMap(connection => {
+      const caipNetwork = connection.caipNetwork ?? fallbackCaipNetwork
+
+      if (!caipNetwork) {
+        return []
+      }
+
+      return connection.accounts.map(({ address, type, publicKey }) =>
+        CoreHelperUtil.createAccount({
+          caipAddress: `${caipNetwork.caipNetworkId}:${address}`,
+          type: type || 'eoa',
+          publicKey
+        })
+      )
     })
 
     if (!accountState) {

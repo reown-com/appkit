@@ -20,7 +20,7 @@ export const CUSTOM_DEEPLINK_WALLETS = {
     url: 'https://solflare.com'
   },
   COINBASE: {
-    id: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+    id: 'd0ca99ff52b99abc48743dad0f7fc891e041be73574f7fac4afe5d4bb83845c8',
     url: 'https://go.cb-w.com',
     evmDeeplink: 'cbwallet://miniapp'
   },

@@ -197,6 +197,85 @@ describe('ConnectorUtil', () => {
 
       expect(ConnectorUtil.showConnector(ANNOUNCED_CONNECTOR)).toBe(true)
     })
+
+    it('should hide connector whose explorerId is in excludeWalletIds', () => {
+      ApiControllerRelative.state.excludedWallets = []
+      const originalExclude = OptionsControllerRelative.state.excludeWalletIds
+      OptionsControllerRelative.state.excludeWalletIds = ['phantom-id']
+
+      const phantom = {
+        ...ANNOUNCED_CONNECTOR,
+        explorerId: 'phantom-id'
+      } as unknown as ConnectorWithProviders
+
+      expect(ConnectorUtil.showConnector(phantom)).toBe(false)
+
+      OptionsControllerRelative.state.excludeWalletIds = originalExclude
+    })
+
+    it('should hide connector when includeWalletIds is set and connector id not included', () => {
+      ApiControllerRelative.state.excludedWallets = []
+      const originalInclude = OptionsControllerRelative.state.includeWalletIds
+      OptionsControllerRelative.state.includeWalletIds = ['metamask-id']
+
+      const phantom = {
+        ...ANNOUNCED_CONNECTOR,
+        explorerId: 'phantom-id'
+      } as unknown as ConnectorWithProviders
+
+      expect(ConnectorUtil.showConnector(phantom)).toBe(false)
+
+      OptionsControllerRelative.state.includeWalletIds = originalInclude
+    })
+
+    it('should show connector when its explorerId is in includeWalletIds', () => {
+      ApiControllerRelative.state.excludedWallets = []
+      const originalInclude = OptionsControllerRelative.state.includeWalletIds
+      OptionsControllerRelative.state.includeWalletIds = ['metamask-id']
+
+      const metamask = {
+        ...ANNOUNCED_CONNECTOR,
+        explorerId: 'metamask-id'
+      } as unknown as ConnectorWithProviders
+
+      expect(ConnectorUtil.showConnector(metamask)).toBe(true)
+
+      OptionsControllerRelative.state.includeWalletIds = originalInclude
+    })
+
+    it('should fall back to explorerWallet.id when explorerId is not set', () => {
+      ApiControllerRelative.state.excludedWallets = []
+      const originalExclude = OptionsControllerRelative.state.excludeWalletIds
+      OptionsControllerRelative.state.excludeWalletIds = ['phantom-id']
+
+      const phantom = {
+        ...ANNOUNCED_CONNECTOR,
+        explorerWallet: { id: 'phantom-id' }
+      } as unknown as ConnectorWithProviders
+
+      expect(ConnectorUtil.showConnector(phantom)).toBe(false)
+
+      OptionsControllerRelative.state.excludeWalletIds = originalExclude
+    })
+
+    it('should not filter EXTERNAL connectors by include/excludeWalletIds', () => {
+      ApiControllerRelative.state.excludedWallets = []
+      const originalInclude = OptionsControllerRelative.state.includeWalletIds
+      OptionsControllerRelative.state.includeWalletIds = ['metamask-id']
+
+      const external = {
+        id: 'external',
+        type: 'EXTERNAL',
+        info: { rdns: 'external.wallet' },
+        name: 'External Wallet',
+        chain: { id: 'eip155:1' },
+        explorerId: 'external-id'
+      } as unknown as ConnectorWithProviders
+
+      expect(ConnectorUtil.showConnector(external)).toBe(true)
+
+      OptionsControllerRelative.state.includeWalletIds = originalInclude
+    })
   })
 
   describe('getAuthName', () => {

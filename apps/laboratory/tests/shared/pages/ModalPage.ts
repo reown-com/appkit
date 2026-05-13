@@ -962,30 +962,38 @@ export class ModalPage {
   }
 
   async clickOpenWebApp() {
-    let url = ''
-
     const openButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
     await expect(openButton).toBeVisible()
     await expect(openButton).toHaveText('Open')
 
-    while (!url) {
-      await openButton.click()
-      await this.page.waitForTimeout(500)
+    /*
+     * Patch window.open to capture the URL synchronously at the moment AppKit
+     * calls it. Reading lastTab.url() after the click races against external
+     * redirects (e.g. some wallets' webapp_link points to chromewebstore.google.com
+     * which immediately redirects to a Google consent page, dropping the ?uri= param).
+     */
+    await this.page.evaluate(() => {
+      const original = window.open
+      ;(window as unknown as { __capturedOpenUrl: string }).__capturedOpenUrl = ''
+      window.open = function open(...args: Parameters<typeof window.open>) {
+        ;(window as unknown as { __capturedOpenUrl: string }).__capturedOpenUrl = String(
+          args[0] ?? ''
+        )
 
-      const pages = this.page.context().pages()
-
-      // Check if more than 1 tab is open
-      if (pages.length > 1) {
-        const lastTab = pages[pages.length - 1]
-
-        if (lastTab) {
-          url = lastTab.url()
-          break
-        }
+        return original.apply(this, args)
       }
-    }
+    })
 
-    return url
+    await openButton.click()
+    await this.page.waitForFunction(
+      () => (window as unknown as { __capturedOpenUrl: string }).__capturedOpenUrl !== '',
+      undefined,
+      { timeout: 10_000 }
+    )
+
+    return this.page.evaluate(
+      () => (window as unknown as { __capturedOpenUrl: string }).__capturedOpenUrl
+    )
   }
 
   async search(value: string) {
