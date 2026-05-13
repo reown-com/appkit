@@ -310,10 +310,11 @@ export class ModalValidator {
 
   async expectOpenButton({ disabled }: { disabled: boolean }) {
     const secondaryButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
+    const innerButton = secondaryButton.locator('button')
     if (disabled) {
-      await expect(secondaryButton).toHaveAttribute('disabled')
+      await expect(innerButton).toBeDisabled()
     } else {
-      await expect(secondaryButton).not.toHaveAttribute('disabled')
+      await expect(innerButton).not.toBeDisabled()
     }
   }
 
