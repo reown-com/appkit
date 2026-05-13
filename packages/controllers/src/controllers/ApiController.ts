@@ -281,7 +281,7 @@ export const ApiController = {
         page: String(params.page),
         entries: String(params.entries),
         include: params.include?.join(',') || undefined,
-        exclude: exclude.length ? exclude.join(',') : undefined
+        exclude: exclude.join(',') || undefined
       }
     })
 
