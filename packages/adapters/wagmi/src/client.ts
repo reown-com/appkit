@@ -502,11 +502,18 @@ export class WagmiAdapter extends AdapterBlueprint {
      * from wagmi since we already set it in chain adapter blueprint
      */
 
-    const { enableEIP6963: isEIP6963Enabled } = OptionsController.state || {}
-    if (
-      connector.type === CommonConstantsUtil.CONNECTOR_ID.INJECTED &&
-      isEIP6963Enabled === false
-    ) {
+    const { enableEIP6963: isEIP6963Enabled, enableInjected: isInjectedEnabled } =
+      OptionsController.state || {}
+
+    const isInjectedType = connector.type === CommonConstantsUtil.CONNECTOR_ID.INJECTED
+    const isBasicInjected = connector.id === CommonConstantsUtil.CONNECTOR_ID.INJECTED
+    const isEip6963Connector = isInjectedType && !isBasicInjected
+
+    if (isBasicInjected && isInjectedEnabled === false) {
+      return
+    }
+
+    if (isEip6963Connector && isEIP6963Enabled === false) {
       return
     }
 
