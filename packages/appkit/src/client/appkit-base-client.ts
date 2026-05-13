@@ -2411,18 +2411,22 @@ export abstract class AppKitBaseClient {
       throw new Error('AppKit:getAccount - namespace is required')
     }
 
-    const allAccounts = connections.flatMap(connection => {
-      const { caipNetwork } = connection
+    const fallbackCaipNetwork = ChainController.getActiveCaipNetwork(namespace)
 
-      return caipNetwork
-        ? connection.accounts.map(({ address, type, publicKey }) =>
-            CoreHelperUtil.createAccount({
-              caipAddress: `${caipNetwork.caipNetworkId}:${address}`,
-              type: type || 'eoa',
-              publicKey
-            })
-          )
-        : []
+    const allAccounts = connections.flatMap(connection => {
+      const caipNetwork = connection.caipNetwork ?? fallbackCaipNetwork
+
+      if (!caipNetwork) {
+        return []
+      }
+
+      return connection.accounts.map(({ address, type, publicKey }) =>
+        CoreHelperUtil.createAccount({
+          caipAddress: `${caipNetwork.caipNetworkId}:${address}`,
+          type: type || 'eoa',
+          publicKey
+        })
+      )
     })
 
     if (!accountState) {
