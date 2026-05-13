@@ -22,7 +22,8 @@ export const networks = [mainnet, polygon, arbitrum, optimism] as [
 // Setup wagmi adapter
 export const wagmiAdapter = new WagmiAdapter({
   networks,
-  projectId
+  projectId,
+  ssr: true
 })
 
 // Create modal
