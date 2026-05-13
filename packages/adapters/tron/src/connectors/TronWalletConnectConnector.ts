@@ -2,10 +2,12 @@ import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
+  OptionsController,
   type RequestArguments,
   WalletConnectConnector,
   WcHelpersUtil
 } from '@reown/appkit-controllers'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type { TronConnector } from '@reown/appkit-utils/tron'
 
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
@@ -88,24 +90,72 @@ export class TronWalletConnectConnector
       throw new Error('Chain not found')
     }
 
-    const request = {
+    const rpcUrl = this.getRpcUrl(chain)
+
+    // Step 1: Build unsigned transaction via Blockchain API
+    const createTxResponse = await fetch(rpcUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'tron_createTransaction',
+        params: [params.from, params.to, parseInt(params.value, 10), true]
+      })
+    })
+    const createTxResult = await createTxResponse.json()
+    const unsignedTx = createTxResult?.result
+
+    if (!unsignedTx?.txID) {
+      throw new Error(unsignedTx?.Error || 'Failed to create transaction')
+    }
+
+    // Step 2: Send full transaction to wallet for signing via WalletConnect
+    const signRequest = {
       method: 'tron_signTransaction',
       params: {
         address: params.from,
-        transaction: {
-          to: params.to,
-          from: params.from,
-          value: params.value,
-          data: params.data
-        }
+        transaction: unsignedTx
       }
     }
-    const result: { txID?: string; signature?: string[] } | undefined = await this.provider.request(
-      request,
-      chain.caipNetworkId
-    )
+    const signedTx:
+      | {
+          txID?: string
+          signature?: string[]
+          raw_data?: Record<string, unknown>
+          raw_data_hex?: string
+          visible?: boolean
+        }
+      | undefined = await this.provider.request(signRequest, chain.caipNetworkId)
 
-    return result?.txID || ''
+    if (!signedTx?.signature?.length) {
+      throw new Error('Transaction signing failed')
+    }
+
+    // Step 3: Broadcast the signed transaction via Blockchain API
+    const broadcastResponse = await fetch(rpcUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'tron_broadcastTransaction',
+        params: [
+          signedTx.txID || unsignedTx.txID,
+          signedTx.visible ?? unsignedTx.visible ?? true,
+          signedTx.raw_data || unsignedTx.raw_data,
+          signedTx.raw_data_hex || unsignedTx.raw_data_hex,
+          signedTx.signature
+        ]
+      })
+    })
+    const broadcastResult = await broadcastResponse.json()
+
+    if (!broadcastResult?.result?.result) {
+      throw new Error(broadcastResult?.result?.message || 'Failed to broadcast transaction')
+    }
+
+    return signedTx.txID || unsignedTx.txID
   }
 
   async switchNetwork(): Promise<void> {
@@ -122,6 +172,12 @@ export class TronWalletConnectConnector
   }
 
   // -- Internals ----------------------------------------------------- //
+  private getRpcUrl(chain: CaipNetwork): string {
+    const projectId = OptionsController.state.projectId
+
+    return CaipNetworksUtil.getDefaultRpcUrl(chain, chain.caipNetworkId, projectId)
+  }
+
   private get sessionChains() {
     return WcHelpersUtil.getChainsFromNamespaces(this.provider.session?.namespaces)
   }
