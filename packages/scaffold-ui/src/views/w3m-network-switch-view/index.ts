@@ -77,8 +77,8 @@ export class W3mNetworkSwitchView extends LitElement {
 
           ${this.error || this.success ? null : html`<wui-loading-hexagon></wui-loading-hexagon>`}
 
-          <wui-icon-box color="error" icon="close" size="sm"></wui-icon-box>
-          <wui-icon-box color="success" icon="checkmark" size="sm"></wui-icon-box>
+          <wui-icon-box color="error" icon="close" size="xl" padding="2"></wui-icon-box>
+          <wui-icon-box color="success" icon="checkmark" size="xl" padding="2"></wui-icon-box>
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="2">
@@ -142,14 +142,14 @@ export class W3mNetworkSwitchView extends LitElement {
         ChainController.setIsSwitchingNamespace(true)
       }
       if (this.network) {
-        await ChainController.switchActiveNetwork(this.network)
+        await ChainController.switchActiveNetwork(this.network, { throwOnFailure: true })
         const isAuthenticated = await SIWXUtil.isAuthenticated()
 
         // If not authenticated, wait for siwx prompt, else show success and close/navigate
         if (isAuthenticated) {
           this.success = true
           await new Promise<void>(resolve => {
-            setTimeout(resolve, 800)
+            setTimeout(resolve, 1100)
           })
 
           const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
