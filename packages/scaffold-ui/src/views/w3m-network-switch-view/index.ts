@@ -77,8 +77,8 @@ export class W3mNetworkSwitchView extends LitElement {
 
           ${this.error || this.success ? null : html`<wui-loading-hexagon></wui-loading-hexagon>`}
 
-          <wui-icon-box color="error" icon="close" size="xl" padding="2"></wui-icon-box>
-          <wui-icon-box color="success" icon="checkmark" size="xl" padding="2"></wui-icon-box>
+          <wui-icon-box color="error" icon="close" size="sm" padding="2"></wui-icon-box>
+          <wui-icon-box color="success" icon="checkmark" size="sm" padding="2"></wui-icon-box>
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="2">
