@@ -150,7 +150,9 @@ export class W3mRouterContainer extends LitElement {
       direction = 'next'
     }
 
-    this.viewDirection = `${direction}-${newView}`
+    queueMicrotask(() => {
+      this.viewDirection = `${direction}-${newView}`
+    })
 
     setTimeout(() => {
       this.historyState = history

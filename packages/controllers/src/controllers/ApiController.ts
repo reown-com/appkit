@@ -280,8 +280,8 @@ export const ApiController = {
         ...params,
         page: String(params.page),
         entries: String(params.entries),
-        include: params.include?.join(','),
-        exclude: exclude.join(',')
+        include: params.include?.join(',') || undefined,
+        exclude: exclude.join(',') || undefined
       }
     })
 
@@ -468,7 +468,7 @@ export const ApiController = {
     const params = {
       page: pageOverride ?? 1,
       entries: entriesOverride ?? 100,
-      search: search?.trim(),
+      search: search?.trim() || undefined,
       badge_type: badge,
       include: includeOverride ?? includeWalletIds,
       exclude: excludeOverride ?? excludeWalletIds,

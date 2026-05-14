@@ -4,7 +4,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import type { Balance } from '@reown/appkit-common'
-import { ConstantsUtil, RouterController, SendController } from '@reown/appkit-controllers'
+import { RouterController, SendController } from '@reown/appkit-controllers'
 import { UiHelperUtil } from '@reown/appkit-ui'
 
 import { W3mInputToken } from '../../src/partials/w3m-input-token'
@@ -23,7 +23,7 @@ const MOCK_TOKEN: Balance = {
 } as unknown as Balance
 
 const MOCK_NATIVE_TOKEN: Balance = {
-  address: ConstantsUtil.NATIVE_TOKEN_ADDRESS.eip155,
+  address: undefined,
   chainId: '1',
   symbol: 'ETH',
   name: 'Ethereum',
@@ -78,7 +78,7 @@ describe('W3mInputToken', () => {
 
   it('should display total value when token amount is set', async () => {
     const element: W3mInputToken = await fixture(
-      html`<w3m-input-token .token=${MOCK_TOKEN} .sendTokenAmount=${50}></w3m-input-token>`
+      html`<w3m-input-token .token=${MOCK_TOKEN} .sendTokenAmount=${'50'}></w3m-input-token>`
     )
 
     const totalValue = element.shadowRoot?.querySelector('.totalValue')
@@ -94,20 +94,25 @@ describe('W3mInputToken', () => {
     const maxLink = element.shadowRoot?.querySelector('wui-link')
     maxLink?.click()
 
-    expect(setTokenAmountSpy).toHaveBeenCalledWith(100)
+    expect(setTokenAmountSpy).toHaveBeenCalledWith('100.000000000000000000')
   })
 
   it('should handle max amount click for native token', async () => {
     const setTokenAmountSpy = vi.spyOn(SendController, 'setTokenAmount')
     const element: W3mInputToken = await fixture(
-      html`<w3m-input-token .token=${MOCK_NATIVE_TOKEN} .gasPrice=${1000000000}></w3m-input-token>`
+      html`<w3m-input-token
+        .token=${MOCK_NATIVE_TOKEN}
+        .gasPrice=${'1000000000'}
+      ></w3m-input-token>`
     )
 
     const maxLink = element.shadowRoot?.querySelector('wui-link')
     maxLink?.click()
 
-    // Should subtract gas from max amount for native token
-    expect(setTokenAmountSpy).toHaveBeenCalled()
+    // Should subtract gas (65000 * 1 Gwei = 0.000065 ETH) from max amount for native token
+    // 65000 covers EOA (21000) and common contract recipients (multisigs, exchange deposits)
+    // 10 ETH - 0.000065 ETH = 9.999935 ETH
+    expect(setTokenAmountSpy).toHaveBeenCalledWith('9.999935000000000000')
   })
 
   it('should update token amount when input changes', async () => {
@@ -119,6 +124,6 @@ describe('W3mInputToken', () => {
     const input = element.shadowRoot?.querySelector('wui-input-amount')
     input?.dispatchEvent(new CustomEvent('inputChange', { detail: 75 }))
 
-    expect(setTokenAmountSpy).toHaveBeenCalledWith(75)
+    expect(setTokenAmountSpy).toHaveBeenCalledWith('75')
   })
 })
