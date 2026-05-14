@@ -128,4 +128,12 @@ describe('OptionsController', () => {
     expect(OptionsController.state.enableMobileFullScreen).toBe(true)
     spy.mockRestore()
   })
+
+  it('should update state correctly on setEnableInjected()', () => {
+    OptionsController.setEnableInjected(false)
+    expect(OptionsController.state.enableInjected).toBe(false)
+
+    OptionsController.setEnableInjected(true)
+    expect(OptionsController.state.enableInjected).toBe(true)
+  })
 })

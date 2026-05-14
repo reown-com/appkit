@@ -34,7 +34,7 @@ const token = {
   },
   iconUrl: 'https://token-icons.s3.amazonaws.com/0x4200000000000000000000000000000000000042.png'
 }
-const sendTokenAmount = 0.1
+const sendTokenAmount = '0.1'
 const receiverAddress = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
 const receiverProfileName = 'john.eth'
 const receiverProfileImageUrl = 'https://ipfs.com/0x123.png'
@@ -238,7 +238,7 @@ describe('SendController', () => {
     })
 
     it('should call sendTransaction without tokenMint', async () => {
-      SendController.setTokenAmount(0.1)
+      SendController.setTokenAmount('0.1')
       SendController.setReceiverAddress('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')
 
       await SendController.sendSolanaToken()
@@ -273,7 +273,7 @@ describe('SendController', () => {
       }
 
       SendController.setToken(solanaToken as SendControllerState['token'])
-      SendController.setTokenAmount(50)
+      SendController.setTokenAmount('50')
       SendController.setReceiverAddress('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')
 
       await SendController.sendSolanaToken()
@@ -310,7 +310,7 @@ describe('SendController', () => {
       }
 
       SendController.setToken(solanaToken as SendControllerState['token'])
-      SendController.setTokenAmount(50)
+      SendController.setTokenAmount('50')
       SendController.setReceiverAddress('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')
 
       await SendController.sendSolanaToken()

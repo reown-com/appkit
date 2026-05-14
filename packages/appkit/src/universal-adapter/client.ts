@@ -264,7 +264,7 @@ export class UniversalAdapter extends AdapterBlueprint {
         }
       }
     }
-    connector.provider.setDefaultChain(caipNetwork.caipNetworkId)
+    connector.provider?.setDefaultChain(caipNetwork.caipNetworkId)
   }
 
   public getWalletConnectProvider() {
