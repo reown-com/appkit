@@ -124,7 +124,7 @@
     "bs58": "6.0.0",
     "semver": "7.7.2",
     "valtio": "2.1.7",
-    "viem": "^2.45.0"
+    "viem": ">=2.45.0 <3.0.0"
   },
   "devDependencies": {
     "@walletconnect/types": "2.23.7",
