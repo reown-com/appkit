@@ -1,5 +1,7 @@
 # @reown/appkit-experimental
 
+## 1.8.20
+
 ## 1.8.19
 
 ### Patch Changes

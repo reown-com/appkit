@@ -1,5 +1,13 @@
 # @reown/appkit-wallet
 
+## 1.8.20
+
+### Patch Changes
+
+- Updated dependencies [[`6b7096e`](https://github.com/reown-com/appkit/commit/6b7096e417b8e80d60594edc666ed2ebb5b67563)]:
+  - @reown/appkit-common@1.8.20
+  - @reown/appkit-polyfills@1.8.20
+
 ## 1.8.19
 
 ### Patch Changes
