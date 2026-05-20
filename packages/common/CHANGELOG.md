@@ -1,5 +1,11 @@
 # @reown/appkit-common
 
+## 1.8.20
+
+### Patch Changes
+
+- [#5585](https://github.com/reown-com/appkit/pull/5585) [`6b7096e`](https://github.com/reown-com/appkit/commit/6b7096e417b8e80d60594edc666ed2ebb5b67563) Thanks [@tomiir](https://github.com/tomiir)! - Adds network image for monad mainnet
+
 ## 1.8.19
 
 ### Patch Changes
