@@ -1,5 +1,12 @@
 # @reown/appkit
 
+## 1.8.20
+
+### Patch Changes
+
+- Updated dependencies [[`08f5c48`](https://github.com/reown-com/appkit/commit/08f5c48f29d9fb1525e5251b8e1a4a9db4299a0d), [`ed51ea6`](https://github.com/reown-com/appkit/commit/ed51ea6d67aa412ad397c594cf39a260015bbae9), [`cc75433`](https://github.com/reown-com/appkit/commit/cc75433b628d5682081bed8ae42690c20cf5823f)]:
+  - @reown/appkit@1.8.20
+
 ## 1.8.19
 
 ### Patch Changes
