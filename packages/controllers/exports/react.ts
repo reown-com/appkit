@@ -555,13 +555,24 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
         await ConnectorControllerUtil.connectExternal(fallbackConnector)
       } else if (isMobileDevice) {
         const wcWallet = ConnectUtil.mapWalletItemToWcWallet(_wallet)
+        const isCustomDeeplinkWallet = MobileWalletUtil.isCustomDeeplinkWallet(
+          _wallet.id,
+          activeNamespace
+        )
 
-        if (wcWallet.mobile_link) {
-          ConnectionControllerUtil.onConnectMobile(wcWallet, options?.wcPayUrl)
-        } else {
+        /*
+         * Custom-deeplink wallets (Phantom, Solflare, Coinbase, Binance) either
+         * don't support WalletConnect or expect a specific browse-URL format
+         * (`https://<wallet>/ul/v1/browse/<dapp_url>`). Building
+         * `<mobile_link>wc?uri=<wc_uri>` here would silently fail for Solflare.
+         * Matches headful selectWalletConnector behavior.
+         */
+        if (isCustomDeeplinkWallet || !wcWallet.mobile_link) {
           MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, activeNamespace, {
             isCoinbaseDisabled: OptionsController.state.enableCoinbase === false
           })
+        } else {
+          ConnectionControllerUtil.onConnectMobile(wcWallet, options?.wcPayUrl)
         }
       } else {
         await ConnectionController.connectWalletConnect({ cache: 'never' })
