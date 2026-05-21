@@ -1740,34 +1740,37 @@ describe('useAppKitWallets', () => {
       }
     }
 
-    it('uses handleMobileDeeplinkRedirect for Solflare on Solana even when mobile_link is set', async () => {
-      mockHeadlessSnapshots()
-      vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
-      vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('solana')
+    it.each([['solana' as const], ['eip155' as const]])(
+      'uses handleMobileDeeplinkRedirect for Solflare on %s even when mobile_link is set',
+      async namespace => {
+        mockHeadlessSnapshots()
+        vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+        vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue(namespace)
 
-      const handleRedirectSpy = vi
-        .spyOn(MobileWalletUtil, 'handleMobileDeeplinkRedirect')
-        .mockImplementation(() => undefined)
-      const onConnectMobileSpy = vi
-        .spyOn(ConnectionControllerUtil, 'onConnectMobile')
-        .mockImplementation(() => undefined)
+        const handleRedirectSpy = vi
+          .spyOn(MobileWalletUtil, 'handleMobileDeeplinkRedirect')
+          .mockImplementation(() => undefined)
+        const onConnectMobileSpy = vi
+          .spyOn(ConnectionControllerUtil, 'onConnectMobile')
+          .mockImplementation(() => undefined)
 
-      const solflare = makeMobileWallet({
-        id: CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
-        name: 'Solflare',
-        walletInfo: { deepLink: 'solflare://' }
-      })
+        const solflare = makeMobileWallet({
+          id: CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
+          name: 'Solflare',
+          walletInfo: { deepLink: 'solflare://' }
+        })
 
-      const result = useAppKitWallets()
-      await result.connect(solflare, 'solana')
+        const result = useAppKitWallets()
+        await result.connect(solflare, namespace)
 
-      expect(handleRedirectSpy).toHaveBeenCalledWith(
-        CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
-        'solana',
-        expect.objectContaining({ isCoinbaseDisabled: expect.any(Boolean) })
-      )
-      expect(onConnectMobileSpy).not.toHaveBeenCalled()
-    })
+        expect(handleRedirectSpy).toHaveBeenCalledWith(
+          CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
+          namespace,
+          expect.objectContaining({ isCoinbaseDisabled: expect.any(Boolean) })
+        )
+        expect(onConnectMobileSpy).not.toHaveBeenCalled()
+      }
+    )
 
     it.each([['solana' as const], ['eip155' as const], ['bip122' as const]])(
       'uses handleMobileDeeplinkRedirect for Phantom on %s even when mobile_link is set',
