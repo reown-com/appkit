@@ -54,7 +54,7 @@
     "lit": "3.3.0",
     "valtio": "2.1.7",
     "viem": "2.45.0",
-    "zod": "3.22.4"
+    "zod": "4.4.3"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",
