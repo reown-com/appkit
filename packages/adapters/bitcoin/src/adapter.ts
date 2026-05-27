@@ -61,33 +61,39 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('The connector does not support any of the requested chains')
     }
 
-    const connection = this.getConnection({
-      address: params.address,
-      connectorId: connector.id,
-      connections: this.connections,
-      connectors: this.connectors
-    })
-
-    if (connection?.account) {
-      this.emit('accountChanged', {
-        address: connection.account.address,
-        chainId: connection.caipNetwork?.id,
-        connector
+    // If we are already connected to the address, return the connection to prevent extra interactions
+    if (params.address) {
+      const connection = this.getConnection({
+        address: params.address,
+        connectorId: connector.id,
+        connections: this.connections,
+        connectors: this.connectors
       })
 
-      return {
-        id: connector.id,
-        type: connector.type,
-        address: connection.account.address,
-        chainId: chain.id,
-        provider: connector.provider
+      if (connection?.account) {
+        this.emit('accountChanged', {
+          address: connection.account.address,
+          chainId: connection.caipNetwork?.id,
+          connector
+        })
+
+        return {
+          id: connector.id,
+          type: connector.type,
+          address: connection.account.address,
+          chainId: chain.id,
+          provider: connector.provider
+        }
       }
     }
 
-    const address = await connector.connect().catch(err => {
+    const address = await connector.connect({ caipNetworkId: chain.caipNetworkId }).catch(err => {
       throw new UserRejectedRequestError(err)
     })
-    const accounts = await this.getAccounts({ id: connector.id })
+    const accounts = await this.getAccounts({
+      id: connector.id,
+      caipNetworkId: chain.caipNetworkId
+    })
 
     this.emit('accountChanged', {
       address,
@@ -124,7 +130,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   ): Promise<AdapterBlueprint.GetAccountsResult> {
     const addresses = await this.connectors
       .find(connector => connector.id === params.id)
-      ?.getAccountAddresses()
+      ?.getAccountAddresses({ caipNetworkId: params.caipNetworkId })
       .catch(() => [])
 
     const caipNetwork = ChainController.getActiveCaipNetwork(this.namespace as ChainNamespace)
@@ -189,13 +195,13 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       })
     )
 
-    const okxConnector = OKXConnector.getWallet({
+    const okxConnector = new OKXConnector({
       requestedChains: this.networks,
       requestedCaipNetworkId: ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)
         ?.caipNetworkId
     })
 
-    if (okxConnector) {
+    if (CoreHelperUtil.isClient()) {
       this.addConnector(okxConnector)
     }
 
@@ -229,7 +235,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       const { address } = CoreHelperUtil.getAccount(accounts[0])
 
       const allAccounts = await this.getAccounts({ id: connectorId })
-
       const connection = this.getConnection({
         connectorId,
         connections: this.connections,
@@ -587,6 +592,11 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     if (!connector) {
       throw new Error('BitcoinAdapter:onChainChanged - connector is undefined')
     }
+    const chain = connector.chains.find(c => c.id === chainId) || connector.chains[0]
+
+    if (!chain) {
+      throw new Error('BitcoinAdapter:onChainChanged - chain is undefined')
+    }
 
     const { address } = await this.connect({
       id: connector.id,
@@ -594,17 +604,10 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       type: ''
     })
 
-    const accounts = await this.getAccounts({ id: connector.id })
-    const chain = connector.chains.find(c => c.id === chainId) || connector.chains[0]
-
-    if (
-      HelpersUtil.isLowerCaseMatch(
-        this.getConnectorId(CommonConstantsUtil.CHAIN.BITCOIN),
-        connector.id
-      )
-    ) {
-      this.emit('switchNetwork', { chainId, address })
-    }
+    const accounts = await this.getAccounts({
+      id: connector.id,
+      caipNetworkId: chain?.caipNetworkId
+    })
 
     this.addConnection({
       connectorId: connector.id,
@@ -616,6 +619,15 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       })),
       caipNetwork: chain
     })
+
+    if (
+      HelpersUtil.isLowerCaseMatch(
+        this.getConnectorId(CommonConstantsUtil.CHAIN.BITCOIN),
+        connector.id
+      )
+    ) {
+      this.emit('switchNetwork', { chainId: chain.id, address })
+    }
   }
 
   // -- Private ------------------------------------------ //
