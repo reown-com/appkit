@@ -325,6 +325,13 @@ export interface FetchWalletsOptions {
   include?: string[]
   /** Wallet IDs to exclude. Overrides the default exclude list when provided. */
   exclude?: string[]
+  /**
+   * Include wallets that support WalletConnect Pay but are not v2-compatible.
+   * By default these are filtered out. Enable for WalletConnect Pay surfaces.
+   */
+  includePayOnly?: boolean
+  /** Sort mode. 'wcpay' bubbles WalletConnect Pay-supporting wallets to the top. */
+  sort?: 'default' | 'wcpay'
 }
 
 export interface UseAppKitWalletsReturn {
