@@ -281,7 +281,8 @@ export const ApiController = {
         page: String(params.page),
         entries: String(params.entries),
         include: params.include?.join(',') || undefined,
-        exclude: exclude.join(',') || undefined
+        exclude: exclude.join(',') || undefined,
+        include_pay_only: params.include_pay_only ? 'true' : undefined
       }
     })
 
@@ -391,12 +392,15 @@ export const ApiController = {
     entries: entriesOverride,
     badge,
     include: includeOverride,
-    exclude: excludeOverride
-  }: Pick<ApiGetWalletsRequest, 'page'> & {
+    exclude: excludeOverride,
+    includePayOnly,
+    sort
+  }: Pick<ApiGetWalletsRequest, 'page' | 'sort'> & {
     entries?: number
     badge?: BadgeType
     include?: string[]
     exclude?: string[]
+    includePayOnly?: boolean
   }) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
     const chains = ChainController.getRequestedCaipNetworkIds().join(',')
@@ -411,6 +415,8 @@ export const ApiController = {
       include: includeOverride ?? includeWalletIds,
       exclude: excludeOverride ?? defaultExclude,
       badge_type: badge,
+      include_pay_only: includePayOnly,
+      sort,
       chains
     }
     const { data, count, mobileFilteredOutWalletsLength } = await ApiController.fetchWallets(params)
@@ -454,12 +460,15 @@ export const ApiController = {
     entries: entriesOverride,
     page: pageOverride,
     include: includeOverride,
-    exclude: excludeOverride
-  }: Pick<ApiGetWalletsRequest, 'search' | 'badge'> & {
+    exclude: excludeOverride,
+    includePayOnly,
+    sort
+  }: Pick<ApiGetWalletsRequest, 'search' | 'badge' | 'sort'> & {
     entries?: number
     page?: number
     include?: string[]
     exclude?: string[]
+    includePayOnly?: boolean
   }) {
     const { includeWalletIds, excludeWalletIds } = OptionsController.state
     const chains = ChainController.getRequestedCaipNetworkIds().join(',')
@@ -472,6 +481,8 @@ export const ApiController = {
       badge_type: badge,
       include: includeOverride ?? includeWalletIds,
       exclude: excludeOverride ?? excludeWalletIds,
+      include_pay_only: includePayOnly,
+      sort,
       chains
     }
 
