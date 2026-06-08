@@ -88,6 +88,14 @@ export default function DemoContent({
           showActions={false}
         />
       ) : null}
+      {tronAdapter ? (
+        <AppKitWalletButtons
+          title="TRON Wallet Buttons"
+          namespace={isMultiChain ? 'tron' : undefined}
+          wallets={ConstantsUtil.TronWalletButtons}
+          showActions={false}
+        />
+      ) : null}
     </>
   )
 }
