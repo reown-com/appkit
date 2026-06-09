@@ -326,6 +326,7 @@ export class W3mConnectView extends LitElement {
     if (hasOtherMethods && shouldCollapseWallets) {
       return html`<wui-list-button
         data-testid="w3m-collapse-wallets-button"
+        icon="wallet"
         tabIdx=${ifDefined(tabIndex)}
         @click=${this.onContinueWalletClick.bind(this)}
         text="Continue with a wallet"
