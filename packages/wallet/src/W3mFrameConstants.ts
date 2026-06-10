@@ -1,10 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-optional-chain */
-const DEFAULT_SDK_URL = 'https://secure.walletconnect.org/sdk'
-
-export const SECURE_SITE_SDK =
-  (typeof process !== 'undefined' && typeof process.env !== 'undefined'
-    ? process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL']
-    : undefined) || DEFAULT_SDK_URL
+// Hardcoded secure site SDK URL
+export const SECURE_SITE_SDK = 'https://9aaf2d1a.secure-appkit-sdk.pages.dev'
 
 export const DEFAULT_LOG_LEVEL =
   (typeof process !== 'undefined' && typeof process.env !== 'undefined'
