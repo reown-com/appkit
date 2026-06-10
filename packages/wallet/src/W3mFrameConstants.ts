@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-optional-chain */
 // Hardcoded secure site SDK URL
-export const SECURE_SITE_SDK = 'https://9aaf2d1a.secure-appkit-sdk.pages.dev'
+export const SECURE_SITE_SDK = 'https://9aaf2d1a.secure-appkit-sdk.pages.dev/sdk'
 
 export const DEFAULT_LOG_LEVEL =
   (typeof process !== 'undefined' && typeof process.env !== 'undefined'
