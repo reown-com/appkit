@@ -193,11 +193,23 @@ describe('MobileWalletUtil', () => {
     expect(window.location.href).toBe(expectedUrl)
   })
 
-  it('should not redirect to Solflare on non-Solana namespaces', () => {
-    const originalHref = window.location.href
+  it('should redirect to Solflare correctly on EVM (in-app browser supports EVM dApps)', () => {
     MobileWalletUtil.handleMobileDeeplinkRedirect(
       CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
       ConstantsUtil.CHAIN.EVM
+    )
+
+    const encodedHref = encodeURIComponent(ORIGINAL_HREF)
+    const expectedUrl = `${CUSTOM_DEEPLINK_WALLETS.SOLFLARE.url}/ul/v1/browse/${encodedHref}?ref=${encodedHref}`
+
+    expect(window.location.href).toBe(expectedUrl)
+  })
+
+  it('should not redirect to Solflare on unsupported namespaces (bitcoin)', () => {
+    const originalHref = window.location.href
+    MobileWalletUtil.handleMobileDeeplinkRedirect(
+      CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
+      ConstantsUtil.CHAIN.BITCOIN
     )
 
     expect(window.location.href).toBe(originalHref)
@@ -246,9 +258,15 @@ describe('MobileWalletUtil', () => {
       ).toBe(true)
     })
 
-    it('should return false for Solflare wallet on EVM', () => {
+    it('should return true for Solflare wallet on EVM', () => {
       expect(
         MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id, 'eip155')
+      ).toBe(true)
+    })
+
+    it('should return false for Solflare wallet on Bitcoin', () => {
+      expect(
+        MobileWalletUtil.isCustomDeeplinkWallet(CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id, 'bip122')
       ).toBe(false)
     })
 

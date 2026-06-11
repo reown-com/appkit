@@ -63,7 +63,14 @@ export const MobileWalletUtil = {
     }
 
     if (id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id) {
-      return namespace === ConstantsUtil.CHAIN.SOLANA
+      /*
+       * Solflare's in-app browser exposes both `window.solflare` (Solana) and
+       * `window.ethereum` (EVM), so the same `…/ul/v1/browse/<dapp_url>`
+       * Universal Link is the correct entry point for either chain.
+       * The `solflare://wc?uri=…` deeplink that the WC fallback would build
+       * is not handled by Solflare's app.
+       */
+      return namespace === ConstantsUtil.CHAIN.SOLANA || namespace === ConstantsUtil.CHAIN.EVM
     }
 
     if (id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id) {
@@ -121,10 +128,10 @@ export const MobileWalletUtil = {
       }
     }
 
-    // Solflare only supports Solana
+    // Solflare's in-app browser supports both Solana and EVM dApps
     if (
       id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id &&
-      namespace === ConstantsUtil.CHAIN.SOLANA &&
+      (namespace === ConstantsUtil.CHAIN.SOLANA || namespace === ConstantsUtil.CHAIN.EVM) &&
       !('solflare' in window)
     ) {
       window.location.href = `${CUSTOM_DEEPLINK_WALLETS.SOLFLARE.url}/ul/v1/browse/${encodedHref}?ref=${encodedHref}`
