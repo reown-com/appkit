@@ -116,6 +116,46 @@ export class WagmiAdapter extends AdapterBlueprint {
     this.setupWatchers()
   }
 
+  /**
+   * Resets the wagmi config state for SSR (Server-Side Rendering).
+   *
+   * In Next.js App Router with SSR, the WagmiAdapter is typically created as a module-level
+   * singleton. This can cause cross-request state leakage where one user's wallet connection
+   * state bleeds into another user's server-rendered HTML.
+   *
+   * Call this method before each SSR request when `cookieToInitialState` returns undefined
+   * (i.e., when the user has no wallet cookies) to reset the config state and prevent
+   * showing another user's wallet address.
+   *
+   * @example
+   * ```tsx
+   * // In your layout.tsx (server component)
+   * const cookies = (await headers()).get('cookie')
+   * const initialState = cookieToInitialState(wagmiAdapter.wagmiConfig, cookies)
+   *
+   * // Reset state if no cookies to prevent state leakage
+   * if (!initialState) {
+   *   wagmiAdapter.resetSSRState()
+   * }
+   * ```
+   */
+  public resetSSRState(): void {
+    if (!this.wagmiConfig) {
+      return
+    }
+
+    // Reset the wagmi config state to disconnected
+    this.wagmiConfig.setState(state => ({
+      ...state,
+      connections: new Map(),
+      current: null,
+      status: 'disconnected'
+    }))
+
+    // Clear the connections map
+    this.wagmiConfig.state.connections.clear()
+  }
+
   override async getAccounts(
     params: AdapterBlueprint.GetAccountsParams
   ): Promise<AdapterBlueprint.GetAccountsResult> {
