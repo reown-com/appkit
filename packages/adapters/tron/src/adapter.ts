@@ -143,8 +143,21 @@ export class TronAdapter extends AdapterBlueprint<TronConnector> {
     })
   }
 
-  override async signMessage(): Promise<AdapterBlueprint.SignMessageResult> {
-    return Promise.resolve({ signature: '' })
+  override async signMessage(
+    params: AdapterBlueprint.SignMessageParams
+  ): Promise<AdapterBlueprint.SignMessageResult> {
+    const connector = params.provider as TronConnector
+
+    if (!connector) {
+      throw new Error('TronAdapter:signMessage - connector is undefined')
+    }
+
+    const signature = await connector.signMessage({
+      message: params.message,
+      from: params.address
+    })
+
+    return { signature }
   }
 
   override async sendTransaction(): Promise<AdapterBlueprint.SendTransactionResult> {
