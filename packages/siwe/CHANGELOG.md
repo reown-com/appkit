@@ -1,5 +1,18 @@
 # @reown/appkit-siwe
 
+## 1.8.21
+
+### Patch Changes
+
+- [#5685](https://github.com/reown-com/appkit/pull/5685) [`ea99fd1`](https://github.com/reown-com/appkit/commit/ea99fd1293161577216e86c1b5137dd56def4362) Thanks [@enesozturk](https://github.com/enesozturk)! - Add `includePayOnly` and `sort` options to `useAppKitWallets().fetchWallets()`. `includePayOnly` surfaces wallets that support WalletConnect Pay but are not v2-compatible (filtered out by default), and `sort: 'wcpay'` bubbles WalletConnect Pay-supporting wallets to the top.
+
+- Updated dependencies [[`ea99fd1`](https://github.com/reown-com/appkit/commit/ea99fd1293161577216e86c1b5137dd56def4362)]:
+  - @reown/appkit-utils@1.8.21
+  - @reown/appkit-common@1.8.21
+  - @reown/appkit-ui@1.8.21
+  - @reown/appkit-wallet@1.8.21
+  - @reown/appkit-controllers@1.8.21
+
 ## 1.8.20
 
 ### Patch Changes
