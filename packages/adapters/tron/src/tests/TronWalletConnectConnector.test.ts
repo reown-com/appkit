@@ -146,13 +146,14 @@ describe('TronWalletConnectConnector', () => {
       expect(createBody.method).toBe('tron_createTransaction')
       expect(createBody.params).toEqual([MOCK_OWNER_ADDRESS, MOCK_TO_ADDRESS, 1000000, true])
 
-      // Verify WC sign call with full transaction object
+      // Verify WC sign call uses the legacy nested shape by default (wallet did not
+      // advertise tron_method_version: "v1" in sessionProperties)
       expect(mockProviderRequest).toHaveBeenCalledWith(
         {
           method: 'tron_signTransaction',
           params: {
             address: MOCK_OWNER_ADDRESS,
-            transaction: MOCK_UNSIGNED_TX
+            transaction: { transaction: MOCK_UNSIGNED_TX }
           }
         },
         MOCK_CHAIN_ID
@@ -165,6 +166,46 @@ describe('TronWalletConnectConnector', () => {
       expect(broadcastBody.method).toBe('tron_broadcastTransaction')
       expect(broadcastBody.params[0]).toBe(MOCK_SIGNED_TX.txID)
       expect(broadcastBody.params[4]).toEqual(MOCK_SIGNED_TX.signature)
+    })
+
+    it('should send the flat (v1) transaction shape when wallet advertises tron_method_version v1', async () => {
+      const v1Provider = {
+        ...mockProvider,
+        session: {
+          ...mockProvider.session,
+          sessionProperties: { tron_method_version: 'v1' }
+        }
+      }
+      const v1Connector = new TronWalletConnectConnector({
+        provider: v1Provider as any,
+        chains: [MOCK_CAIP_NETWORK as any]
+      })
+
+      mockFetch.mockResolvedValueOnce({
+        json: () => Promise.resolve({ result: MOCK_UNSIGNED_TX })
+      })
+      mockProviderRequest.mockResolvedValueOnce(MOCK_SIGNED_TX)
+      mockFetch.mockResolvedValueOnce({
+        json: () => Promise.resolve({ result: { result: true } })
+      })
+
+      await v1Connector.sendTransaction({
+        from: MOCK_OWNER_ADDRESS,
+        to: MOCK_TO_ADDRESS,
+        value: '1000000'
+      })
+
+      // v1 wallets receive the flat transaction object (no nested wrapper)
+      expect(mockProviderRequest).toHaveBeenCalledWith(
+        {
+          method: 'tron_signTransaction',
+          params: {
+            address: MOCK_OWNER_ADDRESS,
+            transaction: MOCK_UNSIGNED_TX
+          }
+        },
+        MOCK_CHAIN_ID
+      )
     })
 
     it('should throw when createTransaction fails', async () => {
