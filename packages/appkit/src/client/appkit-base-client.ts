@@ -21,12 +21,14 @@ import type {
   ConnectExternalOptions,
   ConnectMethod,
   ConnectedWalletInfo,
+  ConnectOptions,
   ConnectionControllerClient,
   ConnectionControllerState,
   ConnectorType,
   EstimateGasTransactionArgs,
   EventsControllerState,
   Features,
+  FetchWalletsOptions,
   ModalControllerState,
   NamespaceTypeMap,
   OptionsControllerState,
@@ -41,6 +43,8 @@ import type {
   UseAppKitNetworkReturn,
   User,
   WalletFeature,
+  WalletItem,
+  WalletListSnapshot,
   WriteContractArgs,
   WriteSolanaTransactionArgs
 } from '@reown/appkit-controllers'
@@ -59,6 +63,7 @@ import {
   CoreHelperUtil,
   EnsController,
   EventsController,
+  HeadlessWalletUtil,
   ModalController,
   OnRampController,
   OptionsController,
@@ -2315,6 +2320,49 @@ export abstract class AppKitBaseClient {
 
   public async disconnect(chainNamespace?: ChainNamespace) {
     await ConnectionController.disconnect({ namespace: chainNamespace })
+  }
+
+  // -- Headless wallet list ------------------------------------------------ //
+  // Imperative counterparts of the `useAppKitWallets` React hook, so a non-React host
+  // (e.g. `@walletconnect/pay-appkit`) can list / search / connect wallets headlessly
+  // through the AppKit instance. Both share the same code path via `HeadlessWalletUtil`.
+
+  /**
+   * Fetch / search / paginate the WalletConnect wallet list (WalletGuide explorer). Read
+   * the results with {@link getWalletList}; subscribe with {@link subscribeWalletList}.
+   */
+  public async fetchWallets(options?: FetchWalletsOptions) {
+    await HeadlessWalletUtil.fetchWallets(options)
+  }
+
+  /** The current headless wallet list (initial view + WalletConnect list + pagination). */
+  public getWalletList(): WalletListSnapshot {
+    return HeadlessWalletUtil.getWalletList()
+  }
+
+  /** Subscribe to wallet-list changes. Returns an unsubscribe. */
+  public subscribeWalletList(callback: () => void) {
+    return HeadlessWalletUtil.subscribeWalletList(callback)
+  }
+
+  /**
+   * Pre-fetch the WalletConnect URI (read from {@link getState} / `subscribeConnections`).
+   * Call when a wallet is selected so a later connect can deeplink synchronously (iOS).
+   */
+  public async getWalletConnectUri(options?: ConnectOptions) {
+    await HeadlessWalletUtil.getWalletConnectUri(options)
+  }
+
+  /**
+   * Connect a chosen wallet programmatically (headless — no modal). Handles injected,
+   * API ("all wallets"), and mobile-deeplink wallets.
+   */
+  public async connectWallet(
+    wallet: WalletItem,
+    namespace?: ChainNamespace,
+    options?: ConnectOptions
+  ) {
+    await HeadlessWalletUtil.connect(wallet, namespace, options)
   }
 
   public getSIWX<SIWXConfigInterface = SIWXConfig>() {
