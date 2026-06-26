@@ -23,10 +23,7 @@ import { ConnectUtil, type WalletItem } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
-import {
-  type ConnectOptions,
-  type FetchWalletsOptions
-} from '../src/utils/HeadlessWalletUtil.js'
+import { type ConnectOptions, type FetchWalletsOptions } from '../src/utils/HeadlessWalletUtil.js'
 import { MobileWalletUtil } from '../src/utils/MobileWallet.js'
 import type {
   UseAppKitAccountReturn,

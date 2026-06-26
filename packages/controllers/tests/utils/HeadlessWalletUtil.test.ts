@@ -45,7 +45,9 @@ beforeEach(() => {
 
 describe('HeadlessWalletUtil.fetchWallets', () => {
   it('searches when a search term is given', async () => {
-    const searchWallet = vi.spyOn(ApiController, 'searchWallet').mockResolvedValue(undefined as never)
+    const searchWallet = vi
+      .spyOn(ApiController, 'searchWallet')
+      .mockResolvedValue(undefined as never)
     const fetchByPage = vi.spyOn(ApiController, 'fetchWalletsByPage')
 
     await HeadlessWalletUtil.fetchWallets({ search: 'rainbow', includePayOnly: true })
@@ -55,7 +57,9 @@ describe('HeadlessWalletUtil.fetchWallets', () => {
   })
 
   it('maps the deprecated `query` to `search`', async () => {
-    const searchWallet = vi.spyOn(ApiController, 'searchWallet').mockResolvedValue(undefined as never)
+    const searchWallet = vi
+      .spyOn(ApiController, 'searchWallet')
+      .mockResolvedValue(undefined as never)
 
     await HeadlessWalletUtil.fetchWallets({ query: 'rbw' })
 

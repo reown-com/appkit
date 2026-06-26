@@ -20,8 +20,8 @@ import type {
   ChainAdapterConnector,
   ConnectExternalOptions,
   ConnectMethod,
-  ConnectedWalletInfo,
   ConnectOptions,
+  ConnectedWalletInfo,
   ConnectionControllerClient,
   ConnectionControllerState,
   ConnectorType,
@@ -2322,10 +2322,12 @@ export abstract class AppKitBaseClient {
     await ConnectionController.disconnect({ namespace: chainNamespace })
   }
 
-  // -- Headless wallet list ------------------------------------------------ //
-  // Imperative counterparts of the `useAppKitWallets` React hook, so a non-React host
-  // (e.g. `@walletconnect/pay-appkit`) can list / search / connect wallets headlessly
-  // through the AppKit instance. Both share the same code path via `HeadlessWalletUtil`.
+  /*
+   * Headless wallet list — imperative counterparts of the `useAppKitWallets` React hook,
+   * so a non-React host (e.g. `@walletconnect/pay-appkit`) can list / search / connect
+   * wallets headlessly through the AppKit instance. Both share the same code path via
+   * `HeadlessWalletUtil`.
+   */
 
   /**
    * Fetch / search / paginate the WalletConnect wallet list (WalletGuide explorer). Read
