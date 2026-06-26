@@ -107,16 +107,19 @@ describe('HeadlessWalletUtil.connect', () => {
 
   it('falls back to a connector found by wallet id (API wallet)', async () => {
     const fallback = { id: 'baseAccount', explorerId: 'wc_wallet' }
-    // First lookup (by connector) → none; fallback lookup (by wallet id) → fallback.
-    vi.spyOn(ConnectorController, 'getConnector')
-      .mockReturnValueOnce(undefined as never)
-      .mockReturnValueOnce(fallback as never)
+    // apiWallet has no connectors, so the first (guarded) lookup is skipped — only the
+    // fallback lookup by wallet id runs, and it resolves the Base Account connector.
+    const getConnector = vi
+      .spyOn(ConnectorController, 'getConnector')
+      .mockReturnValue(fallback as never)
     const connectExternal = vi
       .spyOn(ConnectorControllerUtil, 'connectExternal')
       .mockResolvedValue(undefined as never)
 
     await HeadlessWalletUtil.connect(apiWallet, 'eip155')
 
+    expect(getConnector).toHaveBeenCalledTimes(1)
+    expect(getConnector).toHaveBeenCalledWith({ id: 'wc_wallet', namespace: 'eip155' })
     expect(connectExternal).toHaveBeenCalledWith(fallback)
   })
 

@@ -13,7 +13,6 @@ import { ConnectionControllerUtil } from './ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from './ConnectorControllerUtil.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
 import { MobileWalletUtil } from './MobileWallet.js'
-import type { WcWallet } from './TypeUtil.js'
 
 // -- Types ------------------------------------------------------------------ //
 
@@ -100,8 +99,8 @@ export const HeadlessWalletUtil = {
     return {
       wallets: ConnectUtil.getInitialWallets(),
       wcWallets: ConnectUtil.getWalletConnectWallets(
-        ApiController.state.wallets as WcWallet[],
-        ApiController.state.search as WcWallet[]
+        ApiController.state.wallets,
+        ApiController.state.search
       ),
       page: ApiController.state.page,
       count: ApiController.state.count
@@ -159,10 +158,12 @@ export const HeadlessWalletUtil = {
             })
           : undefined
 
-      // Fallback connector lookup for API wallets (empty `connectors`): find a connector
-      // by the wallet's API id (getConnector matches both `c.id` and `c.explorerId`), so
-      // e.g. the Base Account connector opens Coinbase's web wallet instead of falling
-      // through to WalletConnect. Matches headful `ConnectorController.selectWalletConnector`.
+      /*
+       * Fallback connector lookup for API wallets (empty `connectors`): find a connector
+       * by the wallet's API id (getConnector matches both `c.id` and `c.explorerId`), so
+       * e.g. the Base Account connector opens Coinbase's web wallet instead of falling
+       * through to WalletConnect. Matches headful `ConnectorController.selectWalletConnector`.
+       */
       const fallbackConnector =
         !connector && activeNamespace
           ? ConnectorController.getConnector({ id: wallet?.id, namespace: activeNamespace })
