@@ -110,10 +110,12 @@ export class TronWalletConnectConnector
       throw new Error(unsignedTx?.Error || 'Failed to create transaction')
     }
 
-    // Step 2: Send full transaction to wallet for signing via WalletConnect.
-    // Wallets opt into the simplified (v1) payload shape by advertising
-    // `tron_method_version: "v1"` in sessionProperties during the handshake.
-    // Otherwise the spec mandates the legacy nested `transaction.transaction` shape.
+    /*
+     * Step 2: Send full transaction to wallet for signing via WalletConnect.
+     * Wallets opt into the simplified (v1) payload shape by advertising
+     * `tron_method_version: "v1"` in sessionProperties during the handshake.
+     * Otherwise the spec mandates the legacy nested `transaction.transaction` shape.
+     */
     // See https://docs.reown.com/advanced/multichain/rpc-reference/tron-rpc
     const usesV1Format = this.provider.session?.sessionProperties?.['tron_method_version'] === 'v1'
     const signRequest = {
