@@ -2348,8 +2348,9 @@ export abstract class AppKitBaseClient {
   }
 
   /**
-   * Pre-fetch the WalletConnect URI (read from {@link getState} / `subscribeConnections`).
-   * Call when a wallet is selected so a later connect can deeplink synchronously (iOS).
+   * Pre-fetch the WalletConnect URI. The resulting `wcUri` (plus `wcError` / `wcFetchingUri`) is
+   * exposed on the public state — read it via {@link getState} or {@link subscribeState}. Call
+   * when a wallet is selected so a later connect can deeplink synchronously (iOS) or render a QR.
    */
   public async getWalletConnectUri(options?: ConnectOptions) {
     await HeadlessWalletUtil.getWalletConnectUri(options)

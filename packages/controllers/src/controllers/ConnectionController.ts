@@ -700,3 +700,19 @@ const controller = {
 
 // Export the controller wrapped with our error boundary
 export const ConnectionController = withErrorBoundary(controller)
+
+/*
+ * Mirror the WalletConnect URI / connection signals onto the public state so headless hosts can
+ * read them ungated via `appKit.getState()` / `appKit.subscribeState()` — the symmetric read for
+ * `getWalletConnectUri()`. (`subscribeConnections` is gated behind the `multiWallet` remote
+ * feature, so it can't serve the URI for a single-wallet QR.) Driving every wcUri/wcError/
+ * wcFetchingUri mutation through one subscription keeps the mirror in sync regardless of which
+ * setter changed it; it's one-way (PublicState never writes back here), so there's no loop.
+ */
+sub(state, () => {
+  PublicStateController.set({
+    wcUri: state.wcUri,
+    wcError: Boolean(state.wcError),
+    wcFetchingUri: state.wcFetchingUri
+  })
+})
