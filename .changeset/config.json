@@ -1,7 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
-  "changelog": ["@changesets/changelog-github",
-  { "repo": "reown-com/appkit" }],
+  "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [[
     "@reown/appkit",
