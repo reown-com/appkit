@@ -41,7 +41,7 @@ export interface FetchWalletsOptions {
   sort?: 'default' | 'wcpay'
 }
 
-/** Options for {@link HeadlessWalletUtil.connect} / {@link HeadlessWalletUtil.getWalletConnectUri}. */
+/** Options for {@link HeadlessWalletUtil.connect} / {@link HeadlessWalletUtil.prefetchWalletConnectUri}. */
 export interface ConnectOptions {
   /**
    * A WalletConnect Pay deeplink appended to the WC URI, so a WCPay-capable wallet
@@ -60,6 +60,16 @@ export interface WalletListSnapshot {
   page: number
   /** Total number of available WalletConnect wallets for the current parameters. */
   count: number
+}
+
+/** The WalletConnect URI + connection-attempt signals, read imperatively. */
+export interface WalletConnectUriSnapshot {
+  /** Active WalletConnect pairing URI (for rendering a QR / deeplink), or undefined when none. */
+  wcUri: string | undefined
+  /** Whether the last WalletConnect URI fetch / connection attempt errored. */
+  wcError: boolean
+  /** Whether a WalletConnect URI is currently being fetched. */
+  wcFetchingUri: boolean
 }
 
 /**
@@ -120,13 +130,43 @@ export const HeadlessWalletUtil = {
   },
 
   /**
-   * Pre-fetch the WalletConnect URI (read from `ConnectionController.state.wcUri`).
-   * Call when a wallet is selected so a later connect can deeplink synchronously
-   * (required for iOS Safari). Uses 'auto' cache to reuse a valid URI or fetch a new one.
+   * Pre-fetch the WalletConnect URI. Read the result with {@link getWalletConnectUri};
+   * subscribe with {@link subscribeWalletConnectUri}. Call when a wallet is selected so a
+   * later connect can deeplink synchronously (required for iOS Safari) or render a QR. Uses
+   * 'auto' cache to reuse a valid URI or fetch a new one.
    */
-  async getWalletConnectUri(_options?: ConnectOptions): Promise<void> {
+  async prefetchWalletConnectUri(_options?: ConnectOptions): Promise<void> {
     this.resetWcUri()
     await ConnectionController.connectWalletConnect({ cache: 'auto' })
+  },
+
+  /**
+   * Read the current WalletConnect URI state (the QR / deeplink URI plus the fetch/error
+   * signals) — the symmetric read for {@link prefetchWalletConnectUri}. Reads
+   * `ConnectionController` directly, so a headless host gets it ungated through the AppKit
+   * instance without importing the controllers package.
+   */
+  getWalletConnectUri(): WalletConnectUriSnapshot {
+    return {
+      wcUri: ConnectionController.state.wcUri,
+      wcError: Boolean(ConnectionController.state.wcError),
+      wcFetchingUri: ConnectionController.state.wcFetchingUri
+    }
+  },
+
+  /**
+   * Subscribe to WalletConnect URI state changes (wcUri / wcError / wcFetchingUri). The
+   * callback receives no arguments — read the current values with {@link getWalletConnectUri}.
+   * Returns an unsubscribe.
+   */
+  subscribeWalletConnectUri(callback: () => void): () => void {
+    const unsubscribers = [
+      subKey(ConnectionController.state, 'wcUri', callback),
+      subKey(ConnectionController.state, 'wcError', callback),
+      subKey(ConnectionController.state, 'wcFetchingUri', callback)
+    ]
+
+    return () => unsubscribers.forEach(unsubscribe => unsubscribe())
   },
 
   /**

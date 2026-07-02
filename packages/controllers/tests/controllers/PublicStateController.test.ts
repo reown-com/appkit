@@ -10,10 +10,7 @@ describe('PublicStateController', () => {
       open: false,
       selectedNetworkId: undefined,
       activeChain: undefined,
-      initialized: false,
-      wcUri: undefined,
-      wcError: false,
-      wcFetchingUri: false
+      initialized: false
     })
   })
 
@@ -24,10 +21,7 @@ describe('PublicStateController', () => {
       selectedNetworkId: undefined,
       activeChain: undefined,
       initialized: false,
-      open: true,
-      wcUri: undefined,
-      wcError: false,
-      wcFetchingUri: false
+      open: true
     })
     PublicStateController.set({ selectedNetworkId: 'eip155:1' })
     expect(PublicStateController.state).toEqual({
@@ -35,10 +29,7 @@ describe('PublicStateController', () => {
       open: true,
       selectedNetworkId: 'eip155:1',
       activeChain: undefined,
-      initialized: false,
-      wcUri: undefined,
-      wcError: false,
-      wcFetchingUri: false
+      initialized: false
     })
   })
 })

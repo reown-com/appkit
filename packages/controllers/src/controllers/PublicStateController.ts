@@ -38,24 +38,6 @@ export interface PublicStateControllerState {
    * @type {WalletItem | undefined}
    */
   connectingWallet: WalletItem | undefined
-
-  /**
-   * @description The active WalletConnect pairing URI (for rendering a QR / deeplink), or
-   * `undefined` when none is active. Mirrored from the connection layer so headless hosts can
-   * read it ungated — the symmetric read for `getWalletConnectUri()`.
-   * @type {string | undefined}
-   */
-  wcUri: string | undefined
-  /**
-   * @description Whether the last WalletConnect URI fetch / connection attempt errored.
-   * @type {boolean}
-   */
-  wcError: boolean
-  /**
-   * @description Whether a WalletConnect URI is currently being fetched.
-   * @type {boolean}
-   */
-  wcFetchingUri: boolean
 }
 
 // -- State --------------------------------------------- //
@@ -65,10 +47,7 @@ const state = proxy<PublicStateControllerState>({
   selectedNetworkId: undefined,
   activeChain: undefined,
   initialized: false,
-  connectingWallet: undefined,
-  wcUri: undefined,
-  wcError: false,
-  wcFetchingUri: false
+  connectingWallet: undefined
 })
 
 // -- Controller ---------------------------------------- //

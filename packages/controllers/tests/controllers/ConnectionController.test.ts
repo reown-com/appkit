@@ -283,26 +283,6 @@ describe('ConnectionController', () => {
     expect(ConnectionController.state.wcPairingExpiry).toEqual(ConstantsUtil.FOUR_MINUTES_MS)
   })
 
-  it('mirrors wcUri / wcError / wcFetchingUri onto the public state', async () => {
-    // The mirror is a valtio subscription that batches notifications on a microtask, so flush
-    // the queue before asserting on the public state.
-    vi.useRealTimers()
-    const flush = () => new Promise(resolve => setTimeout(resolve, 0))
-
-    ConnectionController.setUri('wc:mirror-test')
-    await flush()
-    expect(PublicStateController.state.wcUri).toEqual('wc:mirror-test')
-    expect(PublicStateController.state.wcFetchingUri).toEqual(false)
-
-    ConnectionController.setWcError(true)
-    await flush()
-    expect(PublicStateController.state.wcError).toEqual(true)
-
-    ConnectionController.resetUri()
-    await flush()
-    expect(PublicStateController.state.wcUri).toBeUndefined()
-  })
-
   it('should disconnect correctly', async () => {
     const disconnectSpy = vi.spyOn(client, 'disconnect')
     await ConnectionController.disconnect()

@@ -134,6 +134,7 @@ export { HeadlessWalletUtil } from '../src/utils/HeadlessWalletUtil.js'
 export type {
   ConnectOptions,
   FetchWalletsOptions,
+  WalletConnectUriSnapshot,
   WalletListSnapshot
 } from '../src/utils/HeadlessWalletUtil.js'
 export * from '../src/utils/ChainControllerUtil.js'

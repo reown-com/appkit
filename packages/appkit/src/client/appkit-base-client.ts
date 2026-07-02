@@ -42,6 +42,7 @@ import type {
   UseAppKitAccountReturn,
   UseAppKitNetworkReturn,
   User,
+  WalletConnectUriSnapshot,
   WalletFeature,
   WalletItem,
   WalletListSnapshot,
@@ -2348,12 +2349,26 @@ export abstract class AppKitBaseClient {
   }
 
   /**
-   * Pre-fetch the WalletConnect URI. The resulting `wcUri` (plus `wcError` / `wcFetchingUri`) is
-   * exposed on the public state — read it via {@link getState} or {@link subscribeState}. Call
-   * when a wallet is selected so a later connect can deeplink synchronously (iOS) or render a QR.
+   * Pre-fetch the WalletConnect URI. Read the result with {@link getWalletConnectUri}; subscribe
+   * with {@link subscribeWalletConnectUri}. Call when a wallet is selected so a later connect can
+   * deeplink synchronously (iOS) or render a QR.
    */
-  public async getWalletConnectUri(options?: ConnectOptions) {
-    await HeadlessWalletUtil.getWalletConnectUri(options)
+  public async prefetchWalletConnectUri(options?: ConnectOptions) {
+    await HeadlessWalletUtil.prefetchWalletConnectUri(options)
+  }
+
+  /**
+   * The current WalletConnect URI state (QR / deeplink URI + fetch/error signals) — the
+   * symmetric read for {@link prefetchWalletConnectUri}. Reads the connection layer directly, so
+   * a headless host gets it ungated through the AppKit instance.
+   */
+  public getWalletConnectUri(): WalletConnectUriSnapshot {
+    return HeadlessWalletUtil.getWalletConnectUri()
+  }
+
+  /** Subscribe to WalletConnect URI state changes. Returns an unsubscribe. */
+  public subscribeWalletConnectUri(callback: () => void) {
+    return HeadlessWalletUtil.subscribeWalletConnectUri(callback)
   }
 
   /**

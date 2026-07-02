@@ -198,7 +198,7 @@ describe('HeadlessWalletUtil.connect', () => {
   })
 })
 
-describe('HeadlessWalletUtil.getWalletConnectUri', () => {
+describe('HeadlessWalletUtil.prefetchWalletConnectUri', () => {
   it('resets then fetches the URI with auto cache', async () => {
     const resetUri = vi.spyOn(ConnectionController, 'resetUri').mockImplementation(vi.fn())
     const setWcLinking = vi.spyOn(ConnectionController, 'setWcLinking').mockImplementation(vi.fn())
@@ -206,11 +206,63 @@ describe('HeadlessWalletUtil.getWalletConnectUri', () => {
       .spyOn(ConnectionController, 'connectWalletConnect')
       .mockResolvedValue(undefined as never)
 
-    await HeadlessWalletUtil.getWalletConnectUri()
+    await HeadlessWalletUtil.prefetchWalletConnectUri()
 
     expect(resetUri).toHaveBeenCalled()
     expect(setWcLinking).toHaveBeenCalledWith(undefined)
     expect(connectWc).toHaveBeenCalledWith({ cache: 'auto' })
+  })
+})
+
+describe('HeadlessWalletUtil.getWalletConnectUri', () => {
+  it('reads wcUri / wcError / wcFetchingUri from the connection layer', () => {
+    ConnectionController.state.wcUri = 'wc:read-test'
+    ConnectionController.state.wcError = true
+    ConnectionController.state.wcFetchingUri = false
+
+    expect(HeadlessWalletUtil.getWalletConnectUri()).toEqual({
+      wcUri: 'wc:read-test',
+      wcError: true,
+      wcFetchingUri: false
+    })
+  })
+
+  it('coerces a missing wcError to a boolean', () => {
+    ConnectionController.state.wcUri = undefined
+    ConnectionController.state.wcError = undefined
+    ConnectionController.state.wcFetchingUri = true
+
+    expect(HeadlessWalletUtil.getWalletConnectUri()).toEqual({
+      wcUri: undefined,
+      wcError: false,
+      wcFetchingUri: true
+    })
+  })
+})
+
+describe('HeadlessWalletUtil.subscribeWalletConnectUri', () => {
+  it('fires on wcUri / wcError / wcFetchingUri changes and unsubscribes cleanly', async () => {
+    const flush = () => new Promise(resolve => setTimeout(resolve, 0))
+    const callback = vi.fn()
+
+    // Establish a known baseline before subscribing so each mutation below is a real change.
+    ConnectionController.state.wcUri = undefined
+    ConnectionController.state.wcFetchingUri = false
+
+    const unsubscribe = HeadlessWalletUtil.subscribeWalletConnectUri(callback)
+
+    ConnectionController.state.wcUri = 'wc:sub-test'
+    await flush()
+    expect(callback).toHaveBeenCalledTimes(1)
+
+    ConnectionController.state.wcFetchingUri = true
+    await flush()
+    expect(callback).toHaveBeenCalledTimes(2)
+
+    unsubscribe()
+    ConnectionController.state.wcUri = 'wc:after-unsub'
+    await flush()
+    expect(callback).toHaveBeenCalledTimes(2)
   })
 })
 
