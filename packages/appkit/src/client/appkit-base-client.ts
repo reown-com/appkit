@@ -2372,6 +2372,20 @@ export abstract class AppKitBaseClient {
   }
 
   /**
+   * Clear the WalletConnect URI + linking state (e.g. when a headless host dismisses or
+   * cancels the QR). Resets the connection layer directly, so a host can clear the URI it
+   * read via {@link getWalletConnectUri} without touching controllers.
+   */
+  public resetWalletConnectUri() {
+    HeadlessWalletUtil.resetWcUri()
+  }
+
+  /** Clear the `connectingWallet` state (e.g. when a headless host cancels a connection). */
+  public resetConnectingWallet() {
+    HeadlessWalletUtil.resetConnectingWallet()
+  }
+
+  /**
    * Connect a chosen wallet programmatically (headless — no modal). Handles injected,
    * API ("all wallets"), and mobile-deeplink wallets.
    */
