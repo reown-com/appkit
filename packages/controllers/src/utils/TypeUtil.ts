@@ -76,6 +76,7 @@ export interface LinkingRecord {
   redirect: string
   redirectUniversalLink?: string
   href: string
+  universalHref?: string
 }
 
 export type ProjectId = string

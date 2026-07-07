@@ -108,21 +108,29 @@ export const ConnectionControllerUtil = {
         ConnectionController.setWcError(false)
         const { mobile_link, link_mode, name } = wallet
         const uriWithPay = CoreHelperUtil.appendPayToUri(wcUri, wcPayUrl)
-        const { redirect, redirectUniversalLink, href } = CoreHelperUtil.formatNativeUrl(
-          mobile_link,
-          uriWithPay,
-          link_mode
-        )
+        const { redirect, redirectUniversalLink, href, universalHref } =
+          CoreHelperUtil.formatNativeUrl(mobile_link, uriWithPay, link_mode)
 
         const deepLink = redirect
         const universalLink = redirectUniversalLink
         const target = CoreHelperUtil.isIframe() ? '_top' : '_self'
 
-        ConnectionController.setWcLinking({ name, href })
+        /*
+         * The href persisted as the WC deeplink choice must match what we open with, so
+         * session-request re-opens (handled by universal-provider) use the same link.
+         */
+        const shouldPreferUniversal =
+          Boolean(OptionsController.state.experimental_preferUniversalLinks) &&
+          Boolean(universalLink)
+
+        ConnectionController.setWcLinking({
+          name,
+          href: shouldPreferUniversal ? (universalHref as string) : href
+        })
         ConnectionController.setRecentWallet(wallet)
 
-        if (OptionsController.state.experimental_preferUniversalLinks && universalLink) {
-          CoreHelperUtil.openHref(universalLink, target)
+        if (shouldPreferUniversal) {
+          CoreHelperUtil.openHref(universalLink as string, target)
         } else {
           CoreHelperUtil.openHref(deepLink, target)
         }
