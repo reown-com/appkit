@@ -142,9 +142,9 @@ describe('CoreHelperUtil', () => {
     })
 
     it('should return the normalized universal base as universalHref', () => {
-      const appUrl = 'bnc://app.binance.com/cedefi/'
+      const appUrl = 'somewallet://app'
       // No trailing slash: formatNativeUrl should normalize it in universalHref
-      const universalLink = 'https://app.binance.com/cedefi'
+      const universalLink = 'https://example.com/app'
 
       const result = CoreHelperUtil.formatNativeUrl(appUrl, wcUri, universalLink)
 
