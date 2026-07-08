@@ -391,7 +391,7 @@ export const appKitConfigs = {
   },
   'reown-authentication': {
     ...commonAppKitConfig,
-    adapters: ['ethers', 'solana', 'bitcoin'],
+    adapters: ['ethers', 'solana', 'bitcoin', 'tron'],
     networks: ConstantsUtil.AllNetworks,
     siwx: new ReownAuthentication(),
     siwxReown: true
