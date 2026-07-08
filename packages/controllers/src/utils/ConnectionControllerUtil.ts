@@ -119,21 +119,16 @@ export const ConnectionControllerUtil = {
          * The href persisted as the WC deeplink choice must match what we open with, so
          * session-request re-opens (handled by universal-provider) use the same link.
          */
-        const shouldPreferUniversal =
-          Boolean(OptionsController.state.experimental_preferUniversalLinks) &&
-          Boolean(universalLink)
+        const shouldPreferUniversal = Boolean(
+          OptionsController.state.experimental_preferUniversalLinks
+        )
+        const linkToOpen = shouldPreferUniversal && universalLink ? universalLink : deepLink
+        const hrefToPersist = shouldPreferUniversal && universalHref ? universalHref : href
 
-        ConnectionController.setWcLinking({
-          name,
-          href: shouldPreferUniversal ? (universalHref as string) : href
-        })
+        ConnectionController.setWcLinking({ name, href: hrefToPersist })
         ConnectionController.setRecentWallet(wallet)
 
-        if (shouldPreferUniversal) {
-          CoreHelperUtil.openHref(universalLink as string, target)
-        } else {
-          CoreHelperUtil.openHref(deepLink, target)
-        }
+        CoreHelperUtil.openHref(linkToOpen, target)
       } catch (e) {
         EventsController.sendEvent({
           type: 'track',
