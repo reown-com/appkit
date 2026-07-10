@@ -14,8 +14,10 @@ import { ModalPage } from './shared/pages/ModalPage'
 import { afterEachCanary, getCanaryTagAndAnnotation } from './shared/utils/metrics'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
-// Upload canary metrics for the @canary-tagged verify tests below.
-// afterEachCanary is a no-op for tests without the @canary tag and outside canary envs.
+/*
+ * Upload canary metrics for the @canary-tagged verify tests below. This hook is a
+ * no-op for tests without the @canary tag and outside canary environments.
+ */
 testMWagmiVerifyValid.afterEach(async ({ browserName, timingRecords }, testInfo) => {
   if (browserName === 'firefox') {
     return
