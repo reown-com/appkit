@@ -15,7 +15,6 @@ interface ModalWalletFixture {
 export const testConnectedMW = base.extend<ModalWalletFixture>({
   walletPage: async ({ context, modalPage, timingRecords }, use) => {
     // Setup
-    let pairingCreatedTime: Date | null = null
     let verificationStartedTime: Date | null = null
 
     timeStart('new WalletPage')
@@ -23,9 +22,6 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
     timeEnd('new WalletPage')
 
     walletPage.page.on('console', msg => {
-      if (msg.text().includes('set') && msg.text().includes('core/pairing/pairing')) {
-        pairingCreatedTime = new Date()
-      }
       if (msg.text().includes('resolving attestation')) {
         verificationStartedTime = new Date()
       }
@@ -51,6 +47,14 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
     const uri = await modalPage.getConnectUri(timingRecords)
     timeEnd('modalPage.getConnectUri')
 
+    /*
+     * Pairing is created when the wallet begins processing the connection URI.
+     * Captured deterministically here instead of by scraping the SDK's
+     * "core/pairing/pairing" console log, which stopped firing and left the
+     * pairingReceiveSessionProposal metric permanently unpopulated.
+     */
+    const pairingCreatedTime = new Date()
+
     timeStart('walletPage.connectWithUri')
     await walletPage.connectWithUri(uri)
     timeEnd('walletPage.connectWithUri')
@@ -69,12 +73,10 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
       timeMs: proposalReceived.getTime() - connectionInitiated.getTime()
     })
 
-    if (pairingCreatedTime) {
-      timingRecords.push({
-        item: 'pairingReceiveSessionProposal',
-        timeMs: proposalReceived.getTime() - (pairingCreatedTime as Date).getTime()
-      })
-    }
+    timingRecords.push({
+      item: 'pairingReceiveSessionProposal',
+      timeMs: proposalReceived.getTime() - pairingCreatedTime.getTime()
+    })
 
     const walletValidator = new WalletValidator(walletPage.page)
 
