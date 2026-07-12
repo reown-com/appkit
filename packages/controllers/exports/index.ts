@@ -130,5 +130,12 @@ export { MobileWalletUtil } from '../src/utils/MobileWallet.js'
 export type * from '../src/utils/TypeUtil.js'
 export type * from '../src/utils/SIWXUtil.js'
 export type { WalletItem } from '../src/utils/ConnectUtil.js'
+export { HeadlessWalletUtil } from '../src/utils/HeadlessWalletUtil.js'
+export type {
+  ConnectOptions,
+  FetchWalletsOptions,
+  WalletConnectUriSnapshot,
+  WalletListSnapshot
+} from '../src/utils/HeadlessWalletUtil.js'
 export * from '../src/utils/ChainControllerUtil.js'
 export * from '../src/utils/WalletConnectUtil.js'

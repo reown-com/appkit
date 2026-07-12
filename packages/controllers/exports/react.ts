@@ -23,9 +23,9 @@ import { ConnectUtil, type WalletItem } from '../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../src/utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../src/utils/ConnectorControllerUtil.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
+import { type ConnectOptions, type FetchWalletsOptions } from '../src/utils/HeadlessWalletUtil.js'
 import { MobileWalletUtil } from '../src/utils/MobileWallet.js'
 import type {
-  BadgeType,
   UseAppKitAccountReturn,
   UseAppKitNetworkReturn,
   WcWallet
@@ -62,9 +62,11 @@ interface DeleteRecentConnectionProps {
   connectorId: string
 }
 
-export interface ConnectOptions {
-  wcPayUrl?: string
-}
+/*
+ * `ConnectOptions` / `FetchWalletsOptions` are defined once in `HeadlessWalletUtil`
+ * (the framework-neutral home) and re-exported here for the hook's public surface.
+ */
+export type { ConnectOptions, FetchWalletsOptions } from '../src/utils/HeadlessWalletUtil.js'
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
@@ -308,30 +310,6 @@ export function useAppKitConnection({ namespace, onSuccess, onError }: UseAppKit
     switchConnection,
     deleteConnection
   }
-}
-
-export interface FetchWalletsOptions {
-  /** Page number to fetch (default: 1) */
-  page?: number
-  /** @deprecated Use `search` instead */
-  query?: string
-  /** Search query to filter wallets. When provided, switches to search mode. */
-  search?: string
-  /** Number of entries per page. Defaults to 40 for list mode, 100 for search mode. */
-  entries?: number
-  /** Filter wallets by badge type ('none' | 'certified') */
-  badge?: BadgeType
-  /** Wallet IDs to include. Overrides the global includeWalletIds config when provided. */
-  include?: string[]
-  /** Wallet IDs to exclude. Overrides the default exclude list when provided. */
-  exclude?: string[]
-  /**
-   * Include wallets that support WalletConnect Pay but are not v2-compatible.
-   * By default these are filtered out. Enable for WalletConnect Pay surfaces.
-   */
-  includePayOnly?: boolean
-  /** Sort mode. 'wcpay' bubbles WalletConnect Pay-supporting wallets to the top. */
-  sort?: 'default' | 'wcpay'
 }
 
 export interface UseAppKitWalletsReturn {
