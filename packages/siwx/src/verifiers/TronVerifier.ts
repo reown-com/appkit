@@ -1,5 +1,5 @@
 import bs58 from 'bs58'
-import { hashMessage, recoverAddress, keccak256, toBytes, concat, toHex } from 'viem'
+import { concat, hashMessage, keccak256, recoverAddress, toBytes, toHex } from 'viem'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import type { SIWXSession } from '@reown/appkit-controllers'
@@ -60,17 +60,19 @@ export class TronVerifier extends SIWXVerifier {
 
     // Handle hex format with 41 prefix (e.g., "41...")
     if (tronAddress.startsWith('41') && tronAddress.length === 42) {
-      return `0x${tronAddress.slice(2)}` as `0x${string}`
+      return `0x${tronAddress.slice(2)}`
     }
 
     // Decode Base58Check TRON address
     const decoded = bs58.decode(tronAddress)
 
-    // Remove the 0x41 prefix (first byte) and 4-byte checksum (last 4 bytes)
-    // TRON address: 1 byte prefix + 20 bytes address + 4 bytes checksum = 25 bytes
+    /*
+     * Remove the 0x41 prefix (first byte) and 4-byte checksum (last 4 bytes)
+     * TRON address: 1 byte prefix + 20 bytes address + 4 bytes checksum = 25 bytes
+     */
     const addressBytes = decoded.slice(1, 21)
 
-    return toHex(addressBytes) as `0x${string}`
+    return toHex(addressBytes)
   }
 
   /**
