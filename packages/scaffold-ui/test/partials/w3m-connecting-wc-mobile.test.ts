@@ -109,12 +109,15 @@ describe('W3mConnectingWcMobile', () => {
     )
 
     const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
+    const setWcLinkingSpy = vi.spyOn(ConnectionController, 'setWcLinking')
     el['onConnect']()
 
     expect(openHrefSpy).toHaveBeenCalledWith(
       expect.stringContaining('reown.com/appkit/wc?uri='),
       '_self'
     )
+    // The persisted deeplink choice must be the universal base so request re-opens match
+    expect(setWcLinkingSpy).toHaveBeenCalledWith({ name: 'test', href: 'reown.com/appkit/' })
   })
 
   it('should use deeplink if enableUniversalLinks is enabled but wallet has no link_mode', async () => {
@@ -140,8 +143,41 @@ describe('W3mConnectingWcMobile', () => {
     )
 
     const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
+    const setWcLinkingSpy = vi.spyOn(ConnectionController, 'setWcLinking')
     el['onConnect']()
 
     expect(openHrefSpy).toHaveBeenCalledWith(expect.stringContaining('test://app/wc?uri='), '_self')
+    // No universal link available: fall back to persisting the native base
+    expect(setWcLinkingSpy).toHaveBeenCalledWith({ name: 'test', href: 'test://app/' })
+  })
+
+  it('should persist the native href when preferUniversalLinks is disabled', async () => {
+    vi.spyOn(RouterController, 'state', 'get').mockReturnValueOnce({
+      ...RouterController.state,
+      data: {
+        wallet: {
+          id: 'test',
+          name: 'test',
+          mobile_link: 'test://app',
+          link_mode: 'reown.com/appkit'
+        }
+      }
+    })
+
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      experimental_preferUniversalLinks: false
+    })
+
+    const el: W3mConnectingWcMobile = await fixture(
+      html`<w3m-connecting-wc-mobile></w3m-connecting-wc-mobile>`
+    )
+
+    const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
+    const setWcLinkingSpy = vi.spyOn(ConnectionController, 'setWcLinking')
+    el['onConnect']()
+
+    expect(openHrefSpy).toHaveBeenCalledWith(expect.stringContaining('test://app/wc?uri='), '_self')
+    expect(setWcLinkingSpy).toHaveBeenCalledWith({ name: 'test', href: 'test://app/' })
   })
 })

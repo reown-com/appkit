@@ -56,9 +56,7 @@ export class W3mInputAddress extends LitElement {
           ?disabled=${true}
           autocomplete="off"
           .value=${this.value ?? ''}
-        >
-           ${this.value ?? ''}</textarea
-        >
+        ></textarea>
       </wui-flex>`
     }
 
@@ -96,9 +94,7 @@ export class W3mInputAddress extends LitElement {
         @blur=${this.onBlur.bind(this)}
         .value=${this.value ?? ''}
         autocomplete="off"
-      >
-${this.value ?? ''}</textarea
-      >
+      ></textarea>
     </wui-flex>`
   }
 

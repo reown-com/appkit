@@ -33,7 +33,7 @@ import { SnackController } from './SnackController.js'
 
 export interface TxParams {
   receiverAddress: string
-  sendTokenAmount: number
+  sendTokenAmount: string
   decimals: string
 }
 export interface SendInputArguments {
@@ -47,14 +47,14 @@ export interface SendInputArguments {
 export interface ContractWriteParams {
   receiverAddress: string
   tokenAddress: string
-  sendTokenAmount: number
+  sendTokenAmount: string
   decimals: string
 }
 export interface SendControllerState {
   tokenBalances: Balance[]
   token?: Balance
   hash?: string
-  sendTokenAmount?: number
+  sendTokenAmount?: string
   receiverAddress?: string
   receiverProfileName?: string
   receiverProfileImageUrl?: string
@@ -122,7 +122,7 @@ const controller = {
         getPreferredAccountType(ChainController.state.activeChain) ===
         W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
       token: state.token?.symbol || '',
-      amount: state.sendTokenAmount ?? 0,
+      amount: Number(state.sendTokenAmount ?? '0'),
       network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
     }
   },
@@ -177,7 +177,7 @@ const controller = {
         properties: {
           isSmartAccount: activeAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: SendController.state.token.address,
-          amount: SendController.state.sendTokenAmount,
+          amount: Number(SendController.state.sendTokenAmount),
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
       })
@@ -198,7 +198,7 @@ const controller = {
         properties: {
           isSmartAccount: activeAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: SendController.state.token.symbol || '',
-          amount: SendController.state.sendTokenAmount,
+          amount: Number(SendController.state.sendTokenAmount),
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
       })
@@ -302,7 +302,7 @@ const controller = {
         isSmartAccount:
           getPreferredAccountType('eip155') === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
         token: SendController.state.token?.symbol || '',
-        amount: params.sendTokenAmount,
+        amount: Number(params.sendTokenAmount),
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
         hash: hash || ''
       }
@@ -350,7 +350,7 @@ const controller = {
           isSmartAccount:
             getPreferredAccountType('eip155') === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: SendController.state.token?.symbol || '',
-          amount: params.sendTokenAmount,
+          amount: Number(params.sendTokenAmount),
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           hash: hash || ''
         }
@@ -392,7 +392,7 @@ const controller = {
       chainNamespace: 'solana',
       tokenMint,
       to: SendController.state.receiverAddress,
-      value: SendController.state.sendTokenAmount
+      value: Number(SendController.state.sendTokenAmount)
     })
 
     if (hash) {
@@ -407,7 +407,7 @@ const controller = {
       properties: {
         isSmartAccount: false,
         token: SendController.state.token?.symbol || '',
-        amount: SendController.state.sendTokenAmount,
+        amount: Number(SendController.state.sendTokenAmount),
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
         hash: hash || ''
       }

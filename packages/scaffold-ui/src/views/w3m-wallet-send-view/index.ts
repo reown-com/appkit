@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { type CaipAddress } from '@reown/appkit-common'
+import { type CaipAddress, NumberUtil } from '@reown/appkit-common'
 import {
   AssetUtil,
   ChainController,
@@ -61,9 +61,9 @@ export class W3mWalletSendView extends LitElement {
 
   @state() private caipAddress = ChainController.getAccountData()?.caipAddress
 
-  @state() private message: SendButtonMessage = SEND_BUTTON_MESSAGE.PREVIEW_SEND
-
   @state() private disconnecting = false
+
+  @state() private gasFee = SwapController.state.gasFee
 
   public constructor() {
     super()
@@ -97,6 +97,9 @@ export class W3mWalletSendView extends LitElement {
           this.receiverAddress = val.receiverAddress
           this.receiverProfileName = val.receiverProfileName
           this.loading = val.loading
+        }),
+        SwapController.subscribeKey('gasFee', val => {
+          this.gasFee = val
         })
       ]
     )
@@ -112,8 +115,7 @@ export class W3mWalletSendView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.getMessage()
-
+    const message = this.getMessage()
     const isReadOnly = Boolean(this.params)
 
     return html` <wui-flex flexDirection="column" .padding=${['0', '4', '4', '4'] as const}>
@@ -121,8 +123,9 @@ export class W3mWalletSendView extends LitElement {
         <w3m-input-token
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
+          .gasPrice=${this.gasFee}
           ?readOnly=${isReadOnly}
-          ?isInsufficientBalance=${this.message === SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS}
+          ?isInsufficientBalance=${message === SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS}
         ></w3m-input-token>
         <wui-icon-box size="md" variant="secondary" icon="arrowBottom"></wui-icon-box>
         <w3m-input-address
@@ -130,7 +133,7 @@ export class W3mWalletSendView extends LitElement {
           .value=${this.receiverProfileName ? this.receiverProfileName : this.receiverAddress}
         ></w3m-input-address>
       </wui-flex>
-      ${this.buttonTemplate()}
+      ${this.buttonTemplate(message)}
     </wui-flex>`
   }
 
@@ -142,6 +145,7 @@ export class W3mWalletSendView extends LitElement {
 
   private async fetchNetworkPrice() {
     await SwapController.getNetworkTokenPrice()
+    await SwapController.getInitialGasPrice()
   }
 
   private onButtonClick() {
@@ -166,47 +170,40 @@ export class W3mWalletSendView extends LitElement {
     }
   }
 
-  private getMessage() {
-    this.message = SEND_BUTTON_MESSAGE.PREVIEW_SEND
-
-    if (
-      this.receiverAddress &&
-      !CoreHelperUtil.isAddress(this.receiverAddress, ChainController.state.activeChain)
-    ) {
-      this.message = SEND_BUTTON_MESSAGE.INVALID_ADDRESS
-    }
-
-    if (!this.receiverAddress) {
-      this.message = SEND_BUTTON_MESSAGE.ADD_ADDRESS
-    }
-
-    if (
-      this.sendTokenAmount &&
-      this.token &&
-      this.sendTokenAmount > Number(this.token.quantity.numeric)
-    ) {
-      this.message = SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS
+  private getMessage(): SendButtonMessage {
+    if (!this.token) {
+      return SEND_BUTTON_MESSAGE.SELECT_TOKEN
     }
 
     if (!this.sendTokenAmount) {
-      this.message = SEND_BUTTON_MESSAGE.ADD_AMOUNT
+      return SEND_BUTTON_MESSAGE.ADD_AMOUNT
     }
 
-    if (this.sendTokenAmount && this.token?.price) {
-      const value = this.sendTokenAmount * this.token.price
+    if (this.token.price) {
+      const value = Number(this.sendTokenAmount) * this.token.price
       if (!value) {
-        this.message = SEND_BUTTON_MESSAGE.INCORRECT_VALUE
+        return SEND_BUTTON_MESSAGE.INCORRECT_VALUE
       }
     }
 
-    if (!this.token) {
-      this.message = SEND_BUTTON_MESSAGE.SELECT_TOKEN
+    if (NumberUtil.bigNumber(this.sendTokenAmount).gt(this.token.quantity.numeric)) {
+      return SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS
     }
+
+    if (!this.receiverAddress) {
+      return SEND_BUTTON_MESSAGE.ADD_ADDRESS
+    }
+
+    if (!CoreHelperUtil.isAddress(this.receiverAddress, ChainController.state.activeChain)) {
+      return SEND_BUTTON_MESSAGE.INVALID_ADDRESS
+    }
+
+    return SEND_BUTTON_MESSAGE.PREVIEW_SEND
   }
 
-  private buttonTemplate() {
-    const isDisabled = !this.message.startsWith(SEND_BUTTON_MESSAGE.PREVIEW_SEND)
-    const isInsufficientBalance = this.message === SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS
+  private buttonTemplate(message: SendButtonMessage) {
+    const isDisabled = !message.startsWith(SEND_BUTTON_MESSAGE.PREVIEW_SEND)
+    const isInsufficientBalance = message === SEND_BUTTON_MESSAGE.INSUFFICIENT_FUNDS
     const isReadOnly = Boolean(this.params)
 
     if (isInsufficientBalance && !isReadOnly) {
@@ -245,7 +242,7 @@ export class W3mWalletSendView extends LitElement {
         ?loading=${this.loading}
         fullWidth
       >
-        ${this.message}
+        ${message}
       </wui-button>
     </wui-flex>`
   }
@@ -312,7 +309,7 @@ export class W3mWalletSendView extends LitElement {
         },
         iconUrl: AssetUtil.getTokenImage(symbol) ?? ''
       })
-      SendController.setTokenAmount(amount)
+      SendController.setTokenAmount(String(amount))
       SendController.setReceiverAddress(this.params.to)
     } catch (err) {
       // eslint-disable-next-line no-console

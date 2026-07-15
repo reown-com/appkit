@@ -101,6 +101,31 @@ export const ConnectorUtil = {
       return false
     }
 
+    const { includeWalletIds, excludeWalletIds } = OptionsController.state
+    const isFilterableConnectorType =
+      connector.type === 'INJECTED' ||
+      connector.type === 'ANNOUNCED' ||
+      connector.type === 'MULTI_CHAIN'
+
+    if (isFilterableConnectorType) {
+      const connectorWalletId = connector.explorerId || connector.explorerWallet?.id
+
+      if (
+        excludeWalletIds?.length &&
+        connectorWalletId &&
+        excludeWalletIds.includes(connectorWalletId)
+      ) {
+        return false
+      }
+
+      if (
+        includeWalletIds?.length &&
+        (!connectorWalletId || !includeWalletIds.includes(connectorWalletId))
+      ) {
+        return false
+      }
+    }
+
     return true
   },
 

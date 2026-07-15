@@ -310,11 +310,22 @@ export class ModalValidator {
 
   async expectOpenButton({ disabled }: { disabled: boolean }) {
     const secondaryButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
-    if (disabled) {
-      await expect(secondaryButton).toHaveAttribute('disabled')
-    } else {
-      await expect(secondaryButton).not.toHaveAttribute('disabled')
-    }
+
+    await expect
+      .poll(
+        () =>
+          secondaryButton.evaluate((el: Element) => {
+            const btn = el.shadowRoot?.querySelector('button') as HTMLButtonElement | null
+            if (btn) {
+              return btn.disabled
+            }
+            const attr = el.getAttribute('disabled')
+
+            return attr !== null && attr !== 'false'
+          }),
+        { timeout: 60000 }
+      )
+      .toBe(disabled)
   }
 
   async expectTryAgainButton() {

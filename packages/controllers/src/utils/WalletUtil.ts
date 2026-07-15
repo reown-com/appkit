@@ -16,9 +16,7 @@ interface AppKitWallet extends WcWallet {
 
 export const WalletUtil = {
   filterOutDuplicatesByRDNS(wallets: WcWallet[]) {
-    const connectors = OptionsController.state.enableEIP6963
-      ? ConnectorController.state.connectors
-      : []
+    const connectors = ConnectorController.state.connectors
     const recent = StorageUtil.getRecentWallets()
 
     const connectorRDNSs = connectors

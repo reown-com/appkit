@@ -136,8 +136,25 @@ describe('CoreHelperUtil', () => {
       expect(result).toEqual({
         redirect: `${appUrl}wc?uri=${encodeURIComponent(wcUri)}`,
         redirectUniversalLink: `${universalLink}wc?uri=${encodeURIComponent(wcUri)}`,
-        href: appUrl
+        href: appUrl,
+        universalHref: universalLink
       })
+    })
+
+    it('should return the normalized universal base as universalHref', () => {
+      const appUrl = 'somewallet://app'
+      // No trailing slash: formatNativeUrl should normalize it in universalHref
+      const universalLink = 'https://example.com/app'
+
+      const result = CoreHelperUtil.formatNativeUrl(appUrl, wcUri, universalLink)
+
+      expect(result.universalHref).toBe(`${universalLink}/`)
+    })
+
+    it('should leave universalHref undefined when no universal link is provided', () => {
+      const result = CoreHelperUtil.formatNativeUrl('rainbow://', wcUri, null)
+
+      expect(result.universalHref).toBeUndefined()
     })
 
     it('should format Rainbow URL with deeplink only', () => {

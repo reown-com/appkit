@@ -2,20 +2,11 @@ import type { Adapter } from '@tronweb3/tronwallet-abstract-adapter'
 import type { RequestArguments } from '@walletconnect/universal-provider'
 
 import type { CaipNetwork } from '@reown/appkit-common'
+import { ChainController, OptionsController } from '@reown/appkit-controllers'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type { TronConnector } from '@reown/appkit-utils/tron'
 
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
-
-/**
- * Maps TRON chain IDs to fullnode API URLs for building transactions.
- */
-const TRON_FULLNODE_URLS: Record<string, string> = {
-  '0x2b6653dc': 'https://api.trongrid.io',
-  '0x94a9059e': 'https://api.shasta.trongrid.io',
-  '0xcd8690dc': 'https://nile.trongrid.io'
-}
-
-const DEFAULT_TRON_FULLNODE_URL = 'https://api.trongrid.io'
 
 export class TronConnectConnector implements TronConnector {
   public readonly chain = 'tron'
@@ -108,40 +99,52 @@ export class TronConnectConnector implements TronConnector {
   }
 
   async sendTransaction(params: TronConnector.SendTransactionParams): Promise<string> {
-    const fullNodeUrl = await this.getFullNodeUrl()
+    const rpcUrl = this.getRpcUrl()
 
-    // Build a proper unsigned transaction via the TRON fullnode API
-    const createResponse = await fetch(`${fullNodeUrl}/wallet/createtransaction`, {
+    // Step 1: Build unsigned transaction via Blockchain API
+    const createResponse = await fetch(rpcUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
-        owner_address: params.from,
-        to_address: params.to,
-        amount: parseInt(params.value, 10),
-        visible: true
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'tron_createTransaction',
+        params: [params.from, params.to, parseInt(params.value, 10), true]
       })
     })
 
-    const unsignedTx = await createResponse.json()
+    const createResult = await createResponse.json()
+    const unsignedTx = createResult?.result
 
-    if (!unsignedTx.txID) {
-      throw new Error(unsignedTx.Error || 'Failed to create transaction')
+    if (!unsignedTx?.txID) {
+      throw new Error(unsignedTx?.Error || 'Failed to create transaction')
     }
 
-    // Sign the transaction with the wallet adapter
+    // Step 2: Sign the transaction with the wallet adapter
     const signedTx = await this.adapter.signTransaction(unsignedTx)
 
-    // Broadcast the signed transaction
-    const broadcastResponse = await fetch(`${fullNodeUrl}/wallet/broadcasttransaction`, {
+    // Step 3: Broadcast the signed transaction via Blockchain API
+    const broadcastResponse = await fetch(rpcUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(signedTx)
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'tron_broadcastTransaction',
+        params: [
+          signedTx.txID || unsignedTx.txID,
+          signedTx.visible ?? unsignedTx.visible ?? true,
+          signedTx.raw_data || unsignedTx.raw_data,
+          signedTx.raw_data_hex || unsignedTx.raw_data_hex,
+          signedTx.signature
+        ]
+      })
     })
 
     const broadcastResult = await broadcastResponse.json()
 
-    if (!broadcastResult.result) {
-      throw new Error(broadcastResult.message || 'Failed to broadcast transaction')
+    if (!broadcastResult?.result?.result) {
+      throw new Error(broadcastResult?.result?.message || 'Failed to broadcast transaction')
     }
 
     return unsignedTx.txID
@@ -157,36 +160,25 @@ export class TronConnectConnector implements TronConnector {
 
   // -- Private ------------------------------------------------------ //
 
-  /**
-   * Resolves the TRON fullnode API URL for building and broadcasting transactions.
-   * Uses the adapter's chainId to pick the correct network, but always maps to our
-   * own controlled URLs (not the adapter's fullNode) to avoid third-party CSP issues.
-   * TODO: Route through rpc.walletconnect.org once the RPC proxy supports TRON.
-   */
-  private async getFullNodeUrl(): Promise<string> {
-    const adapterWithNetwork = this.adapter as Adapter & {
-      network?: () => Promise<{ chainId?: string }>
-    }
-
-    if (typeof adapterWithNetwork.network === 'function') {
-      try {
-        const network = await adapterWithNetwork.network()
-
-        if (network.chainId) {
-          return TRON_FULLNODE_URLS[network.chainId] || DEFAULT_TRON_FULLNODE_URL
-        }
-      } catch {
-        // Adapter may not support network() — fall through to chain mapping
-      }
-    }
-
-    const chain = this.requestedChains[0]
+  private getRpcUrl(): string {
+    const chain = ChainController.getCaipNetworkByNamespace('tron')
+    const projectId = OptionsController.state.projectId
 
     if (chain) {
-      return TRON_FULLNODE_URLS[chain.id] || DEFAULT_TRON_FULLNODE_URL
+      return CaipNetworksUtil.getDefaultRpcUrl(chain, chain.caipNetworkId, projectId)
     }
 
-    return DEFAULT_TRON_FULLNODE_URL
+    const fallbackChain = this.requestedChains[0]
+
+    if (fallbackChain) {
+      return CaipNetworksUtil.getDefaultRpcUrl(
+        fallbackChain,
+        fallbackChain.caipNetworkId,
+        projectId
+      )
+    }
+
+    return ''
   }
 
   private setupAdapterListeners() {
