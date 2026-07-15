@@ -727,13 +727,15 @@ const controller = {
       return undefined
     }
 
-    const amount = ConnectionController.parseUnits(
+    let amount = ConnectionController.parseUnits(
       sourceTokenAmount,
       sourceToken.decimals
     )?.toString()
 
     try {
-      const response = await BlockchainApiController.generateSwapCalldata({
+      const isSourceTokenIsNetworkToken = sourceToken.address === networkAddress
+
+      let response = await BlockchainApiController.generateSwapCalldata({
         userAddress: fromCaipAddress,
         from: sourceToken.address,
         to: toToken.address,
@@ -741,10 +743,48 @@ const controller = {
         disableEstimate: true
       })
 
-      const isSourceTokenIsNetworkToken = sourceToken.address === networkAddress
+      let gas = BigInt(response.tx.eip155.gas)
+      let gasPrice = BigInt(response.tx.eip155.gasPrice)
 
-      const gas = BigInt(response.tx.eip155.gas)
-      const gasPrice = BigInt(response.tx.eip155.gasPrice)
+      /*
+       * For native-token source swaps (e.g. ETH → USDC), the transaction
+       * value IS the swap input amount, so the total ETH deducted from the
+       * wallet is value + gas×gasPrice.  If that exceeds the balance the
+       * wallet's eth_estimateGas call will revert.
+       *
+       * The UI's Max button uses a rough constant to pre-subtract gas, but
+       * the API may return a different gas estimate.  We correct here using
+       * the actual numbers from the first calldata response.
+       */
+      if (isSourceTokenIsNetworkToken && amount) {
+        const nativeToken = state.myTokensWithBalance?.find(t => t.address === networkAddress)
+        if (nativeToken) {
+          const decimals = parseInt(nativeToken.quantity.decimals, 10)
+          const rawBalance =
+            ConnectionController.parseUnits(nativeToken.quantity.numeric, decimals) ?? 0n
+          const gasCost = gas * gasPrice
+          const value = BigInt(amount)
+
+          if (value + gasCost > rawBalance) {
+            // Re-request calldata with an amount that leaves room for gas
+            const adjustedAmount = rawBalance > gasCost ? rawBalance - gasCost : 0n
+            // eslint-disable-next-line max-depth
+            if (adjustedAmount > 0n) {
+              response = await BlockchainApiController.generateSwapCalldata({
+                userAddress: fromCaipAddress,
+                from: sourceToken.address,
+                to: toToken.address,
+                amount: adjustedAmount.toString(),
+                disableEstimate: true
+              })
+              amount = adjustedAmount.toString()
+              gas = BigInt(response.tx.eip155.gas)
+              gasPrice = BigInt(response.tx.eip155.gasPrice)
+            }
+          }
+        }
+      }
+
       const address = CoreHelperUtil.getPlainAddress(response.tx.to)
 
       if (!address) {

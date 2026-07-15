@@ -76,6 +76,7 @@ export interface LinkingRecord {
   redirect: string
   redirectUniversalLink?: string
   href: string
+  universalHref?: string
 }
 
 export type ProjectId = string
@@ -192,6 +193,13 @@ export interface ApiGetWalletsRequest {
   exclude?: string[]
   names?: string
   rdns?: string
+  /**
+   * Include wallets that support WalletConnect Pay but are not v2-compatible.
+   * By default the API returns only v2-compatible wallets, which filters these out.
+   */
+  include_pay_only?: boolean
+  /** Sort mode. 'wcpay' bubbles WalletConnect Pay-supporting wallets to the top. */
+  sort?: 'default' | 'wcpay'
 }
 
 export interface ApiGetWalletsResponse {

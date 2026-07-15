@@ -6,7 +6,8 @@ export const tronShastaTestnet = defineChain({
   network: 'tron-shasta',
   nativeCurrency: { name: 'TRX', symbol: 'TRX', decimals: 6 },
   rpcUrls: {
-    default: { http: ['https://rpc.walletconnect.org/v1'] }
+    default: { http: ['https://rpc.walletconnect.org/v1'] },
+    chainDefault: { http: ['https://api.shasta.trongrid.io'] }
   },
   blockExplorers: { default: { name: 'Tronscan', url: 'https://shasta.tronscan.org' } },
   testnet: true,

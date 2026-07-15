@@ -21,7 +21,7 @@ export default [
   {
     name: '@reown/appkit/react',
     path: 'packages/appkit/dist/esm/exports/react.js',
-    limit: '235 KB', // Current: ~222 KB (5% buffer)
+    limit: '236 KB', // Current: ~235 KB
     gzip: true
   },
   {

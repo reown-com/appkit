@@ -54,7 +54,7 @@ const mockNetwork: CaipNetwork = {
 
 const mockSendControllerState = {
   token: mockToken,
-  sendTokenAmount: 5,
+  sendTokenAmount: '5',
   receiverAddress: '0x456',
   loading: false,
   tokenBalances: [mockToken]
