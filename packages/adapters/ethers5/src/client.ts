@@ -459,13 +459,11 @@ export class Ethers5Adapter extends AdapterBlueprint {
            * handler can call syncProvider() — keeping useAppKitProvider reactive
            * when the user switches accounts inside the modal.
            */
-          if (!connector.provider) {
-            const ethersProvider =
-              this.ethersProviders[connector.id as keyof Omit<ProviderType, 'metadata' | 'EIP6963'>]
-            if (ethersProvider) {
-              await ethersProvider.initialize()
-              connector.provider = (await ethersProvider.getProvider()) as Provider | undefined
-            }
+          const ethersProvider =
+            this.ethersProviders[connector.id as keyof Omit<ProviderType, 'metadata' | 'EIP6963'>]
+          if (!connector.provider && ethersProvider) {
+            await ethersProvider.initialize()
+            connector.provider = (await ethersProvider.getProvider()) as Provider | undefined
           }
 
           this.emit('accountChanged', {
