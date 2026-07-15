@@ -1561,25 +1561,19 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
     vi.restoreAllMocks()
   })
 
-  it('should add Base Account connector when coinbasePreference is smartWalletOnly', async () => {
-    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-      ...(OptionsController.state || {}),
-      coinbasePreference: 'smartWalletOnly'
-    })
+  it('should add Base Account connector when enableBaseAccount is not false', async () => {
     const getBaseAccountConnectorSpy = vi
       .spyOn(helpers, 'getBaseAccountConnector')
       .mockResolvedValue(mockBaseAccountConnector() as any)
     vi.spyOn(helpers, 'getCoinbaseConnector').mockResolvedValue(null)
     await adapter['addThirdPartyConnectors']()
     expect(getBaseAccountConnectorSpy).toHaveBeenCalled()
-    expect(adapter.wagmiConfig.connectors.length).toBe(1)
     expect(adapter.wagmiConfig.connectors.some(c => c.id === 'baseAccount')).toBe(true)
   })
 
   it('should not add Base Account connector if enableBaseAccount is false', async () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...(OptionsController.state || {}),
-      coinbasePreference: 'smartWalletOnly',
       enableBaseAccount: false
     })
     const getBaseAccountConnectorSpy = vi
@@ -1639,11 +1633,10 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
     expect(adapter.wagmiConfig.connectors.some(c => c.id === 'coinbaseWallet')).toBe(true)
   })
 
-  it('should fall back to coinbaseWallet when coinbasePreference is smartWalletOnly but enableBaseAccount is false', async () => {
+  it('should use coinbaseWallet with preference "smartWalletOnly" when coinbasePreference is smartWalletOnly', async () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...(OptionsController.state || {}),
-      coinbasePreference: 'smartWalletOnly',
-      enableBaseAccount: false
+      coinbasePreference: 'smartWalletOnly'
     })
     vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(null)
     const getCoinbaseConnectorSpy = vi
