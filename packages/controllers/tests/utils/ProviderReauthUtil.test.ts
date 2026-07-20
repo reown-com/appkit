@@ -2,8 +2,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import {
   ChainController,
-  isCoinbaseProviderId,
+  isCoinbaseConnectorId,
   isUnauthorizedProviderError,
+  maybeWrapCoinbaseProvider,
   withCoinbaseReauth
 } from '../../exports/index.js'
 
@@ -26,16 +27,50 @@ function createProvider(impl: (args: { method: string; params?: unknown }) => Pr
 }
 
 // -- Tests --------------------------------------------------------------------
-describe('isCoinbaseProviderId', () => {
-  it('matches Coinbase provider ids across the casings used by the registration paths', () => {
-    expect(isCoinbaseProviderId('coinbaseWallet')).toBe(true)
-    expect(isCoinbaseProviderId('coinbaseWalletSDK')).toBe(true)
-    // wagmi restore path stores connector.type.toUpperCase()
-    expect(isCoinbaseProviderId('COINBASEWALLET')).toBe(true)
-    expect(isCoinbaseProviderId('walletConnect')).toBe(false)
-    expect(isCoinbaseProviderId('WALLET_CONNECT')).toBe(false)
-    expect(isCoinbaseProviderId('injected')).toBe(false)
-    expect(isCoinbaseProviderId(undefined)).toBe(false)
+describe('isCoinbaseConnectorId', () => {
+  it('matches Coinbase connector ids, tolerating casing variants', () => {
+    expect(isCoinbaseConnectorId('coinbaseWallet')).toBe(true)
+    expect(isCoinbaseConnectorId('coinbaseWalletSDK')).toBe(true)
+    // wagmi restore path can surface connector.type.toUpperCase()
+    expect(isCoinbaseConnectorId('COINBASEWALLET')).toBe(true)
+    expect(isCoinbaseConnectorId('walletConnect')).toBe(false)
+    expect(isCoinbaseConnectorId('injected')).toBe(false)
+    expect(isCoinbaseConnectorId('EXTERNAL')).toBe(false)
+    expect(isCoinbaseConnectorId(undefined)).toBe(false)
+  })
+})
+
+describe('maybeWrapCoinbaseProvider', () => {
+  it('wraps an eip155 Coinbase provider (by connector id, not remapped type)', () => {
+    const provider = createProvider(async () => null)
+    const wrapped = maybeWrapCoinbaseProvider({
+      connectorId: 'coinbaseWalletSDK',
+      chainNamespace: 'eip155',
+      provider
+    })
+    expect(wrapped).not.toBe(provider)
+  })
+
+  it('leaves a non-Coinbase provider untouched (identity preserved)', () => {
+    const provider = createProvider(async () => null)
+    // The ethers/live paths remap Coinbase to type 'EXTERNAL'; guarding on the
+    // connector id (not the type) is what makes the fix adapter-agnostic.
+    const same = maybeWrapCoinbaseProvider({
+      connectorId: 'walletConnect',
+      chainNamespace: 'eip155',
+      provider
+    })
+    expect(same).toBe(provider)
+  })
+
+  it('does not wrap a Coinbase connector on a non-eip155 namespace', () => {
+    const provider = createProvider(async () => null)
+    const same = maybeWrapCoinbaseProvider({
+      connectorId: 'coinbaseWalletSDK',
+      chainNamespace: 'solana',
+      provider
+    })
+    expect(same).toBe(provider)
   })
 })
 

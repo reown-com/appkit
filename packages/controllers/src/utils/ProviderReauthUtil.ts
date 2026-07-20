@@ -1,21 +1,24 @@
+import type { ChainNamespace } from '@reown/appkit-common'
+
 import { ChainController } from '../controllers/ChainController.js'
 
 /**
  * Recovers a provider whose wallet session was restored WITHOUT re-authorizing
  * the underlying SDK — the Coinbase Wallet SDK case.
  *
- * On an AppKit auto-restore (`syncConnection`), the wagmi Coinbase connector's
- * provider is read back via `eth_accounts` only; `eth_requestAccounts` is never
- * re-issued (unlike wagmi's own `reconnect`, which calls the connector's
- * `connect()` → `eth_requestAccounts`). The Coinbase SDK keeps the accounts but
- * drops its internal authorization, so the first signing RPC on the raw
- * provider throws EIP-1193 `4100` ("Must call 'eth_requestAccounts' before
- * other methods"). Consumers that call `.request()` directly on the provider
- * (e.g. WalletConnect Pay) hit this; consumers going through wagmi's hooks do
- * not, because wagmi re-authorized first.
+ * On an AppKit auto-restore, the Coinbase provider is read back via
+ * `eth_accounts` only; `eth_requestAccounts` is never re-issued (unlike wagmi's
+ * own `reconnect`, which calls the connector's `connect()` →
+ * `eth_requestAccounts`). The Coinbase SDK keeps the accounts but drops its
+ * internal authorization, so the first signing RPC on the raw provider throws
+ * EIP-1193 `4100` ("Must call 'eth_requestAccounts' before other methods").
+ * Consumers that call `.request()` directly on the provider (e.g. WalletConnect
+ * Pay) hit this; consumers going through wagmi's hooks do not, because wagmi
+ * re-authorized first.
  *
- * Wrapping the shared provider instance here fixes every consumer of that
- * instance at once, keeping the recovery out of downstream code.
+ * The recovery is adapter-agnostic: it wraps the one shared Coinbase provider
+ * instance that every consumer reads, so both the wagmi and ethers adapters are
+ * covered, and downstream code keeps no workaround of its own.
  */
 
 /** Marks a provider already wrapped by {@link withCoinbaseReauth}. */
@@ -37,15 +40,17 @@ interface Eip1193LikeProvider {
 const wrapperCache = new WeakMap<object, object>()
 
 /**
- * True when `id` denotes a Coinbase provider that needs `4100` recovery.
+ * True when `connectorId` is a Coinbase connector.
  *
- * Matched case-insensitively by substring because the provider id reaches
- * `ProviderController` with inconsistent casing across registration paths: the
- * wagmi restore path stores `connector.type.toUpperCase()` → `'COINBASEWALLET'`,
- * while other paths use `'coinbaseWallet'` / `'coinbaseWalletSDK'`.
+ * The connector id (not the provider "type") is the reliable signal: it is a
+ * stable `'coinbaseWallet'` / `'coinbaseWalletSDK'` across every adapter and
+ * registration path, whereas the provider type is remapped to `'EXTERNAL'` by
+ * `PresetsUtil.ConnectorTypesMap` on most paths. Matched case-insensitively by
+ * substring to also tolerate the wagmi restore path's uppercased
+ * `connector.type` (`'COINBASEWALLET'`).
  */
-export function isCoinbaseProviderId(id: string | undefined): boolean {
-  return typeof id === 'string' && id.toLowerCase().includes('coinbase')
+export function isCoinbaseConnectorId(connectorId: string | undefined): boolean {
+  return typeof connectorId === 'string' && connectorId.toLowerCase().includes('coinbase')
 }
 
 /**
@@ -164,4 +169,26 @@ export function withCoinbaseReauth<T extends object>(provider: T): T {
   wrapperCache.set(provider, proxy)
 
   return proxy
+}
+
+/**
+ * Apply {@link withCoinbaseReauth} to an eip155 Coinbase provider, returning
+ * every other provider untouched. This is the single decision the provider
+ * registration seam (`syncProvider`) needs — keeping the guard here (keyed on
+ * the reliable connector id) rather than in the state setter.
+ */
+export function maybeWrapCoinbaseProvider<T>(params: {
+  connectorId: string | undefined
+  chainNamespace: ChainNamespace | undefined
+  provider: T
+}): T {
+  const { connectorId, chainNamespace, provider } = params
+
+  const shouldWrap =
+    chainNamespace === 'eip155' &&
+    isCoinbaseConnectorId(connectorId) &&
+    typeof provider === 'object' &&
+    provider !== null
+
+  return shouldWrap ? (withCoinbaseReauth(provider as object) as T) : provider
 }

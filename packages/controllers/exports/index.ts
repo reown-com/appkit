@@ -14,8 +14,9 @@ export type { ChainControllerState, AccountState } from '../src/controllers/Chai
 export { ProviderController } from '../src/controllers/ProviderController.js'
 export type { ProviderControllerState } from '../src/controllers/ProviderController.js'
 export {
-  isCoinbaseProviderId,
+  isCoinbaseConnectorId,
   isUnauthorizedProviderError,
+  maybeWrapCoinbaseProvider,
   withCoinbaseReauth
 } from '../src/utils/ProviderReauthUtil.js'
 

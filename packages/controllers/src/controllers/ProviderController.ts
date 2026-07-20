@@ -4,7 +4,6 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import type { ChainNamespace } from '@reown/appkit-common'
 
-import { isCoinbaseProviderId, withCoinbaseReauth } from '../utils/ProviderReauthUtil.js'
 import type { ConnectorType } from '../utils/TypeUtil.js'
 import type { ChainControllerState } from './ChainController.js'
 
@@ -64,20 +63,7 @@ export const ProviderController = {
     provider: T
   ) {
     if (chainNamespace && provider) {
-      /*
-       * `setProviderId` runs before `setProvider`, so the id is available here.
-       * Coinbase eip155 providers can be restored unauthorized and throw 4100 on
-       * the first signing RPC — wrap them so `.request()` self-heals. Every other
-       * provider is stored exactly as before.
-       */
-      const shouldReauth =
-        chainNamespace === 'eip155' &&
-        isCoinbaseProviderId(this.getProviderId(chainNamespace)) &&
-        typeof provider === 'object'
-
-      const nextProvider = shouldReauth ? withCoinbaseReauth(provider as object) : provider
-
-      state.providers[chainNamespace] = ref(nextProvider as object) as T
+      state.providers[chainNamespace] = ref(provider) as T
     }
   },
 
