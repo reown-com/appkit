@@ -655,7 +655,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       })
 
       if (res.chainId !== Number(chainId)) {
-        await switchChain(this.wagmiConfig, { chainId: res.chainId })
+        await switchChain(this.wagmiConfig, { chainId: res.chainId }).catch(() => undefined)
       }
 
       return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
