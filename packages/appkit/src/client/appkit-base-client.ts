@@ -1580,9 +1580,11 @@ export abstract class AppKitBaseClient {
     chainNamespace: ChainNamespace
   }) {
     ProviderController.setProviderId(chainNamespace, type)
-    // Coinbase eip155 providers can be restored unauthorized and throw EIP-1193
-    // 4100 on the first signing RPC — wrap so `.request()` self-heals. Keyed on
-    // the connector `id` (stable across adapters/paths), not the remapped type.
+    /*
+     * Coinbase eip155 providers can be restored unauthorized and throw EIP-1193
+     * 4100 on the first signing RPC — wrap so `.request()` self-heals. Keyed on
+     * the connector `id` (stable across adapters/paths), not the remapped type.
+     */
     ProviderController.setProvider(
       chainNamespace,
       maybeWrapCoinbaseProvider({ connectorId: id, chainNamespace, provider })
