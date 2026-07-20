@@ -123,6 +123,16 @@ export const solanaSdkOptions: SdkOption[] = [
 
 export const multichainSdkOptions: SdkOption[] = [
   {
+    title: 'Bitcoin + Tron (Debug)',
+    link: '/appkit?name=multichain-bitcoin-tron',
+    description: 'Configuration with Bitcoin and Tron adapters only (no EVM) - debug mode enabled'
+  },
+  {
+    title: 'Wagmi + Bitcoin + Tron (Debug)',
+    link: '/appkit?name=multichain-wagmi-bitcoin-tron',
+    description: 'Configuration with Wagmi, Bitcoin and Tron adapters - matches customer setup'
+  },
+  {
     title: 'Wagmi + Solana + Bitcoin',
     link: '/appkit?name=multichain-all',
     description: 'Configuration with Wagmi, Solana and Bitcoin adapters enabled for AppKit'

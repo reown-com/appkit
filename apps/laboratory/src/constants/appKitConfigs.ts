@@ -381,6 +381,19 @@ export const appKitConfigs = {
     networks: ConstantsUtil.AllNetworks,
     customWallets: []
   },
+  'multichain-bitcoin-tron': {
+    ...commonAppKitConfig,
+    adapters: ['bitcoin', 'tron'],
+    networks: [...ConstantsUtil.BitcoinNetworks, ...ConstantsUtil.TronNetworks],
+    debug: true
+  },
+  'multichain-wagmi-bitcoin-tron': {
+    ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
+    adapters: ['wagmi', 'bitcoin', 'tron'],
+    networks: [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.BitcoinNetworks, ...ConstantsUtil.TronNetworks],
+    debug: true
+  },
 
   // ----- Custom Variants ------------------------------
   'siwx-default': {
