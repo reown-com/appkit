@@ -41,7 +41,6 @@ configTest.afterAll(async () => {
 
 // -- Tests --------------------------------------------------------------------
 configTest('Should fetch correct config of projectId with all features enabled', async () => {
-  configTest.slow()
   await browserPage.getByTestId('project-id-button').click()
   // See the project on dashboard.reown.com Admin's Team > AppKit E2E Config Tests
   await browserPage.getByTestId('project-id-input').fill('5164c17d2d7091727aef80eeb55d7290')
@@ -73,7 +72,6 @@ configTest('Should fetch correct config of projectId with all features enabled',
 })
 
 configTest('Should fetch correct config of projectId with specific features enabled', async () => {
-  configTest.slow()
   await browserPage.getByTestId('project-id-button').click()
   // See the project on dashboard.reown.com Admin's Team > AppKit E2E Config Tests 2
   await browserPage.getByTestId('project-id-input').fill('f0d34629513aeb67746e0bb2a52e59fc')
@@ -103,7 +101,6 @@ configTest('Should fetch correct config of projectId with specific features enab
 })
 
 configTest('Should fetch correct config of projectId with all features disabled', async () => {
-  configTest.slow()
   await browserPage.getByTestId('project-id-button').click()
   // See the project on dashboard.reown.com Admin's Team > AppKit E2E Config Tests 3
   await browserPage.getByTestId('project-id-input').fill('8771bbe81fcf7903aabaf5f9f462cbc5')
