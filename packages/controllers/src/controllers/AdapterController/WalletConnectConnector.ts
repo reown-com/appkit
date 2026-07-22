@@ -22,20 +22,20 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
   private getCaipNetworks = ChainController.getCaipNetworks.bind(ChainController)
 
   constructor({ provider, namespace }: WalletConnectConnector.Options<Namespace>) {
-    this.caipNetworks = this.getCaipNetworks()
+    this.caipNetworks = this.getCaipNetworks(namespace);
     this.provider = provider
     this.chain = namespace
   }
 
   get chains() {
-    return this.getCaipNetworks()
+    return this.getCaipNetworks(this.chain);
   }
 
   async connectWalletConnect() {
     const isAuthenticated = await this.authenticate()
 
     if (!isAuthenticated) {
-      const caipNetworks = this.getCaipNetworks()
+      const caipNetworks = this.getCaipNetworks(this.chain);
       const universalProviderConfigOverride =
         OptionsController.state.universalProviderConfigOverride
       const namespaces = WcHelpersUtil.createNamespaces(

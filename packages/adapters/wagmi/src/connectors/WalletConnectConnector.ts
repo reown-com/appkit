@@ -115,7 +115,7 @@ export function walletConnect(parameters: AppKitOptionsParams) {
       } = {}
     ) {
       try {
-        const caipNetworks = ChainController.getCaipNetworks()
+        const caipNetworks = ChainController.getCaipNetworks(ConstantsUtil.CHAIN.EVM);
         const provider = await this.getProvider()
         if (!provider) {
           throw new ProviderNotFoundError()
@@ -306,7 +306,7 @@ export function walletConnect(parameters: AppKitOptionsParams) {
       const provider = await this.getProvider()
       const chain = provider.session?.namespaces[ConstantsUtil.CHAIN.EVM]?.chains?.[0]
 
-      const network = ChainController.getCaipNetworks().find(c => c.id === chain)
+      const network = ChainController.getCaipNetworks(ConstantsUtil.CHAIN.EVM).find(c => c.id === chain)
 
       return network?.id as number
     },
@@ -340,7 +340,7 @@ export function walletConnect(parameters: AppKitOptionsParams) {
         throw new ProviderNotFoundError()
       }
 
-      const chainToSwitch = ChainController.getCaipNetworks().find(x => x.id === chainId)
+      const chainToSwitch = ChainController.getCaipNetworks(ConstantsUtil.CHAIN.EVM).find(x => x.id === chainId)
 
       if (!chainToSwitch) {
         throw new SwitchChainError(new ChainNotConfiguredError())
@@ -420,7 +420,7 @@ export function walletConnect(parameters: AppKitOptionsParams) {
       config.emitter.emit('change', { chainId })
     },
     onConnect(_connectInfo) {
-      this.setRequestedChainsIds(ChainController.getCaipNetworks().map(x => Number(x.id)))
+      this.setRequestedChainsIds(ChainController.getCaipNetworks(ConstantsUtil.CHAIN.EVM).map(x => Number(x.id)))
     },
     async onDisconnect(_error) {
       this.setRequestedChainsIds([])
