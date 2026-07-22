@@ -1,5 +1,34 @@
 # @reown/appkit-siwe
 
+## 1.8.23
+
+### Patch Changes
+
+- [#5712](https://github.com/reown-com/appkit/pull/5712) [`f2d2539`](https://github.com/reown-com/appkit/commit/f2d25397347b2347dae13b9088989a6333e813d8) Thanks [@enesozturk](https://github.com/enesozturk)! - Recover Coinbase Wallet from the EIP-1193 `4100` ("Must call 'eth_requestAccounts' before other methods") error that could dead-end signing after a session restore.
+
+  On an AppKit auto-restore, the Coinbase Wallet SDK provider keeps its accounts but drops its internal authorization — unlike wagmi's own `reconnect`, AppKit's restore reads `eth_accounts` without re-issuing `eth_requestAccounts`. Consumers that call `.request()` directly on the provider (rather than through wagmi's hooks) then failed the first signing RPC with `4100`.
+
+  The provider registration seam (`syncProvider`) now wraps Coinbase eip155 providers — keyed on the connector `id`, which is stable across the wagmi, ethers, and ethers5 adapters (the provider "type" is remapped to `'EXTERNAL'` on most paths, so it can't be used to detect Coinbase). A `4100` then triggers a one-shot recovery: a single `eth_requestAccounts` re-authorization, an active-chain re-assert before an `eth_sendTransaction` retry (so the transaction can't broadcast on the wrong network after the handshake resets the SDK's chain), then exactly one retry. Non-`4100` errors, rejected re-auth prompts, and non-Coinbase providers are unaffected. The wrapper is cached per provider instance so consumers keep a stable reference.
+
+- [#5665](https://github.com/reown-com/appkit/pull/5665) [`e5ee43c`](https://github.com/reown-com/appkit/commit/e5ee43c7c4db6f2918d20f588b39f71f10ed2de8) Thanks [@Khizr97](https://github.com/Khizr97)! - Fix `coinbasePreference` option being ignored — `'all'` and `'eoaOnly'` now correctly use the `coinbaseWallet` connector (with QR code support) instead of always using `baseAccount`. `'smartWalletOnly'` uses `baseAccount`. Regression introduced in PR #5269.
+
+- [#5663](https://github.com/reown-com/appkit/pull/5663) [`da65c78`](https://github.com/reown-com/appkit/commit/da65c78e73f4ff3873150b3da6a9b303580217ee) Thanks [@Khizr97](https://github.com/Khizr97)! - fix(ethers,ethers5): resolve walletProvider after account switch in modal
+
+  `useAppKitProvider` returned a stale provider when switching accounts inside the
+  modal. In the early-return path of `connect()`, `connector.provider` was never
+  initialised, causing the base-client's `accountChanged` handler to skip
+  `syncProvider()`. The provider is now resolved from `ethersProviders` before the
+  event is emitted.
+
+- [#5706](https://github.com/reown-com/appkit/pull/5706) [`ccf0dcb`](https://github.com/reown-com/appkit/commit/ccf0dcb2d21be5e24458dce45cb1c4d170f04b11) Thanks [@ignaciosantise](https://github.com/ignaciosantise)! - fix: persist the universal-link base as the WalletConnect deeplink choice when `experimental_preferUniversalLinks` is enabled, so session-request re-opens (handled by universal-provider) use the wallet's universal link instead of falling back to its native custom scheme
+
+- Updated dependencies [[`f2d2539`](https://github.com/reown-com/appkit/commit/f2d25397347b2347dae13b9088989a6333e813d8), [`e5ee43c`](https://github.com/reown-com/appkit/commit/e5ee43c7c4db6f2918d20f588b39f71f10ed2de8), [`da65c78`](https://github.com/reown-com/appkit/commit/da65c78e73f4ff3873150b3da6a9b303580217ee), [`ccf0dcb`](https://github.com/reown-com/appkit/commit/ccf0dcb2d21be5e24458dce45cb1c4d170f04b11)]:
+  - @reown/appkit-utils@1.8.23
+  - @reown/appkit-common@1.8.23
+  - @reown/appkit-ui@1.8.23
+  - @reown/appkit-wallet@1.8.23
+  - @reown/appkit-controllers@1.8.23
+
 ## 1.8.22
 
 ### Patch Changes
