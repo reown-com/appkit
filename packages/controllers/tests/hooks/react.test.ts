@@ -27,6 +27,8 @@ import { ConnectUtil } from '../../src/utils/ConnectUtil.js'
 import type { WalletItem } from '../../src/utils/ConnectUtil.js'
 import { ConnectionControllerUtil } from '../../src/utils/ConnectionControllerUtil.js'
 import { ConnectorControllerUtil } from '../../src/utils/ConnectorControllerUtil.js'
+import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil.js'
+import { CUSTOM_DEEPLINK_WALLETS, MobileWalletUtil } from '../../src/utils/MobileWallet.js'
 
 vi.mock('valtio', () => ({
   useSnapshot: vi.fn()
@@ -1694,5 +1696,168 @@ describe('useAppKitWallets', () => {
 
     expect(resetUriSpy).toHaveBeenCalled()
     expect(setWcLinkingSpy).toHaveBeenCalledWith(undefined)
+  })
+
+  describe('connect() mobile deeplink routing', () => {
+    function mockHeadlessSnapshots() {
+      useSnapshot
+        .mockReturnValueOnce({
+          features: { headless: true },
+          remoteFeatures: { headless: true }
+        })
+        .mockReturnValueOnce({
+          wcUri: undefined,
+          wcFetchingUri: false
+        })
+        .mockReturnValueOnce({
+          wallets: [],
+          search: [],
+          page: 1,
+          count: 0
+        })
+        .mockReturnValueOnce({
+          initialized: true,
+          connectingWallet: undefined
+        })
+        .mockReturnValueOnce({
+          clientId: null
+        })
+
+      vi.spyOn(ConnectUtil, 'getInitialWallets').mockReturnValue([])
+      vi.spyOn(ConnectUtil, 'getWalletConnectWallets').mockReturnValue([])
+    }
+
+    function makeMobileWallet(overrides: Partial<WalletItem>): WalletItem {
+      return {
+        id: 'wallet-id',
+        name: 'Wallet',
+        imageUrl: '',
+        connectors: [],
+        isInjected: false,
+        isRecent: false,
+        walletInfo: {},
+        ...overrides
+      }
+    }
+
+    it.each([['solana' as const], ['eip155' as const]])(
+      'uses handleMobileDeeplinkRedirect for Solflare on %s even when mobile_link is set',
+      async namespace => {
+        mockHeadlessSnapshots()
+        vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+        vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue(namespace)
+
+        const handleRedirectSpy = vi
+          .spyOn(MobileWalletUtil, 'handleMobileDeeplinkRedirect')
+          .mockImplementation(() => undefined)
+        const onConnectMobileSpy = vi
+          .spyOn(ConnectionControllerUtil, 'onConnectMobile')
+          .mockImplementation(() => undefined)
+
+        const solflare = makeMobileWallet({
+          id: CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
+          name: 'Solflare',
+          walletInfo: { deepLink: 'solflare://' }
+        })
+
+        const result = useAppKitWallets()
+        await result.connect(solflare, namespace)
+
+        expect(handleRedirectSpy).toHaveBeenCalledWith(
+          CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id,
+          namespace,
+          expect.objectContaining({ isCoinbaseDisabled: expect.any(Boolean) })
+        )
+        expect(onConnectMobileSpy).not.toHaveBeenCalled()
+      }
+    )
+
+    it.each([['solana' as const], ['eip155' as const], ['bip122' as const]])(
+      'uses handleMobileDeeplinkRedirect for Phantom on %s even when mobile_link is set',
+      async namespace => {
+        mockHeadlessSnapshots()
+        vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+        vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue(namespace)
+
+        const handleRedirectSpy = vi
+          .spyOn(MobileWalletUtil, 'handleMobileDeeplinkRedirect')
+          .mockImplementation(() => undefined)
+        const onConnectMobileSpy = vi
+          .spyOn(ConnectionControllerUtil, 'onConnectMobile')
+          .mockImplementation(() => undefined)
+
+        const phantom = makeMobileWallet({
+          id: CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
+          name: 'Phantom',
+          walletInfo: { deepLink: 'https://phantom.app/ul/v1/' }
+        })
+
+        const result = useAppKitWallets()
+        await result.connect(phantom, namespace)
+
+        expect(handleRedirectSpy).toHaveBeenCalledWith(
+          CUSTOM_DEEPLINK_WALLETS.PHANTOM.id,
+          namespace,
+          expect.objectContaining({ isCoinbaseDisabled: expect.any(Boolean) })
+        )
+        expect(onConnectMobileSpy).not.toHaveBeenCalled()
+      }
+    )
+
+    it('uses onConnectMobile for a regular WC wallet that has mobile_link', async () => {
+      mockHeadlessSnapshots()
+      vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+      vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
+
+      const handleRedirectSpy = vi
+        .spyOn(MobileWalletUtil, 'handleMobileDeeplinkRedirect')
+        .mockImplementation(() => undefined)
+      const onConnectMobileSpy = vi
+        .spyOn(ConnectionControllerUtil, 'onConnectMobile')
+        .mockImplementation(() => undefined)
+
+      const trust = makeMobileWallet({
+        id: 'trust-wallet-id',
+        name: 'Trust',
+        walletInfo: { deepLink: 'trust://' }
+      })
+
+      const result = useAppKitWallets()
+      await result.connect(trust, 'eip155')
+
+      expect(onConnectMobileSpy).toHaveBeenCalledTimes(1)
+      const [walletArg] = onConnectMobileSpy.mock.calls[0] ?? []
+      expect(walletArg).toMatchObject({ id: 'trust-wallet-id', mobile_link: 'trust://' })
+      expect(handleRedirectSpy).not.toHaveBeenCalled()
+    })
+
+    it('falls back to handleMobileDeeplinkRedirect when wallet has no mobile_link', async () => {
+      mockHeadlessSnapshots()
+      vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+      vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
+
+      const handleRedirectSpy = vi
+        .spyOn(MobileWalletUtil, 'handleMobileDeeplinkRedirect')
+        .mockImplementation(() => undefined)
+      const onConnectMobileSpy = vi
+        .spyOn(ConnectionControllerUtil, 'onConnectMobile')
+        .mockImplementation(() => undefined)
+
+      const unknown = makeMobileWallet({
+        id: 'unknown-wallet-id',
+        name: 'Unknown',
+        walletInfo: {}
+      })
+
+      const result = useAppKitWallets()
+      await result.connect(unknown, 'eip155')
+
+      expect(handleRedirectSpy).toHaveBeenCalledWith(
+        'unknown-wallet-id',
+        'eip155',
+        expect.objectContaining({ isCoinbaseDisabled: expect.any(Boolean) })
+      )
+      expect(onConnectMobileSpy).not.toHaveBeenCalled()
+    })
   })
 })
