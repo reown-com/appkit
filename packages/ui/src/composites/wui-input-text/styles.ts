@@ -21,7 +21,7 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[4]};
     color: inherit;
     background: transparent;
-    border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
+    border: 1px solid var(--apkt-input-border, ${({ tokens }) => tokens.theme.borderPrimary});
     caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
     padding: ${({ spacing }) => spacing[3]} ${({ spacing }) => spacing[3]}
       ${({ spacing }) => spacing[3]} ${({ spacing }) => spacing[10]};
@@ -45,7 +45,7 @@ export default css`
 
   input:disabled {
     cursor: unset;
-    border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
+    border: 1px solid var(--apkt-input-border, ${({ tokens }) => tokens.theme.borderPrimary});
   }
 
   input::placeholder {

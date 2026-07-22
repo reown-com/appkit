@@ -9,9 +9,9 @@ export default css`
   input {
     width: 48px;
     height: 48px;
-    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    background: var(--apkt-input-background, ${({ tokens }) => tokens.theme.foregroundPrimary});
     border-radius: ${({ borderRadius }) => borderRadius[4]};
-    border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
+    border: 1px solid var(--apkt-input-border, ${({ tokens }) => tokens.theme.borderPrimary});
     font-family: ${({ fontFamily }) => fontFamily.regular};
     font-size: ${({ textSize }) => textSize.large};
     line-height: 18px;

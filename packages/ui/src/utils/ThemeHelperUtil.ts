@@ -220,6 +220,15 @@ export const ThemeHelperUtil = {
       overrides['--apkt-tokens-core-zIndex'] = `${normalized['z-index']}`
     }
 
+    // Input-specific overrides
+    if (themeVariables['--apkt-input-background']) {
+      overrides['--apkt-input-background'] = themeVariables['--apkt-input-background']
+    }
+
+    if (themeVariables['--apkt-input-border']) {
+      overrides['--apkt-input-border'] = themeVariables['--apkt-input-border']
+    }
+
     return overrides
   },
 

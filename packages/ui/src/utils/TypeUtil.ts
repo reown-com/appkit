@@ -391,6 +391,8 @@ export interface ThemeVariables {
   '--apkt-border-radius-master'?: string
   '--apkt-z-index'?: number
   '--apkt-qr-color'?: string
+  '--apkt-input-background'?: string
+  '--apkt-input-border'?: string
 }
 
 export type IconBoxBorderType = 'wui-color-bg-125' | 'wui-accent-glass-010'

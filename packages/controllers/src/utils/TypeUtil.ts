@@ -234,6 +234,8 @@ export interface ThemeVariables {
   '--apkt-border-radius-master'?: string
   '--apkt-z-index'?: number
   '--apkt-qr-color'?: string
+  '--apkt-input-background'?: string
+  '--apkt-input-border'?: string
 }
 
 // -- BlockchainApiController Types ---------------------------------------------

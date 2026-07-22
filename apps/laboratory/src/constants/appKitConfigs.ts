@@ -69,7 +69,11 @@ export const appKitConfigs = {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
     wagmiConfig: commonWagmiConfig,
-    networks: ConstantsUtil.EvmNetworks
+    networks: ConstantsUtil.EvmNetworks,
+    themeVariables: {
+      '--apkt-input-background': '#2D2D2D',
+      '--apkt-input-border': '#9A9A9A'
+    }
   },
   'wagmi-all': {
     ...commonAppKitConfig,
