@@ -10,7 +10,8 @@ import {
   BASE_URL,
   DEFAULT_SESSION_PARAMS,
   EXTENSION_NAME,
-  EXTENSION_RDNS
+  EXTENSION_RDNS,
+  getMaximumWaitConnections
 } from '@reown/appkit-testing'
 
 import { getNamespaceByLibrary } from '@/tests/shared/utils/namespace'
@@ -113,7 +114,10 @@ export class ModalPage {
     await this.page.goto(this.url)
 
     // Wait for w3m-modal to be injected
-    await this.page.waitForSelector('w3m-modal', { state: 'visible', timeout: 30_000 })
+    await this.page.waitForSelector('w3m-modal', {
+      state: 'visible',
+      timeout: getMaximumWaitConnections()
+    })
   }
 
   assertDefined<T>(value: T | undefined | null): T {
@@ -529,7 +533,7 @@ export class ModalPage {
     }
 
     await expect(this.page.getByText(headerTitle)).not.toBeVisible({
-      timeout: 30_000
+      timeout: getMaximumWaitConnections()
     })
   }
 
