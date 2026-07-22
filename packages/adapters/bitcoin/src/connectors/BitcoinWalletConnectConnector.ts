@@ -84,7 +84,12 @@ export class BitcoinWalletConnectConnector
       params: { account }
     })
 
-    return addresses.map(address => ({ address, purpose: AddressPurpose.Payment }))
+    return addresses.map(addr => ({
+      address: addr.address,
+      publicKey: addr.publicKey ? Buffer.from(addr.publicKey).toString('hex') : undefined,
+      path: addr.path,
+      purpose: addr.intention === 'ordinal' ? AddressPurpose.Ordinal : AddressPurpose.Payment
+    }))
   }
 
   public async signPSBT(
@@ -246,7 +251,7 @@ export namespace WalletConnectProvider {
   export type RequestMethods = {
     signMessage: Request<WCSignMessageParams, WCSignMessageResponse>
     sendTransfer: Request<WCSendTransferParams, WCSendTransferResponse>
-    getAccountAddresses: Request<WCGetAccountAddressesParams, string[]>
+    getAccountAddresses: Request<WCGetAccountAddressesParams, WCGetAccountAddressesResponse>
     signPsbt: Request<WCSignPSBTParams, WCSignPSBTResponse>
   }
 

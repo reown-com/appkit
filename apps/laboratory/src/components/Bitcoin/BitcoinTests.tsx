@@ -13,6 +13,7 @@ import {
 
 import { useAppKitAccount } from '@reown/appkit/react'
 
+import { BitcoinGetAccountAddressesTest } from './BitcoinGetAccountAddressesTest'
 import { BitcoinSendTransferTest } from './BitcoinSendTransferTest'
 import { BitcoinSignMessageTest } from './BitcoinSignMessageTest'
 import { BitcoinSignPSBTTest } from './BitcoinSignPSBTTest'
@@ -60,6 +61,13 @@ export function BitcoinTests() {
               Send Transfer Test
             </Heading>
             <BitcoinSendTransferTest />
+          </Box>
+
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Get Account Addresses Test
+            </Heading>
+            <BitcoinGetAccountAddressesTest />
           </Box>
         </Stack>
       </CardBody>
