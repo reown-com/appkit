@@ -298,8 +298,11 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   private async addThirdPartyConnectors() {
     const thirdPartyConnectors: CreateConnectorFn[] = []
-    const { enableCoinbase: isCoinbaseEnabled, enableBaseAccount: isBaseAccountEnabled } =
-      OptionsController.state || {}
+    const {
+      enableCoinbase: isCoinbaseEnabled,
+      enableBaseAccount: isBaseAccountEnabled,
+      coinbasePreference
+    } = OptionsController.state || {}
 
     if (isBaseAccountEnabled !== false) {
       const baseAccountConnector = await getBaseAccountConnector(this.wagmiConfig.connectors)
@@ -309,7 +312,10 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     if (isCoinbaseEnabled !== false) {
-      const coinbaseConnector = await getCoinbaseConnector(this.wagmiConfig.connectors)
+      const coinbaseConnector = await getCoinbaseConnector(
+        this.wagmiConfig.connectors,
+        coinbasePreference
+      )
       if (coinbaseConnector) {
         thirdPartyConnectors.push(coinbaseConnector)
       }

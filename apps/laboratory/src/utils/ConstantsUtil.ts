@@ -211,7 +211,7 @@ export const ConstantsUtil = {
     'backpack',
     'frontier'
   ] as Wallet[],
-  BitcoinWalletButtons: ['walletConnect', 'xverse', 'leather', 'okx', 'phantom'] as Wallet[],
+  BitcoinWalletButtons: ['walletConnect', 'xverse', 'leather', 'okx'] as Wallet[],
   Socials: [
     'google',
     'github',
