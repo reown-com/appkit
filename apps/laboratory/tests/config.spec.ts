@@ -3,7 +3,6 @@ import { type BrowserContext, type Page, test } from '@playwright/test'
 import { ALL_SOCIALS, WalletPage } from '@reown/appkit-testing'
 
 import { ModalPage } from './shared/pages/ModalPage'
-import { getQuarantineAnnotation } from './shared/utils/quarantine'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 /* eslint-disable init-declarations */
@@ -101,29 +100,25 @@ configTest('Should fetch correct config of projectId with specific features enab
   await modalPage.closeModal()
 })
 
-configTest(
-  'Should fetch correct config of projectId with all features disabled',
-  getQuarantineAnnotation('unresolved-playwright-freeze'),
-  async () => {
-    await browserPage.getByTestId('project-id-button').click()
-    // See the project on dashboard.reown.com Admin's Team > AppKit E2E Config Tests 3
-    await browserPage.getByTestId('project-id-input').fill('8771bbe81fcf7903aabaf5f9f462cbc5')
-    await browserPage.getByTestId('project-id-save-button').click()
-    await browserPage.reload()
+configTest('Should fetch correct config of projectId with all features disabled', async () => {
+  await browserPage.getByTestId('project-id-button').click()
+  // See the project on dashboard.reown.com Admin's Team > AppKit E2E Config Tests 3
+  await browserPage.getByTestId('project-id-input').fill('8771bbe81fcf7903aabaf5f9f462cbc5')
+  await browserPage.getByTestId('project-id-save-button').click()
+  await browserPage.reload()
 
-    await modalPage.openConnectModal()
-    await modalValidator.expectUxBrandingReown(false)
-    await modalValidator.expectEmailLoginNotVisible()
-    await modalValidator.expectSocialsNotVisible()
-    await modalPage.closeModal()
+  await modalPage.openConnectModal()
+  await modalValidator.expectUxBrandingReown(false)
+  await modalValidator.expectEmailLoginNotVisible()
+  await modalValidator.expectSocialsNotVisible()
+  await modalPage.closeModal()
 
-    await modalPage.qrCodeFlow(modalPage, walletPage)
-    await modalValidator.expectConnected()
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
 
-    await modalPage.openModal()
-    await modalValidator.expectSwapsButton(false)
-    await modalValidator.expectActivityButton(false)
-    await modalValidator.expectOnrampButton(false)
-    await modalPage.closeModal()
-  }
-)
+  await modalPage.openModal()
+  await modalValidator.expectSwapsButton(false)
+  await modalValidator.expectActivityButton(false)
+  await modalValidator.expectOnrampButton(false)
+  await modalPage.closeModal()
+})

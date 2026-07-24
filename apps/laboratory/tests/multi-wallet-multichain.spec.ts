@@ -5,7 +5,6 @@ import { WalletPage } from '@reown/appkit-testing'
 
 import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
-import { getQuarantineAnnotation } from './shared/utils/quarantine'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 /* eslint-disable init-declarations */
@@ -194,54 +193,46 @@ test('it should disconnect each wallet as expected', async () => {
   await validator.expectDisconnected()
 })
 
-test(
-  'should disconnect only the selected wallet',
-  getQuarantineAnnotation('unresolved-playwright-freeze'),
-  async () => {
-    await modal.openConnectModal('solana')
-    const solanaExtensionWallet = await modal.getExtensionWallet()
-    await solanaExtensionWallet.click()
-    await validator.expectConnected('solana')
-    solanaExtensionWalletAddress = await modal.getAddress('solana')
+test('should disconnect only the selected wallet', async () => {
+  await modal.openConnectModal('solana')
+  const solanaExtensionWallet = await modal.getExtensionWallet()
+  await solanaExtensionWallet.click()
+  await validator.expectConnected('solana')
+  solanaExtensionWalletAddress = await modal.getAddress('solana')
 
-    await modal.openConnectModal('eip155')
-    await modal.qrCodeFlow(modal, wallet, undefined, true)
-    await validator.expectConnected('eip155')
-    await validator.expectConnected('solana')
+  await modal.openConnectModal('eip155')
+  await modal.qrCodeFlow(modal, wallet, undefined, true)
+  await validator.expectConnected('eip155')
+  await validator.expectConnected('solana')
 
-    walletConnectSolanaAddress = await modal.getAddress('solana')
-    walletConnectEvmAddress = await modal.getAddress('eip155')
+  walletConnectSolanaAddress = await modal.getAddress('solana')
+  walletConnectEvmAddress = await modal.getAddress('eip155')
 
-    expect(await modal.getAddress('solana')).not.toBe(solanaExtensionWalletAddress)
+  expect(await modal.getAddress('solana')).not.toBe(solanaExtensionWalletAddress)
 
-    await modal.openAccount()
-    await modal.clickWalletSwitchButton()
-    await modal.clickTab('solana')
+  await modal.openAccount()
+  await modal.clickWalletSwitchButton()
+  await modal.clickTab('solana')
 
-    await modal.disconnectConnection('Reown')
-    await modal.closeModal()
+  await modal.disconnectConnection('Reown')
+  await modal.closeModal()
 
-    await modal.page.reload()
+  await modal.page.reload()
 
-    await validator.expectConnected('eip155')
-    await validator.expectConnected('solana')
+  await validator.expectConnected('eip155')
+  await validator.expectConnected('solana')
 
-    expect(await modal.getAddress('solana')).toBe(walletConnectSolanaAddress)
-    expect(await modal.getAddress('eip155')).toBe(walletConnectEvmAddress)
-  }
-)
+  expect(await modal.getAddress('solana')).toBe(walletConnectSolanaAddress)
+  expect(await modal.getAddress('eip155')).toBe(walletConnectEvmAddress)
+})
 
-test(
-  'should disconnect WC as expected for all namespaces',
-  getQuarantineAnnotation('unresolved-playwright-freeze'),
-  async () => {
-    await modal.openAccount()
-    await modal.clickWalletSwitchButton()
-    await modal.clickTab('solana')
+test('should disconnect WC as expected for all namespaces', async () => {
+  await modal.openAccount()
+  await modal.clickWalletSwitchButton()
+  await modal.clickTab('solana')
 
-    await modal.clickProfileWalletsDisconnectButton()
+  await modal.clickProfileWalletsDisconnectButton()
 
-    await validator.expectDisconnected('solana')
-    await validator.expectDisconnected('eip155')
-  }
-)
+  await validator.expectDisconnected('solana')
+  await validator.expectDisconnected('eip155')
+})
