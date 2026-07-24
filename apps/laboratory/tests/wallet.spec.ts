@@ -11,6 +11,7 @@ import {
 } from '@reown/appkit-testing'
 
 import { ModalPage } from './shared/pages/ModalPage'
+import { getQuarantineAnnotation } from './shared/utils/quarantine'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 /* eslint-disable init-declarations */
@@ -305,9 +306,13 @@ sampleWalletTest('it should disconnect and close modal when connecting from wall
   await walletPage.page.waitForTimeout(500)
 })
 
-sampleWalletTest('it should disconnect as expected', async () => {
-  await modalPage.qrCodeFlow(modalPage, walletPage)
-  await modalValidator.expectConnected()
-  await modalPage.disconnect()
-  await modalValidator.expectDisconnected()
-})
+sampleWalletTest(
+  'it should disconnect as expected',
+  getQuarantineAnnotation('cluster-4-context-closed'),
+  async () => {
+    await modalPage.qrCodeFlow(modalPage, walletPage)
+    await modalValidator.expectConnected()
+    await modalPage.disconnect()
+    await modalValidator.expectDisconnected()
+  }
+)

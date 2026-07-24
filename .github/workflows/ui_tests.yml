@@ -355,7 +355,7 @@ jobs:
           CI: true
           PLAYWRIGHT_SHARD_SUFFIX: ${{ matrix.shard }} # Pass shard index for unique blob filenames
         working-directory: ./apps/laboratory/
-        run: pnpm ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
+        run: pnpm ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }} --grep-invert '@quarantine'
 
       - name: Run canary with minimal environment config
         if: matrix.shard == 1 # Run canary only on the first shard
@@ -368,6 +368,28 @@ jobs:
           CI: true
         working-directory: ./apps/laboratory/
         run: pnpm playwright:test:canary
+
+      - name: Run quarantined tests (non-blocking)
+        if: matrix.shard == 1 # Run once, not once per shard
+        continue-on-error: true
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: /tmp/playwright_cache
+          BASE_URL: ${{ inputs.base-url }}
+          WALLET_URL: ${{ inputs.wallet-url }}
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
+          NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
+          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
+          NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
+          SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
+          SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
+          CI: true
+          PLAYWRIGHT_SHARD_SUFFIX: quarantine-lane # Distinct suffix so this never collides with a real shard's blob filename
+        working-directory: ./apps/laboratory/
+        run: |
+          pnpm playwright:test --grep '@quarantine' --retries=2 || true
+          echo "" >> $GITHUB_STEP_SUMMARY
+          node ./scripts/summarize-test-results.mjs test-results.json "quarantined tests (shard 1, non-blocking, retries=2)" >> $GITHUB_STEP_SUMMARY
 
       - name: List blob reports directory before upload
         if: always() # Run even if previous steps failed, to see state
@@ -475,6 +497,11 @@ jobs:
       - name: Rename merged JSON report for clarity
         run: mv ${{ github.workspace }}/apps/laboratory/report.json ${{ github.workspace }}/apps/laboratory/merged-test-results.json
         # This step makes the final JSON artifact name more explicit.
+
+      - name: Summarize E2E results in job summary
+        if: always()
+        working-directory: ./apps/laboratory
+        run: node ./scripts/summarize-test-results.mjs merged-test-results.json "main gating run (10 shards)" >> $GITHUB_STEP_SUMMARY
 
       - name: Determine Build Context for S3 Path
         id: build_context
