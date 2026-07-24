@@ -308,7 +308,7 @@ sampleWalletTest('it should disconnect and close modal when connecting from wall
 
 sampleWalletTest(
   'it should disconnect as expected',
-  getQuarantineAnnotation('cluster-4-context-closed'),
+  getQuarantineAnnotation('unresolved-playwright-freeze'),
   async () => {
     await modalPage.qrCodeFlow(modalPage, walletPage)
     await modalValidator.expectConnected()

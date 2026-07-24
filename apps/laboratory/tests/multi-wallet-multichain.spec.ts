@@ -196,7 +196,7 @@ test('it should disconnect each wallet as expected', async () => {
 
 test(
   'should disconnect only the selected wallet',
-  getQuarantineAnnotation('cluster-4-context-closed'),
+  getQuarantineAnnotation('unresolved-playwright-freeze'),
   async () => {
     await modal.openConnectModal('solana')
     const solanaExtensionWallet = await modal.getExtensionWallet()
@@ -233,7 +233,7 @@ test(
 
 test(
   'should disconnect WC as expected for all namespaces',
-  getQuarantineAnnotation('cluster-4-context-closed'),
+  getQuarantineAnnotation('unresolved-playwright-freeze'),
   async () => {
     await modal.openAccount()
     await modal.clickWalletSwitchButton()

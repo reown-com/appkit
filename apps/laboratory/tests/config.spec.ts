@@ -41,77 +41,69 @@ configTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-configTest(
-  'Should fetch correct config of projectId with all features enabled',
-  getQuarantineAnnotation('cluster-4-context-closed'),
-  async () => {
-    await browserPage.getByTestId('project-id-button').click()
-    // See the project on dashboard.reown.com Admin's Team > AppKit E2E Config Tests
-    await browserPage.getByTestId('project-id-input').fill('5164c17d2d7091727aef80eeb55d7290')
-    await browserPage.getByTestId('project-id-save-button').click()
-    await browserPage.reload()
+configTest('Should fetch correct config of projectId with all features enabled', async () => {
+  await browserPage.getByTestId('project-id-button').click()
+  // See the project on dashboard.reown.com Admin's Team > AppKit E2E Config Tests
+  await browserPage.getByTestId('project-id-input').fill('5164c17d2d7091727aef80eeb55d7290')
+  await browserPage.getByTestId('project-id-save-button').click()
+  await browserPage.reload()
 
-    await modalPage.openConnectModal()
-    await modalValidator.expectUxBrandingReown(true)
-    await modalValidator.expectEmailLogin()
-    await modalPage.openAllSocials()
-    await modalValidator.expectSpecificSocialsVisible(ALL_SOCIALS)
-    await modalPage.closeModal()
+  await modalPage.openConnectModal()
+  await modalValidator.expectUxBrandingReown(true)
+  await modalValidator.expectEmailLogin()
+  await modalPage.openAllSocials()
+  await modalValidator.expectSpecificSocialsVisible(ALL_SOCIALS)
+  await modalPage.closeModal()
 
-    await modalPage.qrCodeFlow(modalPage, walletPage)
-    await modalValidator.expectConnected()
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
 
-    await modalPage.openModal()
-    await modalValidator.expectSwapsButton(true)
-    await modalValidator.expectActivityButton(true)
+  await modalPage.openModal()
+  await modalValidator.expectSwapsButton(true)
+  await modalValidator.expectActivityButton(true)
 
-    const fundWalletButton = await modalPage.getDefaultWalletFeaturesButton('fund-wallet')
-    await fundWalletButton.click()
+  const fundWalletButton = await modalPage.getDefaultWalletFeaturesButton('fund-wallet')
+  await fundWalletButton.click()
 
-    await modalValidator.expectOnrampButton(true)
+  await modalValidator.expectOnrampButton(true)
 
-    await modalPage.openOnramp()
-    await modalValidator.expectOnrampProvider(['meld'])
-    await modalPage.closeModal()
-  }
-)
+  await modalPage.openOnramp()
+  await modalValidator.expectOnrampProvider(['meld'])
+  await modalPage.closeModal()
+})
 
-configTest(
-  'Should fetch correct config of projectId with specific features enabled',
-  getQuarantineAnnotation('cluster-4-context-closed'),
-  async () => {
-    await browserPage.getByTestId('project-id-button').click()
-    // See the project on dashboard.reown.com Admin's Team > AppKit E2E Config Tests 2
-    await browserPage.getByTestId('project-id-input').fill('f0d34629513aeb67746e0bb2a52e59fc')
-    await browserPage.getByTestId('project-id-save-button').click()
-    await browserPage.reload()
+configTest('Should fetch correct config of projectId with specific features enabled', async () => {
+  await browserPage.getByTestId('project-id-button').click()
+  // See the project on dashboard.reown.com Admin's Team > AppKit E2E Config Tests 2
+  await browserPage.getByTestId('project-id-input').fill('f0d34629513aeb67746e0bb2a52e59fc')
+  await browserPage.getByTestId('project-id-save-button').click()
+  await browserPage.reload()
 
-    await modalPage.openConnectModal()
-    await modalValidator.expectUxBrandingReown(true)
-    await modalValidator.expectEmailLoginNotVisible()
-    await modalValidator.expectSpecificSocialsVisible(['google', 'x', 'discord'])
-    await modalPage.closeModal()
+  await modalPage.openConnectModal()
+  await modalValidator.expectUxBrandingReown(true)
+  await modalValidator.expectEmailLoginNotVisible()
+  await modalValidator.expectSpecificSocialsVisible(['google', 'x', 'discord'])
+  await modalPage.closeModal()
 
-    await modalPage.qrCodeFlow(modalPage, walletPage)
-    await modalValidator.expectConnected()
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
 
-    await modalPage.openModal()
-    await modalValidator.expectSwapsButton(false)
-    await modalValidator.expectActivityButton(true)
+  await modalPage.openModal()
+  await modalValidator.expectSwapsButton(false)
+  await modalValidator.expectActivityButton(true)
 
-    const fundWalletButton = await modalPage.getDefaultWalletFeaturesButton('fund-wallet')
-    await fundWalletButton.click()
+  const fundWalletButton = await modalPage.getDefaultWalletFeaturesButton('fund-wallet')
+  await fundWalletButton.click()
 
-    await modalValidator.expectOnrampButton(true)
-    await modalPage.openOnramp()
-    await modalValidator.expectOnrampProvider(['meld'])
-    await modalPage.closeModal()
-  }
-)
+  await modalValidator.expectOnrampButton(true)
+  await modalPage.openOnramp()
+  await modalValidator.expectOnrampProvider(['meld'])
+  await modalPage.closeModal()
+})
 
 configTest(
   'Should fetch correct config of projectId with all features disabled',
-  getQuarantineAnnotation('cluster-4-context-closed'),
+  getQuarantineAnnotation('unresolved-playwright-freeze'),
   async () => {
     await browserPage.getByTestId('project-id-button').click()
     // See the project on dashboard.reown.com Admin's Team > AppKit E2E Config Tests 3
