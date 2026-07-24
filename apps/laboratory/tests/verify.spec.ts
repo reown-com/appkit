@@ -14,11 +14,17 @@ import { ModalPage } from './shared/pages/ModalPage'
 import { afterEachCanary, getCanaryTagAndAnnotation } from './shared/utils/metrics'
 import { ModalValidator } from './shared/validators/ModalValidator'
 
-testMWagmiVerifyValid.afterEach(async ({ timingRecords }, testInfo) => {
+testMWagmiVerifyValid.afterEach(async ({ browserName, timingRecords }, testInfo) => {
+  if (browserName === 'firefox') {
+    return
+  }
   await afterEachCanary(testInfo, timingRecords)
 })
 
-testMWagmiVerifyEvil.afterEach(async ({ timingRecords }, testInfo) => {
+testMWagmiVerifyEvil.afterEach(async ({ browserName, timingRecords }, testInfo) => {
+  if (browserName === 'firefox') {
+    return
+  }
   await afterEachCanary(testInfo, timingRecords)
 })
 
