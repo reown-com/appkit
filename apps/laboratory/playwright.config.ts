@@ -18,7 +18,7 @@ const skipWS = process.env['SKIP_PLAYWRIGHT_WEBSERVER'] === 'true'
 export default defineConfig<ModalFixture>({
   testDir: './tests',
   fullyParallel: true,
-  workers: getValue(4, 4),
+  workers: getValue(8, 4),
   reporter: process.env['CI']
     ? [
         ['blob', { outputDir: blobOutputDir, fileName: blobFileName }],
