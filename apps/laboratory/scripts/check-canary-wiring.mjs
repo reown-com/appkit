@@ -36,16 +36,20 @@ for (const file of specFiles) {
 if (offenders.length > 0) {
   console.error('Found @canary-tagged tests with no afterEachCanary() wiring in the same file:')
   for (const offender of offenders) {
-    console.error(`  - ${offender.file} (${offender.tagCount} canary tag(s), 0 afterEachCanary() calls)`)
+    console.error(
+      `  - ${offender.file} (${offender.tagCount} canary tag(s), 0 afterEachCanary() calls)`
+    )
   }
   console.error(
     '\nEvery test tagged via getCanaryTagAndAnnotation() must have a matching afterEach(...) ' +
       'in the same file that calls afterEachCanary(testInfo, timingRecords) — otherwise the test ' +
-      "runs under `pnpm playwright:test:canary` but never reports pass/fail to CloudWatch, so its " +
+      'runs under `pnpm playwright:test:canary` but never reports pass/fail to CloudWatch, so its ' +
       'Grafana alert silently stops reflecting reality. See apps/laboratory/tests/canary.spec.ts ' +
       'for the reference pattern.'
   )
   process.exit(1)
 }
 
-console.log(`OK: all canary-tagged spec files (${specFiles.length} spec files scanned) wire up afterEachCanary().`)
+console.log(
+  `OK: all canary-tagged spec files (${specFiles.length} spec files scanned) wire up afterEachCanary().`
+)
