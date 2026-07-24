@@ -8,7 +8,22 @@ if (!reportPath) {
   process.exit(1)
 }
 
-const report = JSON.parse(readFileSync(reportPath, 'utf8'))
+let report
+try {
+  report = JSON.parse(readFileSync(reportPath, 'utf8'))
+} catch {
+  console.log(
+    `## E2E results${label ? ' — ' + label : ''}\n\nNo report file found or it could not be parsed - see the raw job logs.`
+  )
+  process.exit(0)
+}
+
+// eslint-disable-next-line no-control-regex
+const ANSI_PATTERN = /\u001b\[[0-9;]*m/g
+
+function sanitizeForTable(value) {
+  return String(value).replace(ANSI_PATTERN, '').replace(/\|/g, '\\|')
+}
 
 function collectSpecs(suite) {
   const specs = [...(suite.specs || [])]
@@ -43,7 +58,7 @@ for (const rootSuite of report.suites || []) {
 
       if (finalStatus !== 'passed' && finalStatus !== 'skipped') {
         const message = finalResult.error?.message?.split('\n')[0] ?? '(no error message captured)'
-        failing.push({ ...row, error: message })
+        failing.push({ ...row, error: sanitizeForTable(message) })
       } else if (hadEarlierFailure) {
         selfHealed.push(row)
       }
@@ -56,9 +71,16 @@ const lines = [label ? `## E2E results — ${label}` : '## E2E results', '']
 if (failing.length === 0) {
   lines.push('No failing tests in this run. ✅')
 } else {
-  lines.push(`### ❌ ${failing.length} failing test(s)`, '', '| Test | Project | Error |', '|---|---|---|')
+  lines.push(
+    `### ❌ ${failing.length} failing test(s)`,
+    '',
+    '| Test | Project | Error |',
+    '|---|---|---|'
+  )
   for (const test of failing) {
-    lines.push(`| ${test.title} | ${test.project} | ${test.error} |`)
+    lines.push(
+      `| ${sanitizeForTable(test.title)} | ${sanitizeForTable(test.project)} | ${test.error} |`
+    )
   }
 }
 
@@ -71,7 +93,9 @@ if (selfHealed.length > 0) {
     '|---|---|---|'
   )
   for (const test of selfHealed) {
-    lines.push(`| ${test.title} | ${test.project} | ${test.attempts} |`)
+    lines.push(
+      `| ${sanitizeForTable(test.title)} | ${sanitizeForTable(test.project)} | ${test.attempts} |`
+    )
   }
 }
 
