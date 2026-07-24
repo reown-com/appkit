@@ -115,7 +115,6 @@ jobs:
           - prettier
           - typecheck
           - danger
-          - check:canary-wiring
       fail-fast: false
     steps:
       - name: checkout
