@@ -300,7 +300,17 @@ jobs:
       - name: Install Playwright system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true' # <-- Re-enable condition
         working-directory: ./apps/laboratory/
-        run: pnpm playwright:install-deps
+        run: |
+          for attempt in 1 2 3; do
+            echo "playwright:install-deps attempt $attempt/3"
+            if pnpm playwright:install-deps; then
+              exit 0
+            fi
+            echo "Attempt $attempt failed (likely a transient apt mirror timeout) - retrying in 15s..."
+            sleep 15
+          done
+          echo "playwright:install-deps failed after 3 attempts"
+          exit 1
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true' # <-- Re-enable condition
@@ -429,7 +439,17 @@ jobs:
       - name: Install Playwright system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true' # <-- Re-enable condition
         working-directory: ./apps/laboratory/
-        run: pnpm playwright:install-deps
+        run: |
+          for attempt in 1 2 3; do
+            echo "playwright:install-deps attempt $attempt/3"
+            if pnpm playwright:install-deps; then
+              exit 0
+            fi
+            echo "Attempt $attempt failed (likely a transient apt mirror timeout) - retrying in 15s..."
+            sleep 15
+          done
+          echo "playwright:install-deps failed after 3 attempts"
+          exit 1
 
       - name: Download all shard blob reports
         uses: actions/download-artifact@v4
