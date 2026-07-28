@@ -23,6 +23,7 @@ import { BitcoinWalletConnectConnector } from './connectors/BitcoinWalletConnect
 import { LeatherConnector } from './connectors/LeatherConnector.js'
 import { OKXConnector } from './connectors/OKXConnector.js'
 import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
+import { TrezorConnector } from './connectors/TrezorConnector/index.js'
 import { UnisatConnector } from './connectors/UnisatConnector/index.js'
 import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
 import { BitcoinApi } from './utils/BitcoinApi.js'
@@ -208,6 +209,13 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         this.addConnector(connector)
       }
     })
+
+    const trezorConnector = TrezorConnector.getWallet({
+      requestedChains: this.networks
+    })
+    if (trezorConnector) {
+      this.addConnector(trezorConnector)
+    }
   }
 
   override syncConnection(

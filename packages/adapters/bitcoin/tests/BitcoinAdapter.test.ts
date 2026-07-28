@@ -26,6 +26,7 @@ import { BitcoinWalletConnectConnector } from '../src/connectors/BitcoinWalletCo
 import { LeatherConnector } from '../src/connectors/LeatherConnector'
 import { OKXConnector } from '../src/connectors/OKXConnector'
 import { SatsConnectConnector } from '../src/connectors/SatsConnectConnector'
+import { TrezorConnector } from '../src/connectors/TrezorConnector'
 import { WalletStandardConnector } from '../src/connectors/WalletStandardConnector'
 import type { BitcoinApi } from '../src/utils/BitcoinApi'
 import { AddressPurpose } from '../src/utils/BitcoinConnector'
@@ -50,6 +51,8 @@ describe('BitcoinAdapter', () => {
       connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
     })
     ChainController.setRequestedCaipNetworks([bitcoin], 'bip122')
+    // Mock TrezorConnector to not be available by default in tests
+    vi.spyOn(TrezorConnector, 'getWallet').mockReturnValue(undefined)
   })
 
   describe('constructor', () => {
