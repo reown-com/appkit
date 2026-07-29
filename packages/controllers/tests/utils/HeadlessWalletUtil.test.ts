@@ -243,15 +243,17 @@ describe('HeadlessWalletUtil.prefetchWalletConnectUri', () => {
 })
 
 describe('HeadlessWalletUtil.getWalletConnectUri', () => {
-  it('reads wcUri / wcError / wcFetchingUri from the connection layer', () => {
+  it('reads wcUri / wcError / wcFetchingUri / wcPairingExpiry from the connection layer', () => {
     ConnectionController.state.wcUri = 'wc:read-test'
     ConnectionController.state.wcError = true
     ConnectionController.state.wcFetchingUri = false
+    ConnectionController.state.wcPairingExpiry = 1_700_000_000_000
 
     expect(HeadlessWalletUtil.getWalletConnectUri()).toEqual({
       wcUri: 'wc:read-test',
       wcError: true,
-      wcFetchingUri: false
+      wcFetchingUri: false,
+      wcPairingExpiry: 1_700_000_000_000
     })
   })
 
@@ -259,17 +261,35 @@ describe('HeadlessWalletUtil.getWalletConnectUri', () => {
     ConnectionController.state.wcUri = undefined
     ConnectionController.state.wcError = undefined
     ConnectionController.state.wcFetchingUri = true
+    ConnectionController.state.wcPairingExpiry = undefined
 
     expect(HeadlessWalletUtil.getWalletConnectUri()).toEqual({
       wcUri: undefined,
       wcError: false,
-      wcFetchingUri: true
+      wcFetchingUri: true,
+      wcPairingExpiry: undefined
     })
+  })
+
+  /*
+   * The reason the field is exposed at all: a host that consumes the URI later than it fetched
+   * it (a picker whose deeplink fires on a second, user-paced click) otherwise cannot tell a
+   * fresh URI from one whose pairing has lapsed — every other field reads identically.
+   */
+  it('surfaces the expiry stamped by setUri so a stale pairing is detectable', () => {
+    ConnectionController.state.wcPairingExpiry = undefined
+    ConnectionController.setUri('wc:fresh')
+
+    const { wcUri, wcPairingExpiry } = HeadlessWalletUtil.getWalletConnectUri()
+
+    expect(wcUri).toBe('wc:fresh')
+    expect(wcPairingExpiry).toBeGreaterThan(Date.now())
+    expect(CoreHelperUtil.isPairingExpired(wcPairingExpiry)).toBe(false)
   })
 })
 
 describe('HeadlessWalletUtil.subscribeWalletConnectUri', () => {
-  it('fires on wcUri / wcError / wcFetchingUri changes and unsubscribes cleanly', async () => {
+  it('fires on wcUri / wcError / wcFetchingUri / wcPairingExpiry changes and unsubscribes cleanly', async () => {
     const flush = () => new Promise(resolve => setTimeout(resolve, 0))
     const callback = vi.fn()
 
@@ -287,10 +307,14 @@ describe('HeadlessWalletUtil.subscribeWalletConnectUri', () => {
     await flush()
     expect(callback).toHaveBeenCalledTimes(2)
 
+    ConnectionController.state.wcPairingExpiry = Date.now() + 60_000
+    await flush()
+    expect(callback).toHaveBeenCalledTimes(3)
+
     unsubscribe()
     ConnectionController.state.wcUri = 'wc:after-unsub'
     await flush()
-    expect(callback).toHaveBeenCalledTimes(2)
+    expect(callback).toHaveBeenCalledTimes(3)
   })
 })
 
