@@ -32,10 +32,12 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
     const connectionInitiated = new Date()
     timeEnd('walletPage.connectWithUri')
 
-    // The session proposal is received once the wallet renders the request UI (approve button).
-    // Deterministic, owned-testid signal instead of parsing SDK console logs. Also guards delivery
-    // failures: a proposal that never arrives times out here and fails the run (pages via the
-    // success/failure canary). Interval includes the wallet's render time.
+    /*
+     * The session proposal is received once the wallet renders the request UI (approve button).
+     * Deterministic, owned-testid signal instead of parsing SDK console logs. Also guards delivery
+     * failures: a proposal that never arrives times out here and fails the run (pages via the
+     * success/failure canary). Interval includes the wallet's render time.
+     */
     timeStart('walletPage.waitForSessionProposal')
     await walletPage.waitForSessionProposal()
     const proposalReceived = new Date()
