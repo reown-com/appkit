@@ -227,11 +227,6 @@ const controller = {
 
   async connectWalletConnect({ cache = 'auto' }: ConnectWalletConnectParameters = {}) {
     state.wcFetchingUri = true
-    /*
-     * A new attempt starts from a clean error state — `wcError` is otherwise only cleared by a
-     * successful mobile deeplink or the headful "try again" button, so a headless host (no
-     * scaffold-ui) that hit one error stayed in an error state for the rest of the page's life.
-     */
     state.wcError = false
     const isInTelegramOrSafariIos =
       CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())
