@@ -100,6 +100,25 @@ export const ConnectionControllerUtil = {
       recentConnections: dedupedRecentConnections
     }
   },
+  /**
+   * Throw when there is no WalletConnect pairing URI to deeplink into.
+   *
+   * {@link ConnectionControllerUtil.onConnectMobile} is a no-op without a URI, and it cannot
+   * fetch one itself: the redirect has to happen inside the tap that triggered it (iOS Safari
+   * blocks a redirect issued after an await). A headless host is the layer that pre-fetches the
+   * URI, so it needs the failure as a rejection — otherwise a connect() call that opened nothing
+   * looks like a connect() call still in flight, and the buyer waits on a wallet that never opens.
+   *
+   * The URI is missing whenever the last one was consumed or cleared — most visibly after a
+   * disconnect (`resetWcConnection`), which is when reconnecting used to silently do nothing.
+   */
+  assertWcUriForDeeplink() {
+    if (!ConnectionController.state.wcUri) {
+      throw new Error(
+        'No WalletConnect URI available to deeplink into. Pre-fetch one (connectWalletConnect / prefetchWalletConnectUri) before connecting a mobile wallet.'
+      )
+    }
+  },
   onConnectMobile(wallet: WcWallet | undefined, wcPayUrl?: string) {
     const wcUri = ConnectionController.state.wcUri
 

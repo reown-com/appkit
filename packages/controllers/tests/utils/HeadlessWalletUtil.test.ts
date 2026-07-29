@@ -135,6 +135,7 @@ describe('HeadlessWalletUtil.connect', () => {
       name: 'Some Wallet',
       mobile_link: 'somewallet://'
     } as never)
+    ConnectionController.state.wcUri = 'wc:pairing'
     const onConnectMobile = vi
       .spyOn(ConnectionControllerUtil, 'onConnectMobile')
       .mockImplementation(vi.fn())
@@ -145,6 +146,33 @@ describe('HeadlessWalletUtil.connect', () => {
       expect.objectContaining({ mobile_link: 'somewallet://' }),
       'https://pay/x'
     )
+  })
+
+  it('rejects instead of deeplinking into nothing when the WalletConnect URI is gone', async () => {
+    /*
+     * The state after a disconnect (`resetWcConnection` clears the URI). `onConnectMobile` is a
+     * silent no-op without one, so the host would sit in a connecting state waiting on a wallet
+     * that never opens — it has to learn the attempt failed so it can re-fetch a URI and retry.
+     */
+    vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(undefined as never)
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
+    vi.spyOn(ConnectUtil, 'mapWalletItemToWcWallet').mockReturnValue({
+      id: 'wc_wallet',
+      name: 'Some Wallet',
+      mobile_link: 'somewallet://'
+    } as never)
+    ConnectionController.state.wcUri = undefined
+    const onConnectMobile = vi
+      .spyOn(ConnectionControllerUtil, 'onConnectMobile')
+      .mockImplementation(vi.fn())
+
+    await expect(HeadlessWalletUtil.connect(apiWallet, 'eip155')).rejects.toThrow(
+      'No WalletConnect URI available'
+    )
+
+    expect(onConnectMobile).not.toHaveBeenCalled()
+    // The spinner must not outlive the failed attempt.
+    expect(PublicStateController.set).toHaveBeenCalledWith({ connectingWallet: undefined })
   })
 
   it('redirects via MobileWalletUtil on mobile when there is no mobile link', async () => {

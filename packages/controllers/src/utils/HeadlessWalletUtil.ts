@@ -217,6 +217,7 @@ export const HeadlessWalletUtil = {
         const wcWallet = ConnectUtil.mapWalletItemToWcWallet(wallet)
 
         if (wcWallet.mobile_link) {
+          ConnectionControllerUtil.assertWcUriForDeeplink()
           ConnectionControllerUtil.onConnectMobile(wcWallet, options?.wcPayUrl)
         } else {
           MobileWalletUtil.handleMobileDeeplinkRedirect(wallet.id, activeNamespace, {
