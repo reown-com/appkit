@@ -211,7 +211,9 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     })
 
     const trezorConnector = TrezorConnector.getWallet({
-      requestedChains: this.networks
+      requestedChains: this.networks,
+      requestedCaipNetworkId: ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)
+        ?.caipNetworkId
     })
     if (trezorConnector) {
       this.addConnector(trezorConnector)

@@ -205,7 +205,11 @@ describe('LeatherConnector', () => {
 
     it('should get the account addresses and parse response', async () => {
       const requestSpy = vi.spyOn(universalProvider, 'request')
-      requestSpy.mockResolvedValueOnce(['mock_address'])
+      // getAccountAddresses returns address descriptors, not bare strings.
+      requestSpy.mockResolvedValueOnce([
+        { address: 'mock_address', path: "m/84'/0'/0'", intention: 'payment' },
+        { address: 'mock_ordinal_address', intention: 'ordinal' }
+      ])
 
       const result = await provider.getAccountAddresses()
 
@@ -216,7 +220,20 @@ describe('LeatherConnector', () => {
         },
         bitcoin.caipNetworkId
       )
-      expect(result).toEqual([{ address: 'mock_address', purpose: 'payment' }])
+      expect(result).toEqual([
+        {
+          address: 'mock_address',
+          publicKey: undefined,
+          path: "m/84'/0'/0'",
+          purpose: 'payment'
+        },
+        {
+          address: 'mock_ordinal_address',
+          publicKey: undefined,
+          path: undefined,
+          purpose: 'ordinal'
+        }
+      ])
     })
 
     it('should throw an error if the method is not supported', async () => {
