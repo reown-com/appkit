@@ -56,7 +56,13 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
   }
 
   async authenticate(): Promise<boolean> {
-    const chains = this.chains.map(network => network.caipNetworkId)
+    /*
+     * Scope to this connector's own namespace. `this.chains` resolves to every registered
+     * namespace, while `SIWXUtil.universalProviderAuthenticate` only proceeds for a single
+     * `eip155` namespace — so passing the unscoped list silently disabled one-click auth for
+     * every wallet as soon as a second namespace (e.g. Solana) was registered.
+     */
+    const chains = this.getCaipNetworks(this.chain).map(network => network.caipNetworkId)
 
     return SIWXUtil.universalProviderAuthenticate({
       universalProvider: this.provider,
