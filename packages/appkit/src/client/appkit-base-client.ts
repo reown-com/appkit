@@ -78,6 +78,7 @@ import {
   SnackController,
   StorageUtil,
   ThemeController,
+  WalletConnectConnector,
   WalletUtil,
   WcHelpersUtil,
   getPreferredAccountType,
@@ -769,12 +770,37 @@ export abstract class AppKitBaseClient {
           throw new Error('signMessage: connector changed before the request was sent')
         }
 
+        const connectorId = context?.connectorId || activeConnectorId
+        if (
+          connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT &&
+          namespace === ConstantsUtil.CHAIN.EVM
+        ) {
+          const connector = ConnectorController.getConnector({
+            id: connectorId,
+            namespace
+          }) as WalletConnectConnector | undefined
+
+          if (!connector || typeof connector.signEvmMessage !== 'function') {
+            throw new Error(
+              'signMessage: WalletConnect connector does not support EVM message signing'
+            )
+          }
+
+          const result = await connector.signEvmMessage({
+            message,
+            address,
+            caipNetworkId: caipNetwork.caipNetworkId
+          })
+
+          return result.signature
+        }
+
         const result = await adapter.signMessage({
           message,
           address,
           provider: ProviderController.getProvider(namespace),
           caipNetwork,
-          connectorId: context?.connectorId || activeConnectorId
+          connectorId
         })
 
         return result?.signature || ''

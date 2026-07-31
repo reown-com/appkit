@@ -1,7 +1,14 @@
 import type { SessionTypes } from '@walletconnect/types'
 import UniversalProvider from '@walletconnect/universal-provider'
+import { isHex, stringToHex } from 'viem'
 
-import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import {
+  type CaipNetwork,
+  type CaipNetworkId,
+  type ChainNamespace,
+  ConstantsUtil,
+  type Hex
+} from '@reown/appkit-common'
 
 import { SIWXUtil } from '../../utils/SIWXUtil.js'
 import { WcHelpersUtil } from '../../utils/WalletConnectUtil.js'
@@ -55,6 +62,29 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
     await this.provider.disconnect()
   }
 
+  async signEvmMessage({
+    message,
+    address,
+    caipNetworkId
+  }: WalletConnectConnector.SignEvmMessageParams): Promise<WalletConnectConnector.SignEvmMessageResult> {
+    try {
+      const hexMessage = isHex(message) ? message : stringToHex(message)
+      const signature = await this.provider.request<Hex>(
+        {
+          method: 'personal_sign',
+          params: [hexMessage, address]
+        },
+        caipNetworkId
+      )
+
+      return { signature }
+    } catch (error) {
+      throw new Error('WalletConnectConnector:signEvmMessage - Sign message failed', {
+        cause: error
+      })
+    }
+  }
+
   async authenticate(): Promise<boolean> {
     const chains = this.chains.map(network => network.caipNetworkId)
 
@@ -76,6 +106,16 @@ export namespace WalletConnectConnector {
   export type ConnectResult = {
     clientId: string | null
     session: SessionTypes.Struct
+  }
+
+  export type SignEvmMessageParams = {
+    message: string
+    address: string
+    caipNetworkId: CaipNetworkId
+  }
+
+  export type SignEvmMessageResult = {
+    signature: Hex
   }
 }
 

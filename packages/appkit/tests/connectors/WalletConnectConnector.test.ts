@@ -19,6 +19,7 @@ describe('WalletConnectConnector', () => {
   let provider: typeof mockProvider
 
   beforeEach(() => {
+    vi.clearAllMocks()
     caipNetworks = [
       { ...mainnet, caipNetworkId: 'eip155:1', chainNamespace: 'eip155' },
       solana,
@@ -76,6 +77,43 @@ describe('WalletConnectConnector', () => {
       await connector.connectWalletConnect()
 
       expect(provider.connect).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('signEvmMessage', () => {
+    it('routes personal_sign to the supplied CAIP network', async () => {
+      vi.mocked(provider.request).mockResolvedValueOnce('0xsignature')
+
+      const result = await connector.signEvmMessage({
+        message: 'Sign in',
+        address: '0x1234567890123456789012345678901234567890',
+        caipNetworkId: 'eip155:1'
+      })
+
+      expect(provider.request).toHaveBeenCalledWith(
+        {
+          method: 'personal_sign',
+          params: ['0x5369676e20696e', '0x1234567890123456789012345678901234567890']
+        },
+        'eip155:1'
+      )
+      expect(result).toEqual({ signature: '0xsignature' })
+    })
+
+    it('preserves the provider error as the cause', async () => {
+      const cause = new Error('Wallet request failed')
+      vi.mocked(provider.request).mockRejectedValueOnce(cause)
+
+      await expect(
+        connector.signEvmMessage({
+          message: 'Sign in',
+          address: '0x1234567890123456789012345678901234567890',
+          caipNetworkId: 'eip155:1'
+        })
+      ).rejects.toMatchObject({
+        message: 'WalletConnectConnector:signEvmMessage - Sign message failed',
+        cause
+      })
     })
   })
 

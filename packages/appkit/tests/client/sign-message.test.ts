@@ -5,7 +5,8 @@ import {
   ChainController,
   ConnectorController,
   ProviderController,
-  type SignMessageContext
+  type SignMessageContext,
+  type WalletConnectConnector
 } from '@reown/appkit-controllers'
 import { mockChainControllerState } from '@reown/appkit-controllers/testing'
 
@@ -41,8 +42,8 @@ describe('AppKit message signing', () => {
     appKit = new TestAppKit(mockOptions)
   })
 
-  it('uses the captured SIWX chain and account when the active namespace changes', async () => {
-    const provider = { request: vi.fn() }
+  it('routes WalletConnect signing through the captured EVM connector', async () => {
+    const signEvmMessage = vi.fn().mockResolvedValue({ signature: '0xsignature' })
     const context: SignMessageContext = {
       chainId: mainnet.caipNetworkId,
       accountAddress: '0x1234567890123456789012345678901234567890',
@@ -55,6 +56,41 @@ describe('AppKit message signing', () => {
     })
     vi.spyOn(ChainController, 'getCaipNetworkById').mockReturnValue(mainnet)
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('walletConnect')
+    vi.spyOn(ConnectorController, 'getConnector').mockReturnValue({
+      signEvmMessage
+    } as unknown as WalletConnectConnector)
+    const getProviderSpy = vi.spyOn(ProviderController, 'getProvider')
+
+    const result = await appKit.testConnectionControllerClient?.signMessage('Sign in', context)
+
+    expect(ConnectorController.getConnector).toHaveBeenCalledWith({
+      id: context.connectorId,
+      namespace: ConstantsUtil.CHAIN.EVM
+    })
+    expect(signEvmMessage).toHaveBeenCalledWith({
+      message: 'Sign in',
+      address: context.accountAddress,
+      caipNetworkId: context.chainId
+    })
+    expect(getProviderSpy).not.toHaveBeenCalled()
+    expect(mockEvmAdapter.signMessage).not.toHaveBeenCalled()
+    expect(result).toBe('0xsignature')
+  })
+
+  it('keeps adapter signing for non-WalletConnect connectors', async () => {
+    const provider = { request: vi.fn() }
+    const context: SignMessageContext = {
+      chainId: mainnet.caipNetworkId,
+      accountAddress: '0x1234567890123456789012345678901234567890',
+      connectorId: 'injected'
+    }
+
+    mockChainControllerState({
+      activeChain: ConstantsUtil.CHAIN.SOLANA,
+      activeCaipNetwork: solana
+    })
+    vi.spyOn(ChainController, 'getCaipNetworkById').mockReturnValue(mainnet)
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('injected')
     vi.spyOn(ProviderController, 'getProvider').mockReturnValue(provider)
     vi.spyOn(mockEvmAdapter, 'signMessage').mockResolvedValue({ signature: '0xsignature' })
 
