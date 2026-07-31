@@ -116,6 +116,8 @@ export const SIWXUtil = {
       throw new Error('No ActiveCaipNetwork or client found')
     }
 
+    const connectorId = ConnectorController.getConnectorId(network.chainNamespace)
+
     try {
       const siwxMessage = await siwx.createMessage({
         chainId: network.caipNetworkId,
@@ -129,14 +131,19 @@ export const SIWXUtil = {
         signature = await siwx.signMessage({
           message,
           chainId: network.caipNetworkId,
-          accountAddress: address
+          accountAddress: address,
+          connectorId
         })
       } else {
-        const connectorId = ConnectorController.getConnectorId(network.chainNamespace)
         if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
           RouterController.pushTransactionStack({})
         }
-        signature = (await ConnectionController.signMessage(message)) || ''
+        signature =
+          (await ConnectionController.signMessage(message, {
+            chainId: network.caipNetworkId,
+            accountAddress: address,
+            connectorId
+          })) || ''
       }
 
       await siwx.addSession({
@@ -169,7 +176,7 @@ export const SIWXUtil = {
       })
 
       // eslint-disable-next-line no-console
-      console.error('SWIXUtil:requestSignMessage', error)
+      console.error('SIWXUtil:requestSignMessage', error)
     }
   },
   async cancelSignMessage() {
@@ -542,11 +549,13 @@ export interface SIWXConfig {
   signMessage?: ({
     message,
     chainId,
-    accountAddress
+    accountAddress,
+    connectorId
   }: {
     message: string
-    chainId: string
+    chainId: CaipNetworkId
     accountAddress: string
+    connectorId?: string
   }) => Promise<string>
 
   /**

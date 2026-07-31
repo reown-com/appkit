@@ -139,13 +139,21 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
   }
 
   public signMessage({
-    message
+    message,
+    chainId,
+    accountAddress,
+    connectorId
   }: {
     message: string
-    chainId: string
+    chainId: CaipNetworkId
     accountAddress: string
+    connectorId?: string
   }): Promise<string> {
-    return this.signer.signMessage(message)
+    return this.signer.signMessage(message, {
+      chainId,
+      accountAddress,
+      connectorId
+    })
   }
 }
 

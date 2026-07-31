@@ -1,7 +1,12 @@
 import { ref } from 'valtio/vanilla'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ChainController, type SIWXConfig, SIWXUtil } from '../../exports/index.js'
+import {
+  ChainController,
+  ConnectorController,
+  type SIWXConfig,
+  SIWXUtil
+} from '../../exports/index.js'
 import { extendedMainnet, mockChainControllerState } from '../../exports/testing.js'
 import { ConnectionController } from '../../src/controllers/ConnectionController.js'
 import { EventsController } from '../../src/controllers/EventsController.js'
@@ -19,8 +24,10 @@ describe('SIWXUtil', () => {
       vi.clearAllMocks()
 
       mockChainControllerState({
+        activeChain: 'eip155',
         activeCaipAddress: 'eip155:1:0x1234567890123456789012345678901234567890',
-        activeCaipNetwork: ref(extendedMainnet)
+        activeCaipNetwork: ref(extendedMainnet),
+        chains: new Map([['eip155', { accountState: {} }]])
       })
     })
 
@@ -64,6 +71,51 @@ describe('SIWXUtil', () => {
         }
       })
       expect(getSIWXEventPropertiesSpy).toHaveBeenCalled()
+    })
+
+    it('should pass the immutable signing context to SIWX', async () => {
+      let resolveSignature: ((signature: string) => void) | undefined
+      const signaturePromise = new Promise<string>(resolve => {
+        resolveSignature = resolve
+      })
+      const message = {
+        toString: () => 'Sign in'
+      }
+      const mockSIWX = {
+        createMessage: vi.fn().mockResolvedValue(message),
+        signMessage: vi.fn().mockReturnValue(signaturePromise),
+        addSession: vi.fn().mockResolvedValue(undefined)
+      }
+
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        siwx: mockSIWX as unknown as SIWXConfig
+      })
+      vi.spyOn(CoreHelperUtil, 'getPlainAddress').mockReturnValue(
+        '0x1234567890123456789012345678901234567890'
+      )
+      vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('walletConnect')
+
+      const request = SIWXUtil.requestSignMessage()
+
+      await vi.waitFor(() => expect(mockSIWX.signMessage).toHaveBeenCalledOnce())
+      expect(mockSIWX.signMessage).toHaveBeenCalledWith({
+        message: 'Sign in',
+        chainId: extendedMainnet.caipNetworkId,
+        accountAddress: '0x1234567890123456789012345678901234567890',
+        connectorId: 'walletConnect'
+      })
+
+      resolveSignature?.('0xsignature')
+      await request
+
+      expect(mockSIWX.createMessage).toHaveBeenCalledOnce()
+      expect(mockSIWX.addSession).toHaveBeenCalledOnce()
+      expect(mockSIWX.addSession).toHaveBeenCalledWith({
+        data: message,
+        message: 'Sign in',
+        signature: '0xsignature'
+      })
     })
   })
 

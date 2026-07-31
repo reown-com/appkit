@@ -3,32 +3,36 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
-  RouterController
+  RouterController,
+  type SignMessageContext
 } from '@reown/appkit-controllers'
 
 import type { SIWXSigner } from '../core/SIWXSigner.js'
 
 export default class DefaultSigner implements SIWXSigner {
-  public async signMessage(message: string): Promise<string> {
+  public async signMessage(message: string, context?: SignMessageContext): Promise<string> {
     const client = ConnectionController._getClient()
 
     if (!client) {
       throw new Error('No ConnectionController client found')
     }
 
-    const network = ChainController.getActiveCaipNetwork()
+    const network = context?.chainId
+      ? ChainController.getCaipNetworkById(context.chainId)
+      : ChainController.getActiveCaipNetwork()
 
     if (!network) {
       throw new Error('No ActiveCaipNetwork or client found')
     }
 
-    const connectorId = ConnectorController.getConnectorId(network.chainNamespace)
+    const connectorId =
+      context?.connectorId || ConnectorController.getConnectorId(network.chainNamespace)
 
     if (connectorId === ConstantsUtil.CONNECTOR_ID.AUTH) {
       RouterController.pushTransactionStack({})
     }
 
-    const signature = await client.signMessage(message)
+    const signature = await client.signMessage(message, context)
 
     return signature
   }
