@@ -5,6 +5,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import {
   type CaipAddress,
   type CaipNetwork,
+  type CaipNetworkId,
   type ChainNamespace,
   ConstantsUtil as CommonConstantsUtil,
   type Connection,
@@ -95,6 +96,12 @@ export interface DisconnectParameters {
   initialDisconnect?: boolean
 }
 
+export interface SignMessageContext {
+  accountAddress: string
+  chainId: CaipNetworkId
+  connectorId?: string
+}
+
 interface DisconnectConnectorParameters {
   id: string
   namespace: ChainNamespace
@@ -108,7 +115,7 @@ export interface ConnectionControllerClient {
   connectWalletConnect?: (params?: ConnectWalletConnectParameters) => Promise<void>
   disconnect: (params?: DisconnectParameters) => Promise<void>
   disconnectConnector: (params: DisconnectConnectorParameters) => Promise<void>
-  signMessage: (message: string) => Promise<string>
+  signMessage: (message: string, context?: SignMessageContext) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
   parseUnits: (value: string, decimals: number) => bigint
@@ -337,8 +344,8 @@ const controller = {
     })
   },
 
-  async signMessage(message: string) {
-    return ConnectionController._getClient()?.signMessage(message)
+  async signMessage(message: string, context?: SignMessageContext) {
+    return ConnectionController._getClient()?.signMessage(message, context)
   },
 
   parseUnits(value: string, decimals: number) {

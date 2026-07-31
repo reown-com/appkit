@@ -76,6 +76,7 @@ export const mockEvmAdapter = {
   getBalance: vi.fn().mockResolvedValue({ balance: '1.00', symbol: 'ETH' }),
   getWalletConnectProvider: vi.fn().mockResolvedValue(mockProvider),
   estimateGas: vi.fn().mockResolvedValue({ gas: 21000n }),
+  signMessage: vi.fn(),
   on: emitter.on.bind(emitter),
   off: emitter.off.bind(emitter),
   emit: emitter.emit.bind(emitter),

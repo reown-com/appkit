@@ -37,6 +37,7 @@ import type {
   RouterControllerState,
   SIWXConfig,
   SendTransactionArgs,
+  SignMessageContext,
   SocialProvider,
   ThemeControllerState,
   UseAppKitAccountReturn,
@@ -730,9 +731,12 @@ export abstract class AppKitBaseClient {
 
         return ids.some(id => Boolean(window.ethereum?.[String(id)]))
       },
-      signMessage: async (message: string) => {
-        const namespace = ChainController.state.activeChain
-        const adapter = this.getAdapter(ChainController.state.activeChain)
+      signMessage: async (message: string, context?: SignMessageContext) => {
+        const contextNamespace = context
+          ? ParseUtil.parseCaipNetworkId(context.chainId).chainNamespace
+          : undefined
+        const namespace = contextNamespace || ChainController.state.activeChain
+        const adapter = this.getAdapter(namespace)
 
         if (!namespace) {
           throw new Error('signMessage: namespace not found')
@@ -742,16 +746,35 @@ export abstract class AppKitBaseClient {
           throw new Error('signMessage: adapter not found')
         }
 
-        const address = this.getAddress(namespace)
+        const caipNetwork = context
+          ? ChainController.getCaipNetworkById(context.chainId, namespace)
+          : this.getCaipNetwork(namespace)
+
+        if (!caipNetwork) {
+          throw new Error('signMessage: network not found')
+        }
+
+        const address = context?.accountAddress || this.getAddress(namespace)
 
         if (!address) {
           throw new Error('signMessage: address not found')
         }
 
-        const result = await adapter?.signMessage({
+        const activeConnectorId = ConnectorController.getConnectorId(namespace)
+        if (
+          context?.connectorId &&
+          activeConnectorId &&
+          context.connectorId !== activeConnectorId
+        ) {
+          throw new Error('signMessage: connector changed before the request was sent')
+        }
+
+        const result = await adapter.signMessage({
           message,
           address,
-          provider: ProviderController.getProvider(namespace)
+          provider: ProviderController.getProvider(namespace),
+          caipNetwork,
+          connectorId: context?.connectorId || activeConnectorId
         })
 
         return result?.signature || ''
