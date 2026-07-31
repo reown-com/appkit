@@ -90,6 +90,8 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'flag-enable-reconnect.spec.ts'
 ]
 
+const SINGLE_ADAPTER_WAGMI_TESTS = [...SINGLE_ADAPTER_EVM_TESTS, 'siwx-walletconnect.spec.ts']
+
 const CORE_TESTS = ['sign-client.spec.ts', 'universal-provider.spec.ts', 'core.spec.ts']
 
 const SINGLE_ADAPTER_MOBILE_TESTS = ['mobile-wallet-features.spec.ts']
@@ -131,6 +133,7 @@ function createRegex(tests: string[], isDesktop = true) {
 }
 
 const SINGLE_ADAPTER_EVM_TESTS_REGEX = createRegex(SINGLE_ADAPTER_EVM_TESTS)
+const SINGLE_ADAPTER_WAGMI_TESTS_REGEX = createRegex(SINGLE_ADAPTER_WAGMI_TESTS)
 const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = createRegex(SINGLE_ADAPTER_SOLANA_TESTS)
 const SINGLE_ADAPTER_BITCOIN_TESTS_REGEX = createRegex(SINGLE_ADAPTER_BITCOIN_TESTS)
 const SINGLE_ADAPTER_TON_TESTS_REGEX = createRegex(SINGLE_ADAPTER_TON_TESTS)
@@ -166,11 +169,11 @@ const customProjectProperties: CustomProjectProperties = {
     testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Chrome/wagmi': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
+    testMatch: SINGLE_ADAPTER_WAGMI_TESTS_REGEX,
     testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Firefox/wagmi': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
+    testMatch: SINGLE_ADAPTER_WAGMI_TESTS_REGEX,
     testIgnore: /reown-authentication.*\.spec\.ts/u
   },
   'Desktop Chrome/bitcoin': {

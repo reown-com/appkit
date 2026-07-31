@@ -233,7 +233,7 @@ export const siwxSdkOptions: SdkOption[] = [
     title: 'Default SIWX',
     link: '/appkit?name=siwx-default',
     description:
-      'Multichain SIWX configuration with Ethers, Solana and Bitcoin adapters enabled for AppKit'
+      'Multichain SIWX configuration with Wagmi, Solana, Bitcoin and Tron adapters enabled for AppKit'
   }
 ]
 
