@@ -73,7 +73,7 @@ describe('SIWXUtil', () => {
       expect(getSIWXEventPropertiesSpy).toHaveBeenCalled()
     })
 
-    it('should pass the immutable signing context to SIWX', async () => {
+    it('should use one immutable signing context for concurrent requests', async () => {
       let resolveSignature: ((signature: string) => void) | undefined
       const signaturePromise = new Promise<string>(resolve => {
         resolveSignature = resolve
@@ -96,7 +96,8 @@ describe('SIWXUtil', () => {
       )
       vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('walletConnect')
 
-      const request = SIWXUtil.requestSignMessage()
+      const firstRequest = SIWXUtil.requestSignMessage()
+      const secondRequest = SIWXUtil.requestSignMessage()
 
       await vi.waitFor(() => expect(mockSIWX.signMessage).toHaveBeenCalledOnce())
       expect(mockSIWX.signMessage).toHaveBeenCalledWith({
@@ -107,7 +108,7 @@ describe('SIWXUtil', () => {
       })
 
       resolveSignature?.('0xsignature')
-      await request
+      await Promise.all([firstRequest, secondRequest])
 
       expect(mockSIWX.createMessage).toHaveBeenCalledOnce()
       expect(mockSIWX.addSession).toHaveBeenCalledOnce()
