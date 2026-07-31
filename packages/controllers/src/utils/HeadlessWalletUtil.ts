@@ -70,6 +70,16 @@ export interface WalletConnectUriSnapshot {
   wcError: boolean
   /** Whether a WalletConnect URI is currently being fetched. */
   wcFetchingUri: boolean
+  /**
+   * When the pairing behind `wcUri` expires, as an epoch ms timestamp — `undefined` when there
+   * is no URI. Set four minutes out on every delivery (see `ConnectionController.setUri`).
+   *
+   * A host that renders the URI immediately rarely needs this, but one that consumes it later
+   * does: the URI can be well past its pairing by the time the user acts on it, and nothing else
+   * in this snapshot distinguishes a fresh URI from a dead one. Compare with
+   * `CoreHelperUtil.isPairingExpired`, which treats the last ten seconds as already expired.
+   */
+  wcPairingExpiry: number | undefined
 }
 
 /**
@@ -150,12 +160,14 @@ export const HeadlessWalletUtil = {
     return {
       wcUri: ConnectionController.state.wcUri,
       wcError: Boolean(ConnectionController.state.wcError),
-      wcFetchingUri: ConnectionController.state.wcFetchingUri
+      wcFetchingUri: ConnectionController.state.wcFetchingUri,
+      wcPairingExpiry: ConnectionController.state.wcPairingExpiry
     }
   },
 
   /**
-   * Subscribe to WalletConnect URI state changes (wcUri / wcError / wcFetchingUri). The
+   * Subscribe to WalletConnect URI state changes (wcUri / wcError / wcFetchingUri /
+   * wcPairingExpiry). The
    * callback receives no arguments — read the current values with {@link getWalletConnectUri}.
    * Returns an unsubscribe.
    */
@@ -163,7 +175,8 @@ export const HeadlessWalletUtil = {
     const unsubscribers = [
       subKey(ConnectionController.state, 'wcUri', callback),
       subKey(ConnectionController.state, 'wcError', callback),
-      subKey(ConnectionController.state, 'wcFetchingUri', callback)
+      subKey(ConnectionController.state, 'wcFetchingUri', callback),
+      subKey(ConnectionController.state, 'wcPairingExpiry', callback)
     ]
 
     return () => unsubscribers.forEach(unsubscribe => unsubscribe())
@@ -217,6 +230,7 @@ export const HeadlessWalletUtil = {
         const wcWallet = ConnectUtil.mapWalletItemToWcWallet(wallet)
 
         if (wcWallet.mobile_link) {
+          ConnectionControllerUtil.assertWcUriForDeeplink()
           ConnectionControllerUtil.onConnectMobile(wcWallet, options?.wcPayUrl)
         } else {
           MobileWalletUtil.handleMobileDeeplinkRedirect(wallet.id, activeNamespace, {
