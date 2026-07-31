@@ -1,4 +1,10 @@
 import * as TrezorConnectWeb from '@trezor/connect-web'
+import {
+  deriveAddresses,
+  getXpubOrDescriptorInfo,
+  address as trezorAddress,
+  networks as trezorNetworks
+} from '@trezor/utxo-lib'
 import * as btc from 'bitcoinjs-lib'
 
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
@@ -37,6 +43,59 @@ function describeTrezorFailure(
  * so comparisons need a value of the field's own type.
  */
 const PAYMENT_PURPOSE = AddressPurpose.Payment as BitcoinConnector.AccountAddress['purpose']
+
+/** Script types we derive an account for, in the order they are requested. */
+const SCRIPT_TYPES: readonly TrezorConnectorTypes.BitcoinScriptType[] = [
+  'p2pkh',
+  'p2sh',
+  'p2wpkh',
+  'p2tr'
+] as const
+
+const ADDRESS_CHAINS: readonly TrezorConnectorTypes.AddressChain[] = ['receive', 'change'] as const
+
+/** BIP purpose per script type: BIP44 legacy, BIP49 nested, BIP84 native, BIP86 taproot. */
+const SCRIPT_TYPE_PURPOSES: Record<TrezorConnectorTypes.BitcoinScriptType, number> = {
+  p2pkh: 44,
+  p2sh: 49,
+  p2wpkh: 84,
+  p2tr: 86
+}
+
+const PURPOSE_SCRIPT_TYPES: Record<number, TrezorConnectorTypes.BitcoinScriptType> = {
+  44: 'p2pkh',
+  49: 'p2sh',
+  84: 'p2wpkh',
+  86: 'p2tr'
+}
+
+/** How many indices of each chain are derived per account. Matches the BIP44 gap limit. */
+const ADDRESSES_PER_CHAIN = 20
+
+/**
+ * The output script type the device expects for one of our own addresses. Using
+ * PAYTOWITNESS for everything would misdescribe legacy, nested SegWit and
+ * taproot change back to the user.
+ */
+const OUTPUT_SCRIPT_TYPES: Record<
+  TrezorConnectorTypes.BitcoinScriptType,
+  TrezorConnectorTypes.OutputScriptType
+> = {
+  p2pkh: 'PAYTOADDRESS',
+  p2sh: 'PAYTOP2SHWITNESS',
+  p2wpkh: 'PAYTOWITNESS',
+  p2tr: 'PAYTOTAPROOT'
+}
+
+const INPUT_SCRIPT_TYPES: Record<
+  TrezorConnectorTypes.BitcoinScriptType,
+  TrezorConnectorTypes.InputScriptType
+> = {
+  p2pkh: 'SPENDADDRESS',
+  p2sh: 'SPENDP2SHWITNESS',
+  p2wpkh: 'SPENDWITNESS',
+  p2tr: 'SPENDTAPROOT'
+}
 
 let cachedTrezorConnect: TrezorConnectApi | undefined = undefined
 
@@ -96,13 +155,24 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
   private initialized = false
   private connectedAddresses: BitcoinConnector.AccountAddress[] = []
 
-  // Native SegWit derivation paths (BIP84)
-  private readonly paymentPath = "m/84'/0'/0'/0/0"
-  private readonly ordinalPath = "m/84'/0'/0'/0/1"
+  /** Account-level extended keys, one per script type, for the cached coin. */
+  private accountDescriptors?: TrezorConnectorTypes.AccountDescriptors
 
-  // Testnet paths
-  private readonly testnetPaymentPath = "m/84'/1'/0'/0/0"
-  private readonly testnetOrdinalPath = "m/84'/1'/0'/0/1"
+  /** The coin `accountDescriptors` were fetched for, so a network switch can invalidate them. */
+  private descriptorsCoin?: string
+
+  /**
+   * Shared in-flight fetch. Without it, concurrent callers — the adapter calls
+   * connect() and getAccountAddresses() back to back on session restore — would
+   * each open their own device popup.
+   */
+  private descriptorsPromise?: Promise<TrezorConnectorTypes.AccountDescriptors>
+
+  /** Every address derived from the account descriptors. */
+  private derivedAddresses: TrezorConnectorTypes.DerivedAddress[] = []
+
+  /** Address lookup for path, public key and script type resolution. */
+  private addressMap = new Map<string, TrezorConnectorTypes.DerivedAddress>()
 
   /*
    * Signing requires the previous transaction of each input so the device can
@@ -139,14 +209,19 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
     }
   }
 
-  /** Payment path for the active network, never the mainnet constant. */
-  private get activePaymentPath(): string {
-    return this.currentNetwork === 'Testnet' ? this.testnetPaymentPath : this.paymentPath
+  /** Coin type for the active network: 0' on mainnet, 1' on testnet. */
+  private get coinType(): number {
+    return this.currentNetwork === 'Testnet' ? 1 : 0
   }
 
-  /** Ordinal path for the active network. */
-  private get activeOrdinalPath(): string {
-    return this.currentNetwork === 'Testnet' ? this.testnetOrdinalPath : this.ordinalPath
+  /** Payment path for the active network, never the mainnet constant. */
+  private get activePaymentPath(): string {
+    return `m/84'/${this.coinType}'/0'/0/0`
+  }
+
+  /** The account path whose extended key every address of `scriptType` derives from. */
+  private accountPath(scriptType: TrezorConnectorTypes.BitcoinScriptType): string {
+    return `m/${SCRIPT_TYPE_PURPOSES[scriptType]}'/${this.coinType}'/0'`
   }
 
   public get chains() {
@@ -164,7 +239,6 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
       throw new Error('No addresses returned from Trezor')
     }
 
-    this.connectedAddresses = addresses
     const paymentAddress = addresses.find(a => a.purpose === PAYMENT_PURPOSE)
 
     if (!paymentAddress) {
@@ -178,35 +252,61 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
 
   public async disconnect(): Promise<void> {
     this.connectedAddresses = []
+    this.clearDerivedState()
     this.emit('disconnect')
 
     return Promise.resolve()
   }
 
   public async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
-    await this.initTrezor()
+    await this.ensureDerivedAddresses()
 
-    const bundle = [
-      { path: this.activePaymentPath, showOnTrezor: false, coin: this.getCoinName() },
-      { path: this.activeOrdinalPath, showOnTrezor: false, coin: this.getCoinName() }
+    /*
+     * The adapter collapses whatever comes back to exactly two accounts by
+     * position (BitcoinConstantsUtil.ACCOUNT_INDEXES), so this contract stays
+     * [payment, ordinal] on the BIP84 receive chain. The rest of the derived
+     * matrix is reachable through getDerivedAddresses().
+     */
+    const payment = this.requireDerived('p2wpkh', 'receive', 0)
+    const ordinal = this.requireDerived('p2wpkh', 'receive', 1)
+
+    const addresses: BitcoinConnector.AccountAddress[] = [
+      {
+        address: payment.address,
+        publicKey: payment.publicKey,
+        path: payment.path,
+        purpose: AddressPurpose.Payment
+      },
+      {
+        address: ordinal.address,
+        publicKey: ordinal.publicKey,
+        path: ordinal.path,
+        purpose: AddressPurpose.Ordinal
+      }
     ]
-
-    const result = await getTrezorConnect().getAddress({ bundle })
-
-    if (!result.success) {
-      throw new Error(describeTrezorFailure('Failed to get addresses from Trezor', result.payload))
-    }
-
-    const addresses: BitcoinConnector.AccountAddress[] = result.payload.map((addr, index) => ({
-      address: addr.address,
-      publicKey: undefined,
-      path: addr.serializedPath,
-      purpose: index === 0 ? AddressPurpose.Payment : AddressPurpose.Ordinal
-    }))
 
     this.connectedAddresses = addresses
 
     return addresses
+  }
+
+  /**
+   * Every address derived for this account: each script type, both the receive
+   * and change chains, `ADDRESSES_PER_CHAIN` indices deep. Served from the
+   * xpubs fetched at connect time, so it costs no device interaction.
+   */
+  public async getDerivedAddresses(): Promise<TrezorConnectorTypes.DerivedAddress[]> {
+    await this.ensureDerivedAddresses()
+
+    return [...this.derivedAddresses]
+  }
+
+  /**
+   * The account-level extended public key for each script type. Taproot is an
+   * output descriptor rather than a bare xpub — see AccountDescriptors.
+   */
+  public async getAccountDescriptors(): Promise<TrezorConnectorTypes.AccountDescriptors> {
+    return { ...(await this.ensureDerivedAddresses()) }
   }
 
   public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
@@ -287,12 +387,14 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
       const signInput = params.signInputs.find(si => si.index === i)
       const prevHash = Buffer.from(txInput.hash).reverse().toString('hex')
 
+      const inputPath = this.resolveInputPath(input, signInput)
+
       inputs.push({
-        address_n: this.pathToArray(this.resolveInputPath(input, signInput)),
+        address_n: this.pathToArray(inputPath),
         prev_hash: prevHash,
         prev_index: txInput.index,
         amount: this.getInputAmount(input, txInput.index, i),
-        script_type: this.getInputScriptType(input),
+        script_type: this.getInputScriptType(input, inputPath),
         sequence: txInput.sequence
       })
     }
@@ -307,18 +409,21 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
       const opReturnData = TrezorConnector.getOpReturnData(output.script)
 
       if (opReturnData === undefined) {
-        const address = TrezorConnector.decodeOutputAddress(output.script, network)
-        const addressInfo = this.connectedAddresses.find(a => a.address === address)
+        const address = this.decodeOutputAddress(output.script)
+        const derived = this.addressMap.get(address)
 
-        if (addressInfo) {
+        if (derived) {
           /*
-           * Change back to one of our own addresses: identified by derivation
-           * path. Our paths are BIP84, so the output is native SegWit.
+           * One of our own addresses — change, or a send to ourselves. Declaring
+           * it by derivation path is what lets the device recognise it as change
+           * rather than showing the user a third-party recipient. The script
+           * type has to match the address: the change chain of a legacy, nested
+           * SegWit or taproot account is not native SegWit.
            */
           outputs.push({
-            address_n: this.pathToArray(addressInfo.path || this.activePaymentPath),
+            address_n: this.pathToArray(derived.path),
             amount: output.value.toString(),
-            script_type: 'PAYTOWITNESS'
+            script_type: OUTPUT_SCRIPT_TYPES[derived.scriptType]
           })
         } else {
           /*
@@ -419,13 +524,22 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
 
   public async switchNetwork(caipNetworkId: string): Promise<void> {
     const network = this.getNetworkFromCaipId(caipNetworkId)
+    const previousCoin = this.getCoinName()
+
     this.currentNetwork = network
 
     // The new coin needs its own backend before it can be signed for.
     await this.configureBackend()
 
-    // Re-fetch addresses for the new network
-    this.connectedAddresses = await this.getAccountAddresses()
+    /*
+     * A different coin type derives from different account keys, so the cache
+     * cannot be reused and the device has to be consulted again. Switching to
+     * the network already in use costs no device interaction.
+     */
+    if (this.getCoinName() !== previousCoin) {
+      this.clearDerivedState()
+      await this.getAccountAddresses()
+    }
 
     this.emit('chainChanged', caipNetworkId)
   }
@@ -467,6 +581,183 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
     this.initialized = true
 
     await this.configureBackend()
+  }
+
+  /**
+   * Fetches the account extended keys once and derives every address from them.
+   * Subsequent calls are served from cache, so the device is consulted a single
+   * time per account rather than once per address request.
+   */
+  private async ensureDerivedAddresses(): Promise<TrezorConnectorTypes.AccountDescriptors> {
+    const coin = this.getCoinName()
+
+    if (this.accountDescriptors && this.descriptorsCoin === coin) {
+      return this.accountDescriptors
+    }
+
+    if (this.descriptorsPromise) {
+      return this.descriptorsPromise
+    }
+
+    this.descriptorsPromise = this.requestAccountDescriptors(coin).finally(() => {
+      this.descriptorsPromise = undefined
+    })
+
+    return this.descriptorsPromise
+  }
+
+  /**
+   * One bundled getPublicKey call covering all four accounts. This is the only
+   * point at which the connector asks the device for key material.
+   */
+  private async requestAccountDescriptors(
+    coin: string
+  ): Promise<TrezorConnectorTypes.AccountDescriptors> {
+    await this.initTrezor()
+
+    const bundle = SCRIPT_TYPES.map(scriptType => ({
+      path: this.accountPath(scriptType),
+      coin,
+      showOnTrezor: false
+    }))
+
+    const result = await getTrezorConnect().getPublicKey({ bundle })
+
+    if (!result.success) {
+      throw new Error(
+        describeTrezorFailure('Failed to get account descriptors from Trezor', result.payload)
+      )
+    }
+
+    const network = this.getDerivationNetwork()
+    const descriptors = {} as TrezorConnectorTypes.AccountDescriptors
+
+    SCRIPT_TYPES.forEach((scriptType, index) => {
+      const node = result.payload[index]
+
+      if (!node) {
+        throw new Error(`Trezor returned no extended public key for the ${scriptType} account`)
+      }
+
+      /*
+       * The xpubSegwit field carries the script-type-specific form — ypub/zpub
+       * for nested and native SegWit, and the tr(...) output descriptor for
+       * taproot — while xpub is always the coin's default format. This is the
+       * same precedence TrezorConnect applies when it builds a descriptor.
+       */
+      const descriptor = node.xpubSegwit ?? node.xpub
+
+      if (!descriptor) {
+        throw new Error(`Trezor returned an empty extended public key for ${scriptType}`)
+      }
+
+      /*
+       * A bare BIP86 xpub carries the same version bytes as a BIP44 one, so a
+       * derivation library reading version bytes alone would silently produce
+       * legacy addresses for a taproot account. Assert the descriptor resolves
+       * to the type we asked for rather than trusting it.
+       */
+      const { paymentType } = getXpubOrDescriptorInfo(descriptor, network)
+
+      if (paymentType !== scriptType) {
+        throw new Error(
+          `Trezor returned a ${paymentType} extended key for the ${scriptType} account ` +
+            `(${this.accountPath(scriptType)}); deriving from it would produce addresses of the ` +
+            'wrong type.'
+        )
+      }
+
+      descriptors[scriptType] = descriptor
+    })
+
+    this.accountDescriptors = descriptors
+    this.descriptorsCoin = coin
+    this.deriveAddressMatrix(descriptors)
+
+    return descriptors
+  }
+
+  /**
+   * Expands the account descriptors into concrete addresses. Purely local: no
+   * device interaction and no network access.
+   */
+  private deriveAddressMatrix(descriptors: TrezorConnectorTypes.AccountDescriptors): void {
+    const network = this.getDerivationNetwork()
+    const derived: TrezorConnectorTypes.DerivedAddress[] = []
+
+    for (const scriptType of SCRIPT_TYPES) {
+      const descriptor = descriptors[scriptType]
+      const { node } = getXpubOrDescriptorInfo(descriptor, network)
+
+      for (const chain of ADDRESS_CHAINS) {
+        const addresses = deriveAddresses(descriptor, chain, 0, ADDRESSES_PER_CHAIN, network)
+
+        /*
+         * Only the address and path come back from deriveAddresses, but
+         * resolveInputPath matches on public key, so the matching keys are
+         * derived alongside them.
+         */
+        const chainNode = node.derive(chain === 'receive' ? 0 : 1)
+
+        addresses.forEach(({ address, path }, index) => {
+          derived.push({
+            address,
+            path,
+            publicKey: Buffer.from(chainNode.derive(index).publicKey).toString('hex'),
+            scriptType,
+            chain,
+            index
+          })
+        })
+      }
+    }
+
+    this.derivedAddresses = derived
+    this.addressMap = new Map(derived.map(entry => [entry.address, entry]))
+  }
+
+  /** The derivation network, from @trezor/utxo-lib rather than bitcoinjs-lib. */
+  private getDerivationNetwork() {
+    return this.currentNetwork === 'Testnet' ? trezorNetworks.testnet : trezorNetworks.bitcoin
+  }
+
+  private requireDerived(
+    scriptType: TrezorConnectorTypes.BitcoinScriptType,
+    chain: TrezorConnectorTypes.AddressChain,
+    index: number
+  ): TrezorConnectorTypes.DerivedAddress {
+    const derived = this.derivedAddresses.find(
+      entry => entry.scriptType === scriptType && entry.chain === chain && entry.index === index
+    )
+
+    if (!derived) {
+      throw new Error(`No derived ${scriptType} ${chain} address at index ${index}`)
+    }
+
+    return derived
+  }
+
+  private clearDerivedState(): void {
+    this.accountDescriptors = undefined
+    this.descriptorsCoin = undefined
+    this.derivedAddresses = []
+    this.addressMap = new Map()
+  }
+
+  /**
+   * The script type a path belongs to, read from its BIP purpose. Returns
+   * undefined for paths that are not one of the four accounts we derive.
+   */
+  private static scriptTypeFromPath(
+    path: string
+  ): TrezorConnectorTypes.BitcoinScriptType | undefined {
+    const purpose = path.split('/')[1]
+
+    if (!purpose) {
+      return undefined
+    }
+
+    return PURPOSE_SCRIPT_TYPES[parseInt(purpose.replace(/['h]$/u, ''), 10)]
   }
 
   /**
@@ -520,29 +811,49 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
     }
   }
 
-  private getPathForAddress(_address: string): string {
-    return this.activePaymentPath
+  /**
+   * The derivation path of one of our own addresses. Throws rather than falling
+   * back to the payment path: signing an address we cannot place with the key at
+   * `.../0/0` would produce a signature from the wrong key silently.
+   */
+  private getPathForAddress(address: string): string {
+    const derived = this.addressMap.get(address)
+
+    if (!derived) {
+      throw new Error(
+        `Address ${address} was not derived from this Trezor account, so its derivation path is ` +
+          'unknown.'
+      )
+    }
+
+    return derived.path
   }
 
   /**
-   * The derivation path to sign an input with. Explicit `signInputs` win, then
-   * the PSBT's own `bip32Derivation`, and only then the account's payment path
-   * for the *active* network — never the mainnet constant.
+   * The derivation path to sign an input with. Explicit `signInputs` win and are
+   * resolved against the derived addresses, then the PSBT's own
+   * `bip32Derivation`, and only then the account's payment path for the *active*
+   * network — never the mainnet constant.
    */
   private resolveInputPath(
     input: btc.Psbt['data']['inputs'][number] | undefined,
     signInput: BitcoinConnector.SignPSBTParams['signInputs'][number] | undefined
   ): string {
     if (signInput?.address) {
-      const addressInfo = this.connectedAddresses.find(a => a.address === signInput.address)
-
-      return addressInfo?.path || this.getPathForAddress(signInput.address)
+      return this.getPathForAddress(signInput.address)
     }
 
     if (signInput?.publicKey) {
-      const addressInfo = this.connectedAddresses.find(a => a.publicKey === signInput.publicKey)
+      const derived = this.derivedAddresses.find(entry => entry.publicKey === signInput.publicKey)
 
-      return addressInfo?.path || this.activePaymentPath
+      if (!derived) {
+        throw new Error(
+          `Public key ${signInput.publicKey} was not derived from this Trezor account, so its ` +
+            'derivation path is unknown.'
+        )
+      }
+
+      return derived.path
     }
 
     return input?.bip32Derivation?.[0]?.path || this.activePaymentPath
@@ -593,10 +904,14 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
    * Decodes an output script to an address, failing loudly for scripts we cannot
    * describe to the device. Sending an empty address instead would have the user
    * approve something other than what the caller asked for.
+   *
+   * Uses @trezor/utxo-lib rather than bitcoinjs-lib because the latter throws
+   * "No ECC Library provided" for taproot scripts unless initEccLib() has been
+   * called, which would make any PSBT carrying a P2TR output unsignable.
    */
-  private static decodeOutputAddress(script: Uint8Array, network: btc.Network): string {
+  private decodeOutputAddress(script: Uint8Array): string {
     try {
-      return btc.address.fromOutputScript(Buffer.from(script), network)
+      return trezorAddress.fromOutputScript(Buffer.from(script), this.getDerivationNetwork())
     } catch {
       throw new Error(`Unsupported output script in PSBT: ${Buffer.from(script).toString('hex')}`)
     }
@@ -666,15 +981,31 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
 
   /** Maps the input's script to the spend type the device expects. */
   private getInputScriptType(
-    input: btc.Psbt['data']['inputs'][number] | undefined
+    input: btc.Psbt['data']['inputs'][number] | undefined,
+    path?: string
   ): TrezorConnectorTypes.InputScriptType {
+    /*
+     * Multisig is checked first because a derivation path cannot express it —
+     * the account purpose only describes the single-key case.
+     */
+    if (input?.witnessScript) {
+      return 'SPENDMULTISIG'
+    }
+
+    /*
+     * The path states the account's script type outright, which the script
+     * inspection below can only guess at: a nested SegWit input is
+     * indistinguishable from a native one when the PSBT omits its redeemScript.
+     */
+    const pathScriptType = path ? TrezorConnector.scriptTypeFromPath(path) : undefined
+
+    if (pathScriptType) {
+      return INPUT_SCRIPT_TYPES[pathScriptType]
+    }
+
     if (input?.witnessUtxo) {
       if (input.redeemScript) {
         return 'SPENDP2SHWITNESS'
-      }
-
-      if (input.witnessScript) {
-        return 'SPENDMULTISIG'
       }
 
       const script = Buffer.from(input.witnessUtxo.script)

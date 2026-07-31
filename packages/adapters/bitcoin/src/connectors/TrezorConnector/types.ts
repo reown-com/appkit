@@ -3,12 +3,33 @@ import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
 export namespace TrezorConnector {
   export type Network = 'Bitcoin' | 'Testnet'
 
-  export type ScriptType =
-    | 'SPENDADDRESS'
-    | 'SPENDMULTISIG'
-    | 'SPENDWITNESS'
-    | 'SPENDP2SHWITNESS'
-    | 'SPENDTAPROOT'
+  /**
+   * The four account kinds we derive, keyed by their BIP. These match
+   * `@trezor/utxo-lib`'s own `PaymentType`, which is what decides how a
+   * descriptor's public keys are turned into addresses.
+   */
+  export type BitcoinScriptType = 'p2pkh' | 'p2sh' | 'p2wpkh' | 'p2tr'
+
+  /** BIP32 chain: 0 for receive addresses, 1 for change. */
+  export type AddressChain = 'receive' | 'change'
+
+  /**
+   * An account-level extended public key per script type, as returned by
+   * `getPublicKey`. Taproot is an output descriptor (`tr([…]xpub…/<0;1>/*)`)
+   * rather than a bare xpub — a BIP86 xpub carries the same version bytes as a
+   * BIP44 one, so only the descriptor form identifies it as taproot.
+   */
+  export type AccountDescriptors = Record<BitcoinScriptType, string>
+
+  /** A locally derived address, with everything needed to sign for it. */
+  export type DerivedAddress = {
+    address: string
+    path: string
+    publicKey: string
+    scriptType: BitcoinScriptType
+    chain: AddressChain
+    index: number
+  }
 
   export type InputScriptType =
     | 'SPENDADDRESS'
@@ -100,13 +121,5 @@ export namespace TrezorConnector {
       amount: string
       script_pubkey: string
     }[]
-  }
-
-  export type SignTransactionParams = {
-    inputs: TrezorInput[]
-    outputs: AnyTrezorOutput[]
-    coin: string
-    version?: number
-    locktime?: number
   }
 }
