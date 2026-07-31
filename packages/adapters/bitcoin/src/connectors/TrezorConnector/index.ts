@@ -488,11 +488,30 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
       const witness = signedInput?.witness ?? []
       const [signature, pubkey] = witness
 
-      if (witness.length === 0) {
-        // Nothing to graft: the device left this input unsigned.
-      } else if (witness.length === 2 && signature?.length && pubkey?.length) {
+      /*
+       * A legacy (P2PKH) input has no witness at all: the device puts its
+       * signature in the scriptSig as `<signature> <publicKey>`. Reading only the
+       * witness dropped it silently, leaving the input unsigned and the caller
+       * unable to finalize a transaction the user had already approved.
+       */
+      const legacySig = TrezorConnector.getLegacyPartialSig(signedInput?.script)
+
+      /*
+       * A taproot key-path spend is witnessed by one Schnorr signature — 64
+       * bytes, or 65 when a sighash flag is appended — with no public key
+       * alongside it. Its PSBT home is `tapKeySig`, not `partialSig`; writing it
+       * as a raw witness instead would leave the caller unable to finalize.
+       */
+      const isTaprootKeySig =
+        witness.length === 1 && (signature?.length === 64 || signature?.length === 65)
+
+      if (witness.length === 2 && signature?.length && pubkey?.length) {
         psbt.updateInput(i, { partialSig: [{ pubkey, signature }] })
-      } else {
+      } else if (legacySig) {
+        psbt.updateInput(i, { partialSig: [legacySig] })
+      } else if (isTaprootKeySig && signature) {
+        psbt.updateInput(i, { tapKeySig: signature })
+      } else if (witness.length > 0) {
         /*
          * Multisig or script paths we cannot express as a single partialSig:
          * preserve the device's witness verbatim so the caller keeps a usable
@@ -502,6 +521,10 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
           finalScriptWitness: this.witnessStackToScriptWitness(witness)
         })
       }
+      /*
+       * Anything else means the device left this input unsigned, so there is
+       * nothing to graft.
+       */
     }
 
     let txid: string | undefined = undefined
@@ -857,6 +880,49 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
     }
 
     return input?.bip32Derivation?.[0]?.path || this.activePaymentPath
+  }
+
+  /**
+   * The signature of a legacy input, read from its scriptSig.
+   *
+   * A P2PKH scriptSig is exactly `<signature> <publicKey>`, which maps onto
+   * `partialSig` the same way a P2WPKH witness does. Returns undefined for any
+   * other shape — P2SH redeem paths included — so the caller can fall back.
+   */
+  private static getLegacyPartialSig(
+    script: Uint8Array | undefined
+  ): { pubkey: Buffer; signature: Buffer } | undefined {
+    if (!script?.length) {
+      return undefined
+    }
+
+    let chunks: (number | Buffer)[] | null = null
+
+    try {
+      chunks = btc.script.decompile(Buffer.from(script))
+    } catch {
+      return undefined
+    }
+
+    if (chunks?.length !== 2) {
+      return undefined
+    }
+
+    const [signature, pubkey] = chunks
+
+    if (!Buffer.isBuffer(signature) || !Buffer.isBuffer(pubkey)) {
+      return undefined
+    }
+
+    /*
+     * A public key is 33 bytes compressed or 65 uncompressed; anything else means
+     * this is a redeem script or another spend path, not a bare P2PKH.
+     */
+    if (pubkey.length !== 33 && pubkey.length !== 65) {
+      return undefined
+    }
+
+    return { pubkey, signature }
   }
 
   /**

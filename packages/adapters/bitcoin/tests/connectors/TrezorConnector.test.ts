@@ -738,6 +738,89 @@ describe('TrezorConnector', () => {
       expect(sent.refTxs).toBeUndefined()
     })
 
+    it('grafts a taproot key-path signature as tapKeySig', async () => {
+      // A taproot key-path spend is witnessed by one Schnorr signature, with no
+      // public key alongside it, and belongs in tapKeySig rather than partialSig.
+      const taprootScript = Buffer.concat([Buffer.from([0x51, 0x20]), Buffer.alloc(32, 6)])
+      const schnorrSig = Buffer.alloc(64, 7)
+
+      const psbt = new btc.Psbt({ network })
+      psbt.addInput({
+        hash: Buffer.alloc(32, 5),
+        index: 0,
+        witnessUtxo: { script: taprootScript, value: 150000 }
+      })
+      psbt.addOutput({ script: DEVICE_SCRIPT, value: 140000 })
+
+      const signedTx = new btc.Transaction()
+      signedTx.version = 2
+      psbt.txInputs.forEach(input => signedTx.addInput(input.hash, input.index, input.sequence))
+      psbt.txOutputs.forEach(output => signedTx.addOutput(output.script, output.value))
+      signedTx.setWitness(0, [schnorrSig])
+
+      vi.mocked(TrezorConnect.signTransaction).mockResolvedValueOnce({
+        success: true,
+        payload: { serializedTx: signedTx.toHex() }
+      } as never)
+
+      const response = await connector.signPSBT({
+        psbt: psbt.toBase64(),
+        signInputs: [],
+        broadcast: false
+      })
+
+      const returned = btc.Psbt.fromBase64(response.psbt, { network })
+      const input = returned.data.inputs[0]!
+
+      expect(input.tapKeySig).toBeDefined()
+      expect(Buffer.from(input.tapKeySig!).equals(schnorrSig)).toBe(true)
+      // Not a partialSig: taproot has no public key in the witness to pair with.
+      expect(input.partialSig).toBeUndefined()
+    })
+
+    it('grafts a legacy input signature from its scriptSig', async () => {
+      // A P2PKH input has no witness: its signature lives in the scriptSig.
+      const prevTx = new btc.Transaction()
+      prevTx.version = 2
+      prevTx.addInput(Buffer.alloc(32, 3), 0)
+      const legacyScript = btc.payments.p2pkh({
+        hash: Buffer.alloc(20, 4),
+        network
+      }).output!
+      prevTx.addOutput(legacyScript, 300000)
+
+      const psbt = new btc.Psbt({ network })
+      psbt.addInput({ hash: prevTx.getHash(), index: 0, nonWitnessUtxo: prevTx.toBuffer() })
+      psbt.addOutput({ script: DEVICE_SCRIPT, value: 290000 })
+
+      // The device returns the signature inside scriptSig, with no witness.
+      const signedTx = new btc.Transaction()
+      signedTx.version = 2
+      psbt.txInputs.forEach(input => signedTx.addInput(input.hash, input.index, input.sequence))
+      psbt.txOutputs.forEach(output => signedTx.addOutput(output.script, output.value))
+      signedTx.setInputScript(0, btc.script.compile([DER_SIGNATURE, DEVICE_PUBKEY]))
+
+      vi.mocked(TrezorConnect.signTransaction).mockResolvedValueOnce({
+        success: true,
+        payload: { serializedTx: signedTx.toHex() }
+      } as never)
+
+      const response = await connector.signPSBT({
+        psbt: psbt.toBase64(),
+        signInputs: [],
+        broadcast: false
+      })
+
+      const returned = btc.Psbt.fromBase64(response.psbt, { network })
+      const input = returned.data.inputs[0]!
+
+      // Previously this input came back unsigned, so the caller could not
+      // finalize it ("Can not finalize input #N") despite the user approving.
+      expect(input.partialSig).toHaveLength(1)
+      expect(input.partialSig![0]!.signature.equals(DER_SIGNATURE)).toBe(true)
+      expect(input.partialSig![0]!.pubkey.equals(DEVICE_PUBKEY)).toBe(true)
+    })
+
     it('refuses an input whose amount cannot be determined', async () => {
       const psbt = new btc.Psbt({ network })
       psbt.addInput({ hash: Buffer.alloc(32, 7), index: 0 })
