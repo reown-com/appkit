@@ -22,6 +22,7 @@ import { CoreHelperUtil } from './CoreHelperUtil.js'
  */
 
 let addEmbeddedWalletSessionPromise: Promise<void> | null = null
+let requestSignMessagePromise: Promise<void> | null = null
 
 export const SIWXUtil = {
   getSIWX() {
@@ -100,83 +101,99 @@ export const SIWXUtil = {
     return sessions.length > 0
   },
   async requestSignMessage() {
-    const siwx = OptionsController.state.siwx
-    const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
-    const network = getActiveCaipNetwork()
-
-    if (!siwx) {
-      throw new Error('SIWX is not enabled')
+    if (requestSignMessagePromise) {
+      return requestSignMessagePromise
     }
 
-    if (!address) {
-      throw new Error('No ActiveCaipAddress found')
-    }
+    const request = (async () => {
+      const siwx = OptionsController.state.siwx
+      const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
+      const network = getActiveCaipNetwork()
 
-    if (!network) {
-      throw new Error('No ActiveCaipNetwork or client found')
-    }
+      if (!siwx) {
+        throw new Error('SIWX is not enabled')
+      }
 
-    const connectorId = ConnectorController.getConnectorId(network.chainNamespace)
+      if (!address) {
+        throw new Error('No ActiveCaipAddress found')
+      }
 
-    try {
-      const siwxMessage = await siwx.createMessage({
-        chainId: network.caipNetworkId,
-        accountAddress: address
-      })
+      if (!network) {
+        throw new Error('No ActiveCaipNetwork or client found')
+      }
 
-      const message = siwxMessage.toString()
+      const connectorId = ConnectorController.getConnectorId(network.chainNamespace)
 
-      let signature = ''
-      if (siwx.signMessage) {
-        signature = await siwx.signMessage({
-          message,
+      try {
+        const siwxMessage = await siwx.createMessage({
           chainId: network.caipNetworkId,
-          accountAddress: address,
-          connectorId
+          accountAddress: address
         })
-      } else {
-        if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
-          RouterController.pushTransactionStack({})
-        }
-        signature =
-          (await ConnectionController.signMessage(message, {
+
+        const message = siwxMessage.toString()
+
+        let signature = ''
+        if (siwx.signMessage) {
+          signature = await siwx.signMessage({
+            message,
             chainId: network.caipNetworkId,
             accountAddress: address,
             connectorId
-          })) || ''
-      }
+          })
+        } else {
+          if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
+            RouterController.pushTransactionStack({})
+          }
+          signature =
+            (await ConnectionController.signMessage(message, {
+              chainId: network.caipNetworkId,
+              accountAddress: address,
+              connectorId
+            })) || ''
+        }
 
-      await siwx.addSession({
-        data: siwxMessage,
-        message,
-        signature
-      })
-
-      ChainController.setLastConnectedSIWECaipNetwork(network)
-
-      ModalController.close()
-
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SIWX_AUTH_SUCCESS',
-        properties: this.getSIWXEventProperties()
-      })
-    } catch (error) {
-      if (!ModalController.state.open || RouterController.state.view === 'ApproveTransaction') {
-        await ModalController.open({
-          view: 'SIWXSignMessage'
+        await siwx.addSession({
+          data: siwxMessage,
+          message,
+          signature
         })
+
+        ChainController.setLastConnectedSIWECaipNetwork(network)
+
+        ModalController.close()
+
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SIWX_AUTH_SUCCESS',
+          properties: this.getSIWXEventProperties()
+        })
+      } catch (error) {
+        if (!ModalController.state.open || RouterController.state.view === 'ApproveTransaction') {
+          await ModalController.open({
+            view: 'SIWXSignMessage'
+          })
+        }
+
+        SnackController.showError('Error signing message')
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SIWX_AUTH_ERROR',
+          properties: this.getSIWXEventProperties(error)
+        })
+
+        // eslint-disable-next-line no-console
+        console.error('SIWXUtil:requestSignMessage', error)
       }
+    })()
 
-      SnackController.showError('Error signing message')
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SIWX_AUTH_ERROR',
-        properties: this.getSIWXEventProperties(error)
-      })
+    requestSignMessagePromise = request
 
-      // eslint-disable-next-line no-console
-      console.error('SIWXUtil:requestSignMessage', error)
+    try {
+      return await request
+    } finally {
+      if (requestSignMessagePromise === request) {
+        requestSignMessagePromise = null
+      }
     }
   },
   async cancelSignMessage() {

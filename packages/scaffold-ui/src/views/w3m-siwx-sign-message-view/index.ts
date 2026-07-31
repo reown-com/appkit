@@ -47,6 +47,7 @@ export class W3mSIWXSignMessageView extends LitElement {
           fullWidth
           variant="neutral-secondary"
           ?loading=${this.isCancelling}
+          ?disabled=${this.isSigning || this.isCancelling}
           @click=${this.onCancel.bind(this)}
           data-testid="w3m-connecting-siwe-cancel"
         >
@@ -59,6 +60,7 @@ export class W3mSIWXSignMessageView extends LitElement {
           variant="neutral-primary"
           @click=${this.onSign.bind(this)}
           ?loading=${this.isSigning}
+          ?disabled=${this.isSigning || this.isCancelling}
           data-testid="w3m-connecting-siwe-sign"
         >
           ${this.isSigning ? 'Signing...' : 'Sign'}
@@ -69,6 +71,10 @@ export class W3mSIWXSignMessageView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private async onSign() {
+    if (this.isSigning || this.isCancelling) {
+      return
+    }
+
     this.isSigning = true
     try {
       await SIWXUtil.requestSignMessage()
@@ -89,6 +95,10 @@ export class W3mSIWXSignMessageView extends LitElement {
   }
 
   private async onCancel() {
+    if (this.isSigning || this.isCancelling) {
+      return
+    }
+
     this.isCancelling = true
     await SIWXUtil.cancelSignMessage().finally(() => (this.isCancelling = false))
   }
