@@ -139,13 +139,14 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
   }
 
   public signMessage({
-    message
+    message,
+    chainId
   }: {
     message: string
     chainId: string
     accountAddress: string
   }): Promise<string> {
-    return this.signer.signMessage(message)
+    return this.signer.signMessage(message, chainId)
   }
 }
 

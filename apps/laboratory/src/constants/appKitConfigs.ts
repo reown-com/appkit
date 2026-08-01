@@ -396,6 +396,86 @@ export const appKitConfigs = {
     siwx: new ReownAuthentication(),
     siwxReown: true
   },
+
+  // ----- SIWX Single Chain Variants ------------------------------
+  'siwx-wagmi': {
+    ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
+    adapters: ['wagmi'],
+    networks: ConstantsUtil.EvmNetworks,
+    siwx: new DefaultSIWX()
+  },
+  'siwx-ethers': {
+    ...commonAppKitConfig,
+    adapters: ['ethers'],
+    networks: ConstantsUtil.EvmNetworks,
+    siwx: new DefaultSIWX()
+  },
+  'siwx-ethers5': {
+    ...commonAppKitConfig,
+    adapters: ['ethers5'],
+    networks: ConstantsUtil.EvmNetworks,
+    siwx: new DefaultSIWX()
+  },
+  'siwx-solana': {
+    ...commonAppKitConfig,
+    adapters: ['solana'],
+    networks: ConstantsUtil.SolanaNetworks,
+    siwx: new DefaultSIWX()
+  },
+  'siwx-bitcoin': {
+    ...commonAppKitConfig,
+    adapters: ['bitcoin'],
+    networks: ConstantsUtil.BitcoinNetworks,
+    siwx: new DefaultSIWX()
+  },
+
+  // ----- SIWX Multichain Variants ------------------------------
+  'siwx-wagmi-solana': {
+    ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
+    adapters: ['wagmi', 'solana'],
+    networks: [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks],
+    siwx: new DefaultSIWX()
+  },
+  'siwx-ethers-solana': {
+    ...commonAppKitConfig,
+    adapters: ['ethers', 'solana'],
+    networks: [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks],
+    siwx: new DefaultSIWX()
+  },
+  'siwx-all': {
+    ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
+    adapters: ['wagmi', 'solana', 'bitcoin', 'ton', 'tron'],
+    networks: ConstantsUtil.AllNetworks,
+    siwx: new DefaultSIWX()
+  },
+
+  // ----- Reown Authentication Variants ------------------------------
+  'reown-auth-wagmi-solana': {
+    ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
+    adapters: ['wagmi', 'solana'],
+    networks: [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks],
+    siwx: new ReownAuthentication(),
+    siwxReown: true
+  },
+  'reown-auth-ethers-solana': {
+    ...commonAppKitConfig,
+    adapters: ['ethers', 'solana'],
+    networks: [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks],
+    siwx: new ReownAuthentication(),
+    siwxReown: true
+  },
+  'reown-auth-all': {
+    ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
+    adapters: ['wagmi', 'solana', 'bitcoin'],
+    networks: ConstantsUtil.AllNetworks,
+    siwx: new ReownAuthentication(),
+    siwxReown: true
+  },
   'pay-default': {
     ...commonAppKitConfig,
     wagmiConfig: commonWagmiConfig,

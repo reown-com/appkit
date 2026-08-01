@@ -832,6 +832,8 @@ export namespace AdapterBlueprint {
     message: string
     address: string
     provider?: AppKitConnector['provider']
+    caipNetworkId?: string
+    connectorId?: string
   }
 
   export type SignMessageResult = {
