@@ -100,6 +100,17 @@ export const ConnectionControllerUtil = {
       recentConnections: dedupedRecentConnections
     }
   },
+  /*
+   * Not fetched here on purpose: the deeplink has to open inside the tap that triggered it
+   * (iOS Safari blocks a redirect issued after an await), so the caller pre-fetches the URI.
+   */
+  assertWcUriForDeeplink() {
+    if (!ConnectionController.state.wcUri) {
+      throw new Error(
+        'No WalletConnect URI available to deeplink into. Pre-fetch one (connectWalletConnect / prefetchWalletConnectUri) before connecting a mobile wallet.'
+      )
+    }
+  },
   onConnectMobile(wallet: WcWallet | undefined, wcPayUrl?: string) {
     const wcUri = ConnectionController.state.wcUri
 
