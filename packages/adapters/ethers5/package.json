@@ -26,6 +26,7 @@
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
+    "@trezor/connect-web": "9.7.3",
     "@walletconnect/universal-provider": "2.23.7",
     "valtio": "2.1.7"
   },

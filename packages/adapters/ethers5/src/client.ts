@@ -15,6 +15,7 @@ import { ConstantsUtil, PresetsUtil } from '@reown/appkit-common'
 import {
   AdapterBlueprint,
   AssetController,
+  type ChainAdapterConnector,
   ChainController,
   type CombinedProvider,
   type Connector,
@@ -42,6 +43,7 @@ import {
 } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
+import { TrezorConnector } from './connectors/TrezorConnector/index.js'
 import { Ethers5Methods } from './utils/Ethers5Methods.js'
 
 export interface EIP6963ProviderDetail {
@@ -273,6 +275,15 @@ export class Ethers5Adapter extends AdapterBlueprint {
         })
       }
     })
+
+    const trezorConnector = TrezorConnector.getWallet({
+      requestedChains: this.getCaipNetworks(),
+      requestedCaipNetworkId: ChainController.getActiveCaipNetwork(CommonConstantsUtil.CHAIN.EVM)
+        ?.caipNetworkId
+    })
+    if (trezorConnector) {
+      this.addConnector(trezorConnector as unknown as ChainAdapterConnector)
+    }
   }
 
   private async disconnectAll() {
