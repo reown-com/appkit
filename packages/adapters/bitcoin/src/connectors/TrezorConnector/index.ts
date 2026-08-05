@@ -591,15 +591,27 @@ export class TrezorConnector extends ProviderEventEmitter implements BitcoinConn
       return
     }
 
-    await getTrezorConnect().init({
-      manifest: {
-        email: 'support@reown.com',
-        appUrl: typeof window === 'undefined' ? 'https://reown.com' : window.location.origin,
-        appName: 'Reown AppKit'
-      },
-      lazyLoad: true,
-      popup: true
-    })
+    try {
+      await getTrezorConnect().init({
+        manifest: {
+          email: 'support@reown.com',
+          appUrl: typeof window === 'undefined' ? 'https://reown.com' : window.location.origin,
+          appName: 'Reown AppKit'
+        },
+        lazyLoad: true,
+        popup: true
+      })
+    } catch (error) {
+      /*
+       * Trezor Connect is a page-global singleton: the host app (or another
+       * connector) may have initialized it first, which init() reports as an
+       * error even though the instance is fully usable.
+       */
+      const message = error instanceof Error ? error.message : String(error)
+      if (!message.toLowerCase().includes('already initialized')) {
+        throw error
+      }
+    }
 
     this.initialized = true
 
