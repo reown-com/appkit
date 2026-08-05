@@ -31,7 +31,9 @@ import {
   UserRejectedRequestError as ViemUserRejectedRequestError,
   checksumAddress,
   formatUnits,
-  parseUnits
+  isHex,
+  parseUnits,
+  toHex
 } from 'viem'
 
 import { ErrorUtil, UserRejectedRequestError } from '@reown/appkit-common'
@@ -415,6 +417,22 @@ export class WagmiAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
     try {
+      if (
+        params.connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT &&
+        params.provider
+      ) {
+        const hexMessage = isHex(params.message) ? params.message : toHex(params.message)
+        const signature = await params.provider.request<string>(
+          {
+            method: 'personal_sign',
+            params: [hexMessage, params.address]
+          },
+          params.caipNetworkId
+        )
+
+        return { signature: signature as Hex }
+      }
+
       const signature = await signMessage(this.wagmiConfig, {
         message: params.message,
         account: params.address as Hex
