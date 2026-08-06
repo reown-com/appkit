@@ -1,4 +1,3 @@
-/* eslint no-console: 0 */
 import { WalletPage, WalletValidator } from '@reown/appkit-testing'
 import { DEFAULT_SESSION_PARAMS } from '@reown/appkit-testing'
 
@@ -14,33 +13,9 @@ interface ModalWalletFixture {
 // MW -> test Modal + Wallet
 export const testConnectedMW = base.extend<ModalWalletFixture>({
   walletPage: async ({ context, modalPage, timingRecords }, use) => {
-    // Setup
-    let pairingCreatedTime: Date | null = null
-    let verificationStartedTime: Date | null = null
-
     timeStart('new WalletPage')
     const walletPage = new WalletPage(await context.newPage())
     timeEnd('new WalletPage')
-
-    walletPage.page.on('console', msg => {
-      if (msg.text().includes('set') && msg.text().includes('core/pairing/pairing')) {
-        pairingCreatedTime = new Date()
-      }
-      if (msg.text().includes('resolving attestation')) {
-        verificationStartedTime = new Date()
-      }
-      if (msg.text().includes('session_proposal') && msg.text().includes('verifyContext')) {
-        // For some reason this log is emitted twice; so only recording the time once
-        if (verificationStartedTime) {
-          const verificationEndedTime = new Date()
-          timingRecords.push({
-            item: 'sessionProposalVerification',
-            timeMs: verificationEndedTime.getTime() - verificationStartedTime.getTime()
-          })
-          verificationStartedTime = null
-        }
-      }
-    })
 
     timeStart('walletPage.load')
     await walletPage.load()
@@ -53,28 +28,36 @@ export const testConnectedMW = base.extend<ModalWalletFixture>({
 
     timeStart('walletPage.connectWithUri')
     await walletPage.connectWithUri(uri)
+    // Capture immediately on resolution — nothing awaited in between — to avoid skewing the interval.
+    const connectionInitiated = new Date()
     timeEnd('walletPage.connectWithUri')
 
-    const connectionInitiated = new Date()
-
-    // Handle session proposal
-    timeStart('walletPage.handleSessionProposal')
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    timeEnd('walletPage.handleSessionProposal')
-
+    /*
+     * The session proposal is received once the wallet renders the request UI (approve button).
+     * Deterministic, owned-testid signal instead of parsing SDK console logs. Also guards delivery
+     * failures: a proposal that never arrives times out here and fails the run (pages via the
+     * success/failure canary). Interval includes the wallet's render time.
+     */
+    timeStart('walletPage.waitForSessionProposal')
+    await walletPage.waitForSessionProposal()
     const proposalReceived = new Date()
+    timeEnd('walletPage.waitForSessionProposal')
 
     timingRecords.push({
-      item: 'receiveSessionProposal',
+      item: 'sessionProposalReceived',
       timeMs: proposalReceived.getTime() - connectionInitiated.getTime()
     })
 
-    if (pairingCreatedTime) {
-      timingRecords.push({
-        item: 'pairingReceiveSessionProposal',
-        timeMs: proposalReceived.getTime() - (pairingCreatedTime as Date).getTime()
-      })
-    }
+    // Approve the session proposal (request UI already visible from the wait above)
+    timeStart('walletPage.handleSessionProposal')
+    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+    const proposalApproved = new Date()
+    timeEnd('walletPage.handleSessionProposal')
+
+    timingRecords.push({
+      item: 'sessionProposalApproved',
+      timeMs: proposalApproved.getTime() - proposalReceived.getTime()
+    })
 
     const walletValidator = new WalletValidator(walletPage.page)
 
