@@ -542,6 +542,7 @@ export function useAppKitWallets(): UseAppKitWalletsReturn {
         const wcWallet = ConnectUtil.mapWalletItemToWcWallet(_wallet)
 
         if (wcWallet.mobile_link) {
+          ConnectionControllerUtil.assertWcUriForDeeplink()
           ConnectionControllerUtil.onConnectMobile(wcWallet, options?.wcPayUrl)
         } else {
           MobileWalletUtil.handleMobileDeeplinkRedirect(_wallet.id, activeNamespace, {

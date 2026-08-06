@@ -1,3 +1,3 @@
 export abstract class SIWXSigner {
-  public abstract signMessage(message: string): Promise<string>
+  public abstract signMessage(message: string, chainId?: string): Promise<string>
 }
