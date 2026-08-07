@@ -147,7 +147,7 @@ export class TrezorConnector implements Provider {
   public readonly type = 'ANNOUNCED'
   public readonly chains: CaipNetwork[] = []
   public readonly imageUrl =
-    'https://pbs.twimg.com/profile_images/1876994745022529536/5FD_cxXO_400x400.jpg'
+    'data:image/svg+xml,%3Csvg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="40" height="40" rx="6" fill="%23fff"/%3E%3Cpath transform="translate(6 6) scale(1.16)" d="M17.858 5.569c0-3.044-2.643-5.569-5.86-5.569-3.216 0-5.856 2.525-5.856 5.569v1.78H3.731V20.15L11.998 24l8.271-3.849V7.403h-2.411zm-8.73 0c0-1.434 1.264-2.584 2.87-2.584 1.61 0 2.87 1.15 2.87 2.584v1.78h-5.74Zm7.81 12.516-4.94 2.298-4.937-2.298v-7.693h9.878z"/%3E%3C/svg%3E'
 
   public readonly provider = this
 
