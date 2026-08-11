@@ -397,6 +397,23 @@ describe('syncConnectedWalletInfo', () => {
       expect(setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
       expect(getCaipNetwork).toHaveBeenCalledWith('eip155')
     })
+
+    it('should not disconnect the namespace when a previously connected connector has not registered yet', async () => {
+      const appKit = new AppKit(mockOptions)
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValueOnce({
+        syncConnection: vi.fn()
+      })
+      vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('tron-link')
+      vi.spyOn(ConnectorController, 'getConnectors').mockReturnValue([])
+
+      const onDisconnectNamespaceSpy = vi.spyOn(appKit as any, 'onDisconnectNamespace')
+      const setStatus = vi.spyOn(appKit, 'setStatus')
+
+      await appKit['syncAdapterConnection']('eip155')
+
+      expect(onDisconnectNamespaceSpy).not.toHaveBeenCalled()
+      expect(setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
+    })
   })
 
   describe('connectExternal', () => {
