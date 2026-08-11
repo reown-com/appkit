@@ -1460,6 +1460,17 @@ export abstract class AppKitBaseClient {
     const connectors = ConnectorController.getConnectors(namespace)
     const connector = connectors.find(c => c.id === connectorId)
 
+    if (adapter && connectorId && !connector) {
+      /*
+       * A connector was connected in a previous session but hasn't registered with the
+       * adapter yet (e.g. an injected wallet extension whose readyState resolves
+       * asynchronously). This is not a user disconnect: leave storage untouched so a
+       * late connector registration (see `setConnectors`) can retry this sync.
+       */
+      this.setStatus('disconnected', namespace)
+      return
+    }
+
     try {
       if (!adapter || !connector) {
         throw new Error(`Adapter or connector not found for namespace ${namespace}`)
