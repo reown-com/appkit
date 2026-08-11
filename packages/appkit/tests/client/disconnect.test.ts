@@ -564,6 +564,21 @@ describe('AppKit - disconnect - error handling scenarios', () => {
     const solanaNamespace = CommonConstantsUtil.CHAIN.SOLANA
     const solanaAdapterError = new Error('Solana adapter failed') // Corrected error message for clarity
 
+    /*
+     * `beforeEach` mocks `getConnectorId` to return 'mockConnector' for eip155/solana but never
+     * registers a matching connector. Without this, AppKit's background `initialize()` (kicked
+     * off, unawaited, from the constructor) races `syncAdapterConnection` into the "connector not
+     * registered yet" branch before the assertions below run, which is not what this test is
+     * about. Mocking `getConnectors` here lets that background sync resolve normally so the
+     * `removeConnectorId` call below is only ever produced by the real disconnect flow.
+     */
+    vi.spyOn(ConnectorController, 'getConnectors').mockImplementation(ns => {
+      if (ns === eip155Namespace || ns === solanaNamespace) {
+        return [{ id: 'mockConnector', chain: ns } as any]
+      }
+      return []
+    })
+
     const mockEip155Provider = { disconnect: vi.fn().mockResolvedValue(undefined) }
     const mockSolanaProvider = { disconnect: vi.fn() }
 
@@ -585,9 +600,11 @@ describe('AppKit - disconnect - error handling scenarios', () => {
       connections: []
     })
 
-    // Call eip155 disconnect
+    // Call eip155 disconnect (initialDisconnect: true so the real code path exercises
+    // onDisconnectNamespace/removeConnectorId, matching the assertion below)
     await (appKit as any).connectionControllerClient.disconnect({
-      chainNamespace: eip155Namespace
+      chainNamespace: eip155Namespace,
+      initialDisconnect: true
     })
 
     // Call solana disconnect
