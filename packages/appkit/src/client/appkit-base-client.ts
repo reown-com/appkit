@@ -97,6 +97,8 @@ import { UniversalAdapter } from '../universal-adapter/client.js'
 import { ConfigUtil } from '../utils/ConfigUtil.js'
 import type { AppKitOptions } from '../utils/index.js'
 
+const PENDING_CONNECTOR_CLEANUP_MS = 10_000
+
 export interface AppKitOptionsWithSdk extends AppKitOptions {
   sdkVersion: SdkVersion | AppKitSdkVersion
 }
@@ -154,6 +156,7 @@ export abstract class AppKitBaseClient {
   public reportedAlertErrors: Record<string, boolean> = {}
 
   private readyPromise?: Promise<void>
+  private pendingConnectorCleanupTimers = new Map<ChainNamespace, ReturnType<typeof setTimeout>>()
 
   constructor(options: AppKitOptionsWithSdk) {
     this.options = options
@@ -1439,6 +1442,33 @@ export abstract class AppKitBaseClient {
     }
   }
 
+  protected schedulePendingConnectorCleanup(namespace: ChainNamespace, connectorId: string) {
+    this.clearPendingConnectorCleanup(namespace)
+
+    const timer = setTimeout(() => {
+      this.pendingConnectorCleanupTimers.delete(namespace)
+
+      const stillMissing =
+        ConnectorController.getConnectorId(namespace) === connectorId &&
+        !ConnectorController.getConnectors(namespace).some(c => c.id === connectorId)
+
+      if (stillMissing) {
+        this.onDisconnectNamespace({ chainNamespace: namespace, closeModal: false })
+      }
+    }, PENDING_CONNECTOR_CLEANUP_MS)
+
+    this.pendingConnectorCleanupTimers.set(namespace, timer)
+  }
+
+  protected clearPendingConnectorCleanup(namespace: ChainNamespace) {
+    const timer = this.pendingConnectorCleanupTimers.get(namespace)
+
+    if (timer) {
+      clearTimeout(timer)
+      this.pendingConnectorCleanupTimers.delete(namespace)
+    }
+  }
+
   protected async syncAdapterConnections() {
     await Promise.allSettled(
       this.chainNamespaces.map(namespace => {
@@ -1466,9 +1496,12 @@ export abstract class AppKitBaseClient {
        * A connector was connected in a previous session but hasn't registered with the
        * adapter yet (e.g. an injected wallet extension whose readyState resolves
        * asynchronously). This is not a user disconnect: leave storage untouched so a
-       * late connector registration (see `setConnectors`) can retry this sync.
+       * late connector registration (see `setConnectors`) can retry this sync. If the
+       * connector never registers, `schedulePendingConnectorCleanup` eventually clears
+       * the stale stored connection instead of leaving it dangling forever.
        */
       this.setStatus('disconnected', namespace)
+      this.schedulePendingConnectorCleanup(namespace, connectorId)
       return
     }
 
@@ -2239,14 +2272,16 @@ export abstract class AppKitBaseClient {
 
       if (
         retriedNamespaces.has(namespace) ||
-        ChainController.getAccountData(namespace)?.status === 'connected' ||
+        OptionsController.state.enableReconnect === false ||
+        ChainController.getAccountData(namespace)?.status !== 'disconnected' ||
         ConnectorController.getConnectorId(namespace) !== connector.id
       ) {
         return
       }
 
       retriedNamespaces.add(namespace)
-      this.syncNamespaceConnection(namespace)
+      this.clearPendingConnectorCleanup(namespace)
+      void this.syncNamespaceConnection(namespace)
     })
   }
 
