@@ -111,18 +111,16 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
+    const accounts = this.wallet.accounts || []
+
     const addresses = new Set<string>()
-    const mappedAccounts = this.wallet.accounts
+    const mappedAccounts = accounts
       .map<BitcoinConnector.AccountAddress>(acc => {
         const { address, purpose, publicKey } = acc as BitcoinAccount
 
         let validatedPublicKey: string | undefined
         if (publicKey && isValidPublicKey(publicKey)) {
           validatedPublicKey = Buffer.from(publicKey).toString('hex')
-        } else if (publicKey) {
-          console.warn(
-            `WalletStandardConnector:getAccountAddresses - Invalid public key length (${publicKey.length} bytes) for address ${address}. Expected 33, 65, or 32 bytes.`
-          )
         }
 
         return {
@@ -204,9 +202,11 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
       }
     })
 
+    const psbtBytes = new Uint8Array(Buffer.from(params.psbt, 'base64'))
+
     const response = (
       await feature.signTransaction({
-        psbt: new Uint8Array(Buffer.from(params.psbt, 'base64')),
+        psbt: psbtBytes,
         inputsToSign
       })
     )[0]
@@ -256,10 +256,10 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
         }
       }
     } catch (error) {
-      if (error instanceof Error && error.message.includes('was not signed')) {
-        throw error
+      if (error instanceof Error) {
+        throw new Error(`PSBT signature verification failed: ${error.message}`)
       }
-      console.warn('WalletStandardConnector:signPSBT - Failed to verify signatures:', error)
+      throw new Error('PSBT signature verification failed: Unknown error')
     }
   }
 

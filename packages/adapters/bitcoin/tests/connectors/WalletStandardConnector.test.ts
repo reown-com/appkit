@@ -213,11 +213,10 @@ describe('WalletStandardConnector', () => {
       }
     })
 
-    it('should return undefined publicKey and warn for invalid length (e.g., 42 bytes from MetaMask bug)', async () => {
+    it('should return undefined publicKey for invalid length (e.g., 42 bytes from MetaMask bug)', async () => {
       // Simulate MetaMask's bug: publicKey is UTF-8 bytes of the address string (42 bytes)
       // A typical Bitcoin address like "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4" is 42 characters
       const invalidPubKey = new Uint8Array(42).fill(0x61) // 42 bytes of 'a'
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
         mockWalletStandardProvider.mockAccount({
@@ -230,16 +229,10 @@ describe('WalletStandardConnector', () => {
 
       expect(accounts).toHaveLength(1)
       expect(accounts[0]?.publicKey).toBeUndefined()
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Invalid public key length (42 bytes)')
-      )
-
-      consoleSpy.mockRestore()
     })
 
     it('should return undefined publicKey for other invalid lengths', async () => {
       const invalidLengths = [0, 1, 20, 31, 34, 64, 66, 100]
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
       for (const length of invalidLengths) {
         const invalidPubKey = new Uint8Array(length).fill(0x02)
@@ -253,8 +246,6 @@ describe('WalletStandardConnector', () => {
         const accounts = await connector.getAccountAddresses()
         expect(accounts[0]?.publicKey).toBeUndefined()
       }
-
-      consoleSpy.mockRestore()
     })
 
     it('should filter duplicate addresses', async () => {
