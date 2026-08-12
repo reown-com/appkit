@@ -527,6 +527,71 @@ describe('Base Public methods', () => {
     expect(hasMergedConnectorFromConnectors).toBe(true)
   })
 
+  describe('setConnectors retry', () => {
+    it('should retry syncing the namespace when the previously stored connector registers late', () => {
+      const appKit = new AppKit(mockOptions)
+
+      vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('tron-link')
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({ status: 'disconnected' } as any)
+      const syncNamespaceConnectionSpy = vi
+        .spyOn(appKit as any, 'syncNamespaceConnection')
+        .mockResolvedValue(undefined)
+
+      const lateConnector = {
+        id: 'tron-link',
+        name: 'TronLink',
+        chain: 'eip155',
+        type: 'INJECTED'
+      } as Connector
+
+      appKit.setConnectors([lateConnector])
+
+      expect(syncNamespaceConnectionSpy).toHaveBeenCalledWith('eip155')
+    })
+
+    it('should not retry when the namespace is already connected', () => {
+      const appKit = new AppKit(mockOptions)
+
+      vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('tron-link')
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({ status: 'connected' } as any)
+      const syncNamespaceConnectionSpy = vi
+        .spyOn(appKit as any, 'syncNamespaceConnection')
+        .mockResolvedValue(undefined)
+
+      const lateConnector = {
+        id: 'tron-link',
+        name: 'TronLink',
+        chain: 'eip155',
+        type: 'INJECTED'
+      } as Connector
+
+      appKit.setConnectors([lateConnector])
+
+      expect(syncNamespaceConnectionSpy).not.toHaveBeenCalled()
+    })
+
+    it('should not retry when the newly registered connector does not match the stored connector id', () => {
+      const appKit = new AppKit(mockOptions)
+
+      vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('some-other-connector')
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({ status: 'disconnected' } as any)
+      const syncNamespaceConnectionSpy = vi
+        .spyOn(appKit as any, 'syncNamespaceConnection')
+        .mockResolvedValue(undefined)
+
+      const lateConnector = {
+        id: 'tron-link',
+        name: 'TronLink',
+        chain: 'eip155',
+        type: 'INJECTED'
+      } as Connector
+
+      appKit.setConnectors([lateConnector])
+
+      expect(syncNamespaceConnectionSpy).not.toHaveBeenCalled()
+    })
+  })
+
   it('should add connector', () => {
     const addConnector = vi.spyOn(ConnectorController, 'addConnector')
     const connector = {
