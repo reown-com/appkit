@@ -24,6 +24,7 @@ import type {
   ConnectedWalletInfo,
   ConnectionControllerClient,
   ConnectionControllerState,
+  Connector,
   ConnectorType,
   EstimateGasTransactionArgs,
   EventsControllerState,
@@ -2222,6 +2223,31 @@ export abstract class AppKitBaseClient {
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
     const allConnectors = [...ConnectorController.state.allConnectors, ...connectors]
     ConnectorController.setConnectors(allConnectors)
+    this.retryPendingNamespaceConnections(connectors)
+  }
+
+  /**
+   * A connector that registers after boot (e.g. an injected wallet extension resolving
+   * its readyState asynchronously) never got a chance to sync its stored connection.
+   * If it matches the namespace's previously connected connector id, retry the sync now.
+   */
+  protected retryPendingNamespaceConnections(connectors: Connector[]) {
+    const retriedNamespaces = new Set<ChainNamespace>()
+
+    connectors.forEach(connector => {
+      const namespace = connector.chain
+
+      if (
+        retriedNamespaces.has(namespace) ||
+        ChainController.getAccountData(namespace)?.status === 'connected' ||
+        ConnectorController.getConnectorId(namespace) !== connector.id
+      ) {
+        return
+      }
+
+      retriedNamespaces.add(namespace)
+      this.syncNamespaceConnection(namespace)
+    })
   }
 
   public setConnections: (typeof ConnectionController)['setConnections'] = (
