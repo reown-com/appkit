@@ -1,5 +1,5 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type {
   AdapterNetworkState,
@@ -528,7 +528,25 @@ describe('Base Public methods', () => {
   })
 
   describe('setConnectors retry', () => {
-    it('should retry syncing the namespace when the previously stored connector registers late', () => {
+    beforeEach(async () => {
+      /*
+       * Every `new AppKit(...)` in this file kicks off a fire-and-forget background
+       * initialization promise that the creating test never awaits. If one of those is still
+       * in flight when this describe block mocks `ConnectorController.getConnectorId` /
+       * `ChainController.getAccountData`, its background continuation can read these mocks
+       * mid-test (in the microtask gap before `afterEach` restores them) and drive a real
+       * connect flow that permanently mutates shared controller state. Flush the macrotask
+       * queue first so no earlier test's backlog is still pending when the mocks go up.
+       */
+      await new Promise(resolve => setTimeout(resolve, 0))
+    })
+
+    afterEach(() => {
+      vi.mocked(ConnectorController.getConnectorId).mockRestore()
+      vi.mocked(ChainController.getAccountData).mockRestore()
+    })
+
+    it('should retry syncing the namespace when the previously stored connector registers late', async () => {
       const appKit = new AppKit(mockOptions)
 
       vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('tron-link')
@@ -547,9 +565,13 @@ describe('Base Public methods', () => {
       appKit.setConnectors([lateConnector])
 
       expect(syncNamespaceConnectionSpy).toHaveBeenCalledWith('eip155')
+
+      // Drain the constructor's fire-and-forget init promise before the test ends so it
+      // can't resolve in the background and leak side effects into a later, unrelated test.
+      await (appKit as any).readyPromise
     })
 
-    it('should not retry when the namespace is already connected', () => {
+    it('should not retry when the namespace is already connected', async () => {
       const appKit = new AppKit(mockOptions)
 
       vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('tron-link')
@@ -568,9 +590,13 @@ describe('Base Public methods', () => {
       appKit.setConnectors([lateConnector])
 
       expect(syncNamespaceConnectionSpy).not.toHaveBeenCalled()
+
+      // Drain the constructor's fire-and-forget init promise before the test ends so it
+      // can't resolve in the background and leak side effects into a later, unrelated test.
+      await (appKit as any).readyPromise
     })
 
-    it('should not retry when the newly registered connector does not match the stored connector id', () => {
+    it('should not retry when the newly registered connector does not match the stored connector id', async () => {
       const appKit = new AppKit(mockOptions)
 
       vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('some-other-connector')
@@ -589,6 +615,10 @@ describe('Base Public methods', () => {
       appKit.setConnectors([lateConnector])
 
       expect(syncNamespaceConnectionSpy).not.toHaveBeenCalled()
+
+      // Drain the constructor's fire-and-forget init promise before the test ends so it
+      // can't resolve in the background and leak side effects into a later, unrelated test.
+      await (appKit as any).readyPromise
     })
   })
 
