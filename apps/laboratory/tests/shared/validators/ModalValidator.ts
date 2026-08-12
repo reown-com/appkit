@@ -66,7 +66,7 @@ export class ModalValidator {
   }
 
   async expectBalanceFetched(
-    currency: 'SOL' | 'ETH' | 'BTC' | 'POL' | 'TON' | 'TRX',
+    currency: 'SOL' | 'ETH' | 'BTC' | 'POL' | 'TON' | 'TRX' | 'XLM',
     namespace?: string
   ) {
     const accountButton = namespace

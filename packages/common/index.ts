@@ -21,6 +21,7 @@ export {
 } from './src/utils/SafeLocalStorage.js'
 export { getW3mThemeVariables } from './src/utils/ThemeUtil.js'
 export { isReownName } from './src/utils/NamesUtil.js'
+export { StellarStrKeyUtil } from './src/utils/StellarStrKeyUtil.js'
 
 // -- Types -------------------------------------------------------------------
 export type * from './src/utils/ThemeUtil.js'

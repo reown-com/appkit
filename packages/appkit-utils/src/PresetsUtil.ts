@@ -131,7 +131,13 @@ export const PresetsUtil = {
     // TRON Shasta Testnet
     '0x94a9059e': '3502bb86-cc4e-420f-a387-59ea63a28b00',
     // TRON Nile Testnet
-    '0xcd8690dc': '3502bb86-cc4e-420f-a387-59ea63a28b00'
+    '0xcd8690dc': '3502bb86-cc4e-420f-a387-59ea63a28b00',
+    /*
+     * Stellar Pubnet / Testnet
+     * TODO: replace once the Stellar logo is uploaded to the Reown asset CDN
+     */
+    pubnet: '',
+    testnet: ''
   } as Record<string, string>,
 
   ConnectorImageIds: {
