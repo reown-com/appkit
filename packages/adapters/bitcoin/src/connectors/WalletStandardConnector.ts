@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/require-await */
 import { getWallets } from '@wallet-standard/app'
 import type { Wallet, WalletWithFeatures } from '@wallet-standard/base'
+import { Psbt } from 'bitcoinjs-lib'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import { PresetsUtil } from '@reown/appkit-common'
@@ -11,7 +12,36 @@ import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
+import type { BitcoinSigHashFlag } from '../utils/wallet-standard/SignTransaction.js'
 import type { BitcoinFeatures } from '../utils/wallet-standard/WalletFeatures.js'
+
+// -- Constants ----
+const VALID_PUBLIC_KEY_LENGTHS = [33, 65, 32]
+const SIGHASH_ALL = 0x01
+const SIGHASH_NONE = 0x02
+const SIGHASH_SINGLE = 0x03
+const SIGHASH_ANYONECANPAY = 0x80
+
+// -- Helpers ----
+function isValidPublicKey(publicKey: ArrayLike<number>): boolean {
+  return VALID_PUBLIC_KEY_LENGTHS.includes(publicKey.length)
+}
+
+function numericSighashToFlag(sighashType: number): BitcoinSigHashFlag | undefined {
+  const baseType = sighashType & 0x1f
+  const hasAnyoneCanPay = (sighashType & SIGHASH_ANYONECANPAY) !== 0
+
+  switch (baseType) {
+    case SIGHASH_ALL:
+      return hasAnyoneCanPay ? 'ALL|ANYONECANPAY' : 'ALL'
+    case SIGHASH_NONE:
+      return hasAnyoneCanPay ? 'NONE|ANYONECANPAY' : 'NONE'
+    case SIGHASH_SINGLE:
+      return hasAnyoneCanPay ? 'SINGLE|ANYONECANPAY' : 'SINGLE'
+    default:
+      return undefined
+  }
+}
 
 type WalletAccount = Wallet['accounts'][number]
 
@@ -86,10 +116,19 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
       .map<BitcoinConnector.AccountAddress>(acc => {
         const { address, purpose, publicKey } = acc as BitcoinAccount
 
+        let validatedPublicKey: string | undefined
+        if (publicKey && isValidPublicKey(publicKey)) {
+          validatedPublicKey = Buffer.from(publicKey).toString('hex')
+        } else if (publicKey) {
+          console.warn(
+            `WalletStandardConnector:getAccountAddresses - Invalid public key length (${publicKey.length} bytes) for address ${address}. Expected 33, 65, or 32 bytes.`
+          )
+        }
+
         return {
           address,
           purpose: purpose ?? AddressPurpose.Payment,
-          publicKey: Buffer.from(publicKey).toString('hex')
+          publicKey: validatedPublicKey
         }
       })
       .filter(acc => {
@@ -142,6 +181,8 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
       )
     }
 
+    const requestedInputIndexes = new Set<number>()
+
     const inputsToSign = params.signInputs.map(input => {
       const account = this.wallet.accounts.find(acc => acc.address === input.address)
 
@@ -149,10 +190,17 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
         throw new Error(`Account with address ${input.address} not found`)
       }
 
+      requestedInputIndexes.add(input.index)
+
+      const sigHash =
+        input.sighashTypes?.length > 0
+          ? numericSighashToFlag(input.sighashTypes[0] as number)
+          : undefined
+
       return {
         account,
         signingIndexes: [input.index],
-        sigHash: undefined
+        sigHash
       }
     })
 
@@ -167,9 +215,51 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
       throw new Error('No response from wallet')
     }
 
+    const signedPsbtBase64 = Buffer.from(response.signedPsbt).toString('base64')
+    this.verifySignatures(signedPsbtBase64, requestedInputIndexes)
+
     return {
-      psbt: Buffer.from(response.signedPsbt).toString('base64'),
+      psbt: signedPsbtBase64,
       txid: undefined
+    }
+  }
+
+  private verifySignatures(psbtBase64: string, requestedInputIndexes: Set<number>): void {
+    try {
+      const psbt = Psbt.fromBase64(psbtBase64)
+
+      for (const index of requestedInputIndexes) {
+        const input = psbt.data.inputs[index]
+
+        if (!input) {
+          throw new Error(`Input at index ${index} not found in signed PSBT`)
+        }
+
+        const hasPartialSig = input.partialSig && input.partialSig.length > 0
+        const hasFinalScriptSig = input.finalScriptSig && input.finalScriptSig.length > 0
+        const hasFinalScriptWitness =
+          input.finalScriptWitness && input.finalScriptWitness.length > 0
+        const hasTapKeySig = input.tapKeySig && input.tapKeySig.length > 0
+        const hasTapScriptSig = input.tapScriptSig && input.tapScriptSig.length > 0
+
+        const isSigned =
+          hasPartialSig ||
+          hasFinalScriptSig ||
+          hasFinalScriptWitness ||
+          hasTapKeySig ||
+          hasTapScriptSig
+
+        if (!isSigned) {
+          throw new Error(
+            `Input at index ${index} was not signed. The wallet may have failed to sign this input.`
+          )
+        }
+      }
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('was not signed')) {
+        throw error
+      }
+      console.warn('WalletStandardConnector:signPSBT - Failed to verify signatures:', error)
     }
   }
 

@@ -1,3 +1,4 @@
+import { Psbt } from 'bitcoinjs-lib'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
@@ -6,6 +7,64 @@ import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 import { WalletStandardConnector } from '../../src/connectors/WalletStandardConnector'
 import { MethodNotSupportedError } from '../../src/errors/MethodNotSupportedError'
 import { mockWalletStandardProvider } from '../mocks/mockWalletStandard'
+
+/**
+ * Creates a mock signed PSBT with a partial signature at the specified input index.
+ */
+function createMockSignedPsbt(inputIndex: number = 0): Uint8Array {
+  const psbt = new Psbt()
+
+  // Add a minimal transaction structure
+  psbt.addInput({
+    hash: Buffer.alloc(32, 0),
+    index: 0,
+    witnessUtxo: {
+      script: Buffer.from('0014' + '00'.repeat(20), 'hex'),
+      value: 10000
+    }
+  })
+  psbt.addOutput({
+    script: Buffer.from('0014' + '00'.repeat(20), 'hex'),
+    value: 9000
+  })
+
+  // Add a partial signature to simulate a signed input
+  // This is a mock signature - 33 byte compressed pubkey + 71 byte DER signature
+  const mockPubKey = Buffer.alloc(33, 0x02)
+  mockPubKey[32] = 0x01 // Make it a valid compressed pubkey format
+  const mockSignature = Buffer.alloc(71, 0x30)
+
+  psbt.data.inputs[inputIndex]!.partialSig = [
+    {
+      pubkey: mockPubKey,
+      signature: mockSignature
+    }
+  ]
+
+  return psbt.toBuffer()
+}
+
+/**
+ * Creates a mock unsigned PSBT (no signatures).
+ */
+function createMockUnsignedPsbt(): Uint8Array {
+  const psbt = new Psbt()
+
+  psbt.addInput({
+    hash: Buffer.alloc(32, 0),
+    index: 0,
+    witnessUtxo: {
+      script: Buffer.from('0014' + '00'.repeat(20), 'hex'),
+      value: 10000
+    }
+  })
+  psbt.addOutput({
+    script: Buffer.from('0014' + '00'.repeat(20), 'hex'),
+    value: 9000
+  })
+
+  return psbt.toBuffer()
+}
 
 vi.mock('@wallet-standard/app', async () =>
   Promise.resolve({
@@ -109,11 +168,13 @@ describe('WalletStandardConnector', () => {
   })
 
   describe('getAccountAddresses', () => {
-    it('should return accounts with purpose, address and publicKey', async () => {
+    it('should return accounts with purpose, address and publicKey when valid', async () => {
+      // Use a valid 33-byte compressed public key
+      const validCompressedPubKey = new Uint8Array(33).fill(0x02)
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
         mockWalletStandardProvider.mockAccount({
           address: 'bc1qtest123',
-          publicKey: new Uint8Array(Buffer.from('testPublicKey')),
+          publicKey: validCompressedPubKey,
           // @ts-expect-error - purpose is not part of the mock account
           purpose: 'ordinal'
         })
@@ -126,48 +187,92 @@ describe('WalletStandardConnector', () => {
       expect(accounts[0]).toHaveProperty('publicKey')
       expect(accounts[0]).toHaveProperty('purpose')
       expect(accounts[0]?.address).toBe('bc1qtest123')
-      expect(accounts[0]?.publicKey).toBeTruthy()
+      expect(accounts[0]?.publicKey).toBe('02'.repeat(33))
       expect(accounts[0]?.purpose).toBe('ordinal')
     })
 
-    it('should map accounts correctly', async () => {
+    it('should accept valid public key lengths (33, 65, 32 bytes)', async () => {
+      const testCases = [
+        { length: 33, description: 'compressed' },
+        { length: 65, description: 'uncompressed' },
+        { length: 32, description: 'x-only (Taproot)' }
+      ]
+
+      for (const testCase of testCases) {
+        const validPubKey = new Uint8Array(testCase.length).fill(0x02)
+        vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
+          mockWalletStandardProvider.mockAccount({
+            address: `address_${testCase.length}`,
+            publicKey: validPubKey
+          })
+        ])
+
+        const accounts = await connector.getAccountAddresses()
+
+        expect(accounts[0]?.publicKey).toBe('02'.repeat(testCase.length))
+      }
+    })
+
+    it('should return undefined publicKey and warn for invalid length (e.g., 42 bytes from MetaMask bug)', async () => {
+      // Simulate MetaMask's bug: publicKey is UTF-8 bytes of the address string (42 bytes)
+      // A typical Bitcoin address like "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4" is 42 characters
+      const invalidPubKey = new Uint8Array(42).fill(0x61) // 42 bytes of 'a'
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
         mockWalletStandardProvider.mockAccount({
-          address: 'address1',
-          publicKey: new Uint8Array(Buffer.from('publicKey1'))
+          address: 'bc1qtest123',
+          publicKey: invalidPubKey
         })
       ])
 
       const accounts = await connector.getAccountAddresses()
-      expect(accounts).toEqual([
-        {
-          address: 'address1',
-          publicKey: '7075626c69634b657931',
-          purpose: 'payment'
-        }
-      ])
+
+      expect(accounts).toHaveLength(1)
+      expect(accounts[0]?.publicKey).toBeUndefined()
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Invalid public key length (42 bytes)')
+      )
+
+      consoleSpy.mockRestore()
+    })
+
+    it('should return undefined publicKey for other invalid lengths', async () => {
+      const invalidLengths = [0, 1, 20, 31, 34, 64, 66, 100]
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      for (const length of invalidLengths) {
+        const invalidPubKey = new Uint8Array(length).fill(0x02)
+        vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
+          mockWalletStandardProvider.mockAccount({
+            address: `address_${length}`,
+            publicKey: invalidPubKey
+          })
+        ])
+
+        const accounts = await connector.getAccountAddresses()
+        expect(accounts[0]?.publicKey).toBeUndefined()
+      }
+
+      consoleSpy.mockRestore()
     })
 
     it('should filter duplicate addresses', async () => {
+      const validPubKey = new Uint8Array(33).fill(0x02)
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
         mockWalletStandardProvider.mockAccount({
           address: 'address1',
-          publicKey: new Uint8Array(Buffer.from('publicKey1'))
+          publicKey: validPubKey
         }),
         mockWalletStandardProvider.mockAccount({
           address: 'address1',
-          publicKey: new Uint8Array(Buffer.from('publicKey2'))
+          publicKey: new Uint8Array(33).fill(0x03)
         })
       ])
 
       const accounts = await connector.getAccountAddresses()
-      expect(accounts).toEqual([
-        {
-          address: 'address1',
-          publicKey: '7075626c69634b657931',
-          purpose: 'payment'
-        }
-      ])
+      expect(accounts).toHaveLength(1)
+      expect(accounts[0]?.address).toBe('address1')
     })
   })
 
@@ -257,10 +362,10 @@ describe('WalletStandardConnector', () => {
   })
 
   describe('signPSBT', () => {
-    it('should sign PSBT correctly', async () => {
+    it('should sign PSBT correctly and pass sighashTypes as sigHash flag', async () => {
       const accountMock = mockWalletStandardProvider.mockAccount({
         address: 'address',
-        publicKey: new Uint8Array(Buffer.from('publicKey1'))
+        publicKey: new Uint8Array(33).fill(0x02) // Valid compressed pubkey
       })
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([accountMock])
 
@@ -268,35 +373,102 @@ describe('WalletStandardConnector', () => {
         wallet.features['bitcoin:signTransaction'] as any,
         'signTransaction'
       )
-      signPsbtFeatureSpy.mockReturnValueOnce([{ signedPsbt: Buffer.from('mock_signed_psbt') }])
+      // Return a properly signed PSBT
+      signPsbtFeatureSpy.mockReturnValueOnce([{ signedPsbt: createMockSignedPsbt(0) }])
 
       const response = await connector.signPSBT({
-        psbt: 'psbt1',
+        psbt: 'cHNidDE=', // base64 of 'psbt1'
         signInputs: [
           {
             address: 'address',
             index: 0,
-            sighashTypes: [1]
+            sighashTypes: [1] // SIGHASH_ALL
           }
         ]
       })
+
+      // Verify sigHash is now passed as 'ALL' instead of undefined
       expect(signPsbtFeatureSpy).toHaveBeenCalledWith({
-        psbt: expect.objectContaining(Uint8Array.from([])),
+        psbt: expect.any(Uint8Array),
         inputsToSign: expect.arrayContaining([
           expect.objectContaining({
             account: accountMock,
             signingIndexes: [0],
-            sigHash: undefined
+            sigHash: 'ALL'
           })
         ])
       })
-      expect(response).toEqual({ psbt: 'bW9ja19zaWduZWRfcHNidA==', txid: undefined })
+      expect(response.psbt).toBeTruthy()
+      expect(response.txid).toBeUndefined()
+    })
+
+    it('should convert various sighashTypes correctly', async () => {
+      const accountMock = mockWalletStandardProvider.mockAccount({
+        address: 'address',
+        publicKey: new Uint8Array(33).fill(0x02)
+      })
+
+      const testCases = [
+        { input: [1], expected: 'ALL' },
+        { input: [2], expected: 'NONE' },
+        { input: [3], expected: 'SINGLE' },
+        { input: [0x81], expected: 'ALL|ANYONECANPAY' },
+        { input: [0x82], expected: 'NONE|ANYONECANPAY' },
+        { input: [0x83], expected: 'SINGLE|ANYONECANPAY' }
+      ]
+
+      for (const testCase of testCases) {
+        vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([accountMock])
+        const signPsbtFeatureSpy = vi.spyOn(
+          wallet.features['bitcoin:signTransaction'] as any,
+          'signTransaction'
+        )
+        signPsbtFeatureSpy.mockReturnValueOnce([{ signedPsbt: createMockSignedPsbt(0) }])
+
+        await connector.signPSBT({
+          psbt: 'cHNidDE=',
+          signInputs: [{ address: 'address', index: 0, sighashTypes: testCase.input }]
+        })
+
+        expect(signPsbtFeatureSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            inputsToSign: expect.arrayContaining([
+              expect.objectContaining({ sigHash: testCase.expected })
+            ])
+          })
+        )
+      }
+    })
+
+    it('should pass sigHash as undefined when sighashTypes is empty', async () => {
+      const accountMock = mockWalletStandardProvider.mockAccount({
+        address: 'address',
+        publicKey: new Uint8Array(33).fill(0x02)
+      })
+      vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([accountMock])
+
+      const signPsbtFeatureSpy = vi.spyOn(
+        wallet.features['bitcoin:signTransaction'] as any,
+        'signTransaction'
+      )
+      signPsbtFeatureSpy.mockReturnValueOnce([{ signedPsbt: createMockSignedPsbt(0) }])
+
+      await connector.signPSBT({
+        psbt: 'cHNidDE=',
+        signInputs: [{ address: 'address', index: 0, sighashTypes: [] }]
+      })
+
+      expect(signPsbtFeatureSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          inputsToSign: expect.arrayContaining([expect.objectContaining({ sigHash: undefined })])
+        })
+      )
     })
 
     it('should throw if account is not found', async () => {
       await expect(
         connector.signPSBT({
-          psbt: 'psbt1',
+          psbt: 'cHNidDE=',
           signInputs: [
             {
               address: 'mock_address',
@@ -322,7 +494,7 @@ describe('WalletStandardConnector', () => {
 
       await expect(
         connector.signPSBT({
-          psbt: 'psbt1',
+          psbt: 'cHNidDE=',
           signInputs: [
             {
               address: 'address',
@@ -337,7 +509,7 @@ describe('WalletStandardConnector', () => {
     it('should throw if broadcast is true', async () => {
       await expect(
         connector.signPSBT({
-          psbt: 'psbt1',
+          psbt: 'cHNidDE=',
           signInputs: [
             {
               address: 'address',
@@ -348,6 +520,28 @@ describe('WalletStandardConnector', () => {
           broadcast: true
         })
       ).rejects.toThrow(MethodNotSupportedError)
+    })
+
+    it('should throw if wallet returns unsigned PSBT', async () => {
+      const accountMock = mockWalletStandardProvider.mockAccount({
+        address: 'address',
+        publicKey: new Uint8Array(33).fill(0x02)
+      })
+      vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([accountMock])
+
+      const signPsbtFeatureSpy = vi.spyOn(
+        wallet.features['bitcoin:signTransaction'] as any,
+        'signTransaction'
+      )
+      // Return an unsigned PSBT
+      signPsbtFeatureSpy.mockReturnValueOnce([{ signedPsbt: createMockUnsignedPsbt() }])
+
+      await expect(
+        connector.signPSBT({
+          psbt: 'cHNidDE=',
+          signInputs: [{ address: 'address', index: 0, sighashTypes: [1] }]
+        })
+      ).rejects.toThrow('Input at index 0 was not signed')
     })
   })
 
