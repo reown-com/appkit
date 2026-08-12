@@ -414,6 +414,70 @@ describe('syncConnectedWalletInfo', () => {
       expect(onDisconnectNamespaceSpy).not.toHaveBeenCalled()
       expect(setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
     })
+
+    it('should schedule a cleanup that disconnects the namespace if the connector never registers', async () => {
+      vi.useFakeTimers()
+
+      try {
+        const appKit = new AppKit(mockOptions)
+        /*
+         * This stub replaces the adapter for every `getAdapter` call, including the ones the
+         * constructor's background `initialize()` makes, so it must also answer
+         * `syncConnections` or that init rejects unhandled after the test ends.
+         */
+        vi.spyOn(appKit as any, 'getAdapter').mockReturnValue({
+          syncConnection: vi.fn(),
+          syncConnections: vi.fn()
+        })
+        vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('tron-link')
+        vi.spyOn(ConnectorController, 'getConnectors').mockReturnValue([])
+
+        const onDisconnectNamespaceSpy = vi.spyOn(appKit as any, 'onDisconnectNamespace')
+
+        await appKit['syncAdapterConnection']('eip155')
+
+        expect(onDisconnectNamespaceSpy).not.toHaveBeenCalled()
+
+        vi.advanceTimersByTime(10_000)
+
+        expect(onDisconnectNamespaceSpy).toHaveBeenCalledWith({
+          chainNamespace: 'eip155',
+          closeModal: false
+        })
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('should not run the scheduled cleanup if the connector is cleared before the timeout', async () => {
+      vi.useFakeTimers()
+
+      try {
+        const appKit = new AppKit(mockOptions)
+        /*
+         * This stub replaces the adapter for every `getAdapter` call, including the ones the
+         * constructor's background `initialize()` makes, so it must also answer
+         * `syncConnections` or that init rejects unhandled after the test ends.
+         */
+        vi.spyOn(appKit as any, 'getAdapter').mockReturnValue({
+          syncConnection: vi.fn(),
+          syncConnections: vi.fn()
+        })
+        vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('tron-link')
+        vi.spyOn(ConnectorController, 'getConnectors').mockReturnValue([])
+
+        const onDisconnectNamespaceSpy = vi.spyOn(appKit as any, 'onDisconnectNamespace')
+
+        await appKit['syncAdapterConnection']('eip155')
+
+        appKit['clearPendingConnectorCleanup']('eip155')
+        vi.advanceTimersByTime(10_000)
+
+        expect(onDisconnectNamespaceSpy).not.toHaveBeenCalled()
+      } finally {
+        vi.useRealTimers()
+      }
+    })
   })
 
   describe('connectExternal', () => {

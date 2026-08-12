@@ -542,8 +542,20 @@ describe('Base Public methods', () => {
     })
 
     afterEach(() => {
+      /*
+       * Restore only the spies this block installs. `vi.restoreAllMocks()` would also reset
+       * the module-level `vi.fn()` mocks in `tests/mocks/Adapter.ts` (e.g. `getBalance`) to
+       * a no-op implementation, and the outer `beforeEach` only calls `vi.clearAllMocks()`,
+       * so those would stay broken for every later test in this file.
+       */
       vi.mocked(ConnectorController.getConnectorId).mockRestore()
       vi.mocked(ChainController.getAccountData).mockRestore()
+      /*
+       * The AppKit constructor writes `enableReconnect` into the shared OptionsController
+       * state, so the `enableReconnect: false` case below would otherwise leak into any
+       * later test that reads it before constructing its own AppKit.
+       */
+      OptionsController.setEnableReconnect(true)
     })
 
     it('should retry syncing the namespace when the previously stored connector registers late', async () => {
@@ -618,6 +630,52 @@ describe('Base Public methods', () => {
 
       // Drain the constructor's fire-and-forget init promise before the test ends so it
       // can't resolve in the background and leak side effects into a later, unrelated test.
+      await (appKit as any).readyPromise
+    })
+
+    it('should not retry while the namespace is still in its initial connecting state at boot', async () => {
+      const appKit = new AppKit(mockOptions)
+
+      vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('tron-link')
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({ status: 'connecting' } as any)
+      const syncNamespaceConnectionSpy = vi
+        .spyOn(appKit as any, 'syncNamespaceConnection')
+        .mockResolvedValue(undefined)
+
+      const lateConnector = {
+        id: 'tron-link',
+        name: 'TronLink',
+        chain: 'eip155',
+        type: 'INJECTED'
+      } as Connector
+
+      appKit.setConnectors([lateConnector])
+
+      expect(syncNamespaceConnectionSpy).not.toHaveBeenCalled()
+
+      await (appKit as any).readyPromise
+    })
+
+    it('should not retry when enableReconnect is explicitly disabled', async () => {
+      const appKit = new AppKit({ ...mockOptions, enableReconnect: false })
+
+      vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('tron-link')
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({ status: 'disconnected' } as any)
+      const syncNamespaceConnectionSpy = vi
+        .spyOn(appKit as any, 'syncNamespaceConnection')
+        .mockResolvedValue(undefined)
+
+      const lateConnector = {
+        id: 'tron-link',
+        name: 'TronLink',
+        chain: 'eip155',
+        type: 'INJECTED'
+      } as Connector
+
+      appKit.setConnectors([lateConnector])
+
+      expect(syncNamespaceConnectionSpy).not.toHaveBeenCalled()
+
       await (appKit as any).readyPromise
     })
   })
