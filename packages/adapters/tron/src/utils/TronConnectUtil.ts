@@ -50,7 +50,60 @@ function listenForReady(
   cleanups.push(() => adapter.removeListener('readyStateChanged', handler))
 }
 
+const READY_STATE_TIMEOUT_MS = 3_000
+
 export const TronConnectUtil = {
+  /**
+   * Callers should start `watchWalletAdapters` before awaiting this, so an adapter that
+   * becomes ready during the wait is already handled by the time this resolves.
+   */
+  waitForLoadingAdapters(adapters: Adapter[], timeoutMs = READY_STATE_TIMEOUT_MS): Promise<void> {
+    if (!CoreHelperUtil.isClient()) {
+      return Promise.resolve()
+    }
+
+    const loadingAdapters = adapters.filter(
+      adapter => adapter.readyState === WalletReadyState.Loading
+    )
+
+    if (loadingAdapters.length === 0) {
+      return Promise.resolve()
+    }
+
+    return new Promise(resolve => {
+      let remaining = loadingAdapters.length
+
+      const handlers = loadingAdapters.map(adapter => {
+        function handler(state: WalletReadyState) {
+          if (state !== WalletReadyState.Loading) {
+            settle()
+          }
+        }
+        adapter.on('readyStateChanged', handler)
+
+        return { adapter, handler }
+      })
+
+      const timer = setTimeout(finish, timeoutMs)
+
+      function settle() {
+        remaining -= 1
+
+        if (remaining <= 0) {
+          finish()
+        }
+      }
+
+      function finish() {
+        clearTimeout(timer)
+        handlers.forEach(({ adapter, handler }) =>
+          adapter.removeListener('readyStateChanged', handler)
+        )
+        resolve()
+      }
+    })
+  },
+
   /**
    * Watch for TRON wallet adapters and invoke callback when one becomes available.
    * Returns a cleanup function to stop listening.

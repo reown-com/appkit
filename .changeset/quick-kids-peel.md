@@ -28,4 +28,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fix stored wallet connections being silently wiped when a connector registers with the adapter after boot (e.g. an injected wallet extension resolving its readyState async, like TronLink). useAppKitAccount now rehydrates correctly instead of staying disconnected after reload.
+Fix stored TRON wallet connections being silently wiped on reload when a wallet adapter (e.g. TronLink) is still resolving its `readyState` when boot sync runs. `TronAdapter.syncConnectors` now waits for pending wallet adapters to settle before boot connection sync runs, so `useAppKitAccount` rehydrates correctly instead of staying disconnected.

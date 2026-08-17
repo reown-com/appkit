@@ -57,13 +57,15 @@ export class TronAdapter extends AdapterBlueprint<TronConnector> {
     this.walletAdapters = params?.walletAdapters || []
   }
 
-  syncConnectors() {
+  async syncConnectors() {
     const chains = ChainController.getCaipNetworks()
 
     this.cleanupWalletWatch?.()
     this.cleanupWalletWatch = TronConnectUtil.watchWalletAdapters(this.walletAdapters, adapter => {
       this.addConnector(new TronConnectConnector({ adapter, chains }))
     })
+
+    await TronConnectUtil.waitForLoadingAdapters(this.walletAdapters)
   }
 
   override async connect(
