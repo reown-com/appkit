@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ChainController } from '@reown/appkit-controllers'
+import type { StellarConnector } from '@reown/appkit-utils/stellar'
 
 import { StellarAdapter } from '../src/adapter.js'
-import type { StellarConnector } from '../src/adapter.js'
 
 const ADDRESS = 'GB43KVROR7TFJ6KAPCYRF2FJROTZAH4FHLTJLPWX4DRZCC5NASLGITR6'
 
@@ -58,7 +58,11 @@ describe('StellarAdapter', () => {
         })
       } as Response)
 
-      const result = await adapter.getBalance({ address: ADDRESS, caipNetwork: MOCK_NETWORK })
+      const result = await adapter.getBalance({
+        address: ADDRESS,
+        chainId: MOCK_NETWORK.id,
+        caipNetwork: MOCK_NETWORK
+      })
 
       expect(fetchSpy).toHaveBeenCalledWith(`https://horizon.stellar.org/accounts/${ADDRESS}`)
       expect(result).toEqual({ balance: '123.4567890', symbol: 'XLM' })
@@ -71,7 +75,11 @@ describe('StellarAdapter', () => {
         json: async () => ({})
       } as Response)
 
-      const result = await adapter.getBalance({ address: ADDRESS, caipNetwork: MOCK_NETWORK })
+      const result = await adapter.getBalance({
+        address: ADDRESS,
+        chainId: MOCK_NETWORK.id,
+        caipNetwork: MOCK_NETWORK
+      })
 
       expect(result).toEqual({ balance: '0', symbol: 'XLM' })
     })
@@ -84,7 +92,11 @@ describe('StellarAdapter', () => {
       } as Response)
       vi.spyOn(console, 'error').mockImplementation(() => undefined)
 
-      const result = await adapter.getBalance({ address: ADDRESS, caipNetwork: MOCK_NETWORK })
+      const result = await adapter.getBalance({
+        address: ADDRESS,
+        chainId: MOCK_NETWORK.id,
+        caipNetwork: MOCK_NETWORK
+      })
 
       expect(result).toEqual({ balance: '0', symbol: 'XLM' })
     })
@@ -96,7 +108,11 @@ describe('StellarAdapter', () => {
         json: async () => ({ balances: [] })
       } as Response)
 
-      const result = await adapter.getBalance({ address: ADDRESS, caipNetwork: MOCK_NETWORK })
+      const result = await adapter.getBalance({
+        address: ADDRESS,
+        chainId: MOCK_NETWORK.id,
+        caipNetwork: MOCK_NETWORK
+      })
 
       expect(result).toEqual({ balance: '0', symbol: 'XLM' })
     })
@@ -104,7 +120,11 @@ describe('StellarAdapter', () => {
     it('does not call Horizon without an address', async () => {
       const fetchSpy = vi.spyOn(global, 'fetch')
 
-      const result = await adapter.getBalance({ address: '', caipNetwork: MOCK_NETWORK })
+      const result = await adapter.getBalance({
+        address: '',
+        chainId: MOCK_NETWORK.id,
+        caipNetwork: MOCK_NETWORK
+      })
 
       expect(fetchSpy).not.toHaveBeenCalled()
       expect(result).toEqual({ balance: '0', symbol: 'XLM' })

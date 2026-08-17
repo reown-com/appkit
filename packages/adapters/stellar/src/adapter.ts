@@ -73,6 +73,13 @@ export class StellarAdapter extends AdapterBlueprint<StellarConnector> {
     return this.connector
   }
 
+  /*
+   * Nothing to await: the WalletConnect handshake is driven by the universal
+   * adapter, so by this point the account is already on the session. Kept
+   * `async` regardless, so the throws below surface as rejections rather than
+   * synchronous exceptions.
+   */
+  // eslint-disable-next-line @typescript-eslint/require-await
   override async connect(
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {

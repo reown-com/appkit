@@ -31,6 +31,7 @@ describe('OptionsController', () => {
         eip155: 'smartAccount',
         polkadot: 'eoa',
         solana: 'eoa',
+        stellar: 'eoa',
         ton: 'eoa',
         tron: 'eoa'
       },
@@ -63,6 +64,7 @@ describe('OptionsController', () => {
       eip155: 'eoa',
       polkadot: 'eoa',
       solana: 'eoa',
+      stellar: 'eoa',
       ton: 'eoa',
       tron: 'eoa'
     })
