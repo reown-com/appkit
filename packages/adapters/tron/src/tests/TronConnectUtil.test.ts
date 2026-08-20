@@ -43,9 +43,7 @@ describe('TronConnectUtil.waitForLoadingAdapters', () => {
     const found = createFakeAdapter(WalletReadyState.Found)
     const notFound = createFakeAdapter(WalletReadyState.NotFound)
 
-    await expect(
-      TronConnectUtil.waitForLoadingAdapters([found, notFound])
-    ).resolves.toBeUndefined()
+    await expect(TronConnectUtil.waitForLoadingAdapters([found, notFound])).resolves.toBeUndefined()
   })
 
   it('resolves immediately when not running on the client', async () => {
@@ -55,38 +53,37 @@ describe('TronConnectUtil.waitForLoadingAdapters', () => {
     await expect(TronConnectUtil.waitForLoadingAdapters([loading])).resolves.toBeUndefined()
   })
 
-  it('resolves once a loading adapter settles', async () => {
+  it('resolves on the next poll once a loading adapter settles, without waiting for the full timeout', async () => {
+    vi.useFakeTimers()
     const loading = createFakeAdapter(WalletReadyState.Loading)
 
-    const promise = TronConnectUtil.waitForLoadingAdapters([loading])
-    ;(loading as unknown as { emit: (event: string, state: WalletReadyState) => void }).emit(
-      'readyStateChanged',
-      WalletReadyState.Found
-    )
+    let resolved = false
+    const promise = TronConnectUtil.waitForLoadingAdapters([loading], 3_000).then(() => {
+      resolved = true
+    })
 
-    await expect(promise).resolves.toBeUndefined()
+    ;(loading as unknown as { readyState: WalletReadyState }).readyState = WalletReadyState.Found
+
+    await vi.advanceTimersByTimeAsync(200)
+    await promise
+    expect(resolved).toBe(true)
   })
 
-  it('waits for every loading adapter before resolving', async () => {
+  it('does not resolve before every loading adapter settles', async () => {
+    vi.useFakeTimers()
     const first = createFakeAdapter(WalletReadyState.Loading)
     const second = createFakeAdapter(WalletReadyState.Loading)
 
     let resolved = false
-    const promise = TronConnectUtil.waitForLoadingAdapters([first, second]).then(() => {
+    const promise = TronConnectUtil.waitForLoadingAdapters([first, second], 3_000).then(() => {
       resolved = true
     })
 
-    ;(first as unknown as { emit: (event: string, state: WalletReadyState) => void }).emit(
-      'readyStateChanged',
-      WalletReadyState.Found
-    )
-    await Promise.resolve()
+    ;(first as unknown as { readyState: WalletReadyState }).readyState = WalletReadyState.Found
+    await vi.advanceTimersByTimeAsync(200)
     expect(resolved).toBe(false)
-
-    ;(second as unknown as { emit: (event: string, state: WalletReadyState) => void }).emit(
-      'readyStateChanged',
-      WalletReadyState.NotFound
-    )
+    ;(second as unknown as { readyState: WalletReadyState }).readyState = WalletReadyState.NotFound
+    await vi.advanceTimersByTimeAsync(200)
     await promise
     expect(resolved).toBe(true)
   })
@@ -100,10 +97,10 @@ describe('TronConnectUtil.waitForLoadingAdapters', () => {
       resolved = true
     })
 
-    await vi.advanceTimersByTimeAsync(2_999)
+    await vi.advanceTimersByTimeAsync(2_799)
     expect(resolved).toBe(false)
 
-    await vi.advanceTimersByTimeAsync(1)
+    await vi.advanceTimersByTimeAsync(200)
     await promise
     expect(resolved).toBe(true)
   })

@@ -3,6 +3,7 @@ import { WalletReadyState } from '@tronweb3/tronwallet-abstract-adapter'
 import { TronLinkAdapter } from '@tronweb3/tronwallet-adapter-tronlink'
 
 import { CoreHelperUtil } from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 /**
  * Validate that a "Found" adapter is genuinely the wallet it claims to be.
@@ -51,11 +52,14 @@ function listenForReady(
 }
 
 const READY_STATE_TIMEOUT_MS = 3_000
+const READY_STATE_POLL_INTERVAL_MS = 200
 
 export const TronConnectUtil = {
   /**
-   * Callers should start `watchWalletAdapters` before awaiting this, so an adapter that
-   * becomes ready during the wait is already handled by the time this resolves.
+   * Polls `adapter.readyState` instead of relying on the `readyStateChanged` event, since
+   * not every wallet adapter is guaranteed to emit it. Callers should start
+   * `watchWalletAdapters` before awaiting this, so an adapter that becomes ready during
+   * the wait is already handled by the time this resolves.
    */
   waitForLoadingAdapters(adapters: Adapter[], timeoutMs = READY_STATE_TIMEOUT_MS): Promise<void> {
     if (!CoreHelperUtil.isClient()) {
@@ -70,38 +74,12 @@ export const TronConnectUtil = {
       return Promise.resolve()
     }
 
-    return new Promise(resolve => {
-      let remaining = loadingAdapters.length
-
-      const handlers = loadingAdapters.map(adapter => {
-        function handler(state: WalletReadyState) {
-          if (state !== WalletReadyState.Loading) {
-            settle()
-          }
-        }
-        adapter.on('readyStateChanged', handler)
-
-        return { adapter, handler }
-      })
-
-      const timer = setTimeout(finish, timeoutMs)
-
-      function settle() {
-        remaining -= 1
-
-        if (remaining <= 0) {
-          finish()
-        }
-      }
-
-      function finish() {
-        clearTimeout(timer)
-        handlers.forEach(({ adapter, handler }) =>
-          adapter.removeListener('readyStateChanged', handler)
-        )
-        resolve()
-      }
-    })
+    return HelpersUtil.withRetry({
+      conditionFn: () =>
+        loadingAdapters.every(adapter => adapter.readyState !== WalletReadyState.Loading),
+      intervalMs: READY_STATE_POLL_INTERVAL_MS,
+      maxRetries: Math.ceil(timeoutMs / READY_STATE_POLL_INTERVAL_MS)
+    }).then(() => undefined)
   },
 
   /**
