@@ -30,17 +30,15 @@ describe('TronAdapter.syncConnectors', () => {
     const adapter = new TronAdapter({ walletAdapters: [loading] })
 
     let waitResolved = false
-    const waitSpy = vi
-      .spyOn(TronConnectUtil, 'waitForLoadingAdapters')
-      .mockImplementation(
-        () =>
-          new Promise(resolve => {
-            setTimeout(() => {
-              waitResolved = true
-              resolve()
-            }, 0)
-          })
-      )
+    const waitSpy = vi.spyOn(TronConnectUtil, 'waitForLoadingAdapters').mockImplementation(
+      () =>
+        new Promise(resolve => {
+          setTimeout(() => {
+            waitResolved = true
+            resolve()
+          }, 0)
+        })
+    )
 
     await adapter.syncConnectors()
 
