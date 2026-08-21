@@ -99,6 +99,11 @@ export type AppKitOptions = {
    */
   universalProvider?: UniversalProvider
   /**
+   * Custom relay URL for WalletConnect. Used for testing against staging relay.
+   * @default undefined
+   */
+  relayUrl?: string
+  /**
    * The default account type used for each chain namespace.
    * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa', ton: 'eoa' }"
    */

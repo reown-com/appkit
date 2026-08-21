@@ -46,7 +46,8 @@ const commonAppKitConfig = {
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
   customWallets: ConstantsUtil.CustomWallets,
   projectId: ConstantsUtil.ProjectId,
-  metadata
+  metadata,
+  relayUrl: 'wss://staging-relay.walletconnect.com'
 }
 const commonWagmiConfig = {
   ssr: true,

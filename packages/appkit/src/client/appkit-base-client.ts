@@ -1849,7 +1849,8 @@ export abstract class AppKitBaseClient {
         url: this.options?.metadata ? this.options?.metadata.url : '',
         icons: this.options?.metadata ? this.options?.metadata.icons : ['']
       },
-      logger
+      logger,
+      relayUrl: this.options?.relayUrl
     }
 
     OptionsController.setManualWCControl(Boolean(this.options?.manualWCControl))
