@@ -4,6 +4,7 @@ import {
   type PutMetricDataCommandInput
 } from '@aws-sdk/client-cloudwatch'
 import type { TestInfo } from '@playwright/test'
+import { BASE_URL } from '@reown/appkit-testing'
 
 import { timeEnd, timeStart } from '../../shared/utils/logs'
 import type { TimingRecords } from '../fixtures/timing-fixture'
@@ -37,7 +38,7 @@ export async function afterEachCanary(testInfo: TestInfo, timingRecords: TimingR
       await uploadCanaryResultsToCloudWatch(
         env,
         region,
-        'https://appkit-lab.reown.org/',
+        BASE_URL,
         metricName,
         testInfo.status === 'passed',
         testInfo.duration,
