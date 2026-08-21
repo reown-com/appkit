@@ -4,6 +4,7 @@ import {
   type PutMetricDataCommandInput
 } from '@aws-sdk/client-cloudwatch'
 import type { TestInfo } from '@playwright/test'
+
 import { BASE_URL } from '@reown/appkit-testing'
 
 import { timeEnd, timeStart } from '../../shared/utils/logs'
