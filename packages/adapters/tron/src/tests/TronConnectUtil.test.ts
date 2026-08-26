@@ -3,14 +3,15 @@ import type { Adapter } from '@tronweb3/tronwallet-abstract-adapter'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { CoreHelperUtil } from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 import { TronConnectUtil } from '../utils/TronConnectUtil'
 
-function createFakeAdapter(readyState: WalletReadyState): Adapter {
+function createFakeAdapter(readyState: WalletReadyState, name = 'FakeWallet'): Adapter {
   const listeners = new Map<string, Set<(state: WalletReadyState) => void>>()
 
   return {
-    name: 'FakeWallet',
+    name,
     readyState,
     on(event: string, listener: (state: WalletReadyState) => void) {
       const set = listeners.get(event) ?? new Set()
@@ -32,11 +33,37 @@ function createFakeAdapter(readyState: WalletReadyState): Adapter {
 describe('TronConnectUtil.waitForLoadingAdapters', () => {
   beforeEach(() => {
     vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
+    // Default to "has a stored, non-disconnected TRON session" so existing polling
+    // assertions below exercise the wait mechanism itself.
+    vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValue({
+      hasConnected: true,
+      hasDisconnected: false
+    })
   })
 
   afterEach(() => {
     vi.useRealTimers()
     vi.restoreAllMocks()
+  })
+
+  it('resolves immediately for a loading adapter with no stored connection', async () => {
+    vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValue({
+      hasConnected: false,
+      hasDisconnected: false
+    })
+    const loading = createFakeAdapter(WalletReadyState.Loading)
+
+    await expect(TronConnectUtil.waitForLoadingAdapters([loading])).resolves.toBeUndefined()
+  })
+
+  it('resolves immediately for a loading adapter that was explicitly disconnected', async () => {
+    vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValue({
+      hasConnected: true,
+      hasDisconnected: true
+    })
+    const loading = createFakeAdapter(WalletReadyState.Loading)
+
+    await expect(TronConnectUtil.waitForLoadingAdapters([loading])).resolves.toBeUndefined()
   })
 
   it('resolves immediately when no adapter is loading', async () => {

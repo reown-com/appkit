@@ -2,6 +2,7 @@ import type { Adapter } from '@tronweb3/tronwallet-abstract-adapter'
 import { WalletReadyState } from '@tronweb3/tronwallet-abstract-adapter'
 import { TronLinkAdapter } from '@tronweb3/tronwallet-adapter-tronlink'
 
+import { ConstantsUtil } from '@reown/appkit-common'
 import { CoreHelperUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 
@@ -60,15 +61,30 @@ export const TronConnectUtil = {
    * not every wallet adapter is guaranteed to emit it. Callers should start
    * `watchWalletAdapters` before awaiting this, so an adapter that becomes ready during
    * the wait is already handled by the time this resolves.
+   *
+   * Only waits for adapters that have an actual stored (non-disconnected) TRON connection,
+   * e.g. a previously connected TronLink session. Without this guard, boot sync would block
+   * on every loading adapter regardless of whether it has anything to restore - for example a
+   * wallet adapter that's simply not installed, or a session connected via WalletConnect
+   * instead of an injected adapter - adding a multi-second delay to every page load.
    */
   waitForLoadingAdapters(adapters: Adapter[], timeoutMs = READY_STATE_TIMEOUT_MS): Promise<void> {
     if (!CoreHelperUtil.isClient()) {
       return Promise.resolve()
     }
 
-    const loadingAdapters = adapters.filter(
-      adapter => adapter.readyState === WalletReadyState.Loading
-    )
+    const loadingAdapters = adapters.filter(adapter => {
+      if (adapter.readyState !== WalletReadyState.Loading) {
+        return false
+      }
+
+      const { hasConnected, hasDisconnected } = HelpersUtil.getConnectorStorageInfo(
+        adapter.name,
+        ConstantsUtil.CHAIN.TRON
+      )
+
+      return hasConnected && !hasDisconnected
+    })
 
     if (loadingAdapters.length === 0) {
       return Promise.resolve()
