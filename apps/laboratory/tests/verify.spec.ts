@@ -11,8 +11,19 @@ import { testMWagmiVerifyDomainMismatch } from './shared/fixtures/w3m-wagmi-veri
 import { testMWagmiVerifyEvil } from './shared/fixtures/w3m-wagmi-verify-evil-fixture'
 import { testMWagmiVerifyValid } from './shared/fixtures/w3m-wagmi-verify-valid-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
-import { getCanaryTagAndAnnotation } from './shared/utils/metrics'
+import { afterEachCanary, getCanaryTagAndAnnotation } from './shared/utils/metrics'
 import { ModalValidator } from './shared/validators/ModalValidator'
+
+/*
+ * Registered on the base fixture so it covers every test object in this file — Playwright scopes
+ * hooks to the suite, so registering it once per canary fixture would upload each metric twice.
+ */
+timingFixture.afterEach(async ({ browserName, timingRecords }, testInfo) => {
+  if (browserName === 'firefox') {
+    return
+  }
+  await afterEachCanary(testInfo, timingRecords)
+})
 
 testMWagmiVerifyValid(
   'wagmi: connection and signature requests from non-scam verified domain should show as domain match',
