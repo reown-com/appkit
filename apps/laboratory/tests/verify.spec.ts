@@ -11,8 +11,21 @@ import { testMWagmiVerifyDomainMismatch } from './shared/fixtures/w3m-wagmi-veri
 import { testMWagmiVerifyEvil } from './shared/fixtures/w3m-wagmi-verify-evil-fixture'
 import { testMWagmiVerifyValid } from './shared/fixtures/w3m-wagmi-verify-valid-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
-import { getCanaryTagAndAnnotation } from './shared/utils/metrics'
+import { afterEachCanary, getCanaryTagAndAnnotation } from './shared/utils/metrics'
 import { ModalValidator } from './shared/validators/ModalValidator'
+
+/*
+ * Uploads canary metrics for the @canary-tagged tests below; a no-op for untagged tests and
+ * outside canary environments. Registered on the shared timingFixture rather than on each canary
+ * fixture: Playwright scopes hooks to the suite, so per-fixture registration would run every hook
+ * for every test in the file and upload each datapoint twice.
+ */
+timingFixture.afterEach(async ({ browserName, timingRecords }, testInfo) => {
+  if (browserName === 'firefox') {
+    return
+  }
+  await afterEachCanary(testInfo, timingRecords)
+})
 
 testMWagmiVerifyValid(
   'wagmi: connection and signature requests from non-scam verified domain should show as domain match',
