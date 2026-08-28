@@ -15,17 +15,12 @@ import { afterEachCanary, getCanaryTagAndAnnotation } from './shared/utils/metri
 import { ModalValidator } from './shared/validators/ModalValidator'
 
 /*
- * Upload canary metrics for the @canary-tagged verify tests below. This hook is a
- * no-op for tests without the @canary tag and outside canary environments.
+ * Uploads canary metrics for the @canary-tagged tests below; a no-op for untagged tests and
+ * outside canary environments. Registered on the shared timingFixture rather than on each canary
+ * fixture: Playwright scopes hooks to the suite, so per-fixture registration would run every hook
+ * for every test in the file and upload each datapoint twice.
  */
-testMWagmiVerifyValid.afterEach(async ({ browserName, timingRecords }, testInfo) => {
-  if (browserName === 'firefox') {
-    return
-  }
-  await afterEachCanary(testInfo, timingRecords)
-})
-
-testMWagmiVerifyEvil.afterEach(async ({ browserName, timingRecords }, testInfo) => {
+timingFixture.afterEach(async ({ browserName, timingRecords }, testInfo) => {
   if (browserName === 'firefox') {
     return
   }
