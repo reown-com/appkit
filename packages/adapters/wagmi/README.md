@@ -41,3 +41,13 @@ Refer to the "Features" section of the [AppKit docs](https://docs.reown.com/appk
 
 > [!NOTE]
 > If you are using Web3Modal v1–v5, please use our [migration guides](https://docs.reown.com/appkit/upgrade/to-reown-appkit-web#migrate-from-web3modal-v5-to-reown-appkit).
+
+## Next.js SSR (App Router)
+
+When using `WagmiAdapter` with Next.js App Router:
+
+1. Set `ssr: true` on `WagmiAdapter`.
+2. Pass request cookies into `cookieToInitialState(wagmiAdapter.wagmiConfig, cookies)` inside a client provider wrapped by `WagmiProvider`.
+3. Configure Next.js to stub or install optional `@wagmi/connectors` peer dependencies (Safe, Coinbase, Base Account, etc.) so `next build` succeeds under Turbopack and Webpack.
+
+See the full working example and config reference in [`examples/next-wagmi-app-router`](../../examples/next-wagmi-app-router/README.md).
