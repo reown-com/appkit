@@ -77,6 +77,7 @@ describe('W3mPayView', () => {
         cosmos: undefined,
         ton: undefined,
         tron: undefined,
+        stellar: undefined,
         sui: undefined,
         stacks: undefined
       }
@@ -163,6 +164,7 @@ describe('W3mPayView', () => {
         cosmos: undefined,
         ton: undefined,
         tron: undefined,
+        stellar: undefined,
         sui: undefined,
         stacks: undefined
       }
@@ -271,6 +273,7 @@ describe('W3mPayView', () => {
         cosmos: undefined,
         ton: undefined,
         tron: undefined,
+        stellar: undefined,
         sui: undefined,
         stacks: undefined
       }
@@ -311,6 +314,7 @@ describe('W3mPayView', () => {
         cosmos: undefined,
         ton: undefined,
         tron: undefined,
+        stellar: undefined,
         sui: undefined,
         stacks: undefined
       }
@@ -381,6 +385,7 @@ describe('W3mPayView', () => {
         cosmos: undefined,
         ton: undefined,
         tron: undefined,
+        stellar: undefined,
         sui: undefined,
         stacks: undefined
       }
@@ -521,6 +526,7 @@ describe('W3mPayView', () => {
         cosmos: undefined,
         ton: undefined,
         tron: undefined,
+        stellar: undefined,
         sui: undefined,
         stacks: undefined
       }
@@ -571,6 +577,7 @@ describe('W3mPayView', () => {
         cosmos: undefined,
         ton: undefined,
         tron: undefined,
+        stellar: undefined,
         sui: undefined,
         stacks: undefined
       }

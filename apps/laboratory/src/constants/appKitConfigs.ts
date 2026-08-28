@@ -9,7 +9,15 @@ import { siweConfig } from '@/src/utils/SiweUtils'
 
 import { externalTestConnector } from '../utils/ConnectorUtil'
 
-export type Adapter = 'wagmi' | 'ethers' | 'ethers5' | 'solana' | 'bitcoin' | 'ton' | 'tron'
+export type Adapter =
+  | 'wagmi'
+  | 'ethers'
+  | 'ethers5'
+  | 'solana'
+  | 'bitcoin'
+  | 'ton'
+  | 'tron'
+  | 'stellar'
 export type WagmiConfig = Partial<CreateConfigParameters> & {
   networks: AppKitNetwork[]
   projectId: string
@@ -275,6 +283,13 @@ export const appKitConfigs = {
     ...commonAppKitConfig,
     adapters: ['tron'],
     networks: ConstantsUtil.TronNetworks
+  },
+
+  // ----- Stellar Variants ------------------------------
+  stellar: {
+    ...commonAppKitConfig,
+    adapters: ['stellar'],
+    networks: ConstantsUtil.StellarNetworks
   },
 
   // ----- Solana Variants ------------------------------

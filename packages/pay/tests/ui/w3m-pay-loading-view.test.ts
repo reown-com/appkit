@@ -141,7 +141,8 @@ describe('W3mPayLoadingView', () => {
         sui: undefined,
         stacks: undefined,
         ton: undefined,
-        tron: undefined
+        tron: undefined,
+        stellar: undefined
       }
     })
     vi.spyOn(ConnectorController, 'subscribeKey').mockImplementation((key, callback) => {

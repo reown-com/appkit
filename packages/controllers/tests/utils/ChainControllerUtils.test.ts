@@ -25,7 +25,8 @@ describe('getChainsToDisconnect', () => {
       sui: undefined,
       stacks: undefined,
       ton: undefined,
-      tron: undefined
+      tron: undefined,
+      stellar: undefined
     }
 
     const result = getChainsToDisconnect()
@@ -49,7 +50,8 @@ describe('getChainsToDisconnect', () => {
       sui: undefined,
       stacks: undefined,
       ton: undefined,
-      tron: undefined
+      tron: undefined,
+      stellar: undefined
     }
 
     const result = getChainsToDisconnect('eip155')
@@ -77,7 +79,8 @@ describe('getChainsToDisconnect', () => {
       sui: undefined,
       stacks: undefined,
       ton: undefined,
-      tron: undefined
+      tron: undefined,
+      stellar: undefined
     }
 
     const result = getChainsToDisconnect('solana')

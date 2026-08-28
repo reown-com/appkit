@@ -10,6 +10,7 @@ import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
+import { StellarAdapter } from '@reown/appkit-adapter-stellar'
 import { TonAdapter } from '@reown/appkit-adapter-ton'
 import { TronAdapter } from '@reown/appkit-adapter-tron'
 import { ReownTronAdapter } from '@reown/appkit-adapter-tron/testing'
@@ -22,6 +23,7 @@ const ethersAdapter = new EthersAdapter()
 const ethers5Adapter = new Ethers5Adapter()
 const bitcoinAdapter = new BitcoinAdapter()
 const tonAdapter = new TonAdapter()
+const stellarAdapter = new StellarAdapter()
 const tronAdapter = new TronAdapter({
   walletAdapters: [
     /* Reown extension (must be first for priority) */
@@ -68,6 +70,9 @@ export function getAppKitAdapters(
     }
     if (adapter === 'tron') {
       appKitAdapters.push(tronAdapter)
+    }
+    if (adapter === 'stellar') {
+      appKitAdapters.push(stellarAdapter)
     }
   })
 
