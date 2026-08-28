@@ -17,6 +17,7 @@ import { Ethers5Tests } from './Ethers/Ethers5Tests'
 import { EthersTests } from './Ethers/EthersTests'
 import { ReownAuthenticationTests } from './ReownAuthentication'
 import { SiweData } from './Siwe/SiweData'
+import { StellarTests } from './Stellar/StellarTests'
 import { TonTests } from './Ton/TonTests'
 import { TronTests } from './Tron/TronTests'
 import { UpaTests } from './UPA/UpaTests'
@@ -33,6 +34,7 @@ export default function DemoContent({
   const bitcoinAdapter = config?.adapters?.find(adapter => adapter === 'bitcoin')
   const tonAdapter = config?.adapters?.find(adapter => adapter === 'ton')
   const tronAdapter = config?.adapters?.find(adapter => adapter === 'tron')
+  const stellarAdapter = config?.adapters?.find(adapter => adapter === 'stellar')
   const evmAdapter = config?.adapters?.find(
     adapter => adapter === 'wagmi' || adapter === 'ethers' || adapter === 'ethers5'
   )
@@ -54,6 +56,7 @@ export default function DemoContent({
       <AppKitConnections namespace="bip122" title="Bitcoin Connections" />
       <AppKitConnections namespace="ton" title="TON Connections" />
       <AppKitConnections namespace="tron" title="TRON Connections" />
+      <AppKitConnections namespace="stellar" title="Stellar Connections" />
 
       {evmAdapter === 'wagmi' && <WagmiTests />}
       {evmAdapter === 'ethers5' && <Ethers5Tests />}
@@ -62,6 +65,7 @@ export default function DemoContent({
       {bitcoinAdapter ? <BitcoinTests /> : null}
       {tonAdapter ? <TonTests /> : null}
       {tronAdapter ? <TronTests /> : null}
+      {stellarAdapter ? <StellarTests /> : null}
       {hasNoAdapters ? <UpaTests /> : null}
 
       {isPayEnabled ? <AppKitPay /> : null}

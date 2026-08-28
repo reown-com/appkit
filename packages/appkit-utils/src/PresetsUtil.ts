@@ -108,6 +108,10 @@ export const PresetsUtil = {
     80094: 'e329c2c9-59b0-4a02-83e4-212ff3779900',
     // Abstract Mainnet
     2741: 'fc2427d1-5af9-4a9c-8da5-6f94627cd900',
+    // Rootstock Mainnet
+    30: 'fb7e1624-99e3-4c36-ea01-4cfe46c4a300',
+    // Rootstock Testnet
+    31: '2eb3d92a-3d77-42aa-87c9-190adb144800',
     // Solana networks
     '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
     '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
@@ -127,7 +131,13 @@ export const PresetsUtil = {
     // TRON Shasta Testnet
     '0x94a9059e': '3502bb86-cc4e-420f-a387-59ea63a28b00',
     // TRON Nile Testnet
-    '0xcd8690dc': '3502bb86-cc4e-420f-a387-59ea63a28b00'
+    '0xcd8690dc': '3502bb86-cc4e-420f-a387-59ea63a28b00',
+    /*
+     * Stellar Pubnet / Testnet
+     * TODO: replace once the Stellar logo is uploaded to the Reown asset CDN
+     */
+    pubnet: '',
+    testnet: ''
   } as Record<string, string>,
 
   ConnectorImageIds: {

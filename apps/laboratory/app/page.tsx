@@ -13,6 +13,7 @@ import {
   paySdkOptions,
   siwxSdkOptions,
   solanaSdkOptions,
+  stellarSdkOptions,
   testingSdkOptions,
   tonSdkOptions,
   tronSdkOptions,
@@ -29,6 +30,7 @@ export default function HomePage() {
       <ConfigurationList title="Bitcoin" sdkOptions={bitcoinSdkOptions} />
       <ConfigurationList title="Ton" sdkOptions={tonSdkOptions} />
       <ConfigurationList title="Tron" sdkOptions={tronSdkOptions} />
+      <ConfigurationList title="Stellar" sdkOptions={stellarSdkOptions} />
       <ConfigurationList title="Ethers" sdkOptions={ethersSdkOptions} />
       <ConfigurationList title="Ethers 5" sdkOptions={ethers5SdkOptions} />
       <ConfigurationList

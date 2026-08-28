@@ -62,6 +62,7 @@ export type InternalChainNamespace =
   | 'stacks'
   | 'ton'
   | 'tron'
+  | 'stellar'
 
 export type ChainNamespace<T extends string = InternalChainNamespace> = T | InternalChainNamespace
 
@@ -75,6 +76,7 @@ export type AdapterType =
   | 'polkadot'
   | 'ton'
   | 'tron'
+  | 'stellar'
 
 export type TransactionStatus = 'confirmed' | 'failed' | 'pending'
 

@@ -25,6 +25,8 @@ import {
   solana,
   solanaDevnet,
   solanaTestnet,
+  stellar,
+  stellarTestnet,
   ton,
   tonTestnet,
   tronMainnet,
@@ -125,6 +127,8 @@ const TonNetworks = [ton, tonTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
 
 const TronNetworks = [tronMainnet, tronShastaTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
 
+const StellarNetworks = [stellar, stellarTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
+
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
   SigningFailedToastTitle: 'Signing Failed',
@@ -182,12 +186,14 @@ export const ConstantsUtil = {
   BitcoinNetworks,
   TonNetworks,
   TronNetworks,
+  StellarNetworks,
   AllNetworks: [
     ...EvmNetworks,
     ...SolanaNetworks,
     ...BitcoinNetworks,
     ...TonNetworks,
-    ...TronNetworks
+    ...TronNetworks,
+    ...StellarNetworks
   ] as [AppKitNetwork, ...AppKitNetwork[]],
   EvmWalletButtons: [
     'walletConnect',
@@ -211,7 +217,7 @@ export const ConstantsUtil = {
     'backpack',
     'frontier'
   ] as Wallet[],
-  BitcoinWalletButtons: ['walletConnect', 'xverse', 'leather', 'okx', 'phantom'] as Wallet[],
+  BitcoinWalletButtons: ['walletConnect', 'xverse', 'leather', 'okx'] as Wallet[],
   Socials: [
     'google',
     'github',

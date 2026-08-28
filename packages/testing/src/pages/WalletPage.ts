@@ -83,9 +83,29 @@ export class WalletPage {
     await this.performRequestAction(variant)
   }
 
+  sessionRequestButton(variant: string) {
+    return this.page.getByTestId(`session-${variant}-button`)
+  }
+
+  /**
+   * Resolves once the wallet has received a session proposal and rendered the request UI
+   * (the approve button becomes visible). Deterministic signal for canary timing — replaces
+   * brittle console-log parsing. Shares the same owned testid as `performRequestAction`, so a
+   * selector change breaks the approve flow too and fails the run (paging via the
+   * success/failure canary) rather than silently dropping the timing metric. Note: the interval
+   * includes the wallet's render time; the pure relay/SDK delivery leg needs a wallet-side signal.
+   */
+  async waitForSessionProposal(timeout = 30000) {
+    await this.page.waitForLoadState()
+    await expect(
+      this.sessionRequestButton('approve'),
+      'Session proposal should be received (approve button visible)'
+    ).toBeVisible({ timeout })
+  }
+
   async performRequestAction(variant: string) {
     await this.page.waitForLoadState()
-    const btn = this.page.getByTestId(`session-${variant}-button`)
+    const btn = this.sessionRequestButton(variant)
     await expect(btn, `Session ${variant} element should be visible`).toBeVisible({
       timeout: 30000
     })

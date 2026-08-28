@@ -57,13 +57,15 @@ export class TronAdapter extends AdapterBlueprint<TronConnector> {
     this.walletAdapters = params?.walletAdapters || []
   }
 
-  syncConnectors() {
+  async syncConnectors() {
     const chains = ChainController.getCaipNetworks()
 
     this.cleanupWalletWatch?.()
     this.cleanupWalletWatch = TronConnectUtil.watchWalletAdapters(this.walletAdapters, adapter => {
       this.addConnector(new TronConnectConnector({ adapter, chains }))
     })
+
+    await TronConnectUtil.waitForLoadingAdapters(this.walletAdapters)
   }
 
   override async connect(
@@ -143,8 +145,21 @@ export class TronAdapter extends AdapterBlueprint<TronConnector> {
     })
   }
 
-  override async signMessage(): Promise<AdapterBlueprint.SignMessageResult> {
-    return Promise.resolve({ signature: '' })
+  override async signMessage(
+    params: AdapterBlueprint.SignMessageParams
+  ): Promise<AdapterBlueprint.SignMessageResult> {
+    const connector = params.provider as TronConnector
+
+    if (!connector) {
+      throw new Error('TronAdapter:signMessage - connector is undefined')
+    }
+
+    const signature = await connector.signMessage({
+      message: params.message,
+      from: params.address
+    })
+
+    return { signature }
   }
 
   override async sendTransaction(): Promise<AdapterBlueprint.SendTransactionResult> {

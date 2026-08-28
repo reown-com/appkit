@@ -2,7 +2,9 @@ import type { Adapter } from '@tronweb3/tronwallet-abstract-adapter'
 import { WalletReadyState } from '@tronweb3/tronwallet-abstract-adapter'
 import { TronLinkAdapter } from '@tronweb3/tronwallet-adapter-tronlink'
 
+import { ConstantsUtil } from '@reown/appkit-common'
 import { CoreHelperUtil } from '@reown/appkit-controllers'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 /**
  * Validate that a "Found" adapter is genuinely the wallet it claims to be.
@@ -50,7 +52,52 @@ function listenForReady(
   cleanups.push(() => adapter.removeListener('readyStateChanged', handler))
 }
 
+const READY_STATE_TIMEOUT_MS = 3_000
+const READY_STATE_POLL_INTERVAL_MS = 200
+
 export const TronConnectUtil = {
+  /**
+   * Polls `adapter.readyState` instead of relying on the `readyStateChanged` event, since
+   * not every wallet adapter is guaranteed to emit it. Callers should start
+   * `watchWalletAdapters` before awaiting this, so an adapter that becomes ready during
+   * the wait is already handled by the time this resolves.
+   *
+   * Only waits for adapters that have an actual stored (non-disconnected) TRON connection,
+   * e.g. a previously connected TronLink session. Without this guard, boot sync would block
+   * on every loading adapter regardless of whether it has anything to restore - for example a
+   * wallet adapter that's simply not installed, or a session connected via WalletConnect
+   * instead of an injected adapter - adding a multi-second delay to every page load.
+   */
+  waitForLoadingAdapters(adapters: Adapter[], timeoutMs = READY_STATE_TIMEOUT_MS): Promise<void> {
+    if (!CoreHelperUtil.isClient()) {
+      return Promise.resolve()
+    }
+
+    const loadingAdapters = adapters.filter(adapter => {
+      if (adapter.readyState !== WalletReadyState.Loading) {
+        return false
+      }
+
+      const { hasConnected, hasDisconnected } = HelpersUtil.getConnectorStorageInfo(
+        adapter.name,
+        ConstantsUtil.CHAIN.TRON
+      )
+
+      return hasConnected && !hasDisconnected
+    })
+
+    if (loadingAdapters.length === 0) {
+      return Promise.resolve()
+    }
+
+    return HelpersUtil.withRetry({
+      conditionFn: () =>
+        loadingAdapters.every(adapter => adapter.readyState !== WalletReadyState.Loading),
+      intervalMs: READY_STATE_POLL_INTERVAL_MS,
+      maxRetries: Math.ceil(timeoutMs / READY_STATE_POLL_INTERVAL_MS)
+    }).then(() => undefined)
+  },
+
   /**
    * Watch for TRON wallet adapters and invoke callback when one becomes available.
    * Returns a cleanup function to stop listening.

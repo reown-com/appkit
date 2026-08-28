@@ -13,6 +13,12 @@ export type { ChainControllerState, AccountState } from '../src/controllers/Chai
 
 export { ProviderController } from '../src/controllers/ProviderController.js'
 export type { ProviderControllerState } from '../src/controllers/ProviderController.js'
+export {
+  isCoinbaseConnectorId,
+  isUnauthorizedProviderError,
+  maybeWrapCoinbaseProvider,
+  withCoinbaseReauth
+} from '../src/utils/ProviderReauthUtil.js'
 
 export { OnRampController } from '../src/controllers/OnRampController.js'
 export type { OnRampControllerState, OnRampProvider } from '../src/controllers/OnRampController.js'
