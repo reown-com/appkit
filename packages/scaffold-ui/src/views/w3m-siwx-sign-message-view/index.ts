@@ -23,6 +23,19 @@ export class W3mSIWXSignMessageView extends LitElement {
 
   @state() private isSigning = false
 
+  private hasAutoSignTriggered = false
+
+  public override connectedCallback() {
+    super.connectedCallback()
+
+    if (this.hasAutoSignTriggered) {
+      return
+    }
+
+    this.hasAutoSignTriggered = true
+    queueMicrotask(() => void this.onSign())
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -69,6 +82,10 @@ export class W3mSIWXSignMessageView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private async onSign() {
+    if (this.isSigning) {
+      return
+    }
+
     this.isSigning = true
     try {
       await SIWXUtil.requestSignMessage()
