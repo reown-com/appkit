@@ -12,7 +12,7 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts"
   },
   "dependencies": {
-    "@opennextjs/cloudflare": "1.5.3",
+    "@opennextjs/cloudflare": "1.17.1",
     "@radix-ui/react-accordion": "1.2.12",
     "@radix-ui/react-icons": "1.3.2",
     "@radix-ui/react-slot": "1.2.3",
