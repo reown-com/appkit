@@ -1,4 +1,4 @@
-import { onUnmounted, reactive, ref } from 'vue'
+import { onUnmounted, reactive, ref, shallowRef } from 'vue'
 
 import type { ChainNamespace } from '@reown/appkit-common'
 import { type ConnectorType, type Event } from '@reown/appkit-controllers'
@@ -63,8 +63,8 @@ export function getAppKit(appKit: AppKit) {
 export * from '@reown/appkit-controllers/vue'
 
 export function useAppKitProvider<T>(chainNamespace: ChainNamespace): UseAppKitReturnType<T> {
-  const walletProvider = ref(ProviderController.state.providers[chainNamespace] as T | undefined)
-  const walletProviderType = ref(ProviderController.state.providerIds[chainNamespace])
+  const walletProvider = shallowRef(ProviderController.state.providers[chainNamespace] as T | undefined)
+  const walletProviderType = shallowRef(ProviderController.state.providerIds[chainNamespace])
 
   const unsubscribe = ProviderController.subscribe(newState => {
     walletProvider.value = newState.providers[chainNamespace]
