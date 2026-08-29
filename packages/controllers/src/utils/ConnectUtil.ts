@@ -62,7 +62,9 @@ export const ConnectUtil = {
    */
   getWalletConnectWallets(wcAllWallets: WcWallet[], wcSearchWallets: WcWallet[]) {
     if (wcSearchWallets.length > 0) {
-      return wcSearchWallets.map(w => this.mapWalletToWalletItem(w))
+      return WalletUtil.filterAndFlagWallets(wcSearchWallets).map(w =>
+        this.mapWalletToWalletItem(w)
+      )
     }
 
     return WalletUtil.getWalletConnectWallets(wcAllWallets).map(w => this.mapWalletToWalletItem(w))
