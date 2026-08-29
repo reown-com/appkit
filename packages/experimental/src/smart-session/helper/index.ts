@@ -16,7 +16,7 @@ export function validateRequest(request: SmartSessionGrantPermissionsRequest) {
     return SmartSessionGrantPermissionsRequestSchema.parse(request)
   } catch (e) {
     if (e instanceof ZodError) {
-      const formattedErrors = e.errors
+      const formattedErrors = e.issues
         .map(err => `Invalid ${err.path.join('.') || 'Unknown field'}: ${err.message}`)
         .join('; ')
       throw new Error(formattedErrors)

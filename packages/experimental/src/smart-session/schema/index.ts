@@ -22,14 +22,14 @@ export const ERROR_MESSAGES = {
   INVALID_PUBLIC_KEY_FORMAT: 'Invalid public key: must start with "0x"',
   //PermissionSchema
   INVALID_PERMISSIONS: 'Invalid permissions: must be a non-empty array',
-  INVALID_PERMISSIONS_TYPE: 'Invalid permissions: Expected array, received object',
+  INVALID_PERMISSIONS_TYPE: 'Invalid permissions: Invalid input: expected array, received object',
 
   INVALID_ALLOWANCE_FORMAT: 'Invalid allowance: must be a hexadecimal string starting with "0x"',
   INVALID_START: 'Invalid start time: must be a positive integer and in the future',
   INVALID_PERIOD: 'Invalid period: must be a positive integer',
   //PolicySchema
   INVALID_POLICIES: 'Invalid policies: must be a non-empty array',
-  INVALID_POLICIES_TYPE: 'Invalid policies: Expected array, received object',
+  INVALID_POLICIES_TYPE: 'Invalid policies: Invalid input: expected array, received object',
 
   INVALID_GRANT_PERMISSIONS_RESPONSE: 'Invalid grantPermissions response'
 }
@@ -46,9 +46,7 @@ const ChainIdSchema = z
 
 // Address Schema
 const AddressSchema = z
-  .string({
-    invalid_type_error: ERROR_MESSAGES.INVALID_ADDRESS
-  })
+  .string({ error: ERROR_MESSAGES.INVALID_ADDRESS })
   .startsWith('0x', { message: ERROR_MESSAGES.INVALID_ADDRESS })
   .optional()
 
@@ -63,7 +61,7 @@ const ExpirySchema = z
 // Key Schema
 const KeySchema = z.object({
   type: z.enum(['secp256r1', 'secp256k1'], {
-    errorMap: () => ({ message: ERROR_MESSAGES.UNSUPPORTED_KEY_TYPE })
+    error: () => ERROR_MESSAGES.UNSUPPORTED_KEY_TYPE
   }),
   publicKey: z.string().refine(val => val.startsWith('0x'), {
     message: ERROR_MESSAGES.INVALID_PUBLIC_KEY_FORMAT
@@ -80,7 +78,7 @@ const SignerSchema = z.object({
 
 // Argument Condition Schema
 const ArgumentConditionSchema = z.object({
-  operator: z.nativeEnum(ParamOperator, { errorMap: () => ({ message: 'Invalid operator type' }) }),
+  operator: z.enum(ParamOperator, { error: () => 'Invalid operator type' }),
   value: z.string().startsWith('0x', { message: ERROR_MESSAGES.INVALID_ADDRESS })
 })
 
@@ -89,7 +87,7 @@ const FunctionPermissionSchema = z.object({
   functionName: z.string(),
   args: z.array(ArgumentConditionSchema).optional(),
   valueLimit: z.string().startsWith('0x', { message: ERROR_MESSAGES.INVALID_ADDRESS }).optional(),
-  operation: z.nativeEnum(Operation).optional()
+  operation: z.enum(Operation).optional()
 })
 
 // Contract Call Permission Schema
@@ -97,7 +95,7 @@ const ContractCallPermissionSchema = z.object({
   type: z.literal('contract-call'),
   data: z.object({
     address: z.string().startsWith('0x', { message: ERROR_MESSAGES.INVALID_ADDRESS }),
-    abi: z.array(z.record(z.unknown())),
+    abi: z.array(z.record(z.string(), z.unknown())),
     functions: z.array(FunctionPermissionSchema)
   })
 })
@@ -142,7 +140,7 @@ const PermissionSchema = z.union([
 // Policies Schema
 const PolicySchema = z.object({
   type: z.string(),
-  data: z.record(z.unknown())
+  data: z.record(z.string(), z.unknown())
 })
 
 // Smart Session Grant Permissions Request Schema
