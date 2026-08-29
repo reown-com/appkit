@@ -43,6 +43,26 @@ export default [
     path: 'packages/ui/dist/esm/exports/index.js',
     limit: '500 KB', // Baseline - adjust after first run
     gzip: true
+  },
+
+  // ===== Headless Package =====
+  {
+    name: '@reown/appkit-headless - Main Entry',
+    path: 'packages/headless/dist/esm/exports/index.js',
+    limit: '30 KB', // Target: much smaller than full appkit
+    gzip: true
+  },
+  {
+    name: '@reown/appkit-headless/react',
+    path: 'packages/headless/dist/esm/exports/react.js',
+    limit: '80 KB', // Target: ~50-80KB (down from ~222KB for appkit/react)
+    gzip: true
+  },
+  {
+    name: '@reown/appkit-headless/vue',
+    path: 'packages/headless/dist/esm/exports/vue.js',
+    limit: '80 KB', // Target: similar to react
+    gzip: true
   }
 
   // Note: Adapters and smaller packages excluded since they're just re-exports (<5KB each)
