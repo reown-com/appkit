@@ -23,7 +23,8 @@ vi.mock('../../src/controllers/RouterController', () => ({
 
 vi.mock('../../src/utils/SIWXUtil', () => ({
   SIWXUtil: {
-    isSIWXCloseDisabled: vi.fn()
+    isSIWXCloseDisabled: vi.fn(),
+    cancelSignMessage: vi.fn()
   }
 }))
 
@@ -92,6 +93,15 @@ describe('ModalUtil', () => {
       await ModalUtil.safeClose()
       expect(ModalController.shake).not.toHaveBeenCalled()
       expect(ModalController.close).toHaveBeenCalled()
+    })
+
+    it('should cancel the sign message instead of shaking when on the SIWXSignMessage view', async () => {
+      RouterController.state.view = 'SIWXSignMessage'
+      vi.mocked(SIWXUtil.isSIWXCloseDisabled).mockResolvedValue(true)
+      await ModalUtil.safeClose()
+      expect(SIWXUtil.cancelSignMessage).toHaveBeenCalled()
+      expect(ModalController.shake).not.toHaveBeenCalled()
+      expect(ModalController.close).not.toHaveBeenCalled()
     })
   })
 })

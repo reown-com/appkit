@@ -21,7 +21,11 @@ export const ModalUtil = {
 
     const isSIWXCloseDisabled = await SIWXUtil.isSIWXCloseDisabled()
     if (isSIWXCloseDisabled) {
-      ModalController.shake()
+      if (RouterController.state.view === 'SIWXSignMessage') {
+        await SIWXUtil.cancelSignMessage()
+      } else {
+        ModalController.shake()
+      }
 
       return
     }
