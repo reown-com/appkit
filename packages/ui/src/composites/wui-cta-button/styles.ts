@@ -17,6 +17,15 @@ export default css`
 
   wui-text {
     color: ${({ tokens }) => tokens.theme.textSecondary};
+    min-width: 0;
+    flex: 1 1 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  wui-button {
+    flex-shrink: 0;
   }
 
   wui-icon {
