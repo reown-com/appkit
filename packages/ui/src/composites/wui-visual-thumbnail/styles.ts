@@ -17,7 +17,6 @@ export default css`
   }
 
   wui-icon {
-    width: 32px;
-    height: 32px;
+    font-size: 48px;
   }
 `
