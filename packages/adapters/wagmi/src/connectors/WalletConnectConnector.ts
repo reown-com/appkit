@@ -295,11 +295,16 @@ export function walletConnect(parameters: AppKitOptionsParams) {
       }
 
       const isMultichain = Object.keys(AdapterController.state.adapters).length > 1
-      if (isMultichain) {
-        const activeEvmNetwork = ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.EVM)
-        if (activeEvmNetwork?.caipNetworkId && provider_) {
-          provider_.setDefaultChain(activeEvmNetwork.caipNetworkId)
+      const providerWithFlag = provider_ as Provider & { _appKitRequestOverride?: boolean }
+      if (isMultichain && provider_ && !providerWithFlag._appKitRequestOverride) {
+        const originalRequest = provider_.request.bind(provider_)
+        provider_.request = (args: { method: string; params?: unknown }, chain?: string) => {
+          const activeEvmNetwork = ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.EVM)
+          const chainToUse = chain ?? activeEvmNetwork?.caipNetworkId
+          // @ts-expect-error - args type mismatch with RequestArguments
+          return originalRequest(args, chainToUse)
         }
+        providerWithFlag._appKitRequestOverride = true
       }
 
       // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
