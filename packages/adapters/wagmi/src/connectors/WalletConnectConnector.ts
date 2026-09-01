@@ -23,6 +23,7 @@ import {
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
+  AdapterController,
   ChainController,
   OptionsController,
   StorageUtil,
@@ -290,6 +291,14 @@ export function walletConnect(parameters: AppKitOptionsParams) {
 
         if (storedCaipNetwork && storedCaipNetwork.chainNamespace === ConstantsUtil.CHAIN.EVM) {
           await this.switchChain?.({ chainId: Number(storedCaipNetwork.id) })
+        }
+      }
+
+      const isMultichain = Object.keys(AdapterController.state.adapters).length > 1
+      if (isMultichain) {
+        const activeEvmNetwork = ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.EVM)
+        if (activeEvmNetwork?.caipNetworkId && provider_) {
+          provider_.setDefaultChain(activeEvmNetwork.caipNetworkId)
         }
       }
 
