@@ -6,7 +6,8 @@ import {
   ConnectorController,
   EventsController,
   ModalController,
-  RouterController
+  RouterController,
+  SIWXUtil
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
@@ -53,7 +54,9 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
         throw new Error('w3m-connecting-wc-browser: No connector found')
       }
 
-      ModalController.close()
+      if (await SIWXUtil.isAuthenticated()) {
+        ModalController.close()
+      }
     } catch (error) {
       const isUserRejectedRequestError =
         error instanceof AppKitError &&
