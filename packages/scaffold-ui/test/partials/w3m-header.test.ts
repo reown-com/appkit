@@ -294,4 +294,47 @@ describe('W3mHeader', () => {
       expect(networkSelect).toBeNull()
     })
   })
+
+  describe('Accessible names', () => {
+    function innerButtonLabel(host: HTMLElement | null) {
+      return host?.shadowRoot?.querySelector('button')?.getAttribute('aria-label')
+    }
+
+    it('should label the close button', () => {
+      const closeButton = HelpersUtil.getByTestId(element, 'w3m-header-close')
+      expect(innerButtonLabel(closeButton)).toBe('Close')
+    })
+
+    it('should label the help button', async () => {
+      RouterController.reset('Connect')
+      element.requestUpdate()
+      await element.updateComplete
+      await elementUpdated(element)
+
+      const helpButton = element.shadowRoot?.querySelector(
+        'wui-icon-button[icon="helpCircle"]'
+      ) as HTMLElement | null
+      expect(innerButtonLabel(helpButton)).toBe('Help')
+    })
+
+    it('should label the back button', async () => {
+      RouterController.push('Networks')
+      await element.updateComplete
+      await elementUpdated(element)
+
+      const backButton = HelpersUtil.getByTestId(element, 'header-back')
+      expect(innerButtonLabel(backButton)).toBe('Back')
+    })
+
+    it('should label the smart sessions button', async () => {
+      RouterController.push('Account')
+      OptionsController.state.features = { smartSessions: true }
+      element.requestUpdate()
+      await element.updateComplete
+      await elementUpdated(element)
+
+      const smartSessionsButton = HelpersUtil.getByTestId(element, 'w3m-header-smart-sessions')
+      expect(innerButtonLabel(smartSessionsButton)).toBe('Smart Sessions')
+    })
+  })
 })

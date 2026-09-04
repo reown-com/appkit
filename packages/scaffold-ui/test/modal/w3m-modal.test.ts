@@ -434,4 +434,44 @@ describe('W3mModal', () => {
       expect(ChainController.setIsSwitchingNamespace).toHaveBeenCalledWith(false)
     })
   })
+
+  describe('Accessible name', () => {
+    let element: W3mModal
+
+    beforeEach(async () => {
+      Element.prototype.animate = vi.fn().mockReturnValue({ finished: true })
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve([]))
+      vi.spyOn(ApiController, 'fetchWalletsByPage').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
+      OptionsController.setEnableEmbedded(true)
+      RouterController.reset('Connect')
+      ModalController.close()
+      element = await fixture(html`<w3m-modal .enableEmbedded=${true}></w3m-modal>`)
+    })
+
+    it('should name the card after the Connect heading', () => {
+      const card = HelpersUtil.getByTestId(element, 'w3m-modal-card')
+      expect(card?.getAttribute('aria-label')).toBe('Connect Wallet')
+    })
+
+    it('should name the card after the Networks heading', async () => {
+      RouterController.reset('Networks')
+      element.requestUpdate()
+      await element.updateComplete
+      await elementUpdated(element)
+
+      const card = HelpersUtil.getByTestId(element, 'w3m-modal-card')
+      expect(card?.getAttribute('aria-label')).toBe('Choose Network')
+    })
+
+    it('should fall back to a spaced view name when the heading is empty', async () => {
+      RouterController.reset('Account')
+      element.requestUpdate()
+      await element.updateComplete
+      await elementUpdated(element)
+
+      const card = HelpersUtil.getByTestId(element, 'w3m-modal-card')
+      expect(card?.getAttribute('aria-label')).toBe('Account')
+    })
+  })
 })
