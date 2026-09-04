@@ -6,6 +6,7 @@ import {
   ConnectorController,
   EventsController,
   ModalController,
+  OptionsController,
   RouterController,
   SIWXUtil
 } from '@reown/appkit-controllers'
@@ -54,7 +55,8 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
         throw new Error('w3m-connecting-wc-browser: No connector found')
       }
 
-      if (await SIWXUtil.isAuthenticated()) {
+      const isAuthenticated = !OptionsController.state.siwx || (await SIWXUtil.isAuthenticated())
+      if (isAuthenticated) {
         ModalController.close()
       }
     } catch (error) {

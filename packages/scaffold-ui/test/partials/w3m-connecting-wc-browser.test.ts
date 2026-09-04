@@ -12,6 +12,7 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
+  OptionsController,
   RouterController,
   SIWXUtil,
   type WcWallet
@@ -82,6 +83,10 @@ describe('W3mConnectingWcBrowser', () => {
     vi.spyOn(EventsController, 'sendEvent')
     vi.spyOn(ModalController, 'close').mockImplementation(() => {})
     vi.spyOn(SIWXUtil, 'isAuthenticated').mockResolvedValue(false)
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      siwx: {} as any
+    })
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       ...ConnectorController.state,
       connectors: [CONNECTOR]

@@ -137,6 +137,11 @@ describe('W3mConnectingFarcasterView', () => {
       vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([MOCK_CONNECTION])
       vi.spyOn(ConnectionController, 'connectExternal').mockResolvedValue(undefined)
       vi.spyOn(SIWXUtil, 'isAuthenticated').mockResolvedValue(false)
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        remoteFeatures: { multiWallet: true },
+        siwx: {} as any
+      })
 
       await element['connectFarcaster']()
 
@@ -149,6 +154,10 @@ describe('W3mConnectingFarcasterView', () => {
       vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([])
       vi.spyOn(ConnectionController, 'connectExternal').mockResolvedValue(undefined)
       vi.spyOn(SIWXUtil, 'isAuthenticated').mockResolvedValue(false)
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        siwx: {} as any
+      })
 
       await element['connectFarcaster']()
 

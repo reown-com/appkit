@@ -210,7 +210,8 @@ export class W3mConnectingFarcasterView extends LitElement {
           })
         }
         this.loading = false
-        if (await SIWXUtil.isAuthenticated()) {
+        const isAuthenticated = !OptionsController.state.siwx || (await SIWXUtil.isAuthenticated())
+        if (isAuthenticated) {
           if (hasConnections && isMultiWalletEnabled) {
             RouterController.replace('ProfileWallets')
             SnackController.showSuccess('New Wallet Added')
