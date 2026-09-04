@@ -6,6 +6,7 @@ import {
   ModalController,
   OptionsController,
   RouterController,
+  SIWXUtil,
   SnackController
 } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
@@ -40,7 +41,9 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         }
 
         if (OptionsController.state.siwx) {
-          ModalController.close()
+          if (await SIWXUtil.isAuthenticated()) {
+            ModalController.close()
+          }
 
           return
         }

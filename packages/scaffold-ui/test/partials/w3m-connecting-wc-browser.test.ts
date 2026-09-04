@@ -11,7 +11,10 @@ import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
+  ModalController,
+  OptionsController,
   RouterController,
+  SIWXUtil,
   type WcWallet
 } from '@reown/appkit-controllers'
 
@@ -60,8 +63,10 @@ describe('W3mConnectingWcBrowser', () => {
   })
 
   it('it should connect successfully if a connector exist', async () => {
-    vi.spyOn(ConnectionController, 'connectExternal')
+    vi.spyOn(ConnectionController, 'connectExternal').mockResolvedValue(undefined)
     vi.spyOn(EventsController, 'sendEvent')
+    vi.spyOn(ModalController, 'close').mockImplementation(() => {})
+    vi.spyOn(SIWXUtil, 'isAuthenticated').mockResolvedValue(true)
     vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
       ...ConnectorController.state,
       connectors: [CONNECTOR]
@@ -70,6 +75,27 @@ describe('W3mConnectingWcBrowser', () => {
     await fixture(html`<w3m-connecting-wc-browser></w3m-connecting-wc-browser>`)
 
     expect(ConnectionController.connectExternal).toHaveBeenCalledWith(CONNECTOR, CONNECTOR.chain)
+    expect(ModalController.close).toHaveBeenCalled()
+  })
+
+  it('it should not close the modal if siwx is enabled and not yet authenticated', async () => {
+    vi.spyOn(ConnectionController, 'connectExternal').mockResolvedValue(undefined)
+    vi.spyOn(EventsController, 'sendEvent')
+    vi.spyOn(ModalController, 'close').mockImplementation(() => {})
+    vi.spyOn(SIWXUtil, 'isAuthenticated').mockResolvedValue(false)
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      siwx: {} as any
+    })
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      connectors: [CONNECTOR]
+    })
+
+    await fixture(html`<w3m-connecting-wc-browser></w3m-connecting-wc-browser>`)
+
+    expect(ConnectionController.connectExternal).toHaveBeenCalledWith(CONNECTOR, CONNECTOR.chain)
+    expect(ModalController.close).not.toHaveBeenCalled()
   })
 
   it('it should throw an error if trying to connect when a connector does not exist', async () => {
