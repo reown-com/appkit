@@ -1,5 +1,19 @@
 # pay-test-exchange
 
+## 0.1.22
+
+### Patch Changes
+
+- [#5665](https://github.com/reown-com/appkit/pull/5665) [`e5ee43c`](https://github.com/reown-com/appkit/commit/e5ee43c7c4db6f2918d20f588b39f71f10ed2de8) Thanks [@Khizr97](https://github.com/Khizr97)! - Fix `coinbasePreference` option being ignored — `'all'` and `'eoaOnly'` now correctly use the `coinbaseWallet` connector (with QR code support) instead of always using `baseAccount`. `'smartWalletOnly'` uses `baseAccount`. Regression introduced in PR #5269.
+
+- [#5663](https://github.com/reown-com/appkit/pull/5663) [`da65c78`](https://github.com/reown-com/appkit/commit/da65c78e73f4ff3873150b3da6a9b303580217ee) Thanks [@Khizr97](https://github.com/Khizr97)! - fix(ethers,ethers5): resolve walletProvider after account switch in modal
+
+  `useAppKitProvider` returned a stale provider when switching accounts inside the
+  modal. In the early-return path of `connect()`, `connector.provider` was never
+  initialised, causing the base-client's `accountChanged` handler to skip
+  `syncProvider()`. The provider is now resolved from `ethersProviders` before the
+  event is emitted.
+
 ## 0.1.21
 
 ### Patch Changes

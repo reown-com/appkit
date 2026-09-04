@@ -223,6 +223,14 @@ export const tronSdkOptions: SdkOption[] = [
   }
 ]
 
+export const stellarSdkOptions: SdkOption[] = [
+  {
+    title: 'Default',
+    link: '/appkit?name=stellar',
+    description: 'Basic configuration using Stellar as a driving library'
+  }
+]
+
 export const siwxSdkOptions: SdkOption[] = [
   {
     title: 'Reown Authentication',

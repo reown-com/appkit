@@ -4,6 +4,7 @@ export * from './solana/index.js'
 export * from './bitcoin.js'
 export * from './ton/index.js'
 export * from './tron/index.js'
+export * from './stellar/index.js'
 
 // -- Utils ------------------------------------------------------------------
 export * from './utils.js'

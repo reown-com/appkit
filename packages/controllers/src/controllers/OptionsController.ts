@@ -170,7 +170,7 @@ export interface OptionsControllerStatePublic {
   allowUnsupportedChain?: boolean
   /**
    * Default account types for each namespace.
-   * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa', ton: 'eoa', tron: 'eoa' }"
+   * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa', stellar: 'eoa', ton: 'eoa', tron: 'eoa' }"
    */
   defaultAccountTypes: PreferredAccountTypes
   /**
@@ -346,6 +346,10 @@ export const OptionsController = {
 
   setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {
     state.enableEIP6963 = enableEIP6963
+  },
+
+  setEnableInjected(enableInjected: OptionsControllerState['enableInjected']) {
+    state.enableInjected = enableInjected
   },
 
   setEnableCoinbase(enableCoinbase: OptionsControllerState['enableCoinbase']) {

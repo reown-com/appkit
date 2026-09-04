@@ -1,6 +1,7 @@
 import type { TemplateResult } from 'lit'
 import { LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import { html, unsafeStatic } from 'lit/static-html.js'
 
 import { appStoreSvg } from '../../assets/svg/app-store.js'
@@ -298,7 +299,7 @@ export class WuiIcon extends LitElement {
 
       // Return the Phosphor icon with dynamic tag
       // eslint-disable-next-line lit/binding-positions, lit/no-invalid-html
-      return html`<${tag} size=${getPhosphorSize[this.size]} weight="${this.weight}"></${tag}>`
+      return html`<${tag} size=${ifDefined(getPhosphorSize[this.size])} weight="${this.weight}"></${tag}>`
     }
 
     // Fallback to regular SVG

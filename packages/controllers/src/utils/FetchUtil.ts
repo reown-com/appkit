@@ -93,7 +93,7 @@ export class FetchUtil {
     const url = new URL(path, this.baseUrl)
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
-        if (value) {
+        if (value !== undefined && value !== null) {
           url.searchParams.append(key, value)
         }
       })

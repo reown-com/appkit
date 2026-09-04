@@ -333,6 +333,20 @@ describe('ConnectionController', () => {
     expect(ConnectionController.state.status).toEqual('disconnected')
   })
 
+  it('should clear a previous wcError when a new connectWalletConnect attempt starts', async () => {
+    /*
+     * Without this, a host with no scaffold-ui (headless) stays in an error state for the rest
+     * of the page's life: nothing else clears `wcError` except a successful mobile deeplink or
+     * the headful "try again" button, so every later attempt still reads as failed.
+     */
+    client.connectWalletConnect = vi.fn().mockResolvedValueOnce(undefined)
+    ConnectionController.state.wcError = true
+
+    await ConnectionController.connectWalletConnect({ cache: 'never' })
+
+    expect(ConnectionController.state.wcError).toEqual(false)
+  })
+
   it('should not set wcError when connectWalletConnect succeeds in cached mode', async () => {
     client.connectWalletConnect = vi.fn().mockResolvedValueOnce(undefined)
     vi.spyOn(CoreHelperUtil, 'isPairingExpired').mockReturnValue(true)

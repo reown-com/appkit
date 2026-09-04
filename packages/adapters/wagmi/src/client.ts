@@ -31,7 +31,9 @@ import {
   UserRejectedRequestError as ViemUserRejectedRequestError,
   checksumAddress,
   formatUnits,
-  parseUnits
+  isHex,
+  parseUnits,
+  toHex
 } from 'viem'
 
 import { ErrorUtil, UserRejectedRequestError } from '@reown/appkit-common'
@@ -298,8 +300,11 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   private async addThirdPartyConnectors() {
     const thirdPartyConnectors: CreateConnectorFn[] = []
-    const { enableCoinbase: isCoinbaseEnabled, enableBaseAccount: isBaseAccountEnabled } =
-      OptionsController.state || {}
+    const {
+      enableCoinbase: isCoinbaseEnabled,
+      enableBaseAccount: isBaseAccountEnabled,
+      coinbasePreference
+    } = OptionsController.state || {}
 
     if (isBaseAccountEnabled !== false) {
       const baseAccountConnector = await getBaseAccountConnector(this.wagmiConfig.connectors)
@@ -309,7 +314,10 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     if (isCoinbaseEnabled !== false) {
-      const coinbaseConnector = await getCoinbaseConnector(this.wagmiConfig.connectors)
+      const coinbaseConnector = await getCoinbaseConnector(
+        this.wagmiConfig.connectors,
+        coinbasePreference
+      )
       if (coinbaseConnector) {
         thirdPartyConnectors.push(coinbaseConnector)
       }
@@ -409,6 +417,22 @@ export class WagmiAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
     try {
+      if (
+        params.connectorId === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT &&
+        params.provider
+      ) {
+        const hexMessage = isHex(params.message) ? params.message : toHex(params.message)
+        const signature = await params.provider.request<string>(
+          {
+            method: 'personal_sign',
+            params: [hexMessage, params.address]
+          },
+          params.caipNetworkId
+        )
+
+        return { signature: signature as Hex }
+      }
+
       const signature = await signMessage(this.wagmiConfig, {
         message: params.message,
         account: params.address as Hex
@@ -502,11 +526,18 @@ export class WagmiAdapter extends AdapterBlueprint {
      * from wagmi since we already set it in chain adapter blueprint
      */
 
-    const { enableEIP6963: isEIP6963Enabled } = OptionsController.state || {}
-    if (
-      connector.type === CommonConstantsUtil.CONNECTOR_ID.INJECTED &&
-      isEIP6963Enabled === false
-    ) {
+    const { enableEIP6963: isEIP6963Enabled, enableInjected: isInjectedEnabled } =
+      OptionsController.state || {}
+
+    const isInjectedType = connector.type === CommonConstantsUtil.CONNECTOR_ID.INJECTED
+    const isBasicInjected = connector.id === CommonConstantsUtil.CONNECTOR_ID.INJECTED
+    const isEip6963Connector = isInjectedType && !isBasicInjected
+
+    if (isBasicInjected && isInjectedEnabled === false) {
+      return
+    }
+
+    if (isEip6963Connector && isEIP6963Enabled === false) {
       return
     }
 
@@ -1079,6 +1110,14 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private toChecksummedAddress(address: string) {
-    return checksumAddress(address.toLowerCase() as `0x${string}`)
+    if (!address) {
+      return address as `0x${string}`
+    }
+
+    try {
+      return checksumAddress(address.toLowerCase() as `0x${string}`)
+    } catch {
+      return address as `0x${string}`
+    }
   }
 }

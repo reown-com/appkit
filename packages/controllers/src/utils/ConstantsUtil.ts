@@ -206,7 +206,8 @@ export const ConstantsUtil = {
     sui: '0x',
     stacks: '0x',
     ton: '0x',
-    tron: '0x'
+    tron: '0x',
+    stellar: '0x'
   } as const satisfies Record<ChainNamespace, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1,
@@ -294,7 +295,8 @@ export const ConstantsUtil = {
     polkadot: 'eoa',
     solana: 'eoa',
     ton: 'eoa',
-    tron: 'eoa'
+    tron: 'eoa',
+    stellar: 'eoa'
   } as const satisfies PreferredAccountTypes,
   ADAPTER_TYPES: {
     UNIVERSAL: 'universal',

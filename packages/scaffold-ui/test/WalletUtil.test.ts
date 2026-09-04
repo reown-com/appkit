@@ -125,6 +125,19 @@ describe('WalletUtil', () => {
 
       expect(filteredWallets).toEqual(mockWallets)
     })
+
+    it('should still dedup against connectors when enableEIP6963 is false', () => {
+      OptionsController.state.enableEIP6963 = false
+
+      const mockConnectors = [mockMetamaskConnector]
+      vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(mockConnectors)
+      vi.spyOn(StorageUtil, 'getRecentWallets').mockReturnValue([])
+      vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+
+      const filteredWallets = WalletUtil.filterOutDuplicatesByRDNS(mockWallets)
+
+      expect(filteredWallets).not.toContain(mockMetamaskWallet)
+    })
   })
 
   describe('filterOutDuplicatesByIds', () => {

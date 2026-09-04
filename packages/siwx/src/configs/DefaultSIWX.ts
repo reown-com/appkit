@@ -3,7 +3,12 @@ import { InformalMessenger } from '../messengers/index.js'
 import DefaultSigner from '../signers/DefaultSigner.js'
 import { LocalStorage } from '../storages/index.js'
 import { BIP122Verifier } from '../verifiers/BIP122Verifier.js'
-import { EIP155Verifier, SolanaVerifier } from '../verifiers/index.js'
+import {
+  EIP155Verifier,
+  SolanaVerifier,
+  StellarVerifier,
+  TronVerifier
+} from '../verifiers/index.js'
 
 const DEFAULTS = {
   getDefaultMessenger: () =>
@@ -18,7 +23,13 @@ const DEFAULTS = {
         )
     }),
 
-  getDefaultVerifiers: () => [new EIP155Verifier(), new SolanaVerifier(), new BIP122Verifier()],
+  getDefaultVerifiers: () => [
+    new EIP155Verifier(),
+    new SolanaVerifier(),
+    new BIP122Verifier(),
+    new TronVerifier(),
+    new StellarVerifier()
+  ],
 
   getDefaultStorage: () => new LocalStorage({ key: '@appkit/siwx' }),
 
@@ -29,7 +40,7 @@ const DEFAULTS = {
  * This is the default configuration for SIWX.
  *
  * This configuration is split in three pieces `messenger`, `verifiers` and `storage`.
- * By default it uses InformalMessenger, EIP155Verifier, SolanaVerifier, BIP122Verifier, and LocalStorage.
+ * By default it uses InformalMessenger, EIP155Verifier, SolanaVerifier, BIP122Verifier, TronVerifier, StellarVerifier, and LocalStorage.
  * You may override any of these defaults by passing your own configuration for the constructor.
  */
 export class DefaultSIWX extends SIWXConfig {

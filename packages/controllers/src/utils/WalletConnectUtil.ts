@@ -65,7 +65,13 @@ export const DEFAULT_METHODS = {
     'wallet_getAssets'
   ],
   bip122: ['sendTransfer', 'signMessage', 'signPsbt', 'getAccountAddresses'],
-  tron: ['tron_signMessage', 'tron_signTransaction']
+  tron: ['tron_signMessage', 'tron_signTransaction'],
+  stellar: [
+    'stellar_signXDR',
+    'stellar_signAndSubmitXDR',
+    'stellar_signMessage',
+    'stellar_signAuthEntry'
+  ]
 }
 
 export const WcHelpersUtil = {

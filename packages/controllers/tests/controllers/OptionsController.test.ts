@@ -31,6 +31,7 @@ describe('OptionsController', () => {
         eip155: 'smartAccount',
         polkadot: 'eoa',
         solana: 'eoa',
+        stellar: 'eoa',
         ton: 'eoa',
         tron: 'eoa'
       },
@@ -63,6 +64,7 @@ describe('OptionsController', () => {
       eip155: 'eoa',
       polkadot: 'eoa',
       solana: 'eoa',
+      stellar: 'eoa',
       ton: 'eoa',
       tron: 'eoa'
     })
@@ -127,5 +129,13 @@ describe('OptionsController', () => {
     OptionsController.setEnableMobileFullScreen(true)
     expect(OptionsController.state.enableMobileFullScreen).toBe(true)
     spy.mockRestore()
+  })
+
+  it('should update state correctly on setEnableInjected()', () => {
+    OptionsController.setEnableInjected(false)
+    expect(OptionsController.state.enableInjected).toBe(false)
+
+    OptionsController.setEnableInjected(true)
+    expect(OptionsController.state.enableInjected).toBe(true)
   })
 })

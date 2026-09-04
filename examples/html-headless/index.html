@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AppKit Headless (vanilla) Example</title>
+    <link rel="stylesheet" href="/src/main.css" />
+  </head>
+  <body>
+    <main class="page">
+      <h1 class="title">AppKit Headless — vanilla JS</h1>
+      <p class="subtitle">
+        A custom wallet modal driven entirely by the imperative AppKit client API (<code
+          >appKit.fetchWallets</code
+        >
+        / <code>getWalletList</code> / <code>subscribeWalletList</code> /
+        <code>connectWallet</code>) — no React, no AppKit modal.
+      </p>
+
+      <!-- Connected account -->
+      <section id="account" class="account" hidden>
+        <span id="account-address" class="account__address"></span>
+        <button id="disconnect" class="btn btn--outline">Disconnect</button>
+      </section>
+
+      <!-- Open the custom wallet modal -->
+      <button id="open" class="btn">Connect wallet</button>
+
+      <!-- Custom headless wallet modal -->
+      <div id="modal" class="modal" hidden>
+        <div class="modal__backdrop" data-close></div>
+        <div class="modal__card">
+          <div class="modal__header">
+            <h2>Select a wallet</h2>
+            <button class="modal__close" data-close>&times;</button>
+          </div>
+          <!-- Wallet list with infinite loading -->
+          <div id="wallet-list" class="wallet-list"></div>
+          <p id="list-status" class="wallet-list__status"></p>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

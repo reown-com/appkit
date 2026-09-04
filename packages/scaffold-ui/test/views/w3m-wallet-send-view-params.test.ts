@@ -102,7 +102,7 @@ describe('W3mWalletSendView - parameters handling', () => {
       iconUrl: ''
     })
 
-    expect(SendController.setTokenAmount).toHaveBeenCalledWith(10.5)
+    expect(SendController.setTokenAmount).toHaveBeenCalledWith('10.5')
     expect(SendController.setReceiverAddress).toHaveBeenCalledWith(mockValidParams.to)
   })
 

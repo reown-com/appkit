@@ -191,7 +191,8 @@ export const CoreHelperUtil = {
       redirectUniversalLink: safeUniversalLink
         ? `${safeUniversalLink}wc?uri=${encodedWcUrl}`
         : undefined,
-      href: safeAppUrl
+      href: safeAppUrl,
+      universalHref: safeUniversalLink ?? undefined
     }
   },
 

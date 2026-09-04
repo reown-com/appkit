@@ -13,7 +13,7 @@ import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-item'
 
-const EXPLORER = 'https://walletconnect.com/explorer'
+const EXPLORER = 'https://walletguide.walletconnect.network'
 
 @customElement('w3m-get-wallet-view')
 export class W3mGetWalletView extends LitElement {
@@ -29,7 +29,7 @@ export class W3mGetWalletView extends LitElement {
           icon="externalLink"
           size="sm"
           @click=${() => {
-            CoreHelperUtil.openHref('https://walletconnect.com/explorer?type=wallet', '_blank')
+            CoreHelperUtil.openHref('https://walletguide.walletconnect.network/', '_blank')
           }}
         ></w3m-list-wallet>
       </wui-flex>

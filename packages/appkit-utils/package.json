@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-utils",
-  "version": "1.8.19",
+  "version": "1.8.23",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -45,6 +45,11 @@
       "types": "./dist/types/exports/tron.d.ts",
       "import": "./dist/esm/exports/tron.js",
       "default": "./dist/esm/exports/tron.js"
+    },
+    "./stellar": {
+      "types": "./dist/types/exports/stellar.d.ts",
+      "import": "./dist/esm/exports/stellar.js",
+      "default": "./dist/esm/exports/stellar.js"
     }
   },
   "typesVersions": {
@@ -60,6 +65,9 @@
       ],
       "tron": [
         "./dist/types/exports/tron.d.ts"
+      ],
+      "stellar": [
+        "./dist/types/exports/stellar.d.ts"
       ]
     }
   },

@@ -560,6 +560,9 @@ importers:
       '@reown/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
+      '@reown/appkit-adapter-stellar':
+        specifier: workspace:*
+        version: link:../../packages/adapters/stellar
       '@reown/appkit-adapter-ton':
         specifier: workspace:*
         version: link:../../packages/adapters/ton
@@ -611,6 +614,9 @@ importers:
       '@solana/web3.js':
         specifier: 1.98.4
         version: 1.98.4(bufferutil@4.1.0)(typescript@5.9.2)(utf-8-validate@5.0.10)
+      '@stellar/stellar-base':
+        specifier: 15.0.0
+        version: 15.0.0
       '@tanstack/react-query':
         specifier: 5.75.5
         version: 5.75.5(react@19.1.2)
@@ -891,6 +897,19 @@ importers:
       ethers:
         specifier: 6.14.0
         version: 6.14.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+    devDependencies:
+      vite:
+        specifier: 5.4.20
+        version: 5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.1)
+
+  examples/html-headless:
+    dependencies:
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
+      '@reown/appkit-adapter-wagmi':
+        specifier: workspace:*
+        version: link:../../packages/adapters/wagmi
     devDependencies:
       vite:
         specifier: 5.4.20
@@ -2566,6 +2585,34 @@ importers:
       vue:
         specifier: 3.4.3
         version: 3.4.3(typescript@5.9.2)
+
+  packages/adapters/stellar:
+    dependencies:
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../../appkit
+      '@reown/appkit-common':
+        specifier: workspace:*
+        version: link:../../common
+      '@reown/appkit-controllers':
+        specifier: workspace:*
+        version: link:../../controllers
+      '@reown/appkit-polyfills':
+        specifier: workspace:*
+        version: link:../../polyfills
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../../appkit-utils
+      '@walletconnect/universal-provider':
+        specifier: 2.23.7
+        version: 2.23.7(aws4fetch@1.0.20)(bufferutil@4.1.0)(db0@0.3.4)(ioredis@5.9.1)(typescript@5.8.3)(utf-8-validate@5.0.10)
+    devDependencies:
+      '@vitest/coverage-v8':
+        specifier: 2.1.9
+        version: 2.1.9(vitest@2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8)(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.1))
+      vitest:
+        specifier: 2.1.9
+        version: 2.1.9(@types/node@22.13.9)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.1.0)(utf-8-validate@5.0.10))(lightningcss@1.30.2)(terser@5.44.1)
 
   packages/adapters/ton:
     dependencies:
@@ -9062,6 +9109,15 @@ packages:
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
+  '@stellar/js-xdr@4.0.0':
+    resolution: {integrity: sha512-+NmNa7Tk5BI5XFdy/6xGTqAN4J9a9KgCrCGhj2uEUTCBhLkch0M+QbKzNH8zEnejWe0p8w+0q5hUVX6L3OzoVA==}
+    engines: {node: '>=20.0.0', pnpm: '>=9.0.0'}
+
+  '@stellar/stellar-base@15.0.0':
+    resolution: {integrity: sha512-XQhxUr9BYiEcFcgc4oWcCMR9QJCny/GmmGsuwPKf/ieIcOeb5149KLHYx9mJCA0ea8QbucR2/GzV58QbXOTxQA==}
+    engines: {node: '>=20.0.0'}
+    deprecated: This package is now rolled into @stellar/stellar-sdk. Please use @stellar/stellar-sdk to continue receiving updates and support.
+
   '@storybook/addon-docs@9.0.15':
     resolution: {integrity: sha512-HOb45DkF23T1tRzakb9q33qnBRso15S/GM28ippPZWi5ZXR9RAyKVgOSMA/ViEpK4ezASxN+Tee+H7m4ksEFZw==}
     peerDependencies:
@@ -11146,6 +11202,10 @@ packages:
 
   base-x@5.0.1:
     resolution: {integrity: sha512-M7uio8Zt++eg3jPj+rHMfCC+IuygQHHCOU+IYsVtik6FWjuYpVt/+MRKcgsAMHh8mMFAwnB+Bs+mTrFiXjMzKg==}
+
+  base32.js@0.1.0:
+    resolution: {integrity: sha512-n3TkB02ixgBOhTvANakDb4xaMXnYUVkNoRFJjQflcqMQhyEKxEHdj3E6N8t8sUQ0mjH/3/JxzlXuz3ul/J90pQ==}
+    engines: {node: '>=0.12.0'}
 
   base58-js@1.0.5:
     resolution: {integrity: sha512-LkkAPP8Zu+c0SVNRTRVDyMfKVORThX+rCViget00xdgLRrKkClCTz1T7cIrpr69ShwV5XJuuoZvMvJ43yURwkA==}
@@ -29854,6 +29914,17 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
+  '@stellar/js-xdr@4.0.0': {}
+
+  '@stellar/stellar-base@15.0.0':
+    dependencies:
+      '@noble/curves': 1.9.7
+      '@stellar/js-xdr': 4.0.0
+      base32.js: 0.1.0
+      bignumber.js: 9.3.1
+      buffer: 6.0.3
+      sha.js: 2.4.12
+
   '@storybook/addon-docs@9.0.15(@types/react@19.1.15)(storybook@9.0.15(@testing-library/dom@10.4.1)(bufferutil@4.1.0)(prettier@3.5.3)(utf-8-validate@5.0.10))':
     dependencies:
       '@mdx-js/react': 3.1.1(@types/react@19.1.15)(react@19.2.1)
@@ -35397,6 +35468,8 @@ snapshots:
   base-x@4.0.1: {}
 
   base-x@5.0.1: {}
+
+  base32.js@0.1.0: {}
 
   base58-js@1.0.5: {}
 

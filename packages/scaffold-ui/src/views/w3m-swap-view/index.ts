@@ -299,12 +299,34 @@ export class W3mSwapView extends LitElement {
       .price=${myToken?.price}
       .marketValue=${marketValue}
       .onSetMaxValue=${this.onSetMaxValue.bind(this)}
+      ?autoFocus=${target === 'sourceToken'}
     ></w3m-swap-input>`
   }
 
   private onSetMaxValue(target: SwapInputTarget, balance: string | undefined) {
     const maxValue = NumberUtil.bigNumber(balance || '0')
-    this.handleChangeAmount(target, maxValue.gt(0) ? maxValue.toFixed(20) : '0')
+    if (!maxValue.gt(0)) {
+      this.handleChangeAmount(target, '0')
+
+      return
+    }
+    const token = target === 'sourceToken' ? this.sourceToken : this.toToken
+    const decimals = token?.decimals ?? 18
+
+    // For native source token, subtract gas so the swap value + gas doesn't exceed balance.
+    const { networkAddress } = SwapController.getParams()
+    const gasFee = SwapController.state.gasFee
+    if (target === 'sourceToken' && token?.address === networkAddress && gasFee && gasFee !== '0') {
+      const SWAP_GAS_LIMIT = 150000n
+      const gasCostWei = SWAP_GAS_LIMIT * BigInt(gasFee)
+      const gasCost = NumberUtil.bigNumber(gasCostWei.toString()).div(
+        NumberUtil.bigNumber(10).pow(decimals)
+      )
+      const maxAfterGas = maxValue.minus(gasCost)
+      this.handleChangeAmount(target, maxAfterGas.gt(0) ? maxAfterGas.toFixed(decimals, 0) : '0')
+    } else {
+      this.handleChangeAmount(target, maxValue.toFixed(decimals, 0))
+    }
   }
 
   private templateDetails() {

@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit'
-import { property } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 
 import { NumberUtil } from '@reown/appkit-common'
 
@@ -27,6 +27,8 @@ export class WuiListToken extends LitElement {
   @property() public tokenCurrency = ''
 
   @property({ type: Boolean }) public clickable = false
+
+  @state() private imageError = false
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -67,12 +69,26 @@ export class WuiListToken extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  public override updated(changedProperties: Map<string | number | symbol, unknown>) {
+    if (changedProperties.has('tokenImageUrl')) {
+      this.imageError = false
+    }
+  }
+
   public visualTemplate() {
-    if (this.tokenName && this.tokenImageUrl) {
-      return html`<wui-image alt=${this.tokenName} src=${this.tokenImageUrl}></wui-image>`
+    if (this.tokenName && this.tokenImageUrl && !this.imageError) {
+      return html`<wui-image
+        alt=${this.tokenName}
+        src=${this.tokenImageUrl}
+        @onLoadError=${this.handleImageError}
+      ></wui-image>`
     }
 
     return html`<wui-icon name="coinPlaceholder" color="default"></wui-icon>`
+  }
+
+  private handleImageError() {
+    this.imageError = true
   }
 }
 
