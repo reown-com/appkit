@@ -6,6 +6,7 @@ import { ConstantsUtil } from '@reown/appkit-common'
 
 import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
 import type { PaymentCurrency, PurchaseCurrency } from '../utils/TypeUtil.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { ApiController } from './ApiController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
@@ -34,6 +35,11 @@ export interface OnRampControllerState {
   providers: OnRampProvider[]
   error: string | null
   quotesLoading: boolean
+  /**
+   * ISO 3166-1 alpha-2 country code forwarded to Meld.
+   * When unset, AppKit falls back to the browser locale region, then US for USD.
+   */
+  countryCode?: string
 }
 
 type StateKey = keyof OnRampControllerState
@@ -88,6 +94,56 @@ const defaultState = {
 // -- State --------------------------------------------- //
 const state = proxy<OnRampControllerState>(defaultState)
 
+
+function getBrowserCountryCode(): string | undefined {
+  if (!CoreHelperUtil.isClient()) {
+    return undefined
+  }
+
+  try {
+    const locale =
+      Intl.DateTimeFormat().resolvedOptions().locale || window.navigator.language
+    if (!locale) {
+      return undefined
+    }
+
+    if (typeof Intl.Locale === 'function') {
+      const region = new Intl.Locale(locale).region
+      if (region) {
+        return region.toUpperCase()
+      }
+    }
+
+    const match = locale.match(/[-_]([A-Za-z]{2})$/)
+    if (match?.[1]) {
+      return match[1].toUpperCase()
+    }
+  } catch {
+    // Ignore locale resolution failures and fall through to currency defaults.
+  }
+
+  return undefined
+}
+
+function resolveOnRampCountryCode(paymentCurrencyId?: string): string | undefined {
+  if (state.countryCode) {
+    return state.countryCode.toUpperCase()
+  }
+
+  const browserCountry = getBrowserCountryCode()
+  if (browserCountry) {
+    return browserCountry
+  }
+
+  // Default USD on-ramp traffic without a locale region still needs a country so
+  // Meld does not route to Binance Connect with a fabricated receive amount.
+  if (paymentCurrencyId === 'USD') {
+    return 'US'
+  }
+
+  return undefined
+}
+
 // -- Controller ---------------------------------------- //
 const controller = {
   state,
@@ -112,10 +168,29 @@ const controller = {
       url.searchParams.append('destinationCurrencyCode', currency)
       url.searchParams.append('walletAddress', address)
       url.searchParams.append('externalCustomerId', OptionsController.state.projectId)
+
+      const countryCode = resolveOnRampCountryCode(state.paymentCurrency?.id)
+      if (countryCode) {
+        url.searchParams.append('countryCode', countryCode)
+      }
+
+      const sourceCurrencyCode = state.paymentCurrency?.id
+      if (sourceCurrencyCode) {
+        url.searchParams.append('sourceCurrencyCode', sourceCurrencyCode)
+      }
+
+      if (typeof state.paymentAmount === 'number') {
+        url.searchParams.append('sourceAmount', String(state.paymentAmount))
+      }
+
       state.selectedProvider = { ...provider, url: url.toString() }
     } else {
       state.selectedProvider = provider
     }
+  },
+
+  setCountryCode(countryCode: string | undefined) {
+    state.countryCode = countryCode
   },
 
   setOnrampProviders(providers: OnRampProviderName[]) {
@@ -191,6 +266,7 @@ const controller = {
     state.paymentAmount = undefined
     state.purchaseAmount = undefined
     state.quotesLoading = false
+    state.countryCode = undefined
   }
 }
 
