@@ -213,6 +213,8 @@ describe('OnRampController', () => {
     })
     OptionsController.state.projectId = 'test'
     OnRampController.resetState()
+    OnRampController.setCountryCode('US')
+    OnRampController.setPaymentAmount(100)
     const meldProvider = ONRAMP_PROVIDERS[0] as OnRampProvider
     OnRampController.setSelectedProvider(meldProvider)
     const resultUrl = new URL(meldProvider.url)
@@ -220,7 +222,31 @@ describe('OnRampController', () => {
     resultUrl.searchParams.append('destinationCurrencyCode', 'USDC')
     resultUrl.searchParams.append('walletAddress', '0x123')
     resultUrl.searchParams.append('externalCustomerId', 'test')
+    resultUrl.searchParams.append('countryCode', 'US')
+    resultUrl.searchParams.append('sourceCurrencyCode', 'USD')
+    resultUrl.searchParams.append('sourceAmount', '100')
 
     expect(OnRampController.state.selectedProvider?.url).toEqual(resultUrl.toString())
+  })
+
+  it('should prefer explicit countryCode over browser locale for meld url', () => {
+    mockChainControllerState({
+      activeChain: ConstantsUtil.CHAIN.EVM,
+      chains: new Map([
+        [
+          ConstantsUtil.CHAIN.EVM,
+          { accountState: { address: '0x123', caipAddress: 'eip155:1:0x123' } }
+        ]
+      ])
+    })
+    OptionsController.state.projectId = 'test'
+    OnRampController.resetState()
+    OnRampController.setCountryCode('GB')
+    const meldProvider = ONRAMP_PROVIDERS[0] as OnRampProvider
+    OnRampController.setSelectedProvider(meldProvider)
+
+    const selectedUrl = new URL(OnRampController.state.selectedProvider?.url || '')
+    expect(selectedUrl.searchParams.get('countryCode')).toEqual('GB')
+    expect(selectedUrl.searchParams.get('sourceCurrencyCode')).toEqual('USD')
   })
 })
