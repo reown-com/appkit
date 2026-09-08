@@ -377,26 +377,28 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       throw new Error(`RPC URL not found for chainId: ${params.chainId}`)
     }
 
-    const connection = this.getConnection({
-      address: params.address,
-      connectorId: connector.id,
-      connections: this.connections,
-      connectors: this.connectors
-    })
-
-    if (connection?.account) {
-      this.emit('accountChanged', {
-        address: connection.account.address,
-        chainId: connection.caipNetwork?.id,
-        connector: connectorWithProvider
+    if (params.address) {
+      const connection = this.getConnection({
+        address: params.address,
+        connectorId: connector.id,
+        connections: this.connections,
+        connectors: this.connectors
       })
 
-      return {
-        id: connector.id,
-        address: connection.account.address,
-        chainId: params.chainId as string,
-        provider: connector as CoreProvider,
-        type: connector.type
+      if (connection?.account) {
+        this.emit('accountChanged', {
+          address: connection.account.address,
+          chainId: connection.caipNetwork?.id,
+          connector: connectorWithProvider
+        })
+
+        return {
+          id: connector.id,
+          address: connection.account.address,
+          chainId: params.chainId as string,
+          provider: connector as CoreProvider,
+          type: connector.type
+        }
       }
     }
 

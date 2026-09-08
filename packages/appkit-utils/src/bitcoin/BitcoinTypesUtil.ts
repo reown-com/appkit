@@ -9,7 +9,9 @@ interface ChainAdapterConnector extends Connector {
  * This is the interface for a Bitcoin connector.
  */
 export interface BitcoinConnector extends ChainAdapterConnector, Provider {
-  getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]>
+  getAccountAddresses(params?: {
+    caipNetworkId?: CaipNetwork['caipNetworkId']
+  }): Promise<BitcoinConnector.AccountAddress[]>
   signMessage(params: BitcoinConnector.SignMessageParams): Promise<string>
   sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string>
   signPSBT(params: BitcoinConnector.SignPSBTParams): Promise<BitcoinConnector.SignPSBTResponse>
