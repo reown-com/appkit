@@ -38,7 +38,9 @@ describe('Common field validation', () => {
 
   it('should fail for missing chainId', () => {
     const { chainId, ...requestWithoutChainId } = testRequest
-    expect(() => validateRequest(requestWithoutChainId as any)).toThrow('Invalid chainId: Required')
+    expect(() => validateRequest(requestWithoutChainId as any)).toThrow(
+      'Invalid chainId: Invalid input: expected string, received undefined'
+    )
   })
 
   describe('ChainIdSchema Validation', () => {
@@ -164,19 +166,21 @@ describe('Common field validation', () => {
     it('should fail for a non-number expiry', () => {
       const request = { ...testRequest, expiry: '1234567890' as any }
       expect(() => validateRequest(request)).toThrow(
-        'Invalid expiry: Expected number, received string'
+        'Invalid expiry: Invalid input: expected number, received string'
       )
     })
 
     it('should fail for an undefined expiry', () => {
       const { expiry, ...requestWithoutExpiry } = testRequest
-      expect(() => validateRequest(requestWithoutExpiry as any)).toThrow('Invalid expiry: Required')
+      expect(() => validateRequest(requestWithoutExpiry as any)).toThrow(
+        'Invalid expiry: Invalid input: expected number, received undefined'
+      )
     })
 
     it('should fail for a null expiry', () => {
       const request = { ...testRequest, expiry: null as any }
       expect(() => validateRequest(request)).toThrow(
-        'Invalid expiry: Expected number, received null'
+        'Invalid expiry: Invalid input: expected number, received null'
       )
     })
 
@@ -227,7 +231,9 @@ describe('Common field validation', () => {
         ...testRequest,
         signer: { type: 'keys' } as any
       }
-      expect(() => validateRequest(request)).toThrow('Invalid signer.data: Required')
+      expect(() => validateRequest(request)).toThrow(
+        'Invalid signer.data: Invalid input: expected object, received undefined'
+      )
     })
 
     it('should fail for missing keys in multi-key signer', () => {
@@ -235,7 +241,9 @@ describe('Common field validation', () => {
         ...testRequest,
         signer: { type: 'keys', data: {} } as any
       }
-      expect(() => validateRequest(request)).toThrow('Invalid signer.data.keys: Required')
+      expect(() => validateRequest(request)).toThrow(
+        'Invalid signer.data.keys: Invalid input: expected array, received undefined'
+      )
     })
 
     it('should fail for non-object signer', () => {
@@ -244,7 +252,7 @@ describe('Common field validation', () => {
         signer: 'invalid' as any
       }
       expect(() => validateRequest(request)).toThrow(
-        'Invalid signer: Expected object, received string'
+        'Invalid signer: Invalid input: expected object, received string'
       )
     })
 
@@ -254,7 +262,7 @@ describe('Common field validation', () => {
         signer: null as any
       }
       expect(() => validateRequest(request)).toThrow(
-        'Invalid signer: Expected object, received null'
+        'Invalid signer: Invalid input: expected object, received null'
       )
     })
 
@@ -319,7 +327,7 @@ describe('Common field validation', () => {
         policies: [{ invalidKey: 'value' }] as any
       }
       expect(() => validateRequest(request)).toThrow(
-        'Invalid policies.0.type: Required; Invalid policies.0.data: Required'
+        'Invalid policies.0.type: Invalid input: expected string, received undefined; Invalid policies.0.data: Invalid input: expected record, received undefined'
       )
     })
 
@@ -328,7 +336,9 @@ describe('Common field validation', () => {
         ...testRequest,
         policies: [{ data: { key: 'value' } }] as any
       }
-      expect(() => validateRequest(request)).toThrow('Invalid policies.0.type: Required')
+      expect(() => validateRequest(request)).toThrow(
+        'Invalid policies.0.type: Invalid input: expected string, received undefined'
+      )
     })
 
     it('should fail for policies with missing data', () => {
@@ -336,7 +346,9 @@ describe('Common field validation', () => {
         ...testRequest,
         policies: [{ type: 'someType' }] as any
       }
-      expect(() => validateRequest(request)).toThrow('Invalid policies.0.data: Required')
+      expect(() => validateRequest(request)).toThrow(
+        'Invalid policies.0.data: Invalid input: expected record, received undefined'
+      )
     })
 
     it('should fail for policies with non-object data', () => {
@@ -345,7 +357,7 @@ describe('Common field validation', () => {
         policies: [{ type: 'someType', data: 'invalidData' }] as any
       }
       expect(() => validateRequest(request)).toThrow(
-        'Invalid policies.0.data: Expected object, received string'
+        'Invalid policies.0.data: Invalid input: expected record, received string'
       )
     })
   })
