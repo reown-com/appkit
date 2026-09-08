@@ -123,4 +123,32 @@ describe('AssetUtil', () => {
   it('should fetch the wallet with image id', async () => {
     expect(await AssetUtil.fetchWalletImage('rainbow-id')).toBe('new-wallet-image-url-rainbow-id')
   })
+
+  describe('getChainImage', () => {
+    it('should return pre-fetched network image when available', () => {
+      AssetController.state = {
+        ...AssetController.state,
+        networkImages: {
+          'dd9de794-d4ce-4c94-682f-a367f926d500': 'tron-blob-url'
+        }
+      }
+      expect(AssetUtil.getChainImage('tron')).toBe('tron-blob-url')
+    })
+
+    it('should return undefined when pre-fetched image is not available', () => {
+      AssetController.state = {
+        ...AssetController.state,
+        networkImages: {}
+      }
+      expect(AssetUtil.getChainImage('tron')).toBeUndefined()
+    })
+
+    it('should return undefined for namespace without image ID', () => {
+      AssetController.state = {
+        ...AssetController.state,
+        networkImages: {}
+      }
+      expect(AssetUtil.getChainImage('polkadot')).toBeUndefined()
+    })
+  })
 })
