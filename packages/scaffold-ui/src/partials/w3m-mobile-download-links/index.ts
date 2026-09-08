@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 
 import type { WcWallet } from '@reown/appkit-controllers'
 import { CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-cta-button'
 
 import styles from './styles.js'
@@ -27,17 +27,11 @@ export class W3mMobileDownloadLinks extends LitElement {
     const isIos = CoreHelperUtil.isIos()
     const isAndroid = CoreHelperUtil.isAndroid()
     const isMultiple = [app_store, play_store, homepage, chrome_store].filter(Boolean).length > 1
-    const shortName = UiHelperUtil.getTruncateString({
-      string: name,
-      charsStart: 12,
-      charsEnd: 0,
-      truncate: 'end'
-    })
 
     if (isMultiple && !isMobile) {
       return html`
         <wui-cta-button
-          label=${`Don't have ${shortName}?`}
+          label=${`Don't have ${name}?`}
           buttonLabel="Get"
           @click=${() => RouterController.push('Downloads', { wallet: this.wallet })}
         ></wui-cta-button>
@@ -47,7 +41,7 @@ export class W3mMobileDownloadLinks extends LitElement {
     if (!isMultiple && homepage) {
       return html`
         <wui-cta-button
-          label=${`Don't have ${shortName}?`}
+          label=${`Don't have ${name}?`}
           buttonLabel="Get"
           @click=${this.onHomePage.bind(this)}
         ></wui-cta-button>
@@ -57,7 +51,7 @@ export class W3mMobileDownloadLinks extends LitElement {
     if (app_store && isIos) {
       return html`
         <wui-cta-button
-          label=${`Don't have ${shortName}?`}
+          label=${`Don't have ${name}?`}
           buttonLabel="Get"
           @click=${this.onAppStore.bind(this)}
         ></wui-cta-button>
@@ -67,7 +61,7 @@ export class W3mMobileDownloadLinks extends LitElement {
     if (play_store && isAndroid) {
       return html`
         <wui-cta-button
-          label=${`Don't have ${shortName}?`}
+          label=${`Don't have ${name}?`}
           buttonLabel="Get"
           @click=${this.onPlayStore.bind(this)}
         ></wui-cta-button>
