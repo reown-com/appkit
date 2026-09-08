@@ -49,9 +49,11 @@ export function NetworkList() {
               key={n.network.id}
               enabled={enabledNetworks.includes(n.network.id)}
               disabled={Boolean(caipAddress) || isLastChainEnabled}
-              imageSrc={getImageDeliveryURL(
+              imageSrc={
                 networkImages[n.network.id as keyof typeof networkImages]
-              )}
+                  ? getImageDeliveryURL(networkImages[n.network.id as keyof typeof networkImages])
+                  : ''
+              }
               onChange={() => {
                 if (enabledNetworks.includes(n.network.id)) {
                   removeNetwork(n)
