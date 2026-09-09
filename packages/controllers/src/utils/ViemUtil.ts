@@ -1,9 +1,9 @@
 import {
+  type Chain,
+  type PublicClient as ViemPublicClient,
   type createPublicClient,
   type defineChain,
-  type http,
-  type Chain,
-  type PublicClient as ViemPublicClient
+  type http
 } from 'viem'
 
 import { type CaipNetwork, type CaipNetworkId, ParseUtil } from '@reown/appkit-common'
