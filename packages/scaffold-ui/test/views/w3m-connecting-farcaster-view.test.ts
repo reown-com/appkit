@@ -11,6 +11,7 @@ import {
   ModalController,
   OptionsController,
   RouterController,
+  SIWXUtil,
   SnackController
 } from '@reown/appkit-controllers'
 
@@ -65,6 +66,7 @@ describe('W3mConnectingFarcasterView', () => {
       vi.spyOn(RouterController, 'goBack').mockImplementation(() => {})
 
       vi.spyOn(ModalController, 'close').mockImplementation(() => {})
+      vi.spyOn(SIWXUtil, 'isAuthenticated').mockResolvedValue(true)
 
       vi.spyOn(SnackController, 'showSuccess').mockImplementation(() => {})
       vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
@@ -129,6 +131,37 @@ describe('W3mConnectingFarcasterView', () => {
       expect(RouterController.reset).not.toHaveBeenCalled()
       expect(RouterController.push).not.toHaveBeenCalled()
       expect(SnackController.showSuccess).not.toHaveBeenCalled()
+    })
+
+    it('should not close modal or navigate when siwx is not yet authenticated, even with connections and multiWallet enabled', async () => {
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([MOCK_CONNECTION])
+      vi.spyOn(ConnectionController, 'connectExternal').mockResolvedValue(undefined)
+      vi.spyOn(SIWXUtil, 'isAuthenticated').mockResolvedValue(false)
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        remoteFeatures: { multiWallet: true },
+        siwx: {} as any
+      })
+
+      await element['connectFarcaster']()
+
+      expect(ModalController.close).not.toHaveBeenCalled()
+      expect(RouterController.replace).not.toHaveBeenCalledWith('ProfileWallets')
+      expect(SnackController.showSuccess).not.toHaveBeenCalled()
+    })
+
+    it('should not close modal when siwx is not yet authenticated and there are no connections', async () => {
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([])
+      vi.spyOn(ConnectionController, 'connectExternal').mockResolvedValue(undefined)
+      vi.spyOn(SIWXUtil, 'isAuthenticated').mockResolvedValue(false)
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        siwx: {} as any
+      })
+
+      await element['connectFarcaster']()
+
+      expect(ModalController.close).not.toHaveBeenCalled()
     })
 
     it('should navigate back and show error when connection fails', async () => {
