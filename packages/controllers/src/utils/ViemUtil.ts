@@ -1,4 +1,10 @@
-import { type createPublicClient, type defineChain, type http } from 'viem'
+import {
+  type Chain,
+  type PublicClient as ViemPublicClient,
+  type createPublicClient,
+  type defineChain,
+  type http
+} from 'viem'
 
 import { type CaipNetwork, type CaipNetworkId, ParseUtil } from '@reown/appkit-common'
 
@@ -11,6 +17,12 @@ type ViemUtils = {
   createPublicClient: PublicClient
   http: Http
   defineChain: typeof defineChain
+}
+
+type ViemUtilType = {
+  getBlockchainApiRpcUrl: (caipNetworkId: CaipNetworkId, projectId: string) => string
+  getViemChain: (caipNetwork: CaipNetwork) => Promise<Chain>
+  createViemPublicClient: (caipNetwork: CaipNetwork) => Promise<ViemPublicClient>
 }
 
 // -- Constants ----------------------------------------------------------------
@@ -32,7 +44,7 @@ async function loadViemUtils() {
 }
 
 // -- Utils --------------------------------------------------------------------
-export const ViemUtil = {
+export const ViemUtil: ViemUtilType = {
   getBlockchainApiRpcUrl(caipNetworkId: CaipNetworkId, projectId: string) {
     const url = new URL('https://rpc.walletconnect.org/v1/')
     url.searchParams.set('chainId', caipNetworkId)
