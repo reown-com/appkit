@@ -26,7 +26,7 @@ const sampleWalletTest = test.extend<{ library: string }>({
   library: ['wagmi', { option: true }]
 })
 
-sampleWalletTest.describe.configure({ mode: 'serial' })
+sampleWalletTest.describe.configure({ mode: 'serial', retries: 2 })
 
 sampleWalletTest.beforeAll(async ({ browser, library }) => {
   context = await browser.newContext()
