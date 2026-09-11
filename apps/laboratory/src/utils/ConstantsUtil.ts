@@ -3,6 +3,8 @@ import type { Wallet } from '@reown/appkit-wallet-button'
 import {
   abstract,
   adi,
+  arc,
+  arcTestnet,
   arbitrum,
   aurora,
   base,
@@ -19,6 +21,8 @@ import {
   monadTestnet,
   optimism,
   polygon,
+  robinhood,
+  robinhoodTestnet,
   rootstock,
   rootstockTestnet,
   sepolia,
@@ -98,7 +102,11 @@ const EvmNetworks = [
   monadTestnet,
   rootstock,
   rootstockTestnet,
-  adi
+  adi,
+  arc,
+  arcTestnet,
+  robinhood,
+  robinhoodTestnet
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNotExist = {
