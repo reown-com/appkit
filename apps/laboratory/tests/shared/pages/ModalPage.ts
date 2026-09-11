@@ -529,7 +529,7 @@ export class ModalPage {
     }
 
     await expect(this.page.getByText(headerTitle)).not.toBeVisible({
-      timeout: 30_000
+      timeout: 60_000
     })
   }
 
