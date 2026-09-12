@@ -1274,6 +1274,14 @@ export abstract class AppKitBaseClient {
           chainNamespace
         })
         this.syncConnectedWalletInfo(chainNamespace)
+
+        if (connector.type === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
+          const approvedData = this.getApprovedCaipNetworksData()
+          ChainController.setApprovedCaipNetworksData(chainNamespace, {
+            approvedCaipNetworkIds: approvedData.approvedCaipNetworkIds,
+            supportsAllNetworks: approvedData.supportsAllNetworks
+          })
+        }
       }
 
       const namespaceNetworkId = ChainController.getNetworkData(chainNamespace)?.caipNetwork?.id
@@ -1551,6 +1559,12 @@ export abstract class AppKitBaseClient {
         )
         StorageUtil.addConnectedNamespace(chainNamespace)
 
+        const data = this.getApprovedCaipNetworksData()
+        ChainController.setApprovedCaipNetworksData(chainNamespace, {
+          approvedCaipNetworkIds: data.approvedCaipNetworkIds,
+          supportsAllNetworks: data.supportsAllNetworks
+        })
+
         await this.syncAccount({
           address,
           chainId,
@@ -1560,12 +1574,7 @@ export abstract class AppKitBaseClient {
         this.setStatus('disconnected', chainNamespace)
       }
 
-      const data = this.getApprovedCaipNetworksData()
       this.syncConnectedWalletInfo(chainNamespace)
-      ChainController.setApprovedCaipNetworksData(chainNamespace, {
-        approvedCaipNetworkIds: data.approvedCaipNetworkIds,
-        supportsAllNetworks: data.supportsAllNetworks
-      })
     })
 
     await Promise.all(syncTasks)
