@@ -91,9 +91,17 @@ export class ModalPage {
 
     this.page.on('console', async msg => {
       const args = msg.args()
+      /*
+       * Temporary diagnostic (fix/e2e-confirm-email-diagnostics): also forward the
+       * W3mFrameProvider 'Sending app event' / 'Received frame response' info-level logs,
+       * which come through as plain console.log calls, not error/warning. See
+       * .claude/docs/FS-155-.../confirm-email-hang-plan.md.
+       */
+      const isFrameEventLog =
+        msg.text().includes('Sending app event') || msg.text().includes('Received frame response')
       // eslint-disable-next-line no-plusplus
       for (let i = 0; i < args.length; i++) {
-        if (msg.type() === 'error' || msg.type() === 'warning') {
+        if (msg.type() === 'error' || msg.type() === 'warning' || isFrameEventLog) {
           try {
             const val = await args[i]?.jsonValue()
             console.log(`[console.${msg.type()}]`, val)

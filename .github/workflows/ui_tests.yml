@@ -142,6 +142,11 @@ jobs:
           NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
           SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
+          # Temporary diagnostic: surfaces W3mFrameProvider's existing (normally silenced)
+          # 'Sending app event' / 'Received frame response' logs in the browser console, to
+          # confirm whether the OTP/email-login response is ever actually received during a
+          # "Confirm Email" hang. See .claude/docs/FS-155-.../confirm-email-hang-plan.md.
+          NEXT_PUBLIC_DEFAULT_LOG_LEVEL: info
 
       - name: build extension
         if: inputs.build-and-cache-only == false && inputs.secure-site-url == 'https://secure.walletconnect.org/sdk'
