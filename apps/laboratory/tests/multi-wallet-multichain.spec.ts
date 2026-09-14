@@ -160,7 +160,7 @@ test('should refresh page and expect reconnected', async () => {
   // After page reload, Solana should appear first as it was the last connected network
   await modal.page.reload()
   await validator.expectNetworkButton('Solana')
-  await validator.expectAccountButtonReady(undefined, 60_000)
+  await validator.expectAccountButtonReady()
 
   await modal.switchNetworkWithNetworkButton('Ethereum')
   await validator.expectSwitchedNetwork('Ethereum')
