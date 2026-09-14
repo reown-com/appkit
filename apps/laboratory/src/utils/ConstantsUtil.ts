@@ -3,9 +3,9 @@ import type { Wallet } from '@reown/appkit-wallet-button'
 import {
   abstract,
   adi,
+  arbitrum,
   arc,
   arcTestnet,
-  arbitrum,
   aurora,
   base,
   baseSepolia,
