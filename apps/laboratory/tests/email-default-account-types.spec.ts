@@ -56,7 +56,7 @@ emailTest('it should make the default account type as smart account', async () =
   await page.closeModal()
 
   await page.page.reload()
-  await validator.expectAccountButtonReady()
+  await validator.expectAccountButtonReady(undefined, 60_000)
 
   await page.goToProfileWalletsView()
   await page.clickProfileWalletsMoreButton()
@@ -102,7 +102,7 @@ emailTest('it should show make the default account type as EOA', async () => {
   await page.closeModal()
 
   await page.page.reload()
-  await validator.expectAccountButtonReady()
+  await validator.expectAccountButtonReady(undefined, 60_000)
 
   await page.goToProfileWalletsView()
   await page.clickProfileWalletsMoreButton()

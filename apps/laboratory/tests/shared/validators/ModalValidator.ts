@@ -560,9 +560,9 @@ export class ModalValidator {
     await expect(connectButton).toContainText('Connecting...')
   }
 
-  async expectAccountButtonReady(namespace?: string) {
+  async expectAccountButtonReady(namespace?: string, timeout = MAX_WAIT) {
     const accountButton = this.page.getByTestId(`account-button${namespace ? `-${namespace}` : ''}`)
-    await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
+    await expect(accountButton).toBeVisible({ timeout })
   }
 
   async expectAccountSwitched(oldAddress: string, namespace?: string) {

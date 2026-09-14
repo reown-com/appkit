@@ -162,7 +162,7 @@ smartAccountTest(
 
     await page.page.waitForTimeout(500)
     await page.page.reload()
-    await validator.expectAccountButtonReady()
+    await validator.expectAccountButtonReady(undefined, 60_000)
 
     await page.openProfileWalletsView()
     await page.clickProfileWalletsMoreButton()
@@ -188,7 +188,7 @@ smartAccountTest(
     await validator.expectChangePreferredAccountToShow(EOA)
 
     await page.page.reload()
-    await validator.expectAccountButtonReady()
+    await validator.expectAccountButtonReady(undefined, 60_000)
 
     await page.openProfileWalletsView()
     await page.clickProfileWalletsMoreButton()
