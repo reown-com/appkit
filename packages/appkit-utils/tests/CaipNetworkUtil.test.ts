@@ -182,6 +182,18 @@ describe('CaipNetworksUtil', () => {
     })
   })
 
+  describe('isWcHttpRpcSupported', () => {
+    it('returns true for a chain in the supported chains list (Solana mainnet)', () => {
+      expect(
+        CaipNetworksUtil.isWcHttpRpcSupported('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')
+      ).toBe(true)
+    })
+
+    it('returns false for a chain not in the supported chains list', () => {
+      expect(CaipNetworksUtil.isWcHttpRpcSupported('eip155:999')).toBe(false)
+    })
+  })
+
   describe('extendCaipNetwork', () => {
     const customNetworkImageUrls = {
       1: 'https://example.com/eth.png'
