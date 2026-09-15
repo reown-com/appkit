@@ -209,5 +209,13 @@ describe('TronConnectConnector', () => {
 
       expect(mockAdapter.switchChain).toHaveBeenCalledWith('0x2b6653dc')
     })
+
+    it('does not throw when the underlying wallet adapter does not support switchChain', async () => {
+      mockAdapter.switchChain.mockRejectedValueOnce(
+        new Error("The current wallet doesn't support switch chain.")
+      )
+
+      await expect(connector.switchNetwork('tron:0x94a9059e')).resolves.toBeUndefined()
+    })
   })
 })

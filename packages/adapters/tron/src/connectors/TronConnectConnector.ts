@@ -164,8 +164,16 @@ export class TronConnectConnector implements TronConnector {
      * '0x94a9059e', not 'tron:0x94a9059e'. Without this, wallets that default to a fixed
      * network on connect (MetaMask always starts on Mainnet) never actually switch, even
      * though our own app state has moved to a different chain.
+     *
+     * Not every wallet adapter supports this (the base Adapter class's default implementation
+     * rejects), so failures are swallowed the same way disconnect() above does, instead of
+     * blocking the app's own network switch for wallets that can't act on it.
      */
-    await this.adapter.switchChain(chainId.split(':').pop() ?? chainId)
+    try {
+      await this.adapter.switchChain(chainId.split(':').pop() ?? chainId)
+    } catch {
+      // Silently fail — some wallets don't support programmatic chain switching
+    }
   }
 
   // -- Private ------------------------------------------------------ //
