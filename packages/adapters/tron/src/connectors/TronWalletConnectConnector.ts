@@ -91,11 +91,13 @@ export class TronWalletConnectConnector
       throw new Error('Chain not found')
     }
 
-    const useBlockchainApi = CaipNetworksUtil.isWcHttpRpcSupported(chain.caipNetworkId)
+    const isBlockchainApiSupported = CaipNetworksUtil.isWcHttpRpcSupported(chain.caipNetworkId)
 
-    // Step 1: Build unsigned transaction, via the Blockchain API where it's supported,
-    // otherwise directly against the chain's own fullnode.
-    const unsignedTx = useBlockchainApi
+    /*
+     * Step 1: Build unsigned transaction, via the Blockchain API where it's supported,
+     * otherwise directly against the chain's own fullnode.
+     */
+    const unsignedTx = isBlockchainApiSupported
       ? await this.createTransactionViaBlockchainApi(chain, params)
       : await TronFullnodeUtil.createTransaction(this.requireFullNodeUrl(chain), params)
 
@@ -129,7 +131,7 @@ export class TronWalletConnectConnector
     }
 
     // Step 3: Broadcast the signed transaction, via the same path used to build it.
-    if (useBlockchainApi) {
+    if (isBlockchainApiSupported) {
       await this.broadcastViaBlockchainApi(chain, signedTx, unsignedTx)
     } else {
       await TronFullnodeUtil.broadcastTransaction(this.requireFullNodeUrl(chain), signedTx)

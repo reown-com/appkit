@@ -57,9 +57,7 @@ describe('TronFullnodeUtil', () => {
       const [url, options] = mockFetch.mock.calls[0] as [string, RequestInit]
       expect(url).toBe(`${FULL_NODE_URL}/wallet/createtransaction`)
       expect(options.method).toBe('POST')
-      expect((options.headers as Record<string, string>)['Content-Type']).toBe(
-        'application/json'
-      )
+      expect((options.headers as Record<string, string>)['Content-Type']).toBe('application/json')
       expect(JSON.parse(options.body as string)).toEqual({
         owner_address: MOCK_OWNER_ADDRESS,
         to_address: MOCK_TO_ADDRESS,

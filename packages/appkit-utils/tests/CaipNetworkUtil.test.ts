@@ -184,9 +184,9 @@ describe('CaipNetworksUtil', () => {
 
   describe('isWcHttpRpcSupported', () => {
     it('returns true for a chain in the supported chains list (Solana mainnet)', () => {
-      expect(
-        CaipNetworksUtil.isWcHttpRpcSupported('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')
-      ).toBe(true)
+      expect(CaipNetworksUtil.isWcHttpRpcSupported('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')).toBe(
+        true
+      )
     })
 
     it('returns false for a chain not in the supported chains list', () => {
