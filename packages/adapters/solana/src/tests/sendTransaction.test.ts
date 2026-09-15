@@ -233,4 +233,42 @@ describe('SolanaAdapter - sendTransaction error handling', () => {
       })
     ).rejects.toThrow('Not enough SOL to cover fees or rent')
   })
+
+  it('should reject when signature status includes an on-chain error', async () => {
+    mockSendTransactionProvider.sendTransaction.mockResolvedValue('sig-failed')
+    ;(SolStoreUtil.state.connection as any).getSignatureStatus.mockResolvedValue({
+      value: { err: { InstructionError: [0, 'Custom'] } }
+    })
+
+    await expect(
+      adapter.sendTransaction({
+        provider: mockSendTransactionProvider as any,
+        to: TestConstants.accounts[1].address,
+        value: 1
+      })
+    ).rejects.toThrow('Transaction failed on-chain')
+  })
+
+  it('should reject when signature confirmation times out', async () => {
+    vi.useFakeTimers()
+    mockSendTransactionProvider.sendTransaction.mockResolvedValue('sig-pending')
+    ;(SolStoreUtil.state.connection as any).getSignatureStatus.mockResolvedValue({
+      value: null
+    })
+
+    try {
+      const assertion = expect(
+        adapter.sendTransaction({
+          provider: mockSendTransactionProvider as any,
+          to: TestConstants.accounts[1].address,
+          value: 1
+        })
+      ).rejects.toThrow('Transaction confirmation timed out')
+
+      await vi.advanceTimersByTimeAsync(60_000)
+      await assertion
+    } finally {
+      vi.useRealTimers()
+    }
+  })
 })
