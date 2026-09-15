@@ -38,6 +38,7 @@ import { SolanaWalletConnectProvider } from './providers/SolanaWalletConnectProv
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
 import { createSPLTokenTransaction } from './utils/createSPLTokenTransaction.js'
 import { createSendTransaction } from './utils/createSendTransaction.js'
+import { waitForSignatureConfirmation } from './utils/waitForSignatureConfirmation.js'
 import { watchStandard } from './utils/watchStandard.js'
 
 export interface AdapterOptions {
@@ -200,16 +201,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       throw error
     })
 
-    await new Promise<void>(resolve => {
-      const interval = setInterval(async () => {
-        const status = await connection.getSignatureStatus(result)
-
-        if (status?.value) {
-          clearInterval(interval)
-          resolve()
-        }
-      }, 1000)
-    })
+    await waitForSignatureConfirmation(connection, result)
 
     return {
       hash: result
@@ -326,16 +318,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       throw error
     })
 
-    await new Promise<void>(resolve => {
-      const interval = setInterval(async () => {
-        const status = await connection.getSignatureStatus(result)
-
-        if (status?.value) {
-          clearInterval(interval)
-          resolve()
-        }
-      }, 1000)
-    })
+    await waitForSignatureConfirmation(connection, result)
 
     return {
       hash: result
