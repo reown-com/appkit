@@ -68,6 +68,7 @@ const mockAdapter = {
   address: MOCK_OWNER_ADDRESS,
   signMessage: vi.fn(),
   signTransaction: vi.fn(),
+  switchChain: vi.fn(),
   on: vi.fn(),
   removeListener: vi.fn()
 }
@@ -193,6 +194,20 @@ describe('TronConnectConnector', () => {
       )
 
       expect(mockAdapter.signTransaction).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('switchNetwork', () => {
+    it('switches the underlying wallet adapter to the bare (non-CAIP) chain id', async () => {
+      await connector.switchNetwork('tron:0x94a9059e')
+
+      expect(mockAdapter.switchChain).toHaveBeenCalledWith('0x94a9059e')
+    })
+
+    it('passes through a chain id that has no namespace prefix unchanged', async () => {
+      await connector.switchNetwork('0x2b6653dc')
+
+      expect(mockAdapter.switchChain).toHaveBeenCalledWith('0x2b6653dc')
     })
   })
 })
