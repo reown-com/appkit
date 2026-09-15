@@ -10,28 +10,33 @@ export async function waitForSignatureConfirmation(
 ): Promise<void> {
   const timeoutMs = options.timeoutMs ?? SIGNATURE_CONFIRMATION_TIMEOUT_MS
   const pollIntervalMs = options.pollIntervalMs ?? SIGNATURE_CONFIRMATION_POLL_MS
-  const startedAt = Date.now()
 
-  await new Promise<void>((resolve, reject) => {
-    let settled = false
+  let settled = false
+  let pollInFlight = false
+  let interval: ReturnType<typeof setInterval> | undefined
+  let timeoutId: ReturnType<typeof setTimeout> | undefined
 
-    const finish = (callback: () => void) => {
-      if (settled) {
-        return
-      }
-      settled = true
+  const cleanup = () => {
+    if (interval !== undefined) {
       clearInterval(interval)
-      callback()
+      interval = undefined
     }
 
+    if (timeoutId !== undefined) {
+      clearTimeout(timeoutId)
+      timeoutId = undefined
+    }
+  }
+
+  const wait = new Promise<void>((resolve, reject) => {
     const poll = async () => {
+      if (settled || pollInFlight) {
+        return
+      }
+
+      pollInFlight = true
+
       try {
-        if (Date.now() - startedAt >= timeoutMs) {
-          finish(() => reject(new Error('Transaction confirmation timed out')))
-
-          return
-        }
-
         const status = await connection.getSignatureStatus(signature)
 
         if (settled) {
@@ -43,21 +48,43 @@ export async function waitForSignatureConfirmation(
         }
 
         if (status.value.err) {
-          finish(() => reject(new Error('Transaction failed on-chain')))
+          settled = true
+          reject(new Error('Transaction failed on-chain'))
 
           return
         }
 
-        finish(() => resolve())
+        settled = true
+        resolve()
       } catch (error) {
-        finish(() => reject(error))
+        if (settled) {
+          return
+        }
+
+        settled = true
+        reject(error)
+      } finally {
+        pollInFlight = false
       }
     }
 
-    const interval = setInterval(() => {
+    void poll()
+    interval = setInterval(() => {
       void poll()
     }, pollIntervalMs)
-
-    void poll()
   })
+
+  const timeout = new Promise<void>((_, reject) => {
+    timeoutId = setTimeout(() => {
+      settled = true
+      reject(new Error('Transaction confirmation timed out'))
+    }, timeoutMs)
+  })
+
+  try {
+    await Promise.race([wait, timeout])
+  } finally {
+    settled = true
+    cleanup()
+  }
 }

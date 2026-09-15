@@ -45,4 +45,42 @@ describe('waitForSignatureConfirmation', () => {
       })
     ).rejects.toThrow('Transaction confirmation timed out')
   })
+
+  it('rejects at the timeout when getSignatureStatus never settles', async () => {
+    const connection = {
+      getSignatureStatus: vi.fn(() => new Promise(() => undefined))
+    } as { getSignatureStatus: ReturnType<typeof vi.fn> }
+
+    await expect(
+      waitForSignatureConfirmation(connection, 'sig-hung', {
+        timeoutMs: 40,
+        pollIntervalMs: 10_000
+      })
+    ).rejects.toThrow('Transaction confirmation timed out')
+  }, 500)
+
+  it('does not resolve success from a late poll after the timeout', async () => {
+    let resolveStatus: (value: unknown) => void = () => undefined
+    const connection = {
+      getSignatureStatus: vi.fn(
+        () =>
+          new Promise(resolve => {
+            resolveStatus = resolve
+          })
+      )
+    } as { getSignatureStatus: ReturnType<typeof vi.fn> }
+
+    const confirmation = waitForSignatureConfirmation(connection, 'sig-late', {
+      timeoutMs: 40,
+      pollIntervalMs: 10_000
+    })
+
+    await expect(confirmation).rejects.toThrow('Transaction confirmation timed out')
+
+    resolveStatus({ value: { confirmationStatus: 'confirmed', err: null } })
+    await Promise.resolve()
+    await Promise.resolve()
+
+    await expect(confirmation).rejects.toThrow('Transaction confirmation timed out')
+  }, 500)
 })
