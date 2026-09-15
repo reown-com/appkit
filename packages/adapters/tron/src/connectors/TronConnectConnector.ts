@@ -7,6 +7,7 @@ import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type { TronConnector } from '@reown/appkit-utils/tron'
 
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
+import { TronFullnodeUtil } from '../utils/TronFullnodeUtil.js'
 
 export class TronConnectConnector implements TronConnector {
   public readonly chain = 'tron'
@@ -99,6 +100,12 @@ export class TronConnectConnector implements TronConnector {
   }
 
   async sendTransaction(params: TronConnector.SendTransactionParams): Promise<string> {
+    const chain = ChainController.getCaipNetworkByNamespace('tron') ?? this.requestedChains[0]
+
+    if (chain && !CaipNetworksUtil.isWcHttpRpcSupported(chain.caipNetworkId)) {
+      return this.sendTransactionViaFullnode(chain, params)
+    }
+
     const rpcUrl = this.getRpcUrl()
 
     // Step 1: Build unsigned transaction via Blockchain API
@@ -159,6 +166,24 @@ export class TronConnectConnector implements TronConnector {
   }
 
   // -- Private ------------------------------------------------------ //
+
+  private async sendTransactionViaFullnode(
+    chain: CaipNetwork,
+    params: TronConnector.SendTransactionParams
+  ): Promise<string> {
+    const fullNodeUrl = chain.rpcUrls?.['chainDefault']?.http?.[0]
+
+    if (!fullNodeUrl) {
+      throw new Error('No RPC URL available for this chain')
+    }
+
+    const unsignedTx = await TronFullnodeUtil.createTransaction(fullNodeUrl, params)
+    const signedTx = await this.adapter.signTransaction(unsignedTx)
+
+    await TronFullnodeUtil.broadcastTransaction(fullNodeUrl, signedTx)
+
+    return (signedTx as { txID?: string }).txID || unsignedTx.txID
+  }
 
   private getRpcUrl(): string {
     const chain = ChainController.getCaipNetworkByNamespace('tron')
