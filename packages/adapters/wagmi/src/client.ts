@@ -954,8 +954,8 @@ export class WagmiAdapter extends AdapterBlueprint {
         switchError?.data?.originalError?.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
 
       const provider = isUnrecognizedChain
-        ? await getConnections(this.wagmiConfig)?.[0]?.connector
-            .getProvider()
+        ? await getConnections(this.wagmiConfig)?.[0]
+            ?.connector.getProvider()
             .catch(() => undefined)
         : undefined
 

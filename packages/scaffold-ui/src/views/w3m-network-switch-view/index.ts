@@ -76,7 +76,6 @@ export class W3mNetworkSwitchView extends LitElement {
           ></wui-network-image>
 
           ${this.error || this.success ? null : html`<wui-loading-hexagon></wui-loading-hexagon>`}
-
           ${this.success
             ? html`<wui-icon-box color="success" icon="checkmark" size="sm"></wui-icon-box>`
             : html`<wui-icon-box color="error" icon="close" size="sm"></wui-icon-box>`}
@@ -173,7 +172,8 @@ export class W3mNetworkSwitchView extends LitElement {
 
     const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
     const authConnector = ConnectorController.getAuthConnector()
-    const isUsingAuth = Boolean(authConnector) && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
+    const isUsingAuth =
+      Boolean(authConnector) && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
     const previousView = RouterController.state.history.at(-2)
     const isConnected = Boolean(ChainController.state.activeCaipAddress)
 
