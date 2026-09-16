@@ -17,9 +17,8 @@ import {
   VStack,
   useDisclosure
 } from '@chakra-ui/react'
-import { type Chain, erc20Abi, parseUnits } from 'viem'
-import { type Config, useAccount, useConfig } from 'wagmi'
-import { getWalletClient } from 'wagmi/actions'
+import { erc20Abi, parseUnits } from 'viem'
+import { useAccount, useSendTransaction, useWriteContract } from 'wagmi'
 
 import type { Address, Hex } from '@reown/appkit-common'
 import { arbitrum, arc, arcTestnet, base, optimism, sepolia } from '@reown/appkit/networks'
@@ -36,79 +35,84 @@ const ALLOWED_CHAINIDS = ALLOWED_CHAINS.map(chain => chain.id) as number[]
 const NATIVE_USDC_CHAIN_IDS = [arc.id, arcTestnet.id] as number[]
 
 // ERC20 USDC token addresses (6 decimals)
-const TOKEN_ADDRESSES = {
-  [sepolia.id]: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238' as Hex,
-  [optimism.id]: '0x0b2c639c533813f4aa9d7837caf62653d097ff85' as Hex,
-  [base.id]: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' as Hex,
-  [arbitrum.id]: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as Hex
+const TOKEN_ADDRESSES: Record<number, Hex> = {
+  [sepolia.id]: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
+  [optimism.id]: '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
+  [base.id]: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+  [arbitrum.id]: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'
 }
 
 interface SendUSDCFormProps {
   isOpen: boolean
   onClose: () => void
-  chain: Chain
-  config: Config
   balance: string
   isNativeUsdc: boolean
+  chainId: number
 }
 
-function SendUSDCForm({
-  isOpen,
-  onClose,
-  chain,
-  config,
-  balance,
-  isNativeUsdc
-}: SendUSDCFormProps) {
-  const [address, setAddress] = useState('')
+function SendUSDCForm({ isOpen, onClose, balance, isNativeUsdc, chainId }: SendUSDCFormProps) {
+  const [toAddress, setToAddress] = useState('')
   const [amount, setAmount] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const { fetchBalances } = useWalletGetAssets()
   const { showPendingToast, showSuccessToast, showErrorToast } = useTransactionToast()
 
+  // Use wagmi hooks for transactions
+  const { sendTransaction, isPending: isSendPending } = useSendTransaction({
+    mutation: {
+      onSuccess: hash => {
+        showSuccessToast(hash)
+        fetchBalances()
+      },
+      onError: error => {
+        showErrorToast(ErrorUtil.getErrorMessage(error, 'Failed to send transaction'))
+      }
+    }
+  })
+
+  const { writeContract, isPending: isWritePending } = useWriteContract({
+    mutation: {
+      onSuccess: hash => {
+        showSuccessToast(hash)
+        fetchBalances()
+      },
+      onError: error => {
+        showErrorToast(ErrorUtil.getErrorMessage(error, 'Failed to send transaction'))
+      }
+    }
+  })
+
+  const isLoading = isSendPending || isWritePending
+
   async function onSendTransaction() {
-    const client = await getWalletClient(config)
+    if (!toAddress.startsWith('0x')) {
+      showErrorToast('Invalid address format')
+      return
+    }
 
-    try {
-      setIsLoading(true)
+    onClose()
+    showPendingToast()
 
-      if (!address.startsWith('0x')) {
-        throw new Error('Invalid address format')
+    if (isNativeUsdc) {
+      // Arc chains: USDC is native currency with 18 decimals
+      const usdcAmount = parseUnits(amount, 18)
+      sendTransaction({
+        to: toAddress as Address,
+        value: usdcAmount
+      })
+    } else {
+      // Other chains: USDC is ERC20 token with 6 decimals
+      const usdcAmount = parseUnits(amount, 6)
+      const contractAddress = TOKEN_ADDRESSES[chainId]
+      if (!contractAddress) {
+        showErrorToast('USDC contract address not found for this chain')
+        return
       }
-
-      onClose()
-      showPendingToast()
-
-      let hash: Hex
-
-      if (isNativeUsdc) {
-        // Arc chains: USDC is native currency with 18 decimals
-        const usdcAmount = parseUnits(amount, 18)
-        hash = await client.sendTransaction({
-          to: address as Address,
-          value: usdcAmount
-        })
-      } else {
-        // Other chains: USDC is ERC20 token with 6 decimals
-        const usdcAmount = BigInt(Math.round(parseFloat(amount) * 1_000_000))
-        const chainId = chain.id as keyof typeof TOKEN_ADDRESSES
-        const contractAddress = TOKEN_ADDRESSES[chainId]
-        hash = await client.writeContract({
-          abi: erc20Abi,
-          functionName: 'transfer',
-          args: [address as Address, usdcAmount],
-          address: contractAddress
-        })
-      }
-
-      showSuccessToast(hash)
-      await fetchBalances()
-    } catch (error) {
-      showErrorToast(ErrorUtil.getErrorMessage(error, 'Failed to send transaction'))
-      onClose()
-      setIsLoading(false)
-    } finally {
-      setIsLoading(false)
+      writeContract({
+        abi: erc20Abi,
+        functionName: 'transfer',
+        args: [toAddress as Address, usdcAmount],
+        address: contractAddress
+      })
     }
   }
 
@@ -134,8 +138,8 @@ function SendUSDCForm({
             </Text>
             <Input
               placeholder="Destination Address"
-              onChange={e => setAddress(e.target.value)}
-              value={address}
+              onChange={e => setToAddress(e.target.value)}
+              value={toAddress}
             />
             <Input
               placeholder="USDC Amount"
@@ -155,7 +159,7 @@ function SendUSDCForm({
               <Button
                 data-testid="sign-transaction-button"
                 onClick={onSendTransaction}
-                isDisabled={isLoading || !address || !amount}
+                isDisabled={isLoading || !toAddress || !amount}
                 isLoading={isLoading}
                 width="full"
               >
@@ -176,7 +180,6 @@ function SendUSDCForm({
 
 export function WagmiSendUSDCTest() {
   const { status, chain } = useAccount()
-  const config = useConfig()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { fetchBalances } = useWalletGetAssets()
   const [usdcBalance, setUsdcBalance] = useState('0')
@@ -225,10 +228,9 @@ export function WagmiSendUSDCTest() {
       <SendUSDCForm
         isOpen={isOpen}
         onClose={onClose}
-        chain={chain}
-        config={config}
         balance={usdcBalance}
         isNativeUsdc={isNativeUsdc}
+        chainId={chain.id}
       />
     </>
   )
