@@ -15,6 +15,7 @@ export const ConstantsUtil = {
   LEATHER_CONNECTOR_NAME: 'Leather',
   OKX_CONNECTOR_NAME: 'OKX Wallet',
   BINANCE_CONNECTOR_NAME: 'Binance Wallet',
+  JUPITER_CONNECTOR_NAME: 'Jupiter',
 
   EIP155: CommonConstantsUtil.CHAIN.EVM,
   ADD_CHAIN_METHOD: 'wallet_addEthereumChain',

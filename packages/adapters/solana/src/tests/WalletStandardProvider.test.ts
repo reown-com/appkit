@@ -148,6 +148,24 @@ describe('WalletStandardProvider specific tests', () => {
     })
   })
 
+  it('should map a known wallet name to its WalletConnect explorer id', () => {
+    const jupiterProvider = new WalletStandardProvider({
+      wallet: { ...mockWalletStandard(), name: 'Jupiter' },
+      getActiveChain,
+      requestedChains
+    })
+
+    expect(jupiterProvider.explorerId).toBe(
+      '0ef262ca2a56b88d179c93a21383fee4e135bd7bc6680e5c2356ff8e38301037'
+    )
+    expect(jupiterProvider.id).toBe(jupiterProvider.explorerId)
+  })
+
+  it('should fall back to the wallet name when the name has no explorer id', () => {
+    expect(walletStandardProvider.explorerId).toBeUndefined()
+    expect(walletStandardProvider.id).toBe('mocked-wallet')
+  })
+
   it('should use the same requestedChains to return chains', () => {
     const testingChainIndex = 2
     const chainId = Object.keys(solanaChains)[testingChainIndex] as `solana:${string}`
