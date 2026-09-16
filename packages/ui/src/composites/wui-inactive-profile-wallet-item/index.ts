@@ -66,18 +66,16 @@ export class WuiInactiveProfileWalletItem extends LitElement {
     if (this.icon) {
       return html`
         <wui-flex alignItems="center" justifyContent="center" class="icon-box">
-          <wui-flex alignItems="center" justifyContent="center" class="icon-box">
-            <wui-icon size="lg" color="default" name=${this.icon} class="custom-icon"></wui-icon>
+          <wui-icon size="lg" color="default" name=${this.icon} class="custom-icon"></wui-icon>
 
-            ${this.iconBadge
-              ? html`<wui-icon
-                  color="default"
-                  size="inherit"
-                  name=${this.iconBadge}
-                  class="icon-badge"
-                ></wui-icon>`
-              : null}
-          </wui-flex>
+          ${this.iconBadge
+            ? html`<wui-icon
+                color="default"
+                size="md"
+                name=${this.iconBadge}
+                class="icon-badge"
+              ></wui-icon>`
+            : null}
         </wui-flex>
       `
     }

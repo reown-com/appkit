@@ -115,7 +115,7 @@ export class WuiActiveProfileWalletItem extends LitElement {
             ${this.iconBadge
               ? html`<wui-icon
                   color="accent-primary"
-                  size="inherit"
+                  size="md"
                   name=${this.iconBadge}
                   class="icon-badge"
                 ></wui-icon>`
