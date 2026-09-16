@@ -90,7 +90,7 @@ function SendUSDCForm({
       const provider = new ethers.providers.Web3Provider(walletProvider, chainId)
       const signer = provider.getSigner(userAddress)
 
-      let txHash: string
+      let txHash = ''
 
       if (isNativeUsdc) {
         // Arc chains: USDC is native currency with 18 decimals

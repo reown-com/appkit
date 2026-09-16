@@ -90,7 +90,7 @@ function SendUSDCForm({
       const provider = new BrowserProvider(walletProvider, chainId)
       const signer = new JsonRpcSigner(provider, userAddress)
 
-      let txHash: string
+      let txHash = ''
 
       if (isNativeUsdc) {
         // Arc chains: USDC is native currency with 18 decimals

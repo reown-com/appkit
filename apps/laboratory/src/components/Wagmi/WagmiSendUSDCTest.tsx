@@ -83,9 +83,10 @@ function SendUSDCForm({ isOpen, onClose, balance, isNativeUsdc, chainId }: SendU
 
   const isLoading = isSendPending || isWritePending
 
-  async function onSendTransaction() {
+  function onSendTransaction() {
     if (!toAddress.startsWith('0x')) {
       showErrorToast('Invalid address format')
+
       return
     }
 
@@ -105,6 +106,7 @@ function SendUSDCForm({ isOpen, onClose, balance, isNativeUsdc, chainId }: SendU
       const contractAddress = TOKEN_ADDRESSES[chainId]
       if (!contractAddress) {
         showErrorToast('USDC contract address not found for this chain')
+
         return
       }
       writeContract({

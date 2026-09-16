@@ -9,6 +9,7 @@ import {
   Stack,
   StackDivider
 } from '@chakra-ui/react'
+
 import { useAppKitAccount } from '@reown/appkit/react'
 
 import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
