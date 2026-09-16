@@ -36,6 +36,7 @@ import {
   toHex
 } from 'viem'
 
+import { WcConstantsUtil } from '@reown/appkit'
 import { ErrorUtil, UserRejectedRequestError } from '@reown/appkit-common'
 import type {
   AppKitNetwork,
@@ -935,16 +936,43 @@ export class WagmiAdapter extends AdapterBlueprint {
       blockExplorers?.default.url ?? caipNetwork.blockExplorers?.default?.url ?? ''
     const currency = nativeCurrency ?? caipNetwork.nativeCurrency
     const chainName = name ?? caipNetwork.name
+    const addEthereumChainParameter = {
+      chainName,
+      nativeCurrency: currency,
+      rpcUrls: [rpcUrl],
+      blockExplorerUrls: [blockExplorerUrl]
+    }
 
-    await switchChain(this.wagmiConfig, {
-      chainId: id,
-      addEthereumChainParameter: {
-        chainName,
-        nativeCurrency: currency,
-        rpcUrls: [rpcUrl],
-        blockExplorerUrls: [blockExplorerUrl]
+    try {
+      await switchChain(this.wagmiConfig, { chainId: id, addEthereumChainParameter })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (switchError: any) {
+      const isUnrecognizedChain =
+        switchError?.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+        switchError?.code === WcConstantsUtil.ERROR_INVALID_CHAIN_ID ||
+        switchError?.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
+        switchError?.data?.originalError?.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+
+      const provider = isUnrecognizedChain
+        ? await getConnections(this.wagmiConfig)?.[0]?.connector
+            .getProvider()
+            .catch(() => undefined)
+        : undefined
+
+      if (!provider) {
+        throw switchError
       }
-    })
+
+      await (provider as Provider).request({
+        method: 'wallet_addEthereumChain',
+        params: [
+          {
+            chainId: `0x${id.toString(16)}`,
+            ...addEthereumChainParameter
+          }
+        ]
+      })
+    }
 
     await super.switchNetwork(params)
   }
