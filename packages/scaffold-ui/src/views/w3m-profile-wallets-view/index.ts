@@ -525,7 +525,9 @@ export class W3mProfileWalletsView extends LitElement {
 
       if (isDifferentNamespace && connection?.caipNetwork) {
         ConnectorController.setFilterByNamespace(namespace)
-        await ChainController.switchActiveNetwork(connection?.caipNetwork)
+        await ChainController.switchActiveNetwork(connection?.caipNetwork, {
+          throwOnFailure: true
+        })
       }
 
       await ConnectionController.switchConnection({
