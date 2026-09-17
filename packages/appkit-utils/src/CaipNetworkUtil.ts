@@ -77,6 +77,7 @@ const WC_HTTP_RPC_SUPPORTED_CHAINS = [
   'eip155:30',
   'eip155:2810',
   'eip155:55931',
+  'eip155:5042',
   'bip122:000000000019d6689c085ae165831e93',
   'bip122:000000000933ea01ad0ee984209779ba',
   'tron:0x2b6653dc',
