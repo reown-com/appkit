@@ -194,7 +194,7 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
       } catch {
         /*
          * Non-standard feature (not part of the Wallet Standard or @exodus/bitcoin-wallet-standard-features
-         * spec) - best-effort only, must not block the rest of the disconnect cleanup if a wallet rejects it. 
+         * spec) - best-effort only, must not block the rest of the disconnect cleanup if a wallet rejects it.
          */
       }
     }
