@@ -84,24 +84,8 @@ describe('W3mNetworkSwitchView', () => {
     expect(ModalController.close).not.toHaveBeenCalled()
   })
 
-  it('closes the modal on success when reached from the Networks list, connected, and not using AUTH', async () => {
+  it('goes back on success, reached from the Networks list', async () => {
     vi.useFakeTimers()
-    vi.spyOn(ChainController, 'switchActiveNetwork').mockResolvedValue(undefined)
-
-    await fixture<W3mNetworkSwitchView>(html`<w3m-network-switch-view></w3m-network-switch-view>`)
-    await vi.advanceTimersByTimeAsync(1100)
-
-    expect(ModalController.close).toHaveBeenCalled()
-    expect(RouterController.goBack).not.toHaveBeenCalled()
-  })
-
-  it('goes back on success when the previous view is not Networks', async () => {
-    vi.useFakeTimers()
-    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
-      ...RouterController.state,
-      data: { network: MOCK_NETWORK as any },
-      history: ['Connect', 'SwitchNetwork']
-    })
     vi.spyOn(ChainController, 'switchActiveNetwork').mockResolvedValue(undefined)
 
     await fixture<W3mNetworkSwitchView>(html`<w3m-network-switch-view></w3m-network-switch-view>`)
@@ -111,7 +95,7 @@ describe('W3mNetworkSwitchView', () => {
     expect(ModalController.close).not.toHaveBeenCalled()
   })
 
-  it('goes back on success when using the AUTH connector, even from Networks', async () => {
+  it('goes back on success when using the AUTH connector', async () => {
     vi.useFakeTimers()
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('AUTH')
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({} as any)
@@ -124,7 +108,7 @@ describe('W3mNetworkSwitchView', () => {
     expect(ModalController.close).not.toHaveBeenCalled()
   })
 
-  it('shows the success (checkmark) state before closing/going back', async () => {
+  it('shows the success (checkmark) state before going back', async () => {
     vi.useFakeTimers()
     vi.spyOn(ChainController, 'switchActiveNetwork').mockResolvedValue(undefined)
 
@@ -135,10 +119,10 @@ describe('W3mNetworkSwitchView', () => {
     await Promise.resolve()
 
     expect(element.success).toBe(true)
-    expect(ModalController.close).not.toHaveBeenCalled()
+    expect(RouterController.goBack).not.toHaveBeenCalled()
 
     await vi.advanceTimersByTimeAsync(1100)
 
-    expect(ModalController.close).toHaveBeenCalled()
+    expect(RouterController.goBack).toHaveBeenCalled()
   })
 })

@@ -7,7 +7,6 @@ import {
   AssetUtil,
   ChainController,
   ConnectorController,
-  ModalController,
   RouterController,
   SIWXUtil
 } from '@reown/appkit-controllers'
@@ -170,18 +169,7 @@ export class W3mNetworkSwitchView extends LitElement {
       setTimeout(resolve, 1100)
     })
 
-    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
-    const authConnector = ConnectorController.getAuthConnector()
-    const isUsingAuth =
-      Boolean(authConnector) && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
-    const previousView = RouterController.state.history.at(-2)
-    const isConnected = Boolean(ChainController.state.activeCaipAddress)
-
-    if (previousView === 'Networks' && !isUsingAuth && isConnected) {
-      ModalController.close()
-    } else {
-      RouterController.goBack()
-    }
+    RouterController.goBack()
   }
 }
 
