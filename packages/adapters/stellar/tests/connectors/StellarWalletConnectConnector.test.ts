@@ -138,6 +138,18 @@ describe('StellarWalletConnectConnector', () => {
     expect(result.signedAuthEntry).toBe('signed-entry')
   })
 
+  it('request forwards to the universal provider on the active stellar chain', async () => {
+    const { connector, provider } = createConnector({ ok: true })
+
+    const result = await connector.request({ method: 'stellar_signXDR', params: { xdr: 'x' } })
+
+    expect(provider.request).toHaveBeenCalledWith(
+      { method: 'stellar_signXDR', params: { xdr: 'x' } },
+      'stellar:pubnet'
+    )
+    expect(result).toEqual({ ok: true })
+  })
+
   it('throws when no stellar network is active', async () => {
     const { connector } = createConnector({})
 
