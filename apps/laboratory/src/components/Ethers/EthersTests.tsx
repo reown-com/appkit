@@ -19,6 +19,7 @@ import { useEthersActiveCapabilities } from '@/src/hooks/useEthersActiveCapabili
 import { EthersGetCallsStatusTest } from './EthersGetCallsStatusTest'
 import { EthersSendCallsTest } from './EthersSendCallsTest'
 import { EthersSendCallsWithPaymasterServiceTest } from './EthersSendCallsWithPaymasterServiceTest'
+import { EthersSendUSDCTest } from './EthersSendUSDCTest'
 import { EthersSignMessageTest } from './EthersSignMessageTest'
 import { EthersSignTypedDataTest } from './EthersSignTypedDataTest'
 import { EthersTransactionTest } from './EthersTransactionTest'
@@ -84,6 +85,12 @@ export function EthersTests() {
               Contract Write
             </Heading>
             <EthersWriteContractTest />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Send USDC
+            </Heading>
+            <EthersSendUSDCTest />
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">

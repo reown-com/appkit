@@ -9,6 +9,8 @@ const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
 const EMAIL_DOMAIN = 'web3modal.msdc.co'
 
+let callCount = 0
+
 export class Email {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   private readonly mailsac: Mailsac<any>
@@ -161,8 +163,12 @@ export class Email {
     )
     const { id } = await response.json()
 
-    const email = `w3m-w${id}@${domain}`
+    callCount += 1
+    const runId = process.env['GITHUB_RUN_ID'] ?? 'local'
+    const shard = process.env['PLAYWRIGHT_SHARD_SUFFIX'] ?? '0'
+    const email = `w3m-w${id}-${runId}-${shard}-${process.pid}-${callCount}@${domain}`
     // eslint-disable-next-line no-console
+    console.log(`[getEmailAddressToUse] Allocated id ${id}, using address: ${email}`)
 
     return email
   }

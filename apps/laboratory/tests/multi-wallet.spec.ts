@@ -27,7 +27,7 @@ const test = extensionFixture.extend<{ library: string }>({
   library: ['wagmi', { option: true }]
 })
 
-test.describe.configure({ mode: 'serial' })
+test.describe.configure({ mode: 'serial', retries: 2 })
 
 test.beforeAll(async ({ library, context }) => {
   apiKey = process.env['MAILSAC_API_KEY'] as string
