@@ -1,5 +1,42 @@
 # @reown/appkit-cli
 
+## 1.8.24
+
+### Patch Changes
+
+- [#5747](https://github.com/reown-com/appkit/pull/5747) [`d6cb98d`](https://github.com/reown-com/appkit/commit/d6cb98d47eccd976ef47b016264708399bb0a175) Thanks [@santgr11](https://github.com/santgr11)! - Fix broken image in tokens with broken image url
+
+- [#5768](https://github.com/reown-com/appkit/pull/5768) [`cd395ad`](https://github.com/reown-com/appkit/commit/cd395addb82bf148a8b3739f8ab17a53f65b6e2d) Thanks [@0xmkh](https://github.com/0xmkh)! - Upgraded viem to latest version
+
+- [#5755](https://github.com/reown-com/appkit/pull/5755) [`3d181c8`](https://github.com/reown-com/appkit/commit/3d181c841d5c3708f5b874e0722092707546e8c6) Thanks [@santgr11](https://github.com/santgr11)! - Make default wallet icon bigget in Sign In message request
+
+- [#5760](https://github.com/reown-com/appkit/pull/5760) [`c2172e1`](https://github.com/reown-com/appkit/commit/c2172e1f24019c592d527f3ad59d04cd1bef87a3) Thanks [@santgr11](https://github.com/santgr11)! - Fixed the SIWX sign-message prompt not appearing after connecting until the page was refreshed, reproducible with the Solana adapter on email sign-in and more generally with Farcaster login or browser-injected-wallet connections.
+
+- [#5728](https://github.com/reown-com/appkit/pull/5728) [`4d6cf6a`](https://github.com/reown-com/appkit/commit/4d6cf6aeabddce159f04144ef60c7abd31c052c2) Thanks [@enesozturk](https://github.com/enesozturk)! - Fix headless hosts getting stuck after a disconnect, where connecting any wallet afterwards silently did nothing and every attempt reported a connection error until the page was reloaded.
+
+  Two gaps, both only reachable without scaffold-ui (which re-fetches the URI per view and clears the error on "try again"):
+
+  - `wcError` was only ever cleared by a successful mobile deeplink or the headful "try again" button, so a single failure left every later attempt reading as failed. A new `connectWalletConnect` attempt now starts from a clean error state.
+  - `ConnectionControllerUtil.onConnectMobile` is a no-op without a pairing URI, and a disconnect clears it (`resetWcConnection`). `connectWallet` / the `useAppKitWallets` `connect` now reject in that case (`ConnectionControllerUtil.assertWcUriForDeeplink`) instead of resolving as if a wallet had been opened, so the host can pre-fetch a URI and retry rather than waiting on a redirect that never fires.
+
+  Headless hosts can also now read the pairing expiry: `getWalletConnectUri()` returns `wcPairingExpiry` alongside `wcUri` / `wcError` / `wcFetchingUri`, and `subscribeWalletConnectUri` fires on it. `ConnectionController.setUri` has always stamped it four minutes out, and scaffold-ui reads it (`isPairingExpired`) to decide whether to re-connect — it simply was never passed through to the headless read.
+
+  It matters for a host that consumes the URI later than it fetched it. Scaffold-ui generates a URI and acts on it in one gesture, so a lapsed pairing is nearly unreachable there. A host whose picker fetches on wallet select and deeplinks on a second, user-paced click can easily be past four minutes by the time the user taps, and no other field in the snapshot distinguishes a fresh URI from a dead one.
+
+- [#5756](https://github.com/reown-com/appkit/pull/5756) [`af531f4`](https://github.com/reown-com/appkit/commit/af531f434a77a3c50f8afccbff5224135d63571c) Thanks [@santgr11](https://github.com/santgr11)! - Show the full wallet name in the "Don't have X?" download CTA instead of always hard-truncating it to 12 characters
+
+- [#5758](https://github.com/reown-com/appkit/pull/5758) [`0cec5de`](https://github.com/reown-com/appkit/commit/0cec5dee7d629f4bf602399e2e214b0d3e776ba3) Thanks [@santgr11](https://github.com/santgr11)! - Fix Sign modal Cancel/Sign buttons rendering outside the modal boundary when both show their loading label at once (e.g. after a network hiccup lets a user press both before either resolves). `wui-button` can now shrink as a flex item and truncates its label with an ellipsis instead of overflowing past its own bounds.
+
+- [#5746](https://github.com/reown-com/appkit/pull/5746) [`d8263cb`](https://github.com/reown-com/appkit/commit/d8263cb6ebb9e1618509f9d9311ea48850b80df1) Thanks [@santgr11](https://github.com/santgr11)! - Fix stored TRON wallet connections being silently wiped on reload when a wallet adapter (e.g. TronLink) is still resolving its `readyState` when boot sync runs. `TronAdapter.syncConnectors` now waits for a pending wallet adapter to settle before boot connection sync runs, but only when that adapter has an actual stored TRON connection to restore, so `useAppKitAccount` rehydrates correctly instead of staying disconnected, without adding a delay to every page load.
+
+- [#5745](https://github.com/reown-com/appkit/pull/5745) [`840dc8f`](https://github.com/reown-com/appkit/commit/840dc8fadc1ac8a18a5f6ce18e935860164382a7) Thanks [@tomiir](https://github.com/tomiir)! - Added Stellar support via WalletConnect through the new `@reown/appkit-adapter-stellar` package. Supports the `stellar:pubnet` and `stellar:testnet` networks and the `stellar_signXDR`, `stellar_signAndSubmitXDR`, `stellar_signMessage` and `stellar_signAuthEntry` methods, along with a SIWX verifier for SEP-53 signatures. Stellar wallets connect over WalletConnect only -- there is no extension wallet support.
+
+- [#5736](https://github.com/reown-com/appkit/pull/5736) [`8fe48b0`](https://github.com/reown-com/appkit/commit/8fe48b04adb2543c5c64b930bf9c6d21a6ca215d) Thanks [@0xmkh](https://github.com/0xmkh)! - fix(siwx): resolve multichain wallet signing race condition
+
+  Fixed an issue where SIWX signing would fail with multichain wallets (Trust Wallet, SafePal) when the active namespace changed between message creation and signing.
+
+- [#5723](https://github.com/reown-com/appkit/pull/5723) [`b9a2612`](https://github.com/reown-com/appkit/commit/b9a2612c9cd23c7a145a8d25fae86aac32cc5233) Thanks [@santgr11](https://github.com/santgr11)! - Fixed Rootstock network logo not being displayed in the network selectors.
+
 ## 1.8.23
 
 ### Patch Changes
