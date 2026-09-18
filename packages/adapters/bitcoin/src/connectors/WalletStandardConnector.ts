@@ -184,6 +184,21 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   async disconnect() {
+    const disconnectFeature = this.wallet.features['bitcoin:disconnect'] as
+      | { disconnect: () => Promise<void> }
+      | undefined
+
+    if (disconnectFeature && typeof disconnectFeature.disconnect === 'function') {
+      try {
+        await disconnectFeature.disconnect()
+      } catch {
+        /*
+         * Non-standard feature (not part of the Wallet Standard or @exodus/bitcoin-wallet-standard-features
+         * spec) - best-effort only, must not block the rest of the disconnect cleanup if a wallet rejects it.
+         */
+      }
+    }
+
     return Promise.resolve()
   }
 
