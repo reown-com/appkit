@@ -30,10 +30,14 @@ export class W3mNetworkSwitchView extends LitElement {
 
   private unsubscribe: (() => void)[] = []
 
+  private switchSuccessTimeout?: ReturnType<typeof setTimeout>
+
   // -- State & Properties -------------------------------- //
   @state() private showRetry = false
 
   @state() public error = false
+
+  @state() public success = false
 
   public constructor() {
     super()
@@ -41,6 +45,10 @@ export class W3mNetworkSwitchView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    if (this.switchSuccessTimeout) {
+      clearTimeout(this.switchSuccessTimeout)
+      this.switchSuccessTimeout = undefined
+    }
   }
 
   public override firstUpdated() {
@@ -60,6 +68,7 @@ export class W3mNetworkSwitchView extends LitElement {
     return html`
       <wui-flex
         data-error=${this.error}
+        data-success=${this.success}
         flexDirection="column"
         alignItems="center"
         .padding=${['10', '5', '10', '5'] as const}
@@ -71,9 +80,10 @@ export class W3mNetworkSwitchView extends LitElement {
             imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
           ></wui-network-image>
 
-          ${this.error ? null : html`<wui-loading-hexagon></wui-loading-hexagon>`}
-
-          <wui-icon-box color="error" icon="close" size="sm"></wui-icon-box>
+          ${this.error || this.success ? null : html`<wui-loading-hexagon></wui-loading-hexagon>`}
+          ${this.success
+            ? html`<wui-icon-box color="success" icon="checkmark" size="sm"></wui-icon-box>`
+            : html`<wui-icon-box color="error" icon="close" size="sm"></wui-icon-box>`}
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="2">
@@ -103,6 +113,10 @@ export class W3mNetworkSwitchView extends LitElement {
       return ''
     }
 
+    if (this.success) {
+      return ''
+    }
+
     return this.error
       ? 'Switch can be declined if chain is not supported by a wallet or previous request is still active'
       : 'Accept connection request in your wallet'
@@ -113,6 +127,10 @@ export class W3mNetworkSwitchView extends LitElement {
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       return `Switching to ${this.network?.name ?? 'Unknown'} network...`
+    }
+
+    if (this.success) {
+      return `Switched to ${this.network?.name ?? 'Unknown'}`
     }
 
     return this.error ? 'Switch declined' : 'Approve in wallet'
@@ -132,21 +150,38 @@ export class W3mNetworkSwitchView extends LitElement {
   private async onSwitchNetwork() {
     try {
       this.error = false
+      this.success = false
       if (ChainController.state.activeChain !== this.network?.chainNamespace) {
         ChainController.setIsSwitchingNamespace(true)
       }
       if (this.network) {
-        await ChainController.switchActiveNetwork(this.network)
+        await ChainController.switchActiveNetwork(this.network, { throwOnFailure: true })
         const isAuthenticated = await SIWXUtil.isAuthenticated()
 
         // If not authenticated, wait for siwx prompt, else go back to previous view
         if (isAuthenticated) {
-          RouterController.goBack()
+          this.onSwitchSuccess()
         }
       }
     } catch (error) {
       this.error = true
+      ChainController.setIsSwitchingNamespace(false)
     }
+  }
+
+  private async onSwitchSuccess() {
+    this.success = true
+
+    /*
+     * If the view is torn down before this fires (modal closed, navigated away),
+     * disconnectedCallback cancels the timeout and this promise never resolves,
+     * so goBack() below never fires against a navigation stack that has moved on.
+     */
+    await new Promise<void>(resolve => {
+      this.switchSuccessTimeout = setTimeout(resolve, 1100)
+    })
+
+    RouterController.goBack()
   }
 }
 

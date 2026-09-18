@@ -1024,6 +1024,78 @@ describe('WagmiAdapter', () => {
       })
       expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith({ chainId: 'eip155:1' })
     })
+
+    it('falls back to wallet_addEthereumChain when switchChain rejects with an unrecognized-chain code', async () => {
+      const mockRequest = vi.fn().mockResolvedValue(undefined)
+      const mockProvider = { request: mockRequest }
+
+      vi.mocked(switchChain).mockRejectedValueOnce({ code: 4902 })
+      vi.mocked(getConnections).mockReturnValue([
+        { connector: { getProvider: () => Promise.resolve(mockProvider) } }
+      ] as any)
+
+      await adapter.switchNetwork({ caipNetwork: mockCaipNetworks[0] })
+
+      expect(mockRequest).toHaveBeenCalledWith({
+        method: 'wallet_addEthereumChain',
+        params: [
+          expect.objectContaining({
+            chainId: '0x1',
+            chainName: mockCaipNetworks[0].name,
+            nativeCurrency: {
+              name: mockCaipNetworks[0].nativeCurrency.name,
+              symbol: mockCaipNetworks[0].nativeCurrency.symbol,
+              decimals: mockCaipNetworks[0].nativeCurrency.decimals
+            },
+            rpcUrls: [mockCaipNetworks[0].rpcUrls?.['chainDefault']?.http?.[0] ?? ''],
+            blockExplorerUrls: [mockCaipNetworks[0].blockExplorers?.default.url ?? '']
+          })
+        ]
+      })
+    })
+
+    it('falls back to wallet_addEthereumChain when the code is nested under data.originalError', async () => {
+      const mockRequest = vi.fn().mockResolvedValue(undefined)
+      const mockProvider = { request: mockRequest }
+
+      vi.mocked(switchChain).mockRejectedValueOnce({ data: { originalError: { code: 4902 } } })
+      vi.mocked(getConnections).mockReturnValue([
+        { connector: { getProvider: () => Promise.resolve(mockProvider) } }
+      ] as any)
+
+      await adapter.switchNetwork({ caipNetwork: mockCaipNetworks[0] })
+
+      expect(mockRequest).toHaveBeenCalledWith(
+        expect.objectContaining({ method: 'wallet_addEthereumChain' })
+      )
+    })
+
+    it('rethrows without attempting a fallback when the error is not an unrecognized-chain error', async () => {
+      const mockRequest = vi.fn()
+      const mockProvider = { request: mockRequest }
+      const rejection = { code: 4001, message: 'User rejected the request' }
+
+      vi.mocked(switchChain).mockRejectedValueOnce(rejection)
+      vi.mocked(getConnections).mockReturnValue([
+        { connector: { getProvider: () => Promise.resolve(mockProvider) } }
+      ] as any)
+
+      await expect(adapter.switchNetwork({ caipNetwork: mockCaipNetworks[0] })).rejects.toEqual(
+        rejection
+      )
+      expect(mockRequest).not.toHaveBeenCalled()
+    })
+
+    it('rethrows the original error when no connection/provider is available for the fallback', async () => {
+      const rejection = { code: 4902 }
+
+      vi.mocked(switchChain).mockRejectedValueOnce(rejection)
+      vi.mocked(getConnections).mockReturnValue([])
+
+      await expect(adapter.switchNetwork({ caipNetwork: mockCaipNetworks[0] })).rejects.toEqual(
+        rejection
+      )
+    })
   })
 
   describe('WagmiAdapter - Permissions', () => {
