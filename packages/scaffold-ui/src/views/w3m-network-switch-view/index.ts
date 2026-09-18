@@ -159,6 +159,7 @@ export class W3mNetworkSwitchView extends LitElement {
       }
     } catch (error) {
       this.error = true
+      ChainController.setIsSwitchingNamespace(false)
     }
   }
 

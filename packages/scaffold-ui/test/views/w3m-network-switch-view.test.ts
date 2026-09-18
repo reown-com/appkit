@@ -84,6 +84,22 @@ describe('W3mNetworkSwitchView', () => {
     expect(ModalController.close).not.toHaveBeenCalled()
   })
 
+  it('clears isSwitchingNamespace when a cross-namespace switch fails', async () => {
+    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+      ...RouterController.state,
+      data: { network: { ...MOCK_NETWORK, chainNamespace: 'solana' } as any },
+      history: ['Connect', 'Networks', 'SwitchNetwork']
+    })
+    vi.spyOn(ChainController, 'switchActiveNetwork').mockRejectedValue(
+      new Error('Chain is not supported')
+    )
+
+    await fixture<W3mNetworkSwitchView>(html`<w3m-network-switch-view></w3m-network-switch-view>`)
+
+    expect(ChainController.setIsSwitchingNamespace).toHaveBeenCalledWith(true)
+    expect(ChainController.setIsSwitchingNamespace).toHaveBeenLastCalledWith(false)
+  })
+
   it('goes back on success, reached from the Networks list', async () => {
     vi.useFakeTimers()
     vi.spyOn(ChainController, 'switchActiveNetwork').mockResolvedValue(undefined)

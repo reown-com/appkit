@@ -940,6 +940,8 @@ describe('W3mProfileWalletsView - User Actions', () => {
       accounts: [{ address: 'solanaAddress123', type: 'eoa' }]
     } as unknown as Connection
 
+    const previousFilterByNamespace = ConnectorController.state.filterByNamespace
+
     vi.spyOn(ChainController, 'switchActiveNetwork').mockRejectedValueOnce(
       new Error('Chain is not supported')
     )
@@ -959,6 +961,15 @@ describe('W3mProfileWalletsView - User Actions', () => {
     })
     expect(SnackController.showError).toHaveBeenCalledWith('Failed to switch wallet')
     expect(ConnectionController.switchConnection).not.toHaveBeenCalled()
+    // The namespace filter set before the failed switch must be rolled back
+    expect(ConnectorController.setFilterByNamespace).toHaveBeenNthCalledWith(
+      1,
+      ConstantsUtil.CHAIN.SOLANA
+    )
+    expect(ConnectorController.setFilterByNamespace).toHaveBeenNthCalledWith(
+      2,
+      previousFilterByNamespace
+    )
   })
 
   it('should handle wallet delete action for recent connections', async () => {
