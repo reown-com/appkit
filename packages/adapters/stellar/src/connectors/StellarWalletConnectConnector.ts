@@ -119,9 +119,14 @@ export class StellarWalletConnectConnector
     return Promise.resolve()
   }
 
-  public request<T>(args: RequestArguments) {
-    // @ts-expect-error - args type should match internalRequest arguments but it's not correctly typed in Provider
-    return this.internalRequest(args) as T
+  public async request<T>(args: RequestArguments): Promise<T> {
+    const chain = ChainController.getCaipNetworkByNamespace(ConstantsUtil.CHAIN.STELLAR)
+
+    if (!chain) {
+      throw new Error('Chain not found')
+    }
+
+    return this.provider.request<T>(args, chain.caipNetworkId)
   }
 
   public setDefaultChain(chainId: string) {
