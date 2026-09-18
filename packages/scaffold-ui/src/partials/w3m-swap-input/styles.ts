@@ -29,6 +29,10 @@ export default css`
     z-index: 10;
   }
 
+  :host > wui-flex .swap-token-button {
+    flex-shrink: 0;
+  }
+
   :host > wui-flex .swap-input {
     -webkit-mask-image: linear-gradient(
       270deg,
