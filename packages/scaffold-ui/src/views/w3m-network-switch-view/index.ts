@@ -30,6 +30,8 @@ export class W3mNetworkSwitchView extends LitElement {
 
   private unsubscribe: (() => void)[] = []
 
+  private switchSuccessTimeout?: ReturnType<typeof setTimeout>
+
   // -- State & Properties -------------------------------- //
   @state() private showRetry = false
 
@@ -43,6 +45,10 @@ export class W3mNetworkSwitchView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    if (this.switchSuccessTimeout) {
+      clearTimeout(this.switchSuccessTimeout)
+      this.switchSuccessTimeout = undefined
+    }
   }
 
   public override firstUpdated() {
@@ -166,8 +172,11 @@ export class W3mNetworkSwitchView extends LitElement {
   private async onSwitchSuccess() {
     this.success = true
 
+    // If the view is torn down before this fires (modal closed, navigated away),
+    // disconnectedCallback cancels the timeout and this promise never resolves,
+    // so goBack() below never fires against a navigation stack that has moved on.
     await new Promise<void>(resolve => {
-      setTimeout(resolve, 1100)
+      this.switchSuccessTimeout = setTimeout(resolve, 1100)
     })
 
     RouterController.goBack()

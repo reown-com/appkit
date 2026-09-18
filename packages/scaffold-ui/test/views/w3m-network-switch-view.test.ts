@@ -111,6 +111,27 @@ describe('W3mNetworkSwitchView', () => {
     expect(ModalController.close).not.toHaveBeenCalled()
   })
 
+  it('does not go back if the view is torn down before the success animation finishes', async () => {
+    vi.useFakeTimers()
+    vi.spyOn(ChainController, 'switchActiveNetwork').mockResolvedValue(undefined)
+
+    const element = await fixture<W3mNetworkSwitchView>(
+      html`<w3m-network-switch-view></w3m-network-switch-view>`
+    )
+    await Promise.resolve()
+    await Promise.resolve()
+
+    expect(element.success).toBe(true)
+
+    // Simulate the router navigating away (e.g. modal closed, a new flow started)
+    // before the 1100ms success animation completes.
+    element.remove()
+
+    await vi.advanceTimersByTimeAsync(1100)
+
+    expect(RouterController.goBack).not.toHaveBeenCalled()
+  })
+
   it('goes back on success when using the AUTH connector', async () => {
     vi.useFakeTimers()
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('AUTH')
