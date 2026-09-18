@@ -139,6 +139,26 @@ describe('CaipNetworksUtil', () => {
       expect(result).toContain('projectId=test-project-id')
     })
 
+    it('should return blockchain API URL for Arc', () => {
+      const arc: AppKitNetwork = {
+        id: 5042,
+        name: 'Arc',
+        nativeCurrency: {
+          name: 'USDC',
+          symbol: 'USDC',
+          decimals: 18
+        },
+        rpcUrls: {
+          default: {
+            http: []
+          }
+        }
+      }
+      const result = CaipNetworksUtil.getDefaultRpcUrl(arc, 'eip155:5042', mockProjectId)
+      expect(result).toContain('rpc.walletconnect.org')
+      expect(result).toContain('projectId=test-project-id')
+    })
+
     it('should return default RPC URL for unsupported chains', () => {
       const customNetwork: AppKitNetwork = {
         id: 999,

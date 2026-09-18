@@ -352,6 +352,81 @@ describe('TronWalletConnectConnector', () => {
     })
   })
 
+  describe('request', () => {
+    it('should forward the request to the WC provider on the active tron chain', async () => {
+      mockProviderRequest.mockResolvedValueOnce({ ok: true })
+
+      const result = await connector.request({
+        method: 'tron_signMessage',
+        params: { message: 'x' }
+      })
+
+      expect(result).toEqual({ ok: true })
+      expect(mockProviderRequest).toHaveBeenCalledWith(
+        { method: 'tron_signMessage', params: { message: 'x' } },
+        MOCK_CHAIN_ID
+      )
+    })
+
+    it('should reject when no tron network is active', async () => {
+      vi.mocked(ChainController.getCaipNetworkByNamespace).mockReturnValue(undefined)
+
+      await expect(connector.request({ method: 'tron_signMessage' })).rejects.toThrow(
+        'Chain not found'
+      )
+      expect(mockProviderRequest).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('signTransaction', () => {
+    it('should sign a prebuilt tx with the legacy nested shape and the session address by default', async () => {
+      mockProviderRequest.mockResolvedValueOnce(MOCK_SIGNED_TX)
+
+      const result = await connector.signTransaction(MOCK_UNSIGNED_TX)
+
+      expect(result).toEqual(MOCK_SIGNED_TX)
+      expect(mockProviderRequest).toHaveBeenCalledWith(
+        {
+          method: 'tron_signTransaction',
+          params: {
+            address: MOCK_OWNER_ADDRESS,
+            transaction: { transaction: MOCK_UNSIGNED_TX }
+          }
+        },
+        MOCK_CHAIN_ID
+      )
+    })
+
+    it('should send the flat (v1) shape when wallet advertises tron_method_version v1', async () => {
+      const v1Connector = new TronWalletConnectConnector({
+        provider: {
+          ...mockProvider,
+          session: { ...mockProvider.session, sessionProperties: { tron_method_version: 'v1' } }
+        } as any,
+        chains: [MOCK_CAIP_NETWORK as any]
+      })
+      mockProviderRequest.mockResolvedValueOnce(MOCK_SIGNED_TX)
+
+      await v1Connector.signTransaction(MOCK_UNSIGNED_TX, MOCK_OWNER_ADDRESS)
+
+      expect(mockProviderRequest).toHaveBeenCalledWith(
+        {
+          method: 'tron_signTransaction',
+          params: { address: MOCK_OWNER_ADDRESS, transaction: MOCK_UNSIGNED_TX }
+        },
+        MOCK_CHAIN_ID
+      )
+    })
+
+    it('should throw when the wallet returns no signature', async () => {
+      mockProviderRequest.mockResolvedValueOnce({ txID: MOCK_UNSIGNED_TX.txID })
+
+      await expect(connector.signTransaction(MOCK_UNSIGNED_TX)).rejects.toThrow(
+        'Transaction signing failed'
+      )
+    })
+  })
+
   describe('signMessage', () => {
     it('should call tron_signMessage via WC provider', async () => {
       mockProviderRequest.mockResolvedValueOnce({ signature: 'test-signature-hex' })
