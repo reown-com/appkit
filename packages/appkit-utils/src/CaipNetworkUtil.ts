@@ -151,6 +151,16 @@ export const CaipNetworksUtil = {
   },
 
   /**
+   * Whether the Blockchain API RPC proxy (rpc.walletconnect.org) supports this chain.
+   * Callers needing to call it directly for methods it doesn't support (e.g. TRON's
+   * custom tron_createTransaction/tron_broadcastTransaction on a testnet) should fall
+   * back to a chain's own RPC URL instead of routing through the proxy.
+   */
+  isWcHttpRpcSupported(caipNetworkId: CaipNetworkId) {
+    return WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetworkId)
+  },
+
+  /**
    * Extends the CaipNetwork object with the image ID and image URL if the image ID is not provided
    * @param params - The parameters object
    * @param params.caipNetwork - The CaipNetwork object to extend

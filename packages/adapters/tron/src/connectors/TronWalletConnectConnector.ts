@@ -11,6 +11,7 @@ import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type { TronConnector } from '@reown/appkit-utils/tron'
 
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
+import { TronFullnodeUtil } from '../utils/TronFullnodeUtil.js'
 
 export type WalletConnectProviderConfig = {
   provider: WalletConnectConnector['provider']
@@ -114,51 +115,24 @@ export class TronWalletConnectConnector
 
   public async sendTransaction(params: TronConnector.SendTransactionParams): Promise<string> {
     const chain = this.getActiveChain()
+    const isBlockchainApiSupported = CaipNetworksUtil.isWcHttpRpcSupported(chain.caipNetworkId)
 
-    const rpcUrl = this.getRpcUrl(chain)
-
-    // Step 1: Build unsigned transaction via Blockchain API
-    const createTxResponse = await fetch(rpcUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'tron_createTransaction',
-        params: [params.from, params.to, parseInt(params.value, 10), true]
-      })
-    })
-    const createTxResult = await createTxResponse.json()
-    const unsignedTx = createTxResult?.result
-
-    if (!unsignedTx?.txID) {
-      throw new Error(unsignedTx?.Error || 'Failed to create transaction')
-    }
+    /*
+     * Step 1: Build unsigned transaction, via the Blockchain API where it's supported,
+     * otherwise directly against the chain's own fullnode.
+     */
+    const unsignedTx = isBlockchainApiSupported
+      ? await this.createTransactionViaBlockchainApi(chain, params)
+      : await TronFullnodeUtil.createTransaction(this.requireFullNodeUrl(chain), params)
 
     // Step 2: Send full transaction to wallet for signing via WalletConnect
     const signedTx = await this.signTransaction(unsignedTx, params.from)
 
-    // Step 3: Broadcast the signed transaction via Blockchain API
-    const broadcastResponse = await fetch(rpcUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'tron_broadcastTransaction',
-        params: [
-          signedTx.txID || unsignedTx.txID,
-          signedTx.visible ?? unsignedTx.visible ?? true,
-          signedTx.raw_data || unsignedTx.raw_data,
-          signedTx.raw_data_hex || unsignedTx.raw_data_hex,
-          signedTx.signature
-        ]
-      })
-    })
-    const broadcastResult = await broadcastResponse.json()
-
-    if (!broadcastResult?.result?.result) {
-      throw new Error(broadcastResult?.result?.message || 'Failed to broadcast transaction')
+    // Step 3: Broadcast the signed transaction, via the same path used to build it.
+    if (isBlockchainApiSupported) {
+      await this.broadcastViaBlockchainApi(chain, signedTx, unsignedTx)
+    } else {
+      await TronFullnodeUtil.broadcastTransaction(this.requireFullNodeUrl(chain), signedTx)
     }
 
     return signedTx.txID || unsignedTx.txID
@@ -197,6 +171,78 @@ export class TronWalletConnectConnector
     const projectId = OptionsController.state.projectId
 
     return CaipNetworksUtil.getDefaultRpcUrl(chain, chain.caipNetworkId, projectId)
+  }
+
+  private requireFullNodeUrl(chain: CaipNetwork): string {
+    const fullNodeUrl = chain.rpcUrls?.['chainDefault']?.http?.[0]
+
+    if (!fullNodeUrl) {
+      throw new Error('No RPC URL available for this chain')
+    }
+
+    return fullNodeUrl
+  }
+
+  private async createTransactionViaBlockchainApi(
+    chain: CaipNetwork,
+    params: TronConnector.SendTransactionParams
+  ): Promise<Record<string, unknown> & { txID: string }> {
+    const rpcUrl = this.getRpcUrl(chain)
+
+    const createTxResponse = await fetch(rpcUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'tron_createTransaction',
+        params: [params.from, params.to, parseInt(params.value, 10), true]
+      })
+    })
+    const createTxResult = await createTxResponse.json()
+    const unsignedTx = createTxResult?.result
+
+    if (!unsignedTx?.txID) {
+      throw new Error(unsignedTx?.Error || 'Failed to create transaction')
+    }
+
+    return unsignedTx
+  }
+
+  private async broadcastViaBlockchainApi(
+    chain: CaipNetwork,
+    signedTx: {
+      txID?: string
+      signature?: string[]
+      raw_data?: Record<string, unknown>
+      raw_data_hex?: string
+      visible?: boolean
+    },
+    unsignedTx: Record<string, unknown> & { txID: string }
+  ): Promise<void> {
+    const rpcUrl = this.getRpcUrl(chain)
+
+    const broadcastResponse = await fetch(rpcUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'tron_broadcastTransaction',
+        params: [
+          signedTx.txID || unsignedTx.txID,
+          signedTx.visible ?? unsignedTx['visible'] ?? true,
+          signedTx.raw_data || unsignedTx['raw_data'],
+          signedTx.raw_data_hex || unsignedTx['raw_data_hex'],
+          signedTx.signature
+        ]
+      })
+    })
+    const broadcastResult = await broadcastResponse.json()
+
+    if (!broadcastResult?.result?.result) {
+      throw new Error(broadcastResult?.result?.message || 'Failed to broadcast transaction')
+    }
   }
 
   private get sessionChains() {
