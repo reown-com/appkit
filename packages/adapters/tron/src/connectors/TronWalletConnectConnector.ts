@@ -57,11 +57,7 @@ export class TronWalletConnectConnector
   }
 
   public async signMessage(params: TronConnector.SignMessageParams): Promise<string> {
-    const chain = ChainController.getCaipNetworkByNamespace(ConstantsUtil.CHAIN.TRON)
-
-    if (!chain) {
-      throw new Error('Chain not found')
-    }
+    const chain = this.getActiveChain()
 
     const request = {
       method: 'tron_signMessage',
@@ -83,12 +79,41 @@ export class TronWalletConnectConnector
     return result?.signature || ''
   }
 
-  public async sendTransaction(params: TronConnector.SendTransactionParams): Promise<string> {
-    const chain = ChainController.getCaipNetworkByNamespace(ConstantsUtil.CHAIN.TRON)
+  /**
+   * Signs a TronWeb transaction JSON as-is (no build, no broadcast). Wallets opt into
+   * the simplified (v1) payload shape by advertising `tron_method_version: "v1"` in
+   * sessionProperties during the handshake; otherwise the spec mandates the legacy
+   * nested `transaction.transaction` shape. `address` defaults to the session's
+   * first Tron account.
+   * See https://docs.reown.com/advanced/multichain/rpc-reference/tron-rpc
+   */
+  public async signTransaction<T extends TronWalletConnectConnector.Transaction>(
+    transaction: T,
+    address: string | undefined = this.getActiveAddress()
+  ): Promise<T & TronWalletConnectConnector.SignedTransaction> {
+    const chain = this.getActiveChain()
+    const isV1Format = this.provider.session?.sessionProperties?.['tron_method_version'] === 'v1'
+    const signedTx: (T & TronWalletConnectConnector.SignedTransaction) | undefined =
+      await this.provider.request(
+        {
+          method: 'tron_signTransaction',
+          params: {
+            address,
+            transaction: isV1Format ? transaction : { transaction }
+          }
+        },
+        chain.caipNetworkId
+      )
 
-    if (!chain) {
-      throw new Error('Chain not found')
+    if (!signedTx?.signature?.length) {
+      throw new Error('Transaction signing failed')
     }
+
+    return signedTx
+  }
+
+  public async sendTransaction(params: TronConnector.SendTransactionParams): Promise<string> {
+    const chain = this.getActiveChain()
 
     const rpcUrl = this.getRpcUrl(chain)
 
@@ -110,34 +135,8 @@ export class TronWalletConnectConnector
       throw new Error(unsignedTx?.Error || 'Failed to create transaction')
     }
 
-    /*
-     * Step 2: Send full transaction to wallet for signing via WalletConnect.
-     * Wallets opt into the simplified (v1) payload shape by advertising
-     * `tron_method_version: "v1"` in sessionProperties during the handshake.
-     * Otherwise the spec mandates the legacy nested `transaction.transaction` shape.
-     */
-    // See https://docs.reown.com/advanced/multichain/rpc-reference/tron-rpc
-    const usesV1Format = this.provider.session?.sessionProperties?.['tron_method_version'] === 'v1'
-    const signRequest = {
-      method: 'tron_signTransaction',
-      params: {
-        address: params.from,
-        transaction: usesV1Format ? unsignedTx : { transaction: unsignedTx }
-      }
-    }
-    const signedTx:
-      | {
-          txID?: string
-          signature?: string[]
-          raw_data?: Record<string, unknown>
-          raw_data_hex?: string
-          visible?: boolean
-        }
-      | undefined = await this.provider.request(signRequest, chain.caipNetworkId)
-
-    if (!signedTx?.signature?.length) {
-      throw new Error('Transaction signing failed')
-    }
+    // Step 2: Send full transaction to wallet for signing via WalletConnect
+    const signedTx = await this.signTransaction(unsignedTx, params.from)
 
     // Step 3: Broadcast the signed transaction via Blockchain API
     const broadcastResponse = await fetch(rpcUrl, {
@@ -169,9 +168,8 @@ export class TronWalletConnectConnector
     return Promise.resolve()
   }
 
-  public request<T>(args: RequestArguments) {
-    // @ts-expect-error - args type should match internalRequest arguments but it's not correctly typed in Provider
-    return this.internalRequest(args) as T
+  public async request<T>(args: RequestArguments): Promise<T> {
+    return this.provider.request<T>(args, this.getActiveChain().caipNetworkId)
   }
 
   public setDefaultChain(chainId: string) {
@@ -179,6 +177,22 @@ export class TronWalletConnectConnector
   }
 
   // -- Internals ----------------------------------------------------- //
+  private getActiveChain(): CaipNetwork {
+    const chain = ChainController.getCaipNetworkByNamespace(ConstantsUtil.CHAIN.TRON)
+
+    if (!chain) {
+      throw new Error('Chain not found')
+    }
+
+    return chain
+  }
+
+  private getActiveAddress(): string | undefined {
+    const account = this.provider.session?.namespaces?.[ConstantsUtil.CHAIN.TRON]?.accounts?.[0]
+
+    return account?.split(':')[2]
+  }
+
   private getRpcUrl(chain: CaipNetwork): string {
     const projectId = OptionsController.state.projectId
 
@@ -188,4 +202,15 @@ export class TronWalletConnectConnector
   private get sessionChains() {
     return WcHelpersUtil.getChainsFromNamespaces(this.provider.session?.namespaces)
   }
+}
+
+export declare namespace TronWalletConnectConnector {
+  /** Raw TronWeb transaction JSON (as returned by `tron_createTransaction`). */
+  type Transaction = {
+    txID?: string
+    raw_data?: Record<string, unknown>
+    raw_data_hex?: string
+    visible?: boolean
+  }
+  type SignedTransaction = Transaction & { signature?: string[] }
 }
