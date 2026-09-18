@@ -172,9 +172,11 @@ export class W3mNetworkSwitchView extends LitElement {
   private async onSwitchSuccess() {
     this.success = true
 
-    // If the view is torn down before this fires (modal closed, navigated away),
-    // disconnectedCallback cancels the timeout and this promise never resolves,
-    // so goBack() below never fires against a navigation stack that has moved on.
+    /*
+     * If the view is torn down before this fires (modal closed, navigated away),
+     * disconnectedCallback cancels the timeout and this promise never resolves,
+     * so goBack() below never fires against a navigation stack that has moved on.
+     */
     await new Promise<void>(resolve => {
       this.switchSuccessTimeout = setTimeout(resolve, 1100)
     })
