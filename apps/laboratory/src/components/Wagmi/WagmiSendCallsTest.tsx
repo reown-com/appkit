@@ -2,8 +2,7 @@ import { useCallback, useState } from 'react'
 
 import { Button, Heading, Stack, Text } from '@chakra-ui/react'
 import { type WalletCapabilities, parseGwei, toHex } from 'viem'
-import { useAccount } from 'wagmi'
-import { useSendCalls } from 'wagmi/experimental'
+import { useAccount, useSendCalls } from 'wagmi'
 
 import type { Address } from '@reown/appkit-common'
 import { useAppKitAccount } from '@reown/appkit/react'
