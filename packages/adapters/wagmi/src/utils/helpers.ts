@@ -93,7 +93,7 @@ export async function getCoinbaseConnector(
     const { coinbaseWallet } = await import('@wagmi/connectors')
 
     if (coinbaseWallet && !connectors.some(c => c.id === 'coinbaseWallet')) {
-      return coinbaseWallet({ preference })
+      return coinbaseWallet({ preference: preference ? { options: preference } : undefined })
     }
   } catch (error) {
     // eslint-disable-next-line no-console
