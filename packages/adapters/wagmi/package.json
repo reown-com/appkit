@@ -29,20 +29,20 @@
     "@walletconnect/universal-provider": "2.23.7",
     "valtio": "2.1.7"
   },
-  "optionalDependencies": {
-    "@wagmi/connectors": ">=5.9.9"
-  },
   "peerDependencies": {
-    "@wagmi/core": ">=2.21.2",
+    "@wagmi/core": ">=3.0.0",
     "viem": ">=2.55.13",
-    "wagmi": ">=2.19.5"
+    "wagmi": ">=3.0.0"
   },
   "devDependencies": {
     "@types/react": "19.1.15",
     "@types/react-dom": "19.1.9",
     "@vitest/coverage-v8": "2.1.9",
+    "@wagmi/connectors": "8.2.0",
+    "@wagmi/core": "3.6.5",
     "@walletconnect/types": "2.23.7",
-    "vitest": "2.1.9"
+    "vitest": "2.1.9",
+    "wagmi": "3.7.7"
   },
   "author": "Reown (https://discord.gg/reown)",
   "license": "SEE LICENSE IN LICENSE.md",

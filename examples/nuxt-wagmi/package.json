@@ -14,7 +14,7 @@
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@tanstack/vue-query": "5.75.5",
     "@vue/devtools-api": "7.7.2",
-    "@wagmi/core": "2.22.1",
+    "@wagmi/core": "3.6.5",
     "@wagmi/vue": "0.4.11",
     "@walletconnect/logger": "3.0.2",
     "nuxt": "4.1.2",
