@@ -30,7 +30,7 @@ const BACKGROUND_OVERRIDES: Record<string, string> = {
 }
 
 // -- Helpers ------------------------------------------- //
-function headings() {
+export function headings() {
   const connectorName = RouterController.state.data?.connector?.name
   const walletName = RouterController.state.data?.wallet?.name
   const networkName = RouterController.state.data?.network?.name
@@ -43,7 +43,7 @@ function headings() {
     : 'Connect Social'
 
   return {
-    Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
+    Connect: isEmail ? 'Connect Email Wallet' : 'Connect Wallet',
     Create: 'Create Wallet',
     ChooseAccountName: undefined,
     Account: undefined,
@@ -203,6 +203,7 @@ export class W3mHeader extends LitElement {
         iconSize="lg"
         type="neutral"
         variant="primary"
+        label="Smart Sessions"
         @click=${() => RouterController.push('SmartSessionList')}
         data-testid="w3m-header-smart-sessions"
       ></wui-icon-button>
@@ -218,6 +219,7 @@ export class W3mHeader extends LitElement {
         type="neutral"
         variant="primary"
         iconSize="lg"
+        label="Close"
         @click=${this.onClose.bind(this)}
         data-testid="w3m-header-close"
       ></wui-icon-button>
@@ -282,6 +284,7 @@ export class W3mHeader extends LitElement {
         iconSize="lg"
         type="neutral"
         variant="primary"
+        label="Back"
         @click=${this.onGoBack.bind(this)}
       ></wui-icon-button>`
     }
@@ -294,6 +297,7 @@ export class W3mHeader extends LitElement {
       iconSize="lg"
       type="neutral"
       variant="primary"
+      label="Help"
       @click=${this.onWalletHelp.bind(this)}
     ></wui-icon-button>`
   }

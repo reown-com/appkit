@@ -21,7 +21,7 @@ import '@reown/appkit-ui/wui-card'
 import '@reown/appkit-ui/wui-flex'
 
 import '../../partials/w3m-alertbar/index.js'
-import '../../partials/w3m-header/index.js'
+import { headings } from '../../partials/w3m-header/index.js'
 import '../../partials/w3m-snackbar/index.js'
 import '../../partials/w3m-tooltip-trigger/index.js'
 import '../../partials/w3m-tooltip/index.js'
@@ -69,6 +69,8 @@ export class W3mModalBase extends LitElement {
 
   @state() private mobileFullScreen = OptionsController.state.enableMobileFullScreen
 
+  @state() private view = RouterController.state.view
+
   public constructor() {
     super()
     this.initializeTheming()
@@ -86,9 +88,10 @@ export class W3mModalBase extends LitElement {
             this.filterByNamespace = val
           }
         }),
-        RouterController.subscribeKey('view', () => {
+        RouterController.subscribeKey('view', val => {
+          this.view = val
           this.dataset['border'] = HelpersUtil.hasFooter() ? 'true' : 'false'
-          this.padding = PADDING_OVERRIDES[RouterController.state.view] ?? vars.spacing[1]
+          this.padding = PADDING_OVERRIDES[val] ?? vars.spacing[1]
         })
       ]
     )
@@ -146,12 +149,22 @@ export class W3mModalBase extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private dialogLabel() {
+    const heading = headings()[this.view]
+    if (heading) {
+      return heading.replace(/\s+/g, ' ').trim()
+    }
+
+    return this.view.replace(/([a-z])([A-Z])/g, '$1 $2')
+  }
+
   private contentTemplate() {
     return html` <wui-card
       shake="${this.shake}"
       data-embedded="${ifDefined(this.enableEmbedded)}"
       role="alertdialog"
       aria-modal="true"
+      aria-label=${this.dialogLabel()}
       tabindex="0"
       data-testid="w3m-modal-card"
     >
