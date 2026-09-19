@@ -14,7 +14,7 @@
     "@walletconnect/utils": "2.23.7",
     "react": "19.1.2",
     "react-dom": "19.1.2",
-    "viem": "2.55.13",
+    "viem": "2.56.8",
     "wagmi": "3.7.7"
   },
   "devDependencies": {

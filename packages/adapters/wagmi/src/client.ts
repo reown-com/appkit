@@ -137,12 +137,11 @@ export class WagmiAdapter extends AdapterBlueprint {
       const { address, accounts, chainId } = provider.user
 
       return Promise.resolve({
-        accounts: (accounts || [{ address, type: 'eoa' }]).map(
-          (account: { address: string; type: 'eoa' | 'smartAccount' }) =>
-            CoreHelperUtil.createAccount({
-              caipAddress: `eip155:${chainId}:${account.address}` as CaipAddress,
-              type: account.type
-            })
+        accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
+          CoreHelperUtil.createAccount({
+            caipAddress: `eip155:${chainId}:${account.address}` as CaipAddress,
+            type: account.type
+          })
         )
       })
     }
@@ -194,18 +193,17 @@ export class WagmiAdapter extends AdapterBlueprint {
       const caipNetworkId = CaipNetworksUtil.getCaipNetworkId(element)
 
       if (fromTransportProp) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- viem transport types conflict in monorepo
         transports[element.id] = CaipNetworksUtil.extendWagmiTransports(
           element as CaipNetwork,
           configParams.projectId,
-          fromTransportProp as Parameters<typeof CaipNetworksUtil.extendWagmiTransports>[2]
-        ) as (typeof transports)[number]
+          fromTransportProp
+        )
       } else {
         transports[element.id] = CaipNetworksUtil.getViemTransport(
           element as CaipNetwork,
           configParams.projectId,
           configParams.customRpcUrls?.[caipNetworkId]
-        ) as (typeof transports)[number]
+        )
       }
     })
 

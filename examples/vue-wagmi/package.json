@@ -14,7 +14,7 @@
     "@wagmi/connectors": "5.11.2",
     "@wagmi/core": "3.6.5",
     "@wagmi/vue": "0.4.11",
-    "viem": "2.55.13",
+    "viem": "2.56.8",
     "vue": "3.4.3"
   },
   "devDependencies": {

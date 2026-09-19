@@ -41,6 +41,7 @@
     "@wagmi/connectors": "8.2.0",
     "@wagmi/core": "3.6.5",
     "@walletconnect/types": "2.23.7",
+    "viem": "2.56.8",
     "vitest": "2.1.9",
     "wagmi": "3.7.7"
   },
