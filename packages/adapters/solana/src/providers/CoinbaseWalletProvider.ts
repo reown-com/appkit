@@ -1,5 +1,6 @@
 import { fromLegacyPublicKey } from '@solana/compat'
 import type { Connection, PublicKey, SendOptions } from '@solana/web3.js'
+import { VersionedTransaction } from '@solana/web3.js'
 
 import {
   type CaipNetwork,
@@ -10,10 +11,19 @@ import {
 } from '@reown/appkit-common'
 import type { RequestArguments } from '@reown/appkit-controllers'
 import type { Provider as CoreProvider } from '@reown/appkit-controllers'
-import { type AnyTransaction, type Provider as SolanaProvider } from '@reown/appkit-utils/solana'
+import {
+  type AnySolanaKitTransaction,
+  type AnyTransaction,
+  type Provider as SolanaProvider
+} from '@reown/appkit-utils/solana'
 import { solana } from '@reown/appkit/networks'
 
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
+import {
+  decodeSolanaKitTransaction,
+  encodeSolanaKitTransaction,
+  isAnySolanaKitTransaction
+} from './shared/SolanaKitTransaction.js'
 
 export type SolanaCoinbaseWallet = {
   publicKey?: PublicKey
@@ -99,32 +109,69 @@ export class CoinbaseWalletProvider extends ProviderEventEmitter implements Sola
     return result.signature
   }
 
-  public async signTransaction<T extends AnyTransaction>(transaction: T) {
-    return this.coinbase.signTransaction(transaction)
+  public async signTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(
+    transaction: T
+  ) {
+    if (isAnySolanaKitTransaction(transaction)) {
+      const legacyTransaction = VersionedTransaction.deserialize(
+        encodeSolanaKitTransaction(transaction)
+      )
+      const signedLegacyTransaction = await this.coinbase.signTransaction(legacyTransaction)
+
+      return decodeSolanaKitTransaction(new Uint8Array(signedLegacyTransaction.serialize())) as T
+    }
+
+    return this.coinbase.signTransaction(transaction) as Promise<T>
   }
 
-  public async signAndSendTransaction<T extends AnyTransaction>(
+  public async signAndSendTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(
     transaction: T,
     sendOptions?: SendOptions
   ) {
-    const result = await this.coinbase.signAndSendTransaction(transaction, sendOptions)
+    const legacyTransaction: AnyTransaction = isAnySolanaKitTransaction(transaction)
+      ? VersionedTransaction.deserialize(encodeSolanaKitTransaction(transaction))
+      : transaction
+    const result = await this.coinbase.signAndSendTransaction(legacyTransaction, sendOptions)
 
     return result.signature
   }
 
   public async sendTransaction(
-    transaction: AnyTransaction,
+    transaction: AnyTransaction | AnySolanaKitTransaction,
     connection: Connection,
     options?: SendOptions
   ) {
     const signedTransaction = await this.signTransaction(transaction)
-    const signature = await connection.sendRawTransaction(signedTransaction.serialize(), options)
+    const rawTransaction = isAnySolanaKitTransaction(signedTransaction)
+      ? encodeSolanaKitTransaction(signedTransaction)
+      : signedTransaction.serialize()
+    const signature = await connection.sendRawTransaction(rawTransaction, options)
 
     return signature
   }
 
-  public async signAllTransactions<T extends AnyTransaction[]>(transactions: T): Promise<T> {
-    return (await this.coinbase.signAllTransactions(transactions)) as T
+  public async signAllTransactions<T extends (AnyTransaction | AnySolanaKitTransaction)[]>(
+    transactions: T
+  ): Promise<T> {
+    const legacyTransactions: AnyTransaction[] = transactions.map(transaction =>
+      isAnySolanaKitTransaction(transaction)
+        ? VersionedTransaction.deserialize(encodeSolanaKitTransaction(transaction))
+        : transaction
+    )
+
+    const signedLegacyTransactions = await this.coinbase.signAllTransactions(legacyTransactions)
+
+    return signedLegacyTransactions.map((signedTransaction, index) => {
+      const originalTransaction = transactions[index]
+
+      if (originalTransaction && isAnySolanaKitTransaction(originalTransaction)) {
+        return decodeSolanaKitTransaction(
+          new Uint8Array((signedTransaction as VersionedTransaction).serialize())
+        )
+      }
+
+      return signedTransaction
+    }) as T
   }
 
   public async request<T>(_args: RequestArguments): Promise<T> {

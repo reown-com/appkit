@@ -38,6 +38,7 @@ import {
 import { ConnectorController, type RequestArguments } from '@reown/appkit-controllers'
 import type { Provider as CoreProvider } from '@reown/appkit-controllers'
 import type {
+  AnySolanaKitTransaction,
   AnyTransaction,
   GetActiveChain,
   Provider as SolanaProvider
@@ -46,6 +47,11 @@ import type {
 import { solanaChains } from '../utils/chains.js'
 import { WalletStandardFeatureNotSupportedError } from './shared/Errors.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
+import {
+  decodeSolanaKitTransaction,
+  encodeSolanaKitTransaction,
+  isAnySolanaKitTransaction
+} from './shared/SolanaKitTransaction.js'
 
 export interface WalletStandardProviderConfig {
   wallet: Wallet
@@ -145,15 +151,15 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
     return result.signature
   }
 
-  public async signTransaction<T extends AnyTransaction>(transaction: T) {
+  public async signTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(
+    transaction: T
+  ) {
     const feature = this.getWalletFeature(SolanaSignTransaction)
     const account = this.getAccount(true)
 
-    const serializedTransaction = this.serializeTransaction(transaction)
-
     const [result] = await feature.signTransaction({
       account,
-      transaction: new Uint8Array(serializedTransaction),
+      transaction: new Uint8Array(this.serializeTransaction(transaction)),
       chain: this.getActiveChainName()
     })
 
@@ -163,14 +169,10 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
 
     this.emit('pendingTransaction', undefined)
 
-    if (isVersionedTransaction(transaction)) {
-      return VersionedTransaction.deserialize(result.signedTransaction) as T
-    }
-
-    return Transaction.from(result.signedTransaction) as T
+    return this.deserializeTransaction(transaction, result.signedTransaction) as T
   }
 
-  public async signAndSendTransaction<T extends AnyTransaction>(
+  public async signAndSendTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(
     transaction: T,
     sendOptions?: SendOptions
   ) {
@@ -197,17 +199,22 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
   }
 
   public async sendTransaction(
-    transaction: AnyTransaction,
+    transaction: AnyTransaction | AnySolanaKitTransaction,
     connection: Connection,
     options?: SendOptions
   ) {
     const signedTransaction = await this.signTransaction(transaction)
-    const signature = await connection.sendRawTransaction(signedTransaction.serialize(), options)
+    const rawTransaction = isAnySolanaKitTransaction(signedTransaction)
+      ? encodeSolanaKitTransaction(signedTransaction)
+      : signedTransaction.serialize()
+    const signature = await connection.sendRawTransaction(rawTransaction, options)
 
     return signature
   }
 
-  public async signAllTransactions<T extends AnyTransaction[]>(transactions: T): Promise<T> {
+  public async signAllTransactions<T extends (AnyTransaction | AnySolanaKitTransaction)[]>(
+    transactions: T
+  ): Promise<T> {
     const feature = this.getWalletFeature(SolanaSignTransaction)
 
     const account = this.getAccount(true)
@@ -230,11 +237,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
 
       this.emit('pendingTransaction', undefined)
 
-      if (isVersionedTransaction(transaction)) {
-        return VersionedTransaction.deserialize(signedTransaction)
-      }
-
-      return Transaction.from(signedTransaction)
+      return this.deserializeTransaction(transaction, signedTransaction)
     }) as T
   }
 
@@ -253,8 +256,27 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
   }
 
   // -- Private ------------------------------------------- //
-  private serializeTransaction(transaction: AnyTransaction) {
+  private serializeTransaction(transaction: AnyTransaction | AnySolanaKitTransaction) {
+    if (isAnySolanaKitTransaction(transaction)) {
+      return encodeSolanaKitTransaction(transaction)
+    }
+
     return transaction.serialize({ verifySignatures: false })
+  }
+
+  private deserializeTransaction(
+    originalTransaction: AnyTransaction | AnySolanaKitTransaction,
+    signedTransaction: Uint8Array
+  ) {
+    if (isAnySolanaKitTransaction(originalTransaction)) {
+      return decodeSolanaKitTransaction(signedTransaction)
+    }
+
+    if (isVersionedTransaction(originalTransaction)) {
+      return VersionedTransaction.deserialize(signedTransaction)
+    }
+
+    return Transaction.from(signedTransaction)
   }
 
   private getAccount<Required extends boolean>(

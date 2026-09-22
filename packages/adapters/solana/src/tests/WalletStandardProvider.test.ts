@@ -8,8 +8,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
 import { WalletStandardFeatureNotSupportedError } from '../providers/shared/Errors.js'
+import {
+  decodeSolanaKitTransaction,
+  encodeSolanaKitTransaction
+} from '../providers/shared/SolanaKitTransaction.js'
 import { solanaChains } from '../utils/chains'
-import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+import {
+  mockLegacyTransaction,
+  mockSolanaKitTransaction,
+  mockVersionedTransaction
+} from './mocks/Transaction.js'
 import { mockWalletStandard } from './mocks/WalletStandard'
 import { TestConstants } from './util/TestConstants'
 
@@ -75,6 +83,23 @@ describe('WalletStandardProvider specific tests', () => {
     })
   })
 
+  it('should call signTransaction with correct params and decode the result for a solana-kit transaction', async () => {
+    const transaction = mockSolanaKitTransaction()
+    const result = await walletStandardProvider.signTransaction(transaction)
+
+    expect(wallet.features[SolanaSignTransaction].signTransaction).toHaveBeenCalledWith({
+      transaction: encodeSolanaKitTransaction(transaction),
+      account: wallet.accounts[0],
+      chain: 'solana:mainnet'
+    })
+
+    const [{ signedTransaction }] = await wallet.features[
+      SolanaSignTransaction
+    ].signTransaction.mock.results[0]!.value
+
+    expect(result).toEqual(decodeSolanaKitTransaction(signedTransaction))
+  })
+
   it('should call signAndSendTransaction with correct params and emit pendingTransaction', async () => {
     const transaction = mockLegacyTransaction()
 
@@ -107,6 +132,22 @@ describe('WalletStandardProvider specific tests', () => {
         minContextSlot: 1,
         skipPreflight: true
       }
+    })
+    expect(emitSpy).toHaveBeenCalledWith('pendingTransaction', undefined)
+  })
+
+  it('should call signAndSendTransaction with correct params for a solana-kit transaction', async () => {
+    const transaction = mockSolanaKitTransaction()
+
+    await walletStandardProvider.signAndSendTransaction(transaction)
+
+    expect(
+      wallet.features[SolanaSignAndSendTransaction].signAndSendTransaction
+    ).toHaveBeenCalledWith({
+      transaction: encodeSolanaKitTransaction(transaction),
+      account: wallet.accounts[0],
+      chain: 'solana:mainnet',
+      options: { preflightCommitment: undefined }
     })
     expect(emitSpy).toHaveBeenCalledWith('pendingTransaction', undefined)
   })
@@ -146,6 +187,31 @@ describe('WalletStandardProvider specific tests', () => {
     transactions.forEach(() => {
       expect(emitSpy).toHaveBeenCalledWith('pendingTransaction', undefined)
     })
+  })
+
+  it('should call signAllTransactions with correct params for a mix of legacy and solana-kit transactions', async () => {
+    const legacyTransaction = mockLegacyTransaction()
+    const kitTransaction = mockSolanaKitTransaction()
+    const transactions = [legacyTransaction, kitTransaction]
+    const results = await walletStandardProvider.signAllTransactions(transactions)
+
+    expect(wallet.features[SolanaSignTransaction].signTransaction).toHaveBeenCalledWith(
+      {
+        transaction: new Uint8Array(legacyTransaction.serialize({ verifySignatures: false })),
+        account: wallet.accounts[0],
+        chain: 'solana:mainnet'
+      },
+      {
+        transaction: encodeSolanaKitTransaction(kitTransaction),
+        account: wallet.accounts[0],
+        chain: 'solana:mainnet'
+      }
+    )
+
+    const signTransactionResults = await wallet.features[SolanaSignTransaction].signTransaction.mock
+      .results[0]!.value as { signedTransaction: Uint8Array }[]
+
+    expect(results[1]).toEqual(decodeSolanaKitTransaction(signTransactionResults[1]!.signedTransaction))
   })
 
   it('should use the same requestedChains to return chains', () => {
