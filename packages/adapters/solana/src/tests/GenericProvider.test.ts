@@ -84,6 +84,12 @@ describe.each(providers)('Generic provider tests for $name', ({ provider }) => {
     expect(events.connect).toHaveBeenCalledWith(TestConstants.accounts[0].publicKey)
   })
 
+  it('should expose a solana-kit Address matching the legacy publicKey', async () => {
+    await provider.connect()
+
+    expect(provider.address).toEqual(TestConstants.accounts[0].address)
+  })
+
   it('should signMessage', async () => {
     const result = await provider.signMessage(new TextEncoder().encode('test'))
 

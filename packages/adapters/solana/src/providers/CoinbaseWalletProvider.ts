@@ -1,3 +1,4 @@
+import { fromLegacyPublicKey } from '@solana/compat'
 import type { Connection, PublicKey, SendOptions } from '@solana/web3.js'
 
 import {
@@ -62,6 +63,10 @@ export class CoinbaseWalletProvider extends ProviderEventEmitter implements Sola
 
   public get publicKey() {
     return this.coinbase.publicKey
+  }
+
+  public get address() {
+    return this.publicKey ? fromLegacyPublicKey(this.publicKey) : undefined
   }
 
   public get imageId() {

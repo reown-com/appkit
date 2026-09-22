@@ -1,3 +1,4 @@
+import { fromLegacyPublicKey } from '@solana/compat'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import {
   Connection,
@@ -82,6 +83,10 @@ export class SolanaWalletConnectProvider
     }
 
     return undefined
+  }
+
+  public get address() {
+    return this.publicKey ? fromLegacyPublicKey(this.publicKey) : undefined
   }
 
   public async connect() {

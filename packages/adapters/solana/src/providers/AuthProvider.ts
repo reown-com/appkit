@@ -1,3 +1,4 @@
+import { fromLegacyPublicKey } from '@solana/compat'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import { PublicKey, type SendOptions, Transaction, VersionedTransaction } from '@solana/web3.js'
 import base58 from 'bs58'
@@ -44,6 +45,10 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
       ?.address
 
     return address ? new PublicKey(address) : undefined
+  }
+
+  get address() {
+    return this.publicKey ? fromLegacyPublicKey(this.publicKey) : undefined
   }
 
   get chains() {

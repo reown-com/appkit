@@ -14,6 +14,7 @@ import {
   SolanaSignTransaction,
   type SolanaSignTransactionFeature
 } from '@solana/wallet-standard-features'
+import { fromLegacyPublicKey } from '@solana/compat'
 import { getCommitment } from '@solana/wallet-standard-util'
 import type { Connection, SendOptions } from '@solana/web3.js'
 import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
@@ -106,6 +107,10 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
     }
 
     return undefined
+  }
+
+  public get address() {
+    return this.publicKey ? fromLegacyPublicKey(this.publicKey) : undefined
   }
 
   public async connect(): Promise<string> {

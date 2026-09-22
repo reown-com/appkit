@@ -1,3 +1,4 @@
+import type { Address } from '@solana/kit'
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 import type {
   PublicKey,
@@ -45,6 +46,7 @@ export interface Provider
   type: ConnectorType
   chain: ChainNamespace
   publicKey?: PublicKey
+  address?: Address
   provider: CoreProvider | W3mFrameProvider | UniversalProvider
 
   // Methods
