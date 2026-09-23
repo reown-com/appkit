@@ -1,16 +1,16 @@
 import { useState } from 'react'
 
-import { fromLegacyPublicKey, fromLegacyTransactionInstruction } from '@solana/compat'
+import { getTransferSolInstruction } from '@solana-program/system'
 import {
   type Blockhash,
   appendTransactionMessageInstructions,
   compileTransaction,
+  createNoopSigner,
   createTransactionMessage,
+  getSignatureFromTransaction,
   setTransactionMessageFeePayer,
   setTransactionMessageLifetimeUsingBlockhash
 } from '@solana/kit'
-import { SystemProgram } from '@solana/web3.js'
-import bs58 from 'bs58'
 
 import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 
@@ -42,13 +42,15 @@ export function SolanaKitDemo() {
     print(`provider.address (solana-kit Address): ${walletProvider.address ?? 'n/a'}`)
   }
 
-  // Build and sign a transaction using only @solana/kit primitives, no
-  // @solana/web3.js classes involved on the dApp side.
+  // Build and sign a transaction using only @solana/kit (+ @solana-program/system
+  // for the instruction), no @solana/web3.js on the dApp side at all. The wallet
+  // does the actual signing, so `source` is a noop signer: it carries the address
+  // without being able to sign itself.
   async function onSignSolanaKitTransaction(send: boolean) {
     try {
       setIsLoading(true)
 
-      if (!walletProvider?.publicKey || !walletProvider.address) {
+      if (!walletProvider?.address) {
         throw Error('Connect a wallet first')
       }
       if (!connection) {
@@ -58,22 +60,17 @@ export function SolanaKitDemo() {
       const feePayer = walletProvider.address
       const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
 
-      const instruction = fromLegacyTransactionInstruction(
-        SystemProgram.transfer({
-          fromPubkey: walletProvider.publicKey,
-          toPubkey: walletProvider.publicKey,
-          lamports: SELF_TRANSFER_LAMPORTS
-        })
-      )
+      const instruction = getTransferSolInstruction({
+        source: createNoopSigner(feePayer),
+        destination: feePayer,
+        amount: SELF_TRANSFER_LAMPORTS
+      })
 
       const message = appendTransactionMessageInstructions(
         [instruction],
         setTransactionMessageLifetimeUsingBlockhash(
           { blockhash: blockhash as Blockhash, lastValidBlockHeight: BigInt(lastValidBlockHeight) },
-          setTransactionMessageFeePayer(
-            fromLegacyPublicKey(walletProvider.publicKey),
-            createTransactionMessage({ version: 0 })
-          )
+          setTransactionMessageFeePayer(feePayer, createTransactionMessage({ version: 0 }))
         )
       )
       const kitTransaction = compileTransaction(message)
@@ -85,11 +82,8 @@ export function SolanaKitDemo() {
         print(`signAndSendTransaction() -> signature: ${signature}`)
       } else {
         const signedTransaction = await walletProvider.signTransaction(kitTransaction)
-        const signatureBytes = Object.values(signedTransaction.signatures)[0]
         print(
-          `signTransaction() -> solana-kit Transaction, signature: ${
-            signatureBytes ? bs58.encode(signatureBytes) : 'missing'
-          }`
+          `signTransaction() -> solana-kit Transaction, signature: ${getSignatureFromTransaction(signedTransaction)}`
         )
       }
     } catch (err) {
