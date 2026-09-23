@@ -159,6 +159,27 @@ describe('CaipNetworksUtil', () => {
       expect(result).toContain('projectId=test-project-id')
     })
 
+    it('should return blockchain API URL for Robinhood Chain', () => {
+      const robinhood: AppKitNetwork = {
+        id: 4663,
+        name: 'Robinhood Chain',
+        nativeCurrency: {
+          name: 'Ether',
+          symbol: 'ETH',
+          decimals: 18
+        },
+        rpcUrls: {
+          default: {
+            http: ['https://rpc.mainnet.chain.robinhood.com']
+          }
+        }
+      }
+      const result = CaipNetworksUtil.getDefaultRpcUrl(robinhood, 'eip155:4663', mockProjectId)
+      expect(result).toContain('rpc.walletconnect.org')
+      expect(result).toContain('chainId=eip155%3A4663')
+      expect(result).toContain('projectId=test-project-id')
+    })
+
     it('should return default RPC URL for unsupported chains', () => {
       const customNetwork: AppKitNetwork = {
         id: 999,
@@ -207,6 +228,10 @@ describe('CaipNetworksUtil', () => {
       expect(CaipNetworksUtil.isWcHttpRpcSupported('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')).toBe(
         true
       )
+    })
+
+    it('returns true for Robinhood Chain', () => {
+      expect(CaipNetworksUtil.isWcHttpRpcSupported('eip155:4663')).toBe(true)
     })
 
     it('returns false for a chain not in the supported chains list', () => {
