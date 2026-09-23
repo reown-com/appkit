@@ -444,6 +444,24 @@ export const appKitConfigs = {
     networks: ConstantsUtil.BitcoinNetworks,
     siwx: new DefaultSIWX()
   },
+  'siwx-ton': {
+    ...commonAppKitConfig,
+    adapters: ['ton'],
+    networks: ConstantsUtil.TonNetworks,
+    siwx: new DefaultSIWX()
+  },
+  'siwx-tron': {
+    ...commonAppKitConfig,
+    adapters: ['tron'],
+    networks: ConstantsUtil.TronNetworks,
+    siwx: new DefaultSIWX()
+  },
+  'siwx-stellar': {
+    ...commonAppKitConfig,
+    adapters: ['stellar'],
+    networks: ConstantsUtil.StellarNetworks,
+    siwx: new DefaultSIWX()
+  },
 
   // ----- SIWX Multichain Variants ------------------------------
   'siwx-wagmi-solana': {
@@ -486,8 +504,43 @@ export const appKitConfigs = {
   'reown-auth-all': {
     ...commonAppKitConfig,
     wagmiConfig: commonWagmiConfig,
-    adapters: ['wagmi', 'solana', 'bitcoin'],
+    adapters: ['wagmi', 'solana', 'bitcoin', 'ton', 'tron'],
     networks: ConstantsUtil.AllNetworks,
+    siwx: new ReownAuthentication(),
+    siwxReown: true
+  },
+  'reown-auth-solana': {
+    ...commonAppKitConfig,
+    adapters: ['solana'],
+    networks: ConstantsUtil.SolanaNetworks,
+    siwx: new ReownAuthentication(),
+    siwxReown: true
+  },
+  'reown-auth-bitcoin': {
+    ...commonAppKitConfig,
+    adapters: ['bitcoin'],
+    networks: ConstantsUtil.BitcoinNetworks,
+    siwx: new ReownAuthentication(),
+    siwxReown: true
+  },
+  'reown-auth-ton': {
+    ...commonAppKitConfig,
+    adapters: ['ton'],
+    networks: ConstantsUtil.TonNetworks,
+    siwx: new ReownAuthentication(),
+    siwxReown: true
+  },
+  'reown-auth-tron': {
+    ...commonAppKitConfig,
+    adapters: ['tron'],
+    networks: ConstantsUtil.TronNetworks,
+    siwx: new ReownAuthentication(),
+    siwxReown: true
+  },
+  'reown-auth-stellar': {
+    ...commonAppKitConfig,
+    adapters: ['stellar'],
+    networks: ConstantsUtil.StellarNetworks,
     siwx: new ReownAuthentication(),
     siwxReown: true
   },
