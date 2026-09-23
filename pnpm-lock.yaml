@@ -1861,6 +1861,49 @@ importers:
         specifier: 5.4.20
         version: 5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.1)
 
+  examples/react-solana-kit:
+    dependencies:
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
+      '@reown/appkit-adapter-solana':
+        specifier: workspace:*
+        version: link:../../packages/adapters/solana
+      '@solana/compat':
+        specifier: 8.3.0
+        version: 8.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.2)
+      '@solana/kit':
+        specifier: 8.3.0
+        version: 8.3.0(bufferutil@4.1.0)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.2)(utf-8-validate@5.0.10)
+      '@solana/web3.js':
+        specifier: 1.98.4
+        version: 1.98.4(bufferutil@4.1.0)(typescript@5.9.2)(utf-8-validate@5.0.10)
+      '@tanstack/react-query':
+        specifier: 5.75.5
+        version: 5.75.5(react@19.1.2)
+      bs58:
+        specifier: 6.0.0
+        version: 6.0.0
+      react:
+        specifier: 19.1.2
+        version: 19.1.2
+      react-dom:
+        specifier: 19.1.2
+        version: 19.1.2(react@19.1.2)
+    devDependencies:
+      '@types/react':
+        specifier: 19.1.15
+        version: 19.1.15
+      '@types/react-dom':
+        specifier: 19.1.9
+        version: 19.1.9(@types/react@19.1.15)
+      '@vitejs/plugin-react':
+        specifier: 4.2.1
+        version: 4.2.1(vite@5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.1))
+      vite:
+        specifier: 5.4.20
+        version: 5.4.20(@types/node@22.13.9)(lightningcss@1.30.2)(terser@5.44.1)
+
   examples/react-wagmi:
     dependencies:
       '@reown/appkit':
