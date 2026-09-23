@@ -58,8 +58,8 @@ describe('CoinbaseWalletProvider', () => {
 
     expect(wallet.signTransaction).toHaveBeenCalledWith(expect.any(VersionedTransaction))
 
-    const signedLegacyTransaction = vi.mocked(wallet.signTransaction).mock
-      .results[0]!.value as VersionedTransaction
+    const signedLegacyTransaction = vi.mocked(wallet.signTransaction).mock.results[0]!
+      .value as VersionedTransaction
     expect(result).toEqual(
       decodeSolanaKitTransaction(new Uint8Array(signedLegacyTransaction.serialize()))
     )

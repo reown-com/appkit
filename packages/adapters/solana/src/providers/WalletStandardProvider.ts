@@ -1,3 +1,4 @@
+import { fromLegacyPublicKey } from '@solana/compat'
 import {
   WalletAccountError,
   WalletSendTransactionError,
@@ -14,7 +15,6 @@ import {
   SolanaSignTransaction,
   type SolanaSignTransactionFeature
 } from '@solana/wallet-standard-features'
-import { fromLegacyPublicKey } from '@solana/compat'
 import { getCommitment } from '@solana/wallet-standard-util'
 import type { Connection, SendOptions } from '@solana/web3.js'
 import { PublicKey, Transaction, VersionedTransaction } from '@solana/web3.js'
@@ -151,9 +151,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
     return result.signature
   }
 
-  public async signTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(
-    transaction: T
-  ) {
+  public async signTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(transaction: T) {
     const feature = this.getWalletFeature(SolanaSignTransaction)
     const account = this.getAccount(true)
 

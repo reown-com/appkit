@@ -93,9 +93,8 @@ describe('WalletStandardProvider specific tests', () => {
       chain: 'solana:mainnet'
     })
 
-    const [{ signedTransaction }] = await wallet.features[
-      SolanaSignTransaction
-    ].signTransaction.mock.results[0]!.value
+    const [{ signedTransaction }] =
+      await wallet.features[SolanaSignTransaction].signTransaction.mock.results[0]!.value
 
     expect(result).toEqual(decodeSolanaKitTransaction(signedTransaction))
   })
@@ -208,10 +207,12 @@ describe('WalletStandardProvider specific tests', () => {
       }
     )
 
-    const signTransactionResults = await wallet.features[SolanaSignTransaction].signTransaction.mock
-      .results[0]!.value as { signedTransaction: Uint8Array }[]
+    const signTransactionResults = (await wallet.features[SolanaSignTransaction].signTransaction
+      .mock.results[0]!.value) as { signedTransaction: Uint8Array }[]
 
-    expect(results[1]).toEqual(decodeSolanaKitTransaction(signTransactionResults[1]!.signedTransaction))
+    expect(results[1]).toEqual(
+      decodeSolanaKitTransaction(signTransactionResults[1]!.signedTransaction)
+    )
   })
 
   it('should use the same requestedChains to return chains', () => {

@@ -106,9 +106,7 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
     return base58.decode(result.signature)
   }
 
-  public async signTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(
-    transaction: T
-  ) {
+  public async signTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(transaction: T) {
     const result = await this.provider.request({
       method: 'solana_signTransaction',
       params: { transaction: this.serializeTransaction(transaction) },

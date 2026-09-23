@@ -226,9 +226,7 @@ describe('AuthProvider specific tests', () => {
       method: 'solana_signAllTransactions',
       params: {
         transactions: [
-          base58.encode(
-            new Uint8Array(legacyTransaction.serialize({ verifySignatures: false }))
-          ),
+          base58.encode(new Uint8Array(legacyTransaction.serialize({ verifySignatures: false }))),
           base58.encode(encodeSolanaKitTransaction(kitTransaction))
         ]
       }

@@ -109,9 +109,7 @@ export class CoinbaseWalletProvider extends ProviderEventEmitter implements Sola
     return result.signature
   }
 
-  public async signTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(
-    transaction: T
-  ) {
+  public async signTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(transaction: T) {
     if (isAnySolanaKitTransaction(transaction)) {
       const legacyTransaction = VersionedTransaction.deserialize(
         encodeSolanaKitTransaction(transaction)

@@ -121,9 +121,7 @@ export class SolanaWalletConnectProvider
     return base58.decode(signedMessage.signature)
   }
 
-  public async signTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(
-    transaction: T
-  ) {
+  public async signTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(transaction: T) {
     this.checkIfMethodIsSupported('solana_signTransaction')
 
     const serializedTransaction = this.serializeTransaction(transaction)
