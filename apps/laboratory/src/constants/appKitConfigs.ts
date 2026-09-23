@@ -444,6 +444,24 @@ export const appKitConfigs = {
     networks: ConstantsUtil.BitcoinNetworks,
     siwx: new DefaultSIWX()
   },
+  'siwx-ton': {
+    ...commonAppKitConfig,
+    adapters: ['ton'],
+    networks: ConstantsUtil.TonNetworks,
+    siwx: new DefaultSIWX()
+  },
+  'siwx-tron': {
+    ...commonAppKitConfig,
+    adapters: ['tron'],
+    networks: ConstantsUtil.TronNetworks,
+    siwx: new DefaultSIWX()
+  },
+  'siwx-stellar': {
+    ...commonAppKitConfig,
+    adapters: ['stellar'],
+    networks: ConstantsUtil.StellarNetworks,
+    siwx: new DefaultSIWX()
+  },
 
   // ----- SIWX Multichain Variants ------------------------------
   'siwx-wagmi-solana': {
@@ -488,6 +506,20 @@ export const appKitConfigs = {
     wagmiConfig: commonWagmiConfig,
     adapters: ['wagmi', 'solana', 'bitcoin'],
     networks: ConstantsUtil.AllNetworks,
+    siwx: new ReownAuthentication(),
+    siwxReown: true
+  },
+  'reown-auth-solana': {
+    ...commonAppKitConfig,
+    adapters: ['solana'],
+    networks: ConstantsUtil.SolanaNetworks,
+    siwx: new ReownAuthentication(),
+    siwxReown: true
+  },
+  'reown-auth-bitcoin': {
+    ...commonAppKitConfig,
+    adapters: ['bitcoin'],
+    networks: ConstantsUtil.BitcoinNetworks,
     siwx: new ReownAuthentication(),
     siwxReown: true
   },
