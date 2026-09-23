@@ -17,7 +17,7 @@ const modal = createAppKit({
   defaultNetwork: solanaDevnet,
   metadata: {
     name: 'AppKit Solana-Kit Example',
-    description: 'Proof of concept: integrating @solana/kit (web3.js 2.x) with AppKit',
+    description: 'AppKit React Solana-Kit Example',
     url: 'https://reown.com/appkit',
     icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   },

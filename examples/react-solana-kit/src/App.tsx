@@ -9,7 +9,7 @@ export default function App() {
         <img src="/appkit-logo.png" alt="AppKit" width="150" />
       </div>
 
-      <h1 className="page-title">AppKit + @solana/kit Integration POC</h1>
+      <h1 className="page-title">AppKit + @solana/kit Example</h1>
 
       <div className="appkit-buttons-container">
         <appkit-button />

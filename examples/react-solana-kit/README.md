@@ -1,4 +1,4 @@
-# AppKit + `@solana/kit` integration POC
+# AppKit + `@solana/kit` integration example
 
 Minimal example showing how a dApp developer integrates `@solana/kit` (web3.js 2.x) support in the Solana adapter.
 
