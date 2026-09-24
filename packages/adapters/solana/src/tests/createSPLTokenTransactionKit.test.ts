@@ -219,6 +219,27 @@ describe('createSPLTokenTransactionKit', () => {
     expect(getSetComputeUnitLimitInstruction).toHaveBeenCalledWith({ units: 52_000 })
   })
 
+  it('fetches the blockhash after simulating, not before, to minimize staleness before the wallet signs', async () => {
+    const { estimateComputeUnitLimitFactory } = await import('@solana-program/compute-budget')
+    const estimateFn = vi.fn().mockResolvedValue(40_000)
+    vi.mocked(estimateComputeUnitLimitFactory).mockReturnValue(estimateFn)
+
+    await createSPLTokenTransactionKit({
+      provider,
+      connection,
+      to: TestConstants.accounts[1].address as Address,
+      amount: 1,
+      tokenMint: mockTokenMint
+    })
+
+    const estimateCallOrder = estimateFn.mock.invocationCallOrder[0]
+    const blockhashCallOrder = vi.mocked(connection.getLatestBlockhash).mock.invocationCallOrder[0]
+
+    expect(estimateCallOrder).toBeDefined()
+    expect(blockhashCallOrder).toBeDefined()
+    expect(blockhashCallOrder as number).toBeGreaterThan(estimateCallOrder as number)
+  })
+
   it('should fall back to a static compute-unit limit when simulation fails', async () => {
     const { estimateComputeUnitLimitFactory, getSetComputeUnitLimitInstruction } = await import(
       '@solana-program/compute-budget'

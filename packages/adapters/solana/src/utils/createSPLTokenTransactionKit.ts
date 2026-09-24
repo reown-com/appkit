@@ -120,18 +120,21 @@ export async function createSPLTokenTransactionKit({
       })
     ]
 
-    const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
-
-    const message = appendTransactionMessageInstructions(
+    /*
+     * No lifetime attached yet: estimateComputeUnitLimitFactory's simulation only needs a fee
+     * payer (it substitutes its own fresh blockhash server-side for the simulation itself, see
+     * its `replaceRecentBlockhash` behavior). The real blockhash is fetched further down, as the
+     * last RPC call before compiling, to minimize the staleness window before the wallet signs;
+     * fetching it here instead risks it expiring during the simulation round-trip plus however
+     * long the wallet's approval UI takes, which can silently drop the transaction after signing.
+     */
+    const messageWithoutLifetime = appendTransactionMessageInstructions(
       instructions,
-      setTransactionMessageLifetimeUsingBlockhash(
-        { blockhash: blockhash as Blockhash, lastValidBlockHeight: BigInt(lastValidBlockHeight) },
-        setTransactionMessageFeePayer(feePayer, createTransactionMessage({ version: 0 }))
-      )
+      setTransactionMessageFeePayer(feePayer, createTransactionMessage({ version: 0 }))
     )
 
     const estimateComputeUnitLimit = estimateComputeUnitLimitFactory({ rpc })
-    const estimatedUnits = await estimateComputeUnitLimit(message).catch(() => null)
+    const estimatedUnits = await estimateComputeUnitLimit(messageWithoutLifetime).catch(() => null)
 
     const unitLimit =
       estimatedUnits && estimatedUnits > 0
@@ -143,10 +146,17 @@ export async function createSPLTokenTransactionKit({
 
     const messageWithComputeLimit = prependTransactionMessageInstruction(
       getSetComputeUnitLimitInstruction({ units: unitLimit }),
-      message
+      messageWithoutLifetime
     )
 
-    return compileTransaction(messageWithComputeLimit)
+    const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
+
+    const finalMessage = setTransactionMessageLifetimeUsingBlockhash(
+      { blockhash: blockhash as Blockhash, lastValidBlockHeight: BigInt(lastValidBlockHeight) },
+      messageWithComputeLimit
+    )
+
+    return compileTransaction(finalMessage)
   } catch (error) {
     throw new Error(
       `Failed to create SPL token transaction: ${error instanceof Error ? error.message : 'Unknown error'}`
