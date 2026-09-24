@@ -3,7 +3,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Provider } from '@reown/appkit-utils/solana'
 
-import { createSPLTokenTransactionKit } from '../utils/createSPLTokenTransactionKit'
+import {
+  createSPLTokenTransactionKit,
+  toTokenBaseUnits
+} from '../utils/createSPLTokenTransactionKit'
 import { mockConnection } from './mocks/Connection'
 import { TestConstants } from './util/TestConstants'
 
@@ -45,6 +48,23 @@ const mockProvider = (address?: Address) => {
 
 let provider = mockProvider(TestConstants.accounts[0].address as Address)
 let connection = mockConnection()
+
+describe('toTokenBaseUnits', () => {
+  it('does not underpay due to floating-point multiplication error', () => {
+    // 0.29 * 100 === 28.999999999999996 in IEEE 754, which Math.floor would wrongly truncate to 28
+    expect(toTokenBaseUnits(0.29, 2)).toBe(29n)
+    // 1.15 * 100 === 114.99999999999999 in IEEE 754
+    expect(toTokenBaseUnits(1.15, 2)).toBe(115n)
+  })
+
+  it('truncates precision beyond the mint decimals, matching the legacy path', () => {
+    expect(toTokenBaseUnits(0.297, 2)).toBe(29n)
+  })
+
+  it('converts a whole-number amount correctly', () => {
+    expect(toTokenBaseUnits(1, 6)).toBe(1_000_000n)
+  })
+})
 
 describe('createSPLTokenTransactionKit', () => {
   beforeEach(async () => {

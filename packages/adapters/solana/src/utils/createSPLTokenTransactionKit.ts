@@ -36,6 +36,21 @@ const COMPUTE_UNIT_MARGIN_MULTIPLIER = 1.3
 const MAX_COMPUTE_UNIT_LIMIT = 1_400_000
 const FALLBACK_COMPUTE_UNIT_LIMIT = 50_000
 
+/**
+ * Converts a decimal amount into the mint's base units via string math, avoiding
+ * IEEE-754 float multiplication error (e.g. 0.29 * 100 === 28.999999999999996, which
+ * Math.floor(amount * 10 ** decimals) would wrongly truncate to 28 instead of 29).
+ * Truncates precision beyond `decimals`, matching the legacy path's flooring behavior.
+ */
+export function toTokenBaseUnits(amount: number, decimals: number): bigint {
+  const parts = amount.toString().split('.')
+  const whole = parts[0] ?? '0'
+  const fraction = parts[1] ?? ''
+  const paddedFraction = fraction.slice(0, decimals).padEnd(decimals, '0')
+
+  return BigInt(whole) * 10n ** BigInt(decimals) + BigInt(paddedFraction || '0')
+}
+
 export async function createSPLTokenTransactionKit({
   provider,
   to,
@@ -62,7 +77,7 @@ export async function createSPLTokenTransactionKit({
       throw new Error('Token-2022 mints are not yet supported')
     }
     const decimals = mint.data.decimals
-    const tokenAmount = BigInt(Math.floor(amount * 10 ** decimals))
+    const tokenAmount = toTokenBaseUnits(amount, decimals)
 
     const [fromTokenAccount] = await findAssociatedTokenPda({
       owner: feePayer,
