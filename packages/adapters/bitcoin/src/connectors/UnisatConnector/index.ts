@@ -143,6 +143,11 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
     const network = this.getNetwork(caipNetworkId)
 
     await this.wallet.switchChain(network)
+    const chain = this.chains.find(c => c.caipNetworkId === caipNetworkId)
+    if (!chain) {
+      throw new Error('UnisatConnector:switchNetwork - chain is undefined')
+    }
+    this.emit('chainChanged', chain.id)
   }
 
   public request<T>(_args: RequestArguments): Promise<T> {
