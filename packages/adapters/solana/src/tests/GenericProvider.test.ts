@@ -11,7 +11,11 @@ import { CoinbaseWalletProvider } from '../providers/CoinbaseWalletProvider.js'
 import { SolanaWalletConnectProvider } from '../providers/SolanaWalletConnectProvider.js'
 import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
 import { mockCoinbaseWallet } from './mocks/CoinbaseWallet.js'
-import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+import {
+  mockLegacyTransaction,
+  mockSolanaKitTransaction,
+  mockVersionedTransaction
+} from './mocks/Transaction.js'
 import { mockUniversalProvider } from './mocks/UniversalProvider.js'
 import { mockW3mFrameProvider } from './mocks/W3mFrameProvider.js'
 import { mockWalletStandard } from './mocks/WalletStandard.js'
@@ -84,6 +88,12 @@ describe.each(providers)('Generic provider tests for $name', ({ provider }) => {
     expect(events.connect).toHaveBeenCalledWith(TestConstants.accounts[0].publicKey)
   })
 
+  it('should expose a solana-kit Address matching the legacy publicKey', async () => {
+    await provider.connect()
+
+    expect(provider.address).toEqual(TestConstants.accounts[0].address)
+  })
+
   it('should signMessage', async () => {
     const result = await provider.signMessage(new TextEncoder().encode('test'))
 
@@ -100,6 +110,13 @@ describe.each(providers)('Generic provider tests for $name', ({ provider }) => {
     const result = await provider.signTransaction(mockVersionedTransaction())
 
     expect(result).toBeInstanceOf(VersionedTransaction)
+  })
+
+  it('should signTransaction with a solana-kit transaction', async () => {
+    const result = await provider.signTransaction(mockSolanaKitTransaction())
+
+    expect(result).toHaveProperty('messageBytes')
+    expect(result).toHaveProperty('signatures')
   })
 
   it('should signAndSendTransaction with Legacy Transaction', async () => {

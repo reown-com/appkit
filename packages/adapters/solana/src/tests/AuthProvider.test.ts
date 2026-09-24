@@ -1,10 +1,19 @@
+import base58 from 'bs58'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import { type AccountState, ChainController } from '@reown/appkit-controllers'
 
 import { AuthProvider } from '../providers/AuthProvider'
-import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'
+import {
+  decodeSolanaKitTransaction,
+  encodeSolanaKitTransaction
+} from '../providers/shared/SolanaKitTransaction.js'
+import {
+  mockLegacyTransaction,
+  mockSolanaKitTransaction,
+  mockVersionedTransaction
+} from './mocks/Transaction'
 import { mockW3mFrameProvider } from './mocks/W3mFrameProvider'
 import { TestConstants } from './util/TestConstants'
 
@@ -127,6 +136,22 @@ describe('AuthProvider specific tests', () => {
     })
   })
 
+  it('should call signTransaction with correct params for a solana-kit transaction', async () => {
+    await authProvider.connect()
+    const transaction = mockSolanaKitTransaction()
+    const result = await authProvider.signTransaction(transaction)
+
+    expect(provider.request).toHaveBeenCalledWith({
+      chainNamespace: 'solana',
+      method: 'solana_signTransaction',
+      params: { transaction: base58.encode(encodeSolanaKitTransaction(transaction)) }
+    })
+
+    const { transaction: signedTransactionBase58 } = await vi.mocked(provider.request).mock
+      .results[0]!.value
+    expect(result).toEqual(decodeSolanaKitTransaction(base58.decode(signedTransactionBase58)))
+  })
+
   it('should call signAndSendTransaction with correct params', async () => {
     await authProvider.connect()
     const transaction = mockLegacyTransaction()
@@ -156,6 +181,22 @@ describe('AuthProvider specific tests', () => {
     })
   })
 
+  it('should call signAndSendTransaction with correct params for a solana-kit transaction', async () => {
+    await authProvider.connect()
+    const transaction = mockSolanaKitTransaction()
+
+    await authProvider.signAndSendTransaction(transaction)
+
+    expect(provider.request).toHaveBeenCalledWith({
+      chainNamespace: 'solana',
+      method: 'solana_signAndSendTransaction',
+      params: {
+        transaction: base58.encode(encodeSolanaKitTransaction(transaction)),
+        options: undefined
+      }
+    })
+  })
+
   it('should call signAllTransactions with correct params', async () => {
     await authProvider.connect()
     const transactions = [mockLegacyTransaction(), mockVersionedTransaction()]
@@ -171,5 +212,30 @@ describe('AuthProvider specific tests', () => {
         ]
       }
     })
+  })
+
+  it('should call signAllTransactions with correct params for a mix of legacy and solana-kit transactions', async () => {
+    await authProvider.connect()
+    const legacyTransaction = mockLegacyTransaction()
+    const kitTransaction = mockSolanaKitTransaction()
+    const transactions = [legacyTransaction, kitTransaction]
+    const results = await authProvider.signAllTransactions(transactions)
+
+    expect(provider.request).toHaveBeenCalledWith({
+      chainNamespace: 'solana',
+      method: 'solana_signAllTransactions',
+      params: {
+        transactions: [
+          base58.encode(new Uint8Array(legacyTransaction.serialize({ verifySignatures: false }))),
+          base58.encode(encodeSolanaKitTransaction(kitTransaction))
+        ]
+      }
+    })
+
+    const { transactions: signedTransactionsBase58 } = await vi.mocked(provider.request).mock
+      .results[0]!.value
+    expect(results[1]).toEqual(
+      decodeSolanaKitTransaction(base58.decode(signedTransactionsBase58[1]))
+    )
   })
 })

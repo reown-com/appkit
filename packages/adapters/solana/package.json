@@ -53,6 +53,8 @@
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
+    "@solana/compat": "8.3.0",
+    "@solana/kit": "8.3.0",
     "@solana/wallet-adapter-base": "0.9.27",
     "@solana/wallet-standard-features": "1.3.0",
     "@solana/wallet-standard-util": "1.1.2",
