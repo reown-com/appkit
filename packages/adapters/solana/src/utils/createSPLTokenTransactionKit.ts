@@ -1,4 +1,9 @@
 import {
+  estimateComputeUnitLimitFactory,
+  getSetComputeUnitLimitInstruction,
+  getSetComputeUnitPriceInstruction
+} from '@solana-program/compute-budget'
+import {
   TOKEN_PROGRAM_ADDRESS,
   fetchMaybeMint,
   fetchMaybeToken,
@@ -6,11 +11,6 @@ import {
   getCreateAssociatedTokenIdempotentInstruction,
   getTransferCheckedInstruction
 } from '@solana-program/token'
-import {
-  estimateComputeUnitLimitFactory,
-  getSetComputeUnitLimitInstruction,
-  getSetComputeUnitPriceInstruction
-} from '@solana-program/compute-budget'
 import {
   type Blockhash,
   appendTransactionMessageInstructions,
@@ -24,7 +24,10 @@ import {
 } from '@solana/kit'
 
 import { SPL_COMPUTE_BUDGET_CONSTANTS } from '@reown/appkit-utils/solana'
-import type { AnySolanaKitTransaction, SPLTokenTransactionKitArgs } from '@reown/appkit-utils/solana'
+import type {
+  AnySolanaKitTransaction,
+  SPLTokenTransactionKitArgs
+} from '@reown/appkit-utils/solana'
 
 const COMPUTE_UNIT_MARGIN_MULTIPLIER = 1.3
 const MAX_COMPUTE_UNIT_LIMIT = 1_400_000

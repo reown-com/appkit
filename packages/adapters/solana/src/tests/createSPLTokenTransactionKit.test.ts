@@ -94,9 +94,7 @@ describe('createSPLTokenTransactionKit', () => {
       ] as unknown as Awaited<ReturnType<typeof findAssociatedTokenPda>>)
     )
 
-    vi.mocked(estimateComputeUnitLimitFactory).mockReturnValue(
-      vi.fn().mockResolvedValue(40_000)
-    )
+    vi.mocked(estimateComputeUnitLimitFactory).mockReturnValue(vi.fn().mockResolvedValue(40_000))
   })
 
   it('should throw error when provider has no address', async () => {

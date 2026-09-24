@@ -14,13 +14,13 @@ import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
 import { SolanaAddressTest } from './SolanaAddressTest'
+import { SolanaSPLTransferKitTest } from './SolanaSPLTransferKitTest'
 import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
 import { SolanaSignAllTransactionsTest } from './SolanaSignAllTransactionsTest'
 import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
 import { SolanaSignJupiterSwapTest } from './SolanaSignJupiterSwapTest'
 import { SolanaSignMessageTest } from './SolanaSignMessageTest'
 import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
-import { SolanaSPLTransferKitTest } from './SolanaSPLTransferKitTest'
 import { SolanaWriteContractTest } from './SolanaWriteContractTest'
 
 export function SolanaTests() {
