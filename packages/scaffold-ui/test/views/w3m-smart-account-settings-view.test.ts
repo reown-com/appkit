@@ -73,7 +73,11 @@ describe('W3mSmartAccountSettingsView', () => {
     expect(setPrefSpy).toHaveBeenCalled()
   })
 
-  it('should toggle smart account version on click', async () => {
+  it('should toggle smart account version on click if enableSmartAccountVersionSwitch is true', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      enableSmartAccountVersionSwitch: true
+    })
     vi.spyOn(window, 'location', 'get').mockReturnValue({
       reload: vi.fn()
     } as unknown as Location)
@@ -83,5 +87,17 @@ describe('W3mSmartAccountSettingsView', () => {
     const toggle = HelpersUtil.getByTestId(element, ACCOUNT_TOGGLE_SMART_ACCOUNT_VERSION_TEST_ID)
     toggle.click()
     expect(window.location.reload).toHaveBeenCalled()
+  })
+
+  it('should not show toggle smart account version if enableSmartAccountVersionSwitch is false', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      enableSmartAccountVersionSwitch: false
+    })
+    const element: W3mSmartAccountSettingsView = await fixture(
+      html`<w3m-smart-account-settings-view></w3m-smart-account-settings-view>`
+    )
+    const toggle = HelpersUtil.getByTestId(element, ACCOUNT_TOGGLE_SMART_ACCOUNT_VERSION_TEST_ID)
+    expect(toggle).toBeNull()
   })
 })
