@@ -20,6 +20,7 @@ import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest
 import { SolanaSignJupiterSwapTest } from './SolanaSignJupiterSwapTest'
 import { SolanaSignMessageTest } from './SolanaSignMessageTest'
 import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
+import { SolanaSPLTransferKitTest } from './SolanaSPLTransferKitTest'
 import { SolanaWriteContractTest } from './SolanaWriteContractTest'
 
 export function SolanaTests() {
@@ -91,6 +92,17 @@ export function SolanaTests() {
               </Tooltip>
             </Heading>
             <SolanaSendTransactionTest />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              SPL Token Transfer (solana-kit)
+              <Tooltip label="Builds a solana-kit-native SPL token transfer via @solana-program/token, then signs or signs-and-sends it through the same widened Provider methods as a legacy transaction">
+                <Text as="span" fontSize="sm" ml="2">
+                  ℹ️
+                </Text>
+              </Tooltip>
+            </Heading>
+            <SolanaSPLTransferKitTest />
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">

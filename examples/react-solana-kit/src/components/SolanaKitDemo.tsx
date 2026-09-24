@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { getTransferSolInstruction } from '@solana-program/system'
 import {
+  type Address,
   type Blockhash,
   appendTransactionMessageInstructions,
   compileTransaction,
@@ -12,11 +13,19 @@ import {
   setTransactionMessageLifetimeUsingBlockhash
 } from '@solana/kit'
 
-import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
+import {
+  type Provider,
+  createSPLTokenTransactionKit,
+  useAppKitConnection
+} from '@reown/appkit-adapter-solana/react'
 
 import { useAppKitAccount, useAppKitProvider } from '../config'
 
 const SELF_TRANSFER_LAMPORTS = 100
+const SELF_SPL_TRANSFER_AMOUNT = 0.01
+// Circle's Devnet USDC mint, https://developers.circle.com/stablecoins/faucet. Requires the
+// connected wallet to already hold some (e.g. via Circle's faucet) for the demo to succeed.
+const DEVNET_USDC_MINT = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU' as Address
 
 export function SolanaKitDemo() {
   const { isConnected } = useAppKitAccount({ namespace: 'solana' })
@@ -93,6 +102,46 @@ export function SolanaKitDemo() {
     }
   }
 
+  // Self-transfer a small amount of Devnet USDC using @solana-program/token, no
+  // @solana/spl-token on the dApp side. Fails with a clear error if the connected
+  // wallet doesn't already hold Devnet USDC (get some from Circle's faucet first).
+  async function onSignSPLTokenTransaction(send: boolean) {
+    try {
+      setIsLoading(true)
+
+      if (!walletProvider?.address) {
+        throw Error('Connect a wallet first')
+      }
+      if (!connection) {
+        throw Error('No connection set')
+      }
+
+      const kitTransaction = await createSPLTokenTransactionKit({
+        provider: walletProvider,
+        connection,
+        to: walletProvider.address,
+        amount: SELF_SPL_TRANSFER_AMOUNT,
+        tokenMint: DEVNET_USDC_MINT
+      })
+
+      print(`Built a solana-kit SPL token transfer transaction for ${walletProvider.address}`)
+
+      if (send) {
+        const signature = await walletProvider.signAndSendTransaction(kitTransaction)
+        print(`signAndSendTransaction() -> signature: ${signature}`)
+      } else {
+        const signedTransaction = await walletProvider.signTransaction(kitTransaction)
+        print(
+          `signTransaction() -> solana-kit Transaction, signature: ${getSignatureFromTransaction(signedTransaction)}`
+        )
+      }
+    } catch (err) {
+      print(`Error: ${(err as Error).message}`)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   if (!isConnected) {
     return (
       <section className="code-container" style={{ width: '100%' }}>
@@ -111,6 +160,12 @@ export function SolanaKitDemo() {
         </button>
         <button onClick={() => onSignSolanaKitTransaction(true)} disabled={isLoading}>
           Sign and send solana-kit transaction
+        </button>
+        <button onClick={() => onSignSPLTokenTransaction(false)} disabled={isLoading}>
+          Sign SPL token transfer
+        </button>
+        <button onClick={() => onSignSPLTokenTransaction(true)} disabled={isLoading}>
+          Sign and send SPL token transfer
         </button>
       </div>
       <div className="code-container-content">
