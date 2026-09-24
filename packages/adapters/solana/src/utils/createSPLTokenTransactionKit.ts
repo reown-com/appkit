@@ -26,12 +26,6 @@ import {
 import { SPL_COMPUTE_BUDGET_CONSTANTS } from '@reown/appkit-utils/solana'
 import type { AnySolanaKitTransaction, SPLTokenTransactionKitArgs } from '@reown/appkit-utils/solana'
 
-/**
- * Mirrors the values the sibling spl-send-priority-fee fix settled on for the legacy path
- * (SPL_COMPUTE_BUDGET_CONSTANTS.SIMULATION_MARGIN_MULTIPLIER / FALLBACK_UNIT_LIMIT_WITH_ATA_CREATION
- * / SIMULATION_UNIT_LIMIT on fix/spl-send-priority-fee). Duplicated locally rather than imported
- * since that fix is on a different, not-yet-merged branch base; worth deduplicating once both land.
- */
 const COMPUTE_UNIT_MARGIN_MULTIPLIER = 1.3
 const MAX_COMPUTE_UNIT_LIMIT = 1_400_000
 const FALLBACK_COMPUTE_UNIT_LIMIT = 50_000
