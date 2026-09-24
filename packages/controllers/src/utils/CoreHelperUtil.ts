@@ -27,12 +27,25 @@ export const CoreHelperUtil = {
 
   isMobile() {
     if (this.isClient()) {
-      return Boolean(
-        (window?.matchMedia &&
-          typeof window.matchMedia === 'function' &&
-          window.matchMedia('(pointer:coarse)')?.matches) ||
-          /Android|webOS|iPhone|iPad|iPod|BlackBerry|Opera Mini/u.test(navigator.userAgent)
-      )
+      // Known mobile UA strings - definitive match, check first
+      if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|Opera Mini/u.test(navigator.userAgent)) {
+        return true
+      }
+
+      /*
+       * Pointer:coarse matches touchscreens, but also touchscreen desktops/laptops.
+       * If a fine pointer (trackpad/mouse) is also available via any-pointer:fine,
+       * this is a multi-input desktop device - not mobile.
+       * Ref: https://css-tricks.com/interaction-media-features-and-their-potential-for-incorrect-assumptions/
+       */
+      const isCoarsePointer = window.matchMedia?.('(pointer:coarse)')?.matches ?? false
+      const hasAnyFinePointer = window.matchMedia?.('(any-pointer:fine)')?.matches ?? false
+
+      if (isCoarsePointer && hasAnyFinePointer) {
+        return false
+      }
+
+      return isCoarsePointer
     }
 
     return false
