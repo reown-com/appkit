@@ -106,4 +106,26 @@ describe('resolveComputeBudgetInstructions', () => {
     // price + limit + the one real instruction passed in
     expect(simulatedInstructionCount).toBe(3)
   })
+
+  it('simulates the exact final instruction shape for multiple real instructions (e.g. ATA creation + transfer)', async () => {
+    let simulatedInstructionCount: number | undefined
+
+    connection.simulateTransaction = vi
+      .fn()
+      .mockImplementation((versionedTransaction: VersionedTransaction) => {
+        simulatedInstructionCount = versionedTransaction.message.compiledInstructions.length
+
+        return Promise.resolve({ value: { err: null, unitsConsumed: 18000 } })
+      })
+
+    await resolveComputeBudgetInstructions({
+      connection,
+      instructions: [dummyInstruction, dummyInstruction],
+      feePayer,
+      fallbackUnitLimit: 99999
+    })
+
+    // price + limit + the two real instructions passed in
+    expect(simulatedInstructionCount).toBe(4)
+  })
 })
