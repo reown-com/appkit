@@ -5,7 +5,7 @@ import {
   TOKEN_PROGRAM_ID,
   getAssociatedTokenAddressSync
 } from '@solana/spl-token'
-import { ComputeBudgetProgram, Keypair, PublicKey, type AccountInfo } from '@solana/web3.js'
+import { type AccountInfo, ComputeBudgetProgram, Keypair, PublicKey } from '@solana/web3.js'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Provider } from '@reown/appkit-utils/solana'
@@ -41,7 +41,11 @@ function buildMintAccountInfo(decimals: number): AccountInfo<Buffer> {
   return { data, owner: TOKEN_PROGRAM_ID, lamports: 1, executable: false, rentEpoch: 0 }
 }
 
-function buildTokenAccountInfo(mint: PublicKey, owner: PublicKey, amount: number): AccountInfo<Buffer> {
+function buildTokenAccountInfo(
+  mint: PublicKey,
+  owner: PublicKey,
+  amount: number
+): AccountInfo<Buffer> {
   const data = Buffer.alloc(AccountLayout.span)
 
   AccountLayout.encode(
@@ -219,7 +223,9 @@ describe('createSPLTokenTransaction', () => {
     expect(transaction.instructions[1]?.programId.equals(ComputeBudgetProgram.programId)).toBe(true)
     expect(transaction.instructions[2]?.programId.equals(TOKEN_PROGRAM_ID)).toBe(true)
 
-    const limitInstruction = ComputeBudgetProgram.setComputeUnitLimit({ units: Math.ceil(405 * 1.3) })
+    const limitInstruction = ComputeBudgetProgram.setComputeUnitLimit({
+      units: Math.ceil(405 * 1.3)
+    })
     expect(transaction.instructions[1]?.data.equals(limitInstruction.data)).toBe(true)
   })
 
@@ -260,7 +266,9 @@ describe('createSPLTokenTransaction', () => {
     expect(transaction.instructions[2]?.programId.equals(ASSOCIATED_TOKEN_PROGRAM_ID)).toBe(true)
     expect(transaction.instructions[3]?.programId.equals(TOKEN_PROGRAM_ID)).toBe(true)
 
-    const limitInstruction = ComputeBudgetProgram.setComputeUnitLimit({ units: Math.ceil(18000 * 1.3) })
+    const limitInstruction = ComputeBudgetProgram.setComputeUnitLimit({
+      units: Math.ceil(18000 * 1.3)
+    })
     expect(transaction.instructions[1]?.data.equals(limitInstruction.data)).toBe(true)
   })
 })
