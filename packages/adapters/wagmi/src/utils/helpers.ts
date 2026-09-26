@@ -57,16 +57,15 @@ export async function getSafeConnector(
 ): Promise<CreateConnectorFn | null> {
   if (CoreHelperUtil.isSafeApp()) {
     try {
-      // Use runtime-computed path to prevent webpack from statically analyzing this import
       const connectorPath = ['@wagmi', 'connectors', 'safe'].join('/')
-      const mod = await import(/* webpackIgnore: true */ connectorPath)
+      const mod = await import(connectorPath)
       const { safe } = mod
 
       if (safe && !connectors.some(c => c.type === 'safe')) {
         return safe()
       }
-    } catch (error) {
-      // Expected when safe-apps-sdk peer dep is not installed - fail silently
+    } catch {
+      // Safe connector not available
     }
   }
 
@@ -77,17 +76,15 @@ export async function getBaseAccountConnector(
   connectors: readonly Connector[]
 ): Promise<CreateConnectorFn | null> {
   try {
-    // Use runtime-computed path to prevent webpack from statically analyzing this import
-    // @base-org/account is an optional peer dep of @wagmi/connectors that users may not have
     const connectorPath = ['@wagmi', 'connectors', 'baseAccount'].join('/')
-    const mod = await import(/* webpackIgnore: true */ connectorPath)
+    const mod = await import(connectorPath)
     const { baseAccount } = mod
 
     if (baseAccount && !connectors.some(c => c.id === 'baseAccount')) {
       return baseAccount()
     }
-  } catch (error) {
-    // Expected when @base-org/account peer dep is not installed - fail silently
+  } catch {
+    // Base Account connector not available
   }
 
   return null
@@ -98,16 +95,15 @@ export async function getCoinbaseConnector(
   preference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 ): Promise<CreateConnectorFn | null> {
   try {
-    // Use runtime-computed path to prevent webpack from statically analyzing this import
     const connectorPath = ['@wagmi', 'connectors', 'coinbaseWallet'].join('/')
-    const mod = await import(/* webpackIgnore: true */ connectorPath)
+    const mod = await import(connectorPath)
     const { coinbaseWallet } = mod
 
     if (coinbaseWallet && !connectors.some(c => c.id === 'coinbaseWallet')) {
       return coinbaseWallet({ preference: preference ? { options: preference } : undefined })
     }
-  } catch (error) {
-    // Expected when coinbase-wallet-sdk peer dep is not installed - fail silently
+  } catch {
+    // Coinbase Wallet connector not available
   }
 
   return null
