@@ -160,6 +160,18 @@ describe('WagmiAdapter', () => {
       }
     })
 
+    vi.mock('@wagmi/connectors/safe', () => ({
+      safe: mockSafe
+    }))
+
+    vi.mock('@wagmi/connectors/baseAccount', () => ({
+      baseAccount: mockBaseAccountConnector
+    }))
+
+    vi.mock('@wagmi/connectors/coinbaseWallet', () => ({
+      coinbaseWallet: mockCoinbaseConnector
+    }))
+
     vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(
       mockBaseAccountConnector() as any
     )
