@@ -56,12 +56,17 @@ export async function getSafeConnector(
   connectors: readonly Connector[]
 ): Promise<CreateConnectorFn | null> {
   if (CoreHelperUtil.isSafeApp()) {
-    const { safe } = await import('@wagmi/connectors/safe')
+    try {
+      // Use runtime-computed path to prevent webpack from statically analyzing this import
+      const connectorPath = ['@wagmi', 'connectors', 'safe'].join('/')
+      const mod = await import(/* webpackIgnore: true */ connectorPath)
+      const { safe } = mod
 
-    if (safe && !connectors.some(c => c.type === 'safe')) {
-      const safeConnector = safe()
-
-      return safeConnector
+      if (safe && !connectors.some(c => c.type === 'safe')) {
+        return safe()
+      }
+    } catch (error) {
+      // Expected when safe-apps-sdk peer dep is not installed - fail silently
     }
   }
 
@@ -72,14 +77,17 @@ export async function getBaseAccountConnector(
   connectors: readonly Connector[]
 ): Promise<CreateConnectorFn | null> {
   try {
-    const { baseAccount } = await import('@wagmi/connectors/baseAccount')
+    // Use runtime-computed path to prevent webpack from statically analyzing this import
+    // @base-org/account is an optional peer dep of @wagmi/connectors that users may not have
+    const connectorPath = ['@wagmi', 'connectors', 'baseAccount'].join('/')
+    const mod = await import(/* webpackIgnore: true */ connectorPath)
+    const { baseAccount } = mod
 
     if (baseAccount && !connectors.some(c => c.id === 'baseAccount')) {
       return baseAccount()
     }
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Failed to import Base Account SDK:', error)
+    // Expected when @base-org/account peer dep is not installed - fail silently
   }
 
   return null
@@ -90,14 +98,16 @@ export async function getCoinbaseConnector(
   preference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 ): Promise<CreateConnectorFn | null> {
   try {
-    const { coinbaseWallet } = await import('@wagmi/connectors/coinbaseWallet')
+    // Use runtime-computed path to prevent webpack from statically analyzing this import
+    const connectorPath = ['@wagmi', 'connectors', 'coinbaseWallet'].join('/')
+    const mod = await import(/* webpackIgnore: true */ connectorPath)
+    const { coinbaseWallet } = mod
 
     if (coinbaseWallet && !connectors.some(c => c.id === 'coinbaseWallet')) {
       return coinbaseWallet({ preference: preference ? { options: preference } : undefined })
     }
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Failed to import Coinbase Wallet SDK:', error)
+    // Expected when coinbase-wallet-sdk peer dep is not installed - fail silently
   }
 
   return null
