@@ -30,6 +30,7 @@
     "valtio": "2.1.7"
   },
   "peerDependencies": {
+    "@wagmi/connectors": ">=8.0.0",
     "@wagmi/core": ">=3.0.0",
     "viem": ">=2.55.13",
     "wagmi": ">=3.0.0"
