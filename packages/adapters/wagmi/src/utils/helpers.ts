@@ -57,9 +57,7 @@ export async function getSafeConnector(
 ): Promise<CreateConnectorFn | null> {
   if (CoreHelperUtil.isSafeApp()) {
     try {
-      const connectorPath = ['@wagmi', 'connectors', 'safe'].join('/')
-      const mod = await import(connectorPath)
-      const { safe } = mod
+      const { safe } = await import('@wagmi/connectors/safe')
 
       if (safe && !connectors.some(c => c.type === 'safe')) {
         return safe()
@@ -76,9 +74,7 @@ export async function getBaseAccountConnector(
   connectors: readonly Connector[]
 ): Promise<CreateConnectorFn | null> {
   try {
-    const connectorPath = ['@wagmi', 'connectors', 'baseAccount'].join('/')
-    const mod = await import(connectorPath)
-    const { baseAccount } = mod
+    const { baseAccount } = await import('@wagmi/connectors/baseAccount')
 
     if (baseAccount && !connectors.some(c => c.id === 'baseAccount')) {
       return baseAccount()
@@ -95,9 +91,7 @@ export async function getCoinbaseConnector(
   preference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 ): Promise<CreateConnectorFn | null> {
   try {
-    const connectorPath = ['@wagmi', 'connectors', 'coinbaseWallet'].join('/')
-    const mod = await import(connectorPath)
-    const { coinbaseWallet } = mod
+    const { coinbaseWallet } = await import('@wagmi/connectors/coinbaseWallet')
 
     if (coinbaseWallet && !connectors.some(c => c.id === 'coinbaseWallet')) {
       return coinbaseWallet({ preference: preference ? { options: preference } : undefined })
