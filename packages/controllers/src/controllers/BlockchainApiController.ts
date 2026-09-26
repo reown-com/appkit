@@ -658,6 +658,28 @@ export const BlockchainApiController = {
     }
   },
 
+  async getOnrampWidgetUrl({
+    destinationCurrencyCode,
+    walletAddress
+  }: {
+    destinationCurrencyCode: string
+    walletAddress: string
+  }): Promise<string> {
+    const response = await state.api.post<{ url: string }>({
+      path: `/v1/onramp/widget-url`,
+      params: {
+        projectId: OptionsController.state.projectId
+      },
+      body: {
+        destinationCurrencyCode,
+        walletAddress,
+        externalCustomerId: OptionsController.state.projectId
+      }
+    })
+
+    return response.url
+  },
+
   async getSmartSessions(caipAddress: CaipAddress) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
