@@ -192,6 +192,31 @@ describe('WalletConnectProvider specific tests', () => {
     )
   })
 
+  it('should attach the signature to a solana-kit transaction when the wallet returns an empty transaction field', async () => {
+    await walletConnectProvider.connect()
+    const transaction = mockSolanaKitTransaction()
+    const signatureBytes = new Uint8Array(64).fill(1)
+    vi.spyOn(provider, 'request').mockImplementationOnce(
+      <T>() => Promise.resolve({ signature: base58.encode(signatureBytes), transaction: null }) as T
+    )
+
+    const result = await walletConnectProvider.signTransaction(transaction)
+
+    expect(result).toEqual({
+      ...transaction,
+      signatures: { [TestConstants.accounts[0].address]: signatureBytes }
+    })
+  })
+
+  it('should throw a clear error when the wallet returns neither a signature nor a transaction for a solana-kit transaction', async () => {
+    await walletConnectProvider.connect()
+    vi.spyOn(provider, 'request').mockImplementationOnce(<T>() => Promise.resolve({}) as T)
+
+    await expect(walletConnectProvider.signTransaction(mockSolanaKitTransaction())).rejects.toThrow(
+      'Invalid solana_signTransaction response'
+    )
+  })
+
   it('should keep other signers and signature order when attaching a signature to a solana-kit transaction', async () => {
     await walletConnectProvider.connect()
     const otherSignature = new Uint8Array(64).fill(3)

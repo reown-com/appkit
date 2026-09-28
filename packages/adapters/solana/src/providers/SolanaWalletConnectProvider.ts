@@ -134,18 +134,22 @@ export class SolanaWalletConnectProvider
     })
 
     if (isAnySolanaKitTransaction(transaction)) {
-      if ('transaction' in result) {
+      if ('transaction' in result && result.transaction) {
         return this.deserializeTransaction(
           transaction,
           new Uint8Array(Buffer.from(result.transaction, 'base64'))
         ) as T
       }
 
-      return addSolanaKitTransactionSignature(
-        transaction,
-        fromLegacyPublicKey(new PublicKey(this.getAccount(true).publicKey)),
-        base58.decode(result.signature)
-      )
+      if ('signature' in result) {
+        return addSolanaKitTransactionSignature(
+          transaction,
+          fromLegacyPublicKey(new PublicKey(this.getAccount(true).publicKey)),
+          base58.decode(result.signature)
+        )
+      }
+
+      throw new Error('Invalid solana_signTransaction response: missing signature and transaction')
     }
 
     // If the result contains signature is the old RPC response
