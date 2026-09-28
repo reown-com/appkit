@@ -523,6 +523,28 @@ export const appKitConfigs = {
     siwx: new ReownAuthentication(),
     siwxReown: true
   },
+  'reown-auth-wagmi': {
+    ...commonAppKitConfig,
+    wagmiConfig: commonWagmiConfig,
+    adapters: ['wagmi'],
+    networks: ConstantsUtil.EvmNetworks,
+    siwx: new ReownAuthentication(),
+    siwxReown: true
+  },
+  'reown-auth-ethers': {
+    ...commonAppKitConfig,
+    adapters: ['ethers'],
+    networks: ConstantsUtil.EvmNetworks,
+    siwx: new ReownAuthentication(),
+    siwxReown: true
+  },
+  'reown-auth-ethers5': {
+    ...commonAppKitConfig,
+    adapters: ['ethers5'],
+    networks: ConstantsUtil.EvmNetworks,
+    siwx: new ReownAuthentication(),
+    siwxReown: true
+  },
   'pay-default': {
     ...commonAppKitConfig,
     wagmiConfig: commonWagmiConfig,
