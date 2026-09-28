@@ -8,16 +8,12 @@ import {
   getAssociatedTokenAddressSync,
   getMint
 } from '@solana/spl-token'
-import {
-  ComputeBudgetProgram,
-  Connection,
-  PublicKey,
-  Transaction,
-  type TransactionInstruction
-} from '@solana/web3.js'
+import { Connection, PublicKey, Transaction, type TransactionInstruction } from '@solana/web3.js'
 
 import { SPL_COMPUTE_BUDGET_CONSTANTS } from '@reown/appkit-utils/solana'
 import type { SPLTokenTransactionArgs } from '@reown/appkit-utils/solana'
+
+import { resolveComputeBudgetInstructions } from './resolveComputeBudgetInstructions.js'
 
 async function getMintOwnerProgramId(connection: Connection, mint: PublicKey) {
   const info = await connection.getAccountInfo(mint)
@@ -91,21 +87,10 @@ export async function createSPLTokenTransaction({
       }
     }
 
-    const instructions: TransactionInstruction[] = []
-
-    const computeUnitLimit = shouldCreateATA
-      ? SPL_COMPUTE_BUDGET_CONSTANTS.UNIT_LIMIT_WITH_ATA_CREATION
-      : SPL_COMPUTE_BUDGET_CONSTANTS.UNIT_LIMIT_TRANSFER_ONLY
-
-    instructions.push(
-      ComputeBudgetProgram.setComputeUnitPrice({
-        microLamports: SPL_COMPUTE_BUDGET_CONSTANTS.UNIT_PRICE_MICRO_LAMPORTS
-      }),
-      ComputeBudgetProgram.setComputeUnitLimit({ units: computeUnitLimit })
-    )
+    const transferInstructions: TransactionInstruction[] = []
 
     if (shouldCreateATA) {
-      instructions.push(
+      transferInstructions.push(
         createAssociatedTokenAccountInstruction(
           fromPubkey,
           toTokenAccount,
@@ -116,7 +101,7 @@ export async function createSPLTokenTransaction({
       )
     }
 
-    instructions.push(
+    transferInstructions.push(
       createTransferCheckedInstruction(
         fromTokenAccount,
         mintPubkey,
@@ -129,13 +114,22 @@ export async function createSPLTokenTransaction({
       )
     )
 
+    const computeBudgetInstructions = await resolveComputeBudgetInstructions({
+      connection,
+      instructions: transferInstructions,
+      feePayer: fromPubkey,
+      fallbackUnitLimit: shouldCreateATA
+        ? SPL_COMPUTE_BUDGET_CONSTANTS.FALLBACK_UNIT_LIMIT_WITH_ATA_CREATION
+        : SPL_COMPUTE_BUDGET_CONSTANTS.FALLBACK_UNIT_LIMIT_TRANSFER_ONLY
+    })
+
     const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
 
     return new Transaction({
       feePayer: fromPubkey,
       blockhash,
       lastValidBlockHeight
-    }).add(...instructions)
+    }).add(...computeBudgetInstructions, ...transferInstructions)
   } catch (error) {
     throw new Error(
       `Failed to create SPL token transaction: ${error instanceof Error ? error.message : 'Unknown error'}`
