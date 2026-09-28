@@ -1,8 +1,8 @@
 import type {
   Address,
   Rpc as KitRpc,
-  SolanaRpcApi,
   Transaction as SolanaKitTransaction,
+  SolanaRpcApi,
   TransactionWithLifetime
 } from '@solana/kit'
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
