@@ -1,7 +1,9 @@
+import base58 from 'bs58'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ChainController } from '@reown/appkit-controllers'
+import type { AnySolanaKitTransaction } from '@reown/appkit-utils/solana'
 
 import { SolanaWalletConnectProvider } from '../providers/SolanaWalletConnectProvider.js'
 import { WalletConnectMethodNotSupportedError } from '../providers/shared/Errors.js'
@@ -9,6 +11,7 @@ import {
   decodeSolanaKitTransaction,
   encodeSolanaKitTransaction
 } from '../providers/shared/SolanaKitTransaction.js'
+import { mockConnection } from './mocks/Connection.js'
 import {
   mockLegacyTransaction,
   mockSolanaKitTransaction,
@@ -143,6 +146,146 @@ describe('WalletConnectProvider specific tests', () => {
     expect(result).toEqual(
       decodeSolanaKitTransaction(new Uint8Array(Buffer.from(signedTransactionBase64, 'base64')))
     )
+  })
+
+  it('should attach the signature to a solana-kit transaction when the wallet returns only a signature', async () => {
+    await walletConnectProvider.connect()
+    const transaction = mockSolanaKitTransaction()
+    const signatureBytes = new Uint8Array(64).fill(1)
+    vi.spyOn(provider, 'request').mockImplementationOnce(
+      <T>() => Promise.resolve({ signature: base58.encode(signatureBytes) }) as T
+    )
+
+    const result = await walletConnectProvider.signTransaction(transaction)
+
+    expect(result).toEqual({
+      ...transaction,
+      signatures: { [TestConstants.accounts[0].address]: signatureBytes }
+    })
+    expect(Object.isFrozen(result)).toBe(true)
+    expect(Object.isFrozen(result.signatures)).toBe(true)
+    expect(transaction.signatures).toEqual({ [TestConstants.accounts[0].address]: null })
+  })
+
+  it('should use the returned transaction for a solana-kit transaction when the wallet returns both a signature and a transaction', async () => {
+    await walletConnectProvider.connect()
+    const transaction = mockSolanaKitTransaction()
+    const signedTransaction = {
+      ...transaction,
+      signatures: { [TestConstants.accounts[0].address]: new Uint8Array(64).fill(2) }
+    } as AnySolanaKitTransaction
+    const signedTransactionBase64 = Buffer.from(
+      encodeSolanaKitTransaction(signedTransaction)
+    ).toString('base64')
+    vi.spyOn(provider, 'request').mockImplementationOnce(
+      <T>() =>
+        Promise.resolve({
+          signature: base58.encode(new Uint8Array(64).fill(1)),
+          transaction: signedTransactionBase64
+        }) as T
+    )
+
+    const result = await walletConnectProvider.signTransaction(transaction)
+
+    expect(result).toEqual(
+      decodeSolanaKitTransaction(new Uint8Array(Buffer.from(signedTransactionBase64, 'base64')))
+    )
+  })
+
+  it('should keep other signers and signature order when attaching a signature to a solana-kit transaction', async () => {
+    await walletConnectProvider.connect()
+    const otherSignature = new Uint8Array(64).fill(3)
+    const signatureBytes = new Uint8Array(64).fill(1)
+    const transaction = {
+      ...mockSolanaKitTransaction(),
+      signatures: {
+        [TestConstants.accounts[1].address]: otherSignature,
+        [TestConstants.accounts[0].address]: null
+      } as AnySolanaKitTransaction['signatures']
+    }
+    vi.spyOn(provider, 'request').mockImplementationOnce(
+      <T>() => Promise.resolve({ signature: base58.encode(signatureBytes) }) as T
+    )
+
+    const result = await walletConnectProvider.signTransaction(transaction)
+
+    expect(Object.keys(result.signatures)).toEqual([
+      TestConstants.accounts[1].address,
+      TestConstants.accounts[0].address
+    ])
+    expect(Object.values(result.signatures)).toEqual([otherSignature, signatureBytes])
+  })
+
+  it('should throw when the connected account is not a signer of the solana-kit transaction', async () => {
+    await walletConnectProvider.connect()
+    const transaction = {
+      ...mockSolanaKitTransaction(),
+      signatures: {
+        [TestConstants.accounts[1].address]: null
+      } as AnySolanaKitTransaction['signatures']
+    }
+    vi.spyOn(provider, 'request').mockImplementationOnce(
+      <T>() => Promise.resolve({ signature: base58.encode(new Uint8Array(64).fill(1)) }) as T
+    )
+
+    await expect(walletConnectProvider.signTransaction(transaction)).rejects.toThrow(
+      'is not a required signer'
+    )
+  })
+
+  it('should reject a signature that is not 64 bytes for a solana-kit transaction', async () => {
+    await walletConnectProvider.connect()
+    vi.spyOn(provider, 'request').mockImplementationOnce(
+      <T>() => Promise.resolve({ signature: base58.encode(new Uint8Array(32).fill(1)) }) as T
+    )
+
+    await expect(
+      walletConnectProvider.signTransaction(mockSolanaKitTransaction())
+    ).rejects.toThrow('Invalid signature length')
+  })
+
+  it('should broadcast the signed solana-kit transaction from sendTransaction when the wallet returns only a signature', async () => {
+    await walletConnectProvider.connect()
+    const transaction = mockSolanaKitTransaction()
+    const signatureBytes = new Uint8Array(64).fill(1)
+    const connection = mockConnection()
+    const sendRawTransaction = vi
+      .spyOn(connection, 'sendRawTransaction')
+      .mockResolvedValue('broadcast-signature')
+    vi.spyOn(provider, 'request').mockImplementationOnce(
+      <T>() => Promise.resolve({ signature: base58.encode(signatureBytes) }) as T
+    )
+
+    const result = await walletConnectProvider.sendTransaction(transaction, connection)
+
+    expect(result).toBe('broadcast-signature')
+    expect(sendRawTransaction).toHaveBeenCalledWith(
+      encodeSolanaKitTransaction({
+        ...transaction,
+        signatures: { [TestConstants.accounts[0].address]: signatureBytes }
+      } as AnySolanaKitTransaction),
+      undefined
+    )
+  })
+
+  it('should sign a solana-kit transaction in the signAllTransactions fallback when the wallet returns only a signature', async () => {
+    await walletConnectProvider.connect()
+    const transaction = mockSolanaKitTransaction()
+    const signatureBytes = new Uint8Array(64).fill(1)
+    vi.spyOn(provider, 'request').mockImplementationOnce(
+      <T>() => Promise.resolve({ signature: base58.encode(signatureBytes) }) as T
+    )
+
+    const [result] = await walletConnectProvider.signAllTransactions([transaction])
+
+    expect(provider.request).toHaveBeenCalledWith(
+      expect.objectContaining({ method: 'solana_signTransaction' }),
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+    )
+    expect(result).toEqual({
+      ...transaction,
+      signatures: { [TestConstants.accounts[0].address]: signatureBytes }
+    })
   })
 
   it('should call signAndSendTransaction with correct params', async () => {
