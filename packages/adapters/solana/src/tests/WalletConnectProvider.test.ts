@@ -5,7 +5,15 @@ import { ChainController } from '@reown/appkit-controllers'
 
 import { SolanaWalletConnectProvider } from '../providers/SolanaWalletConnectProvider.js'
 import { WalletConnectMethodNotSupportedError } from '../providers/shared/Errors.js'
-import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+import {
+  decodeSolanaKitTransaction,
+  encodeSolanaKitTransaction
+} from '../providers/shared/SolanaKitTransaction.js'
+import {
+  mockLegacyTransaction,
+  mockSolanaKitTransaction,
+  mockVersionedTransaction
+} from './mocks/Transaction.js'
 import { mockUniversalProvider, mockUniversalProviderSession } from './mocks/UniversalProvider.js'
 import { TestConstants } from './util/TestConstants.js'
 
@@ -114,6 +122,29 @@ describe('WalletConnectProvider specific tests', () => {
     )
   })
 
+  it('should call signTransaction with correct params for a solana-kit transaction, without legacy raw RPC params', async () => {
+    await walletConnectProvider.connect()
+    const transaction = mockSolanaKitTransaction()
+    const result = await walletConnectProvider.signTransaction(transaction)
+
+    expect(provider.request).toHaveBeenCalledWith(
+      {
+        method: 'solana_signTransaction',
+        params: {
+          transaction: Buffer.from(encodeSolanaKitTransaction(transaction)).toString('base64'),
+          pubkey: TestConstants.accounts[0].address
+        }
+      },
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+    )
+
+    const { transaction: signedTransactionBase64 } = await vi.mocked(provider.request).mock
+      .results[0]!.value
+    expect(result).toEqual(
+      decodeSolanaKitTransaction(new Uint8Array(Buffer.from(signedTransactionBase64, 'base64')))
+    )
+  })
+
   it('should call signAndSendTransaction with correct params', async () => {
     await walletConnectProvider.connect()
     const transaction = mockLegacyTransaction()
@@ -143,6 +174,25 @@ describe('WalletConnectProvider specific tests', () => {
             'AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAECFj6WhBP/eepC4T4bDgYuJMiSVXNh9IvPWv1ZDUV52gYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMmaU6FiJxS/swxct+H8Iree7FERP/8vrGuAdF90ANelAQECAAAMAgAAAICWmAAAAAAA',
           pubkey: TestConstants.accounts[0].address,
           sendOptions: { preflightCommitment: 'singleGossip' }
+        }
+      },
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+    )
+  })
+
+  it('should call signAndSendTransaction with correct params for a solana-kit transaction', async () => {
+    await walletConnectProvider.connect()
+    const transaction = mockSolanaKitTransaction()
+
+    await walletConnectProvider.signAndSendTransaction(transaction)
+
+    expect(provider.request).toHaveBeenCalledWith(
+      {
+        method: 'solana_signAndSendTransaction',
+        params: {
+          transaction: Buffer.from(encodeSolanaKitTransaction(transaction)).toString('base64'),
+          pubkey: TestConstants.accounts[0].address,
+          sendOptions: undefined
         }
       },
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
@@ -294,6 +344,31 @@ describe('WalletConnectProvider specific tests', () => {
         }
       },
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+    )
+  })
+
+  it('should call signAllTransactions correctly for a mix of legacy and solana-kit transactions', async () => {
+    await walletConnectProvider.connect()
+    const kitTransaction = mockSolanaKitTransaction()
+    const transactions = [mockLegacyTransaction(), kitTransaction]
+    const results = await walletConnectProvider.signAllTransactions(transactions)
+
+    expect(provider.request).toHaveBeenNthCalledWith(
+      2,
+      {
+        method: 'solana_signTransaction',
+        params: {
+          transaction: Buffer.from(encodeSolanaKitTransaction(kitTransaction)).toString('base64'),
+          pubkey: TestConstants.accounts[0].address
+        }
+      },
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+    )
+
+    const { transaction: signedTransactionBase64 } = await vi.mocked(provider.request).mock
+      .results[1]!.value
+    expect(results[1]).toEqual(
+      decodeSolanaKitTransaction(new Uint8Array(Buffer.from(signedTransactionBase64, 'base64')))
     )
   })
 

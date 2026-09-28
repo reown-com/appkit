@@ -1,4 +1,10 @@
-import type { Rpc as KitRpc, SolanaRpcApi } from '@solana/kit'
+import type {
+  Address,
+  Rpc as KitRpc,
+  SolanaRpcApi,
+  Transaction as SolanaKitTransaction,
+  TransactionWithLifetime
+} from '@solana/kit'
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 import type {
   PublicKey,
@@ -48,6 +54,7 @@ export interface Provider
   type: ConnectorType
   chain: ChainNamespace
   publicKey?: PublicKey
+  address?: Address
   provider: CoreProvider | W3mFrameProvider | UniversalProvider
 
   // Methods
@@ -58,17 +65,21 @@ export interface Provider
   }) => Promise<string>
   disconnect: () => Promise<void>
   signMessage: (message: Uint8Array) => Promise<Uint8Array>
-  signTransaction: <T extends AnyTransaction>(transaction: T) => Promise<T>
+  signTransaction: <T extends AnyTransaction | AnySolanaKitTransaction>(
+    transaction: T
+  ) => Promise<T>
   signAndSendTransaction: (
-    transaction: AnyTransaction,
+    transaction: AnyTransaction | AnySolanaKitTransaction,
     options?: SendOptions
   ) => Promise<TransactionSignature>
   sendTransaction: (
-    transaction: AnyTransaction,
+    transaction: AnyTransaction | AnySolanaKitTransaction,
     connection: Connection,
     options?: SendTransactionOptions
   ) => Promise<TransactionSignature>
-  signAllTransactions: <T extends AnyTransaction[]>(transactions: T) => Promise<T>
+  signAllTransactions: <T extends (AnyTransaction | AnySolanaKitTransaction)[]>(
+    transactions: T
+  ) => Promise<T>
   getAccounts: () => Promise<
     {
       namespace: 'solana'
@@ -115,6 +126,8 @@ export type Metadata = {
 }
 
 export type AnyTransaction = SolanaWeb3Transaction | VersionedTransaction
+
+export type AnySolanaKitTransaction = SolanaKitTransaction & TransactionWithLifetime
 
 export type GetActiveChain = () => CaipNetwork | undefined
 
