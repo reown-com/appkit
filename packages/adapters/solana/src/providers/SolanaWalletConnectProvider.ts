@@ -152,7 +152,7 @@ export class SolanaWalletConnectProvider
       throw new Error('Invalid solana_signTransaction response: missing signature and transaction')
     }
 
-    // If the result contains signature is the old RPC response
+    // Per the WalletConnect Solana RPC spec, `signature` is required and `transaction` is optional
     if ('signature' in result) {
       const decoded = base58.decode(result.signature)
       transaction.addSignature(
