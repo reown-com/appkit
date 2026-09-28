@@ -138,3 +138,11 @@ export type SPLTokenTransactionArgs = {
   amount: number
   tokenMint: string
 }
+
+export type SPLTokenTransactionKitArgs = {
+  provider: Provider
+  connection: Connection
+  to: Address
+  amount: number
+  tokenMint: Address
+}
