@@ -23,7 +23,7 @@ export function SolanaSPLTransferKitTest() {
   const [tokenMint, setTokenMint] = useState('')
   const [amount, setAmount] = useState('')
 
-  async function buildTransaction() {
+  function buildTransaction() {
     if (!walletProvider?.address || !address) {
       throw Error('user is disconnected')
     }
