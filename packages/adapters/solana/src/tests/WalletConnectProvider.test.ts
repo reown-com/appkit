@@ -239,9 +239,9 @@ describe('WalletConnectProvider specific tests', () => {
       <T>() => Promise.resolve({ signature: base58.encode(new Uint8Array(32).fill(1)) }) as T
     )
 
-    await expect(
-      walletConnectProvider.signTransaction(mockSolanaKitTransaction())
-    ).rejects.toThrow('Invalid signature length')
+    await expect(walletConnectProvider.signTransaction(mockSolanaKitTransaction())).rejects.toThrow(
+      'Invalid signature length'
+    )
   })
 
   it('should broadcast the signed solana-kit transaction from sendTransaction when the wallet returns only a signature', async () => {
