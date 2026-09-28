@@ -1,6 +1,11 @@
 import '@reown/appkit-polyfills'
 
 export { SolanaAdapter } from './client.js'
+export {
+  getBalanceKit,
+  getLatestBlockhashKit,
+  waitForSignatureConfirmationKit
+} from './utils/SolanaKitConnectionUtil.js'
 export { createSPLTokenTransactionKit } from './utils/createSPLTokenTransactionKit.js'
 
 // -- Types -----------------------------------------------------------

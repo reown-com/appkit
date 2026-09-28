@@ -1,6 +1,8 @@
 import type {
   Address,
+  Rpc as KitRpc,
   Transaction as SolanaKitTransaction,
+  SolanaRpcApi,
   TransactionWithLifetime
 } from '@solana/kit'
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
@@ -20,6 +22,8 @@ import type { Provider as CoreProvider } from '@reown/appkit-controllers'
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 export type Connection = SolanaConnection
+
+export type Rpc = KitRpc<SolanaRpcApi>
 
 export interface ISolConfig {
   providers: ProviderType
