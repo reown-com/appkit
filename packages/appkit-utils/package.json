@@ -99,6 +99,7 @@
   "devDependencies": {
     "@walletconnect/types": "2.23.7",
     "bs58": "6.0.0",
+    "@solana/kit": "8.3.0",
     "@solana/web3.js": "1.98.4",
     "@wallet-standard/features": "1.1.0",
     "@wallet-standard/base": "1.1.0",
