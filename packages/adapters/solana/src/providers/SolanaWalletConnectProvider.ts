@@ -25,6 +25,7 @@ import type {
 import { WalletConnectMethodNotSupportedError } from './shared/Errors.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import {
+  addSolanaKitTransactionSignature,
   decodeSolanaKitTransaction,
   encodeSolanaKitTransaction,
   isAnySolanaKitTransaction
@@ -132,12 +133,27 @@ export class SolanaWalletConnectProvider
       ...this.getRawRPCParams(transaction)
     })
 
-    // If the result contains signature is the old RPC response
-    if ('signature' in result) {
-      if (isAnySolanaKitTransaction(transaction)) {
-        throw new Error('Unexpected legacy-style response for a solana-kit transaction')
+    if (isAnySolanaKitTransaction(transaction)) {
+      if ('transaction' in result && result.transaction) {
+        return this.deserializeTransaction(
+          transaction,
+          new Uint8Array(Buffer.from(result.transaction, 'base64'))
+        ) as T
       }
 
+      if ('signature' in result) {
+        return addSolanaKitTransactionSignature(
+          transaction,
+          fromLegacyPublicKey(new PublicKey(this.getAccount(true).publicKey)),
+          base58.decode(result.signature)
+        )
+      }
+
+      throw new Error('Invalid solana_signTransaction response: missing signature and transaction')
+    }
+
+    // Per the WalletConnect Solana RPC spec, `signature` is required and `transaction` is optional
+    if ('signature' in result) {
       const decoded = base58.decode(result.signature)
       transaction.addSignature(
         new PublicKey(this.getAccount(true).publicKey),
