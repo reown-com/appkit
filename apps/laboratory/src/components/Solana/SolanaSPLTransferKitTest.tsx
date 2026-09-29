@@ -100,7 +100,7 @@ export function SolanaSPLTransferKitTest() {
 
   return (
     <Stack direction="column" spacing={2}>
-      <Box display="flex" width="100%" gap="2" mb="2">
+      <Box display="flex" flexDirection={{ base: 'column', md: 'row' }} width="100%" gap="2" mb="2">
         <InputGroup>
           <InputLeftAddon>Recipient</InputLeftAddon>
           <Input value={recipient} onChange={e => setRecipient(e.currentTarget.value)} />
