@@ -27,9 +27,13 @@ async function simulateUnitsConsumed({
     blockhash: PublicKey.default.toBase58(),
     lastValidBlockHeight: 0
   }).add(
-    ComputeBudgetProgram.setComputeUnitPrice({
-      microLamports: SPL_COMPUTE_BUDGET_CONSTANTS.UNIT_PRICE_MICRO_LAMPORTS
-    }),
+    /*
+     * A zero price keeps the fee payer's simulated fee at the base fee. With the real price the RPC
+     * requires the fee payer to hold limit * price (0.028 SOL at the simulation limit) even without
+     * signature verification, which makes simulation fail for most wallets. The price does not
+     * affect units consumed.
+     */
+    ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 0 }),
     ComputeBudgetProgram.setComputeUnitLimit({
       units: SPL_COMPUTE_BUDGET_CONSTANTS.SIMULATION_UNIT_LIMIT
     }),
