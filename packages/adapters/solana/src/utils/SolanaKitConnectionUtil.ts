@@ -16,18 +16,37 @@ export async function getLatestBlockhashKit(
   return value
 }
 
+/**
+ * Polls the RPC until the given signature has a status, then resolves.
+ *
+ * Polls are serial: the next request is only scheduled once the previous one has
+ * settled, so a slow RPC cannot stack up overlapping requests. If a request fails,
+ * the returned promise rejects with that error instead of staying pending forever.
+ *
+ * @param rpc - The RPC client used to fetch the signature status.
+ * @param signature - The transaction signature to wait for.
+ */
 export async function waitForSignatureConfirmationKit(
   rpc: Rpc,
   signature: Signature
 ): Promise<void> {
-  await new Promise<void>(resolve => {
-    const interval = setInterval(async () => {
-      const { value } = await rpc.getSignatureStatuses([signature]).send()
+  await new Promise<void>((resolve, reject) => {
+    async function poll() {
+      try {
+        const { value } = await rpc.getSignatureStatuses([signature]).send()
 
-      if (value[0]) {
-        clearInterval(interval)
-        resolve()
+        if (value[0]) {
+          resolve()
+
+          return
+        }
+
+        setTimeout(poll, 1000)
+      } catch (error) {
+        reject(error instanceof Error ? error : new Error('Signature status request failed'))
       }
-    }, 1000)
+    }
+
+    setTimeout(poll, 1000)
   })
 }
