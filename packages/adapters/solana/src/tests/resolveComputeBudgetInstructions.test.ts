@@ -128,4 +128,36 @@ describe('resolveComputeBudgetInstructions', () => {
     // price + limit + the two real instructions passed in
     expect(simulatedInstructionCount).toBe(4)
   })
+
+  it('simulates with a zero price so low-balance fee payers pass the fee pre-check, but still returns the real price', async () => {
+    const SET_COMPUTE_UNIT_PRICE_DISCRIMINATOR = 3
+    let simulatedPrice: bigint | undefined
+
+    connection.simulateTransaction = vi
+      .fn()
+      .mockImplementation((versionedTransaction: VersionedTransaction) => {
+        const priceInstruction = versionedTransaction.message.compiledInstructions.find(
+          instruction =>
+            instruction.data.length === 9 &&
+            instruction.data[0] === SET_COMPUTE_UNIT_PRICE_DISCRIMINATOR
+        )
+        simulatedPrice = priceInstruction
+          ? Buffer.from(priceInstruction.data).readBigUInt64LE(1)
+          : undefined
+
+        return Promise.resolve({ value: { err: null, unitsConsumed: 5000 } })
+      })
+
+    const instructions = await resolveComputeBudgetInstructions({
+      connection,
+      instructions: [dummyInstruction],
+      feePayer,
+      fallbackUnitLimit: 99999
+    })
+
+    expect(simulatedPrice).toBe(0n)
+
+    const expectedPrice = ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 20000000 })
+    expect(instructions[0]?.data.equals(expectedPrice.data)).toBe(true)
+  })
 })
