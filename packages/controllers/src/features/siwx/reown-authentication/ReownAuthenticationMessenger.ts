@@ -1,7 +1,10 @@
-import { type CaipNetworkId, NetworkUtil } from '@reown/appkit-common'
+import { type CaipNetworkId, ConstantsUtil, NetworkUtil } from '@reown/appkit-common'
 
 import { ChainController } from '../../../controllers/ChainController.js'
 import type { SIWXMessage } from '../../../utils/SIWXUtil.js'
+
+// Phantom rejects Solana sign-in messages that have no statement
+const SOLANA_STATEMENT = 'Sign in to verify that you own this wallet.'
 
 export class ReownAuthenticationMessenger {
   public resources?: SIWXMessage['resources']
@@ -22,7 +25,9 @@ export class ReownAuthenticationMessenger {
       resources: this.resources,
       nonce: await this.getNonce(input),
       issuedAt: this.stringifyDate(new Date()),
-      statement: undefined,
+      statement: input.chainId.startsWith(`${ConstantsUtil.CHAIN.SOLANA}:`)
+        ? SOLANA_STATEMENT
+        : undefined,
       expirationTime: undefined,
       notBefore: undefined
     }
