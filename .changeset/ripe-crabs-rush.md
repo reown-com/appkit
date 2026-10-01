@@ -29,4 +29,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed Reown Authentication sign-in failing with Phantom on Solana. The sign-in message for Solana now includes a statement, which Phantom requires before it shows the signature request.
+Fixed Reown Authentication sign-in failing with Phantom on Solana. The sign-in message for Solana now includes a statement and writes the chain as `solana:mainnet`, `solana:testnet` or `solana:devnet`, which Phantom requires before it shows the signature request.

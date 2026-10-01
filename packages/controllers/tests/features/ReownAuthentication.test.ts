@@ -64,6 +64,7 @@ describe.each([
 
   const expectedStatement =
     namespace === 'solana' ? 'Sign in to verify that you own this wallet.' : undefined
+  const expectedChainIdInMessage = namespace === 'solana' ? 'solana:mainnet' : `${namespace}:${id}`
 
   beforeAll(() => {
     global.fetch = vi.fn() as unknown as typeof fetch
@@ -165,7 +166,7 @@ ${address}
 ${statementBlock}
 URI: http://mocked.com/
 Version: 1
-Chain ID: ${namespace}:${id}
+Chain ID: ${expectedChainIdInMessage}
 Nonce: mock_nonce
 Issued At: 2024-12-05T16:02:32.905Z`)
 
@@ -213,6 +214,28 @@ Issued At: 2024-12-05T16:02:32.905Z`)
 
         expect(message.statement).not.toContain('\n')
         expect(message.statement).toMatch(/^[A-Za-z0-9\-._~:/?#[\]@!$&'()*+,;= ]+$/u)
+      }
+    )
+
+    it.runIf(namespace === 'solana').each([
+      { caipId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', inMessage: 'solana:mainnet' },
+      { caipId: 'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z', inMessage: 'solana:testnet' },
+      { caipId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1', inMessage: 'solana:devnet' },
+      {
+        caipId: 'solana:CustomNetworkGenesisHash12345678',
+        inMessage: 'solana:CustomNetworkGenesisHash12345678'
+      }
+    ] as const)(
+      'writes $inMessage in the message for $caipId and keeps the CAIP-2 id in the data',
+      async ({ caipId, inMessage }) => {
+        vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+          mocks.mockFetchResponse({ token: 'mock_token', nonce: 'mock_nonce' })
+        )
+
+        const message = await siwx.createMessage({ accountAddress: address, chainId: caipId })
+
+        expect(message.chainId).toBe(caipId)
+        expect(message.toString().split('\n')).toContain(`Chain ID: ${inMessage}`)
       }
     )
 
