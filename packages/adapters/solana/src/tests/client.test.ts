@@ -33,6 +33,10 @@ vi.mock('@solana/web3.js', () => ({
   PublicKey: vi.fn(key => ({ toBase58: () => key }))
 }))
 
+vi.mock('@solana/kit', () => ({
+  createSolanaRpc: vi.fn(url => ({ __rpcUrl: url }))
+}))
+
 vi.mock('../utils/watchStandard', () => ({
   watchStandard: vi.fn()
 }))
@@ -111,7 +115,8 @@ describe('SolanaAdapter', () => {
       expect(adapter.networks).toEqual(mockNetworks)
       expect(adapter.projectId).toBe('test-project-id')
       expect(SolStoreUtil.setConnection).toHaveBeenCalledWith(
-        expect.objectContaining({ rpcEndpoint: solana.rpcUrls.default.http[0] })
+        expect.objectContaining({ rpcEndpoint: solana.rpcUrls.default.http[0] }),
+        expect.anything()
       )
     })
   })
@@ -144,7 +149,8 @@ describe('SolanaAdapter', () => {
       expect(result.address).toBe('mock-address')
       expect(result.chainId).toBe('5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')
       expect(SolStoreUtil.setConnection).toHaveBeenCalledWith(
-        expect.objectContaining({ rpcEndpoint: 'mock_rpc_url' })
+        expect.objectContaining({ rpcEndpoint: 'mock_rpc_url' }),
+        expect.anything()
       )
     })
 
@@ -157,7 +163,8 @@ describe('SolanaAdapter', () => {
       })
 
       expect(SolStoreUtil.setConnection).toHaveBeenCalledWith(
-        expect.objectContaining({ rpcEndpoint: solana.rpcUrls.default.http[0] })
+        expect.objectContaining({ rpcEndpoint: solana.rpcUrls.default.http[0] }),
+        expect.anything()
       )
     })
 

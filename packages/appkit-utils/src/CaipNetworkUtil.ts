@@ -77,6 +77,7 @@ const WC_HTTP_RPC_SUPPORTED_CHAINS = [
   'eip155:30',
   'eip155:2810',
   'eip155:55931',
+  'eip155:5042',
   'bip122:000000000019d6689c085ae165831e93',
   'bip122:000000000933ea01ad0ee984209779ba',
   'tron:0x2b6653dc',
@@ -147,6 +148,16 @@ export const CaipNetworksUtil = {
     }
 
     return defaultRpcUrl || ''
+  },
+
+  /**
+   * Whether the Blockchain API RPC proxy (rpc.walletconnect.org) supports this chain.
+   * Callers needing to call it directly for methods it doesn't support (e.g. TRON's
+   * custom tron_createTransaction/tron_broadcastTransaction on a testnet) should fall
+   * back to a chain's own RPC URL instead of routing through the proxy.
+   */
+  isWcHttpRpcSupported(caipNetworkId: CaipNetworkId) {
+    return WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetworkId)
   },
 
   /**

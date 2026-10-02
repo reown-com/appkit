@@ -3,7 +3,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
@@ -136,6 +136,54 @@ describe('W3mUnsupportedChainView', () => {
       expect(RouterController.reset).not.toHaveBeenCalled()
       expect(RouterController.push).not.toHaveBeenCalled()
       expect(SnackController.showSuccess).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('Switch Network Logic', () => {
+    let element: W3mUnsupportedChainView
+
+    const MOCK_NETWORK = {
+      id: 1,
+      chainNamespace: TEST_CHAIN,
+      caipNetworkId: 'eip155:1',
+      name: 'Ethereum'
+    } as unknown as CaipNetwork
+
+    beforeEach(async () => {
+      vi.clearAllMocks()
+
+      vi.spyOn(ChainController, 'getActiveCaipAddress').mockReturnValue('eip155:1:0x123')
+      vi.spyOn(ChainController, 'getAllApprovedCaipNetworkIds').mockReturnValue(['eip155:1'])
+      vi.spyOn(ChainController, 'getNetworkProp').mockReturnValue(false)
+      vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+        ...RouterController.state,
+        data: {}
+      })
+      vi.spyOn(RouterController, 'push').mockImplementation(() => {})
+      vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
+
+      element = await fixture(html`<w3m-unsupported-chain-view></w3m-unsupported-chain-view>`)
+    })
+
+    it('shows an error snackbar when switching an already-approved network fails', async () => {
+      vi.spyOn(ChainController, 'switchActiveNetwork').mockRejectedValueOnce(
+        new Error('Chain is not supported')
+      )
+
+      await element['onSwitchNetwork'](MOCK_NETWORK)
+
+      expect(ChainController.switchActiveNetwork).toHaveBeenCalledWith(MOCK_NETWORK, {
+        throwOnFailure: true
+      })
+      expect(SnackController.showError).toHaveBeenCalledWith('Failed to switch network')
+    })
+
+    it('does not show an error snackbar when switching succeeds', async () => {
+      vi.spyOn(ChainController, 'switchActiveNetwork').mockResolvedValueOnce(undefined)
+
+      await element['onSwitchNetwork'](MOCK_NETWORK)
+
+      expect(SnackController.showError).not.toHaveBeenCalled()
     })
   })
 })

@@ -9,7 +9,6 @@ import {
   Stack,
   StackDivider
 } from '@chakra-ui/react'
-import type { Config } from 'wagmi'
 
 import { useAppKitAccount } from '@reown/appkit/react'
 
@@ -26,11 +25,7 @@ import { WagmiSignTypedDataTest } from './WagmiSignTypedDataTest'
 import { WagmiTransactionTest } from './WagmiTransactionTest'
 import { WagmiWriteContractTest } from './WagmiWriteContractTest'
 
-interface IProps {
-  config?: Config
-}
-
-export function WagmiTests({ config }: IProps) {
+export function WagmiTests() {
   const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { availableCapabilities, fetchCapabilities, hasFetchedCapabilities, capabilitiesToRender } =
     useWagmiAvailableCapabilities()
@@ -78,7 +73,7 @@ export function WagmiTests({ config }: IProps) {
             <Heading size="xs" textTransform="uppercase" pb="2">
               USDC Send
             </Heading>
-            <WagmiSendUSDCTest config={config} />
+            <WagmiSendUSDCTest />
           </Box>
 
           <Box>

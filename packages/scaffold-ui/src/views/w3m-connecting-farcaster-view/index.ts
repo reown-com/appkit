@@ -11,6 +11,7 @@ import {
   ModalController,
   OptionsController,
   RouterController,
+  SIWXUtil,
   SnackController,
   StorageUtil,
   ThemeController
@@ -209,11 +210,14 @@ export class W3mConnectingFarcasterView extends LitElement {
           })
         }
         this.loading = false
-        if (hasConnections && isMultiWalletEnabled) {
-          RouterController.replace('ProfileWallets')
-          SnackController.showSuccess('New Wallet Added')
-        } else {
-          ModalController.close()
+        const isAuthenticated = !OptionsController.state.siwx || (await SIWXUtil.isAuthenticated())
+        if (isAuthenticated) {
+          if (hasConnections && isMultiWalletEnabled) {
+            RouterController.replace('ProfileWallets')
+            SnackController.showSuccess('New Wallet Added')
+          } else {
+            ModalController.close()
+          }
         }
       } catch (error) {
         if (this.socialProvider) {

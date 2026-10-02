@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-wagmi",
-  "version": "1.8.23",
+  "version": "1.8.24",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/src/index.js",
@@ -34,7 +34,7 @@
   },
   "peerDependencies": {
     "@wagmi/core": ">=2.21.2",
-    "viem": ">=2.45.0",
+    "viem": ">=2.55.13",
     "wagmi": ">=2.19.5"
   },
   "devDependencies": {

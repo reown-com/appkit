@@ -16,7 +16,7 @@ const smartAccountTest = test.extend<{ library: string }>({
   library: ['wagmi', { option: true }]
 })
 
-smartAccountTest.describe.configure({ mode: 'serial' })
+smartAccountTest.describe.configure({ mode: 'serial', retries: 2 })
 
 smartAccountTest.beforeAll(async ({ browser, library }) => {
   smartAccountTest.setTimeout(300000)

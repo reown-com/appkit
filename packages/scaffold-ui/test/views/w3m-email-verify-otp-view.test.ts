@@ -12,6 +12,7 @@ import {
   OptionsController,
   RouterController,
   type SIWXConfig,
+  SIWXUtil,
   SnackController
 } from '@reown/appkit-controllers'
 
@@ -70,6 +71,7 @@ describe('W3mEmailVerifyOtpView', () => {
       vi.spyOn(RouterController, 'replace').mockImplementation(() => {})
       vi.spyOn(ModalController, 'close').mockImplementation(() => {})
       vi.spyOn(SnackController, 'showSuccess').mockImplementation(() => {})
+      vi.spyOn(SIWXUtil, 'isAuthenticated').mockResolvedValue(true)
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         remoteFeatures: { multiWallet: true },
@@ -103,6 +105,7 @@ describe('W3mEmailVerifyOtpView', () => {
       expect(RouterController.reset).not.toHaveBeenCalled()
       expect(RouterController.push).not.toHaveBeenCalled()
       expect(SnackController.showSuccess).not.toHaveBeenCalled()
+      expect(SIWXUtil.isAuthenticated).not.toHaveBeenCalled()
     })
 
     it('should close modal when has no connections and multiWallet is enabled', async () => {
@@ -150,8 +153,8 @@ describe('W3mEmailVerifyOtpView', () => {
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         ...OptionsController.state,
         remoteFeatures: { multiWallet: true },
-        siwx: true
-      } as any)
+        siwx: {} as SIWXConfig
+      })
 
       vi.spyOn(ConnectionController, 'connectExternal').mockResolvedValue(undefined)
 
@@ -162,6 +165,38 @@ describe('W3mEmailVerifyOtpView', () => {
       expect(RouterController.reset).not.toHaveBeenCalled()
       expect(RouterController.push).not.toHaveBeenCalled()
       expect(SnackController.showSuccess).not.toHaveBeenCalled()
+    })
+
+    it('should close modal when siwx is enabled and already authenticated', async () => {
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        remoteFeatures: { multiWallet: true },
+        siwx: {} as SIWXConfig
+      })
+      vi.spyOn(SIWXUtil, 'isAuthenticated').mockResolvedValue(true)
+
+      element = await fixture(html`<w3m-email-verify-otp-view></w3m-email-verify-otp-view>`)
+
+      await element.onOtpSubmit('123456')
+
+      expect(ModalController.close).toHaveBeenCalled()
+    })
+
+    it('should not close modal when siwx is enabled and not yet authenticated', async () => {
+      vi.spyOn(ConnectionController, 'getConnections').mockReturnValue([MOCK_CONNECTION])
+      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+        ...OptionsController.state,
+        remoteFeatures: { multiWallet: true },
+        siwx: {} as SIWXConfig
+      })
+      vi.spyOn(SIWXUtil, 'isAuthenticated').mockResolvedValue(false)
+
+      element = await fixture(html`<w3m-email-verify-otp-view></w3m-email-verify-otp-view>`)
+
+      await element.onOtpSubmit('123456')
+
+      expect(ModalController.close).not.toHaveBeenCalled()
+      expect(RouterController.replace).not.toHaveBeenCalledWith('ProfileWallets')
     })
   })
 })

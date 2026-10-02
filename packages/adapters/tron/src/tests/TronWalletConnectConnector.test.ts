@@ -50,6 +50,20 @@ const MOCK_CAIP_NETWORK = {
   nativeCurrency: { name: 'TRX', symbol: 'TRX', decimals: 6 }
 }
 
+const MOCK_SHASTA_CHAIN_ID = 'tron:0x94a9059e'
+
+const MOCK_SHASTA_CAIP_NETWORK = {
+  id: '0x94a9059e',
+  name: 'TRON Shasta Testnet',
+  chainNamespace: 'tron' as const,
+  caipNetworkId: MOCK_SHASTA_CHAIN_ID,
+  rpcUrls: {
+    default: { http: ['https://rpc.walletconnect.org/v1'] },
+    chainDefault: { http: ['https://api.shasta.trongrid.io'] }
+  },
+  nativeCurrency: { name: 'TRX', symbol: 'TRX', decimals: 6 }
+}
+
 // Mock fetch
 const mockFetch = vi.fn()
 vi.stubGlobal('fetch', mockFetch)
@@ -262,6 +276,154 @@ describe('TronWalletConnectConnector', () => {
           value: '1000000'
         })
       ).rejects.toThrow('Insufficient bandwidth')
+    })
+
+    it('falls back to the fullnode directly for a chain the Blockchain API does not support (Shasta)', async () => {
+      vi.mocked(ChainController.getCaipNetworkByNamespace).mockReturnValue(
+        MOCK_SHASTA_CAIP_NETWORK as any
+      )
+
+      mockFetch.mockResolvedValueOnce({
+        json: () => Promise.resolve(MOCK_UNSIGNED_TX)
+      })
+      mockProviderRequest.mockResolvedValueOnce(MOCK_SIGNED_TX)
+      mockFetch.mockResolvedValueOnce({
+        json: () => Promise.resolve({ result: true })
+      })
+
+      const result = await connector.sendTransaction({
+        from: MOCK_OWNER_ADDRESS,
+        to: MOCK_TO_ADDRESS,
+        value: '1000000'
+      })
+
+      expect(result).toBe(MOCK_SIGNED_TX.txID)
+
+      const createCall = mockFetch.mock.calls[0]
+      expect(createCall?.[0]).toBe('https://api.shasta.trongrid.io/wallet/createtransaction')
+      expect(JSON.parse(createCall?.[1]?.body as string)).toEqual({
+        owner_address: MOCK_OWNER_ADDRESS,
+        to_address: MOCK_TO_ADDRESS,
+        amount: 1000000,
+        visible: true
+      })
+
+      // The WC signing step is unaffected by which path built the unsigned tx
+      expect(mockProviderRequest).toHaveBeenCalledWith(
+        {
+          method: 'tron_signTransaction',
+          params: {
+            address: MOCK_OWNER_ADDRESS,
+            transaction: { transaction: MOCK_UNSIGNED_TX }
+          }
+        },
+        MOCK_SHASTA_CHAIN_ID
+      )
+
+      const broadcastCall = mockFetch.mock.calls[1]
+      expect(broadcastCall?.[0]).toBe('https://api.shasta.trongrid.io/wallet/broadcasttransaction')
+      expect(JSON.parse(broadcastCall?.[1]?.body as string)).toEqual(MOCK_SIGNED_TX)
+    })
+
+    it('surfaces the real TRON error when the fullnode fallback rejects the transaction', async () => {
+      vi.mocked(ChainController.getCaipNetworkByNamespace).mockReturnValue(
+        MOCK_SHASTA_CAIP_NETWORK as any
+      )
+
+      mockFetch.mockResolvedValueOnce({
+        json: () =>
+          Promise.resolve({
+            Error:
+              'class org.tron.core.exception.ContractValidateException : Validate TransferContract error, no OwnerAccount.'
+          })
+      })
+
+      await expect(
+        connector.sendTransaction({
+          from: MOCK_OWNER_ADDRESS,
+          to: MOCK_TO_ADDRESS,
+          value: '1000000'
+        })
+      ).rejects.toThrow(
+        'class org.tron.core.exception.ContractValidateException : Validate TransferContract error, no OwnerAccount.'
+      )
+
+      expect(mockProviderRequest).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('request', () => {
+    it('should forward the request to the WC provider on the active tron chain', async () => {
+      mockProviderRequest.mockResolvedValueOnce({ ok: true })
+
+      const result = await connector.request({
+        method: 'tron_signMessage',
+        params: { message: 'x' }
+      })
+
+      expect(result).toEqual({ ok: true })
+      expect(mockProviderRequest).toHaveBeenCalledWith(
+        { method: 'tron_signMessage', params: { message: 'x' } },
+        MOCK_CHAIN_ID
+      )
+    })
+
+    it('should reject when no tron network is active', async () => {
+      vi.mocked(ChainController.getCaipNetworkByNamespace).mockReturnValue(undefined)
+
+      await expect(connector.request({ method: 'tron_signMessage' })).rejects.toThrow(
+        'Chain not found'
+      )
+      expect(mockProviderRequest).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('signTransaction', () => {
+    it('should sign a prebuilt tx with the legacy nested shape and the session address by default', async () => {
+      mockProviderRequest.mockResolvedValueOnce(MOCK_SIGNED_TX)
+
+      const result = await connector.signTransaction(MOCK_UNSIGNED_TX)
+
+      expect(result).toEqual(MOCK_SIGNED_TX)
+      expect(mockProviderRequest).toHaveBeenCalledWith(
+        {
+          method: 'tron_signTransaction',
+          params: {
+            address: MOCK_OWNER_ADDRESS,
+            transaction: { transaction: MOCK_UNSIGNED_TX }
+          }
+        },
+        MOCK_CHAIN_ID
+      )
+    })
+
+    it('should send the flat (v1) shape when wallet advertises tron_method_version v1', async () => {
+      const v1Connector = new TronWalletConnectConnector({
+        provider: {
+          ...mockProvider,
+          session: { ...mockProvider.session, sessionProperties: { tron_method_version: 'v1' } }
+        } as any,
+        chains: [MOCK_CAIP_NETWORK as any]
+      })
+      mockProviderRequest.mockResolvedValueOnce(MOCK_SIGNED_TX)
+
+      await v1Connector.signTransaction(MOCK_UNSIGNED_TX, MOCK_OWNER_ADDRESS)
+
+      expect(mockProviderRequest).toHaveBeenCalledWith(
+        {
+          method: 'tron_signTransaction',
+          params: { address: MOCK_OWNER_ADDRESS, transaction: MOCK_UNSIGNED_TX }
+        },
+        MOCK_CHAIN_ID
+      )
+    })
+
+    it('should throw when the wallet returns no signature', async () => {
+      mockProviderRequest.mockResolvedValueOnce({ txID: MOCK_UNSIGNED_TX.txID })
+
+      await expect(connector.signTransaction(MOCK_UNSIGNED_TX)).rejects.toThrow(
+        'Transaction signing failed'
+      )
     })
   })
 

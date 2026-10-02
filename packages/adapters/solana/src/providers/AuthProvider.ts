@@ -1,3 +1,4 @@
+import { fromLegacyPublicKey } from '@solana/compat'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import { PublicKey, type SendOptions, Transaction, VersionedTransaction } from '@solana/web3.js'
 import base58 from 'bs58'
@@ -11,6 +12,7 @@ import {
   getPreferredAccountType
 } from '@reown/appkit-controllers'
 import type {
+  AnySolanaKitTransaction,
   AnyTransaction,
   Connection,
   GetActiveChain,
@@ -20,6 +22,11 @@ import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
+import {
+  decodeSolanaKitTransaction,
+  encodeSolanaKitTransaction,
+  isAnySolanaKitTransaction
+} from './shared/SolanaKitTransaction.js'
 
 export class AuthProvider extends ProviderEventEmitter implements SolanaProvider {
   public readonly id = ConstantsUtil.CONNECTOR_ID.AUTH
@@ -44,6 +51,10 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
       ?.address
 
     return address ? new PublicKey(address) : undefined
+  }
+
+  get address() {
+    return this.publicKey ? fromLegacyPublicKey(this.publicKey) : undefined
   }
 
   get chains() {
@@ -95,7 +106,7 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
     return base58.decode(result.signature)
   }
 
-  public async signTransaction<T extends AnyTransaction>(transaction: T) {
+  public async signTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(transaction: T) {
     const result = await this.provider.request({
       method: 'solana_signTransaction',
       params: { transaction: this.serializeTransaction(transaction) },
@@ -104,14 +115,10 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
 
     const decodedTransaction = base58.decode(result.transaction)
 
-    if (isVersionedTransaction(transaction)) {
-      return VersionedTransaction.deserialize(decodedTransaction) as T
-    }
-
-    return Transaction.from(decodedTransaction) as T
+    return this.deserializeTransaction(transaction, decodedTransaction) as T
   }
 
-  public async signAndSendTransaction<T extends AnyTransaction>(
+  public async signAndSendTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(
     transaction: T,
     options?: SendOptions
   ) {
@@ -130,17 +137,22 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
   }
 
   public async sendTransaction(
-    transaction: AnyTransaction,
+    transaction: AnyTransaction | AnySolanaKitTransaction,
     connection: Connection,
     options?: SendOptions
   ) {
     const signedTransaction = await this.signTransaction(transaction)
-    const signature = await connection.sendRawTransaction(signedTransaction.serialize(), options)
+    const rawTransaction = isAnySolanaKitTransaction(signedTransaction)
+      ? encodeSolanaKitTransaction(signedTransaction)
+      : signedTransaction.serialize()
+    const signature = await connection.sendRawTransaction(rawTransaction, options)
 
     return signature
   }
 
-  public async signAllTransactions<T extends AnyTransaction[]>(transactions: T): Promise<T> {
+  public async signAllTransactions<T extends (AnyTransaction | AnySolanaKitTransaction)[]>(
+    transactions: T
+  ): Promise<T> {
     const result = await this.provider.request({
       method: 'solana_signAllTransactions',
       params: {
@@ -158,11 +170,7 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
 
       const decodedTransaction = base58.decode(encodedTransaction)
 
-      if (isVersionedTransaction(transaction)) {
-        return VersionedTransaction.deserialize(decodedTransaction)
-      }
-
-      return Transaction.from(decodedTransaction)
+      return this.deserializeTransaction(transaction, decodedTransaction)
     }) as T
   }
 
@@ -190,8 +198,27 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
   }
 
   // -- Private ------------------------------------------- //
-  private serializeTransaction(transaction: AnyTransaction) {
+  private serializeTransaction(transaction: AnyTransaction | AnySolanaKitTransaction) {
+    if (isAnySolanaKitTransaction(transaction)) {
+      return base58.encode(encodeSolanaKitTransaction(transaction))
+    }
+
     return base58.encode(new Uint8Array(transaction.serialize({ verifySignatures: false })))
+  }
+
+  private deserializeTransaction(
+    originalTransaction: AnyTransaction | AnySolanaKitTransaction,
+    decodedTransaction: Uint8Array
+  ) {
+    if (isAnySolanaKitTransaction(originalTransaction)) {
+      return decodeSolanaKitTransaction(decodedTransaction)
+    }
+
+    if (isVersionedTransaction(originalTransaction)) {
+      return VersionedTransaction.deserialize(decodedTransaction)
+    }
+
+    return Transaction.from(decodedTransaction)
   }
 }
 

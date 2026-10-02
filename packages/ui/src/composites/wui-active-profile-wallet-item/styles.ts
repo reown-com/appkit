@@ -32,11 +32,10 @@ export default css`
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
     border: 2px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
     border-radius: 50%;
-    padding: ${({ spacing }) => spacing['01']};
   }
 
   .icon-badge {
-    width: 8px;
-    height: 8px;
+    width: 16px;
+    height: 16px;
   }
 `

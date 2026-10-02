@@ -16,6 +16,7 @@ import { useAppKitAccount } from '@reown/appkit/react'
 
 import { useEthersActiveCapabilities } from '@/src/hooks/useEthersActiveCapabilities'
 
+import { Ethers5SendUSDCTest } from './Ethers5SendUSDCTest'
 import { EthersGetCallsStatusTest } from './EthersGetCallsStatusTest'
 import { EthersSendCallsTest } from './EthersSendCallsTest'
 import { EthersSendCallsWithPaymasterServiceTest } from './EthersSendCallsWithPaymasterServiceTest'
@@ -72,6 +73,12 @@ export function Ethers5Tests() {
               Contract Write
             </Heading>
             <EthersWriteContractTest />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Send USDC
+            </Heading>
+            <Ethers5SendUSDCTest />
           </Box>
           <Box>
             <Button onClick={fetchCapabilities} data-testid="fetch-capabilities-button">

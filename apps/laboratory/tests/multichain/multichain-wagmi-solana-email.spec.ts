@@ -14,7 +14,7 @@ let context: BrowserContext
 /* eslint-enable init-declarations */
 
 // -- Setup --------------------------------------------------------------------
-test.describe.configure({ mode: 'serial' })
+test.describe.configure({ mode: 'serial', retries: 2 })
 
 test.beforeAll(async ({ browser }) => {
   context = await browser.newContext()

@@ -132,12 +132,10 @@ export const PresetsUtil = {
     '0x94a9059e': '3502bb86-cc4e-420f-a387-59ea63a28b00',
     // TRON Nile Testnet
     '0xcd8690dc': '3502bb86-cc4e-420f-a387-59ea63a28b00',
-    /*
-     * Stellar Pubnet / Testnet
-     * TODO: replace once the Stellar logo is uploaded to the Reown asset CDN
-     */
-    pubnet: '',
-    testnet: ''
+    // Stellar Pubnet
+    pubnet: '778123dc-b439-4766-47b6-f33d4220fe00',
+    // Stellar Testnet
+    testnet: 'be768f49-1f36-4a9b-994b-efcd94e7fc00'
   } as Record<string, string>,
 
   ConnectorImageIds: {

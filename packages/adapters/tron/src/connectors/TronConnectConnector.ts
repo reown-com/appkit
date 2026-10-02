@@ -7,6 +7,7 @@ import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type { TronConnector } from '@reown/appkit-utils/tron'
 
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
+import { TronFullnodeUtil } from '../utils/TronFullnodeUtil.js'
 
 export class TronConnectConnector implements TronConnector {
   public readonly chain = 'tron'
@@ -99,6 +100,12 @@ export class TronConnectConnector implements TronConnector {
   }
 
   async sendTransaction(params: TronConnector.SendTransactionParams): Promise<string> {
+    const chain = ChainController.getCaipNetworkByNamespace('tron') ?? this.requestedChains[0]
+
+    if (chain && !CaipNetworksUtil.isWcHttpRpcSupported(chain.caipNetworkId)) {
+      return this.sendTransactionViaFullnode(chain, params)
+    }
+
     const rpcUrl = this.getRpcUrl()
 
     // Step 1: Build unsigned transaction via Blockchain API
@@ -150,15 +157,44 @@ export class TronConnectConnector implements TronConnector {
     return unsignedTx.txID
   }
 
-  async switchNetwork(): Promise<void> {
+  async switchNetwork(chainId: string): Promise<void> {
     /*
-     * Network switching is handled entirely by the adapter.
-     * The adapter manually updates the connection and emits the switchNetwork event.
+     * The underlying tronweb3 adapter (e.g. TronLink, MetaMask) keeps its own network/session
+     * state and needs to be told explicitly to switch, via its bare (non-CAIP) chain id - e.g.
+     * '0x94a9059e', not 'tron:0x94a9059e'. Without this, wallets that default to a fixed
+     * network on connect (MetaMask always starts on Mainnet) never actually switch, even
+     * though our own app state has moved to a different chain.
+     *
+     * Not every wallet adapter supports this (the base Adapter class's default implementation
+     * rejects), so failures are swallowed the same way disconnect() above does, instead of
+     * blocking the app's own network switch for wallets that can't act on it.
      */
-    return Promise.resolve()
+    try {
+      await this.adapter.switchChain(chainId.split(':').pop() ?? chainId)
+    } catch {
+      // Silently fail — some wallets don't support programmatic chain switching
+    }
   }
 
   // -- Private ------------------------------------------------------ //
+
+  private async sendTransactionViaFullnode(
+    chain: CaipNetwork,
+    params: TronConnector.SendTransactionParams
+  ): Promise<string> {
+    const fullNodeUrl = chain.rpcUrls?.['chainDefault']?.http?.[0]
+
+    if (!fullNodeUrl) {
+      throw new Error('No RPC URL available for this chain')
+    }
+
+    const unsignedTx = await TronFullnodeUtil.createTransaction(fullNodeUrl, params)
+    const signedTx = await this.adapter.signTransaction(unsignedTx)
+
+    await TronFullnodeUtil.broadcastTransaction(fullNodeUrl, signedTx)
+
+    return (signedTx as { txID?: string }).txID || unsignedTx.txID
+  }
 
   private getRpcUrl(): string {
     const chain = ChainController.getCaipNetworkByNamespace('tron')

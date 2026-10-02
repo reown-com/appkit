@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-utils",
-  "version": "1.8.23",
+  "version": "1.8.24",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -88,7 +88,7 @@
     "@walletconnect/logger": "3.0.2",
     "@walletconnect/universal-provider": "2.23.7",
     "valtio": "2.1.7",
-    "viem": ">=2.45.0"
+    "viem": ">=2.55.13"
   },
   "optionalDependencies": {
     "@base-org/account": "2.4.0",
@@ -99,6 +99,7 @@
   "devDependencies": {
     "@walletconnect/types": "2.23.7",
     "bs58": "6.0.0",
+    "@solana/kit": "8.3.0",
     "@solana/web3.js": "1.98.4",
     "@wallet-standard/features": "1.1.0",
     "@wallet-standard/base": "1.1.0",

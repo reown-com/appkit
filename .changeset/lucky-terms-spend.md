@@ -1,11 +1,11 @@
 ---
+'@reown/appkit-adapter-solana': patch
 '@reown/appkit-utils': patch
-'@reown/appkit-common': patch
 'pay-test-exchange': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
-'@reown/appkit-adapter-solana': patch
+'@reown/appkit-adapter-stellar': patch
 '@reown/appkit-adapter-ton': patch
 '@reown/appkit-adapter-tron': patch
 '@reown/appkit-adapter-wagmi': patch
@@ -13,6 +13,7 @@
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-codemod': patch
+'@reown/appkit-common': patch
 '@reown/appkit-controllers': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
@@ -28,4 +29,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed Rootstock network logo not being displayed in the network selectors.
+Added a solana-kit `Rpc` client to the Solana adapter alongside its existing connection, so apps using `@solana/kit` can read balances, fetch blockhashes, and wait for transaction confirmations through AppKit directly.

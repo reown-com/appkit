@@ -33,8 +33,8 @@ const namespaceImageIds: Record<ChainNamespace, string> = {
   ton: '20f673c0-095e-49b2-07cf-eb5049dcf600',
   // TRON
   tron: '3502bb86-cc4e-420f-a387-59ea63a28b00',
-  // Stellar -- TODO: replace once the logo is uploaded to the Reown asset CDN
-  stellar: ''
+  // Stellar
+  stellar: '778123dc-b439-4766-47b6-f33d4220fe00'
 }
 
 // -- State --------------------------------------------- //

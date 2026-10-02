@@ -1,16 +1,18 @@
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import type { Connection } from '@reown/appkit-utils/solana'
+import type { Connection, Rpc } from '@reown/appkit-utils/solana'
 
 type StateKey = keyof SolStoreUtilState
 
 export interface SolStoreUtilState {
   connection: Connection | null
+  rpc: Rpc | null
 }
 
 const state = proxy<SolStoreUtilState>({
-  connection: null
+  connection: null,
+  rpc: null
 })
 
 export const SolStoreUtil = {
@@ -24,7 +26,8 @@ export const SolStoreUtil = {
     return sub(state, () => callback(state))
   },
 
-  setConnection(connection: Connection) {
+  setConnection(connection: Connection, rpc: Rpc) {
     state.connection = ref(connection)
+    state.rpc = ref(rpc)
   }
 }

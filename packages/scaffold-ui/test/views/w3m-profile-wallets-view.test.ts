@@ -933,6 +933,45 @@ describe('W3mProfileWalletsView - User Actions', () => {
     })
   })
 
+  it('should show an error snackbar when switching wallet fails to switch network', async () => {
+    const mockConnection: Connection = {
+      connectorId: 'walletconnect',
+      caipNetwork: mockSolanaNetwork,
+      accounts: [{ address: 'solanaAddress123', type: 'eoa' }]
+    } as unknown as Connection
+
+    const previousFilterByNamespace = ConnectorController.state.filterByNamespace
+
+    vi.spyOn(ChainController, 'switchActiveNetwork').mockRejectedValueOnce(
+      new Error('Chain is not supported')
+    )
+
+    const element: W3mProfileWalletsView = await fixture(
+      html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
+    )
+
+    await element['handleSwitchWallet'](
+      mockConnection,
+      'solanaAddress123',
+      ConstantsUtil.CHAIN.SOLANA
+    )
+
+    expect(ChainController.switchActiveNetwork).toHaveBeenCalledWith(mockSolanaNetwork, {
+      throwOnFailure: true
+    })
+    expect(SnackController.showError).toHaveBeenCalledWith('Failed to switch wallet')
+    expect(ConnectionController.switchConnection).not.toHaveBeenCalled()
+    // The namespace filter set before the failed switch must be rolled back
+    expect(ConnectorController.setFilterByNamespace).toHaveBeenNthCalledWith(
+      1,
+      ConstantsUtil.CHAIN.SOLANA
+    )
+    expect(ConnectorController.setFilterByNamespace).toHaveBeenNthCalledWith(
+      2,
+      previousFilterByNamespace
+    )
+  })
+
   it('should handle wallet delete action for recent connections', async () => {
     const element: W3mProfileWalletsView = await fixture(
       html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`

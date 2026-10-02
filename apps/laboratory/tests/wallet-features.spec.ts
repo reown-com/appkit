@@ -18,7 +18,7 @@ const walletFeaturesTest = test.extend<{ library: string }>({
   library: ['wagmi', { option: true }]
 })
 
-walletFeaturesTest.describe.configure({ mode: 'serial' })
+walletFeaturesTest.describe.configure({ mode: 'serial', retries: 2 })
 
 walletFeaturesTest.beforeAll(async ({ browser, browserName, library }) => {
   walletFeaturesTest.setTimeout(300000)

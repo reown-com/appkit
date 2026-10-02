@@ -139,6 +139,26 @@ describe('CaipNetworksUtil', () => {
       expect(result).toContain('projectId=test-project-id')
     })
 
+    it('should return blockchain API URL for Arc', () => {
+      const arc: AppKitNetwork = {
+        id: 5042,
+        name: 'Arc',
+        nativeCurrency: {
+          name: 'USDC',
+          symbol: 'USDC',
+          decimals: 18
+        },
+        rpcUrls: {
+          default: {
+            http: []
+          }
+        }
+      }
+      const result = CaipNetworksUtil.getDefaultRpcUrl(arc, 'eip155:5042', mockProjectId)
+      expect(result).toContain('rpc.walletconnect.org')
+      expect(result).toContain('projectId=test-project-id')
+    })
+
     it('should return default RPC URL for unsupported chains', () => {
       const customNetwork: AppKitNetwork = {
         id: 999,
@@ -179,6 +199,18 @@ describe('CaipNetworksUtil', () => {
         mockProjectId
       )
       expect(result).toBe('')
+    })
+  })
+
+  describe('isWcHttpRpcSupported', () => {
+    it('returns true for a chain in the supported chains list (Solana mainnet)', () => {
+      expect(CaipNetworksUtil.isWcHttpRpcSupported('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')).toBe(
+        true
+      )
+    })
+
+    it('returns false for a chain not in the supported chains list', () => {
+      expect(CaipNetworksUtil.isWcHttpRpcSupported('eip155:999')).toBe(false)
     })
   })
 

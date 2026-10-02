@@ -19,6 +19,21 @@ export default css`
     }
   }
 
+  @keyframes pulse {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
   wui-flex:first-child:not(:only-child) {
     position: relative;
   }
@@ -47,6 +62,12 @@ export default css`
 
   [data-error='true'] > wui-flex:first-child {
     animation: shake 250ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+
+  [data-success='true'] wui-icon-box {
+    opacity: 1;
+    transform: scale(1);
+    animation: pulse 400ms ease;
   }
 
   wui-button[data-retry='true'] {

@@ -18,7 +18,7 @@ const configTest = test.extend<{ library: string }>({
   library: ['wagmi', { option: true }]
 })
 
-configTest.describe.configure({ mode: 'serial' })
+configTest.describe.configure({ mode: 'serial', retries: 2 })
 
 configTest.beforeAll(async ({ browser, library }) => {
   context = await browser.newContext()

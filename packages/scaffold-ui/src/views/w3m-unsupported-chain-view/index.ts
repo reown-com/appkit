@@ -172,7 +172,11 @@ export class W3mUnsupportedChainView extends LitElement {
 
     if (caipAddress) {
       if (approvedCaipNetworkIds?.includes(network.caipNetworkId)) {
-        await ChainController.switchActiveNetwork(network)
+        try {
+          await ChainController.switchActiveNetwork(network, { throwOnFailure: true })
+        } catch (error) {
+          SnackController.showError('Failed to switch network')
+        }
       } else if (shouldSupportAllNetworks) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       } else {
