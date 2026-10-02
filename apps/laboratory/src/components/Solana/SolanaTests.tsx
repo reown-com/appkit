@@ -13,6 +13,8 @@ import {
 import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
+import { SolanaAddressTest } from './SolanaAddressTest'
+import { SolanaSPLTransferKitTest } from './SolanaSPLTransferKitTest'
 import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
 import { SolanaSignAllTransactionsTest } from './SolanaSignAllTransactionsTest'
 import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
@@ -37,6 +39,17 @@ export function SolanaTests() {
 
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Address
+              <Tooltip label="Read the connected account as both a legacy PublicKey and a solana-kit Address">
+                <Text as="span" fontSize="sm" ml="2">
+                  ℹ️
+                </Text>
+              </Tooltip>
+            </Heading>
+            <SolanaAddressTest />
+          </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Sign Message
@@ -79,6 +92,17 @@ export function SolanaTests() {
               </Tooltip>
             </Heading>
             <SolanaSendTransactionTest />
+          </Box>
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              SPL Token Transfer (solana-kit)
+              <Tooltip label="Builds a solana-kit-native SPL token transfer via @solana-program/token, then signs or signs-and-sends it through the same widened Provider methods as a legacy transaction">
+                <Text as="span" fontSize="sm" ml="2">
+                  ℹ️
+                </Text>
+              </Tooltip>
+            </Heading>
+            <SolanaSPLTransferKitTest />
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">

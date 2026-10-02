@@ -1,3 +1,4 @@
+import { fromLegacyPublicKey } from '@solana/compat'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import {
   Connection,
@@ -15,6 +16,7 @@ import { type CaipAddress, type CaipNetwork, ParseUtil } from '@reown/appkit-com
 import { AssetController, WalletConnectConnector, WcHelpersUtil } from '@reown/appkit-controllers'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import type {
+  AnySolanaKitTransaction,
   AnyTransaction,
   Provider,
   ProviderEventEmitterMethods
@@ -22,6 +24,12 @@ import type {
 
 import { WalletConnectMethodNotSupportedError } from './shared/Errors.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
+import {
+  addSolanaKitTransactionSignature,
+  decodeSolanaKitTransaction,
+  encodeSolanaKitTransaction,
+  isAnySolanaKitTransaction
+} from './shared/SolanaKitTransaction.js'
 
 export type WalletConnectProviderConfig = {
   provider: UniversalProvider
@@ -84,6 +92,10 @@ export class SolanaWalletConnectProvider
     return undefined
   }
 
+  public get address() {
+    return this.publicKey ? fromLegacyPublicKey(this.publicKey) : undefined
+  }
+
   public async connect() {
     await super.connectWalletConnect()
 
@@ -110,7 +122,7 @@ export class SolanaWalletConnectProvider
     return base58.decode(signedMessage.signature)
   }
 
-  public async signTransaction<T extends AnyTransaction>(transaction: T) {
+  public async signTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(transaction: T) {
     this.checkIfMethodIsSupported('solana_signTransaction')
 
     const serializedTransaction = this.serializeTransaction(transaction)
@@ -121,7 +133,26 @@ export class SolanaWalletConnectProvider
       ...this.getRawRPCParams(transaction)
     })
 
-    // If the result contains signature is the old RPC response
+    if (isAnySolanaKitTransaction(transaction)) {
+      if ('transaction' in result && result.transaction) {
+        return this.deserializeTransaction(
+          transaction,
+          new Uint8Array(Buffer.from(result.transaction, 'base64'))
+        ) as T
+      }
+
+      if ('signature' in result) {
+        return addSolanaKitTransactionSignature(
+          transaction,
+          fromLegacyPublicKey(new PublicKey(this.getAccount(true).publicKey)),
+          base58.decode(result.signature)
+        )
+      }
+
+      throw new Error('Invalid solana_signTransaction response: missing signature and transaction')
+    }
+
+    // Per the WalletConnect Solana RPC spec, `signature` is required and `transaction` is optional
     if ('signature' in result) {
       const decoded = base58.decode(result.signature)
       transaction.addSignature(
@@ -132,16 +163,12 @@ export class SolanaWalletConnectProvider
       return transaction
     }
 
-    const decodedTransaction = Buffer.from(result.transaction, 'base64')
+    const decodedTransaction = new Uint8Array(Buffer.from(result.transaction, 'base64'))
 
-    if (isVersionedTransaction(transaction)) {
-      return VersionedTransaction.deserialize(new Uint8Array(decodedTransaction)) as T
-    }
-
-    return Transaction.from(decodedTransaction) as T
+    return this.deserializeTransaction(transaction, decodedTransaction) as T
   }
 
-  public async signAndSendTransaction<T extends AnyTransaction>(
+  public async signAndSendTransaction<T extends AnyTransaction | AnySolanaKitTransaction>(
     transaction: T,
     sendOptions?: SendOptions
   ) {
@@ -161,19 +188,24 @@ export class SolanaWalletConnectProvider
   }
 
   public async sendTransaction(
-    transaction: AnyTransaction,
+    transaction: AnyTransaction | AnySolanaKitTransaction,
     connection: Connection,
     options?: SendOptions
   ) {
     const signedTransaction = await this.signTransaction(transaction)
-    const signature = await connection.sendRawTransaction(signedTransaction.serialize(), options)
+    const rawTransaction = isAnySolanaKitTransaction(signedTransaction)
+      ? encodeSolanaKitTransaction(signedTransaction)
+      : signedTransaction.serialize()
+    const signature = await connection.sendRawTransaction(rawTransaction, options)
 
     this.emit('pendingTransaction', undefined)
 
     return signature
   }
 
-  public async signAllTransactions<T extends AnyTransaction[]>(transactions: T): Promise<T> {
+  public async signAllTransactions<T extends (AnyTransaction | AnySolanaKitTransaction)[]>(
+    transactions: T
+  ): Promise<T> {
     try {
       this.checkIfMethodIsSupported('solana_signAllTransactions')
 
@@ -188,19 +220,19 @@ export class SolanaWalletConnectProvider
           throw new Error('Invalid transactions response')
         }
 
-        const decodedTransaction = Buffer.from(serializedTransaction, 'base64')
+        const decodedTransaction = new Uint8Array(Buffer.from(serializedTransaction, 'base64'))
 
-        if (isVersionedTransaction(transaction)) {
-          return VersionedTransaction.deserialize(new Uint8Array(decodedTransaction))
+        if (isAnySolanaKitTransaction(transaction) || isVersionedTransaction(transaction)) {
+          return this.deserializeTransaction(transaction, decodedTransaction)
         }
 
         this.emit('pendingTransaction', undefined)
 
-        return Transaction.from(decodedTransaction)
+        return this.deserializeTransaction(transaction, decodedTransaction)
       }) as T
     } catch (error) {
       if (error instanceof WalletConnectMethodNotSupportedError) {
-        const signedTransactions = [] as AnyTransaction[] as T
+        const signedTransactions = [] as (AnyTransaction | AnySolanaKitTransaction)[] as T
 
         for (const transaction of transactions) {
           // eslint-disable-next-line no-await-in-loop
@@ -273,15 +305,32 @@ export class SolanaWalletConnectProvider
     return WcHelpersUtil.getChainsFromNamespaces(this.session?.namespaces)
   }
 
-  private serializeTransaction(transaction: AnyTransaction) {
+  private serializeTransaction(transaction: AnyTransaction | AnySolanaKitTransaction) {
     /*
      * We should consider serializing the transaction to base58 as it is the solana standard.
      * But our specs requires base64 right now:
      * https://docs.reown.com/advanced/multichain/rpc-reference/solana-rpc#solana_signtransaction
      */
-    return Buffer.from(new Uint8Array(transaction.serialize({ verifySignatures: false }))).toString(
-      'base64'
-    )
+    const bytes = isAnySolanaKitTransaction(transaction)
+      ? encodeSolanaKitTransaction(transaction)
+      : new Uint8Array(transaction.serialize({ verifySignatures: false }))
+
+    return Buffer.from(bytes).toString('base64')
+  }
+
+  private deserializeTransaction(
+    originalTransaction: AnyTransaction | AnySolanaKitTransaction,
+    decodedTransaction: Uint8Array
+  ) {
+    if (isAnySolanaKitTransaction(originalTransaction)) {
+      return decodeSolanaKitTransaction(decodedTransaction)
+    }
+
+    if (isVersionedTransaction(originalTransaction)) {
+      return VersionedTransaction.deserialize(decodedTransaction)
+    }
+
+    return Transaction.from(decodedTransaction)
   }
 
   private getAccount<Required extends boolean>(
@@ -321,8 +370,8 @@ export class SolanaWalletConnectProvider
    * This is a deprecated method that is used to support older versions of the
    * WalletConnect RPC API. It should be removed in the future
    */
-  private getRawRPCParams(transaction: AnyTransaction) {
-    if (isVersionedTransaction(transaction)) {
+  private getRawRPCParams(transaction: AnyTransaction | AnySolanaKitTransaction) {
+    if (isAnySolanaKitTransaction(transaction) || isVersionedTransaction(transaction)) {
       return {}
     }
 

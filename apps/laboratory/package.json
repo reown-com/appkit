@@ -136,6 +136,8 @@
     "@safe-global/safe-apps-sdk": "9.1.0",
     "@sentry/browser": "7.120.3",
     "@sentry/react": "7.120.3",
+    "@solana/compat": "8.3.0",
+    "@solana/kit": "8.3.0",
     "@solana/web3.js": "1.98.4",
     "@stellar/stellar-base": "15.0.0",
     "@tanstack/react-query": "5.75.5",

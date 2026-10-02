@@ -7,6 +7,7 @@ import { AppKitConnections } from '@/src/components/AppKitConnections'
 import { AppKitInfoMultiChain } from '@/src/components/AppKitInfoMultiChain'
 import { AppKitWalletButtons } from '@/src/components/AppKitWalletButtons'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
+import { DefaultSIWXStatus } from '@/src/components/DefaultSIWXStatus'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
@@ -39,6 +40,7 @@ export default function DemoContent({
     adapter => adapter === 'wagmi' || adapter === 'ethers' || adapter === 'ethers5'
   )
   const isSiwxReown = Boolean(config?.siwxReown)
+  const isSiwxDefault = Boolean(config?.siwx) && !isSiwxReown
   const isSiweEnabled = Boolean(config?.siweConfig)
   const isMultiChain = config?.adapters?.length && config?.adapters?.length > 1
   const isPayEnabled = Boolean(config?.features?.pay)
@@ -50,6 +52,7 @@ export default function DemoContent({
 
       {isSiweEnabled ? <SiweData /> : null}
       {isSiwxReown ? <ReownAuthenticationTests /> : null}
+      {isSiwxDefault ? <DefaultSIWXStatus /> : null}
 
       <AppKitConnections namespace="eip155" title="EVM Connections" />
       <AppKitConnections namespace="solana" title="Solana Connections" />
