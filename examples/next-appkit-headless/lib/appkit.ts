@@ -18,7 +18,7 @@ import {
 } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
-export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
 
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
