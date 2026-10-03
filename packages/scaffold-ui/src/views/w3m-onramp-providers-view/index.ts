@@ -65,9 +65,9 @@ export class W3mOnRampProvidersView extends LitElement {
       )
   }
 
-  private onClickProvider(provider: OnRampProvider) {
-    OnRampController.setSelectedProvider(provider)
+  private async onClickProvider(provider: OnRampProvider) {
     RouterController.push('BuyInProgress')
+    await OnRampController.setSelectedProvider(provider)
     CoreHelperUtil.openHref(
       OnRampController.state.selectedProvider?.url || provider.url,
       'popupWindow',
