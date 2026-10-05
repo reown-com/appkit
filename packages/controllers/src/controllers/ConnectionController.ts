@@ -144,6 +144,11 @@ export interface ConnectionControllerState {
     name: string
   }
   wcBasic?: boolean
+  /**
+   * Whether a wallet opened the app and injected `window.walletConnectHost`. Universal Provider
+   * then hands the pairing URI to the wallet instead of emitting `display_uri`.
+   */
+  isHostLaunch?: boolean
   wcError?: boolean
   wcFetchingUri: boolean
   recentWallet?: WcWallet
@@ -448,6 +453,10 @@ const controller = {
         }
       })
     }
+  },
+
+  setIsHostLaunch(isHostLaunch: ConnectionControllerState['isHostLaunch']) {
+    state.isHostLaunch = isHostLaunch
   },
 
   setWcBasic(wcBasic: ConnectionControllerState['wcBasic']) {

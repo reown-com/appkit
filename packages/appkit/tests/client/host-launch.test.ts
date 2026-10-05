@@ -1,11 +1,14 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ConnectionController,
+  ConnectorController,
   ModalController,
   OptionsController,
-  type SIWXConfig
+  type SIWXConfig,
+  StorageUtil
 } from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
@@ -63,6 +66,7 @@ describe('AppKit - host launch', () => {
   })
 
   beforeEach(() => {
+    ModalController.clearLoading()
     vi.spyOn(ModalController, 'open').mockResolvedValue(undefined)
     vi.spyOn(console, 'warn').mockImplementation(() => {})
   })
@@ -87,6 +91,55 @@ describe('AppKit - host launch', () => {
     expect(connectSpy).toHaveBeenCalledWith({ cache: 'never' })
     expect(universalProvider.authenticate).not.toHaveBeenCalled()
     expect(ModalController.open).not.toHaveBeenCalled()
+  })
+
+  it('detects the host launch through Universal Provider', async () => {
+    await createAppKit({ universalProvider: createUniversalProvider({ namespaces: {} }) })
+    expect(ConnectionController.state.isHostLaunch).toBe(false)
+
+    stubHostLaunch()
+    await createAppKit({ universalProvider: createUniversalProvider({ namespaces: {} }) })
+    expect(ConnectionController.state.isHostLaunch).toBe(true)
+  })
+
+  it('shows the connect button as loading until the wallet connects', async () => {
+    stubHostLaunch()
+    let resolveConnect = () => {}
+    vi.spyOn(ConnectionController, 'connectWalletConnect').mockReturnValue(
+      new Promise<void>(resolve => {
+        resolveConnect = resolve
+      })
+    )
+
+    const appkit = await createAppKit({ universalProvider: createUniversalProvider() })
+    // Other startup flows, like the embedded wallet sync, don't hide it
+    appkit.setLoading(false, 'eip155')
+
+    expect(ModalController.state.loading).toBe(true)
+    expect(ModalController.state.loadingNamespaceMap.get('eip155')).toBe(true)
+
+    resolveConnect()
+    await vi.waitFor(() => expect(ModalController.state.loading).toBe(false))
+    expect(ModalController.state.loadingNamespaceMap.get('eip155')).toBe(false)
+  })
+
+  it('shows the connect button as loading while a WalletConnect session is restored', async () => {
+    vi.spyOn(StorageUtil, 'getConnectionStatus').mockReturnValue('connected')
+    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockImplementation(namespace =>
+      namespace === 'eip155' ? ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT : undefined
+    )
+    const loadingDuringRestore: unknown[] = []
+    vi.spyOn(AppKit.prototype as any, 'reconnectWalletConnect').mockImplementation(async () => {
+      loadingDuringRestore.push(ModalController.state.loadingNamespaceMap.get('eip155'))
+    })
+
+    await createAppKit({ universalProvider: createUniversalProvider({ namespaces: {} }) })
+
+    expect(loadingDuringRestore).toEqual([true])
+    expect(ModalController.state.loadingNamespaceMap.get('eip155')).toBe(false)
+    expect(ConnectorController.getConnectorId('eip155')).toBe(
+      ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    )
   })
 
   it('does not connect again when a session was restored', async () => {

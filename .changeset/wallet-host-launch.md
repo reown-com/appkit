@@ -29,7 +29,9 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Connects automatically, without the modal, when a wallet opens the app (the wallet injects `window.walletConnectHost`). On startup, if no session was restored, AppKit starts one WalletConnect connection, and Universal Provider hands the pairing URI to the wallet instead of showing a QR code. It only does this once per page load, so a Disconnect doesn't reconnect, and it skips apps that use `manualWCControl`. Regular launches are unchanged.
+Connects automatically, without the modal, when a wallet opens the app (the wallet injects `window.walletConnectHost`). On startup, if no session was restored, AppKit starts one WalletConnect connection, and Universal Provider hands the pairing URI to the wallet instead of showing a QR code. It only does this once per page load, so a Disconnect doesn't reconnect, and it skips apps that use `manualWCControl`.
+
+The connect button now shows its loading state while AppKit connects to the wallet that launched the app, and while it restores a WalletConnect session on page load, instead of showing "Connect" until the address appears.
 
 On a wallet launch AppKit doesn't open the modal by itself: no unsupported network screen and no SIWX sign-in. One-click auth is skipped too, because Universal Provider's `authenticate()` still shows a QR code there. Until that's decided, AppKit logs a warning and connects without authentication.
 

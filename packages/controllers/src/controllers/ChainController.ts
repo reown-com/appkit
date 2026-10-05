@@ -25,7 +25,6 @@ import type {
   NamespaceTypeMap,
   User
 } from '../utils/TypeUtil.js'
-import { WcHelpersUtil } from '../utils/WalletConnectUtil.js'
 import { withErrorBoundary } from '../utils/withErrorBoundary.js'
 import { AdapterController } from './AdapterController/index.js'
 import { ConnectionController, type ConnectionControllerClient } from './ConnectionController.js'
@@ -653,7 +652,7 @@ const controller = {
 
   showUnsupportedChainUI() {
     // A wallet that launched the app expects no modal, so don't open one by ourselves
-    if (WcHelpersUtil.isHostLaunch()) {
+    if (ConnectionController.state.isHostLaunch) {
       console.warn('AppKit: unsupported network on a wallet launch, not opening the modal')
 
       return

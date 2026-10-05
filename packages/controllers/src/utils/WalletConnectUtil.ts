@@ -1,6 +1,6 @@
 import type { SessionTypes } from '@walletconnect/types'
 import type { Namespace, NamespaceConfig } from '@walletconnect/universal-provider'
-import UniversalProvider from '@walletconnect/universal-provider'
+import type UniversalProvider from '@walletconnect/universal-provider'
 
 import {
   type CaipAddress,
@@ -478,15 +478,6 @@ export const WcHelpersUtil = {
     }
 
     return []
-  },
-
-  /**
-   * Whether the page was opened by a wallet that injected `window.walletConnectHost` (e.g. from its
-   * Explore tab). Universal Provider then hands the pairing URI to the wallet instead of emitting
-   * `display_uri`, so AppKit connects without its modal.
-   */
-  isHostLaunch() {
-    return UniversalProvider.isHostLaunch()
   }
 }
 

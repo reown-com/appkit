@@ -7,7 +7,6 @@ import { extendedMainnet, mockChainControllerState } from '../../exports/testing
 import { ConnectionController } from '../../src/controllers/ConnectionController.js'
 import { ModalController } from '../../src/controllers/ModalController.js'
 import { OptionsController } from '../../src/controllers/OptionsController.js'
-import { WcHelpersUtil } from '../../src/utils/WalletConnectUtil.js'
 
 // -- Setup --------------------------------------------------------------------
 const caipAddress = 'eip155:1:0x1234567890123456789012345678901234567890'
@@ -20,7 +19,7 @@ const mockSIWX = {
 } as unknown as SIWXConfig
 
 function stubHostLaunch() {
-  window.walletConnectHost = { autoConnect: true, postMessage: vi.fn() }
+  ConnectionController.setIsHostLaunch(true)
 }
 
 // -- Tests --------------------------------------------------------------------
@@ -42,15 +41,7 @@ describe('host launch', () => {
   })
 
   afterEach(() => {
-    delete window.walletConnectHost
-  })
-
-  it('detects the wallet bridge injected by the host', () => {
-    expect(WcHelpersUtil.isHostLaunch()).toBe(false)
-
-    stubHostLaunch()
-
-    expect(WcHelpersUtil.isHostLaunch()).toBe(true)
+    ConnectionController.setIsHostLaunch(false)
   })
 
   it('does not open the unsupported network modal on a host launch', () => {
