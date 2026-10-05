@@ -29,4 +29,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed Reown Authentication sign-in failing with Phantom on Solana. The sign-in message for Solana now includes a statement and writes the chain as `solana:mainnet`, `solana:testnet` or `solana:devnet`, which Phantom requires before it shows the signature request.
+Fixed sign-in failing with Phantom on Solana, for Reown Authentication and for the default SIWX. The Solana sign-in message now includes a statement and writes the chain as `solana:mainnet`, `solana:testnet` or `solana:devnet`, which Phantom requires before it shows the signature request. Apps that check the default SIWX message text on their own backend will see this new format for Solana.
