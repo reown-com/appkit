@@ -7,7 +7,6 @@ import {
   ConnectionController,
   ConnectorController,
   ModalController,
-  OptionsController,
   type SIWXConfig,
   SIWXUtil,
   StorageUtil
@@ -18,6 +17,7 @@ import { AppKit } from '../../src/client/appkit.js'
 import { mainnet } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
 import {
+  mockApiRequests,
   mockBlockchainApiController,
   mockRemoteFeatures,
   mockStorageUtil,
@@ -70,12 +70,14 @@ describe('AppKit - host launch', () => {
     mockWindowAndDocument()
     // The connect flow reads `window.navigator` for its platform checks
     Object.assign(window, { navigator })
+  })
+
+  // Spies are restored after each test, so they're set up again for every one
+  beforeEach(() => {
     mockStorageUtil()
     mockBlockchainApiController()
     mockRemoteFeatures()
-  })
-
-  beforeEach(() => {
+    mockApiRequests()
     ModalController.clearLoading()
     vi.spyOn(ModalController, 'open').mockResolvedValue(undefined)
     vi.spyOn(console, 'warn').mockImplementation(() => {})
@@ -297,14 +299,15 @@ describe('AppKit - host launch', () => {
 
   it('leaves the connection to the app with manualWCControl', async () => {
     stubHostLaunch()
-    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-      ...OptionsController.state,
-      manualWCControl: true
-    })
     const connectSpy = vi.spyOn(ConnectionController, 'connectWalletConnect')
+    const loadingDuringStartup: unknown[] = []
+    vi.spyOn(ModalController, 'setLoading').mockImplementation(loading => {
+      loadingDuringStartup.push(loading)
+    })
 
     await createAppKit({ universalProvider: createUniversalProvider(), manualWCControl: true })
 
     expect(connectSpy).not.toHaveBeenCalled()
+    expect(loadingDuringStartup).toEqual([])
   })
 })

@@ -303,7 +303,8 @@ export abstract class AppKitBaseClient {
   private canAutoConnectHostLaunch() {
     return Boolean(
       ConnectionController.state.isHostLaunch &&
-        !OptionsController.state.manualWCControl &&
+        // Read from the options: manualWCControl reaches controller state later, enableWalletConnect never
+        !this.options.manualWCControl &&
         this.options.enableWalletConnect !== false
     )
   }

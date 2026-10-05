@@ -415,10 +415,13 @@ export const SIWXUtil = {
       return false
     }
 
-    // `authenticate()` shows a QR code instead of handing the URI to the wallet (WCP4-186)
+    /*
+     * On a wallet launch only `pair()` hands the URI to the wallet; `authenticate()` would never
+     * reach it (WCP4-186). Return false so the connector pairs, and sign in after connecting.
+     */
     if (ConnectionController.state.isHostLaunch) {
       console.warn(
-        'AppKit: one-click auth is not supported on a wallet launch yet, connecting without it'
+        'AppKit: one-click auth is not supported on a wallet launch yet, signing in after connecting'
       )
 
       return false
