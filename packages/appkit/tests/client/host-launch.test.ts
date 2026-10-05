@@ -123,7 +123,7 @@ describe('AppKit - host launch', () => {
     expect(ModalController.state.loadingNamespaceMap.get('eip155')).toBe(false)
   })
 
-  it('shows the connect button as loading while a WalletConnect session is restored', async () => {
+  it('shows the connect button as loading while a session is restored on a wallet launch', async () => {
     vi.spyOn(StorageUtil, 'getConnectionStatus').mockReturnValue('connected')
     vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockImplementation(namespace =>
       namespace === 'eip155' ? ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT : undefined
@@ -133,9 +133,14 @@ describe('AppKit - host launch', () => {
       loadingDuringRestore.push(ModalController.state.loadingNamespaceMap.get('eip155'))
     })
 
+    // A regular launch restores the session as before, without the loading state
+    await createAppKit({ universalProvider: createUniversalProvider({ namespaces: {} }) })
+    expect(loadingDuringRestore).toEqual([undefined])
+
+    stubHostLaunch()
     await createAppKit({ universalProvider: createUniversalProvider({ namespaces: {} }) })
 
-    expect(loadingDuringRestore).toEqual([true])
+    expect(loadingDuringRestore).toEqual([undefined, true])
     expect(ModalController.state.loadingNamespaceMap.get('eip155')).toBe(false)
     expect(ConnectorController.getConnectorId('eip155')).toBe(
       ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT

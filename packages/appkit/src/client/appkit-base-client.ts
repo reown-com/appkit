@@ -154,7 +154,7 @@ export abstract class AppKitBaseClient {
 
   private readyPromise?: Promise<void>
   private hostLaunchConnectStarted = false
-  private walletConnectLoadingNamespaces: ChainNamespace[] = []
+  private hostLaunchLoadingNamespaces: ChainNamespace[] = []
 
   constructor(options: AppKitOptionsWithSdk) {
     this.options = options
@@ -187,7 +187,10 @@ export abstract class AppKitBaseClient {
     this.initializeProjectSettings(options)
     ConnectionController.setIsHostLaunch(UniversalProvider.isHostLaunch())
     this.initControllers(options)
-    this.setWalletConnectLoading(true)
+    // On a wallet launch, the button loads until the session is restored or the auto-connect settles
+    if (this.canAutoConnectHostLaunch()) {
+      this.setHostLaunchLoading(true)
+    }
     await this.initChainAdapters()
     this.sendInitializeEvent(options)
 
@@ -205,10 +208,6 @@ export abstract class AppKitBaseClient {
       await this.syncAdapterConnections()
     } else {
       await this.unSyncExistingConnection()
-    }
-    // On a wallet launch, the button keeps loading until the auto-connect below settles
-    if (!this.canAutoConnectHostLaunch()) {
-      this.setWalletConnectLoading(false)
     }
     if (!options.basic && !options.manualWCControl) {
       this.remoteFeatures = await ConfigUtil.fetchRemoteFeatures(options)
@@ -261,7 +260,7 @@ export abstract class AppKitBaseClient {
     const isConnected = Boolean(this.universalProvider?.session || this.getCaipAddress())
 
     if (isConnected || !this.universalProvider) {
-      this.setWalletConnectLoading(false)
+      this.setHostLaunchLoading(false)
 
       return
     }
@@ -270,7 +269,7 @@ export abstract class AppKitBaseClient {
       .catch(error => {
         console.warn('AppKit: failed to connect to the wallet that launched the app', error)
       })
-      .finally(() => this.setWalletConnectLoading(false))
+      .finally(() => this.setHostLaunchLoading(false))
   }
 
   private canAutoConnectHostLaunch() {
@@ -282,29 +281,12 @@ export abstract class AppKitBaseClient {
   }
 
   /**
-   * Shows the connect button as loading while AppKit restores a WalletConnect session or connects
-   * to the wallet that launched the app, instead of "Connect" until the address appears.
+   * Shows the connect button as loading while AppKit connects to the wallet that launched the app,
+   * instead of "Connect" until the address appears.
    */
-  protected setWalletConnectLoading(isLoading: boolean) {
-    if (isLoading) {
-      const isRestoringConnection =
-        OptionsController.state.enableReconnect !== false &&
-        StorageUtil.getConnectionStatus() === 'connected'
-
-      this.walletConnectLoadingNamespaces = this.canAutoConnectHostLaunch()
-        ? [...this.chainNamespaces]
-        : this.chainNamespaces.filter(
-            namespace =>
-              isRestoringConnection &&
-              ConnectorController.getConnectorId(namespace) ===
-                ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
-          )
-    }
-
-    const namespaces = this.walletConnectLoadingNamespaces
-    if (!isLoading) {
-      this.walletConnectLoadingNamespaces = []
-    }
+  private setHostLaunchLoading(isLoading: boolean) {
+    const namespaces = isLoading ? [...this.chainNamespaces] : this.hostLaunchLoadingNamespaces
+    this.hostLaunchLoadingNamespaces = isLoading ? namespaces : []
     namespaces.forEach(namespace => this.setLoading(isLoading, namespace))
   }
 
@@ -2433,11 +2415,11 @@ export abstract class AppKitBaseClient {
   }
 
   public setLoading(loading: ModalControllerState['loading'], namespace?: ChainNamespace) {
-    // Other startup flows (e.g. the embedded wallet sync) must not hide a pending WalletConnect connection
-    const isWalletConnectLoading = Boolean(
-      namespace && this.walletConnectLoadingNamespaces.includes(namespace)
+    // Other startup flows (e.g. the embedded wallet sync) must not hide a pending wallet launch connection
+    const isHostLaunchLoading = Boolean(
+      namespace && this.hostLaunchLoadingNamespaces.includes(namespace)
     )
-    ModalController.setLoading(loading || isWalletConnectLoading, namespace)
+    ModalController.setLoading(loading || isHostLaunchLoading, namespace)
   }
 
   public async disconnect(chainNamespace?: ChainNamespace) {

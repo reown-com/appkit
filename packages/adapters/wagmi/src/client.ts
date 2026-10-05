@@ -609,7 +609,11 @@ export class WagmiAdapter extends AdapterBlueprint {
         // Also restore a Universal Provider session that wasn't created through AppKit
         const hasWalletConnectSession =
           c.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT &&
-          Boolean((c.provider as UniversalProvider | undefined)?.session?.namespaces?.['eip155'])
+          Boolean(
+            (c.provider as UniversalProvider | undefined)?.session?.namespaces?.[
+              this.namespace as ChainNamespace
+            ]?.accounts?.length
+          )
 
         return !hasDisconnected && (hasConnected || hasWalletConnectSession)
       })
