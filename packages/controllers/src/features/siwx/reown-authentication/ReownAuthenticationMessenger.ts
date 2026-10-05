@@ -3,14 +3,6 @@ import { type CaipNetworkId, ConstantsUtil, NetworkUtil } from '@reown/appkit-co
 import { ChainController } from '../../../controllers/ChainController.js'
 import type { SIWXMessage } from '../../../utils/SIWXUtil.js'
 
-// Phantom rejects Solana sign-in messages that have no statement or a Chain ID other than these
-export const SOLANA_STATEMENT = 'Sign in to verify that you own this wallet.'
-export const SOLANA_MESSAGE_CHAIN_IDS: Readonly<Record<string, string>> = {
-  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'solana:mainnet',
-  'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'solana:testnet',
-  'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1': 'solana:devnet'
-}
-
 export class ReownAuthenticationMessenger {
   public resources?: SIWXMessage['resources']
 
@@ -31,7 +23,7 @@ export class ReownAuthenticationMessenger {
       nonce: await this.getNonce(input),
       issuedAt: this.stringifyDate(new Date()),
       statement: input.chainId.startsWith(`${ConstantsUtil.CHAIN.SOLANA}:`)
-        ? SOLANA_STATEMENT
+        ? ConstantsUtil.SOLANA_SIGN_IN.STATEMENT
         : undefined,
       expirationTime: undefined,
       notBefore: undefined
@@ -53,7 +45,7 @@ export class ReownAuthenticationMessenger {
       params.statement ? `\n${params.statement}\n` : '',
       `URI: ${params.uri}`,
       `Version: ${params.version}`,
-      `Chain ID: ${SOLANA_MESSAGE_CHAIN_IDS[params.chainId] ?? params.chainId}`,
+      `Chain ID: ${ConstantsUtil.SOLANA_SIGN_IN.MESSAGE_CHAIN_IDS[params.chainId] ?? params.chainId}`,
       `Nonce: ${params.nonce}`,
       params.issuedAt && `Issued At: ${params.issuedAt}`,
       params.expirationTime && `Expiration Time: ${params.expirationTime}`,
