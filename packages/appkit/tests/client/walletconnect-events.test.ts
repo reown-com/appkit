@@ -199,12 +199,20 @@ describe('WalletConnect Events', () => {
       return appkit
     }
 
-    it('adopts a session connected outside AppKit, once for all namespaces', async () => {
+    function mockConnectorIds(connectorIds: Record<string, string | undefined>) {
+      return vi
+        .spyOn(ConnectorController, 'getConnectorId')
+        .mockImplementation(namespace => connectorIds[namespace as string])
+    }
+
+    it('adopts a session connected outside AppKit, once, without taking over other wallets', async () => {
       const provider = { ...mockUniversalProvider, on: vi.fn(), session }
       const appkit = await createAppKit(provider)
       const syncSpy = vi
         .spyOn(appkit as any, 'syncWalletConnectAccount')
         .mockResolvedValue(undefined)
+      // EVM has no connection yet, Solana is connected to another wallet
+      const getConnectorIdSpy = mockConnectorIds({ solana: 'phantom' })
 
       getHandler(provider, 'connect')()
       const isConnectingSpy = vi
@@ -213,7 +221,9 @@ describe('WalletConnect Events', () => {
       getHandler(provider, 'connect')()
 
       expect(syncSpy).toHaveBeenCalledOnce()
+      expect(syncSpy).toHaveBeenCalledWith(['eip155'])
       isConnectingSpy.mockRestore()
+      getConnectorIdSpy.mockRestore()
     })
 
     it('reflects the session in AppKit state', async () => {
@@ -232,23 +242,27 @@ describe('WalletConnect Events', () => {
       )
     })
 
-    it('re-syncs on session_update when WalletConnect is the active connector', async () => {
+    it('re-syncs on session_update only the namespaces on WalletConnect', async () => {
       const provider = { ...mockUniversalProvider, on: vi.fn(), session }
       const appkit = await createAppKit(provider)
       const syncSpy = vi
         .spyOn(appkit as any, 'syncWalletConnectAccount')
         .mockResolvedValue(undefined)
-      const getConnectorIdSpy = vi
-        .spyOn(ConnectorController, 'getConnectorId')
-        .mockReturnValue('injected')
+      const getConnectorIdSpy = mockConnectorIds({ eip155: 'injected' })
 
       getHandler(provider, 'session_update')()
       expect(syncSpy).not.toHaveBeenCalled()
 
-      getConnectorIdSpy.mockReturnValue(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+      // EVM through WalletConnect, Solana through another wallet
+      getConnectorIdSpy.mockRestore()
+      const multiWalletSpy = mockConnectorIds({
+        eip155: ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
+        solana: 'phantom'
+      })
       getHandler(provider, 'session_update')()
       expect(syncSpy).toHaveBeenCalledOnce()
-      getConnectorIdSpy.mockRestore()
+      expect(syncSpy).toHaveBeenCalledWith(['eip155'])
+      multiWalletSpy.mockRestore()
     })
 
     it('restores a session that AppKit has no stored connector for', async () => {
@@ -264,7 +278,9 @@ describe('WalletConnect Events', () => {
       await (appkit as any).syncNamespaceConnection('eip155')
       await (appkit as any).syncNamespaceConnection('solana')
 
+      // Only this namespace, so it can't override a connector restored for another one
       expect(reconnectSpy).toHaveBeenCalledOnce()
+      expect(reconnectSpy).toHaveBeenCalledWith(['eip155'])
       getConnectorIdSpy.mockRestore()
     })
   })

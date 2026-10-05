@@ -177,6 +177,16 @@ describe('AppKit - host launch', () => {
     expect(connectSpy).not.toHaveBeenCalled()
   })
 
+  it('does not auto-connect when WalletConnect is disabled', async () => {
+    stubHostLaunch()
+    const connectSpy = vi.spyOn(ConnectionController, 'connectWalletConnect')
+
+    await createAppKit({ universalProvider: createUniversalProvider(), enableWalletConnect: false })
+
+    expect(connectSpy).not.toHaveBeenCalled()
+    expect(ModalController.state.loading).toBe(false)
+  })
+
   it('leaves the connection to the app with manualWCControl', async () => {
     stubHostLaunch()
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
