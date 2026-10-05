@@ -40,7 +40,7 @@ const DEFAULTS = {
  * This is the default configuration for SIWX.
  *
  * This configuration is split in three pieces `messenger`, `verifiers` and `storage`.
- * By default it uses InformalMessenger, EIP155Verifier, SolanaVerifier, BIP122Verifier, TronVerifier, StellarVerifier, and LocalStorage.
+ * By default it uses InformalMessenger (with a default statement and a Phantom-compatible Chain ID for Solana), EIP155Verifier, SolanaVerifier, BIP122Verifier, TronVerifier, StellarVerifier, and LocalStorage.
  * You may override any of these defaults by passing your own configuration for the constructor.
  */
 export class DefaultSIWX extends SIWXConfig {

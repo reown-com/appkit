@@ -5,7 +5,7 @@ import type { SIWXMessage } from '../../../utils/SIWXUtil.js'
 
 // Phantom rejects Solana sign-in messages that have no statement or a Chain ID other than these
 export const SOLANA_STATEMENT = 'Sign in to verify that you own this wallet.'
-export const SOLANA_MESSAGE_CHAIN_IDS: Record<string, string> = {
+export const SOLANA_MESSAGE_CHAIN_IDS: Readonly<Record<string, string>> = {
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'solana:mainnet',
   'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'solana:testnet',
   'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1': 'solana:devnet'
