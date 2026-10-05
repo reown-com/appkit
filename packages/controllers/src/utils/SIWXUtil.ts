@@ -16,6 +16,7 @@ import { RouterController } from '../controllers/RouterController.js'
 import { SnackController } from '../controllers/SnackController.js'
 import { getActiveCaipNetwork, getPreferredAccountType } from './ChainControllerUtil.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
+import { WcHelpersUtil } from './WalletConnectUtil.js'
 
 /**
  * SIWXUtil holds the methods to interact with the SIWX plugin and must be called internally on AppKit.
@@ -32,6 +33,16 @@ export const SIWXUtil = {
     const siwx = OptionsController.state.siwx
 
     if (!(siwx && caipAddress)) {
+      return
+    }
+
+    /*
+     * Requesting a signature opens the modal, which a wallet launch must not show.
+     * Stopgap until authentication on a wallet launch is decided (WCP4-186).
+     */
+    if (WcHelpersUtil.isHostLaunch()) {
+      console.warn('AppKit: SIWX is not supported on a wallet launch yet, skipping authentication')
+
       return
     }
     const [namespace, chainId, address] = caipAddress.split(':') as [ChainNamespace, string, string]
@@ -389,6 +400,15 @@ export const SIWXUtil = {
     const namespaces = new Set(chains.map(chain => chain.split(':')[0] as ChainNamespace))
 
     if (!siwx || namespaces.size !== 1 || !namespaces.has('eip155')) {
+      return false
+    }
+
+    // `authenticate()` shows a QR code instead of handing the URI to the wallet (WCP4-186)
+    if (WcHelpersUtil.isHostLaunch()) {
+      console.warn(
+        'AppKit: one-click auth is not supported on a wallet launch yet, connecting without it'
+      )
+
       return false
     }
 

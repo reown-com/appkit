@@ -153,6 +153,7 @@ export abstract class AppKitBaseClient {
   public reportedAlertErrors: Record<string, boolean> = {}
 
   private readyPromise?: Promise<void>
+  private hostLaunchConnectStarted = false
 
   constructor(options: AppKitOptionsWithSdk) {
     this.options = options
@@ -235,6 +236,33 @@ export abstract class AppKitBaseClient {
       }
       // If siwx is already configured for ReownAuthentication we keep the current instance
     }
+
+    this.autoConnectHostLaunch()
+  }
+
+  /**
+   * When a wallet opens the app (e.g. from its Explore tab), connect to it once, without the modal:
+   * Universal Provider hands the pairing URI to the wallet instead of emitting `display_uri`.
+   * Only decided on the first load, so a later disconnect doesn't reconnect by itself.
+   */
+  protected autoConnectHostLaunch() {
+    if (this.hostLaunchConnectStarted || !WcHelpersUtil.isHostLaunch()) {
+      return
+    }
+    this.hostLaunchConnectStarted = true
+
+    const isConnected = Boolean(this.universalProvider?.session || this.getCaipAddress())
+    const isWalletConnectDisabled =
+      OptionsController.state.manualWCControl ||
+      OptionsController.state.enableWalletConnect === false
+
+    if (isConnected || isWalletConnectDisabled || !this.universalProvider) {
+      return
+    }
+
+    ConnectionController.connectWalletConnect({ cache: 'never' }).catch(error => {
+      console.warn('AppKit: failed to connect to the wallet that launched the app', error)
+    })
   }
 
   private async openSend(
@@ -1389,7 +1417,13 @@ export abstract class AppKitBaseClient {
         ConnectorController.setConnectorId(ConstantsUtil.CONNECTOR_ID.SAFE, namespace)
       }
 
-      const connectorId = ConnectorController.getConnectorId(namespace)
+      // A Universal Provider session that AppKit didn't create is adopted as a WalletConnect connection
+      const hasWalletConnectSession =
+        Boolean(this.universalProvider?.session?.namespaces?.[namespace]?.accounts?.length) &&
+        !StorageUtil.isConnectorDisconnected(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT, namespace)
+      const connectorId =
+        ConnectorController.getConnectorId(namespace) ??
+        (hasWalletConnectSession ? ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT : undefined)
 
       this.setStatus('connecting', namespace)
 
@@ -1965,7 +1999,38 @@ export abstract class AppKitBaseClient {
           }
         })
       })
+
+      this.listenUniversalProviderSessions(this.universalProvider)
     }
+  }
+
+  /**
+   * Keeps AppKit in sync with sessions that Universal Provider creates or updates outside AppKit's
+   * own connect flow, e.g. a raw `universalProvider.connect()` or a wallet pushing new accounts.
+   */
+  protected listenUniversalProviderSessions(universalProvider: UniversalProvider) {
+    const syncSession = () => {
+      // eslint-disable-next-line no-console
+      this.syncWalletConnectAccount().catch(console.error)
+    }
+
+    universalProvider.on('connect', () => {
+      if (!ConnectionController.isWalletConnectConnecting()) {
+        syncSession()
+      }
+    })
+
+    universalProvider.on('session_update', () => {
+      const isWalletConnectActive = this.chainNamespaces.some(
+        namespace =>
+          ConnectorController.getConnectorId(namespace) ===
+          ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+      )
+
+      if (isWalletConnectActive) {
+        syncSession()
+      }
+    })
   }
 
   protected createUniversalProvider() {

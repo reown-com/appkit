@@ -4,6 +4,7 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
+  ConnectorController,
   CoreHelperUtil,
   EventsController,
   StorageUtil
@@ -168,6 +169,103 @@ describe('WalletConnect Events', () => {
         'solana'
       )
       expect(removeDisconnectedConnectorIdSpy).toHaveBeenCalledTimes(2)
+    })
+  })
+
+  describe('sessions created by Universal Provider', () => {
+    const address = '0x1234567890123456789012345678901234567890'
+    const session = {
+      namespaces: { eip155: { accounts: [`eip155:1:${address}`] } },
+      peer: { metadata: { name: 'Mock Wallet', description: '', url: '', icons: [] } }
+    }
+
+    function getHandler(provider: { on: ReturnType<typeof vi.fn> }, event: string) {
+      const handler = provider.on.mock.calls.filter(([name]) => name === event).at(-1)?.[1]
+      if (!handler) {
+        throw new Error(`${event} handler not found`)
+      }
+
+      return handler as () => void
+    }
+
+    async function createAppKit(universalProvider: object, adapters = mockOptions.adapters) {
+      const appkit = new AppKit({
+        ...mockOptions,
+        adapters,
+        universalProvider: universalProvider as any
+      })
+      await appkit.ready()
+
+      return appkit
+    }
+
+    it('adopts a session connected outside AppKit, once for all namespaces', async () => {
+      const provider = { ...mockUniversalProvider, on: vi.fn(), session }
+      const appkit = await createAppKit(provider)
+      const syncSpy = vi
+        .spyOn(appkit as any, 'syncWalletConnectAccount')
+        .mockResolvedValue(undefined)
+
+      getHandler(provider, 'connect')()
+      const isConnectingSpy = vi
+        .spyOn(ConnectionController, 'isWalletConnectConnecting')
+        .mockReturnValue(true)
+      getHandler(provider, 'connect')()
+
+      expect(syncSpy).toHaveBeenCalledOnce()
+      isConnectingSpy.mockRestore()
+    })
+
+    it('reflects the session in AppKit state', async () => {
+      const provider = { ...mockUniversalProvider, on: vi.fn(), session: undefined as unknown }
+      const appkit = await createAppKit(provider, [])
+      vi.spyOn(appkit as any, 'syncBalance').mockResolvedValue(undefined)
+      expect(appkit.getCaipAddress('eip155')).toBeUndefined()
+
+      // Universal Provider settles a session that AppKit didn't request
+      provider.session = session
+      getHandler(provider, 'connect')()
+
+      await vi.waitFor(() => expect(appkit.getCaipAddress('eip155')).toBe(`eip155:1:${address}`))
+      expect(ConnectorController.getConnectorId('eip155')).toBe(
+        ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+      )
+    })
+
+    it('re-syncs on session_update when WalletConnect is the active connector', async () => {
+      const provider = { ...mockUniversalProvider, on: vi.fn(), session }
+      const appkit = await createAppKit(provider)
+      const syncSpy = vi
+        .spyOn(appkit as any, 'syncWalletConnectAccount')
+        .mockResolvedValue(undefined)
+      const getConnectorIdSpy = vi
+        .spyOn(ConnectorController, 'getConnectorId')
+        .mockReturnValue('injected')
+
+      getHandler(provider, 'session_update')()
+      expect(syncSpy).not.toHaveBeenCalled()
+
+      getConnectorIdSpy.mockReturnValue(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+      getHandler(provider, 'session_update')()
+      expect(syncSpy).toHaveBeenCalledOnce()
+      getConnectorIdSpy.mockRestore()
+    })
+
+    it('restores a session that AppKit has no stored connector for', async () => {
+      const provider = { ...mockUniversalProvider, on: vi.fn(), session }
+      const appkit = await createAppKit(provider)
+      const getConnectorIdSpy = vi
+        .spyOn(ConnectorController, 'getConnectorId')
+        .mockReturnValue(undefined)
+      const reconnectSpy = vi
+        .spyOn(appkit as any, 'reconnectWalletConnect')
+        .mockResolvedValue(undefined)
+
+      await (appkit as any).syncNamespaceConnection('eip155')
+      await (appkit as any).syncNamespaceConnection('solana')
+
+      expect(reconnectSpy).toHaveBeenCalledOnce()
+      getConnectorIdSpy.mockRestore()
     })
   })
 

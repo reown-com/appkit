@@ -53,6 +53,7 @@ import {
   AdapterBlueprint,
   AssetController,
   ChainController,
+  ConnectionController,
   CoreHelperUtil,
   OptionsController,
   StorageUtil,
@@ -605,8 +606,12 @@ export class WagmiAdapter extends AdapterBlueprint {
           c.id,
           this.namespace as ChainNamespace
         )
+        // Also restore a Universal Provider session that wasn't created through AppKit
+        const hasWalletConnectSession =
+          c.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT &&
+          Boolean((c.provider as UniversalProvider | undefined)?.session?.namespaces?.['eip155'])
 
-        return !hasDisconnected && hasConnected
+        return !hasDisconnected && (hasConnected || hasWalletConnectSession)
       })
       .map(connector => this.getWagmiConnector(connector.id))
       .filter(Boolean) as Connector[]
@@ -1094,23 +1099,17 @@ export class WagmiAdapter extends AdapterBlueprint {
       const connections = getConnections(this.wagmiConfig)
       const connector = this.getWagmiConnector('walletConnect')
       if (connector && !connections.find(c => c.connector.id === connector.id)) {
-        /**
-         * Handles reconnection logic for Wagmi in multi-chain environments.
-         *
-         * Context:
-         * - When connected to other namespaces, Wagmi requires a reconnect to properly bind to EVM chains.
-         *
-         * Issue with SIWX + One-Click Authentication:
-         * - If Sign-In with X (SIWX) is enabled and the wallet supports One-Click Authentication, reconnection causes issues:
-         *   1. The SIWX `authenticate()` method may still be pending.
-         *   2. A reconnect triggers an `accountChanged` event in Wagmi.
-         *   3. This event re-triggers the SIWX Sign Message UI unnecessarily.
-         *
-         * Resolution:
-         * - To prevent this, we check if the current active chain is `'eip155'`.
-         * - If it is, we skip reconnection to avoid interrupting in the SIWX flow.
+        /*
+         * Reconnecting lets wagmi adopt the session: when AppKit connected another namespace, or
+         * when the session was created outside AppKit (e.g. `universalProvider.connect()`).
+         * AppKit's own EVM flow connects wagmi by itself, and reconnecting while SIWX one-click
+         * auth is still pending would re-trigger the SIWX Sign Message UI.
          */
-        if (ChainController.state.activeChain === 'eip155') {
+        const isConnectingEvm =
+          ConnectionController.isWalletConnectConnecting() &&
+          ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
+
+        if (isConnectingEvm) {
           return
         }
 
