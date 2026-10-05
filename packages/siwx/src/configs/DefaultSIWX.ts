@@ -1,3 +1,7 @@
+import { type CaipNetworkId, ConstantsUtil } from '@reown/appkit-common'
+import type { SIWXMessage } from '@reown/appkit-controllers'
+import { SOLANA_MESSAGE_CHAIN_IDS, SOLANA_STATEMENT } from '@reown/appkit-controllers/features'
+
 import { SIWXConfig } from '../core/SIWXConfig.js'
 import { InformalMessenger } from '../messengers/index.js'
 import DefaultSigner from '../signers/DefaultSigner.js'
@@ -10,9 +14,26 @@ import {
   TronVerifier
 } from '../verifiers/index.js'
 
+// Phantom rejects Solana sign-in messages without a statement or with a CAIP-2 Chain ID
+class DefaultMessenger extends InformalMessenger {
+  override async createMessage(input: SIWXMessage.Input): Promise<SIWXMessage> {
+    const message = await super.createMessage(input)
+
+    if (input.chainId.startsWith(`${ConstantsUtil.CHAIN.SOLANA}:`)) {
+      message.statement ??= SOLANA_STATEMENT
+    }
+
+    return message
+  }
+
+  protected override getMessageChainId(chainId: CaipNetworkId): string | undefined {
+    return SOLANA_MESSAGE_CHAIN_IDS[chainId] ?? super.getMessageChainId(chainId)
+  }
+}
+
 const DEFAULTS = {
   getDefaultMessenger: () =>
-    new InformalMessenger({
+    new DefaultMessenger({
       domain: typeof document === 'undefined' ? 'Unknown Domain' : document.location.host,
       uri: typeof document === 'undefined' ? 'Unknown URI' : document.location.href,
       getNonce: async () =>
