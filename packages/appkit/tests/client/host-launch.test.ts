@@ -3,15 +3,19 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
+  ChainController,
   ConnectionController,
   ConnectorController,
   ModalController,
   OptionsController,
   type SIWXConfig,
+  SIWXUtil,
   StorageUtil
 } from '@reown/appkit-controllers'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
+import { mainnet } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
 import {
   mockBlockchainApiController,
@@ -50,6 +54,12 @@ async function createAppKit({
   return appkit
 }
 
+const address = '0x1234567890123456789012345678901234567890'
+
+function setUnsupportedNetwork() {
+  ChainController.setActiveCaipNetwork(CaipNetworksUtil.getUnsupportedNetwork('eip155:999'))
+}
+
 function stubHostLaunch() {
   window.walletConnectHost = { autoConnect: true, postMessage: vi.fn() }
 }
@@ -73,6 +83,8 @@ describe('AppKit - host launch', () => {
 
   afterEach(() => {
     delete window.walletConnectHost
+    // Don't let a stored unsupported network leak into the next test's startup
+    localStorage.clear()
     vi.restoreAllMocks()
   })
 
@@ -147,6 +159,100 @@ describe('AppKit - host launch', () => {
     )
   })
 
+  it('signs in with SIWX in the wallet once the first connection settles', async () => {
+    stubHostLaunch()
+    let resolveConnect = () => {}
+    vi.spyOn(ConnectionController, 'connectWalletConnect').mockReturnValue(
+      new Promise<void>(resolve => {
+        resolveConnect = resolve
+      })
+    )
+    const requestSignMessageSpy = vi.spyOn(SIWXUtil, 'requestSignMessage').mockResolvedValue()
+
+    const appkit = await createAppKit({
+      universalProvider: createUniversalProvider(),
+      siwx: { getSessions: vi.fn().mockResolvedValue([]) } as unknown as SIWXConfig
+    })
+    appkit.setCaipAddress(`eip155:1:${address}`, 'eip155')
+    // Not while connecting
+    expect(requestSignMessageSpy).not.toHaveBeenCalled()
+
+    resolveConnect()
+    await vi.waitFor(() => expect(requestSignMessageSpy).toHaveBeenCalledOnce())
+    // Only the wallet asks to sign: no Sign In view in AppKit
+    expect(ModalController.open).not.toHaveBeenCalled()
+  })
+
+  it('shows the unsupported network modal once the first connection lands on one', async () => {
+    stubHostLaunch()
+    let resolveConnect = () => {}
+    vi.spyOn(ConnectionController, 'connectWalletConnect').mockImplementation(
+      () =>
+        new Promise<void>(resolve => {
+          setUnsupportedNetwork()
+          resolveConnect = resolve
+        })
+    )
+
+    const appkit = await createAppKit({ universalProvider: createUniversalProvider() })
+    // Held back while connecting
+    expect(ModalController.open).not.toHaveBeenCalled()
+
+    appkit.setCaipAddress(`eip155:999:${address}`, 'eip155')
+    resolveConnect()
+    await vi.waitFor(() => expect(ConnectionController.state.isHostLaunchConnecting).toBe(false))
+
+    expect(ModalController.open).toHaveBeenCalledOnce()
+    expect(ModalController.open).toHaveBeenCalledWith({ view: 'UnsupportedChain' })
+  })
+
+  it('ignores an unsupported network stored on a previous visit', async () => {
+    vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValue('eip155:999')
+
+    // A regular launch keeps it, as before
+    await createAppKit({ universalProvider: createUniversalProvider({ namespaces: {} }) })
+    expect(ChainController.state.activeCaipNetwork?.name).toBe(
+      ConstantsUtil.UNSUPPORTED_NETWORK_NAME
+    )
+
+    vi.mocked(ModalController.open).mockClear()
+    stubHostLaunch()
+    await createAppKit({ universalProvider: createUniversalProvider({ namespaces: {} }) })
+
+    expect(ChainController.state.activeCaipNetwork?.caipNetworkId).toBe(mainnet.caipNetworkId)
+    expect(ModalController.open).not.toHaveBeenCalled()
+  })
+
+  it('shows the unsupported network modal when reconnecting to an unsupported network', async () => {
+    stubHostLaunch()
+    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockImplementation(namespace =>
+      namespace === 'eip155' ? ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT : undefined
+    )
+    vi.spyOn(AppKit.prototype as any, 'syncBalance').mockResolvedValue(undefined)
+    const reconnect = (AppKit.prototype as any).reconnectWalletConnect
+    vi.spyOn(AppKit.prototype as any, 'reconnectWalletConnect').mockImplementation(async function (
+      this: any,
+      ...args: unknown[]
+    ) {
+      await reconnect.apply(this, args)
+      // The wallet moved to a chain the app doesn't support while the app was closed
+      this.setUnsupportedNetwork(999)
+      // Held back until the connection settles
+      expect(ModalController.open).not.toHaveBeenCalled()
+    })
+
+    const appkit = await createAppKit({
+      universalProvider: createUniversalProvider({
+        namespaces: { eip155: { accounts: [`eip155:1:${address}`] } },
+        peer: { metadata: { name: 'Wallet', description: '', url: '', icons: [] } }
+      })
+    })
+
+    expect(appkit.getCaipAddress('eip155')).toBe(`eip155:999:${address}`)
+    expect(ModalController.open).toHaveBeenCalledOnce()
+    expect(ModalController.open).toHaveBeenCalledWith({ view: 'UnsupportedChain' })
+  })
+
   it('does not connect again when a session was restored', async () => {
     stubHostLaunch()
     const connectSpy = vi.spyOn(ConnectionController, 'connectWalletConnect')
@@ -154,6 +260,8 @@ describe('AppKit - host launch', () => {
     await createAppKit({ universalProvider: createUniversalProvider({ namespaces: {} }) })
 
     expect(connectSpy).not.toHaveBeenCalled()
+    // Reconnected on a supported network, so nothing to show
+    expect(ModalController.open).not.toHaveBeenCalled()
   })
 
   it('does not reconnect after a disconnect', async () => {

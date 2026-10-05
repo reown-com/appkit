@@ -42,28 +42,63 @@ describe('host launch', () => {
 
   afterEach(() => {
     ConnectionController.setIsHostLaunch(false)
+    ConnectionController.setIsHostLaunchConnecting(false)
   })
 
-  it('does not open the unsupported network modal on a host launch', () => {
+  it('does not open the unsupported network modal while connecting to the wallet', () => {
     ChainController.showUnsupportedChainUI()
     expect(ModalController.open).toHaveBeenCalledWith({ view: 'UnsupportedChain' })
 
     vi.mocked(ModalController.open).mockClear()
     stubHostLaunch()
+    ConnectionController.setIsHostLaunchConnecting(true)
     ChainController.showUnsupportedChainUI()
+    expect(ModalController.open).not.toHaveBeenCalled()
 
+    // Once connected, it opens as on any other launch
+    ConnectionController.setIsHostLaunchConnecting(false)
+    ChainController.showUnsupportedChainUI()
+    expect(ModalController.open).toHaveBeenCalledWith({ view: 'UnsupportedChain' })
+  })
+
+  it('signs in directly in the wallet on a host launch, once the connection settles', async () => {
+    const requestSignMessageSpy = vi
+      .spyOn(SIWXUtil, 'requestSignMessage')
+      .mockImplementation(() => new Promise(resolve => setTimeout(resolve, 10)))
+
+    await SIWXUtil.initializeIfEnabled(caipAddress)
+    expect(ModalController.open).toHaveBeenCalledWith({ view: 'SIWXSignMessage' })
+    expect(requestSignMessageSpy).not.toHaveBeenCalled()
+
+    vi.mocked(ModalController.open).mockClear()
+    stubHostLaunch()
+    ConnectionController.setIsHostLaunchConnecting(true)
+    await SIWXUtil.initializeIfEnabled(caipAddress)
+    expect(requestSignMessageSpy).not.toHaveBeenCalled()
+
+    // Overlapping calls share one signature request, without the Sign In view
+    ConnectionController.setIsHostLaunchConnecting(false)
+    await Promise.all([
+      SIWXUtil.initializeIfEnabled(caipAddress),
+      SIWXUtil.initializeIfEnabled(caipAddress)
+    ])
+    expect(requestSignMessageSpy).toHaveBeenCalledOnce()
     expect(ModalController.open).not.toHaveBeenCalled()
   })
 
-  it('does not open the SIWX modal on a host launch', async () => {
-    await SIWXUtil.initializeIfEnabled(caipAddress)
-    expect(ModalController.open).toHaveBeenCalledWith({ view: 'SIWXSignMessage' })
+  it('skips email capture on a host launch', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      siwx: mockSIWX,
+      remoteFeatures: { emailCapture: true }
+    })
+    const requestSignMessageSpy = vi.spyOn(SIWXUtil, 'requestSignMessage').mockResolvedValue()
 
-    vi.mocked(ModalController.open).mockClear()
     stubHostLaunch()
     await SIWXUtil.initializeIfEnabled(caipAddress)
 
     expect(ModalController.open).not.toHaveBeenCalled()
+    expect(requestSignMessageSpy).toHaveBeenCalledOnce()
   })
 
   it('connects without one-click auth on a host launch', async () => {

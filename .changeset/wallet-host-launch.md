@@ -33,7 +33,12 @@ Connects automatically, without the modal, when a wallet opens the app (the wall
 
 On a wallet launch, the connect button shows its loading state until the session is restored or the auto-connect settles, instead of showing "Connect" until the address appears. Regular launches are unchanged.
 
-On a wallet launch AppKit doesn't open the modal by itself: no unsupported network screen and no SIWX sign-in. One-click auth is skipped too, because Universal Provider's `authenticate()` still shows a QR code there. Until that's decided, AppKit logs a warning and connects without authentication.
+On a wallet launch AppKit doesn't open the modal by itself while it connects. Once the connection settles:
+
+- the unsupported network screen shows only if the wallet is really on a network the app doesn't support (a network saved on a previous visit is ignored)
+- with SIWX, AppKit asks the wallet to sign the message directly, so the user approves it once in the wallet; AppKit's Sign In view only opens if signing fails
+
+One-click auth is skipped on a wallet launch, because Universal Provider's `authenticate()` still shows a QR code there. Until that's decided, AppKit logs a warning and signs in after connecting instead.
 
 AppKit and the wagmi adapter now also pick up WalletConnect sessions that Universal Provider creates, restores or updates outside AppKit's connect flow (for example a direct `universalProvider.connect()`).
 

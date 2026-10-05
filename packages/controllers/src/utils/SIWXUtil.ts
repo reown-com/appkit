@@ -22,6 +22,8 @@ import { CoreHelperUtil } from './CoreHelperUtil.js'
  */
 
 let addEmbeddedWalletSessionPromise: Promise<void> | null = null
+// A wallet launch signs in directly, so overlapping calls must share one signature request
+let hostLaunchSignInPromise: Promise<void> | null = null
 
 export const SIWXUtil = {
   getSIWX() {
@@ -35,13 +37,8 @@ export const SIWXUtil = {
       return
     }
 
-    /*
-     * Requesting a signature opens the modal, which a wallet launch must not show.
-     * Stopgap until authentication on a wallet launch is decided (WCP4-186).
-     */
-    if (ConnectionController.state.isHostLaunch) {
-      console.warn('AppKit: SIWX is not supported on a wallet launch yet, skipping authentication')
-
+    // A wallet launch signs in once its connection settles (see `finishHostLaunchConnection`)
+    if (ConnectionController.state.isHostLaunchConnecting) {
       return
     }
     const [namespace, chainId, address] = caipAddress.split(':') as [ChainNamespace, string, string]
@@ -51,7 +48,9 @@ export const SIWXUtil = {
     }
 
     try {
-      if (OptionsController.state.remoteFeatures?.emailCapture) {
+      const { isHostLaunch } = ConnectionController.state
+
+      if (OptionsController.state.remoteFeatures?.emailCapture && !isHostLaunch) {
         const user = ChainController.getAccountData(namespace)?.user
         await ModalController.open({
           view: 'DataCapture',
@@ -70,6 +69,20 @@ export const SIWXUtil = {
       if (sessions.length) {
         return
       }
+
+      /*
+       * Inside the wallet, ask for the signature directly instead of showing the Sign In view, so
+       * the user only approves it in the wallet. If it fails, that view opens to retry or cancel.
+       */
+      if (isHostLaunch) {
+        hostLaunchSignInPromise ??= SIWXUtil.requestSignMessage().finally(() => {
+          hostLaunchSignInPromise = null
+        })
+        await hostLaunchSignInPromise
+
+        return
+      }
+
       await ModalController.open({
         view: 'SIWXSignMessage'
       })

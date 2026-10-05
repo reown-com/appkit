@@ -149,6 +149,11 @@ export interface ConnectionControllerState {
    * then hands the pairing URI to the wallet instead of emitting `display_uri`.
    */
   isHostLaunch?: boolean
+  /**
+   * Whether AppKit is still restoring or establishing the connection to the wallet that launched
+   * the app. Meanwhile it doesn't open the unsupported network modal by itself.
+   */
+  isHostLaunchConnecting?: boolean
   wcError?: boolean
   wcFetchingUri: boolean
   recentWallet?: WcWallet
@@ -457,6 +462,12 @@ const controller = {
 
   setIsHostLaunch(isHostLaunch: ConnectionControllerState['isHostLaunch']) {
     state.isHostLaunch = isHostLaunch
+  },
+
+  setIsHostLaunchConnecting(
+    isHostLaunchConnecting: ConnectionControllerState['isHostLaunchConnecting']
+  ) {
+    state.isHostLaunchConnecting = isHostLaunchConnecting
   },
 
   setWcBasic(wcBasic: ConnectionControllerState['wcBasic']) {

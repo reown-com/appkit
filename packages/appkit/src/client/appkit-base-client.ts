@@ -185,7 +185,10 @@ export abstract class AppKitBaseClient {
 
   protected async initialize(options: AppKitOptionsWithSdk) {
     this.initializeProjectSettings(options)
-    ConnectionController.setIsHostLaunch(UniversalProvider.isHostLaunch())
+    const isHostLaunch = UniversalProvider.isHostLaunch()
+    ConnectionController.setIsHostLaunch(isHostLaunch)
+    // Until it's known whether the session is restored or connected for the first time
+    ConnectionController.setIsHostLaunchConnecting(isHostLaunch)
     this.initControllers(options)
     // On a wallet launch, the button loads until the session is restored or the auto-connect settles
     if (this.canAutoConnectHostLaunch()) {
@@ -252,15 +255,15 @@ export abstract class AppKitBaseClient {
    * Only decided on the first load, so a later disconnect doesn't reconnect by itself.
    */
   protected autoConnectHostLaunch() {
-    if (this.hostLaunchConnectStarted || !this.canAutoConnectHostLaunch()) {
+    if (this.hostLaunchConnectStarted || !ConnectionController.state.isHostLaunch) {
       return
     }
     this.hostLaunchConnectStarted = true
 
     const isConnected = Boolean(this.universalProvider?.session || this.getCaipAddress())
 
-    if (isConnected || !this.universalProvider) {
-      this.setHostLaunchLoading(false)
+    if (isConnected || !this.canAutoConnectHostLaunch() || !this.universalProvider) {
+      this.finishHostLaunchConnection()
 
       return
     }
@@ -269,7 +272,32 @@ export abstract class AppKitBaseClient {
       .catch(error => {
         console.warn('AppKit: failed to connect to the wallet that launched the app', error)
       })
-      .finally(() => this.setHostLaunchLoading(false))
+      .finally(() => this.finishHostLaunchConnection())
+  }
+
+  /**
+   * Ends the wallet launch connection. What was held back meanwhile happens now, so the user is
+   * ready before using the app: the unsupported network modal if the session is on a network the
+   * app doesn't support, otherwise the SIWX sign-in.
+   */
+  private finishHostLaunchConnection() {
+    this.setHostLaunchLoading(false)
+    ConnectionController.setIsHostLaunchConnecting(false)
+
+    const isUnsupportedNetwork =
+      ChainController.state.activeCaipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
+
+    if (
+      this.getCaipAddress() &&
+      isUnsupportedNetwork &&
+      OptionsController.state.enableNetworkSwitch &&
+      !OptionsController.state.allowUnsupportedChain
+    ) {
+      ChainController.showUnsupportedChainUI()
+    }
+
+    // Skipped on an unsupported network: switching to a supported one signs in then
+    SIWXUtil.initializeIfEnabled()
   }
 
   private canAutoConnectHostLaunch() {
@@ -576,7 +604,20 @@ export abstract class AppKitBaseClient {
   }
 
   protected getDefaultNetwork() {
-    return CaipNetworksUtil.getCaipNetworkFromStorage(this.defaultCaipNetwork)
+    const network = CaipNetworksUtil.getCaipNetworkFromStorage(this.defaultCaipNetwork)
+
+    /*
+     * An unsupported network stored on a previous visit would stick: the wallet launch connects on
+     * a supported network, but syncing an account on the unsupported one doesn't replace it
+     */
+    if (
+      ConnectionController.state.isHostLaunch &&
+      network?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
+    ) {
+      return this.defaultCaipNetwork ?? ChainController.getAllRequestedCaipNetworks()[0]
+    }
+
+    return network
   }
 
   protected extendCaipNetwork(network: AppKitNetwork, options: AppKitOptions) {
