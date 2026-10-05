@@ -1,7 +1,12 @@
 import { vi } from 'vitest'
 
 import type { Balance } from '@reown/appkit-common'
-import { BlockchainApiController, ChainController, StorageUtil } from '@reown/appkit-controllers'
+import {
+  ApiController,
+  BlockchainApiController,
+  ChainController,
+  StorageUtil
+} from '@reown/appkit-controllers'
 
 import { ConfigUtil } from '../src/utils/ConfigUtil.js'
 import { mockLocalStorage } from './mocks/LocalStorage.js'
@@ -67,4 +72,19 @@ export function mockRemoteFeatures() {
   vi.spyOn(ConfigUtil, 'fetchRemoteFeatures').mockImplementation(() =>
     Promise.resolve(mockRemoteFeaturesConfig)
   )
+}
+
+// Keeps the AppKit startup offline: usage, allowed origins, wallet list, images and identity
+export function mockApiRequests() {
+  vi.spyOn(ApiController, 'fetchUsage').mockResolvedValue()
+  vi.spyOn(ApiController, 'fetchAllowedOrigins').mockResolvedValue(['http://localhost:3000'])
+  vi.spyOn(ApiController, 'fetchWallets').mockResolvedValue({
+    data: [],
+    count: 0,
+    mobileFilteredOutWalletsLength: 0
+  })
+  vi.spyOn(ApiController, '_fetchConnectorImage').mockResolvedValue()
+  vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
+  vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
+  vi.spyOn(BlockchainApiController, 'fetchIdentity').mockResolvedValue({ name: null, avatar: null })
 }
