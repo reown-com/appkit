@@ -20,6 +20,9 @@ import {
 import { mockUniversalProvider, mockUniversalProviderSession } from './mocks/UniversalProvider.js'
 import { TestConstants } from './util/TestConstants.js'
 
+// A wallet may sign a modified message, e.g. Ledger Wallet refreshes the blockhash before signing
+const WALLET_REFRESHED_BLOCKHASH = 'EE6qpH2jf7tkLSrV17eHN7PPe2dH8F7QxdWjKXQc4Rvv'
+
 describe('WalletConnectProvider specific tests', () => {
   let provider = mockUniversalProvider()
   let getActiveChain = vi.fn(() => TestConstants.chains[0])
@@ -385,6 +388,83 @@ describe('WalletConnectProvider specific tests', () => {
 
     expect(result).toBe(transaction)
     expect(result.signatures.length).toEqual(1)
+  })
+
+  it('should use the returned transaction when the wallet returns both a signature and a transaction (legacy)', async () => {
+    await walletConnectProvider.connect()
+    const transaction = mockLegacyTransaction()
+    const signatureBytes = new Uint8Array(64).fill(2)
+    const signedTransaction = mockLegacyTransaction()
+    signedTransaction.recentBlockhash = WALLET_REFRESHED_BLOCKHASH
+    signedTransaction.addSignature(TestConstants.accounts[0].publicKey, Buffer.from(signatureBytes))
+    const signedTransactionBase64 = signedTransaction
+      .serialize({ verifySignatures: false })
+      .toString('base64')
+    vi.spyOn(provider, 'request').mockImplementationOnce(
+      <T>() =>
+        Promise.resolve({
+          signature: base58.encode(signatureBytes),
+          transaction: signedTransactionBase64
+        }) as T
+    )
+
+    const result = await walletConnectProvider.signTransaction(transaction)
+
+    expect(result).not.toBe(transaction)
+    expect(result.recentBlockhash).toBe(WALLET_REFRESHED_BLOCKHASH)
+    expect(result.serialize({ verifySignatures: false }).toString('base64')).toBe(
+      signedTransactionBase64
+    )
+  })
+
+  it('should use the returned transaction when the wallet returns both a signature and a transaction (versioned)', async () => {
+    await walletConnectProvider.connect()
+    const transaction = mockVersionedTransaction()
+    const signatureBytes = new Uint8Array(64).fill(2)
+    const signedTransaction = mockVersionedTransaction()
+    signedTransaction.message.recentBlockhash = WALLET_REFRESHED_BLOCKHASH
+    signedTransaction.addSignature(TestConstants.accounts[0].publicKey, signatureBytes)
+    const signedTransactionBase64 = Buffer.from(signedTransaction.serialize()).toString('base64')
+    vi.spyOn(provider, 'request').mockImplementationOnce(
+      <T>() =>
+        Promise.resolve({
+          signature: base58.encode(signatureBytes),
+          transaction: signedTransactionBase64
+        }) as T
+    )
+
+    const result = await walletConnectProvider.signTransaction(transaction)
+
+    expect(result).not.toBe(transaction)
+    expect(result.message.recentBlockhash).toBe(WALLET_REFRESHED_BLOCKHASH)
+    expect(Buffer.from(result.serialize()).toString('base64')).toBe(signedTransactionBase64)
+  })
+
+  it('should attach the signature when the wallet returns an empty transaction field (legacy)', async () => {
+    await walletConnectProvider.connect()
+    const transaction = mockLegacyTransaction()
+    vi.spyOn(provider, 'request').mockImplementationOnce(
+      <T>() =>
+        Promise.resolve({
+          signature:
+            '2Lb1KQHWfbV3pWMqXZveFWqneSyhH95YsgCENRWnArSkLydjN1M42oB82zSd6BBdGkM9pE6sQLQf1gyBh8KWM2c4',
+          transaction: null
+        }) as T
+    )
+
+    const result = await walletConnectProvider.signTransaction(transaction)
+
+    expect(result).toBe(transaction)
+    expect(result.signatures.length).toEqual(1)
+  })
+
+  it('should throw a clear error when the wallet returns neither a signature nor a transaction (legacy)', async () => {
+    await walletConnectProvider.connect()
+    vi.spyOn(provider, 'request').mockImplementationOnce(<T>() => Promise.resolve({}) as T)
+
+    await expect(walletConnectProvider.signTransaction(mockLegacyTransaction())).rejects.toThrow(
+      'Invalid solana_signTransaction response'
+    )
   })
 
   it('should use the correct chain id for requests', async () => {
