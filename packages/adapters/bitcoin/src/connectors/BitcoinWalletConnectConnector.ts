@@ -1,5 +1,4 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import * as bitcoinjs from 'bitcoinjs-lib'
 
 import { type RequestArguments } from '@reown/appkit'
 import {
@@ -100,7 +99,7 @@ export class BitcoinWalletConnectConnector
       params: {
         account,
         psbt: params.psbt,
-        signInputs: this.getSignInputs(params, account),
+        signInputs: await this.getSignInputs(params, account),
         broadcast: params.broadcast
       }
     })
@@ -160,12 +159,14 @@ export class BitcoinWalletConnectConnector
     return address
   }
 
-  private getSignInputs(params: BitcoinConnector.SignPSBTParams, account: string) {
+  private async getSignInputs(params: BitcoinConnector.SignPSBTParams, account: string) {
     if (params.signInputs?.length > 0) {
       return params.signInputs
     }
 
     try {
+      // Loaded on demand: only an empty signInputs needs it, and it is a sizeable dependency
+      const bitcoinjs = await import('bitcoinjs-lib')
       const caipNetworkId = this.getActiveChain()?.caipNetworkId
       const network =
         caipNetworkId === bitcoinTestnet.caipNetworkId ||
