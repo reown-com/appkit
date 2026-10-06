@@ -1,4 +1,5 @@
 import UniversalProvider from '@walletconnect/universal-provider'
+import * as bitcoinjs from 'bitcoinjs-lib'
 
 import { type RequestArguments } from '@reown/appkit'
 import {
@@ -98,7 +99,7 @@ export class BitcoinWalletConnectConnector
       params: {
         account,
         psbt: params.psbt,
-        signInputs: params.signInputs,
+        signInputs: this.getSignInputs(params, account),
         broadcast: params.broadcast
       }
     })
@@ -156,6 +157,29 @@ export class BitcoinWalletConnectConnector
     }
 
     return address
+  }
+
+  private getSignInputs(params: BitcoinConnector.SignPSBTParams, account: string) {
+    if (params.signInputs?.length > 0) {
+      return params.signInputs
+    }
+
+    try {
+      const network = bitcoinjs.networks.bitcoin
+      const accountScript = bitcoinjs.address.toOutputScript(account, network)
+      const psbt = bitcoinjs.Psbt.fromBase64(params.psbt, { network })
+
+      const ownedInputs = psbt.data.inputs.flatMap((input, index) =>
+        input.witnessUtxo?.script.equals(accountScript)
+          ? [{ address: account, index, sighashTypes: [1] }]
+          : []
+      )
+
+      return ownedInputs.length > 0 ? ownedInputs : params.signInputs
+    } catch {
+      // Undecodable PSBT, or an address bitcoinjs cannot convert (e.g. Taproot without an ECC library): let the wallet decide
+      return params.signInputs
+    }
   }
 
   private checkIfMethodIsSupported(method: WalletConnectProvider.RequestMethod) {

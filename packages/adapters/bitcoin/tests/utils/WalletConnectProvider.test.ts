@@ -1,3 +1,4 @@
+import * as bitcoinjs from 'bitcoinjs-lib'
 import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
@@ -241,6 +242,53 @@ describe('LeatherConnector', () => {
       universalProvider.session = mockUniversalProvider.mockSession()
     })
 
+    const MAINNET_ACCOUNT = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq'
+    const OTHER_ACCOUNT = '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2'
+    const TAPROOT_ACCOUNT = 'bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqzk5jj0'
+
+    function connectAccount(caipNetworkId: string, address: string) {
+      universalProvider.session = mockUniversalProvider.mockSession({
+        namespaces: {
+          bip122: {
+            accounts: [`${caipNetworkId}:${address}`],
+            events: [],
+            methods: ['signPsbt']
+          }
+        }
+      })
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+        caipAddress: `${caipNetworkId}:${address}`,
+        address
+      } as unknown as AccountState)
+    }
+
+    function createPsbt(owners: string[], network = bitcoinjs.networks.bitcoin) {
+      const psbt = new bitcoinjs.Psbt({ network })
+
+      owners.forEach((owner, index) => {
+        psbt.addInput({
+          hash: Buffer.alloc(32, index + 1),
+          index,
+          witnessUtxo: { script: bitcoinjs.address.toOutputScript(owner, network), value: 10_000 }
+        })
+      })
+      psbt.addOutput({ address: owners[0] as string, value: 5_000 })
+
+      return psbt.toBase64()
+    }
+
+    async function requestedSignInputs(
+      psbt: string,
+      signInputs: Parameters<BitcoinWalletConnectConnector['signPSBT']>[0]['signInputs'] = []
+    ) {
+      const requestSpy = vi.spyOn(universalProvider, 'request')
+      requestSpy.mockResolvedValueOnce({ psbt: 'signed_psbt' })
+
+      await provider.signPSBT({ psbt, signInputs, broadcast: false })
+
+      return requestSpy.mock.calls[0]?.[0].params as { signInputs: unknown; broadcast: boolean }
+    }
+
     it('should sign the PSBT and parse response', async () => {
       const requestSpy = vi.spyOn(universalProvider, 'request')
       requestSpy.mockResolvedValueOnce({ psbt: 'mock_psbt', txid: 'mock_txid' })
@@ -296,6 +344,75 @@ describe('LeatherConnector', () => {
       await expect(
         provider.signPSBT({ psbt: 'mock_psbt', signInputs: [], broadcast: true })
       ).rejects.toThrow('Account not found')
+    })
+
+    it('derives the signInputs from the inputs owned by the account when signInputs is empty', async () => {
+      connectAccount(bitcoin.caipNetworkId, MAINNET_ACCOUNT)
+
+      const params = await requestedSignInputs(createPsbt([MAINNET_ACCOUNT, MAINNET_ACCOUNT]))
+
+      expect(params.signInputs).toEqual([
+        { address: MAINNET_ACCOUNT, index: 0, sighashTypes: [1] },
+        { address: MAINNET_ACCOUNT, index: 1, sighashTypes: [1] }
+      ])
+      expect(params.broadcast).toBe(false)
+    })
+
+    it('skips inputs owned by other addresses and keeps the PSBT index', async () => {
+      connectAccount(bitcoin.caipNetworkId, MAINNET_ACCOUNT)
+
+      const params = await requestedSignInputs(
+        createPsbt([OTHER_ACCOUNT, MAINNET_ACCOUNT, OTHER_ACCOUNT, MAINNET_ACCOUNT])
+      )
+
+      expect(params.signInputs).toEqual([
+        { address: MAINNET_ACCOUNT, index: 1, sighashTypes: [1] },
+        { address: MAINNET_ACCOUNT, index: 3, sighashTypes: [1] }
+      ])
+    })
+
+    it('keeps a non-empty signInputs untouched', async () => {
+      connectAccount(bitcoin.caipNetworkId, MAINNET_ACCOUNT)
+      const signInputs = [{ address: MAINNET_ACCOUNT, index: 1, sighashTypes: [2] }]
+
+      const params = await requestedSignInputs(
+        createPsbt([MAINNET_ACCOUNT, MAINNET_ACCOUNT]),
+        signInputs
+      )
+
+      expect(params.signInputs).toBe(signInputs)
+    })
+
+    it('keeps signInputs empty when no input is owned by the account', async () => {
+      connectAccount(bitcoin.caipNetworkId, MAINNET_ACCOUNT)
+
+      const params = await requestedSignInputs(createPsbt([OTHER_ACCOUNT]))
+
+      expect(params.signInputs).toEqual([])
+    })
+
+    it('keeps signInputs empty when the PSBT cannot be decoded', async () => {
+      connectAccount(bitcoin.caipNetworkId, MAINNET_ACCOUNT)
+
+      const params = await requestedSignInputs('not_a_psbt')
+
+      expect(params.signInputs).toEqual([])
+    })
+
+    it('keeps signInputs empty when the account is not a valid address', async () => {
+      connectAccount(bitcoin.caipNetworkId, 'address')
+
+      const params = await requestedSignInputs(createPsbt([MAINNET_ACCOUNT]))
+
+      expect(params.signInputs).toEqual([])
+    })
+
+    it('keeps signInputs empty for a Taproot account', async () => {
+      connectAccount(bitcoin.caipNetworkId, TAPROOT_ACCOUNT)
+
+      const params = await requestedSignInputs(createPsbt([MAINNET_ACCOUNT]))
+
+      expect(params.signInputs).toEqual([])
     })
   })
 
