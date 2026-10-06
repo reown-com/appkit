@@ -10,6 +10,7 @@ import {
 import { ChainController, WalletConnectConnector, WcHelpersUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
+import { bitcoinTestnet } from '@reown/appkit/networks'
 
 import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
@@ -165,15 +166,26 @@ export class BitcoinWalletConnectConnector
     }
 
     try {
-      const network = bitcoinjs.networks.bitcoin
+      const network =
+        this.getActiveChain()?.caipNetworkId === bitcoinTestnet.caipNetworkId
+          ? bitcoinjs.networks.testnet
+          : bitcoinjs.networks.bitcoin
       const accountScript = bitcoinjs.address.toOutputScript(account, network)
       const psbt = bitcoinjs.Psbt.fromBase64(params.psbt, { network })
 
-      const ownedInputs = psbt.data.inputs.flatMap((input, index) =>
-        input.witnessUtxo?.script.equals(accountScript)
+      const ownedInputs = psbt.data.inputs.flatMap((input, index) => {
+        const script =
+          input.witnessUtxo?.script ??
+          (input.nonWitnessUtxo
+            ? bitcoinjs.Transaction.fromBuffer(input.nonWitnessUtxo).outs[
+                psbt.txInputs[index]?.index ?? -1
+              ]?.script
+            : undefined)
+
+        return script?.equals(accountScript)
           ? [{ address: account, index, sighashTypes: [1] }]
           : []
-      )
+      })
 
       return ownedInputs.length > 0 ? ownedInputs : params.signInputs
     } catch {

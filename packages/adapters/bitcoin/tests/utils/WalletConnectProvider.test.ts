@@ -277,6 +277,23 @@ describe('LeatherConnector', () => {
       return psbt.toBase64()
     }
 
+    function createLegacyPsbt(owner: string) {
+      const network = bitcoinjs.networks.bitcoin
+      const previousTx = new bitcoinjs.Transaction()
+      previousTx.addInput(Buffer.alloc(32, 9), 0)
+      previousTx.addOutput(bitcoinjs.address.toOutputScript(owner, network), 10_000)
+
+      const psbt = new bitcoinjs.Psbt({ network })
+      psbt.addInput({
+        hash: previousTx.getId(),
+        index: 0,
+        nonWitnessUtxo: previousTx.toBuffer()
+      })
+      psbt.addOutput({ address: owner, value: 5_000 })
+
+      return psbt.toBase64()
+    }
+
     async function requestedSignInputs(
       psbt: string,
       signInputs: Parameters<BitcoinWalletConnectConnector['signPSBT']>[0]['signInputs'] = []
@@ -413,6 +430,50 @@ describe('LeatherConnector', () => {
       const params = await requestedSignInputs(createPsbt([MAINNET_ACCOUNT]))
 
       expect(params.signInputs).toEqual([])
+    })
+
+    it('derives the signInputs from nonWitnessUtxo for legacy accounts', async () => {
+      connectAccount(bitcoin.caipNetworkId, OTHER_ACCOUNT)
+
+      const params = await requestedSignInputs(createLegacyPsbt(OTHER_ACCOUNT))
+
+      expect(params.signInputs).toEqual([{ address: OTHER_ACCOUNT, index: 0, sighashTypes: [1] }])
+    })
+
+    it('derives the signInputs for a testnet account on the testnet chain', async () => {
+      const testnetAccount = 'tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx'
+      getActiveChain.mockReturnValue(bitcoinTestnet)
+      connectAccount(bitcoinTestnet.caipNetworkId, testnetAccount)
+
+      const params = await requestedSignInputs(
+        createPsbt([testnetAccount], bitcoinjs.networks.testnet)
+      )
+
+      expect(params.signInputs).toEqual([{ address: testnetAccount, index: 0, sighashTypes: [1] }])
+    })
+
+    it('keeps signInputs empty when a testnet account is used while the active chain is mainnet', async () => {
+      const testnetAccount = 'tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx'
+      connectAccount(bitcoin.caipNetworkId, testnetAccount)
+
+      const params = await requestedSignInputs(
+        createPsbt([testnetAccount], bitcoinjs.networks.testnet)
+      )
+
+      expect(params.signInputs).toEqual([])
+    })
+
+    it('still throws Chain not found when there is no active chain', async () => {
+      connectAccount(bitcoin.caipNetworkId, MAINNET_ACCOUNT)
+      getActiveChain.mockReturnValue(undefined)
+
+      await expect(
+        provider.signPSBT({
+          psbt: createPsbt([MAINNET_ACCOUNT]),
+          signInputs: [],
+          broadcast: false
+        })
+      ).rejects.toThrow('Chain not found')
     })
   })
 
