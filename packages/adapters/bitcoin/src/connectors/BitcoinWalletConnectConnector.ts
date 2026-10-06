@@ -10,7 +10,7 @@ import {
 import { ChainController, WalletConnectConnector, WcHelpersUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
-import { bitcoinTestnet } from '@reown/appkit/networks'
+import { bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
@@ -166,8 +166,10 @@ export class BitcoinWalletConnectConnector
     }
 
     try {
+      const caipNetworkId = this.getActiveChain()?.caipNetworkId
       const network =
-        this.getActiveChain()?.caipNetworkId === bitcoinTestnet.caipNetworkId
+        caipNetworkId === bitcoinTestnet.caipNetworkId ||
+        caipNetworkId === bitcoinSignet.caipNetworkId
           ? bitcoinjs.networks.testnet
           : bitcoinjs.networks.bitcoin
       const accountScript = bitcoinjs.address.toOutputScript(account, network)

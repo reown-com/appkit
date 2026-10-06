@@ -3,7 +3,7 @@ import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import { type AccountState, ChainController } from '@reown/appkit-controllers'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { BitcoinWalletConnectConnector } from '../../src/connectors/BitcoinWalletConnectConnector'
 import { mockUniversalProvider } from '../mocks/mockUniversalProvider'
@@ -450,6 +450,18 @@ describe('LeatherConnector', () => {
       )
 
       expect(params.signInputs).toEqual([{ address: testnetAccount, index: 0, sighashTypes: [1] }])
+    })
+
+    it('derives the signInputs for a signet account on the signet chain', async () => {
+      const signetAccount = 'tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx'
+      getActiveChain.mockReturnValue(bitcoinSignet)
+      connectAccount(bitcoinSignet.caipNetworkId, signetAccount)
+
+      const params = await requestedSignInputs(
+        createPsbt([signetAccount], bitcoinjs.networks.testnet)
+      )
+
+      expect(params.signInputs).toEqual([{ address: signetAccount, index: 0, sighashTypes: [1] }])
     })
 
     it('keeps signInputs empty when a testnet account is used while the active chain is mainnet', async () => {
