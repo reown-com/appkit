@@ -182,9 +182,7 @@ export class BitcoinWalletConnectConnector
               ]?.script
             : undefined)
 
-        return script?.equals(accountScript)
-          ? [{ address: account, index, sighashTypes: [1] }]
-          : []
+        return script?.equals(accountScript) ? [{ address: account, index, sighashTypes: [1] }] : []
       })
 
       return ownedInputs.length > 0 ? ownedInputs : params.signInputs
