@@ -92,7 +92,9 @@ describe('W3mOnRampProvidersView', () => {
   })
 
   it('should handle provider selection', async () => {
-    const setSelectedProviderSpy = vi.spyOn(OnRampController, 'setSelectedProvider')
+    const setSelectedProviderSpy = vi
+      .spyOn(OnRampController, 'setSelectedProvider')
+      .mockResolvedValue(undefined)
     const routerPushSpy = vi.spyOn(RouterController, 'push')
     const openHrefSpy = vi.spyOn(CoreHelperUtil, 'openHref')
     const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
@@ -124,6 +126,7 @@ describe('W3mOnRampProvidersView', () => {
 
     const providerItem = element.shadowRoot?.querySelector('w3m-onramp-provider-item')
     providerItem?.click()
+    await vi.waitFor(() => expect(openHrefSpy).toHaveBeenCalled())
 
     expect(setSelectedProviderSpy).toHaveBeenCalledWith(mockProviders[0])
     expect(routerPushSpy).toHaveBeenCalledWith('BuyInProgress')
