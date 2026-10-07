@@ -97,10 +97,7 @@ export async function createSPLTokenTransactionKit({
 
     const signer = createNoopSigner(feePayer)
 
-    const instructions = [
-      getSetComputeUnitPriceInstruction({
-        microLamports: SPL_COMPUTE_BUDGET_CONSTANTS.UNIT_PRICE_MICRO_LAMPORTS
-      }),
+    const transferInstructions = [
       getCreateAssociatedTokenIdempotentInstruction({
         payer: signer,
         ata: toTokenAccount,
@@ -117,6 +114,11 @@ export async function createSPLTokenTransactionKit({
       })
     ]
 
+    const baseMessage = setTransactionMessageFeePayer(
+      feePayer,
+      createTransactionMessage({ version: 0 })
+    )
+
     /*
      * No lifetime attached yet: estimateComputeUnitLimitFactory's simulation only needs a fee
      * payer (it substitutes its own fresh blockhash server-side for the simulation itself, see
@@ -124,14 +126,18 @@ export async function createSPLTokenTransactionKit({
      * last RPC call before compiling, to minimize the staleness window before the wallet signs;
      * fetching it here instead risks it expiring during the simulation round-trip plus however
      * long the wallet's approval UI takes, which can silently drop the transaction after signing.
+     *
+     * Simulated with a zero price: the RPC requires the fee payer to hold limit * price (0.028 SOL
+     * at the simulation limit) even without signature verification, which makes simulation fail
+     * for most wallets. The price does not affect units consumed.
      */
-    const messageWithoutLifetime = appendTransactionMessageInstructions(
-      instructions,
-      setTransactionMessageFeePayer(feePayer, createTransactionMessage({ version: 0 }))
+    const simulationMessage = appendTransactionMessageInstructions(
+      [getSetComputeUnitPriceInstruction({ microLamports: 0 }), ...transferInstructions],
+      baseMessage
     )
 
     const estimateComputeUnitLimit = estimateComputeUnitLimitFactory({ rpc })
-    const estimatedUnits = await estimateComputeUnitLimit(messageWithoutLifetime).catch(() => null)
+    const estimatedUnits = await estimateComputeUnitLimit(simulationMessage).catch(() => null)
 
     const unitLimit =
       estimatedUnits && estimatedUnits > 0
@@ -143,7 +149,15 @@ export async function createSPLTokenTransactionKit({
 
     const messageWithComputeLimit = prependTransactionMessageInstruction(
       getSetComputeUnitLimitInstruction({ units: unitLimit }),
-      messageWithoutLifetime
+      appendTransactionMessageInstructions(
+        [
+          getSetComputeUnitPriceInstruction({
+            microLamports: SPL_COMPUTE_BUDGET_CONSTANTS.UNIT_PRICE_MICRO_LAMPORTS
+          }),
+          ...transferInstructions
+        ],
+        baseMessage
+      )
     )
 
     const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()

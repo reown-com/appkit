@@ -30,6 +30,7 @@ vi.mock('@solana-program/compute-budget', async importOriginal => {
   return {
     ...actual,
     getSetComputeUnitLimitInstruction: vi.fn(actual.getSetComputeUnitLimitInstruction),
+    getSetComputeUnitPriceInstruction: vi.fn(actual.getSetComputeUnitPriceInstruction),
     estimateComputeUnitLimitFactory: vi.fn()
   }
 })
@@ -256,5 +257,38 @@ describe('createSPLTokenTransactionKit', () => {
 
     expect('messageBytes' in result && 'signatures' in result).toBe(true)
     expect(getSetComputeUnitLimitInstruction).toHaveBeenCalledWith({ units: 50_000 })
+  })
+
+  it('simulates with a zero price so low-balance fee payers pass the fee pre-check, but builds the final message with the real price', async () => {
+    const {
+      estimateComputeUnitLimitFactory,
+      getSetComputeUnitPriceInstruction,
+      COMPUTE_BUDGET_PROGRAM_ADDRESS
+    } = await import('@solana-program/compute-budget')
+    const SET_COMPUTE_UNIT_PRICE_DISCRIMINATOR = 3
+    const estimateFn = vi.fn().mockResolvedValue(40_000)
+    vi.mocked(estimateComputeUnitLimitFactory).mockReturnValue(estimateFn)
+
+    await createSPLTokenTransactionKit({
+      provider,
+      connection,
+      to: TestConstants.accounts[1].address as Address,
+      amount: 1,
+      tokenMint: mockTokenMint
+    })
+
+    const simulatedMessage = estimateFn.mock.calls[0]?.[0] as {
+      instructions: { programAddress: Address; data?: Uint8Array }[]
+    }
+    const simulatedPriceInstruction = simulatedMessage.instructions.find(
+      instruction =>
+        instruction.programAddress === COMPUTE_BUDGET_PROGRAM_ADDRESS &&
+        instruction.data?.[0] === SET_COMPUTE_UNIT_PRICE_DISCRIMINATOR
+    )
+
+    expect(simulatedPriceInstruction).toBeDefined()
+    expect(Buffer.from(simulatedPriceInstruction?.data ?? []).readBigUInt64LE(1)).toBe(0n)
+    expect(getSetComputeUnitPriceInstruction).toHaveBeenCalledWith({ microLamports: 0 })
+    expect(getSetComputeUnitPriceInstruction).toHaveBeenCalledWith({ microLamports: 20_000_000 })
   })
 })
