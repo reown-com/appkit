@@ -29,4 +29,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Updates `@walletconnect/*` to `2.25.1-canary-1`. The canary adds the wallet host launch to Universal Provider (`UniversalProvider.isHostLaunch()`, and handing the pairing URI to the wallet that opened the app) plus the wallet fee config.
+Updates `@walletconnect/*` to `2.25.1-canary-6`. The canary adds the wallet host launch to Universal Provider and Ethereum Provider (`isHostLaunch()`, and handing the pairing URI to the wallet that opened the app), the wallet fee config, and Universal Provider funnel events.
