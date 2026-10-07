@@ -668,9 +668,11 @@ export const BlockchainApiController = {
     const response = await state.api.post<{ url: string }>({
       path: `/v1/onramp/widget-url`,
       params: {
-        projectId: OptionsController.state.projectId
+        projectId: OptionsController.state.projectId,
+        new_meld_api: 'true'
       },
       body: {
+        projectId: OptionsController.state.projectId,
         destinationCurrencyCode,
         walletAddress,
         externalCustomerId: OptionsController.state.projectId
