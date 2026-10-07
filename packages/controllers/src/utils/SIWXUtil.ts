@@ -22,6 +22,8 @@ import { CoreHelperUtil } from './CoreHelperUtil.js'
  */
 
 let addEmbeddedWalletSessionPromise: Promise<void> | null = null
+// A wallet launch signs in directly, so overlapping calls must share one signature request
+let hostLaunchSignInPromise: Promise<void> | null = null
 
 export const SIWXUtil = {
   getSIWX() {
@@ -34,6 +36,11 @@ export const SIWXUtil = {
     if (!(siwx && caipAddress)) {
       return
     }
+
+    // A wallet launch signs in once its connection settles (see `finishHostLaunchConnection`)
+    if (ConnectionController.state.isHostLaunchConnecting) {
+      return
+    }
     const [namespace, chainId, address] = caipAddress.split(':') as [ChainNamespace, string, string]
 
     if (!ChainController.checkIfSupportedNetwork(namespace, `${namespace}:${chainId}`)) {
@@ -41,7 +48,9 @@ export const SIWXUtil = {
     }
 
     try {
-      if (OptionsController.state.remoteFeatures?.emailCapture) {
+      const { isHostLaunch } = ConnectionController.state
+
+      if (OptionsController.state.remoteFeatures?.emailCapture && !isHostLaunch) {
         const user = ChainController.getAccountData(namespace)?.user
         await ModalController.open({
           view: 'DataCapture',
@@ -60,6 +69,20 @@ export const SIWXUtil = {
       if (sessions.length) {
         return
       }
+
+      /*
+       * Inside the wallet, ask for the signature directly instead of showing the Sign In view, so
+       * the user only approves it in the wallet. If it fails, that view opens to retry or cancel.
+       */
+      if (isHostLaunch) {
+        hostLaunchSignInPromise ??= SIWXUtil.requestSignMessage().finally(() => {
+          hostLaunchSignInPromise = null
+        })
+        await hostLaunchSignInPromise
+
+        return
+      }
+
       await ModalController.open({
         view: 'SIWXSignMessage'
       })
@@ -389,6 +412,18 @@ export const SIWXUtil = {
     const namespaces = new Set(chains.map(chain => chain.split(':')[0] as ChainNamespace))
 
     if (!siwx || namespaces.size !== 1 || !namespaces.has('eip155')) {
+      return false
+    }
+
+    /*
+     * On a wallet launch only `pair()` hands the URI to the wallet; `authenticate()` would never
+     * reach it (WCP4-186). Return false so the connector pairs, and sign in after connecting.
+     */
+    if (ConnectionController.state.isHostLaunch) {
+      console.warn(
+        'AppKit: one-click auth is not supported on a wallet launch yet, signing in after connecting'
+      )
+
       return false
     }
 

@@ -651,6 +651,14 @@ const controller = {
   },
 
   showUnsupportedChainUI() {
+    // Held back while connecting to a wallet that launched the app, then shown once it settles
+    if (ConnectionController.state.isHostLaunchConnecting) {
+      console.warn(
+        'AppKit: unsupported network while connecting to the wallet, deferring the modal'
+      )
+
+      return
+    }
     ModalController.open({ view: 'UnsupportedChain' })
   },
 
