@@ -185,3 +185,25 @@ test('it should keep Tron and TON off for a link without them and allow enabling
   await Promise.all(tronNetworks.map(n => demoPage.verifyNetworkOptionEnabled(n.id, true)))
   await demoPage.verifyNetworkAvailableOnAppKit('TRON', true)
 })
+
+// Test case 8: A shared link with only enabled networks keeps the chains without networks off
+test('it should keep Tron and TON off for a link with only enabled networks', async () => {
+  const linkWithOnlyNetworks = btoa(
+    JSON.stringify({
+      enabledNetworks: [1, '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', '000000000019d6689c085ae165831e93']
+    })
+  )
+
+  await demoPage.page.goto(`/?config=${linkWithOnlyNetworks}`)
+  await demoPage.openNetworksWithHook()
+
+  await demoPage.verifyChainOptionEnabled('eip155', true)
+  await demoPage.verifyChainOptionEnabled('tron', false)
+  await demoPage.verifyChainOptionEnabled('ton', false)
+  await demoPage.verifyNetworkAvailableOnAppKit('TRON', false)
+
+  await demoPage.page.getByTestId('chain-option-tron').click()
+
+  await demoPage.verifyChainOptionEnabled('tron', true)
+  await demoPage.verifyNetworkAvailableOnAppKit('TRON', true)
+})

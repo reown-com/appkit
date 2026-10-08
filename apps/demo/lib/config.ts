@@ -33,6 +33,7 @@ import {
 } from '@reown/appkit/networks'
 import { type CreateAppKit } from '@reown/appkit/react'
 
+import { NAMESPACE_NETWORK_IDS_MAP } from '@/lib/constants'
 import { urlStateUtils } from '@/lib/url-state'
 
 export const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -108,16 +109,15 @@ const metadata = {
 }
 
 export const initialConfig = urlStateUtils.getStateFromURL()
-const initialEnabledChains = initialConfig?.enabledChains || [
-  'eip155',
-  'solana',
-  'bip122',
-  'tron',
-  'ton'
-]
 // Enabled network IDs
 export const initialEnabledNetworks =
   initialConfig?.enabledNetworks || allNetworks.map(network => network.id)
+// Links saved before a chain existed carry networks but no chains, so a chain is on only if one of its networks is
+export const initialEnabledChains: ChainNamespace[] =
+  initialConfig?.enabledChains ||
+  (Object.keys(NAMESPACE_NETWORK_IDS_MAP) as ChainNamespace[]).filter(namespace =>
+    NAMESPACE_NETWORK_IDS_MAP[namespace].some(id => initialEnabledNetworks.includes(id))
+  )
 
 // Enabled adapters
 const adapters: ChainAdapter[] = []
