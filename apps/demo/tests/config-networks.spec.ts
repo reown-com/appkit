@@ -18,6 +18,13 @@ const solanaNetworks = NETWORK_OPTIONS.filter(n => n.namespace === ConstantsUtil
   n => n.network
 )
 
+const tronNetworks = NETWORK_OPTIONS.filter(n => n.namespace === ConstantsUtil.CHAIN.TRON).map(
+  n => n.network
+)
+const tonNetworks = NETWORK_OPTIONS.filter(n => n.namespace === ConstantsUtil.CHAIN.TON).map(
+  n => n.network
+)
+
 test.beforeAll(async ({ browser }) => {
   const context = await browser.newContext()
   const browserPage = await context.newPage()
@@ -103,4 +110,78 @@ test('it should refresh page keeps state as expected', async () => {
   evmNetworks.forEach(async network => {
     await demoPage.verifyNetworkAvailableOnAppKit(network.name, false)
   })
+})
+
+// Test case 4: Tron and TON are enabled by default and Tron can be disabled with chain option
+test('it should enable Tron and TON by default and disable Tron with chain option', async () => {
+  await demoPage.openNetworksWithHook()
+
+  await demoPage.verifyChainOptionEnabled('tron', true)
+  await demoPage.verifyChainOptionEnabled('ton', true)
+  await demoPage.verifyNetworkAvailableOnAppKit('TRON', true)
+  await demoPage.verifyNetworkAvailableOnAppKit('TON', true)
+  await demoPage.verifyNetworkAvailableOnAppKit('TON Testnet', true)
+
+  await demoPage.disableChainOption('tron')
+
+  await demoPage.verifyChainOptionEnabled('tron', false)
+  await Promise.all(tronNetworks.map(n => demoPage.verifyNetworkOptionEnabled(n.id, false)))
+  await demoPage.verifyNetworkAvailableOnAppKit('TRON', false)
+  await demoPage.verifyChainOptionEnabled('ton', true)
+})
+
+// Test case 5: Disabling every TON network disables the chain and the chain option brings both back
+test('it should disable TON with network options and enable it with chain option', async () => {
+  await demoPage.openNetworksWithHook()
+
+  await demoPage.disableNetworkOption('-3')
+  await demoPage.verifyChainOptionEnabled('ton', true)
+  await demoPage.verifyNetworkAvailableOnAppKit('TON Testnet', false)
+  await demoPage.verifyNetworkAvailableOnAppKit('TON', true)
+
+  await demoPage.disableNetworkOption('-239')
+  await demoPage.verifyChainOptionEnabled('ton', false)
+  await demoPage.verifyNetworkAvailableOnAppKit('TON', false)
+
+  await demoPage.page.getByTestId('chain-option-ton').click()
+
+  await demoPage.verifyChainOptionEnabled('ton', true)
+  await Promise.all(tonNetworks.map(n => demoPage.verifyNetworkOptionEnabled(n.id, true)))
+  await demoPage.verifyNetworkAvailableOnAppKit('TON', true)
+  await demoPage.verifyNetworkAvailableOnAppKit('TON Testnet', true)
+})
+
+// Test case 6: Tron and TON state survives a refresh
+test('it should keep Tron disabled and TON enabled after refresh', async () => {
+  await demoPage.page.reload()
+  await demoPage.openNetworksWithHook()
+
+  await demoPage.verifyChainOptionEnabled('tron', false)
+  await demoPage.verifyChainOptionEnabled('ton', true)
+  await Promise.all(tonNetworks.map(n => demoPage.verifyNetworkOptionEnabled(n.id, true)))
+  await demoPage.verifyNetworkAvailableOnAppKit('TRON', false)
+  await demoPage.verifyNetworkAvailableOnAppKit('TON', true)
+})
+
+// Test case 7: A shared link created before Tron and TON existed keeps them off and lets the user enable them
+test('it should keep Tron and TON off for a link without them and allow enabling Tron', async () => {
+  const linkWithoutTronAndTon = btoa(
+    JSON.stringify({
+      enabledChains: ['eip155', 'solana', 'bip122'],
+      enabledNetworks: [1, '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', '000000000019d6689c085ae165831e93']
+    })
+  )
+
+  await demoPage.page.goto(`/?config=${linkWithoutTronAndTon}`)
+  await demoPage.openNetworksWithHook()
+
+  await demoPage.verifyChainOptionEnabled('tron', false)
+  await demoPage.verifyChainOptionEnabled('ton', false)
+  await demoPage.verifyNetworkAvailableOnAppKit('TRON', false)
+
+  await demoPage.page.getByTestId('chain-option-tron').click()
+
+  await demoPage.verifyChainOptionEnabled('tron', true)
+  await Promise.all(tronNetworks.map(n => demoPage.verifyNetworkOptionEnabled(n.id, true)))
+  await demoPage.verifyNetworkAvailableOnAppKit('TRON', true)
 })

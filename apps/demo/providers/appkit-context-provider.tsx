@@ -60,7 +60,7 @@ export function ContextProvider({ children }: AppKitProviderProps) {
     social: false
   })
   const [enabledChains, setEnabledChains] = useState<ChainNamespace[]>(
-    initialConfig?.enabledChains || ['eip155', 'solana', 'bip122']
+    initialConfig?.enabledChains || ['eip155', 'solana', 'bip122', 'tron', 'ton']
   )
   const [enabledNetworks, setEnabledNetworks] = useState<(string | number)[]>(
     initialEnabledNetworks || []

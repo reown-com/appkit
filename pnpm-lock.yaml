@@ -381,6 +381,12 @@ importers:
       '@reown/appkit-adapter-solana':
         specifier: 1.8.24
         version: 1.8.24(@types/react@19.1.15)(bufferutil@4.1.0)(react@19.1.2)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@4.3.5)
+      '@reown/appkit-adapter-ton':
+        specifier: 1.8.24
+        version: 1.8.24(@types/react@19.1.15)(bufferutil@4.1.0)(react@19.1.2)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.15)(react@19.1.2))(zod@4.3.5)
+      '@reown/appkit-adapter-tron':
+        specifier: 1.8.24
+        version: 1.8.24(@tronweb3/tronwallet-adapter-binance@1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@tronweb3/tronwallet-adapter-bitkeep@1.1.7(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@tronweb3/tronwallet-adapter-metamask-tron@1.0.1(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@tronweb3/tronwallet-adapter-okxwallet@1.0.7(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@tronweb3/tronwallet-adapter-trust@1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.15)(bufferutil@4.1.0)(react@19.1.2)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.15)(react@19.1.2))(zod@4.3.5)
       '@reown/appkit-common':
         specifier: 1.8.24
         version: 1.8.24(bufferutil@4.1.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.3.5)
@@ -405,6 +411,24 @@ importers:
       '@tanstack/react-query':
         specifier: 5.75.5
         version: 5.75.5(react@19.1.2)
+      '@tronweb3/tronwallet-adapter-binance':
+        specifier: 1.0.2
+        version: 1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-bitkeep':
+        specifier: 1.1.7
+        version: 1.1.7(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-metamask-tron':
+        specifier: 1.0.1
+        version: 1.0.1(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-okxwallet':
+        specifier: 1.0.7
+        version: 1.0.7(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-tronlink':
+        specifier: 1.1.13
+        version: 1.1.13(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-trust':
+        specifier: 1.0.2
+        version: 1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
       '@wagmi/core':
         specifier: 2.22.1
         version: 2.22.1(@tanstack/query-core@5.75.5)(@types/react@19.1.15)(react@19.1.2)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.1.2))(viem@2.55.13(bufferutil@4.1.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.3.5))
@@ -7841,6 +7865,29 @@ packages:
 
   '@reown/appkit-adapter-solana@1.8.24':
     resolution: {integrity: sha512-+Xxwq1j7W8U3Ppj9UGx8HyrwZB/rdfSF6GrIsPmyFvkbbQviqKZSrINI/ysNJUU7MZmL773ytgc/EspE/B5nOw==}
+
+  '@reown/appkit-adapter-ton@1.8.24':
+    resolution: {integrity: sha512-nxQd42MDtL/0rSTNvAeajxmP1Rn5+p4/O+m+C7DfgIwA1YkQ+kWVmvctBhJeswLNe88BMukR0+RrjKeNRjPcLg==}
+
+  '@reown/appkit-adapter-tron@1.8.24':
+    resolution: {integrity: sha512-tiSsSUsmFnTGdFWMV1mGeeExZAyuq7PP/hoG2b2sBGyxyWNxcAS5gG9i41IpwDrq/BSPOzWDBh5lFs0EEEfvZQ==}
+    peerDependencies:
+      '@tronweb3/tronwallet-adapter-binance': 1.0.2
+      '@tronweb3/tronwallet-adapter-bitkeep': 1.1.7
+      '@tronweb3/tronwallet-adapter-metamask-tron': 1.0.1
+      '@tronweb3/tronwallet-adapter-okxwallet': 1.0.7
+      '@tronweb3/tronwallet-adapter-trust': 1.0.2
+    peerDependenciesMeta:
+      '@tronweb3/tronwallet-adapter-binance':
+        optional: true
+      '@tronweb3/tronwallet-adapter-bitkeep':
+        optional: true
+      '@tronweb3/tronwallet-adapter-metamask-tron':
+        optional: true
+      '@tronweb3/tronwallet-adapter-okxwallet':
+        optional: true
+      '@tronweb3/tronwallet-adapter-trust':
+        optional: true
 
   '@reown/appkit-common@1.7.8':
     resolution: {integrity: sha512-ridIhc/x6JOp7KbDdwGKY4zwf8/iK8EYBl+HtWrruutSLwZyVi5P8WaZa+8iajL6LcDcDF7LoyLwMTym7SRuwQ==}
@@ -26257,6 +26304,97 @@ snapshots:
       - uploadthing
       - use-sync-external-store
       - utf-8-validate
+      - zod
+
+  '@reown/appkit-adapter-ton@1.8.24(@types/react@19.1.15)(bufferutil@4.1.0)(react@19.1.2)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.15)(react@19.1.2))(zod@4.3.5)':
+    dependencies:
+      '@reown/appkit': 1.8.24(@types/react@19.1.15)(bufferutil@4.1.0)(react@19.1.2)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@4.3.5)
+      '@reown/appkit-common': 1.8.24(bufferutil@4.1.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.3.5)
+      '@reown/appkit-controllers': 1.8.24(@types/react@19.1.15)(bufferutil@4.1.0)(react@19.1.2)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.3.5)
+      '@reown/appkit-polyfills': 1.8.24
+      '@reown/appkit-utils': 1.8.24(@types/react@19.1.15)(bufferutil@4.1.0)(react@19.1.2)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.15)(react@19.1.2))(zod@4.3.5)
+      '@walletconnect/universal-provider': 2.23.7(bufferutil@4.1.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.3.5)
+      tweetnacl-util: 0.15.1
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@deno/kv'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@types/react'
+      - '@upstash/redis'
+      - '@vercel/blob'
+      - '@vercel/functions'
+      - '@vercel/kv'
+      - aws4fetch
+      - bufferutil
+      - db0
+      - debug
+      - encoding
+      - fastestsmallesttextencoderdecoder
+      - immer
+      - ioredis
+      - react
+      - typescript
+      - uploadthing
+      - use-sync-external-store
+      - utf-8-validate
+      - valtio
+      - zod
+
+  '@reown/appkit-adapter-tron@1.8.24(@tronweb3/tronwallet-adapter-binance@1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@tronweb3/tronwallet-adapter-bitkeep@1.1.7(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@tronweb3/tronwallet-adapter-metamask-tron@1.0.1(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@tronweb3/tronwallet-adapter-okxwallet@1.0.7(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@tronweb3/tronwallet-adapter-trust@1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10))(@types/react@19.1.15)(bufferutil@4.1.0)(react@19.1.2)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.15)(react@19.1.2))(zod@4.3.5)':
+    dependencies:
+      '@reown/appkit': 1.8.24(@types/react@19.1.15)(bufferutil@4.1.0)(react@19.1.2)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@4.3.5)
+      '@reown/appkit-common': 1.8.24(bufferutil@4.1.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.3.5)
+      '@reown/appkit-controllers': 1.8.24(@types/react@19.1.15)(bufferutil@4.1.0)(react@19.1.2)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.3.5)
+      '@reown/appkit-polyfills': 1.8.24
+      '@reown/appkit-utils': 1.8.24(@types/react@19.1.15)(bufferutil@4.1.0)(react@19.1.2)(typescript@5.9.2)(use-sync-external-store@1.4.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.15)(react@19.1.2))(zod@4.3.5)
+      '@tronweb3/tronwallet-abstract-adapter': 1.1.10(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-tronlink': 1.1.13(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@walletconnect/universal-provider': 2.23.7(bufferutil@4.1.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.3.5)
+    optionalDependencies:
+      '@tronweb3/tronwallet-adapter-binance': 1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-bitkeep': 1.1.7(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-metamask-tron': 1.0.1(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-okxwallet': 1.0.7(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+      '@tronweb3/tronwallet-adapter-trust': 1.0.2(bufferutil@4.1.0)(utf-8-validate@5.0.10)
+    transitivePeerDependencies:
+      - '@azure/app-configuration'
+      - '@azure/cosmos'
+      - '@azure/data-tables'
+      - '@azure/identity'
+      - '@azure/keyvault-secrets'
+      - '@azure/storage-blob'
+      - '@capacitor/preferences'
+      - '@deno/kv'
+      - '@netlify/blobs'
+      - '@planetscale/database'
+      - '@react-native-async-storage/async-storage'
+      - '@types/react'
+      - '@upstash/redis'
+      - '@vercel/blob'
+      - '@vercel/functions'
+      - '@vercel/kv'
+      - aws4fetch
+      - bufferutil
+      - db0
+      - debug
+      - encoding
+      - fastestsmallesttextencoderdecoder
+      - immer
+      - ioredis
+      - react
+      - typescript
+      - uploadthing
+      - use-sync-external-store
+      - utf-8-validate
+      - valtio
       - zod
 
   '@reown/appkit-common@1.7.8(bufferutil@4.1.0)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@3.22.4)':

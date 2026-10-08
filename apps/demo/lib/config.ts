@@ -1,6 +1,15 @@
+import { BinanceWalletAdapter } from '@tronweb3/tronwallet-adapter-binance'
+import { BitKeepAdapter } from '@tronweb3/tronwallet-adapter-bitkeep'
+import { MetaMaskAdapter } from '@tronweb3/tronwallet-adapter-metamask-tron'
+import { OkxWalletAdapter } from '@tronweb3/tronwallet-adapter-okxwallet'
+import { TronLinkAdapter } from '@tronweb3/tronwallet-adapter-tronlink'
+import { TrustAdapter } from '@tronweb3/tronwallet-adapter-trust'
+
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
+import { TonAdapter } from '@reown/appkit-adapter-ton'
+import { TronAdapter } from '@reown/appkit-adapter-tron'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { type ChainNamespace } from '@reown/appkit-common'
 import { type ChainAdapter, ConstantsUtil } from '@reown/appkit-controllers'
@@ -17,6 +26,9 @@ import {
   polygon,
   solana,
   solanaDevnet,
+  ton,
+  tonTestnet,
+  tronMainnet,
   zksync
 } from '@reown/appkit/networks'
 import { type CreateAppKit } from '@reown/appkit/react'
@@ -41,29 +53,51 @@ export const solanaNetworks = [solana, solanaDevnet] as AppKitNetworksType
 
 export const bitcoinNetworks = [bitcoin, bitcoinTestnet] as AppKitNetworksType
 
+export const tronNetworks = [tronMainnet] as AppKitNetworksType
+
+export const tonNetworks = [ton, tonTestnet] as AppKitNetworksType
+
 export const namespaceNetworksMap: Record<ChainNamespace, [AppKitNetwork, ...AppKitNetwork[]]> = {
   eip155: evmNetworks,
   solana: solanaNetworks,
   bip122: bitcoinNetworks,
+  tron: tronNetworks,
+  ton: tonNetworks,
   // @ts-expect-error Polkadot is not supported yet
   polkadot: []
 }
 export const allNetworks = [
   ...evmNetworks,
   ...solanaNetworks,
-  ...bitcoinNetworks
+  ...bitcoinNetworks,
+  ...tronNetworks,
+  ...tonNetworks
 ] as AppKitNetworksType
 export const networks = [
   ...evmNetworks,
   ...solanaNetworks,
-  ...bitcoinNetworks
+  ...bitcoinNetworks,
+  ...tronNetworks,
+  ...tonNetworks
 ] as AppKitNetworksType
 
 // Adapters
 export const evmAdapter = new EthersAdapter()
 export const solanaAdapter = new SolanaAdapter()
 export const bitcoinAdapter = new BitcoinAdapter({})
-export const allAdapters = [evmAdapter, solanaAdapter, bitcoinAdapter]
+export const tronAdapter = new TronAdapter({
+  walletAdapters: [
+    new TronLinkAdapter({ openUrlWhenWalletNotFound: false, checkTimeout: 3000 }),
+    new TrustAdapter(),
+    new BitKeepAdapter(),
+    new BinanceWalletAdapter(),
+    new OkxWalletAdapter({ openUrlWhenWalletNotFound: false }),
+    // MetaMaskAdapter touches window in its constructor, which does not exist during server render
+    ...(typeof window === 'undefined' ? [] : [new MetaMaskAdapter()])
+  ]
+})
+export const tonAdapter = new TonAdapter()
+export const allAdapters = [evmAdapter, solanaAdapter, bitcoinAdapter, tronAdapter, tonAdapter]
 
 // Metadata
 const metadata = {
@@ -74,7 +108,13 @@ const metadata = {
 }
 
 export const initialConfig = urlStateUtils.getStateFromURL()
-const initialEnabledChains = initialConfig?.enabledChains || ['eip155', 'solana', 'bip122']
+const initialEnabledChains = initialConfig?.enabledChains || [
+  'eip155',
+  'solana',
+  'bip122',
+  'tron',
+  'ton'
+]
 // Enabled network IDs
 export const initialEnabledNetworks =
   initialConfig?.enabledNetworks || allNetworks.map(network => network.id)
@@ -107,6 +147,20 @@ initialEnabledChains.forEach(chain => {
     initialNetworks.push(...enabledNetworks)
 
     adapters.push(bitcoinAdapter)
+  } else if (chain === CommonConstantsUtil.CHAIN.TRON) {
+    const enabledNetworks = tronNetworks.filter(network =>
+      initialEnabledNetworks.includes(network.id)
+    )
+    initialNetworks.push(...enabledNetworks)
+
+    adapters.push(tronAdapter)
+  } else if (chain === CommonConstantsUtil.CHAIN.TON) {
+    const enabledNetworks = tonNetworks.filter(network =>
+      initialEnabledNetworks.includes(network.id)
+    )
+    initialNetworks.push(...enabledNetworks)
+
+    adapters.push(tonAdapter)
   }
 })
 
