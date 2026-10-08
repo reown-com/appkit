@@ -49,5 +49,8 @@ export const NAMESPACE_NETWORK_IDS_MAP: Record<ChainNamespace, (string | number)
   polkadot: [],
   cosmos: [],
   sui: [],
-  stacks: []
+  stacks: [],
+  ton: [],
+  tron: [],
+  stellar: []
 }
