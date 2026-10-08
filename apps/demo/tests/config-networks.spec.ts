@@ -1,4 +1,4 @@
-import { test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 
@@ -206,4 +206,20 @@ test('it should keep Tron and TON off for a link with only enabled networks', as
 
   await demoPage.verifyChainOptionEnabled('tron', true)
   await demoPage.verifyNetworkAvailableOnAppKit('TRON', true)
+})
+
+// Test case 9: The app url declared to wallets is the origin the page is served from
+test('it should declare the page origin as the app url', async () => {
+  const warnings: string[] = []
+  demoPage.page.on('console', message => {
+    if (message.type() === 'warning') {
+      warnings.push(message.text())
+    }
+  })
+
+  await demoPage.page.goto('/')
+  await demoPage.page.waitForLoadState('networkidle')
+  await expect(demoPage.page.getByTestId('chain-option-ton')).toBeVisible()
+
+  expect(warnings.filter(warning => warning.includes('metadata.url'))).toEqual([])
 })

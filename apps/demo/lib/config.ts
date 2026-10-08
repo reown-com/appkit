@@ -104,7 +104,8 @@ export const allAdapters = [evmAdapter, solanaAdapter, bitcoinAdapter, tronAdapt
 const metadata = {
   name: 'AppKit Builder',
   description: 'The full stack toolkit to build onchain app UX',
-  url: 'https://demo.reown.com',
+  // Wallets compare this with the page origin and warn or block on a mismatch
+  url: typeof window === 'undefined' ? 'https://demo.reown.com' : window.location.origin,
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
