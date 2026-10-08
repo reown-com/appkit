@@ -1,4 +1,4 @@
-import { type CaipNetworkId, NetworkUtil } from '@reown/appkit-common'
+import { type CaipNetworkId, ConstantsUtil, NetworkUtil } from '@reown/appkit-common'
 
 import { ChainController } from '../../../controllers/ChainController.js'
 import type { SIWXMessage } from '../../../utils/SIWXUtil.js'
@@ -22,7 +22,9 @@ export class ReownAuthenticationMessenger {
       resources: this.resources,
       nonce: await this.getNonce(input),
       issuedAt: this.stringifyDate(new Date()),
-      statement: undefined,
+      statement: input.chainId.startsWith(`${ConstantsUtil.CHAIN.SOLANA}:`)
+        ? ConstantsUtil.SOLANA_SIGN_IN.STATEMENT
+        : undefined,
       expirationTime: undefined,
       notBefore: undefined
     }
@@ -43,7 +45,7 @@ export class ReownAuthenticationMessenger {
       params.statement ? `\n${params.statement}\n` : '',
       `URI: ${params.uri}`,
       `Version: ${params.version}`,
-      `Chain ID: ${params.chainId}`,
+      `Chain ID: ${ConstantsUtil.SOLANA_SIGN_IN.MESSAGE_CHAIN_IDS[params.chainId] ?? params.chainId}`,
       `Nonce: ${params.nonce}`,
       params.issuedAt && `Issued At: ${params.issuedAt}`,
       params.expirationTime && `Expiration Time: ${params.expirationTime}`,
