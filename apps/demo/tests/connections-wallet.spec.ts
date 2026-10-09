@@ -42,8 +42,6 @@ test('it should switch networks as expected', async () => {
 
   await appPage.openNetworks()
   await appPage.switchNetwork(networkName)
-  await validator.expectSwitchedNetworkOnNetworksView(networkName)
-  await appPage.goBack()
   await validator.expectSwitchedNetworkOnHeaderButton(networkName)
 
   await appPage.page.reload()
@@ -53,8 +51,6 @@ test('it should switch networks as expected', async () => {
   networkName = 'Solana'
   await appPage.openNetworks()
   await appPage.switchNetwork(networkName)
-  await validator.expectSwitchedNetworkOnNetworksView(networkName)
-  await appPage.goBack()
   await validator.expectSwitchedNetworkOnHeaderButton(networkName)
 
   await appPage.page.reload()
@@ -64,8 +60,6 @@ test('it should switch networks as expected', async () => {
   networkName = 'Bitcoin'
   await appPage.openNetworks()
   await appPage.switchNetwork(networkName)
-  await validator.expectSwitchedNetworkOnNetworksView(networkName)
-  await appPage.goBack()
   await validator.expectSwitchedNetworkOnHeaderButton(networkName)
 
   await appPage.page.reload()

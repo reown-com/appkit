@@ -22,7 +22,13 @@ export const networkImages = {
   // Bitcoin
   '000000000019d6689c085ae165831e93': '0b4838db-0161-4ffe-022d-532bf03dba00',
   // Bitcoin Testnet
-  '000000000933ea01ad0ee984209779ba': '39354064-d79b-420b-065d-f980c4b78200'
+  '000000000933ea01ad0ee984209779ba': '39354064-d79b-420b-065d-f980c4b78200',
+  // Tron
+  '0x2b6653dc': '3502bb86-cc4e-420f-a387-59ea63a28b00',
+  // TON
+  '-239': '20f673c0-095e-49b2-07cf-eb5049dcf600',
+  // TON Testnet
+  '-3': '20f673c0-095e-49b2-07cf-eb5049dcf600'
 }
 
 export const chainImages = {

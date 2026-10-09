@@ -17,7 +17,7 @@ import {
 } from '@reown/appkit/react'
 
 import { AppKitContext } from '@/contexts/appkit-context'
-import { initialConfig, initialEnabledNetworks } from '@/lib/config'
+import { initialConfig, initialEnabledChains, initialEnabledNetworks } from '@/lib/config'
 import {
   NAMESPACE_NETWORK_IDS_MAP,
   NETWORK_ID_NAMESPACE_MAP,
@@ -59,9 +59,7 @@ export function ContextProvider({ children }: AppKitProviderProps) {
     wallet: false,
     social: false
   })
-  const [enabledChains, setEnabledChains] = useState<ChainNamespace[]>(
-    initialConfig?.enabledChains || ['eip155', 'solana', 'bip122']
-  )
+  const [enabledChains, setEnabledChains] = useState<ChainNamespace[]>(initialEnabledChains)
   const [enabledNetworks, setEnabledNetworks] = useState<(string | number)[]>(
     initialEnabledNetworks || []
   )

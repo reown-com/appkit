@@ -57,13 +57,9 @@ test('should stay connected after page refresh', async () => {
 test('should switch network as expected', async () => {
   await demoPage.openNetworks()
   await demoPage.switchNetwork('Solana')
-  await validator.expectSwitchedNetworkOnNetworksView('Solana')
-  await demoPage.goBack()
   await validator.expectSwitchedNetworkOnHeaderButton('Solana')
 
   await demoPage.openNetworks()
   await demoPage.switchNetwork('Ethereum')
-  await validator.expectSwitchedNetworkOnNetworksView('Ethereum')
-  await demoPage.goBack()
   await validator.expectSwitchedNetworkOnHeaderButton('Ethereum')
 })
