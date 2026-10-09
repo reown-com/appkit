@@ -50,8 +50,17 @@ export class InformalMessenger extends SIWXMessenger {
     return NetworkUtil.getNetworkNameByCaipNetworkId(requestedNetworks, chainId)
   }
 
+  /**
+   * Get the chain ID as it is written in the message text
+   * @param chainId The CAIP-2 chain ID of the message
+   * @returns The chain ID to render on the `Chain ID` line
+   */
+  protected getMessageChainId(chainId: CaipNetworkId): string | undefined {
+    return this.clearChainIdNamespace ? chainId.split(':')[1] : chainId
+  }
+
   protected override stringify(params: SIWXMessage.Data): string {
-    const chainId = this.clearChainIdNamespace ? params.chainId.split(':')[1] : params.chainId
+    const chainId = this.getMessageChainId(params.chainId)
     const networkName = this.getNetworkName(params.chainId)
 
     return [

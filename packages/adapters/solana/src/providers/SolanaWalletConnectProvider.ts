@@ -232,14 +232,10 @@ export class SolanaWalletConnectProvider
       }) as T
     } catch (error) {
       if (error instanceof WalletConnectMethodNotSupportedError) {
-        const signedTransactions = [] as (AnyTransaction | AnySolanaKitTransaction)[] as T
-
-        for (const transaction of transactions) {
-          // eslint-disable-next-line no-await-in-loop
-          signedTransactions.push(await this.signTransaction(transaction))
-        }
-
-        return signedTransactions
+        // Send every request up front so the wallet can queue them while this page is in the background
+        return (await Promise.all(
+          transactions.map(transaction => this.signTransaction(transaction))
+        )) as T
       }
 
       throw error

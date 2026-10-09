@@ -20,6 +20,17 @@ import {
 import { mockUniversalProvider, mockUniversalProviderSession } from './mocks/UniversalProvider.js'
 import { TestConstants } from './util/TestConstants.js'
 
+function createDeferred<T>() {
+  let resolve!: (value: T) => void
+  let reject!: (reason: unknown) => void
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res
+    reject = rej
+  })
+
+  return { promise, resolve, reject }
+}
+
 describe('WalletConnectProvider specific tests', () => {
   let provider = mockUniversalProvider()
   let getActiveChain = vi.fn(() => TestConstants.chains[0])
@@ -538,6 +549,84 @@ describe('WalletConnectProvider specific tests', () => {
     expect(results[1]).toEqual(
       decodeSolanaKitTransaction(new Uint8Array(Buffer.from(signedTransactionBase64, 'base64')))
     )
+  })
+
+  it('should issue every signTransaction request before the first one is answered in the signAllTransactions fallback', async () => {
+    await walletConnectProvider.connect()
+    const deferreds = [1, 2, 3].map(() => createDeferred<{ signature: string }>())
+    const requestSpy = vi.spyOn(provider, 'request')
+    for (const deferred of deferreds) {
+      requestSpy.mockImplementationOnce(<T>() => deferred.promise as T)
+    }
+
+    const resultPromise = walletConnectProvider.signAllTransactions([
+      mockLegacyTransaction(),
+      mockLegacyTransaction(),
+      mockLegacyTransaction()
+    ])
+
+    expect(provider.request).toHaveBeenCalledTimes(3)
+
+    deferreds.forEach((deferred, index) =>
+      deferred.resolve({ signature: base58.encode(new Uint8Array(64).fill(index + 1)) })
+    )
+
+    await expect(resultPromise).resolves.toHaveLength(3)
+  })
+
+  it('should return signed transactions in input order when the wallet answers out of order', async () => {
+    await walletConnectProvider.connect()
+    const deferreds = [1, 2, 3].map(() => createDeferred<{ signature: string }>())
+    const requestSpy = vi.spyOn(provider, 'request')
+    for (const deferred of deferreds) {
+      requestSpy.mockImplementationOnce(<T>() => deferred.promise as T)
+    }
+    const answer = (index: number) =>
+      deferreds[index]!.resolve({ signature: base58.encode(new Uint8Array(64).fill(index + 1)) })
+
+    const resultPromise = walletConnectProvider.signAllTransactions([
+      mockLegacyTransaction(),
+      mockLegacyTransaction(),
+      mockLegacyTransaction()
+    ])
+    answer(2)
+    answer(0)
+    answer(1)
+    const results = await resultPromise
+
+    expect(
+      results.map(transaction =>
+        base58.encode(new Uint8Array(transaction.signatures[0]!.signature!))
+      )
+    ).toEqual([1, 2, 3].map(fill => base58.encode(new Uint8Array(64).fill(fill))))
+  })
+
+  it('should reject with the first error and not leak unhandled rejections from the other requests', async () => {
+    await walletConnectProvider.connect()
+    const deferreds = [1, 2, 3].map(() => createDeferred<{ signature: string }>())
+    const requestSpy = vi.spyOn(provider, 'request')
+    for (const deferred of deferreds) {
+      requestSpy.mockImplementationOnce(<T>() => deferred.promise as T)
+    }
+
+    const resultPromise = walletConnectProvider.signAllTransactions([
+      mockLegacyTransaction(),
+      mockLegacyTransaction(),
+      mockLegacyTransaction()
+    ])
+    deferreds[0]!.resolve({ signature: base58.encode(new Uint8Array(64).fill(1)) })
+    deferreds[1]!.reject(new Error('User rejected the request'))
+    deferreds[2]!.reject(new Error('Second rejection'))
+
+    await expect(resultPromise).rejects.toThrow('User rejected the request')
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+
+  it('should return an empty array in the signAllTransactions fallback when there are no transactions', async () => {
+    await walletConnectProvider.connect()
+
+    await expect(walletConnectProvider.signAllTransactions([])).resolves.toEqual([])
+    expect(provider.request).not.toHaveBeenCalled()
   })
 
   it('should get chains from namespace accounts', async () => {
