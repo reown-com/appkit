@@ -545,7 +545,7 @@ export class W3mFrameProvider {
     const request = req
     try {
       if (W3mFrameRpcConstants.GET_CHAIN_ID === req.method) {
-        return this.getLastUsedChainId()
+        return this.getLastUsedChainIdAsHex()
       }
 
       /*
@@ -824,6 +824,18 @@ export class W3mFrameProvider {
     const numberChainId = Number(chainId)
 
     return isNaN(numberChainId) ? chainId : numberChainId
+  }
+
+  // The secure site can answer with a CAIP-2 id, but eth_chainId must return a hex quantity
+  private getLastUsedChainIdAsHex() {
+    const chainId = this.getLastUsedChainId()
+    const numericChainId = Number(
+      typeof chainId === 'string' ? chainId.replace(/^eip155:/u, '') : chainId
+    )
+
+    return Number.isInteger(numericChainId) && numericChainId > 0
+      ? `0x${numericChainId.toString(16)}`
+      : chainId
   }
 
   private persistSmartAccountEnabledNetworks(networks: number[]) {
