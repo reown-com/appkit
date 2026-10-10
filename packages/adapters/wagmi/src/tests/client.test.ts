@@ -23,6 +23,7 @@ import { type CaipAddress, ConstantsUtil } from '@reown/appkit-common'
 import {
   AdapterBlueprint,
   ChainController,
+  ConnectionController,
   type ConnectionControllerClient,
   ConnectorController,
   CoreHelperUtil,
@@ -30,7 +31,7 @@ import {
   ProviderController,
   type SocialProvider
 } from '@reown/appkit-controllers'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, HelpersUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import { WagmiAdapter } from '../client'
@@ -1600,14 +1601,7 @@ describe('WagmiAdapter - setUniversalProvider', () => {
     })
   })
 
-  it('should not trigger reconnect when activeChain is eip155', () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'eip155'
-    })
-
-    const reconnectSpy = vi.spyOn(wagmiCore, 'reconnect')
-
+  function emitConnect() {
     adapter.setUniversalProvider(mockUniversalProvider)
 
     const connectHandler = vi
@@ -1615,29 +1609,68 @@ describe('WagmiAdapter - setUniversalProvider', () => {
       .mock.calls.find(call => call[0] === 'connect')?.[1]
 
     expect(connectHandler).toBeDefined()
-
     connectHandler?.()
+  }
+
+  function mockActiveChain(activeChain: string) {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: activeChain as any
+    })
+  }
+
+  it('should not reconnect while AppKit connects WalletConnect on eip155', () => {
+    mockActiveChain('eip155')
+    vi.spyOn(ConnectionController, 'isWalletConnectConnecting').mockReturnValue(true)
+    const reconnectSpy = vi.spyOn(wagmiCore, 'reconnect')
+
+    emitConnect()
 
     expect(reconnectSpy).not.toHaveBeenCalled()
   })
 
-  it('should trigger reconnect when activeChain is not eip155', () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      activeChain: 'cosmos'
-    })
-
+  it('should reconnect when AppKit connects WalletConnect on another namespace', () => {
+    mockActiveChain('solana')
+    vi.spyOn(ConnectionController, 'isWalletConnectConnecting').mockReturnValue(true)
     const reconnectSpy = vi.spyOn(wagmiCore, 'reconnect')
 
-    adapter.setUniversalProvider(mockUniversalProvider)
+    emitConnect()
 
-    const connectHandler = vi
-      .mocked(mockUniversalProvider.on)
-      .mock.calls.find(call => call[0] === 'connect')?.[1]
+    expect(reconnectSpy).toHaveBeenCalledWith(adapter.wagmiConfig, {
+      connectors: [{ id: 'walletConnect' }]
+    })
+  })
 
-    expect(connectHandler).toBeDefined()
+  it('should reconnect to adopt a session created outside AppKit, even on eip155', () => {
+    mockActiveChain('eip155')
+    vi.spyOn(ConnectionController, 'isWalletConnectConnecting').mockReturnValue(false)
+    const reconnectSpy = vi.spyOn(wagmiCore, 'reconnect')
 
-    connectHandler?.()
+    emitConnect()
+
+    expect(reconnectSpy).toHaveBeenCalledWith(adapter.wagmiConfig, {
+      connectors: [{ id: 'walletConnect' }]
+    })
+  })
+})
+
+describe('WagmiAdapter - syncConnections', () => {
+  it('should reconnect a Universal Provider session that AppKit has no record of', async () => {
+    const adapter = new WagmiAdapter({ networks: mockNetworks, projectId: mockProjectId })
+    const session = { namespaces: { eip155: { accounts: ['eip155:1:0x123'] } } }
+
+    vi.spyOn(adapter, 'connectors', 'get').mockReturnValue([
+      { id: 'walletConnect', provider: { session } },
+      { id: 'injected', provider: {} }
+    ] as any)
+    vi.spyOn(HelpersUtil, 'getConnectorStorageInfo').mockReturnValue({
+      hasConnected: false,
+      hasDisconnected: false
+    })
+    vi.spyOn(adapter as any, 'getWagmiConnector').mockImplementation(id => ({ id }))
+    const reconnectSpy = vi.spyOn(wagmiCore, 'reconnect').mockResolvedValue([])
+
+    await adapter.syncConnections()
 
     expect(reconnectSpy).toHaveBeenCalledWith(adapter.wagmiConfig, {
       connectors: [{ id: 'walletConnect' }]

@@ -846,3 +846,38 @@ describe('finalizeWcConnection', () => {
     expect(sendEventSpy).not.toHaveBeenCalled()
   })
 })
+
+describe('ConnectionController.isWalletConnectConnecting', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('is true only while AppKit connects WalletConnect', async () => {
+    let resolveConnect = () => {}
+    const connectWalletConnect = vi.fn(
+      () =>
+        new Promise<void>(resolve => {
+          resolveConnect = resolve
+        })
+    )
+    vi.spyOn(ConnectionController, '_getClient').mockReturnValue({ connectWalletConnect } as any)
+
+    const connecting = ConnectionController.connectWalletConnect({ cache: 'never' })
+    expect(ConnectionController.isWalletConnectConnecting()).toBe(true)
+
+    resolveConnect()
+    await connecting
+    expect(ConnectionController.isWalletConnectConnecting()).toBe(false)
+  })
+
+  it('resets after a failed connection', async () => {
+    vi.spyOn(ConnectionController, '_getClient').mockReturnValue({
+      connectWalletConnect: vi.fn().mockRejectedValue(new Error('rejected'))
+    } as any)
+
+    await expect(ConnectionController.connectWalletConnect({ cache: 'never' })).rejects.toThrow(
+      'rejected'
+    )
+    expect(ConnectionController.isWalletConnectConnecting()).toBe(false)
+  })
+})

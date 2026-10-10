@@ -1359,8 +1359,8 @@ export abstract class AppKitBaseClient {
     }
   }
 
-  protected async reconnectWalletConnect() {
-    await this.syncWalletConnectAccount()
+  protected async reconnectWalletConnect(namespaces?: ChainNamespace[]) {
+    await this.syncWalletConnectAccount(namespaces)
     const address = this.getAddress()
 
     if (!this.getCaipAddress()) {
@@ -1389,13 +1389,21 @@ export abstract class AppKitBaseClient {
         ConnectorController.setConnectorId(ConstantsUtil.CONNECTOR_ID.SAFE, namespace)
       }
 
-      const connectorId = ConnectorController.getConnectorId(namespace)
+      // A Universal Provider session that AppKit didn't create is adopted as a WalletConnect connection
+      const storedConnectorId = ConnectorController.getConnectorId(namespace)
+      const hasWalletConnectSession =
+        Boolean(this.universalProvider?.session?.namespaces?.[namespace]?.accounts?.length) &&
+        !StorageUtil.isConnectorDisconnected(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT, namespace)
+      const connectorId =
+        storedConnectorId ??
+        (hasWalletConnectSession ? ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT : undefined)
 
       this.setStatus('connecting', namespace)
 
       switch (connectorId) {
         case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
-          await this.reconnectWalletConnect()
+          // An adopted session only restores this namespace, not ones held by other connectors
+          await this.reconnectWalletConnect(storedConnectorId ? undefined : [namespace])
           break
         case ConstantsUtil.CONNECTOR_ID.AUTH:
           // Handled during initialization of adapters' auth provider
@@ -1500,9 +1508,9 @@ export abstract class AppKitBaseClient {
     }
   }
 
-  protected async syncWalletConnectAccount() {
+  protected async syncWalletConnectAccount(namespaces = this.chainNamespaces) {
     const sessionNamespaces = Object.keys(this.universalProvider?.session?.namespaces || {})
-    const syncTasks = this.chainNamespaces.map(async chainNamespace => {
+    const syncTasks = namespaces.map(async chainNamespace => {
       const adapter = this.getAdapter(chainNamespace)
 
       if (!adapter) {
@@ -1965,7 +1973,42 @@ export abstract class AppKitBaseClient {
           }
         })
       })
+
+      this.listenUniversalProviderSessions(this.universalProvider)
     }
+  }
+
+  /**
+   * Keeps AppKit in sync with sessions that Universal Provider creates or updates outside AppKit's
+   * own connect flow, e.g. a raw `universalProvider.connect()` or a wallet pushing new accounts.
+   */
+  protected listenUniversalProviderSessions(universalProvider: UniversalProvider) {
+    // Only namespaces on WalletConnect (or, for a new session, on no connector), never another wallet's
+    const syncSession = ({ includeDisconnected }: { includeDisconnected: boolean }) => {
+      const namespaces = this.chainNamespaces.filter(namespace => {
+        const connectorId = ConnectorController.getConnectorId(namespace)
+
+        return (
+          connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT ||
+          (includeDisconnected && !connectorId)
+        )
+      })
+
+      if (namespaces.length) {
+        // eslint-disable-next-line no-console
+        this.syncWalletConnectAccount(namespaces).catch(console.error)
+      }
+    }
+
+    universalProvider.on('connect', () => {
+      if (!ConnectionController.isWalletConnectConnecting()) {
+        syncSession({ includeDisconnected: true })
+      }
+    })
+
+    universalProvider.on('session_update', () => {
+      syncSession({ includeDisconnected: false })
+    })
   }
 
   protected createUniversalProvider() {
