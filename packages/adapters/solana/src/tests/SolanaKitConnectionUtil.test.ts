@@ -55,4 +55,62 @@ describe('waitForSignatureConfirmationKit', () => {
     await expect(promise).resolves.toBeUndefined()
     vi.useRealTimers()
   })
+
+  it('should reject when the signature status request fails', async () => {
+    vi.useFakeTimers()
+    const error = new Error('RPC request failed')
+    const rpc = mockRpc({
+      getSignatureStatuses: vi.fn().mockReturnValue({ send: () => Promise.reject(error) })
+    })
+
+    const promise = waitForSignatureConfirmationKit(rpc, 'sig' as any)
+    const assertion = expect(promise).rejects.toThrow('RPC request failed')
+
+    await vi.advanceTimersByTimeAsync(1000)
+
+    await assertion
+    vi.useRealTimers()
+  })
+
+  it('should reject with an Error when the request rejects with a non-Error value', async () => {
+    vi.useFakeTimers()
+    const rpc = mockRpc({
+      getSignatureStatuses: vi.fn().mockReturnValue({ send: () => Promise.reject('boom') })
+    })
+
+    const promise = waitForSignatureConfirmationKit(rpc, 'sig' as any)
+    const assertion = expect(promise).rejects.toThrow('Signature status request failed')
+
+    await vi.advanceTimersByTimeAsync(1000)
+
+    await assertion
+    vi.useRealTimers()
+  })
+
+  it('should not start a new request while the previous one is still in flight', async () => {
+    vi.useFakeTimers()
+    const resolvers: ((value: unknown) => void)[] = []
+    const send = vi.fn(
+      () =>
+        new Promise(resolve => {
+          resolvers.push(resolve)
+        })
+    )
+    const rpc = mockRpc({ getSignatureStatuses: vi.fn().mockReturnValue({ send }) })
+
+    const promise = waitForSignatureConfirmationKit(rpc, 'sig' as any)
+
+    // The first request is issued and never settles.
+    await vi.advanceTimersByTimeAsync(1000)
+    expect(send).toHaveBeenCalledTimes(1)
+
+    // Several intervals pass while that request is still pending.
+    await vi.advanceTimersByTimeAsync(3000)
+    expect(send).toHaveBeenCalledTimes(1)
+
+    resolvers[0]!({ value: [{ confirmationStatus: 'confirmed' }] })
+
+    await expect(promise).resolves.toBeUndefined()
+    vi.useRealTimers()
+  })
 })
