@@ -4,16 +4,18 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
+  ConnectorController,
   CoreHelperUtil,
   EventsController,
   StorageUtil
 } from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
-import { mainnet, sepolia } from '../mocks/Networks.js'
+import { mainnet, sepolia, solana } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
 import { mockUniversalProvider } from '../mocks/Providers.js'
 import {
+  mockApiRequests,
   mockBlockchainApiController,
   mockRemoteFeatures,
   mockStorageUtil,
@@ -26,6 +28,7 @@ describe('WalletConnect Events', () => {
     mockStorageUtil()
     mockBlockchainApiController()
     mockRemoteFeatures()
+    mockApiRequests()
   })
 
   describe('chainChanged', () => {
@@ -168,6 +171,194 @@ describe('WalletConnect Events', () => {
         'solana'
       )
       expect(removeDisconnectedConnectorIdSpy).toHaveBeenCalledTimes(2)
+    })
+  })
+
+  describe('sessions created by Universal Provider', () => {
+    const address = '0x1234567890123456789012345678901234567890'
+    const session = {
+      namespaces: { eip155: { accounts: [`eip155:1:${address}`] } },
+      peer: { metadata: { name: 'Mock Wallet', description: '', url: '', icons: [] } }
+    }
+
+    function getHandler(provider: { on: ReturnType<typeof vi.fn> }, event: string) {
+      const handler = provider.on.mock.calls.filter(([name]) => name === event).at(-1)?.[1]
+      if (!handler) {
+        throw new Error(`${event} handler not found`)
+      }
+
+      return handler as () => void
+    }
+
+    async function createAppKit(universalProvider: object, adapters = mockOptions.adapters) {
+      const appkit = new AppKit({
+        ...mockOptions,
+        adapters,
+        universalProvider: universalProvider as any
+      })
+      await appkit.ready()
+
+      return appkit
+    }
+
+    function mockConnectorIds(connectorIds: Record<string, string | undefined>) {
+      return vi
+        .spyOn(ConnectorController, 'getConnectorId')
+        .mockImplementation(namespace => connectorIds[namespace as string])
+    }
+
+    it('adopts a session connected outside AppKit, once, without taking over other wallets', async () => {
+      const provider = { ...mockUniversalProvider, on: vi.fn(), session }
+      const appkit = await createAppKit(provider)
+      const syncSpy = vi
+        .spyOn(appkit as any, 'syncWalletConnectAccount')
+        .mockResolvedValue(undefined)
+      // EVM has no connection yet, Solana is connected to another wallet
+      const getConnectorIdSpy = mockConnectorIds({ solana: 'phantom' })
+
+      getHandler(provider, 'connect')()
+      const isConnectingSpy = vi
+        .spyOn(ConnectionController, 'isWalletConnectConnecting')
+        .mockReturnValue(true)
+      getHandler(provider, 'connect')()
+
+      expect(syncSpy).toHaveBeenCalledOnce()
+      expect(syncSpy).toHaveBeenCalledWith(['eip155'])
+      isConnectingSpy.mockRestore()
+      getConnectorIdSpy.mockRestore()
+    })
+
+    it('reflects the session in AppKit state', async () => {
+      const provider = { ...mockUniversalProvider, on: vi.fn(), session: undefined as unknown }
+      const appkit = await createAppKit(provider, [])
+      vi.spyOn(appkit as any, 'syncBalance').mockResolvedValue(undefined)
+      expect(appkit.getCaipAddress('eip155')).toBeUndefined()
+
+      // Universal Provider settles a session that AppKit didn't request
+      provider.session = session
+      getHandler(provider, 'connect')()
+
+      await vi.waitFor(() => expect(appkit.getCaipAddress('eip155')).toBe(`eip155:1:${address}`))
+      expect(ConnectorController.getConnectorId('eip155')).toBe(
+        ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+      )
+    })
+
+    it('re-syncs on session_update only the namespaces on WalletConnect', async () => {
+      const provider = { ...mockUniversalProvider, on: vi.fn(), session }
+      const appkit = await createAppKit(provider)
+      const syncSpy = vi
+        .spyOn(appkit as any, 'syncWalletConnectAccount')
+        .mockResolvedValue(undefined)
+      const getConnectorIdSpy = mockConnectorIds({ eip155: 'injected' })
+
+      getHandler(provider, 'session_update')()
+      expect(syncSpy).not.toHaveBeenCalled()
+
+      // EVM through WalletConnect, Solana through another wallet
+      getConnectorIdSpy.mockRestore()
+      const multiWalletSpy = mockConnectorIds({
+        eip155: ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
+        solana: 'phantom'
+      })
+      getHandler(provider, 'session_update')()
+      expect(syncSpy).toHaveBeenCalledOnce()
+      expect(syncSpy).toHaveBeenCalledWith(['eip155'])
+      multiWalletSpy.mockRestore()
+    })
+
+    it('restores a session that AppKit has no stored connector for', async () => {
+      const provider = { ...mockUniversalProvider, on: vi.fn(), session }
+      const appkit = await createAppKit(provider)
+      const getConnectorIdSpy = vi
+        .spyOn(ConnectorController, 'getConnectorId')
+        .mockReturnValue(undefined)
+      const reconnectSpy = vi
+        .spyOn(appkit as any, 'reconnectWalletConnect')
+        .mockResolvedValue(undefined)
+
+      await (appkit as any).syncNamespaceConnection('eip155')
+      await (appkit as any).syncNamespaceConnection('solana')
+
+      // Only this namespace, so it can't override a connector restored for another one
+      expect(reconnectSpy).toHaveBeenCalledOnce()
+      expect(reconnectSpy).toHaveBeenCalledWith(['eip155'])
+      getConnectorIdSpy.mockRestore()
+    })
+  })
+
+  describe('multichain sessions with another wallet', () => {
+    const evmAddress = '0x1234567890123456789012345678901234567890'
+    const solanaAddress = '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgpU'
+    const multichainSession = {
+      namespaces: {
+        eip155: { accounts: [`eip155:1:${evmAddress}`] },
+        solana: { accounts: [`${solana.caipNetworkId}:${solanaAddress}`] }
+      },
+      peer: { metadata: { name: 'Mock Wallet', description: '', url: '', icons: [] } }
+    }
+
+    function getHandler(provider: { on: ReturnType<typeof vi.fn> }, event: string) {
+      const handler = provider.on.mock.calls.filter(([name]) => name === event).at(-1)?.[1]
+      if (!handler) {
+        throw new Error(`${event} handler not found`)
+      }
+
+      return handler as () => void
+    }
+
+    // EVM through WalletConnect, Solana through Phantom; the wallet's session covers both
+    async function setupMultiWallet() {
+      const provider = { ...mockUniversalProvider, on: vi.fn(), session: multichainSession }
+      const appkit = new AppKit({
+        ...mockOptions,
+        adapters: [],
+        universalProvider: provider as any
+      })
+      await appkit.ready()
+      vi.spyOn(appkit as any, 'syncBalance').mockResolvedValue(undefined)
+      ConnectorController.setConnectorId(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT, 'eip155')
+      ConnectorController.setConnectorId('phantom', 'solana')
+
+      return { appkit, provider }
+    }
+
+    it('keeps Solana on Phantom when the WalletConnect session updates', async () => {
+      const { appkit, provider } = await setupMultiWallet()
+
+      getHandler(provider, 'session_update')()
+
+      await vi.waitFor(() => expect(appkit.getCaipAddress('eip155')).toBe(`eip155:1:${evmAddress}`))
+      expect(ConnectorController.getConnectorId('eip155')).toBe(
+        ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+      )
+      expect(ConnectorController.getConnectorId('solana')).toBe('phantom')
+    })
+
+    it('keeps Solana on Phantom when an external session connects', async () => {
+      const { provider } = await setupMultiWallet()
+      ConnectorController.removeConnectorId('eip155')
+
+      getHandler(provider, 'connect')()
+
+      await vi.waitFor(() =>
+        expect(ConnectorController.getConnectorId('eip155')).toBe(
+          ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+        )
+      )
+      expect(ConnectorController.getConnectorId('solana')).toBe('phantom')
+    })
+
+    it('keeps Solana on Phantom when restoring an unrecorded EVM session', async () => {
+      const { appkit } = await setupMultiWallet()
+      ConnectorController.removeConnectorId('eip155')
+
+      await (appkit as any).syncNamespaceConnection('eip155')
+
+      expect(ConnectorController.getConnectorId('eip155')).toBe(
+        ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+      )
+      expect(ConnectorController.getConnectorId('solana')).toBe('phantom')
     })
   })
 
