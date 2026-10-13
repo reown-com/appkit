@@ -1,10 +1,12 @@
 import { useCallback, useState } from 'react'
 
+import { AddIcon } from '@chakra-ui/icons'
 import { Button, Link, Spacer, Stack, Text } from '@chakra-ui/react'
-import { type Address, parseGwei } from 'viem'
+import { type Address, type Hex, parseGwei } from 'viem'
 import { useAccount, useEstimateGas, useSendTransaction } from 'wagmi'
 import { mainnet } from 'wagmi/chains'
 
+import { AddTransactionModal } from '@/src/components/AddTransactionModal'
 import { useChakraToast } from '@/src/components/Toast'
 import { vitalikEthAddress } from '@/src/utils/DataUtil'
 
@@ -27,8 +29,17 @@ export function WagmiTransactionTest() {
 
 function AvailableTestContent() {
   const toast = useChakraToast()
+  const [customTx, setCustomTx] = useState<{
+    to: Address
+    value: bigint
+    data?: Hex
+  } | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const txToSend = customTx || TEST_TX
+
   const { refetch: estimateGas, isFetching: isEstimateGasFetching } = useEstimateGas({
-    ...TEST_TX,
+    ...txToSend,
     query: {
       enabled: false
     }
@@ -68,37 +79,77 @@ function AvailableTestContent() {
     } else {
       setLoading(true)
       sendTransaction({
-        ...TEST_TX,
+        ...txToSend,
         gas
       })
     }
-  }, [sendTransaction, estimateGas])
+  }, [sendTransaction, estimateGas, txToSend])
+
+  function onConfigureTransaction(params: { eth: string; to: string; data?: string }) {
+    setCustomTx({
+      to: params.to as Address,
+      value: parseGwei(params.eth),
+      data: params.data as Hex | undefined
+    })
+    setIsModalOpen(false)
+  }
+
+  function onCloseModal() {
+    setIsModalOpen(false)
+  }
 
   return (
-    <Stack direction={['column', 'column', 'row']}>
-      <Button
-        data-testid="sign-transaction-button"
-        onClick={onSendTransaction}
-        disabled={!sendTransaction}
-        isDisabled={isLoading}
-        isLoading={isEstimateGasFetching}
-      >
-        Send Transaction to Vitalik
-      </Button>
-
-      <Spacer />
-
-      <Link isExternal href="https://sepoliafaucet.com">
-        <Button variant="outline" colorScheme="blue" isDisabled={isLoading}>
-          Sepolia Faucet 1
+    <>
+      <Stack direction={['column', 'column', 'row']}>
+        <Button
+          data-testid="sign-transaction-button"
+          onClick={onSendTransaction}
+          disabled={!sendTransaction}
+          isDisabled={isLoading}
+          isLoading={isEstimateGasFetching}
+        >
+          {customTx ? 'Send Custom Transaction' : 'Send Transaction to Vitalik'}
         </Button>
-      </Link>
 
-      <Link isExternal href="https://www.infura.io/faucet/sepolia">
-        <Button variant="outline" colorScheme="orange" isDisabled={isLoading}>
-          Sepolia Faucet 2
+        <Button
+          variant="outline"
+          colorScheme="blue"
+          onClick={() => setIsModalOpen(true)}
+          isDisabled={isLoading}
+        >
+          <AddIcon mr={2} /> Configure Transaction
         </Button>
-      </Link>
-    </Stack>
+
+        {customTx && (
+          <Button
+            variant="outline"
+            colorScheme="red"
+            onClick={() => setCustomTx(null)}
+            isDisabled={isLoading}
+          >
+            Reset to Default
+          </Button>
+        )}
+
+        <Spacer />
+
+        <Link isExternal href="https://sepoliafaucet.com">
+          <Button variant="outline" colorScheme="blue" isDisabled={isLoading}>
+            Sepolia Faucet 1
+          </Button>
+        </Link>
+
+        <Link isExternal href="https://www.infura.io/faucet/sepolia">
+          <Button variant="outline" colorScheme="orange" isDisabled={isLoading}>
+            Sepolia Faucet 2
+          </Button>
+        </Link>
+      </Stack>
+      <AddTransactionModal
+        isOpen={isModalOpen}
+        onSubmit={onConfigureTransaction}
+        onClose={onCloseModal}
+      />
+    </>
   )
 }

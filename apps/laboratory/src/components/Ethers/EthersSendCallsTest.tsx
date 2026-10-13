@@ -37,9 +37,9 @@ export function EthersSendCallsTest({
   const { chainId } = useAppKitNetwork()
   const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<Eip1193Provider>('eip155')
-  const [transactionsToBatch, setTransactionsToBatch] = useState<{ value: string; to: string }[]>(
-    []
-  )
+  const [transactionsToBatch, setTransactionsToBatch] = useState<
+    { value: string; to: string; data?: string }[]
+  >([])
   const { isMethodSupported } = useEthersActiveCapabilities()
   const { isSupported, currentChainsInfo, supportedChains, supportedChainsName } = useCapabilities({
     capabilities,
@@ -49,13 +49,13 @@ export function EthersSendCallsTest({
   const toast = useChakraToast()
 
   const [isOpen, setIsOpen] = useState(false)
-  function onSubmit(args: { to: string; eth: string }) {
+  function onSubmit(args: { to: string; eth: string; data?: string }) {
     setLastCallsBatchId(null)
     setTransactionsToBatch(prev => [
       ...prev,
       {
         to: args.to as Address,
-        data: '0x' as Hex,
+        data: (args.data || '0x') as Hex,
         value: `0x${parseGwei(args.eth).toString(16)}`
       }
     ])
@@ -176,6 +176,9 @@ export function EthersSendCallsTest({
                         </StatLabel>
                         <StatNumber>{parseInt(tx.value, 16) / 1000000000} ETH</StatNumber>
                         <StatHelpText>to {tx.to}</StatHelpText>
+                        {tx.data && tx.data !== '0x' && (
+                          <StatHelpText>data: {tx.data}</StatHelpText>
+                        )}
                       </Stat>
                     </CardBody>
                   </Card>{' '}
