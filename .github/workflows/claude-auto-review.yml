@@ -1,0 +1,91 @@
+name: Claude Auto Review
+
+on:
+  pull_request:
+    types: [opened]
+    branches:
+      - main
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: claude-review-${{ github.event_name }}-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  auto-review:
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'pull_request'
+      || (
+        github.event_name == 'issue_comment'
+        && github.event.issue.pull_request
+        && contains(github.event.comment.body, '@claude review')
+        && github.event.comment.user.type != 'Bot'
+      )
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude Auto Review
+        uses: WalletConnect/actions/claude/auto-review@29a239cc76760181de7c79de0d249bbb99db304e
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          project_context: |
+            Reown AppKit — a multi-chain onchain SDK providing wallet connection, authentication, swaps, on-ramp, and transaction UX for 700+ wallets across EVM, Solana, Bitcoin, Polkadot, and TON. Available for React, Next.js, Vue, Nuxt, Svelte, vanilla JS, React Native, Flutter, and native mobile.
+
+            ## Tech Stack
+            - TypeScript/ESM monorepo with pnpm workspaces and Turborepo
+            - LitElement Web Components for UI (wui-* atoms, w3m-* scaffold views)
+            - Valtio for state management (always import from valtio/vanilla)
+            - Vitest for unit tests, Playwright for E2E (apps/laboratory)
+            - Strict TypeScript with experimentalDecorators enabled
+
+            ## Architecture (dependencies flow downward only)
+            - apps & examples → adapters → @reown/appkit → scaffold-ui / pay → ui / controllers / appkit-utils → common / wallet
+
+            ## Package Structure
+            - packages/controllers — valtio state, business logic
+            - packages/ui — atomic wui-* Web Components
+            - packages/scaffold-ui — high-level w3m-* views and partials
+            - packages/appkit — main SDK facade and public API
+            - packages/adapters/* — chain adapters (wagmi, ethers, solana, bitcoin, polkadot, ton, tron)
+            - packages/common — shared types and utilities
+            - packages/appkit-utils — chain-specific helpers
+
+            ## Key Patterns
+            - Controllers use valtio proxy state with section comments (// -- Types ----, // -- State ----, // -- Controller ----)
+            - UI atoms extend LitElement with resetStyles, use @property() not @state()
+            - Scaffold views clean up subscriptions in disconnectedCallback()
+            - Adapters extend AdapterBlueprint and implement connect/disconnect/switchNetwork/signMessage/sendTransaction/getBalance
+            - Cross-package imports must use package entrypoints, never deep internal paths
+            - scaffold-ui uses relative imports within the package, not @reown/ paths
+
+            ## Chain Namespaces
+            - eip155 → EVM (wagmi, ethers, ethers5)
+            - solana → Solana
+            - bip122 → Bitcoin
+            - polkadot → Polkadot
+            - ton → TON
+            - tron → TRON
+
+            ## Review Focus
+            - Import boundary violations (layer order must be respected)
+            - Controller section comments must be present (DangerJS enforces this)
+            - UI components must not import from controllers, scaffold-ui, appkit, or adapters
+            - Adapters must not import from controllers or ui directly
+            - No deep internal path imports across packages
+            - Breaking changes to packages/appkit/exports/ must be intentional
+            - New features require tests (unit in package tests/, E2E in apps/laboratory/tests/)
+            - Changeset required for any package change (pnpm changeset)
+            - Conventional commit format for PR titles
+
+            For detailed guidelines, see AGENTS.md in the repository root.
