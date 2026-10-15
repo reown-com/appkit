@@ -6,7 +6,6 @@ import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
 import { MethodNotSupportedError } from '../../errors/MethodNotSupportedError.js'
 import { AddressPurpose } from '../../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../../utils/ProviderEventEmitter.js'
-import { UnitsUtil } from '../../utils/UnitsUtil.js'
 import type { UnisatConnector as UnisatConnectorTypes } from './types.js'
 
 export class UnisatConnector extends ProviderEventEmitter implements BitcoinConnector {
@@ -95,10 +94,8 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
       throw new Error('No account available')
     }
 
-    const result = await this.wallet.sendBitcoin(
-      params.recipient,
-      Number(UnitsUtil.parseSatoshis(params.amount, network))
-    )
+    // `params.amount` is already in satoshis, which is what `sendBitcoin` expects
+    const result = await this.wallet.sendBitcoin(params.recipient, Number(params.amount))
 
     return result
   }
