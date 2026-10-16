@@ -681,7 +681,9 @@ const controller = {
       ChainController.state.chains.get(chainToWrite)?.accountState?.preferredAccountType
     const optionsAccountType = OptionsController.state.defaultAccountTypes[chainToWrite]
 
-    state.activeCaipAddress = undefined
+    if (state.chains.size === 1 || state.activeChain === chainToWrite) {
+      state.activeCaipAddress = undefined
+    }
     ChainController.setChainAccountData(chainToWrite, {
       smartAccountDeployed: false,
       currentTab: 0,

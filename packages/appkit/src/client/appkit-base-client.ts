@@ -1395,6 +1395,14 @@ export abstract class AppKitBaseClient {
 
       switch (connectorId) {
         case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
+          if (
+            this.universalProvider &&
+            !this.universalProvider.session?.namespaces?.[namespace]?.accounts?.length
+          ) {
+            this.onDisconnectNamespace({ chainNamespace: namespace, closeModal: false })
+
+            break
+          }
           await this.reconnectWalletConnect()
           break
         case ConstantsUtil.CONNECTOR_ID.AUTH:
