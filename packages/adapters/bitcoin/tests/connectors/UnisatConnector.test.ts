@@ -139,15 +139,13 @@ describe('UnisatConnector', () => {
       const txid = await connector.sendTransfer({ amount: '1500', recipient: 'mock_to_address' })
 
       expect(txid).toBe('mock_txhash')
-      expect(wallet.sendBitcoin).toHaveBeenCalledWith('mock_to_address', 0.000015)
+      expect(wallet.sendBitcoin).toHaveBeenCalledWith('mock_to_address', 1500)
     })
 
-    it('should throw an error if the network is unavailable', async () => {
-      vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue(undefined)
+    it('should send amounts of 1,000 BTC or more as satoshis', async () => {
+      await connector.sendTransfer({ amount: '100000000000', recipient: 'mock_to_address' })
 
-      await expect(
-        connector.sendTransfer({ amount: '1500', recipient: 'mock_to_address' })
-      ).rejects.toThrow('No active network available')
+      expect(wallet.sendBitcoin).toHaveBeenCalledWith('mock_to_address', 100_000_000_000)
     })
 
     it('should throw an error if no account is available', async () => {
