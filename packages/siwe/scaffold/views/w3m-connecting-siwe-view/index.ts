@@ -50,6 +50,7 @@ export class W3mConnectingSiweView extends LitElement {
           fullWidth
           variant="neutral-secondary"
           ?loading=${this.isCancelling}
+          ?disabled=${this.isCancelling}
           @click=${this.onCancel.bind(this)}
           data-testid="w3m-connecting-siwe-cancel"
         >
@@ -62,6 +63,7 @@ export class W3mConnectingSiweView extends LitElement {
           variant="neutral-primary"
           @click=${this.onSign.bind(this)}
           ?loading=${this.isSigning}
+          ?disabled=${this.isSigning}
           data-testid="w3m-connecting-siwe-sign"
         >
           ${this.isSigning ? 'Signing...' : 'Sign'}
@@ -72,6 +74,10 @@ export class W3mConnectingSiweView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private async onSign() {
+    if (this.isSigning) {
+      return undefined
+    }
+
     this.isSigning = true
     EventsController.sendEvent({
       event: 'CLICK_SIGN_SIWX_MESSAGE',
@@ -125,15 +131,22 @@ export class W3mConnectingSiweView extends LitElement {
   }
 
   private async onCancel() {
+    if (this.isCancelling) {
+      return
+    }
+
     this.isCancelling = true
     const caipAddress = ChainController.state.activeCaipAddress
-    if (caipAddress) {
-      await ConnectionController.disconnect()
-      ModalController.close()
-    } else {
-      RouterController.push('Connect')
+    try {
+      if (caipAddress) {
+        await ConnectionController.disconnect()
+        ModalController.close()
+      } else {
+        RouterController.push('Connect')
+      }
+    } finally {
+      this.isCancelling = false
     }
-    this.isCancelling = false
     EventsController.sendEvent({
       event: 'CLICK_CANCEL_SIWX',
       type: 'track',
