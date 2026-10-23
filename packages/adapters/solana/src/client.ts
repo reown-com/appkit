@@ -1,3 +1,4 @@
+import { createSolanaRpc } from '@solana/kit'
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { Commitment, ConnectionConfig } from '@solana/web3.js'
 import {
@@ -96,7 +97,10 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       params.networks?.find(n => n.caipNetworkId === connectedCaipNetwork) || params.networks?.[0]
     const rpcUrl = caipNetwork?.rpcUrls.default.http[0] as string
     if (rpcUrl) {
-      SolStoreUtil.setConnection(new SolanaConnection(rpcUrl, this.connectionSettings))
+      SolStoreUtil.setConnection(
+        new SolanaConnection(rpcUrl, this.connectionSettings),
+        createSolanaRpc(rpcUrl)
+      )
     }
   }
 
@@ -405,7 +409,10 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       socialUri: params.socialUri
     })
 
-    SolStoreUtil.setConnection(new SolanaConnection(rpcUrl, this.connectionSettings))
+    SolStoreUtil.setConnection(
+      new SolanaConnection(rpcUrl, this.connectionSettings),
+      createSolanaRpc(rpcUrl)
+    )
 
     this.emit('accountChanged', {
       address,
@@ -504,8 +511,10 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     const { caipNetwork } = params
 
     if (caipNetwork?.rpcUrls?.default?.http?.[0]) {
+      const rpcUrl = caipNetwork.rpcUrls.default.http[0]
       SolStoreUtil.setConnection(
-        new SolanaConnection(caipNetwork.rpcUrls.default.http[0], this.connectionSettings)
+        new SolanaConnection(rpcUrl, this.connectionSettings),
+        createSolanaRpc(rpcUrl)
       )
     }
   }
@@ -577,7 +586,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       .http[0] as string
     const connection = new SolanaConnection(rpcUrl, this.connectionSettings)
 
-    SolStoreUtil.setConnection(connection)
+    SolStoreUtil.setConnection(connection, createSolanaRpc(rpcUrl))
 
     return result
   }

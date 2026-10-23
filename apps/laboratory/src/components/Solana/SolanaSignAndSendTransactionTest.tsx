@@ -1,6 +1,15 @@
 import { useState } from 'react'
 
 import { Button, Link, Spacer, Stack } from '@chakra-ui/react'
+import { fromLegacyPublicKey, fromLegacyTransactionInstruction } from '@solana/compat'
+import {
+  type Blockhash,
+  appendTransactionMessageInstructions,
+  compileTransaction,
+  createTransactionMessage,
+  setTransactionMessageFeePayer,
+  setTransactionMessageLifetimeUsingBlockhash
+} from '@solana/kit'
 import {
   PublicKey,
   SystemProgram,
@@ -27,7 +36,7 @@ export function SolanaSignAndSendTransaction() {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  async function onSendTransaction(mode: 'legacy' | 'versioned') {
+  async function onSendTransaction(mode: 'legacy' | 'versioned' | 'solana-kit') {
     try {
       setIsLoading(true)
       if (!walletProvider?.publicKey || !address) {
@@ -48,7 +57,7 @@ export function SolanaSignAndSendTransaction() {
         toPubkey: recipientAddress,
         lamports: amountInLamports
       })
-      const { blockhash } = await connection.getLatestBlockhash()
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
 
       let signature = ''
 
@@ -63,6 +72,23 @@ export function SolanaSignAndSendTransaction() {
         // Make a versioned transaction
         const versionedTranasction = new VersionedTransaction(messageV0)
         signature = await walletProvider.signAndSendTransaction(versionedTranasction)
+      } else if (mode === 'solana-kit') {
+        // Build a solana-kit (web3.js 2.x) transaction via @solana/kit's pipeline
+        const message = appendTransactionMessageInstructions(
+          [fromLegacyTransactionInstruction(instruction)],
+          setTransactionMessageLifetimeUsingBlockhash(
+            {
+              blockhash: blockhash as Blockhash,
+              lastValidBlockHeight: BigInt(lastValidBlockHeight)
+            },
+            setTransactionMessageFeePayer(
+              fromLegacyPublicKey(walletProvider.publicKey),
+              createTransactionMessage({ version: 0 })
+            )
+          )
+        )
+        const kitTransaction = compileTransaction(message)
+        signature = await walletProvider.signAndSendTransaction(kitTransaction)
       } else {
         // Create a new transaction
         const transaction = new Transaction().add(instruction)
@@ -106,6 +132,13 @@ export function SolanaSignAndSendTransaction() {
         isDisabled={isLoading}
       >
         Sign and Send Versioned Transaction
+      </Button>
+      <Button
+        data-test-id="sign-transaction-button"
+        onClick={() => onSendTransaction('solana-kit')}
+        isDisabled={isLoading}
+      >
+        Sign and Send Solana-Kit Transaction
       </Button>
       <Spacer />
 

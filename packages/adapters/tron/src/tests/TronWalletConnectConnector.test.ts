@@ -448,5 +448,53 @@ describe('TronWalletConnectConnector', () => {
         MOCK_CHAIN_ID
       )
     })
+
+    describe('signature normalization', () => {
+      const BARE_HEX_SIGNATURE = 'ab'.repeat(65)
+
+      it('should prefix 0x when the wallet returns a bare hex string', async () => {
+        mockProviderRequest.mockResolvedValueOnce(BARE_HEX_SIGNATURE)
+
+        const result = await connector.signMessage({
+          message: 'Hello TRON',
+          from: MOCK_OWNER_ADDRESS
+        })
+
+        expect(result).toBe(`0x${BARE_HEX_SIGNATURE}`)
+      })
+
+      it('should prefix 0x when the wallet returns bare hex inside a signature object', async () => {
+        mockProviderRequest.mockResolvedValueOnce({ signature: BARE_HEX_SIGNATURE })
+
+        const result = await connector.signMessage({
+          message: 'Hello TRON',
+          from: MOCK_OWNER_ADDRESS
+        })
+
+        expect(result).toBe(`0x${BARE_HEX_SIGNATURE}`)
+      })
+
+      it('should leave a 0x prefixed signature unchanged', async () => {
+        mockProviderRequest.mockResolvedValueOnce({ signature: `0x${BARE_HEX_SIGNATURE}` })
+
+        const result = await connector.signMessage({
+          message: 'Hello TRON',
+          from: MOCK_OWNER_ADDRESS
+        })
+
+        expect(result).toBe(`0x${BARE_HEX_SIGNATURE}`)
+      })
+
+      it('should return an empty string when the wallet returns no signature', async () => {
+        mockProviderRequest.mockResolvedValueOnce({})
+
+        const result = await connector.signMessage({
+          message: 'Hello TRON',
+          from: MOCK_OWNER_ADDRESS
+        })
+
+        expect(result).toBe('')
+      })
+    })
   })
 })

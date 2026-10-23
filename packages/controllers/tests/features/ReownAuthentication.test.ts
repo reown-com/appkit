@@ -62,6 +62,10 @@ describe.each([
   let siwx: ReownAuthentication
   let mockJWT: string
 
+  const expectedStatement =
+    namespace === 'solana' ? 'Sign in to verify that you own this wallet.' : undefined
+  const expectedChainIdInMessage = namespace === 'solana' ? 'solana:mainnet' : `${namespace}:${id}`
+
   beforeAll(() => {
     global.fetch = vi.fn() as unknown as typeof fetch
 
@@ -143,7 +147,7 @@ describe.each([
         notBefore: undefined,
         requestId: undefined,
         resources: undefined,
-        statement: undefined,
+        statement: expectedStatement,
         toString: expect.any(Function),
         uri: 'http://mocked.com/',
         version: '1'
@@ -154,13 +158,15 @@ describe.each([
         `${namespace}:${id}`
       )
 
+      const statementBlock = expectedStatement ? `\n${expectedStatement}\n` : ''
+
       expect(message.toString())
         .toBe(`mocked.com wants you to sign in with your ${networkName} account:
 ${address}
-
+${statementBlock}
 URI: http://mocked.com/
 Version: 1
-Chain ID: ${namespace}:${id}
+Chain ID: ${expectedChainIdInMessage}
 Nonce: mock_nonce
 Issued At: 2024-12-05T16:02:32.905Z`)
 
@@ -177,6 +183,61 @@ Issued At: 2024-12-05T16:02:32.905Z`)
 
       expect(setItemSpy).toHaveBeenCalledWith('@appkit/siwx-nonce-token', 'mock_token')
     })
+
+    it('only includes a statement for solana', async () => {
+      vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+        mocks.mockFetchResponse({ token: 'mock_token', nonce: 'mock_nonce' })
+      )
+
+      const message = await siwx.createMessage({
+        accountAddress: address,
+        chainId: `${namespace}:${id}`
+      })
+
+      expect(message.statement).toBe(expectedStatement)
+
+      const lines = message.toString().split('\n')
+      expect(lines.some(line => line === expectedStatement)).toBe(namespace === 'solana')
+    })
+
+    it.runIf(namespace === 'solana')(
+      'uses a single-line statement made of characters valid in a statement',
+      async () => {
+        vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+          mocks.mockFetchResponse({ token: 'mock_token', nonce: 'mock_nonce' })
+        )
+
+        const message = await siwx.createMessage({
+          accountAddress: address,
+          chainId: `${namespace}:${id}`
+        })
+
+        expect(message.statement).not.toContain('\n')
+        expect(message.statement).toMatch(/^[A-Za-z0-9\-._~:/?#[\]@!$&'()*+,;= ]+$/u)
+      }
+    )
+
+    it.runIf(namespace === 'solana').each([
+      { caipId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', inMessage: 'solana:mainnet' },
+      { caipId: 'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z', inMessage: 'solana:testnet' },
+      { caipId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1', inMessage: 'solana:devnet' },
+      {
+        caipId: 'solana:CustomNetworkGenesisHash12345678',
+        inMessage: 'solana:CustomNetworkGenesisHash12345678'
+      }
+    ] as const)(
+      'writes $inMessage in the message for $caipId and keeps the CAIP-2 id in the data',
+      async ({ caipId, inMessage }) => {
+        vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+          mocks.mockFetchResponse({ token: 'mock_token', nonce: 'mock_nonce' })
+        )
+
+        const message = await siwx.createMessage({ accountAddress: address, chainId: caipId })
+
+        expect(message.chainId).toBe(caipId)
+        expect(message.toString().split('\n')).toContain(`Chain ID: ${inMessage}`)
+      }
+    )
 
     it('should throw an text error if response is not json', async () => {
       const fetchSpy = vi.spyOn(global, 'fetch')

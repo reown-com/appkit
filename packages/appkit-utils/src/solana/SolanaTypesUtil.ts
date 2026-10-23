@@ -1,3 +1,10 @@
+import type {
+  Address,
+  Rpc as KitRpc,
+  Transaction as SolanaKitTransaction,
+  SolanaRpcApi,
+  TransactionWithLifetime
+} from '@solana/kit'
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 import type {
   PublicKey,
@@ -15,6 +22,8 @@ import type { Provider as CoreProvider } from '@reown/appkit-controllers'
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 export type Connection = SolanaConnection
+
+export type Rpc = KitRpc<SolanaRpcApi>
 
 export interface ISolConfig {
   providers: ProviderType
@@ -45,6 +54,7 @@ export interface Provider
   type: ConnectorType
   chain: ChainNamespace
   publicKey?: PublicKey
+  address?: Address
   provider: CoreProvider | W3mFrameProvider | UniversalProvider
 
   // Methods
@@ -55,17 +65,21 @@ export interface Provider
   }) => Promise<string>
   disconnect: () => Promise<void>
   signMessage: (message: Uint8Array) => Promise<Uint8Array>
-  signTransaction: <T extends AnyTransaction>(transaction: T) => Promise<T>
+  signTransaction: <T extends AnyTransaction | AnySolanaKitTransaction>(
+    transaction: T
+  ) => Promise<T>
   signAndSendTransaction: (
-    transaction: AnyTransaction,
+    transaction: AnyTransaction | AnySolanaKitTransaction,
     options?: SendOptions
   ) => Promise<TransactionSignature>
   sendTransaction: (
-    transaction: AnyTransaction,
+    transaction: AnyTransaction | AnySolanaKitTransaction,
     connection: Connection,
     options?: SendTransactionOptions
   ) => Promise<TransactionSignature>
-  signAllTransactions: <T extends AnyTransaction[]>(transactions: T) => Promise<T>
+  signAllTransactions: <T extends (AnyTransaction | AnySolanaKitTransaction)[]>(
+    transactions: T
+  ) => Promise<T>
   getAccounts: () => Promise<
     {
       namespace: 'solana'
@@ -113,6 +127,8 @@ export type Metadata = {
 
 export type AnyTransaction = SolanaWeb3Transaction | VersionedTransaction
 
+export type AnySolanaKitTransaction = SolanaKitTransaction & TransactionWithLifetime
+
 export type GetActiveChain = () => CaipNetwork | undefined
 
 export type SPLTokenTransactionArgs = {
@@ -121,4 +137,12 @@ export type SPLTokenTransactionArgs = {
   to: string
   amount: number
   tokenMint: string
+}
+
+export type SPLTokenTransactionKitArgs = {
+  provider: Provider
+  connection: Connection
+  to: Address
+  amount: number
+  tokenMint: Address
 }

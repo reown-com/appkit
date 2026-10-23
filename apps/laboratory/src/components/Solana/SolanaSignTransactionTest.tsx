@@ -1,6 +1,15 @@
 import { useState } from 'react'
 
 import { Button, Spacer, Stack } from '@chakra-ui/react'
+import { fromLegacyPublicKey, fromLegacyTransactionInstruction } from '@solana/compat'
+import {
+  type Blockhash,
+  appendTransactionMessageInstructions,
+  compileTransaction,
+  createTransactionMessage,
+  setTransactionMessageFeePayer,
+  setTransactionMessageLifetimeUsingBlockhash
+} from '@solana/kit'
 import {
   PublicKey,
   SystemProgram,
@@ -124,6 +133,65 @@ export function SolanaSignTransactionTest() {
     }
   }
 
+  async function onSignSolanaKitTransaction() {
+    try {
+      setIsLoading(true)
+      if (!walletProvider?.publicKey) {
+        throw Error('user is disconnected')
+      }
+
+      if (!connection) {
+        throw Error('no connection set')
+      }
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
+
+      // Build a solana-kit (web3.js 2.x) transaction via @solana/kit's pipeline
+      const message = appendTransactionMessageInstructions(
+        [
+          fromLegacyTransactionInstruction(
+            SystemProgram.transfer({
+              fromPubkey: walletProvider.publicKey,
+              toPubkey: recipientAddress,
+              lamports: amountInLamports
+            })
+          )
+        ],
+        setTransactionMessageLifetimeUsingBlockhash(
+          {
+            blockhash: blockhash as Blockhash,
+            lastValidBlockHeight: BigInt(lastValidBlockHeight)
+          },
+          setTransactionMessageFeePayer(
+            fromLegacyPublicKey(walletProvider.publicKey),
+            createTransactionMessage({ version: 0 })
+          )
+        )
+      )
+      const kitTransaction = compileTransaction(message)
+
+      const signedTransaction = await walletProvider.signTransaction(kitTransaction)
+      const signature = Object.values(signedTransaction.signatures)[0]
+
+      if (!signature) {
+        throw Error('Empty signature')
+      }
+
+      toast({
+        title: 'Success',
+        description: bs58.encode(signature),
+        type: 'success'
+      })
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: (err as Error).message,
+        type: 'error'
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
@@ -139,6 +207,13 @@ export function SolanaSignTransactionTest() {
         isDisabled={isLoading}
       >
         Sign Versioned Transaction
+      </Button>
+      <Button
+        data-test-id="sign-transaction-button"
+        onClick={onSignSolanaKitTransaction}
+        isDisabled={isLoading}
+      >
+        Sign Solana-Kit Transaction
       </Button>
       <Spacer />
     </Stack>

@@ -478,13 +478,13 @@ export class WagmiAdapter extends AdapterBlueprint {
     const wagmiChain = this.wagmiChains?.find(chain => chain.id === chainId)
 
     const tx = await wagmiWriteContract(this.wagmiConfig, {
+      chainId,
       chain: wagmiChain,
       address: data.tokenAddress,
       account: data.fromAddress,
       abi: data.abi,
       functionName: data.method,
-      args: data.args,
-      __mode: 'prepared'
+      args: data.args
     })
 
     return { hash: tx }
@@ -824,17 +824,17 @@ export class WagmiAdapter extends AdapterBlueprint {
             const chainId = Number(params.chainId)
             const balance = await getBalance(this.wagmiConfig, {
               address: params.address as Hex,
-              chainId,
-              token: params.tokens?.[caipNetwork.caipNetworkId]?.address as Hex
+              chainId
             })
+            const formattedBalance = formatUnits(balance.value, balance.decimals)
 
             StorageUtil.updateNativeBalanceCache({
               caipAddress,
-              balance: balance.formatted,
+              balance: formattedBalance,
               symbol: balance.symbol,
               timestamp: Date.now()
             })
-            resolve({ balance: balance.formatted, symbol: balance.symbol })
+            resolve({ balance: formattedBalance, symbol: balance.symbol })
           } catch (error) {
             // eslint-disable-next-line no-console
             console.warn('Appkit:WagmiAdapter:getBalance - Error getting balance', error)

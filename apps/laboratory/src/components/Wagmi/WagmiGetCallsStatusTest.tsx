@@ -1,8 +1,7 @@
 import { useCallback, useState } from 'react'
 
 import { Button, Input, Stack, Text } from '@chakra-ui/react'
-import { useAccount } from 'wagmi'
-import { useCallsStatus } from 'wagmi/experimental'
+import { useAccount, useCallsStatus } from 'wagmi'
 
 import { useAppKitAccount } from '@reown/appkit/react'
 

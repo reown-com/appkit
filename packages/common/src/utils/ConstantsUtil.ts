@@ -78,6 +78,15 @@ export const ConstantsUtil = {
   SOLANA_SPL_TOKEN_ADDRESSES: {
     SOL: 'So11111111111111111111111111111111111111112'
   },
+  // Phantom rejects Solana sign-in messages that have no statement or a Chain ID other than these
+  SOLANA_SIGN_IN: {
+    STATEMENT: 'Sign in to verify that you own this wallet.',
+    MESSAGE_CHAIN_IDS: {
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'solana:mainnet',
+      'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'solana:testnet',
+      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1': 'solana:devnet'
+    } as Readonly<Record<string, string>>
+  },
   NATIVE_IMAGE_IDS_BY_NAMESPACE: {
     // Ethereum
     eip155: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',

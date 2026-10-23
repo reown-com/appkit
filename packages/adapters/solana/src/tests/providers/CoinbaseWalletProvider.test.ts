@@ -1,3 +1,4 @@
+import { VersionedTransaction } from '@solana/web3.js'
 import { describe, expect, it, vi } from 'vitest'
 
 import {
@@ -11,6 +12,9 @@ import {
   CoinbaseWalletProvider,
   type SolanaCoinbaseWallet
 } from '../../providers/CoinbaseWalletProvider'
+import { decodeSolanaKitTransaction } from '../../providers/shared/SolanaKitTransaction.js'
+import { mockCoinbaseWallet } from '../mocks/CoinbaseWallet.js'
+import { mockSolanaKitTransaction } from '../mocks/Transaction.js'
 
 describe('CoinbaseWalletProvider', () => {
   it('should have correct properties', () => {
@@ -39,5 +43,25 @@ describe('CoinbaseWalletProvider', () => {
       PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]
 
     expect(provider.id).toBe(expectedId)
+  })
+
+  it('should bridge a solana-kit transaction through a legacy VersionedTransaction when signing', async () => {
+    const wallet = mockCoinbaseWallet()
+    const provider = new CoinbaseWalletProvider({
+      provider: wallet,
+      chains: [],
+      getActiveChain: () => mainnet as unknown as CaipNetwork
+    })
+
+    const transaction = mockSolanaKitTransaction()
+    const result = await provider.signTransaction(transaction)
+
+    expect(wallet.signTransaction).toHaveBeenCalledWith(expect.any(VersionedTransaction))
+
+    const signedLegacyTransaction = vi.mocked(wallet.signTransaction).mock.results[0]!
+      .value as VersionedTransaction
+    expect(result).toEqual(
+      decodeSolanaKitTransaction(new Uint8Array(signedLegacyTransaction.serialize()))
+    )
   })
 })

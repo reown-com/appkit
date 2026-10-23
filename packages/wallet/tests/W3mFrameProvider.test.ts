@@ -1,5 +1,5 @@
 import * as logger from '@walletconnect/logger'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   type CaipNetworkId,
@@ -214,6 +214,44 @@ describe('W3mFrameProvider', () => {
 
     expect(response).toEqual(responsePayload)
     expect(postAppEventSpy).toHaveBeenCalled()
+  })
+
+  describe('eth_chainId', () => {
+    const request = { method: 'eth_chainId' } as any
+
+    afterEach(() => {
+      W3mFrameStorage.delete(W3mFrameConstants.LAST_USED_CHAIN_KEY)
+    })
+
+    it.each([
+      ['eip155:4663', '0x1237'],
+      ['eip155:1', '0x1'],
+      ['4663', '0x1237'],
+      ['1', '0x1']
+    ])('should return a hex quantity when the stored chain id is %s', async (stored, expected) => {
+      W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, stored)
+      const postAppEventSpy = vi.spyOn(provider['w3mFrame'].events, 'postAppEvent')
+
+      const response = await provider.request(request)
+
+      expect(response).toBe(expected)
+      expect(postAppEventSpy).not.toHaveBeenCalled()
+    })
+
+    it('should leave a non-EVM stored chain id untouched', async () => {
+      const solanaChainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+      W3mFrameStorage.set(W3mFrameConstants.LAST_USED_CHAIN_KEY, solanaChainId)
+
+      const response = await provider.request(request)
+
+      expect(response).toBe(solanaChainId)
+    })
+
+    it('should leave an unset chain id untouched', async () => {
+      const response = await provider.request(request)
+
+      expect(response).toBeUndefined()
+    })
   })
 
   it('should timeout after 2 minutes of no response on request', async () => {

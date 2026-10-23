@@ -16,7 +16,7 @@ import {
   USDC_CURRENCY_DEFAULT,
   USD_CURRENCY_DEFAULT
 } from '../../src/controllers/OnRampController.js'
-import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../../src/utils/ConstantsUtil.js'
+import { ONRAMP_PROVIDERS } from '../../src/utils/ConstantsUtil.js'
 
 const purchaseCurrencies: [PurchaseCurrency, ...PurchaseCurrency[]] = [
   { id: 'test-coin', symbol: 'TEST', name: 'Test Coin', networks: [] },
@@ -201,7 +201,9 @@ describe('OnRampController', () => {
     expect(OnRampController.state.providers).toEqual([])
   })
 
-  it('should properly configure meld url', () => {
+  it('should properly configure meld url', async () => {
+    const mockWidgetUrl = 'https://meldcrypto.com/session/abc123'
+    vi.spyOn(BlockchainApiController, 'getOnrampWidgetUrl').mockResolvedValue(mockWidgetUrl)
     mockChainControllerState({
       activeChain: ConstantsUtil.CHAIN.EVM,
       chains: new Map([
@@ -214,13 +216,8 @@ describe('OnRampController', () => {
     OptionsController.state.projectId = 'test'
     OnRampController.resetState()
     const meldProvider = ONRAMP_PROVIDERS[0] as OnRampProvider
-    OnRampController.setSelectedProvider(meldProvider)
-    const resultUrl = new URL(meldProvider.url)
-    resultUrl.searchParams.append('publicKey', MELD_PUBLIC_KEY)
-    resultUrl.searchParams.append('destinationCurrencyCode', 'USDC')
-    resultUrl.searchParams.append('walletAddress', '0x123')
-    resultUrl.searchParams.append('externalCustomerId', 'test')
+    await OnRampController.setSelectedProvider(meldProvider)
 
-    expect(OnRampController.state.selectedProvider?.url).toEqual(resultUrl.toString())
+    expect(OnRampController.state.selectedProvider?.url).toEqual(mockWidgetUrl)
   })
 })

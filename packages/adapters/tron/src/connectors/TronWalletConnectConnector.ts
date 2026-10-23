@@ -74,10 +74,10 @@ export class TronWalletConnectConnector
     )
 
     if (typeof result === 'string') {
-      return result
+      return this.normalizeSignature(result)
     }
 
-    return result?.signature || ''
+    return this.normalizeSignature(result?.signature || '')
   }
 
   /**
@@ -151,6 +151,16 @@ export class TronWalletConnectConnector
   }
 
   // -- Internals ----------------------------------------------------- //
+
+  // Some wallets (e.g. Binance Web3) return the signature as bare hex; prefixed values are left alone.
+  private normalizeSignature(signature: string): string {
+    if (!/^[0-9a-fA-F]+$/u.test(signature)) {
+      return signature
+    }
+
+    return `0x${signature}`
+  }
+
   private getActiveChain(): CaipNetwork {
     const chain = ChainController.getCaipNetworkByNamespace(ConstantsUtil.CHAIN.TRON)
 

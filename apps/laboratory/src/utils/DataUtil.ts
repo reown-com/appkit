@@ -277,6 +277,36 @@ export const siwxSdkOptions: SdkOption[] = [
     title: 'Reown Auth Bitcoin',
     link: '/appkit?name=reown-auth-bitcoin',
     description: 'Reown Authentication for Bitcoin'
+  },
+  {
+    title: 'SIWX Wagmi',
+    link: '/appkit?name=siwx-wagmi',
+    description: 'SIWX configuration for EVM using Wagmi'
+  },
+  {
+    title: 'SIWX Ethers',
+    link: '/appkit?name=siwx-ethers',
+    description: 'SIWX configuration for EVM using Ethers'
+  },
+  {
+    title: 'SIWX Ethers5',
+    link: '/appkit?name=siwx-ethers5',
+    description: 'SIWX configuration for EVM using Ethers5'
+  },
+  {
+    title: 'Reown Auth Wagmi',
+    link: '/appkit?name=reown-auth-wagmi',
+    description: 'Reown Authentication for EVM using Wagmi'
+  },
+  {
+    title: 'Reown Auth Ethers',
+    link: '/appkit?name=reown-auth-ethers',
+    description: 'Reown Authentication for EVM using Ethers'
+  },
+  {
+    title: 'Reown Auth Ethers5',
+    link: '/appkit?name=reown-auth-ethers5',
+    description: 'Reown Authentication for EVM using Ethers5'
   }
 ]
 

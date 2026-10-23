@@ -9,6 +9,7 @@ import {
 import { ChainController, WalletConnectConnector, WcHelpersUtil } from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
+import { bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { AddressPurpose } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
@@ -98,7 +99,7 @@ export class BitcoinWalletConnectConnector
       params: {
         account,
         psbt: params.psbt,
-        signInputs: params.signInputs,
+        signInputs: await this.getSignInputs(params, account),
         broadcast: params.broadcast
       }
     })
@@ -156,6 +157,42 @@ export class BitcoinWalletConnectConnector
     }
 
     return address
+  }
+
+  private async getSignInputs(params: BitcoinConnector.SignPSBTParams, account: string) {
+    if (params.signInputs?.length > 0) {
+      return params.signInputs
+    }
+
+    try {
+      // Loaded on demand: only an empty signInputs needs it, and it is a sizeable dependency
+      const bitcoinjs = await import('bitcoinjs-lib')
+      const caipNetworkId = this.getActiveChain()?.caipNetworkId
+      const network =
+        caipNetworkId === bitcoinTestnet.caipNetworkId ||
+        caipNetworkId === bitcoinSignet.caipNetworkId
+          ? bitcoinjs.networks.testnet
+          : bitcoinjs.networks.bitcoin
+      const accountScript = bitcoinjs.address.toOutputScript(account, network)
+      const psbt = bitcoinjs.Psbt.fromBase64(params.psbt, { network })
+
+      const ownedInputs = psbt.data.inputs.flatMap((input, index) => {
+        const script =
+          input.witnessUtxo?.script ??
+          (input.nonWitnessUtxo
+            ? bitcoinjs.Transaction.fromBuffer(input.nonWitnessUtxo).outs[
+                psbt.txInputs[index]?.index ?? -1
+              ]?.script
+            : undefined)
+
+        return script?.equals(accountScript) ? [{ address: account, index, sighashTypes: [1] }] : []
+      })
+
+      return ownedInputs.length > 0 ? ownedInputs : params.signInputs
+    } catch {
+      // Undecodable PSBT, or an address bitcoinjs cannot convert (e.g. Taproot without an ECC library): let the wallet decide
+      return params.signInputs
+    }
   }
 
   private checkIfMethodIsSupported(method: WalletConnectProvider.RequestMethod) {

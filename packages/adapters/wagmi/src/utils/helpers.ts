@@ -56,12 +56,14 @@ export async function getSafeConnector(
   connectors: readonly Connector[]
 ): Promise<CreateConnectorFn | null> {
   if (CoreHelperUtil.isSafeApp()) {
-    const { safe } = await import('@wagmi/connectors')
+    try {
+      const { safe } = await import('@wagmi/connectors/safe')
 
-    if (safe && !connectors.some(c => c.type === 'safe')) {
-      const safeConnector = safe()
-
-      return safeConnector
+      if (safe && !connectors.some(c => c.type === 'safe')) {
+        return safe()
+      }
+    } catch {
+      // Safe connector not available
     }
   }
 
@@ -72,14 +74,13 @@ export async function getBaseAccountConnector(
   connectors: readonly Connector[]
 ): Promise<CreateConnectorFn | null> {
   try {
-    const { baseAccount } = await import('@wagmi/connectors')
+    const { baseAccount } = await import('@wagmi/connectors/baseAccount')
 
     if (baseAccount && !connectors.some(c => c.id === 'baseAccount')) {
       return baseAccount()
     }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Failed to import Base Account SDK:', error)
+  } catch {
+    // Base Account connector not available
   }
 
   return null
@@ -90,14 +91,13 @@ export async function getCoinbaseConnector(
   preference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
 ): Promise<CreateConnectorFn | null> {
   try {
-    const { coinbaseWallet } = await import('@wagmi/connectors')
+    const { coinbaseWallet } = await import('@wagmi/connectors/coinbaseWallet')
 
     if (coinbaseWallet && !connectors.some(c => c.id === 'coinbaseWallet')) {
-      return coinbaseWallet({ preference })
+      return coinbaseWallet({ preference: preference ? { options: preference } : undefined })
     }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Failed to import Coinbase Wallet SDK:', error)
+  } catch {
+    // Coinbase Wallet connector not available
   }
 
   return null

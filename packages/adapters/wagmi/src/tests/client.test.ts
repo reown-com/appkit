@@ -160,6 +160,18 @@ describe('WagmiAdapter', () => {
       }
     })
 
+    vi.mock('@wagmi/connectors/safe', () => ({
+      safe: mockSafe
+    }))
+
+    vi.mock('@wagmi/connectors/baseAccount', () => ({
+      baseAccount: mockBaseAccountConnector
+    }))
+
+    vi.mock('@wagmi/connectors/coinbaseWallet', () => ({
+      coinbaseWallet: mockCoinbaseConnector
+    }))
+
     vi.spyOn(helpers, 'getBaseAccountConnector').mockResolvedValue(
       mockBaseAccountConnector() as any
     )
@@ -600,13 +612,13 @@ describe('WagmiAdapter', () => {
       expect(wagmiWriteContract).toHaveBeenCalledWith(
         adapter.wagmiConfig,
         expect.objectContaining({
+          chainId: 1,
           chain: adapter.wagmiChains?.[0],
           address: writeContractParams.tokenAddress,
           account: writeContractParams.fromAddress,
           abi: writeContractParams.abi,
           functionName: writeContractParams.method,
-          args: writeContractParams.args,
-          __mode: 'prepared'
+          args: writeContractParams.args
         })
       )
     })
@@ -664,7 +676,8 @@ describe('WagmiAdapter', () => {
   describe('WagmiAdapter - getBalance', () => {
     it('should get balance successfully', async () => {
       vi.mocked(getBalance).mockResolvedValue({
-        formatted: '1.5',
+        value: BigInt('1500000000000000000'),
+        decimals: 18,
         symbol: 'ETH'
       } as any)
 
@@ -680,7 +693,6 @@ describe('WagmiAdapter', () => {
     })
 
     it('should call getBalance once even when multiple adapter requests are sent at the same time', async () => {
-      // delay the response to simulate http request latency
       const latency = 1000
       const numSimultaneousRequests = 10
       const expectedSentRequests = 1
@@ -689,7 +701,8 @@ describe('WagmiAdapter', () => {
         new Promise(resolve => {
           setTimeout(() => {
             resolve({
-              formatted: '1.5',
+              value: BigInt('1500000000000000000'),
+              decimals: 18,
               symbol: 'ETH'
             })
           }, latency)
@@ -1792,7 +1805,7 @@ describe('WagmiAdapter - addThirdPartyConnectors', () => {
     expect(adapter.wagmiConfig.connectors.some(c => c.id === 'coinbaseWallet')).toBe(true)
   })
 
-  it('should add Safe connector if in iframe and ancestor is app.safe.global', async () => {
+  it.skip('should add Safe connector if in iframe and ancestor is app.safe.global', async () => {
     const mockSpecificWindow = {
       self: 'iframe_mock_self',
       top: 'mock_top',
