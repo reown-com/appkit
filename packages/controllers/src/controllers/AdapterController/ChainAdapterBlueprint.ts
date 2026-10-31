@@ -961,6 +961,7 @@ export namespace AdapterBlueprint {
   export type GetAccountsParams = {
     id: AppKitConnector['id']
     namespace?: ChainNamespace
+    caipNetworkId?: CaipNetwork['caipNetworkId']
   }
 
   export interface GetConnectionParams<C extends ChainAdapterConnector = ChainAdapterConnector> {
