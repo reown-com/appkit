@@ -239,37 +239,59 @@ export class AppKit extends AppKitBaseClient {
 
     const { isConnected } = await provider.isConnected()
 
-    if (chainNamespace && isAuthSupported && shouldSync) {
-      if (isConnected && this.connectionControllerClient?.connectExternal) {
-        await provider.init()
-        await this.syncAuthConnectorTheme(provider)
-        await this.connectionControllerClient?.connectExternal({
-          id: ConstantsUtil.CONNECTOR_ID.AUTH,
-          info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },
-          type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
-          provider,
-          chainId: ChainController.getNetworkData(chainNamespace)?.caipNetwork?.id,
-          chain: chainNamespace
-        })
-        this.setStatus('connected', chainNamespace)
-        const socialProvider = StorageUtil.getConnectedSocialProvider()
-        if (socialProvider) {
-          EventsController.sendEvent({
-            type: 'track',
-            event: 'SOCIAL_LOGIN_SUCCESS',
-            address: this.getAddress(),
-            properties: {
-              provider: socialProvider as SocialProvider,
-              reconnect: true
-            }
+    if (chainNamespace && shouldSync) {
+      if (isConnected) {
+        try {
+          await provider.init()
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.warn('provider.init failed during initialization', err)
+        }
+
+        if (isAuthSupported && this.connectionControllerClient?.connectExternal) {
+          await this.syncAuthConnectorTheme(provider)
+          await this.connectionControllerClient?.connectExternal({
+            id: ConstantsUtil.CONNECTOR_ID.AUTH,
+            info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },
+            type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
+            provider,
+            chainId: ChainController.getNetworkData(chainNamespace)?.caipNetwork?.id,
+            chain: chainNamespace
           })
+          this.setStatus('connected', chainNamespace)
+          const socialProvider = StorageUtil.getConnectedSocialProvider()
+          if (socialProvider) {
+            EventsController.sendEvent({
+              type: 'track',
+              event: 'SOCIAL_LOGIN_SUCCESS',
+              address: this.getAddress(),
+              properties: {
+                provider: socialProvider as SocialProvider,
+                reconnect: true
+              }
+            })
+          } else {
+            EventsController.sendEvent({
+              type: 'track',
+              event: 'CONNECT_SUCCESS',
+              address: this.getAddress(),
+              properties: {
+                method: 'email',
+                name: this.universalProvider?.session?.peer?.metadata?.name || 'Unknown',
+                reconnect: true,
+                view: RouterController.state.view,
+                walletRank: undefined
+              }
+            })
+          }
         } else {
+          this.setStatus('connected', chainNamespace)
           EventsController.sendEvent({
             type: 'track',
             event: 'CONNECT_SUCCESS',
             address: this.getAddress(),
             properties: {
-              method: 'email',
+              method: 'wallet',
               name: this.universalProvider?.session?.peer?.metadata?.name || 'Unknown',
               reconnect: true,
               view: RouterController.state.view,
