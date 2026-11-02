@@ -29,4 +29,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Widen the zod dependency of the wallet package to `^3.22.4 || ^4.6.6` so consumers can resolve a patched version
+Widen the zod dependency of the wallet package to `^3.22.4 || ^4.6.6` so consumers can resolve a patched version. The published type declarations are generated against zod 4, so consumers that resolve zod 3 and do not set `skipLibCheck` may see type errors from the wallet package declarations.
