@@ -727,7 +727,12 @@ export const W3mFrameSchema = {
 
     .or(EventSchema.extend({ type: zType('FRAME_RPC_REQUEST_ERROR'), payload: zError }))
 
-    .or(EventSchema.extend({ type: zType('FRAME_RPC_REQUEST_SUCCESS'), payload: RpcResponse }))
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_RPC_REQUEST_SUCCESS'),
+        payload: RpcResponse.optional()
+      })
+    )
 
     .or(EventSchema.extend({ type: zType('FRAME_SESSION_UPDATE'), payload: FrameSession }))
 
