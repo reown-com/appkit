@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as z from 'zod'
 
 import type { AdapterType, AppKitSdkVersion, SdkFramework } from '@reown/appkit-common'
 
@@ -522,53 +522,57 @@ export const W3mFrameSchema = {
     .or(
       EventSchema.extend({
         type: zType('APP_RPC_REQUEST'),
-        payload: RpcPersonalSignRequest.or(WalletGetAssetsRequest)
-          .or(RpcEthAccountsRequest)
-          .or(RpcEthBlockNumber)
-          .or(RpcEthCall)
-          .or(RpcEthChainId)
-          .or(RpcEthEstimateGas)
-          .or(RpcEthFeeHistory)
-          .or(RpcEthGasPrice)
-          .or(RpcEthGetAccount)
-          .or(RpcEthGetBalance)
-          .or(RpcEthGetBlockyByHash)
-          .or(RpcEthGetBlockByNumber)
-          .or(RpcEthGetBlockReceipts)
-          .or(RcpEthGetBlockTransactionCountByHash)
-          .or(RcpEthGetBlockTransactionCountByNumber)
-          .or(RpcEthGetCode)
-          .or(RpcEthGetFilter)
-          .or(RpcEthGetFilterLogs)
-          .or(RpcEthGetLogs)
-          .or(RpcEthGetProof)
-          .or(RpcEthGetStorageAt)
-          .or(RpcEthGetTransactionByBlockHashAndIndex)
-          .or(RpcEthGetTransactionByBlockNumberAndIndex)
-          .or(RpcEthGetTransactionByHash)
-          .or(RpcEthGetTransactionCount)
-          .or(RpcEthGetTransactionReceipt)
-          .or(RpcEthGetUncleCountByBlockHash)
-          .or(RpcEthGetUncleCountByBlockNumber)
-          .or(RpcEthMaxPriorityFeePerGas)
-          .or(RpcEthNewBlockFilter)
-          .or(RpcEthNewFilter)
-          .or(RpcEthNewPendingTransactionFilter)
-          .or(RpcEthSendRawTransaction)
-          .or(RpcEthSyncing)
-          .or(RpcUnistallFilter)
-          .or(RpcPersonalSignRequest)
-          .or(RpcEthSignTypedDataV4)
-          .or(RpcEthSendTransactionRequest)
-          .or(RpcSolanaSignMessageRequest)
-          .or(RpcSolanaSignTransactionRequest)
-          .or(RpcSolanaSignAllTransactionsRequest)
-          .or(RpcSolanaSignAndSendTransactionRequest)
-          .or(WalletGetCallsReceiptRequest)
-          .or(WalletSendCallsRequest)
-          .or(WalletGetCapabilitiesRequest)
-          .or(WalletGrantPermissionsRequest)
-          .or(WalletRevokePermissionsRequest)
+        payload: z
+          .union([
+            RpcPersonalSignRequest,
+            WalletGetAssetsRequest,
+            RpcEthAccountsRequest,
+            RpcEthBlockNumber,
+            RpcEthCall,
+            RpcEthChainId,
+            RpcEthEstimateGas,
+            RpcEthFeeHistory,
+            RpcEthGasPrice,
+            RpcEthGetAccount,
+            RpcEthGetBalance,
+            RpcEthGetBlockyByHash,
+            RpcEthGetBlockByNumber,
+            RpcEthGetBlockReceipts,
+            RcpEthGetBlockTransactionCountByHash,
+            RcpEthGetBlockTransactionCountByNumber,
+            RpcEthGetCode,
+            RpcEthGetFilter,
+            RpcEthGetFilterLogs,
+            RpcEthGetLogs,
+            RpcEthGetProof,
+            RpcEthGetStorageAt,
+            RpcEthGetTransactionByBlockHashAndIndex,
+            RpcEthGetTransactionByBlockNumberAndIndex,
+            RpcEthGetTransactionByHash,
+            RpcEthGetTransactionCount,
+            RpcEthGetTransactionReceipt,
+            RpcEthGetUncleCountByBlockHash,
+            RpcEthGetUncleCountByBlockNumber,
+            RpcEthMaxPriorityFeePerGas,
+            RpcEthNewBlockFilter,
+            RpcEthNewFilter,
+            RpcEthNewPendingTransactionFilter,
+            RpcEthSendRawTransaction,
+            RpcEthSyncing,
+            RpcUnistallFilter,
+            RpcPersonalSignRequest,
+            RpcEthSignTypedDataV4,
+            RpcEthSendTransactionRequest,
+            RpcSolanaSignMessageRequest,
+            RpcSolanaSignTransactionRequest,
+            RpcSolanaSignAllTransactionsRequest,
+            RpcSolanaSignAndSendTransactionRequest,
+            WalletGetCallsReceiptRequest,
+            WalletSendCallsRequest,
+            WalletGetCapabilitiesRequest,
+            WalletGrantPermissionsRequest,
+            WalletRevokePermissionsRequest
+          ])
           .and(
             z.object({
               chainId: z.string().or(z.number()).optional(),
@@ -723,7 +727,12 @@ export const W3mFrameSchema = {
 
     .or(EventSchema.extend({ type: zType('FRAME_RPC_REQUEST_ERROR'), payload: zError }))
 
-    .or(EventSchema.extend({ type: zType('FRAME_RPC_REQUEST_SUCCESS'), payload: RpcResponse }))
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_RPC_REQUEST_SUCCESS'),
+        payload: RpcResponse.optional()
+      })
+    )
 
     .or(EventSchema.extend({ type: zType('FRAME_SESSION_UPDATE'), payload: FrameSession }))
 
