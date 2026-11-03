@@ -3,6 +3,7 @@ import type { CreateConfigParameters } from 'wagmi'
 import { CoreHelperUtil, type CreateAppKit } from '@reown/appkit'
 import type { AppKitNetwork, CustomRpcUrlMap } from '@reown/appkit-common'
 import { DefaultSIWX, ReownAuthentication } from '@reown/appkit-siwx'
+import { base, baseSepolia, sepolia } from '@reown/appkit/networks'
 
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { siweConfig } from '@/src/utils/SiweUtils'
@@ -30,6 +31,7 @@ export type AppKitConfigObject = Record<
     wagmiConfig?: WagmiConfig
     adapters?: Adapter[]
     siwxReown?: boolean
+    permissionsDemo?: 'sync' | 'async'
   }
 >
 
@@ -61,6 +63,7 @@ const commonWagmiConfig = {
   networks: ConstantsUtil.AllNetworks,
   projectId: ConstantsUtil.ProjectId
 } as WagmiConfig
+const permissionsDemoNetworks = [baseSepolia, sepolia, base] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const appKitConfigs = {
   headless: {
@@ -142,7 +145,9 @@ export const appKitConfigs = {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
     wagmiConfig: commonWagmiConfig,
-    networks: ConstantsUtil.EvmNetworks,
+    networks: permissionsDemoNetworks,
+    defaultNetwork: sepolia,
+    permissionsDemo: 'async',
     features: {
       smartSessions: true,
       emailShowWallets: false,
@@ -153,7 +158,9 @@ export const appKitConfigs = {
     ...commonAppKitConfig,
     adapters: ['wagmi'],
     wagmiConfig: commonWagmiConfig,
-    networks: ConstantsUtil.EvmNetworks,
+    networks: permissionsDemoNetworks,
+    defaultNetwork: sepolia,
+    permissionsDemo: 'sync',
     features: {
       smartSessions: true,
       emailShowWallets: false,
