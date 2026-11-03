@@ -14,7 +14,8 @@ const RELATIVE_IMPORT_EXTENSION = `.js'`
 const PRIVATE_FUNCTION_REGEX = /private\s+(?:\w+)\s*\(\s*\)/gu
 const ALLOWED_DOMAINS = ['reown.com', 'walletconnect.com', 'walletconnect.org']
 // Allow as loose dependency because of recursive dependency with WalletConnect Monorepo
-const ALLOWED_LOOSE_DEPENDENCIES = ['@walletconnect/logger']
+// zod is loose so consumers can resolve a patched version (GHSA-mrhx-c7xc-m3w5)
+const ALLOWED_LOOSE_DEPENDENCIES = ['@walletconnect/logger', 'zod']
 
 // -- Data --------------------------------------------------------------------
 const { modified_files, created_files, deleted_files, diffForFile } = danger.git

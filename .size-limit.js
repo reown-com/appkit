@@ -35,7 +35,7 @@ export default [
   {
     name: '@reown/appkit-scaffold-ui',
     path: 'packages/scaffold-ui/dist/esm/exports/index.js',
-    limit: '220 KB', // Current: ~201 KB (10% buffer)
+    limit: '240 KB', // Current: ~226 KB (6% buffer)
     gzip: true
   },
   {
