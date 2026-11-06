@@ -52,6 +52,8 @@ export declare namespace StellarConnector {
     txHash: string
     signedXDR: string
     successful?: boolean
+    /** Reported by wallets that only confirm the submission; `pending` means more signatures are needed */
+    status?: 'success' | 'pending'
   }
 
   type SignMessageParams = {

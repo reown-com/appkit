@@ -98,6 +98,50 @@ describe('StellarWalletConnectConnector', () => {
     expect(params.params).not.toHaveProperty('waitForInclusion')
   })
 
+  it('signAndSubmitXDR exposes a success status when the wallet only answers with a status', async () => {
+    const { connector } = createConnector({ status: 'success' })
+
+    const result = await connector.signAndSubmitXDR({ xdr: 'unsigned-xdr', address: ADDRESS })
+
+    expect(result).toEqual({ txHash: '', signedXDR: '', status: 'success' })
+  })
+
+  it('signAndSubmitXDR exposes a pending status for a multisig transaction', async () => {
+    const { connector } = createConnector({ status: 'pending' })
+
+    const result = await connector.signAndSubmitXDR({ xdr: 'unsigned-xdr', address: ADDRESS })
+
+    expect(result).toEqual({ txHash: '', signedXDR: '', status: 'pending' })
+  })
+
+  it('signAndSubmitXDR ignores a status it does not know', async () => {
+    const { connector } = createConnector({ status: 'failed' })
+
+    const result = await connector.signAndSubmitXDR({ xdr: 'unsigned-xdr', address: ADDRESS })
+
+    expect(result).toEqual({ txHash: '', signedXDR: '' })
+  })
+
+  it('signAndSubmitXDR returns both the hash and the status when the wallet sends both', async () => {
+    const { connector } = createConnector({
+      tx_hash: 'abc123',
+      signedXDR: 'signed-xdr',
+      status: 'success'
+    })
+
+    const result = await connector.signAndSubmitXDR({ xdr: 'unsigned-xdr', address: ADDRESS })
+
+    expect(result).toEqual({ txHash: 'abc123', signedXDR: 'signed-xdr', status: 'success' })
+  })
+
+  it('signAndSubmitXDR tolerates an empty wallet answer', async () => {
+    const { connector } = createConnector(undefined)
+
+    const result = await connector.signAndSubmitXDR({ xdr: 'unsigned-xdr', address: ADDRESS })
+
+    expect(result).toEqual({ txHash: '', signedXDR: '' })
+  })
+
   it('signMessage passes the encoding through and returns the signature', async () => {
     const { connector, provider } = createConnector({
       signature: 'base64-signature',
