@@ -28,7 +28,7 @@ const SEP53_JAPANESE_MESSAGE = 'こんにちは、世界！'
 const SEP53_JAPANESE_SIGNATURE =
   'CDU265Xs8y3OWbB/56H9jPgUss5G9A0qFuTqH2zs2YDgTm+++dIfmAEceFqB7bhfN3am59lCtDXrCtwH2k1GBA=='
 
-function signWithLegacyKey(prefix: string, separator: number[], message: string): string {
+function signWithFixtureSeed(prefix: string, separator: number[], message: string): string {
   const encoder = new TextEncoder()
   const payload = Uint8Array.from([
     ...encoder.encode(prefix),
@@ -95,7 +95,7 @@ describe('StellarVerifier', () => {
   })
 
   it('verifies a SEP-53 signature made with the account key', async () => {
-    const signature = signWithLegacyKey('Stellar Signed Message:\n', [], LEGACY_MESSAGE)
+    const signature = signWithFixtureSeed('Stellar Signed Message:\n', [], LEGACY_MESSAGE)
 
     await expect(verifier.verify(mockSession({ signature }))).resolves.toBe(true)
   })
@@ -135,7 +135,13 @@ describe('StellarVerifier', () => {
   })
 
   it('rejects a signature over the SEP-53 prefix with a 0x00 inserted', async () => {
-    const signature = signWithLegacyKey('Stellar Signed Message:\n', [0], LEGACY_MESSAGE)
+    const signature = signWithFixtureSeed('Stellar Signed Message:\n', [0], LEGACY_MESSAGE)
+
+    await expect(verifier.verify(mockSession({ signature }))).resolves.toBe(false)
+  })
+
+  it('rejects a signature over the legacy prefix without the 0x00 separator', async () => {
+    const signature = signWithFixtureSeed('StellarMessage', [], LEGACY_MESSAGE)
 
     await expect(verifier.verify(mockSession({ signature }))).resolves.toBe(false)
   })
