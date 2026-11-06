@@ -57,11 +57,13 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
 
   async authenticate(): Promise<boolean> {
     const chains = this.chains.map(network => network.caipNetworkId)
+    const methods =
+      OptionsController.state.universalProviderConfigOverride?.methods?.[ConstantsUtil.CHAIN.EVM]
 
     return SIWXUtil.universalProviderAuthenticate({
       universalProvider: this.provider,
       chains,
-      methods: OPTIONAL_METHODS
+      methods: methods ?? OPTIONAL_METHODS
     })
   }
 }
