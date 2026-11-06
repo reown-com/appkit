@@ -106,7 +106,7 @@ export function StellarSignXDRTest() {
       toast({
         title: result.status === 'pending' ? 'Transaction pending' : 'Transaction submitted',
         description: result.txHash || result.status,
-        type: 'success'
+        type: result.status === 'pending' ? undefined : 'success'
       })
     } catch (e) {
       // eslint-disable-next-line no-console

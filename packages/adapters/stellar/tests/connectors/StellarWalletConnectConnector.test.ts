@@ -83,7 +83,7 @@ describe('StellarWalletConnectConnector', () => {
       }),
       'stellar:pubnet'
     )
-    expect(result).toEqual({ txHash: 'abc123', signedXDR: 'signed-xdr', successful: true })
+    expect(result).toStrictEqual({ txHash: 'abc123', signedXDR: 'signed-xdr', successful: true })
   })
 
   it('signAndSubmitXDR omits waitForInclusion when not supplied', async () => {
@@ -103,7 +103,7 @@ describe('StellarWalletConnectConnector', () => {
 
     const result = await connector.signAndSubmitXDR({ xdr: 'unsigned-xdr', address: ADDRESS })
 
-    expect(result).toEqual({ txHash: '', signedXDR: '', status: 'success' })
+    expect(result).toStrictEqual({ txHash: '', signedXDR: '', status: 'success' })
   })
 
   it('signAndSubmitXDR exposes a pending status for a multisig transaction', async () => {
@@ -111,16 +111,19 @@ describe('StellarWalletConnectConnector', () => {
 
     const result = await connector.signAndSubmitXDR({ xdr: 'unsigned-xdr', address: ADDRESS })
 
-    expect(result).toEqual({ txHash: '', signedXDR: '', status: 'pending' })
+    expect(result).toStrictEqual({ txHash: '', signedXDR: '', status: 'pending' })
   })
 
-  it('signAndSubmitXDR ignores a status it does not know', async () => {
-    const { connector } = createConnector({ status: 'failed' })
+  it.each(['failed', '', 1, null])(
+    'signAndSubmitXDR ignores the status %j it does not know',
+    async status => {
+      const { connector } = createConnector({ status })
 
-    const result = await connector.signAndSubmitXDR({ xdr: 'unsigned-xdr', address: ADDRESS })
+      const result = await connector.signAndSubmitXDR({ xdr: 'unsigned-xdr', address: ADDRESS })
 
-    expect(result).toEqual({ txHash: '', signedXDR: '' })
-  })
+      expect(result).toStrictEqual({ txHash: '', signedXDR: '' })
+    }
+  )
 
   it('signAndSubmitXDR returns both the hash and the status when the wallet sends both', async () => {
     const { connector } = createConnector({
@@ -131,15 +134,15 @@ describe('StellarWalletConnectConnector', () => {
 
     const result = await connector.signAndSubmitXDR({ xdr: 'unsigned-xdr', address: ADDRESS })
 
-    expect(result).toEqual({ txHash: 'abc123', signedXDR: 'signed-xdr', status: 'success' })
+    expect(result).toStrictEqual({ txHash: 'abc123', signedXDR: 'signed-xdr', status: 'success' })
   })
 
-  it('signAndSubmitXDR tolerates an empty wallet answer', async () => {
-    const { connector } = createConnector(undefined)
+  it.each([undefined, null])('signAndSubmitXDR tolerates a %s wallet answer', async answer => {
+    const { connector } = createConnector(answer)
 
     const result = await connector.signAndSubmitXDR({ xdr: 'unsigned-xdr', address: ADDRESS })
 
-    expect(result).toEqual({ txHash: '', signedXDR: '' })
+    expect(result).toStrictEqual({ txHash: '', signedXDR: '' })
   })
 
   it('signMessage passes the encoding through and returns the signature', async () => {
