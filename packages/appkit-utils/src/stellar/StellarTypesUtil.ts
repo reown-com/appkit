@@ -19,7 +19,7 @@ export interface StellarConnector extends ChainAdapterConnector, Provider {
   ): Promise<StellarConnector.SignAndSubmitXDRResult>
   /**
    * Signs an arbitrary message under the account's Ed25519 key, using the SEP-53
-   * domain-separated payload `sha256("StellarMessage" || 0x00 || message)`.
+   * domain-separated payload `sha256("Stellar Signed Message:\n" || message)`.
    */
   signMessage(
     params: StellarConnector.SignMessageParams
