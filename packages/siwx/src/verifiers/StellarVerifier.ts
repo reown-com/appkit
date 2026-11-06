@@ -1,5 +1,5 @@
 import nacl from 'tweetnacl'
-import { sha256 } from 'viem'
+import { concat, sha256 } from 'viem'
 
 import { ConstantsUtil, StellarStrKeyUtil } from '@reown/appkit-common'
 import type { SIWXSession } from '@reown/appkit-controllers'
@@ -20,25 +20,13 @@ function base64ToBytes(value: string): Uint8Array {
   return bytes
 }
 
-function concatBytes(...parts: Uint8Array[]): Uint8Array {
-  const result = new Uint8Array(parts.reduce((length, part) => length + part.length, 0))
-  let offset = 0
-
-  for (const part of parts) {
-    result.set(part, offset)
-    offset += part.length
-  }
-
-  return result
-}
-
 function buildSep53Payload(message: Uint8Array): Uint8Array {
-  return concatBytes(new TextEncoder().encode(SEP53_PREFIX), message)
+  return concat([new TextEncoder().encode(SEP53_PREFIX), message])
 }
 
 // Kept for wallets built before SEP-53 was adopted, which separate the prefix with a 0x00 byte
 function buildLegacyPayload(message: Uint8Array): Uint8Array {
-  return concatBytes(new TextEncoder().encode(LEGACY_PREFIX), Uint8Array.of(0), message)
+  return concat([new TextEncoder().encode(LEGACY_PREFIX), Uint8Array.of(0), message])
 }
 
 /**
