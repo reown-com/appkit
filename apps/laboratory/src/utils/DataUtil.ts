@@ -52,12 +52,12 @@ export const wagmiSdkOptions: SdkOption[] = [
   },
   {
     title: 'Permissions(Sync)',
-    link: '/appkit?name=wagmi-permissions-sync',
+    link: '/appkit?name=wagmi-permission-sync',
     description: 'Configuration using wagmi and implementing ERC-7715 with passkey'
   },
   {
     title: 'Permissions(Async)',
-    link: '/appkit?name=wagmi-permissions-async',
+    link: '/appkit?name=wagmi-permission-async',
     description: 'Configuration using wagmi and implementing ERC-7715 with ecdsa key'
   }
 ]

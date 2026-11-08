@@ -9,7 +9,12 @@ import { AppKitWalletButtons } from '@/src/components/AppKitWalletButtons'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
 import { DefaultSIWXStatus } from '@/src/components/DefaultSIWXStatus'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
+import { WagmiPermissionsAsyncTest } from '@/src/components/Wagmi/WagmiPermissionsAsyncTest'
+import { WagmiPermissionsSyncTest } from '@/src/components/Wagmi/WagmiPermissionsSyncTest'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
+import { ERC7715PermissionsProvider } from '@/src/context/ERC7715PermissionsContext'
+import { LocalEcdsaKeyProvider } from '@/src/context/LocalEcdsaKeyContext'
+import { PasskeyProvider } from '@/src/context/PasskeyContext'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 import type { AppKitConfigObject } from '../constants/appKitConfigs'
@@ -62,6 +67,20 @@ export default function DemoContent({
       <AppKitConnections namespace="stellar" title="Stellar Connections" />
 
       {evmAdapter === 'wagmi' && <WagmiTests />}
+      {config?.permissionsDemo === 'sync' ? (
+        <ERC7715PermissionsProvider>
+          <PasskeyProvider>
+            <WagmiPermissionsSyncTest />
+          </PasskeyProvider>
+        </ERC7715PermissionsProvider>
+      ) : null}
+      {config?.permissionsDemo === 'async' ? (
+        <ERC7715PermissionsProvider>
+          <LocalEcdsaKeyProvider>
+            <WagmiPermissionsAsyncTest />
+          </LocalEcdsaKeyProvider>
+        </ERC7715PermissionsProvider>
+      ) : null}
       {evmAdapter === 'ethers5' && <Ethers5Tests />}
       {evmAdapter === 'ethers' && <EthersTests />}
       {solanaAdapter ? <SolanaTests /> : null}
