@@ -598,9 +598,6 @@ importers:
       '@reown/appkit-experimental':
         specifier: workspace:*
         version: link:../../packages/experimental
-      '@reown/appkit-pay':
-        specifier: workspace:*
-        version: link:../../packages/pay
       '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../../packages/siwe
