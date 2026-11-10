@@ -40,7 +40,11 @@ describe('AppKit - disconnect', () => {
     mockStorageUtil()
     mockBlockchainApiController()
 
-    vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockProvider)
+    // No session, so the restore on init doesn't adopt a WalletConnect connection
+    vi.spyOn(UniversalProvider, 'init').mockResolvedValue({
+      ...mockProvider,
+      session: undefined
+    } as unknown as UniversalProvider)
 
     appKit = new AppKit(mockOptions)
 
