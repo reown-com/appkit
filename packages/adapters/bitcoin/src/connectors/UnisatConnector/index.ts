@@ -1,12 +1,11 @@
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
-import { ChainController, CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
+import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
 import type { BitcoinConnector } from '@reown/appkit-utils/bitcoin'
 import { bitcoin, bitcoinSignet, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { MethodNotSupportedError } from '../../errors/MethodNotSupportedError.js'
 import { AddressPurpose } from '../../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../../utils/ProviderEventEmitter.js'
-import { UnitsUtil } from '../../utils/UnitsUtil.js'
 import type { UnisatConnector as UnisatConnectorTypes } from './types.js'
 
 export class UnisatConnector extends ProviderEventEmitter implements BitcoinConnector {
@@ -83,22 +82,13 @@ export class UnisatConnector extends ProviderEventEmitter implements BitcoinConn
   }
 
   public async sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string> {
-    const network = ChainController.getActiveCaipNetwork(ConstantsUtil.CHAIN.BITCOIN)
-
-    if (!network) {
-      throw new Error('No active network available')
-    }
-
     const from = (await this.wallet.getAccounts())[0]
 
     if (!from) {
       throw new Error('No account available')
     }
 
-    const result = await this.wallet.sendBitcoin(
-      params.recipient,
-      Number(UnitsUtil.parseSatoshis(params.amount, network))
-    )
+    const result = await this.wallet.sendBitcoin(params.recipient, Number(params.amount))
 
     return result
   }
