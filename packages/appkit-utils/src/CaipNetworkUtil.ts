@@ -34,6 +34,7 @@ const WC_HTTP_RPC_SUPPORTED_CHAINS = [
   'eip155:324',
   'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
   'eip155:5000',
+  'eip155:4663',
   'solana:4sgjmw1sunhzsxgspuhpqldx6wiyjntz',
   'eip155:80084',
   'eip155:5003',
