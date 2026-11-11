@@ -289,6 +289,42 @@ describe('ChainController', () => {
     expect(accountState?.socialWindow).toEqual(undefined)
   })
 
+  it.each(['eip155', 'solana'] as const)(
+    'should only clear the active address when resetting the active namespace (%s)',
+    namespace => {
+      ChainController.initialize(
+        [evmAdapter, solanaAdapter],
+        [mainnetCaipNetwork, solanaCaipNetwork],
+        {
+          connectionControllerClient
+        }
+      )
+      ChainController.setActiveCaipNetwork(mainnetCaipNetwork)
+      const evmAddress = 'eip155:1:0x123'
+      const solanaAddress = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:solana-account'
+      ChainController.setChainAccountData('eip155', {
+        caipAddress: evmAddress,
+        status: 'connected'
+      })
+      ChainController.setChainAccountData('solana', {
+        caipAddress: solanaAddress,
+        status: 'connected'
+      })
+
+      ChainController.resetAccount(namespace)
+
+      expect(ChainController.getAccountData(namespace)?.caipAddress).toBeUndefined()
+      expect(ChainController.getAccountData(namespace)?.status).toBe('disconnected')
+      expect(ChainController.state.activeCaipAddress).toBe(
+        namespace === 'eip155' ? undefined : evmAddress
+      )
+      const otherNamespace = namespace === 'eip155' ? 'solana' : 'eip155'
+      expect(ChainController.getAccountData(otherNamespace)?.caipAddress).toBe(
+        namespace === 'eip155' ? solanaAddress : evmAddress
+      )
+    }
+  )
+
   it('should reset account and set preferredAccountType from OptionsController.state.defaultAccountTypes if defined', () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
       ...OptionsController.state,
