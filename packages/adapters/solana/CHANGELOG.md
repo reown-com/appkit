@@ -1,5 +1,61 @@
 # @reown/appkit-adapter-solana
 
+## 2.0.0
+
+### Major Changes
+
+- [#5793](https://github.com/reown-com/appkit/pull/5793) [`8f9f39f`](https://github.com/reown-com/appkit/commit/8f9f39f1dfe0a21bb619dd9a33b6d7500523298b) Thanks [@0xmkh](https://github.com/0xmkh)! - Add wagmi v3 support
+
+### Minor Changes
+
+- [#5796](https://github.com/reown-com/appkit/pull/5796) [`c9c989a`](https://github.com/reown-com/appkit/commit/c9c989a18ec692ae6707a66b2127c6d6042bdbae) Thanks [@santgr11](https://github.com/santgr11)! - Added support for reading a wallet's address and signing/sending transactions using @solana/kit (the newer Solana SDK), alongside the existing @solana/web3.js support.
+
+- [#5798](https://github.com/reown-com/appkit/pull/5798) [`e68c9d8`](https://github.com/reown-com/appkit/commit/e68c9d8c9ad63f2c42e9fcfa95ac961200f9736c) Thanks [@santgr11](https://github.com/santgr11)! - Added support for building and sending SPL token transfers using @solana/kit (the newer Solana SDK), alongside the existing @solana/web3.js-based support.
+
+### Patch Changes
+
+- [#5802](https://github.com/reown-com/appkit/pull/5802) [`09c48db`](https://github.com/reown-com/appkit/commit/09c48db73d2823a505eb4c7546ebecd590c81230) Thanks [@0xmkh](https://github.com/0xmkh)! - Migrate Meld onramp widget URL to server-side minting via blockchain-api
+
+- [#5781](https://github.com/reown-com/appkit/pull/5781) [`a3b3eab`](https://github.com/reown-com/appkit/commit/a3b3eabf6f32b085b2cc7be61308e4861e4af12f) Thanks [@santgr11](https://github.com/santgr11)! - Fixed TRON `sendTransaction` failing on chains outside the Blockchain API's supported list (e.g. Shasta testnet) by falling back to calling the chain's fullnode directly. Also fixed network switching not reaching the underlying wallet adapter for injected TRON connectors.
+
+- [#5819](https://github.com/reown-com/appkit/pull/5819) [`f31d2fb`](https://github.com/reown-com/appkit/commit/f31d2fb18b6120eceeb6319ee967b5ff8f4c8e41) Thanks [@santgr11](https://github.com/santgr11)! - Fixed Bitcoin `signPSBT` over WalletConnect failing with "Invalid params" in wallets such as Xverse when `signInputs` is empty. The adapter now signs the inputs that belong to the connected account, as the injected Bitcoin connectors already do.
+
+- [#5790](https://github.com/reown-com/appkit/pull/5790) [`88a78cf`](https://github.com/reown-com/appkit/commit/88a78cf57f2ea8cb2c4805c4efeff5ea965be687) Thanks [@santgr11](https://github.com/santgr11)! - Fixed MetaMask silently reconnecting the previously authorized Bitcoin account instead of allowing the user to pick a different one.
+
+- [#5807](https://github.com/reown-com/appkit/pull/5807) [`a82c8d0`](https://github.com/reown-com/appkit/commit/a82c8d06d3b27a41f3c33e0f638168437e3d0cd5) Thanks [@santgr11](https://github.com/santgr11)! - Fixed Tron SIWX failing with Binance Web3 over WalletConnect by prefixing `0x` on message signatures returned without it
+
+- [#5800](https://github.com/reown-com/appkit/pull/5800) [`8b70242`](https://github.com/reown-com/appkit/commit/8b70242d04e07a8ea6da950200d252689b82aed9) Thanks [@santgr11](https://github.com/santgr11)! - Added a solana-kit `Rpc` client to the Solana adapter alongside its existing connection, so apps using `@solana/kit` can read balances, fetch blockhashes, and wait for transaction confirmations through AppKit directly.
+
+- [#5833](https://github.com/reown-com/appkit/pull/5833) [`fa90f4d`](https://github.com/reown-com/appkit/commit/fa90f4de7ebce805316f791b38cda0f06bda9b86) Thanks [@Koobi33](https://github.com/Koobi33)! - Fixed one-click auth (`wc_sessionAuthenticate`) ignoring `universalProviderConfigOverride.methods.eip155`. The WalletConnect connector now passes the overridden EVM methods to `authenticate`, so the ReCap in the SIWE message lists only the methods the dApp asked for. Without an override, the default method list is unchanged.
+
+- [#5786](https://github.com/reown-com/appkit/pull/5786) [`866c940`](https://github.com/reown-com/appkit/commit/866c940f50965904dab4ce3031a78248ddaa7cc5) Thanks [@santgr11](https://github.com/santgr11)! - Fix undersized smart-account badge icon on wallet items
+
+- [#5812](https://github.com/reown-com/appkit/pull/5812) [`ada9b58`](https://github.com/reown-com/appkit/commit/ada9b580a62719e9ef922b4eb19390fa4fa2c54e) Thanks [@santgr11](https://github.com/santgr11)! - Fixed sign-in failing with Phantom on Solana, for Reown Authentication and for the default SIWX. The Solana sign-in message now includes a statement and writes the chain as `solana:mainnet`, `solana:testnet` or `solana:devnet`, which Phantom requires before it shows the signature request. Apps that check the default SIWX message text on their own backend will see this new format for Solana.
+
+- [#5806](https://github.com/reown-com/appkit/pull/5806) [`28555e3`](https://github.com/reown-com/appkit/commit/28555e3cf6b8c4d0d95b8c47e261dad8162b6aa0) Thanks [@santgr11](https://github.com/santgr11)! - Fixed SPL token sends falling back to a static compute-unit limit (and a higher priority fee)
+
+- [#5820](https://github.com/reown-com/appkit/pull/5820) [`e44c739`](https://github.com/reown-com/appkit/commit/e44c73931cd2e36e33ccd36e9176d2e56834ed7b) Thanks [@santgr11](https://github.com/santgr11)! - Fixed Solana `signAllTransactions` stalling in mobile browsers for wallets that do not support `solana_signAllTransactions`: the per-transaction requests are now all sent up front instead of one at a time after each answer.
+
+- [#5773](https://github.com/reown-com/appkit/pull/5773) [`5c1a615`](https://github.com/reown-com/appkit/commit/5c1a615898ff5af4df0576977232ea3783d0e4cc) Thanks [@santgr11](https://github.com/santgr11)! - Keep sign modal buttons inside the modal boundary
+
+- [#5810](https://github.com/reown-com/appkit/pull/5810) [`bd8d8f9`](https://github.com/reown-com/appkit/commit/bd8d8f9f8ad0dff30c9186bd6084d16bdc43926a) Thanks [@santgr11](https://github.com/santgr11)! - Fixed email and social login wallets failing to send transactions because `eth_chainId` could return a CAIP-2 chain id (for example `eip155:11155111`) instead of a hex chain id. It now always returns a hex chain id for EVM networks.
+
+- [#5791](https://github.com/reown-com/appkit/pull/5791) [`99faa4b`](https://github.com/reown-com/appkit/commit/99faa4bdc3c7b6fbc5bf8f35753d11ef7135418b) Thanks [@santgr11](https://github.com/santgr11)! - Add Stellar logo's image ids
+
+- [#5789](https://github.com/reown-com/appkit/pull/5789) [`83d474b`](https://github.com/reown-com/appkit/commit/83d474b1ba6e1d17ce46dcf50ee8ae6e3f2a653c) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes `request()` on the Tron and Stellar WalletConnect connectors, which called a non-existent `internalRequest` and threw `TypeError` for any host calling `provider.request(...)` on a WalletConnect-connected Tron/Stellar wallet. Requests now route through the universal provider on the active chain. Also adds `signTransaction(tx)` to the Tron WalletConnect connector so hosts can sign a prebuilt TronWeb transaction with the spec's `tron_method_version`-aware payload shape.
+
+- [#5799](https://github.com/reown-com/appkit/pull/5799) [`22f8693`](https://github.com/reown-com/appkit/commit/22f86934bafa79e8e74af85e758aa590512bf4bb) Thanks [@santgr11](https://github.com/santgr11)! - Reduced excessive priority fees on SPL token sends by sizing the compute-unit limit from a real transaction simulation instead of a flat static ceiling, falling back to a smaller static limit only if simulation itself fails.
+
+- [#5805](https://github.com/reown-com/appkit/pull/5805) [`6d29482`](https://github.com/reown-com/appkit/commit/6d29482417e8bbbb6036111a118c295b2da2de1e) Thanks [@santgr11](https://github.com/santgr11)! - Fixed signing a solana-kit transaction over WalletConnect failing with `Unexpected legacy-style response` when the wallet returns the spec's `signature` response.
+
+- Updated dependencies [[`09c48db`](https://github.com/reown-com/appkit/commit/09c48db73d2823a505eb4c7546ebecd590c81230), [`a3b3eab`](https://github.com/reown-com/appkit/commit/a3b3eabf6f32b085b2cc7be61308e4861e4af12f), [`c9c989a`](https://github.com/reown-com/appkit/commit/c9c989a18ec692ae6707a66b2127c6d6042bdbae), [`f31d2fb`](https://github.com/reown-com/appkit/commit/f31d2fb18b6120eceeb6319ee967b5ff8f4c8e41), [`88a78cf`](https://github.com/reown-com/appkit/commit/88a78cf57f2ea8cb2c4805c4efeff5ea965be687), [`a82c8d0`](https://github.com/reown-com/appkit/commit/a82c8d06d3b27a41f3c33e0f638168437e3d0cd5), [`8b70242`](https://github.com/reown-com/appkit/commit/8b70242d04e07a8ea6da950200d252689b82aed9), [`fa90f4d`](https://github.com/reown-com/appkit/commit/fa90f4de7ebce805316f791b38cda0f06bda9b86), [`866c940`](https://github.com/reown-com/appkit/commit/866c940f50965904dab4ce3031a78248ddaa7cc5), [`ada9b58`](https://github.com/reown-com/appkit/commit/ada9b580a62719e9ef922b4eb19390fa4fa2c54e), [`28555e3`](https://github.com/reown-com/appkit/commit/28555e3cf6b8c4d0d95b8c47e261dad8162b6aa0), [`e44c739`](https://github.com/reown-com/appkit/commit/e44c73931cd2e36e33ccd36e9176d2e56834ed7b), [`e68c9d8`](https://github.com/reown-com/appkit/commit/e68c9d8c9ad63f2c42e9fcfa95ac961200f9736c), [`5c1a615`](https://github.com/reown-com/appkit/commit/5c1a615898ff5af4df0576977232ea3783d0e4cc), [`bd8d8f9`](https://github.com/reown-com/appkit/commit/bd8d8f9f8ad0dff30c9186bd6084d16bdc43926a), [`99faa4b`](https://github.com/reown-com/appkit/commit/99faa4bdc3c7b6fbc5bf8f35753d11ef7135418b), [`9cdc26c`](https://github.com/reown-com/appkit/commit/9cdc26cf4502eed99e1a0abc801b7507ef9191d5), [`83d474b`](https://github.com/reown-com/appkit/commit/83d474b1ba6e1d17ce46dcf50ee8ae6e3f2a653c), [`22f8693`](https://github.com/reown-com/appkit/commit/22f86934bafa79e8e74af85e758aa590512bf4bb), [`6d29482`](https://github.com/reown-com/appkit/commit/6d29482417e8bbbb6036111a118c295b2da2de1e), [`8f9f39f`](https://github.com/reown-com/appkit/commit/8f9f39f1dfe0a21bb619dd9a33b6d7500523298b)]:
+  - @reown/appkit-controllers@2.0.0
+  - @reown/appkit@2.0.0
+  - @reown/appkit-utils@2.0.0
+  - @reown/appkit-common@2.0.0
+  - @reown/appkit-polyfills@2.0.0
+  - @reown/appkit-wallet@2.0.0
+
 ## 1.8.24
 
 ### Patch Changes
