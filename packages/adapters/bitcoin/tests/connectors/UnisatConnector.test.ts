@@ -139,7 +139,13 @@ describe('UnisatConnector', () => {
       const txid = await connector.sendTransfer({ amount: '1500', recipient: 'mock_to_address' })
 
       expect(txid).toBe('mock_txhash')
-      expect(wallet.sendBitcoin).toHaveBeenCalledWith('mock_to_address', 0.000015)
+      expect(wallet.sendBitcoin).toHaveBeenCalledWith('mock_to_address', 1500)
+    })
+
+    it('should send the amount in satoshis without converting it to BTC', async () => {
+      await connector.sendTransfer({ amount: '150000000000', recipient: 'mock_to_address' })
+
+      expect(wallet.sendBitcoin).toHaveBeenCalledWith('mock_to_address', 150000000000)
     })
 
     it('should throw an error if the network is unavailable', async () => {
