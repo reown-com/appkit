@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-ton",
-  "version": "1.8.24",
+  "version": "2.0.0",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
