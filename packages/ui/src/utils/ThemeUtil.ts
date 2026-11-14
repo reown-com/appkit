@@ -17,7 +17,7 @@ const fonts = {
   'KHTeka-400-woff2': 'https://fonts.reown.com/KHTeka-Regular.woff2',
   'KHTeka-300-woff2': 'https://fonts.reown.com/KHTeka-Light.woff2',
   'KHTekaMono-400-woff2': 'https://fonts.reown.com/KHTekaMono-Regular.woff2',
-  'KHTeka-500-woff': 'https://fonts.reown.com/KHTeka-Light.woff',
+  'KHTeka-500-woff': 'https://fonts.reown.com/KHTeka-Medium.woff',
   'KHTeka-400-woff': 'https://fonts.reown.com/KHTeka-Regular.woff',
   'KHTeka-300-woff': 'https://fonts.reown.com/KHTeka-Light.woff',
   'KHTekaMono-400-woff': 'https://fonts.reown.com/KHTekaMono-Regular.woff'
@@ -133,10 +133,21 @@ export function createRootStyles(_themeVariables?: ThemeVariables) {
             @font-face {
               font-family: 'KHTeka';
               src:
+                url(${unsafeCSS(fonts['KHTeka-500-woff2'])}) format('woff2'),
+                url(${unsafeCSS(fonts['KHTeka-500-woff'])}) format('woff');
+              font-weight: 500;
+              font-style: normal;
+              font-display: swap;
+            }
+
+            @font-face {
+              font-family: 'KHTeka';
+              src:
                 url(${unsafeCSS(fonts['KHTeka-300-woff2'])}) format('woff2'),
                 url(${unsafeCSS(fonts['KHTeka-300-woff'])}) format('woff');
               font-weight: 300;
               font-style: normal;
+              font-display: swap;
             }
 
             @font-face {
@@ -146,15 +157,7 @@ export function createRootStyles(_themeVariables?: ThemeVariables) {
                 url(${unsafeCSS(fonts['KHTekaMono-400-woff'])}) format('woff');
               font-weight: 400;
               font-style: normal;
-            }
-
-            @font-face {
-              font-family: 'KHTeka';
-              src:
-                url(${unsafeCSS(fonts['KHTeka-400-woff2'])}) format('woff2'),
-                url(${unsafeCSS(fonts['KHTeka-400-woff'])}) format('woff');
-              font-weight: 400;
-              font-style: normal;
+              font-display: swap;
             }
           `}
 
