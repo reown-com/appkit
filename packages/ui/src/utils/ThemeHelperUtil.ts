@@ -15,7 +15,9 @@ function normalizeThemeVariables(themeVariables?: ThemeVariables): Record<string
   const normalized: Record<string, string | number> = {}
 
   normalized['font-family'] =
-    themeVariables['--apkt-font-family'] ?? themeVariables['--w3m-font-family'] ?? 'KHTeka'
+    themeVariables['--apkt-font-family'] ??
+    themeVariables['--w3m-font-family'] ??
+    allStyles.fontFamily.regular
 
   normalized['accent'] =
     themeVariables['--apkt-accent'] ?? themeVariables['--w3m-accent'] ?? '#0988F0'

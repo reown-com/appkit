@@ -236,9 +236,14 @@ export const spacing = {
   '64': '256px'
 }
 
+/*
+ * Generic fallbacks keep the UI sans-serif when the KHTeka web fonts can't load
+ * (e.g. Lockdown Mode or content blockers), instead of the browser default serif font.
+ */
 const fontFamily = {
-  regular: 'KHTeka',
-  mono: 'KHTekaMono'
+  regular:
+    "KHTeka, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+  mono: 'KHTekaMono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
 }
 
 const fontWeight = {

@@ -14,6 +14,23 @@ describe('ThemeUtil', () => {
       expect(styles.core.cssText).toContain("font-family: 'KHTekaMono'")
     })
 
+    it('should declare one KHTeka font face per weight, including medium', () => {
+      const cssText = createRootStyles({}).core.cssText
+
+      expect(cssText).toMatch(
+        /KHTeka-Medium\.woff2"?\)? format\('woff2'\),\s*url\(https:\/\/fonts\.reown\.com\/KHTeka-Medium\.woff\) format\('woff'\);\s*font-weight: 500;/u
+      )
+      expect(cssText.match(/KHTeka-Regular\.woff2/gu)).toHaveLength(1)
+      expect(cssText.match(/KHTeka-Light\.woff2/gu)).toHaveLength(1)
+    })
+
+    it('should fall back to generic font families when the KHTeka fonts cannot load', () => {
+      const rootStyles = ThemeHelperUtil.createRootStyles('dark', {})
+
+      expect(rootStyles).toMatch(/--apkt-fontFamily-regular:\s*KHTeka,[^;]*sans-serif;/u)
+      expect(rootStyles).toMatch(/--apkt-fontFamily-mono:\s*KHTekaMono,[^;]*monospace;/u)
+    })
+
     it('should not include Google Fonts import when custom font family is provided with --w3m prefix', () => {
       const themeVariables: ThemeVariables = {
         '--w3m-font-family': 'Custom Font, sans-serif'
