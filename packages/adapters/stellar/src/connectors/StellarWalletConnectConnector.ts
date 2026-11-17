@@ -78,6 +78,7 @@ export class StellarWalletConnectConnector
       tx_hash?: string
       signedXDR?: string
       successful?: boolean
+      status?: string
     }>('stellar_signAndSubmitXDR', {
       xdr: params.xdr,
       address: params.address,
@@ -89,7 +90,10 @@ export class StellarWalletConnectConnector
     return {
       txHash: result?.tx_hash ?? '',
       signedXDR: result?.signedXDR ?? '',
-      ...(result?.successful === undefined ? {} : { successful: result.successful })
+      ...(result?.successful === undefined ? {} : { successful: result.successful }),
+      ...(result?.status === 'success' || result?.status === 'pending'
+        ? { status: result.status }
+        : {})
     }
   }
 
