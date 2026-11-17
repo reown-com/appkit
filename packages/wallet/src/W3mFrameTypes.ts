@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as z from 'zod'
 
 import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 
