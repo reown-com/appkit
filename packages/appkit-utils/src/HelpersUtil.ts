@@ -51,6 +51,7 @@ export const HelpersUtil = {
    * @param intervalMs - Time to wait between tries, in milliseconds.
    * @param maxRetries - Maximum number of times to try before stopping.
    * @returns A Promise that resolves to true if the condition becomes true in time, or false if it doesn't.
+   * Rejects with the original error if the condition function throws or rejects.
    */
   withRetry({
     conditionFn,
@@ -61,25 +62,25 @@ export const HelpersUtil = {
     intervalMs: number
     maxRetries: number
   }): Promise<boolean> {
-    let attempts = 0
+    return new Promise((resolve, reject) => {
+      let attempts = 0
 
-    return new Promise(resolve => {
       async function tryCheck() {
-        attempts += 1
+        try {
+          attempts += 1
 
-        const isConditionMet = await conditionFn()
+          const isConditionMet = await conditionFn()
 
-        if (isConditionMet) {
-          return resolve(true)
+          if (isConditionMet) {
+            resolve(true)
+          } else if (attempts >= maxRetries) {
+            resolve(false)
+          } else {
+            setTimeout(tryCheck, intervalMs)
+          }
+        } catch (error) {
+          reject(error)
         }
-
-        if (attempts >= maxRetries) {
-          return resolve(false)
-        }
-
-        setTimeout(tryCheck, intervalMs)
-
-        return null
       }
 
       tryCheck()
