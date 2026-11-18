@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { HelpersUtil } from '../src/HelpersUtil.js'
 
@@ -7,7 +7,41 @@ describe('HelpersUtil', () => {
     vi.useFakeTimers()
   })
 
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   describe('withRetry', () => {
+    it.each([
+      ['synchronous', false, 1],
+      ['asynchronous', true, 1],
+      ['synchronous', false, 2],
+      ['asynchronous', true, 2]
+    ] as const)(
+      'rejects %s condition errors (async: %s, attempt: %s)',
+      async (_kind, asyncError, failAt) => {
+        const error = new Error('Condition failed')
+        let attempts = 0
+        const conditionFn = vi.fn(() => {
+          attempts += 1
+          if (attempts < failAt) {
+            return false
+          }
+          if (asyncError) {
+            return Promise.reject(error)
+          }
+          throw error
+        })
+        const result = HelpersUtil.withRetry({ conditionFn, intervalMs: 100, maxRetries: 5 })
+        // Attach rejection handling before advancing timers.
+        const rejection = expect(result).rejects.toBe(error)
+        await vi.runAllTimersAsync()
+        await rejection
+        expect(conditionFn).toHaveBeenCalledTimes(failAt)
+        expect(vi.getTimerCount()).toBe(0)
+      }
+    )
+
     it('should retry condition function until success or max retries reached', async () => {
       let attempts = 0
       const conditionFn = vi.fn(() => {
