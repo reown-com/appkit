@@ -6,7 +6,7 @@ import {
   ConstantsUtil,
   PresetsUtil
 } from '@reown/appkit-common'
-import { ChainController, SIWXUtil } from '@reown/appkit-controllers'
+import { ChainController, OptionsController, SIWXUtil } from '@reown/appkit-controllers'
 import { WalletConnectConnector } from '@reown/appkit-controllers'
 
 import { bitcoin, mainnet, solana } from '../../src/networks'
@@ -76,6 +76,42 @@ describe('WalletConnectConnector', () => {
       await connector.connectWalletConnect()
 
       expect(provider.connect).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('authenticate', () => {
+    beforeEach(() => {
+      OptionsController.setUniversalProviderConfigOverride(undefined)
+    })
+
+    it('should pass default methods when there is no override', async () => {
+      const authenticateSpy = vi
+        .spyOn(SIWXUtil, 'universalProviderAuthenticate')
+        .mockResolvedValueOnce(false)
+
+      await connector.authenticate()
+
+      expect(authenticateSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          methods: expect.arrayContaining([
+            'personal_sign',
+            'eth_sendTransaction',
+            'wallet_sendCalls'
+          ])
+        })
+      )
+    })
+
+    it('should pass eip155 methods from universalProviderConfigOverride', async () => {
+      const methods = ['eth_accounts', 'personal_sign']
+      OptionsController.setUniversalProviderConfigOverride({ methods: { eip155: methods } })
+      const authenticateSpy = vi
+        .spyOn(SIWXUtil, 'universalProviderAuthenticate')
+        .mockResolvedValueOnce(false)
+
+      await connector.authenticate()
+
+      expect(authenticateSpy).toHaveBeenCalledWith(expect.objectContaining({ methods }))
     })
   })
 

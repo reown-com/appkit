@@ -233,11 +233,6 @@ export const stellarSdkOptions: SdkOption[] = [
 
 export const siwxSdkOptions: SdkOption[] = [
   {
-    title: 'Reown Authentication',
-    link: '/appkit?name=reown-authentication',
-    description: 'SIWX configuration using Reown Authentication'
-  },
-  {
     title: 'Default SIWX',
     link: '/appkit?name=siwx-default',
     description:
@@ -269,16 +264,6 @@ export const siwxSdkOptions: SdkOption[] = [
     description: 'SIWX configuration for Stellar'
   },
   {
-    title: 'Reown Auth Solana',
-    link: '/appkit?name=reown-auth-solana',
-    description: 'Reown Authentication for Solana'
-  },
-  {
-    title: 'Reown Auth Bitcoin',
-    link: '/appkit?name=reown-auth-bitcoin',
-    description: 'Reown Authentication for Bitcoin'
-  },
-  {
     title: 'SIWX Wagmi',
     link: '/appkit?name=siwx-wagmi',
     description: 'SIWX configuration for EVM using Wagmi'
@@ -292,29 +277,6 @@ export const siwxSdkOptions: SdkOption[] = [
     title: 'SIWX Ethers5',
     link: '/appkit?name=siwx-ethers5',
     description: 'SIWX configuration for EVM using Ethers5'
-  },
-  {
-    title: 'Reown Auth Wagmi',
-    link: '/appkit?name=reown-auth-wagmi',
-    description: 'Reown Authentication for EVM using Wagmi'
-  },
-  {
-    title: 'Reown Auth Ethers',
-    link: '/appkit?name=reown-auth-ethers',
-    description: 'Reown Authentication for EVM using Ethers'
-  },
-  {
-    title: 'Reown Auth Ethers5',
-    link: '/appkit?name=reown-auth-ethers5',
-    description: 'Reown Authentication for EVM using Ethers5'
-  }
-]
-
-export const paySdkOptions: SdkOption[] = [
-  {
-    title: 'Default',
-    link: '/appkit?name=pay-default',
-    description: 'AppKit Pay with default configuration'
   }
 ]
 

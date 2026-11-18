@@ -10,7 +10,6 @@ import {
   ethersSdkOptions,
   featuredSdkOptions,
   multichainSdkOptions,
-  paySdkOptions,
   siwxSdkOptions,
   solanaSdkOptions,
   stellarSdkOptions,
@@ -42,7 +41,6 @@ export default function HomePage() {
         sdkOptions={multichainSdkOptions}
       />
       <ConfigurationList title="SIWX" sdkOptions={siwxSdkOptions} />
-      <ConfigurationList title="Pay" sdkOptions={paySdkOptions} />
       <ConfigurationList title="Custom Configurations" sdkOptions={customSdkOptions} />
     </>
   )

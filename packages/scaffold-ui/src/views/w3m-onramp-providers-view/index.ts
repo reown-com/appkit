@@ -17,6 +17,9 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 import '../../partials/w3m-onramp-provider-item/index.js'
 import '../../partials/w3m-onramp-providers-footer/index.js'
 
+// -- Constants ----------------------------------------- //
+const POPUP_FEATURES = 'width=600,height=800,scrollbars=yes'
+
 @customElement('w3m-onramp-providers-view')
 export class W3mOnRampProvidersView extends LitElement {
   private unsubscribe: (() => void)[] = []
@@ -66,13 +69,29 @@ export class W3mOnRampProvidersView extends LitElement {
   }
 
   private async onClickProvider(provider: OnRampProvider) {
+    /*
+     * Open the popup before any await. Safari on iOS blocks window.open calls that are
+     * not made synchronously within the click, and some provider URLs (e.g. Meld) are fetched.
+     */
+    const popupWindow = CoreHelperUtil.returnOpenHref('', 'popupWindow', POPUP_FEATURES)
+
     RouterController.push('BuyInProgress')
-    await OnRampController.setSelectedProvider(provider)
-    CoreHelperUtil.openHref(
-      OnRampController.state.selectedProvider?.url || provider.url,
-      'popupWindow',
-      'width=600,height=800,scrollbars=yes'
-    )
+
+    try {
+      await OnRampController.setSelectedProvider(provider)
+    } catch (error) {
+      popupWindow?.close()
+      throw error
+    }
+
+    const url = OnRampController.state.selectedProvider?.url || provider.url
+
+    if (popupWindow) {
+      popupWindow.location.href = url
+    } else {
+      CoreHelperUtil.openHref(url, 'popupWindow', POPUP_FEATURES)
+    }
+
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_BUY_PROVIDER',
