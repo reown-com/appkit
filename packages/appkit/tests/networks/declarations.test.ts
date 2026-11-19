@@ -68,7 +68,9 @@ describe('network declarations', () => {
   })
 
   it('only reference @reown/appkit-common from the defineChain helper', () => {
-    const constantFiles = networkFiles.filter(fileName => !fileName.endsWith('/networks/utils.d.ts'))
+    const constantFiles = networkFiles.filter(
+      fileName => !fileName.endsWith('/networks/utils.d.ts')
+    )
 
     expect(constantFiles.length).toBeGreaterThan(0)
     for (const fileName of constantFiles) {
