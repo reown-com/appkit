@@ -20,7 +20,7 @@ export namespace UnisatConnector {
     getPublicKey: () => Promise<string>
     sendBitcoin: (
       to: string,
-      value: number,
+      satoshis: number,
       options?: { feeRate: number; memo?: string; memos?: string[] }
     ) => Promise<string>
     signPsbt: (
