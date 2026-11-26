@@ -2,6 +2,8 @@ import { type CaipNetworkId, type ChainNamespace, ParseUtil } from '@reown/appki
 
 import { OptionsController } from '../controllers/OptionsController.js'
 
+type PaymentType = 'wallet' | 'exchange'
+
 type PayStatus = 'UNKNOWN' | 'IN_PROGRESS' | 'SUCCESS' | 'FAILED'
 
 export type CurrentPayment = {
@@ -24,8 +26,6 @@ export type PaymentAsset = {
   }
   price?: number
 }
-
-type PaymentType = 'wallet' | 'exchange'
 
 export type Exchange = {
   id: string
