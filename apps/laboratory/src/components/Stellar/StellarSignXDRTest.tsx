@@ -103,7 +103,11 @@ export function StellarSignXDRTest() {
         waitForInclusion: true
       })
 
-      toast({ title: 'Transaction submitted', description: result.txHash, type: 'success' })
+      toast({
+        title: result.status === 'pending' ? 'Transaction pending' : 'Transaction submitted',
+        description: result.txHash || result.status,
+        type: result.status === 'pending' ? undefined : 'success'
+      })
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error('Stellar SignAndSubmitXDR error:', e)

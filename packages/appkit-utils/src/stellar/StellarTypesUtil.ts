@@ -12,7 +12,8 @@ export interface StellarConnector extends ChainAdapterConnector, Provider {
    */
   signXDR(params: StellarConnector.SignXDRParams): Promise<StellarConnector.SignXDRResult>
   /**
-   * Signs a transaction envelope XDR and submits it to the network's Horizon endpoint.
+   * Signs a transaction envelope XDR and submits it to the network's Horizon endpoint,
+   * unless the wallet reports `pending` because more signatures are needed.
    */
   signAndSubmitXDR(
     params: StellarConnector.SignAndSubmitXDRParams
@@ -52,6 +53,8 @@ export declare namespace StellarConnector {
     txHash: string
     signedXDR: string
     successful?: boolean
+    /** Submission status reported by some wallets; `pending` means more signatures are needed */
+    status?: 'success' | 'pending'
   }
 
   type SignMessageParams = {
