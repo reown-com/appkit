@@ -167,6 +167,8 @@ const state = proxy<ConnectionControllerState>({
 
 // eslint-disable-next-line init-declarations
 let wcConnectionPromise: Promise<void> | undefined
+// WalletConnect connections started by AppKit itself, to tell them apart from Universal Provider sessions
+let wcConnectionsInFlight = 0
 
 // -- Controller ---------------------------------------- //
 const controller = {
@@ -225,12 +227,17 @@ const controller = {
       .some(({ connectorId: _connectorId }) => _connectorId === connectorId)
   },
 
+  isWalletConnectConnecting() {
+    return wcConnectionsInFlight > 0
+  },
+
   async connectWalletConnect({ cache = 'auto' }: ConnectWalletConnectParameters = {}) {
     state.wcFetchingUri = true
     state.wcError = false
     const isInTelegramOrSafariIos =
       CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())
 
+    wcConnectionsInFlight += 1
     try {
       if (cache === 'always' || (cache === 'auto' && isInTelegramOrSafariIos)) {
         if (wcConnectionPromise) {
@@ -262,6 +269,8 @@ const controller = {
       state.status = 'disconnected'
       wcConnectionPromise = undefined
       throw error
+    } finally {
+      wcConnectionsInFlight -= 1
     }
   },
 
