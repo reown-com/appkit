@@ -4,7 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { ConstantsUtil } from '@reown/appkit-common'
 import type { ChainNamespace } from '@reown/appkit-common'
 
-import { AssetUtil } from '../utils/AssetUtil.js'
+import { AssetUtil, namespaceImageIds } from '../utils/AssetUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { CUSTOM_DEEPLINK_WALLETS } from '../utils/MobileWallet.js'
@@ -240,13 +240,20 @@ export const ApiController = {
   async fetchNetworkImages() {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
 
-    const ids = requestedCaipNetworks
-      ?.map(({ assets }) => assets?.imageId)
-      .filter(Boolean)
-      .filter(imageId => !AssetUtil.getNetworkImageById(imageId))
+    const networkIds =
+      requestedCaipNetworks
+        ?.map(({ assets }) => assets?.imageId)
+        .filter(Boolean)
+        .filter(imageId => !AssetUtil.getNetworkImageById(imageId)) ?? []
 
-    if (ids) {
-      await Promise.allSettled((ids as string[]).map(id => ApiController._fetchNetworkImage(id)))
+    const nsImageIds = Object.values(namespaceImageIds).filter(
+      id => id && !AssetUtil.getNetworkImageById(id)
+    )
+
+    const ids = [...new Set([...(networkIds as string[]), ...nsImageIds])]
+
+    if (ids.length) {
+      await Promise.allSettled(ids.map(id => ApiController._fetchNetworkImage(id)))
     }
   },
 
