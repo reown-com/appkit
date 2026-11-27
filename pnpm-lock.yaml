@@ -3492,8 +3492,8 @@ importers:
         specifier: 3.0.2
         version: 3.0.2
       zod:
-        specifier: 3.22.4
-        version: 3.22.4
+        specifier: ^3.22.4 || ^4.6.6
+        version: 4.6.7
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.9
@@ -20154,6 +20154,9 @@ packages:
 
   zod@4.6.5:
     resolution: {integrity: sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==}
+
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
   zustand@5.0.0:
     resolution: {integrity: sha512-LE+VcmbartOPM+auOjCCLQOsQ05zUTp8RkgwRzefUk+2jISdMMFnxvyTjA4YNWr5ZGXYbVsEMZosttuxUBkojQ==}
@@ -48616,6 +48619,8 @@ snapshots:
   zod@4.0.17: {}
 
   zod@4.6.5: {}
+
+  zod@4.6.7: {}
 
   zustand@5.0.0(@types/react@19.1.15)(react@19.1.2)(use-sync-external-store@1.4.0(react@19.1.2)):
     optionalDependencies:
